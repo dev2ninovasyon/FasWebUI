@@ -21,7 +21,7 @@ const CollapseLogo = () => {
       <LinkStyled href="/">
         {customizer.activeMode === "dark" ? (
           <Image
-            src="/images/logos/fas-logo.png"
+            src="/images/profile/fas-logo.jpg"
             alt="logo"
             height={45}
             width={42}
@@ -30,7 +30,7 @@ const CollapseLogo = () => {
           />
         ) : (
           <Image
-            src={"/images/logos/fas-logo.png"}
+            src={"/images/profile/fas-logo.jpg"}
             alt="logo"
             height={45}
             width={42}
@@ -46,7 +46,7 @@ const CollapseLogo = () => {
     <LinkStyled href="/">
       {customizer.activeMode === "dark" ? (
         <Image
-          src="/images/logos/fas-logo.png"
+          src="/images/profile/fas-logo.jpg"
           alt="logo"
           height={45}
           width={42}
@@ -55,7 +55,7 @@ const CollapseLogo = () => {
         />
       ) : (
         <Image
-          src="/images/logos/fas-logo.png"
+          src="/images/profile/fas-logo.jpg"
           alt="logo"
           height={45}
           width={42}
