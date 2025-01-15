@@ -1,0 +1,127 @@
+import React, { useState } from "react";
+import Link from "next/link";
+import { useDispatch, useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+import {
+  Box,
+  Menu,
+  Avatar,
+  Typography,
+  Divider,
+  Button,
+  IconButton,
+} from "@mui/material";
+
+import { IconMail } from "@tabler/icons-react";
+import { Stack } from "@mui/system";
+import ProfileItems from "./ProfileItems";
+import { setToken, resetToNull } from "@/store/user/UserSlice";
+
+const Profile = () => {
+  const dispatch = useDispatch();
+  const [anchorEl2, setAnchorEl2] = useState(null);
+  const user = useSelector((state: AppState) => state.userReducer);
+
+  const handleClick2 = (event: any) => {
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleClose2 = () => {
+    setAnchorEl2(null);
+  };
+  const handleLogOut = () => {
+    dispatch(resetToNull(""));
+  };
+
+  return (
+    <Box>
+      <IconButton
+        size="large"
+        aria-label="show 11 new notifications"
+        color="inherit"
+        aria-controls="msgs-menu"
+        aria-haspopup="true"
+        sx={{
+          ...(typeof anchorEl2 === "object" && {
+            color: "primary.main",
+          }),
+        }}
+        onClick={handleClick2}
+      >
+        <Avatar
+          src={"/images/profile/user-1.jpg"}
+          alt={"ProfileImg"}
+          sx={{
+            width: 35,
+            height: 35,
+          }}
+        />
+      </IconButton>
+      {/* ------------------------------------------- */}
+      {/* Message Dropdown */}
+      {/* ------------------------------------------- */}
+      <Menu
+        id="msgs-menu"
+        anchorEl={anchorEl2}
+        keepMounted
+        open={Boolean(anchorEl2)}
+        onClose={handleClose2}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        sx={{
+          "& .MuiMenu-paper": {
+            width: "360px",
+            p: 4,
+          },
+        }}
+      >
+        <Typography variant="h5">Kullanıcı Profili</Typography>
+        <Stack direction="row" py={3} spacing={2} alignItems="center">
+          <Avatar
+            src={"/images/profile/user-1.jpg"}
+            alt={"ProfileImg"}
+            sx={{ width: 95, height: 95 }}
+          />
+          <Box>
+            <Typography
+              variant="subtitle2"
+              color="textPrimary"
+              fontWeight={600}
+            >
+              {user.kullaniciAdi}
+            </Typography>
+            <Typography variant="subtitle2" color="textSecondary">
+              {user.yetki
+                ? user.yetki.replace(/([A-Z][a-zıiüüşöç]+)/g, " $1").trim()
+                : user.unvan}
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              color="textSecondary"
+              display="flex"
+              alignItems="center"
+              gap={1}
+              fontSize={"12px"}
+            >
+              <IconMail width={15} height={15} />
+              {user.mail}
+            </Typography>
+          </Box>
+        </Stack>
+        <Divider />
+        <ProfileItems />
+        <Box mt={2}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => handleLogOut()}
+            fullWidth
+          >
+            Çıkış
+          </Button>
+        </Box>
+      </Menu>
+    </Box>
+  );
+};
+
+export default Profile;

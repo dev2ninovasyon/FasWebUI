@@ -1,0 +1,7 @@
+.ck-editor__editable.ck {
+  min-height: 65vh !important;
+}
+
+.ck-editor {
+  max-width: 100% !important;
+}
