@@ -18,7 +18,7 @@ const MobileLogo = () => {
       <LinkStyled href="/">
         {customizer.activeMode === "dark" ? (
           <Image
-            src="/images/profile/fas-logo-yazili-beyaz.jpg"
+            src="/images/profile/logobeyaz.jpg"
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
@@ -27,7 +27,7 @@ const MobileLogo = () => {
           />
         ) : (
           <Image
-            src={"/images/profile/fas-logo-yazili-siyah.jpg"}
+            src={"/images/profile/logosiyah.jpg"}
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
@@ -43,7 +43,7 @@ const MobileLogo = () => {
     <LinkStyled href="/">
       {customizer.activeMode === "dark" ? (
         <Image
-          src="/images/profile/fas-logo-yazili-beyaz.jpg"
+          src="/images/profile/logobeyaz.jpg"
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
@@ -52,7 +52,7 @@ const MobileLogo = () => {
         />
       ) : (
         <Image
-          src="/images/profile/fas-logo-yazili-siyah.jpg"
+          src="/images/profile/logosiyah.jpg"
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
