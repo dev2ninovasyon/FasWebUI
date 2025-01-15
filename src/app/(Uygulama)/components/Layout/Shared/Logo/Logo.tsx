@@ -31,7 +31,7 @@ const Logo = () => {
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
-            style={{ padding: "8px 4px", width: "auto", height: "auto" }}
+            style={{ padding: "8px 4px", width: "auto", height: "75px" }}
             priority
           />
         )}
