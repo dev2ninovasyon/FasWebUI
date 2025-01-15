@@ -18,7 +18,7 @@ const Logo = () => {
       <LinkStyled href="/">
         {customizer.activeMode === "dark" ? (
           <Image
-            src="/images/profile/logobeyaz.jpg"
+            src="/images/logos/logobeyaz.png"
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
@@ -27,7 +27,7 @@ const Logo = () => {
           />
         ) : (
           <Image
-            src={"/images/profile/logosiyah.jpg"}
+            src={"/images/logos/logosiyah.png"}
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
@@ -43,7 +43,7 @@ const Logo = () => {
     <LinkStyled href="/">
       {customizer.activeMode === "dark" ? (
         <Image
-          src="/images/profile/logobeyaz.jpg"
+          src="/images/logos/logobeyaz.png"
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
@@ -52,7 +52,7 @@ const Logo = () => {
         />
       ) : (
         <Image
-          src="/images/profile/logosiyah.jpg"
+          src="/images/logos/logosiyah.png"
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
