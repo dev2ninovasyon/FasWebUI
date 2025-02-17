@@ -141,7 +141,7 @@ const KidemTazminatiBobiVeriYukleme = () => {
   ) => {
     const integerRegex = /^\d+$/; // Regex to match integers only
     setTimeout(() => {
-      if (!value || value.trim() === "") {
+      if (!value) {
         // Eğer değer boşsa geçerli kabul et
         callback(true);
       } else if (integerRegex.test(value)) {
