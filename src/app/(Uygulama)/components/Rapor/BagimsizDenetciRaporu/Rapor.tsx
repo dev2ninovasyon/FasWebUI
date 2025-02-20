@@ -590,7 +590,7 @@ const Report: React.FC<RaporProps> = ({
         <div className="text-center">
           <h2>Bağımsız Denetim Raporu</h2>
           <h2>{user.denetlenenFirmaAdi}</h2>
-          <h2>Ortak Kurulu'na</h2>
+          <h2>Ortak Kurulu&apos;na</h2>
         </div>
       </div>
       {/* Görüş */}
