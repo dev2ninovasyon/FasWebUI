@@ -28,6 +28,7 @@ import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitl
 import { getUygulananDenetimProsedurleri } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import Autocomplete from "@mui/material/Autocomplete";
 import dynamic from "next/dynamic";
+import { FloatingButtonCalismaKagitlari } from "../FloatingButtonCalismaKagitlari";
 const MaddiDogrulamaKonuEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/MaddiDogrulamaKonuEditor"),
   { ssr: false }
@@ -84,6 +85,7 @@ const UygulananDentimProsedurleri: React.FC<CalismaKagidiProps> = ({
   const [selectedKategori, setSelectedKategori] = useState("");
   const [selectedKonu, setSelectedKonu] = useState("");
   const [selectedAciklama, setSelectedAciklama] = useState("");
+  const [selectedStandartMi, setSelectedStandartMi] = useState(true);
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [isNew, setIsNew] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -235,7 +237,7 @@ const UygulananDentimProsedurleri: React.FC<CalismaKagidiProps> = ({
     setSelectedKategori(veri.kategori);
     setSelectedKonu(veri.konu);
     setSelectedAciklama(veri.aciklama);
-
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
@@ -258,6 +260,7 @@ const UygulananDentimProsedurleri: React.FC<CalismaKagidiProps> = ({
   const handleSetSelectedKonu = async (konu: any) => {
     setSelectedKonu(konu);
   };
+
   const handleSetSelectedAciklama = async (aciklama: any) => {
     setSelectedAciklama(aciklama);
   };
@@ -383,6 +386,7 @@ const UygulananDentimProsedurleri: React.FC<CalismaKagidiProps> = ({
           kategori={selectedKategori}
           konu={selectedKonu}
           aciklama={selectedAciklama}
+          standartMi={selectedStandartMi}
           alanAdi1={alanAdi1}
           alanAdi2={alanAdi2}
           alanAdi3={alanAdi3}
@@ -407,6 +411,7 @@ interface PopUpProps {
   kategori?: string;
   konu?: string;
   aciklama?: string;
+  standartMi?: boolean;
   alanAdi1?: string;
   alanAdi2?: string;
   alanAdi3?: string;
@@ -426,6 +431,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   kategori,
   konu,
   aciklama,
+  standartMi,
   alanAdi1,
   alanAdi2,
   alanAdi3,
@@ -443,6 +449,22 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   const handleIsConfirm = () => {
     setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
   };
+
+  const [control, setControl] = useState(false);
+  const [control2, setControl2] = useState(false);
+
+  const handleControl = () => {
+    if (standartMi) {
+      setControl(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!standartMi) {
+      setControl2(true);
+    }
+  }, [standartMi]);
+
   return (
     <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
@@ -489,11 +511,17 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 {alanAdi3}
               </Typography>
               <MaddiDogrulamaAciklamaEditor
+                control={control}
+                control2={control2}
                 aciklama={aciklama}
                 handleSetSelectedAciklama={handleSetSelectedAciklama}
               />
             </Box>
           </DialogContent>
+          <FloatingButtonCalismaKagitlari
+            warn={standartMi ? (control || control2 ? true : false) : true}
+            handleClick={handleControl}
+          />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button

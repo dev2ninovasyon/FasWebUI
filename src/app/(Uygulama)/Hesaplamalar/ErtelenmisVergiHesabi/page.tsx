@@ -25,7 +25,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import VergiVarlik from "./VergiVarlik";
 import VergiYukumluluk from "./VergiYukumluluk";
 import ErtelenmisVergiHesabiCard from "@/app/(Uygulama)/components/Hesaplamalar/ErtelenmisVergiHesabi/ErtelenemisVergiHesabiCard";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import ErtelenmisVergiHesabiOrnekFisler from "./ErtelenmisVergiHesabiOrnekFisler";
 import { createVergiVarligiVeYukumlulugu } from "@/api/Hesaplamalar/Hesaplamalar";
@@ -193,7 +193,9 @@ const Page: React.FC = () => {
         <Grid item xs={12} lg={12}>
           <ErtelenmisVergiHesabiCard hesaplaTiklandimi={hesaplaTiklandimi} />
         </Grid>
-        <FloatingButton handleClick={() => setFloatingButtonTiklandimi(true)} />
+        <FloatingButtonFisler
+          handleClick={() => setFloatingButtonTiklandimi(true)}
+        />
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

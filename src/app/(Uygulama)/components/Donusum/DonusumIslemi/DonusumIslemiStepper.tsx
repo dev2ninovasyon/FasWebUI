@@ -66,7 +66,7 @@ const DonusumIslemiStepper = () => {
         user.token || "",
         user.denetlenenId || 0,
         user.yil || 0,
-        "Bobi"
+        user.denetimTuru || ""
       );
       if (donusumIslemi) {
         setDonusumIslemiYapTiklandiMi(false);

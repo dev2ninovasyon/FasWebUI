@@ -31,7 +31,7 @@ import Hareketsiz from "./Hareketsiz";
 import HareketsizOrnekFisler from "./HareketsizOrnekFisler";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import HareketsizOzet from "./HareketsizOzet";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 
 const BCrumb = [
@@ -262,7 +262,9 @@ const Page: React.FC = () => {
             </TabPanel>
           </TabContext>
         </Grid>
-        <FloatingButton handleClick={() => setFloatingButtonTiklandimi(true)} />
+        <FloatingButtonFisler
+          handleClick={() => setFloatingButtonTiklandimi(true)}
+        />
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

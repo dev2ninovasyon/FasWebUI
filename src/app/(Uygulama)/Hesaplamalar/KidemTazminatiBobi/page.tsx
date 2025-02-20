@@ -24,21 +24,18 @@ import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import {
-  createDavaKarsiliklariHesaplanmis,
   createKidemTazminatiBobiEkBilgi,
   createKidemTazminatiHesapla,
-  getIskontoOrani,
   getKidemTazminatiBobiEkBilgi,
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import DavaKarsiliklariCard from "@/app/(Uygulama)/components/Hesaplamalar/DavaKarsiliklari/DavaKarsiliklariCard";
 import KidemTazminatiBobiVeriYukleme from "./KidemTazminatiBobiVeriYukleme";
 import { IconInfoCircle } from "@tabler/icons-react";
 import KidemTazminatiBobiHesaplama from "./KidemTazminatiBobiHesaplama";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import KidemTazminatiBobiOrnekFisler from "./KidemTazminatiBobiOrnekFisler";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
@@ -1059,7 +1056,7 @@ const Page: React.FC = () => {
                     </Button>
                   </DialogActions>
                 </Dialog>
-                <FloatingButton
+                <FloatingButtonFisler
                   handleClick={() => setFloatingButtonTiklandimi(true)}
                 />
                 <Dialog

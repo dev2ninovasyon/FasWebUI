@@ -100,19 +100,25 @@ const Menuitems: MenuitemsType[] = [
         id: uniqueId(),
         title: "Şirket Yönetim Kadrosu",
         icon: IconPoint,
-        href: "/",
+        href: "/Musteri/SirketYonetimKadrosu",
       },
       {
         id: uniqueId(),
         title: "Şubeler",
         icon: IconPoint,
-        href: "/",
+        href: "/Musteri/Subeler",
       },
       {
         id: uniqueId(),
         title: "Hissedarlar",
         icon: IconPoint,
-        href: "/",
+        href: "/Musteri/Hissedarlar",
+      },
+      {
+        id: uniqueId(),
+        title: "İlişkili Taraflar",
+        icon: IconPoint,
+        href: "/Musteri/IliskiliTaraflar",
       },
       {
         id: uniqueId(),
@@ -166,7 +172,7 @@ const Menuitems: MenuitemsType[] = [
         id: uniqueId(),
         title: "Müşteri Kabul İşlemi",
         icon: IconPoint,
-        href: "/",
+        href: "/Musteri/MusteriKabulIslemi",
       },
       {
         id: uniqueId(),
@@ -208,12 +214,6 @@ const Menuitems: MenuitemsType[] = [
         title: "Defter Yükleme",
         icon: IconPoint,
         href: "/Veri/DefterYukleme",
-      },
-      {
-        id: uniqueId(),
-        title: "E-Defter İnceleme",
-        icon: IconPoint,
-        href: "/Veri/EDefterInceleme",
       },
       /*{
         id: uniqueId(),
@@ -264,6 +264,12 @@ const Menuitems: MenuitemsType[] = [
             href: "/Veri/Mizanlar/VukMizan",
           },
         ],
+      },
+      {
+        id: uniqueId(),
+        title: "E-Defter İnceleme",
+        icon: IconPoint,
+        href: "/Veri/EDefterInceleme",
       },
       /*{
         id: uniqueId(),
@@ -866,15 +872,21 @@ const Menuitems: MenuitemsType[] = [
   },
   {
     id: uniqueId(),
-    title: "DENETİM RAPORU",
+    title: "RAPOR",
     icon: IconFileAnalytics,
-    href: "/",
+    href: "/Rapor",
     children: [
       {
         id: uniqueId(),
-        title: "Dipnot / Görüş Düzenle",
+        title: "Rapor Düzenle",
         icon: IconPoint,
-        href: "/",
+        href: "/Rapor/RaporDuzenle",
+      },
+      {
+        id: uniqueId(),
+        title: "Bağımsız Denetçi Raporu",
+        icon: IconPoint,
+        href: "/Rapor/BagimsizDenetciRaporu",
       },
     ],
   },

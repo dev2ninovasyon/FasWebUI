@@ -28,6 +28,35 @@ export const getMizanVerileri = async (
   }
 };
 
+export const getMizanVerileriByHesapNo = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  type: string,
+  hesapNo: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Mizan/MizanByHesapNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}&hesapNo=${hesapNo}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Mizan verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const getKurumlarVergisiBeyannamesiKarsilastirma = async (
   token: string,
   denetciId: number,

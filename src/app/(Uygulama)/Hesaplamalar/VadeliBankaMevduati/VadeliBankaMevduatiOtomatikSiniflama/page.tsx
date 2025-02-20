@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "react-redux";
@@ -142,7 +142,9 @@ const Page = () => {
             hesaplaTiklandimi={hesaplaTiklandimi}
           />
         </Grid>
-        <FloatingButton handleClick={() => setFloatingButtonTiklandimi(true)} />
+        <FloatingButtonFisler
+          handleClick={() => setFloatingButtonTiklandimi(true)}
+        />
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

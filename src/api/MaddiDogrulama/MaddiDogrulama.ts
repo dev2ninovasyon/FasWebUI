@@ -1,37 +1,25 @@
 import { url } from "@/api/apiBase";
 
-export const getMaddiDogrulama = async (
-  token: string,
-  tfrsmi?: boolean | null,
-  bobimi?: boolean | null
-) => {
+export const getMaddiDogrulama = async (token: string, denetimTuru: string) => {
   try {
-    // Temel URL
-    let query = `${url}/DenetimDosyaBelgeleri/MaddiDogrulamaListe?`;
+    let tfrsmi = denetimTuru == "Tfrs" ? true : false;
+    let bobimi = denetimTuru == "Bobi" ? true : false;
 
-    // tfrsmi ve bobimi değerlerini dinamik olarak ekliyoruz
-    if (tfrsmi !== null && tfrsmi !== undefined) {
-      query += `tfrsmi=${tfrsmi}&`;
-    }
-    if (bobimi !== null && bobimi !== undefined) {
-      query += `bobimi=${bobimi}&`;
-    }
-
-    // Fazladan & karakterini kaldırıyoruz
-    query = query.slice(0, -1);
-
-    const response = await fetch(query, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${url}/DenetimDosyaBelgeleri/MaddiDogrulamaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       return response.json();
     } else {
-      console.error(" verileri getirilemedi");
+      console.error("Verileri getirilemedi");
       return null; // Hata durumunda null döndürüyoruz
     }
   } catch (error) {

@@ -7,7 +7,7 @@ import { Box, Grid } from "@mui/material";
 import MusteriTable from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriTable";
 import MusteriEkleButton from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEkleButton";
 
-const MusteriIslemleri = () => {
+const Page = () => {
   return (
     <MusteriIslemleriLayout>
       <PageContainer
@@ -29,4 +29,4 @@ const MusteriIslemleri = () => {
   );
 };
 
-export default MusteriIslemleri;
+export default Page;

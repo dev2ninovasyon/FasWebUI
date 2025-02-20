@@ -421,6 +421,34 @@ export const getCekSenetReeskontEkBilgi = async (
   }
 };
 
+export const getCekSenetReeskontIskontoOranlari = async (
+  token: string,
+  oranAdi: string,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Hesaplamalar/CekSenetReeskontIskontoOranlari?oranAdi=${oranAdi}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status == 200) {
+      return response.json();
+    } else {
+      console.error("Çek Senet Reeskont Iskonto Oranı verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const getCekSenetReeskontHesaplama = async (
   token: string,
   denetciId: number,

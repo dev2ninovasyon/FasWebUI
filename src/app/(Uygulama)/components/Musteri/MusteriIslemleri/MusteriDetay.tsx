@@ -54,7 +54,6 @@ const MusteriDetay = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        {/* 1 */}
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
           <CustomFormLabel
             htmlFor="firmaAdi"

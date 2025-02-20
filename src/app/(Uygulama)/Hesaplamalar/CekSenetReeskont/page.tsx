@@ -33,6 +33,7 @@ import {
   createCekSenetReeskontEkBilgi,
   createCekSenetReeskontHesapla,
   getCekSenetReeskontEkBilgi,
+  getCekSenetReeskontIskontoOranlari,
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import CekSenetReeskontHesaplama from "./CekSenetReeskontHesaplama";
 import CekSenetReeskontDuzeltmeFarklari from "./CekSenetReeskontDuzeltmeFarklari";
@@ -65,10 +66,11 @@ const Page: React.FC = () => {
   };
 
   const [oran, setOran] = useState("TCMB");
-  const handleChangeHesaplansinMi = (
+  const handleChangeOran = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setOran(event.target.value);
+    await fetchDataIskontoOranlari(event.target.value);
   };
 
   const [kacGun, setKacGun] = useState(365);
@@ -193,6 +195,38 @@ const Page: React.FC = () => {
           cekSenetReeskontEkBilgiVerileri.iskontoOrani180365
         );
         setIskontoOrani365(cekSenetReeskontEkBilgiVerileri.iskontoOrani365);
+      } else {
+        await fetchDataIskontoOranlari("TCMB");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchDataIskontoOranlari = async (oranAdi: string) => {
+    try {
+      const cekSenetReeskontIskontoOranlariVerileri =
+        await getCekSenetReeskontIskontoOranlari(
+          user.token || "",
+          oranAdi,
+          user.yil || 0
+        );
+      if (cekSenetReeskontIskontoOranlariVerileri) {
+        setIskontoOrani130(
+          cekSenetReeskontIskontoOranlariVerileri.iskontoOrani130
+        );
+        setIskontoOrani3090(
+          cekSenetReeskontIskontoOranlariVerileri.iskontoOrani3090
+        );
+        setIskontoOrani90180(
+          cekSenetReeskontIskontoOranlariVerileri.iskontoOrani90180
+        );
+        setIskontoOrani180365(
+          cekSenetReeskontIskontoOranlariVerileri.iskontoOrani180365
+        );
+        setIskontoOrani365(
+          cekSenetReeskontIskontoOranlariVerileri.iskontoOrani365
+        );
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -403,10 +437,10 @@ const Page: React.FC = () => {
                             size="medium"
                             fullWidth
                             value={oran}
-                            onChange={handleChangeHesaplansinMi}
+                            onChange={handleChangeOran}
                           >
                             <MenuItem value={"TCMB"}>TCMB Avans Oranı</MenuItem>
-                            <MenuItem value={"TLREF"}>TLREF </MenuItem>
+                            <MenuItem value={"TRL/TLREF"}>TLREF</MenuItem>
                           </CustomSelect>
                         </Grid>
                       </Grid>

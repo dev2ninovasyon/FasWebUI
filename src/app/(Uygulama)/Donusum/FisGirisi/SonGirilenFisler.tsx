@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
@@ -43,6 +43,8 @@ const SonGirilenFisler: React.FC<Props> = ({
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const [rowCount, setRowCount] = useState(0);
 
@@ -404,6 +406,7 @@ const SonGirilenFisler: React.FC<Props> = ({
           height: "100%",
           width: "100%",
           maxWidth: "100%",
+          overflow: smDown ? "auto" : "",
         }}
         language={dictionary.languageCode}
         ref={hotTableComponent}

@@ -249,7 +249,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       var controller =
         fileType === "E-DefterKebir" ? "DosyaGoster" : "PdfDosyasiGoster";
       const response = await axios({
-        url: `https://faswebapitest.azurewebsites.net/api/Veri/${controller}/${selectedId}`,
+        url: `https://localhost:5001/api/Veri/${controller}/${selectedId}`,
         method: "GET",
         responseType: "blob",
         headers: {

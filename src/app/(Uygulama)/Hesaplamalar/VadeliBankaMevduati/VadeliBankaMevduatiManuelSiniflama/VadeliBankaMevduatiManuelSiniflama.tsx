@@ -24,7 +24,7 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getVadeliBankaMevduatiManuelSiniflama } from "@/api/Hesaplamalar/Hesaplamalar";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import VadeliBankaMevduatiManuelSiniflamaOrnekFisler from "./VadeliBankaMevduatiManuelSiniflamaOrnekFisler";
 
@@ -546,7 +546,7 @@ const VadeliBankaMevduatiManuelSiniflama = () => {
             handleDownload={handleDownload}
           ></ExceleAktarButton>
         </Grid>
-        <FloatingButton
+        <FloatingButtonFisler
           warn={warn}
           handleClick={() => setFloatingButtonTiklandimi(true)}
         />

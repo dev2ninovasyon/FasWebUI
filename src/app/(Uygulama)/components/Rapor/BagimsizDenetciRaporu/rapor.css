@@ -1,0 +1,74 @@
+/* General Styles */
+div {
+  font-family: "Roboto", sans-serif !important;
+}
+
+h1 {
+  font-size: "2.25rem";
+  line-height: "2.75rem";
+}
+
+h2 {
+  font-size: "1.875rem";
+  line-height: "2.25rem";
+}
+
+h3 {
+  font-size: "1.5rem";
+  line-height: "1.75rem";
+}
+
+h4 {
+  font-size: "1.3125rem";
+  line-height: "1.6rem";
+}
+
+h5 {
+  font-size: "1.125rem";
+  line-height: "1.6rem";
+}
+
+h6 {
+  font-size: "1rem";
+  line-height: "1.2rem";
+}
+
+.seperator24 {
+  height: 24px;
+  background-color: white;
+}
+
+.seperator48 {
+  height: 48px;
+  background-color: white;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+/* Table Styles */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding-left: 4px;
+  padding-right: 4px;
+  border: 1px solid #ddd;
+}
+
+.data-table th {
+  text-align: left;
+  font-weight: bold;
+}
+
+.data-table td {
+  text-align: left;
+}

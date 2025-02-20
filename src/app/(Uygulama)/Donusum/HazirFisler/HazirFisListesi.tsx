@@ -309,11 +309,10 @@ const HazirFisListesi = () => {
   };
 
   const fetchData = async () => {
-    const denetimTuru = "Bobi";
     try {
       const hazirFisListesiVerileri = await getHazirFisListesiVerileri(
         user.token || "",
-        denetimTuru
+        user.denetimTuru || ""
       );
       const rowsAll: any = [];
       hazirFisListesiVerileri.forEach((veri: any) => {
@@ -463,14 +462,13 @@ const HazirFisListesi = () => {
                 name: "Fiş Listesine Ekle",
                 callback: async function (key, selection) {
                   const row = await handleGetRowData(selection[0].start.row);
-                  const denetimTuru = "Bobi";
                   try {
                     const result = await createFisListesineHazirFis(
                       user.token || "",
                       user.denetciId || 0,
                       user.denetlenenId || 0,
                       user.yil || 0,
-                      denetimTuru,
+                      user.denetimTuru || "",
                       row[0]
                     );
                     if (result) {

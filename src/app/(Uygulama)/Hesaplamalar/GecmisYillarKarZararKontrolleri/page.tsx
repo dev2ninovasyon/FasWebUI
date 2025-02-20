@@ -19,7 +19,7 @@ import {
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import GecmisYillarKarZararKontrolleriOrnekFisler from "./GecmisYillarKarZararKontrolleriOrnekFisler";
 import GecmisYillarKarZararKontrolleri from "./GecmisYillarKarZararKontrolleri";
@@ -57,7 +57,9 @@ const Page: React.FC = () => {
         <Grid item xs={12} lg={12} mb={2}>
           <GecmisYillarKarZararKontrolleri />
         </Grid>
-        <FloatingButton handleClick={() => setFloatingButtonTiklandimi(true)} />
+        <FloatingButtonFisler
+          handleClick={() => setFloatingButtonTiklandimi(true)}
+        />
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

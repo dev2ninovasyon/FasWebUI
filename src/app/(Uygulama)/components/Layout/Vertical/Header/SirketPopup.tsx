@@ -18,6 +18,7 @@ import YearBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Hea
 import { useDispatch } from "react-redux";
 import {
   setBobimi,
+  setDenetimTuru,
   setDenetlenenFirmaAdi,
   setDenetlenenId,
   setTfrsmi,
@@ -35,12 +36,14 @@ const SirketPopup = () => {
   const theme = useTheme();
 
   const [showDrawer2, setShowDrawer2] = useState(false);
-  const [selectedCompanyId, setSelectedCompanyId] = useState(0);
-  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedId, setSelectedId] = useState(0);
+  const [selectedAdi, setSelectedAdi] = useState("");
+  const [selectedDenetimTuru, setSelectedDenetimTuru] = useState("");
   const [selectedBobimi, setSelectedBobimi] = useState(false);
   const [selectedTfrsmi, setSelectedTfrsmi] = useState(false);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedYearNumber, setSelectedYearNumber] = useState(0);
+
   const [company, setCompany] = useState(
     user.denetlenenFirmaAdi?.split(" ").slice(0, 2).join(" ")
   );
@@ -53,13 +56,14 @@ const SirketPopup = () => {
   };
 
   const handleButtonClick = async () => {
-    await dispatch(setDenetlenenId(selectedCompanyId));
-    await dispatch(setDenetlenenFirmaAdi(selectedCompany));
+    await dispatch(setDenetlenenId(selectedId));
+    await dispatch(setDenetlenenFirmaAdi(selectedAdi));
     await dispatch(setYil(selectedYearNumber));
+    await dispatch(setDenetimTuru(selectedDenetimTuru));
     await dispatch(setBobimi(selectedBobimi));
     await dispatch(setTfrsmi(selectedTfrsmi));
     await setYear(parseInt(selectedYear));
-    await setCompany(selectedCompany.split(" ").slice(0, 2).join(" "));
+    await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
 
     window.location.reload();
 
@@ -128,11 +132,10 @@ const SirketPopup = () => {
               Şirket Seçiniz
             </Typography>
             <CompanyBoxAutocomplete
-              onSelect={(selectedCompany) =>
-                setSelectedCompany(selectedCompany)
-              }
-              onSelectId={(selectedCompanyId) =>
-                setSelectedCompanyId(selectedCompanyId)
+              onSelectId={(selectedId) => setSelectedId(selectedId)}
+              onSelectAdi={(selectedAdi) => setSelectedAdi(selectedAdi)}
+              onSelectDenetimTuru={(selectedDenetimTuru) =>
+                setSelectedDenetimTuru(selectedDenetimTuru)
               }
               onSelectBobimi={(selectedBobimi) =>
                 setSelectedBobimi(selectedBobimi)

@@ -24,6 +24,7 @@ const MusteriEkleForm = () => {
   const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
   const denetciId = user.denetciId;
+
   const handleButtonClick = async () => {
     const createdMusteri = {
       denetciId,

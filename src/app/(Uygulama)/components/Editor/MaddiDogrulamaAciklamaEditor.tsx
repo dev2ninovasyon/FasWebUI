@@ -70,6 +70,8 @@ interface Veri {
 }
 
 interface MaddiDogrulamaAciklamaEditorProps {
+  control: boolean;
+  control2: boolean;
   setIsClickedVarsayılanaDon?: (deger: boolean) => void;
   aciklama?: string;
   handleSetSelectedAciklama: (a: string) => void;
@@ -77,13 +79,14 @@ interface MaddiDogrulamaAciklamaEditorProps {
 
 const MaddiDogrulamaAciklamaEditor: React.FC<
   MaddiDogrulamaAciklamaEditorProps
-> = ({ aciklama, handleSetSelectedAciklama }) => {
+> = ({ control, control2, aciklama, handleSetSelectedAciklama }) => {
   const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const customizer = useSelector((state: AppState) => state.customizer);
   const user = useSelector((state: AppState) => state.userReducer);
   const [selectedId, setSelectedId] = useState(0);
-  const [editorData, setEditorData] = useState(aciklama); // Track editor data
+  const [editorData, setEditorData] = useState(""); // Track editor data
+  const [editorDataTemp, setEditorDataTemp] = useState(aciklama); // Track editor data
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -254,7 +257,7 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
         <CKEditor
           editor={ClassicEditor}
           config={editorConfig}
-          data={editorData}
+          data={control || control2 ? editorDataTemp : editorData}
           onChange={handleChange} // Update content when changed
         />
       </Box>

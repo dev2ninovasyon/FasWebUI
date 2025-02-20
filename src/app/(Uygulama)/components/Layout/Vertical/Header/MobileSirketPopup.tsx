@@ -20,6 +20,7 @@ import {
   setYil,
   setBobimi,
   setTfrsmi,
+  setDenetimTuru,
 } from "@/store/user/UserSlice";
 import { AppState } from "@/store/store";
 
@@ -28,12 +29,13 @@ const MobileSirketPopup = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const [showDrawer2, setShowDrawer2] = useState(false);
-  const [selectedCompanyId, setSelectedCompanyId] = useState(0);
-  const [selectedCompany, setSelectedCompany] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedYearNumber, setSelectedYearNumber] = useState(0);
+  const [selectedId, setSelectedId] = useState(0);
+  const [selectedAdi, setSelectedAdi] = useState("");
+  const [selectedDenetimTuru, setSelectedDenetimTuru] = useState("");
   const [selectedBobimi, setSelectedBobimi] = useState(false);
   const [selectedTfrsmi, setSelectedTfrsmi] = useState(false);
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedYearNumber, setSelectedYearNumber] = useState(0);
 
   const [company, setCompany] = useState(
     user.denetlenenFirmaAdi?.split(" ").slice(0, 2).join(" ")
@@ -47,13 +49,14 @@ const MobileSirketPopup = () => {
   };
 
   function handleButtonClick() {
-    dispatch(setDenetlenenId(selectedCompanyId));
-    dispatch(setDenetlenenFirmaAdi(selectedCompany));
+    dispatch(setDenetlenenId(selectedId));
+    dispatch(setDenetlenenFirmaAdi(selectedAdi));
     dispatch(setYil(selectedYearNumber));
+    dispatch(setDenetimTuru(selectedDenetimTuru));
     dispatch(setBobimi(selectedBobimi));
     dispatch(setTfrsmi(selectedTfrsmi));
     setYear(parseInt(selectedYear));
-    setCompany(selectedCompany.split(" ").slice(0, 2).join(" "));
+    setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
 
     window.location.reload();
 
@@ -102,12 +105,11 @@ const MobileSirketPopup = () => {
               Şirket Seçiniz
             </Typography>
             <CompanyBoxAutocomplete
-              onSelect={(selectedCompany) => {
-                setSelectedCompany(selectedCompany);
-              }}
-              onSelectId={(selectedCompanyId) => {
-                setSelectedCompanyId(selectedCompanyId);
-              }}
+              onSelectId={(selectedId) => setSelectedId(selectedId)}
+              onSelectAdi={(selectedAdi) => setSelectedAdi(selectedAdi)}
+              onSelectDenetimTuru={(selectedDenetimTuru) =>
+                setSelectedDenetimTuru(selectedDenetimTuru)
+              }
               onSelectBobimi={(selectedBobimi) =>
                 setSelectedBobimi(selectedBobimi)
               }

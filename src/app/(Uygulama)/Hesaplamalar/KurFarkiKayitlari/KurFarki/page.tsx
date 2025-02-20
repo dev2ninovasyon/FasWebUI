@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import { IconX } from "@tabler/icons-react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import KurFarki from "./KurFarki";
 import DovizKurlariOtuzBirAralik from "./DovizKurlariOtuzBirAralik";
@@ -77,7 +77,9 @@ const Page: React.FC = () => {
         <Grid item xs={12} lg={12}>
           <DovizKurlariOtuzBirAralik />
         </Grid>
-        <FloatingButton handleClick={() => setFloatingButtonTiklandimi(true)} />
+        <FloatingButtonFisler
+          handleClick={() => setFloatingButtonTiklandimi(true)}
+        />
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

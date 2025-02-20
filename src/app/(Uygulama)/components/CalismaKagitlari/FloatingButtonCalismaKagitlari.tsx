@@ -8,7 +8,7 @@ interface FloatingButtonProps {
   handleClick: () => void;
 }
 
-export const FloatingButton: React.FC<FloatingButtonProps> = ({
+export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
   warn,
   handleClick,
 }) => {
@@ -58,8 +58,8 @@ export const FloatingButton: React.FC<FloatingButtonProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          width: 70,
-          height: 70,
+          width: 72,
+          height: 72,
           backgroundColor: "white",
           borderRadius: "100%",
           overflow: "hidden",
@@ -100,11 +100,11 @@ export const FloatingButton: React.FC<FloatingButtonProps> = ({
         {isHovered &&
           (warn ? (
             <Typography variant="body1" fontWeight="bold" ml={3} noWrap>
-              Fiş oluşturabilmem için seçim yapmalısınız
+              Cevapları sizin için daha önce oluşturdum
             </Typography>
           ) : (
             <Typography variant="body1" fontWeight="bold" ml={3} noWrap>
-              Sizin için fiş oluşturmamı ister misiniz?
+              Sizin için cevaplamamı ister misiniz?
             </Typography>
           ))}
       </Paper>

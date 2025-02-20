@@ -6,25 +6,28 @@ import { getDenetlenenByDenetciId } from "@/api/Musteri/MusteriIslemleri";
 import CustomTextField from "../../../Forms/ThemeElements/CustomTextField";
 
 interface CompanyBoxProps {
-  onSelect: (selectedCompany: string) => void;
   onSelectId: (selectedCompanyId: number) => void;
-  onSelectTfrsmi: (selectedTfrsmi: boolean) => void;
+  onSelectAdi: (selectedCompanyAdi: string) => void;
+  onSelectDenetimTuru: (selectedDenetimTuru: string) => void;
   onSelectBobimi: (selectedBobimi: boolean) => void;
+  onSelectTfrsmi: (selectedTfrsmi: boolean) => void;
 }
 
 interface Company {
   denetlenenId: number;
   firmaAdi?: string;
+  denetimTuru?: string;
   bobimi?: boolean;
   tfrsmi?: boolean;
   label?: string;
 }
 
 const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
-  onSelect,
   onSelectId,
-  onSelectTfrsmi,
+  onSelectAdi,
+  onSelectDenetimTuru,
   onSelectBobimi,
+  onSelectTfrsmi,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -39,8 +42,9 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
       const newRows = musteriVerileri.map((musteri: any) => ({
         denetlenenId: musteri.id,
         firmaAdi: musteri.firmaAdi,
-        tfrsmi: musteri.tfrs,
+        denetimTuru: musteri.denetimTuru,
         bobimi: musteri.bobi,
+        tfrsmi: musteri.tfrs,
         label: musteri.firmaAdi,
       }));
       setRows(newRows);
@@ -59,8 +63,9 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
       options={rows}
       fullWidth
       onChange={(event, value) => {
-        onSelect(value?.firmaAdi || "");
         onSelectId(value?.denetlenenId || 0);
+        onSelectAdi(value?.firmaAdi || "");
+        onSelectDenetimTuru(value?.denetimTuru || "");
         onSelectBobimi(value?.bobimi || false);
         onSelectTfrsmi(value?.tfrsmi || false);
       }}

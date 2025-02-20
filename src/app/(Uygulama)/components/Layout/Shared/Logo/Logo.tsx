@@ -18,20 +18,20 @@ const Logo = () => {
       <LinkStyled href="/">
         {customizer.activeMode === "dark" ? (
           <Image
-            src="/images/logos/logobeyaz.png"
+            src="/images/logos/fas-logo-yazili-beyaz.png"
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
-            style={{ padding: "8px 4px", width: "auto", height: "75px" }}
+            style={{ padding: "8px 4px", width: "auto", height: "auto" }}
             priority
           />
         ) : (
           <Image
-            src={"/images/logos/logosiyah.png"}
+            src={"/images/logos/fas-logo-yazili-siyah.png"}
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
-            style={{ padding: "8px 4px", width: "auto", height: "75px" }}
+            style={{ padding: "8px 4px", width: "auto", height: "auto" }}
             priority
           />
         )}
@@ -43,20 +43,20 @@ const Logo = () => {
     <LinkStyled href="/">
       {customizer.activeMode === "dark" ? (
         <Image
-          src="/images/logos/logobeyaz.png"
+          src="/images/logos/fas-logo-yazili-beyaz.png"
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
-          style={{ padding: "8px 8px", width: "auto", height: "75px" }}
+          style={{ padding: "8px 8px", width: "auto", height: "auto" }}
           priority
         />
       ) : (
         <Image
-          src="/images/logos/logosiyah.png"
+          src="/images/logos/fas-logo-yazili-siyah.png"
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
-          style={{ padding: "8px 8px", width: "auto", height: "75px" }}
+          style={{ padding: "8px 8px", width: "auto", height: "auto" }}
           priority
         />
       )}

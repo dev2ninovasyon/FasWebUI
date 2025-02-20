@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { FloatingButton } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import KidemTazminatiTfrsVeriYukleme from "./KidemTazminatiTfrsVeriYukleme";
 
@@ -140,7 +140,7 @@ const Page: React.FC = () => {
                     Hesapla
                   </Button>
                 </Grid>
-                <FloatingButton
+                <FloatingButtonFisler
                   handleClick={() => setFloatingButtonTiklandimi(true)}
                 />
                 <Dialog

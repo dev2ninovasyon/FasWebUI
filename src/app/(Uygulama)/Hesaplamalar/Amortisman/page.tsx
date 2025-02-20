@@ -138,7 +138,7 @@ const Page: React.FC = () => {
                     id="hesaplamaYontemi"
                     size="small"
                     value={hesaplamaYontemi}
-                    onChange={handleChange}
+                    onChange={handleChangeHesaplamaYontemi}
                     height={"36px"}
                   >
                     <MenuItem value={"Aylık"}>

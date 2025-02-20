@@ -45,8 +45,8 @@ const DonusumMizanKontrol = () => {
 
   useEffect(() => {
     const loadStyles = async () => {
+      dispatch(setCollapse(true));
       if (customizer.activeMode === "dark") {
-        dispatch(setCollapse(true));
         await import(
           "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
         );

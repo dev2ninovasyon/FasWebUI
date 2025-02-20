@@ -75,6 +75,7 @@ const MusteriTable = () => {
   };
 
   const [rows, setRows] = useState([]);
+
   const fetchData = async () => {
     try {
       const musteriVerileri = await getDenetlenenByDenetciId(
