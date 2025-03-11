@@ -8439,7 +8439,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Tfrs'ye İlk Geçiş</th>
+                      <th>Tfrs&apos;ye İlk Geçiş</th>
                       <th style={{ textAlign: "center" }}>{user.yil}</th>
                       <th style={{ textAlign: "center" }}>
                         {user.yil ? user.yil - 1 : 0}
@@ -8474,7 +8474,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Tfrs'ye İlk Geçiş</th>
+                      <th>Tfrs&apos;ye İlk Geçiş</th>
                       <th style={{ textAlign: "center" }}>{user.yil}</th>
                       <th style={{ textAlign: "center" }}>
                         {user.yil ? user.yil - 1 : 0}
