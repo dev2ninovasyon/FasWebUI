@@ -9,7 +9,9 @@ const nextConfig = {
     //   transform: '@mui/material/{{member}}',
     // },
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
+  distDir: "build",
+  output: "standalone",
 };
 
 module.exports = nextConfig;
