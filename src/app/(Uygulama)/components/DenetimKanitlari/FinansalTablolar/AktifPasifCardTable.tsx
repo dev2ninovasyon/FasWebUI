@@ -79,22 +79,31 @@ const AktifPasifCardTable = ({
         fdtData.find((veri: any) => veri.kalemAdi === "Varlıklar [abstract]")
           ?.tutarYil1 ?? 0;
       const kaynaklarTutar =
-        fdtData.find((veri: any) => veri.kalemAdi === "Kaynaklar [abstract]")
-          ?.tutarYil1 ?? 0;
+        fdtData.find(
+          (veri: any) =>
+            veri.kalemAdi === "Kaynaklar [abstract]" ||
+            veri.kalemAdi === "Yükümlülük ve Özkaynaklar [abstract]"
+        )?.tutarYil1 ?? 0;
 
       const varliklarTutar2 =
         fdtData.find((veri: any) => veri.kalemAdi === "Varlıklar [abstract]")
           ?.tutarYil2 ?? 0;
       const kaynaklarTutar2 =
-        fdtData.find((veri: any) => veri.kalemAdi === "Kaynaklar [abstract]")
-          ?.tutarYil2 ?? 0;
+        fdtData.find(
+          (veri: any) =>
+            veri.kalemAdi === "Kaynaklar [abstract]" ||
+            veri.kalemAdi === "Yükümlülük ve Özkaynaklar [abstract]"
+        )?.tutarYil2 ?? 0;
 
       const varliklarTutar3 =
         fdtData.find((veri: any) => veri.kalemAdi === "Varlıklar [abstract]")
           ?.tutarYil3 ?? 0;
       const kaynaklarTutar3 =
-        fdtData.find((veri: any) => veri.kalemAdi === "Kaynaklar [abstract]")
-          ?.tutarYil3 ?? 0;
+        fdtData.find(
+          (veri: any) =>
+            veri.kalemAdi === "Kaynaklar [abstract]" ||
+            veri.kalemAdi === "Yükümlülük ve Özkaynaklar [abstract]"
+        )?.tutarYil3 ?? 0;
 
       const newRows: AktifPasifTablosu[] = [];
 

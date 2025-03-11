@@ -233,7 +233,7 @@ const RaporGorusEditor: React.FC<RaporGorusEditorProps> = ({
       ],
     },
     language: "tr",
-    placeholder: "Type or paste your content here!",
+    placeholder: "İçeriğinizi buraya yazın veya yapıştırın!",
     translations: [translations],
   };
 

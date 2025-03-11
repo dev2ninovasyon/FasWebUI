@@ -140,13 +140,18 @@ const OzkaynakDegisimTablosu: React.FC = () => {
               <TableRow>
                 <TableCell
                   sx={{
-                    maxHeight: 205,
-                    width: 300,
-                    maxWidth: 300,
                     verticalAlign: "bottom",
                   }}
                 >
-                  <Typography variant="body1" align="left">
+                  <Typography
+                    variant="body1"
+                    align="left"
+                    sx={{
+                      width: 250,
+                      maxWidth: 500,
+                      overflow: "auto",
+                    }}
+                  >
                     {title}
                   </Typography>
                 </TableCell>
@@ -156,13 +161,13 @@ const OzkaynakDegisimTablosu: React.FC = () => {
                     sx={{
                       writingMode: "vertical-rl",
                       transform: "rotate(180deg)",
-                      maxHeight: 205,
-                      width: 100,
-                      maxWidth: 100,
-                      //overflow: "auto",
+                      maxHeight: 220,
+                      width: 125,
+                      maxWidth: 175,
+                      overflow: "auto",
                     }}
                   >
-                    <Typography variant="body1" align="left">
+                    <Typography variant="body1" align="left" sx={{}}>
                       {kalem.yatayKalemAdi}
                     </Typography>
                   </TableCell>

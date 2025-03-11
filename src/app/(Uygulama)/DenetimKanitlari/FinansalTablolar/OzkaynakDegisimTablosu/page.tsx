@@ -29,7 +29,14 @@ const Page = () => {
     >
       <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          item
+          xs={12}
+          lg={12}
+          sx={{
+            width: "500px",
+          }}
+        >
           <OzkaynakDegisimTablosu />
         </Grid>
       </Grid>

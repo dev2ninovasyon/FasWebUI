@@ -235,7 +235,7 @@ const MaddiDogrulamaKonuEditor: React.FC<MaddiDogrulamaKonuEditorProps> = ({
       ],
     },
     language: "tr",
-    placeholder: "Type or paste your content here!",
+    placeholder: "İçeriğinizi buraya yazın veya yapıştırın!",
     translations: [translations],
   };
   return (

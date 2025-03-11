@@ -22,7 +22,7 @@ const Logo = () => {
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
-            style={{ padding: "8px 4px", width: "auto", height: "75px" }}
+            style={{ padding: "8px 4px", width: "auto", height: "auto" }}
             priority
           />
         ) : (
@@ -31,7 +31,7 @@ const Logo = () => {
             alt="logo"
             height={customizer.TopbarHeight}
             width={188}
-            style={{ padding: "8px 4px", width: "auto", height: "75px" }}
+            style={{ padding: "8px 4px", width: "auto", height: "auto" }}
             priority
           />
         )}
@@ -47,7 +47,7 @@ const Logo = () => {
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
-          style={{ padding: "8px 8px", width: "auto", height: "75px" }}
+          style={{ padding: "8px 8px", width: "auto", height: "auto" }}
           priority
         />
       ) : (
@@ -56,7 +56,7 @@ const Logo = () => {
           alt="logo"
           height={customizer.TopbarHeight}
           width={188}
-          style={{ padding: "8px 8px", width: "auto", height: "75px" }}
+          style={{ padding: "8px 8px", width: "auto", height: "auto" }}
           priority
         />
       )}

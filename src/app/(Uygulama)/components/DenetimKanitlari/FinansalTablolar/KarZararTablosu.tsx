@@ -183,7 +183,16 @@ const KarZararTablosu: React.FC = () => {
           row.kalemAdi.startsWith("Dönem Net Karı (Zararı) (+/-)") ||
           row.kalemAdi.startsWith("Dönem Karı (Zararı) (+/-)") ||
           row.kalemAdi.startsWith("Brüt Kar (Zarar) (+/-)") ||
-          row.kalemAdi.startsWith("Esas Faaliyet Karı (Zararı) (+/-)")
+          row.kalemAdi.startsWith("Esas Faaliyet Karı (Zararı) (+/-)") ||
+          row.kalemAdi.startsWith(
+            "Finansman Gideri (Geliri) Öncesi Faaliyet Karı (Zararı) (+/-)"
+          ) ||
+          row.kalemAdi.startsWith(
+            "Sürdürülen Faaliyetler Vergi Öncesi Dönem Karı (Zararı) (+/-)"
+          ) ||
+          row.kalemAdi.startsWith(
+            "Sürdürülen Faaliyetler Dönem Net Karı (Zararı) (+/-)"
+          )
         ) {
           backgroundColor = "#253662"; // Default: mavi
           color = theme.palette.common.white; // Default: beyaz

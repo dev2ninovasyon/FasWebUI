@@ -37,12 +37,14 @@ import {
   getFinansalDurumTablosu,
   getKarZararTablosu,
   getNakitAkisTablosu,
+  getOzkaynakTablosu,
 } from "@/api/FinansalTablolar/FinansalToblolar";
 import dynamic from "next/dynamic";
 import Rapor from "./Rapor";
 import jsPDF from "jspdf";
 import { base64FontBold, base64FontRegular } from "./Roboto";
 import { IconFileTypePdf } from "@tabler/icons-react";
+import RaporTfrs from "./RaporTfrs";
 
 const RaporGorusEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Rapor/RaporGorus/RaporGorusEditor"),
@@ -73,6 +75,18 @@ interface VeriFT {
   tutarYil3: number;
 }
 
+interface VeriFT2 {
+  id: number;
+  dikeyKalemId: number;
+  yatayKalemId: number;
+  dikeyKalemAdi: string;
+  yatayKalemAdi: string;
+  formul: number;
+  tutar: number;
+  kalemOzkaynakId: number;
+  formulOzkaynakNavigationId: number;
+}
+
 interface VeriDipnot {
   id: number;
   dipnotKodu: number;
@@ -93,6 +107,17 @@ const BagimsizDenetciRaporuStepper = () => {
   const [fdtData, setFdtData] = React.useState<VeriFT[]>([]);
   const [kztdata, setKztData] = React.useState<VeriFT[]>([]);
   const [natData, setNatData] = React.useState<VeriFT[]>([]);
+  const [ozkDataCari, setOzkDataCari] = React.useState<VeriFT2[]>([]);
+  const [ozkDataOnceki, setOzkDataOnceki] = React.useState<VeriFT2[]>([]);
+
+  const [ozkDikeyDataCari, setOzkDikeyDataCari] = React.useState<VeriFT2[]>([]);
+  const [ozkDikeyDataOnceki, setOzkDikeyDataOnceki] = React.useState<VeriFT2[]>(
+    []
+  );
+  const [ozkYatayDataCari, setOzkYatayDataCari] = React.useState<VeriFT2[]>([]);
+  const [ozkYatayDataOnceki, setOzkYatayDataOnceki] = React.useState<VeriFT2[]>(
+    []
+  );
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [gorusVeriler, setGorusVeriler] = useState<Veri[]>([]);
@@ -445,6 +470,158 @@ const BagimsizDenetciRaporuStepper = () => {
           (veri: VeriFT) => veri.tutarYil1 != 0 || veri.tutarYil2 != 0
         )
       );
+
+      const ozkaynakTablosuCari = await getOzkaynakTablosu(
+        user.token || "",
+        user.denetciId || 0,
+        user.yil || 0,
+        user.denetlenenId || 0
+      );
+
+      const ozkaynakDataCari: VeriFT2[] = [];
+
+      ozkaynakTablosuCari.forEach((veri: VeriFT2) => {
+        const newRow = {
+          id: veri.id,
+          dikeyKalemId: veri.dikeyKalemId,
+          yatayKalemId: veri.yatayKalemId,
+          dikeyKalemAdi: veri.dikeyKalemAdi,
+          yatayKalemAdi: veri.yatayKalemAdi,
+          formul: veri.formul,
+          tutar: veri.tutar,
+          kalemOzkaynakId: veri.kalemOzkaynakId,
+          formulOzkaynakNavigationId: veri.formulOzkaynakNavigationId,
+        };
+
+        if (veri.yatayKalemAdi && veri.dikeyKalemId) {
+          ozkaynakDataCari.push(newRow);
+        }
+      });
+
+      const distinctDikeyKalemObjCari = Array.from(
+        new Map(
+          ozkaynakDataCari.map((veri) => [veri.dikeyKalemId, veri])
+        ).values()
+      );
+
+      const distinctYatayKalemObjCari = Array.from(
+        new Map(
+          ozkaynakDataCari.map((veri) => [veri.yatayKalemId, veri])
+        ).values()
+      );
+
+      const filteredDikeyDataCari = distinctDikeyKalemObjCari.filter(
+        (dikeyItem) => {
+          const relatedOzkaynak = ozkaynakDataCari.filter(
+            (ozk) => ozk.dikeyKalemId === dikeyItem.dikeyKalemId
+          );
+          return relatedOzkaynak.some((ozk) => ozk.tutar !== 0); // En az bir tutar sıfır değilse tutulur
+        }
+      );
+
+      const filteredYatayDataCari = distinctYatayKalemObjCari.filter(
+        (yatayItem) => {
+          const relatedOzkaynak = ozkaynakDataCari.filter(
+            (ozk) => ozk.yatayKalemId === yatayItem.yatayKalemId
+          );
+          return relatedOzkaynak.some((ozk) => ozk.tutar !== 0); // En az bir tutar sıfır değilse tutulur
+        }
+      );
+
+      // Filtrelenmiş dikey ve yatay verilerin ID'lerini al
+      const validDikeyIdsCari = new Set(
+        filteredDikeyDataCari.map((item) => item.dikeyKalemId)
+      );
+      const validYatayIdsCari = new Set(
+        filteredYatayDataCari.map((item) => item.yatayKalemId)
+      );
+
+      // ozkaynakData'yı geçerli dikey ve yatay ID'lere göre filtrele
+      const filteredOzkaynakDataCari = ozkaynakDataCari.filter(
+        (ozk) =>
+          validDikeyIdsCari.has(ozk.dikeyKalemId) &&
+          validYatayIdsCari.has(ozk.yatayKalemId)
+      );
+
+      setOzkDikeyDataCari(filteredDikeyDataCari);
+      setOzkYatayDataCari(filteredYatayDataCari);
+      setOzkDataCari(filteredOzkaynakDataCari);
+
+      const ozkaynakTablosuOnceki = await getOzkaynakTablosu(
+        user.token || "",
+        user.denetciId || 0,
+        user.yil ? user.yil - 1 : 0,
+        user.denetlenenId || 0
+      );
+
+      const ozkaynakDataOnceki: VeriFT2[] = [];
+
+      ozkaynakTablosuOnceki.forEach((veri: VeriFT2) => {
+        const newRow = {
+          id: veri.id,
+          dikeyKalemId: veri.dikeyKalemId,
+          yatayKalemId: veri.yatayKalemId,
+          dikeyKalemAdi: veri.dikeyKalemAdi,
+          yatayKalemAdi: veri.yatayKalemAdi,
+          formul: veri.formul,
+          tutar: veri.tutar,
+          kalemOzkaynakId: veri.kalemOzkaynakId,
+          formulOzkaynakNavigationId: veri.formulOzkaynakNavigationId,
+        };
+
+        if (veri.yatayKalemAdi && veri.dikeyKalemId) {
+          ozkaynakDataOnceki.push(newRow);
+        }
+      });
+
+      const distinctDikeyKalemObjOnceki = Array.from(
+        new Map(
+          ozkaynakDataOnceki.map((veri) => [veri.dikeyKalemId, veri])
+        ).values()
+      );
+
+      const distinctYatayKalemObjOnceki = Array.from(
+        new Map(
+          ozkaynakDataOnceki.map((veri) => [veri.yatayKalemId, veri])
+        ).values()
+      );
+
+      const filteredDikeyDataOnceki = distinctDikeyKalemObjOnceki.filter(
+        (dikeyItem) => {
+          const relatedOzkaynak = ozkaynakDataOnceki.filter(
+            (ozk) => ozk.dikeyKalemId === dikeyItem.dikeyKalemId
+          );
+          return relatedOzkaynak.some((ozk) => ozk.tutar !== 0); // En az bir tutar sıfır değilse tutulur
+        }
+      );
+
+      const filteredYatayDataOnceki = distinctYatayKalemObjOnceki.filter(
+        (yatayItem) => {
+          const relatedOzkaynak = ozkaynakDataOnceki.filter(
+            (ozk) => ozk.yatayKalemId === yatayItem.yatayKalemId
+          );
+          return relatedOzkaynak.some((ozk) => ozk.tutar !== 0); // En az bir tutar sıfır değilse tutulur
+        }
+      );
+
+      // Filtrelenmiş dikey ve yatay verilerin ID'lerini al
+      const validDikeyIdsOnceki = new Set(
+        filteredDikeyDataOnceki.map((item) => item.dikeyKalemId)
+      );
+      const validYatayIdsOnceki = new Set(
+        filteredYatayDataOnceki.map((item) => item.yatayKalemId)
+      );
+
+      // ozkaynakData'yı geçerli dikey ve yatay ID'lere göre filtrele
+      const filteredOzkaynakDataOnceki = ozkaynakDataOnceki.filter(
+        (ozk) =>
+          validDikeyIdsOnceki.has(ozk.dikeyKalemId) &&
+          validYatayIdsOnceki.has(ozk.yatayKalemId)
+      );
+
+      setOzkDikeyDataOnceki(filteredDikeyDataOnceki);
+      setOzkYatayDataOnceki(filteredYatayDataOnceki);
+      setOzkDataOnceki(filteredOzkaynakDataOnceki);
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -1450,18 +1627,47 @@ const BagimsizDenetciRaporuStepper = () => {
               alignItems={"center"}
               justifyContent={"center"}
             >
-              <Rapor
-                kapakImage={kapakImage || ""}
-                firmaLogoImage={firmaLogoImage || ""}
-                dikeyKonum={dikeyKonum}
-                yatayKonum={yatayKonum}
-                fdt={fdtData}
-                kzt={kztdata}
-                nat={natData}
-                dipnotVeriler={dipnotVeriler}
-                gorusVeriler={veriler}
-                detayHesaplar={detayHesaplar}
-              />
+              {user.denetimTuru == "Bobi" ? (
+                <Rapor
+                  kapakImage={kapakImage || ""}
+                  firmaLogoImage={firmaLogoImage || ""}
+                  dikeyKonum={dikeyKonum}
+                  yatayKonum={yatayKonum}
+                  fdt={fdtData}
+                  kzt={kztdata}
+                  nat={natData}
+                  ozktCari={ozkDataCari}
+                  ozktOnceki={ozkDataOnceki}
+                  ozkDikeyCari={ozkDikeyDataCari}
+                  ozkDikeyOnceki={ozkDikeyDataOnceki}
+                  ozkYatayCari={ozkYatayDataCari}
+                  ozkYatayOnceki={ozkYatayDataOnceki}
+                  dipnotVeriler={dipnotVeriler}
+                  gorusVeriler={veriler}
+                  detayHesaplar={detayHesaplar}
+                />
+              ) : user.denetimTuru == "Tfrs" ? (
+                <RaporTfrs
+                  kapakImage={kapakImage || ""}
+                  firmaLogoImage={firmaLogoImage || ""}
+                  dikeyKonum={dikeyKonum}
+                  yatayKonum={yatayKonum}
+                  fdt={fdtData}
+                  kzt={kztdata}
+                  nat={natData}
+                  ozktCari={ozkDataCari}
+                  ozktOnceki={ozkDataOnceki}
+                  ozkDikeyCari={ozkDikeyDataCari}
+                  ozkDikeyOnceki={ozkDikeyDataOnceki}
+                  ozkYatayCari={ozkYatayDataCari}
+                  ozkYatayOnceki={ozkYatayDataOnceki}
+                  dipnotVeriler={dipnotVeriler}
+                  gorusVeriler={veriler}
+                  detayHesaplar={detayHesaplar}
+                />
+              ) : (
+                <></>
+              )}
             </Grid>
           </Grid>
         )}

@@ -183,6 +183,10 @@ const FinansalDurumTablosu: React.FC = () => {
           fontType = "h6";
           control = false;
         }
+        if (row.kalemAdi.startsWith("Ara Toplam")) {
+          backgroundColor = "#253662"; // Default: mavi
+          color = theme.palette.common.white; // Default: beyaz
+        }
 
         return (
           <React.Fragment key={row.id}>

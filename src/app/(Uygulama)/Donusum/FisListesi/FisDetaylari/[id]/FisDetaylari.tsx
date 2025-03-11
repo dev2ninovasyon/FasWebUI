@@ -119,7 +119,7 @@ const FisDetaylari = () => {
     {
       type: "dropdown",
       columnSorting: true,
-      source: ["Düzeltme", "Sınıflama", "Açılış"],
+      source: ["Açılış", "Düzeltme", "Sınıflama", "Transfer"],
       className: "htLeft",
       allowInvalid: false,
     }, // Tip

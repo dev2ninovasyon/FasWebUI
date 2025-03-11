@@ -237,7 +237,7 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
       ],
     },
     language: "tr",
-    placeholder: "Type or paste your content here!",
+    placeholder: "İçeriğinizi buraya yazın veya yapıştırın!",
     translations: [translations],
   };
   return (

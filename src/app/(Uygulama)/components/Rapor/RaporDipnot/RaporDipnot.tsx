@@ -20,6 +20,13 @@ import {
 import RaporDipnotCard from "./RaporDipnotCard";
 import dynamic from "next/dynamic";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import MaliyetCari from "./MaliyetCari";
+import MaliyetOnceki from "./MaliyetOnceki";
+import AmortismanCari from "./AmortismanCari";
+import DovizKuruRiskiCari from "./DovizKuruRiskiCari";
+import DovizKuruRiskiOnceki from "./DovizKuruRiskiOnceki";
+import KrediRiskiCari from "./KrediRiskiCari";
+import KrediRiskiOnceki from "./KrediRiskiOnceki";
 
 const RaporDipnotEditor = dynamic(
   () =>
@@ -242,6 +249,9 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   handleClose,
   setDipnotKoduVeriler,
 }) => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
+  const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
   return (
     <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
@@ -302,14 +312,84 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               ))}
             {dipnotKoduVeriler
               .filter((x) => !x.baslikmi)
-              .map((veri) => (
-                <Box key={veri.id} px={3} pt={3}>
-                  <RaporDipnotEditor
-                    id={veri.id}
-                    text={veri.text}
-                    dipnotKoduVeriler={dipnotKoduVeriler}
-                    setDipnotKoduVeriler={setDipnotKoduVeriler}
-                  />
+              .map((veri, index) => (
+                <Box key={veri.id}>
+                  <Box px={3} pt={3}>
+                    <RaporDipnotEditor
+                      id={veri.id}
+                      text={veri.text}
+                      dipnotKoduVeriler={dipnotKoduVeriler}
+                      setDipnotKoduVeriler={setDipnotKoduVeriler}
+                    />
+                  </Box>
+                  {((user.denetimTuru == "Bobi" &&
+                    (veri.dipnotKodu == 15 || veri.dipnotKodu == 16)) ||
+                    (user.denetimTuru == "Tfrs" &&
+                      (veri.dipnotKodu == 14 || veri.dipnotKodu == 17))) && (
+                    <Box>
+                      <Box px={3} pt={3}>
+                        <AmortismanCari
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                      <Box px={3} pt={3}>
+                        <MaliyetCari
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                      <Box px={3} pt={3}>
+                        <MaliyetOnceki
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                    </Box>
+                  )}
+                  {((user.denetimTuru == "Bobi" && veri.dipnotKodu == 381) ||
+                    (user.denetimTuru == "Tfrs" && veri.dipnotKodu == 45)) && (
+                    <Box>
+                      <Box px={3} pt={3}>
+                        <KrediRiskiCari
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                      <Box px={3} pt={3}>
+                        <KrediRiskiOnceki
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                    </Box>
+                  )}
+                  {((user.denetimTuru == "Bobi" &&
+                    veri.dipnotKodu == 383 &&
+                    index == 2) ||
+                    (user.denetimTuru == "Tfrs" && veri.dipnotKodu == 45)) && (
+                    <Box>
+                      <Box px={3} pt={3}>
+                        <DovizKuruRiskiCari
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                      <Box px={3} pt={3}>
+                        <DovizKuruRiskiOnceki
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
               ))}
           </DialogContent>
@@ -318,7 +398,10 @@ const PopUpComponent: React.FC<PopUpProps> = ({
             <Button
               variant="outlined"
               color="success"
-              onClick={handleUpdate}
+              onClick={() => {
+                handleUpdate();
+                setKaydetTiklandimi(true);
+              }}
               sx={{ width: "20%" }}
             >
               Kaydet

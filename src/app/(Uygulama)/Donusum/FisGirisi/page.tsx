@@ -93,9 +93,10 @@ const Page: React.FC = () => {
                 marginRight: "16px",
               }}
             >
+              <MenuItem value={"Açılış"}>Açılış</MenuItem>
               <MenuItem value={"Düzeltme"}>Düzeltme</MenuItem>
               <MenuItem value={"Sınıflama"}>Sınıflama</MenuItem>
-              <MenuItem value={"Açılış"}>Açılış</MenuItem>
+              <MenuItem value={"Transfer"}>Transfer</MenuItem>
             </CustomSelect>
 
             <Box sx={{ flex: 1 }}></Box>
