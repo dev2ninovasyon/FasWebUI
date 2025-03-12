@@ -69,13 +69,13 @@ const Page = () => {
                     sx={{
                       borderColor: isSelected
                         ? customizer.activeMode == "dark"
-                          ? theme.palette.primary.light
+                          ? theme.palette.primary.dark
                           : theme.palette.primary.main
                         : "rgba(145, 158, 171, 0.12)",
                       boxShadow: isSelected
                         ? `0 0 8px ${
                             customizer.activeMode == "dark"
-                              ? theme.palette.primary.light
+                              ? theme.palette.primary.dark
                               : theme.palette.primary.main
                           }`
                         : "none",
