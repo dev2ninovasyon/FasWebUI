@@ -36,6 +36,7 @@ const Page = () => {
     display: "flex",
     transition: "0.1s ease-in",
     border: "1px solid rgba(145, 158, 171, 0.12)",
+    position: "relative",
     "&:hover": {
       transform: "scale(1.05)",
     },

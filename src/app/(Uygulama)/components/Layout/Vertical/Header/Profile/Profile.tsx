@@ -15,12 +15,13 @@ import {
 import { IconMail } from "@tabler/icons-react";
 import { Stack } from "@mui/system";
 import ProfileItems from "./ProfileItems";
-import { setToken, resetToNull } from "@/store/user/UserSlice";
+import { resetToNull } from "@/store/user/UserSlice";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const [anchorEl2, setAnchorEl2] = useState(null);
   const user = useSelector((state: AppState) => state.userReducer);
+  const customizer = useSelector((state: AppState) => state.customizer);
 
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
@@ -48,7 +49,7 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src={"/images/profile/user-1.jpg"}
+          src={customizer.avatarSrc}
           alt={"ProfileImg"}
           sx={{
             width: 35,
@@ -74,10 +75,9 @@ const Profile = () => {
           },
         }}
       >
-        <Typography variant="h5">Kullanıcı Profili</Typography>
-        <Stack direction="row" py={3} spacing={2} alignItems="center">
+        <Stack direction="row" pb={3} spacing={2} alignItems="center">
           <Avatar
-            src={"/images/profile/user-1.jpg"}
+            src={customizer.avatarSrc}
             alt={"ProfileImg"}
             sx={{ width: 95, height: 95 }}
           />

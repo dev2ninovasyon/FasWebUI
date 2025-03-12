@@ -66,64 +66,10 @@ interface ProfileType {
 const profile: ProfileType[] = [
   {
     id: uniqueId(),
-    href: "/apps/user-profile/profile",
-    title: "Profilim",
-    subtitle: "Hesap bilgileri",
-    icon: "/images/svgs/icon-account.svg",
-  },
-  /*{
-    id: uniqueId(),
-    href: "/apps/email",
-    title: "My Inbox",
-    subtitle: "Messages & Emails",
-    icon: "/images/svgs/icon-inbox.svg",
-  },
-  {
-    id: uniqueId(),
-    href: "/apps/notes",
-    title: "My Tasks",
-    subtitle: "To-do and Daily Tasks",
-    icon: "/images/svgs/icon-tasks.svg",
-  },*/
-  {
-    id: uniqueId(),
-    title: "Kullanıcı",
-    icon: "/images/svgs/icon-users2.png",
-    href: "/Kullanici",
-    subtitle: "Kullanıcılar ile ilgili işlemler",
-    personal: true,
-    /*children: [
-      {
-        id: uniqueId(),
-        title: "Kullanıcı İşlemleri",
-        icon: "/images/svgs/icon-dot.svg",
-        href: "/Kullanici/KullaniciIslemleri",
-      },
-      {
-        id: uniqueId(),
-        title: "Kullanıcı Sözleşme Saatleri",
-        icon: "/images/svgs/icon-dot.svg",
-        href: "/Kullanici/KullaniciSozlesmeSaatleri",
-      },
-      {
-        id: uniqueId(),
-        title: "Denetçi Yıllık Taahütname",
-        icon: "/images/svgs/icon-dot.svg",
-        href: "/Kullanici/DenetciYillikTaahutname",
-      },
-      {
-        id: uniqueId(),
-        title: "Sürekli Eğitim Belge ve Bilgileri",
-        icon: "/images/svgs/icon-dot.svg",
-        href: "/Kullanici/SurekliEgitimBelgeVeBilgileri",
-      },
-      {
-        id: uniqueId(),
-        title: "Denetçi Puantaj Belgesi",
-        icon: "/images/svgs/icon-dot.svg",
-        href: "/Kullanici/DenetciPuantajBelgesi",
-      },
-    ],*/
+    title: "Hesap Ayarları",
+    icon: "/images/svgs/icon-settings.png",
+    href: "/HesapAyarlari",
+    subtitle: "Hesap kişiselleştirme",
   },
   {
     id: uniqueId(),
@@ -131,6 +77,14 @@ const profile: ProfileType[] = [
     icon: "/images/svgs/icon-settings2.png",
     href: "/TemaAyarlari",
     subtitle: "Tema kişiselleştirme",
+  },
+  {
+    id: uniqueId(),
+    title: "Kullanıcı",
+    icon: "/images/svgs/icon-users2.png",
+    href: "/Kullanici",
+    subtitle: "Kullanıcılar ile ilgili işlemler",
+    personal: true,
   },
 ];
 
