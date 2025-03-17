@@ -31,10 +31,10 @@ const KullaniciTopCards = [
   },
   {
     icon: icon5,
-    title: "Sürekli Eğitim Belge ve Bilgileri",
+    title: "Sürekli Eğitim Bilgileri",
     digits: "696",
     bgcolor: "error",
-    href: "/Kullanici/SurekliEgitimBelgeVeBilgileri",
+    href: "/Kullanici/SurekliEgitimBilgileri",
   },
   {
     icon: icon6,

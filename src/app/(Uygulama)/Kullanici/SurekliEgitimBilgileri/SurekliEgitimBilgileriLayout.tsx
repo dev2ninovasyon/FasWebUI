@@ -9,12 +9,12 @@ const BCrumb = [
     title: "Kullanıcı",
   },
   {
-    to: "/Kullanici/SurekliEgitimBelgeVeBilgileri",
-    title: "Sürekli Eğitim Belge ve Bilgileri",
+    to: "/Kullanici/SurekliEgitimBilgileri",
+    title: "Sürekli Eğitim Bilgileri",
   },
 ];
 
-export default function SurekliEgitimBelgeVeBilgileriLayout({
+export default function SurekliEgitimBilgileriLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ export default function SurekliEgitimBelgeVeBilgileriLayout({
   return (
     <ProtectedRoute allowedRoles={["DenetciAdmin"]}>
       <div>
-        <Breadcrumb title="Sürekli Eğitim Belge ve Bilgileri" items={BCrumb} />
+        <Breadcrumb title="Sürekli Eğitim Bilgileri" items={BCrumb} />
         {children}
       </div>
     </ProtectedRoute>

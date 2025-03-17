@@ -124,7 +124,7 @@ const Menuitems: MenuitemsType[] = [
         id: uniqueId(),
         title: "Müşteri Tanıma",
         icon: IconPoint,
-        href: "/",
+        href: "/Musteri/MusteriTanima",
       },
       {
         id: uniqueId(),
@@ -142,13 +142,13 @@ const Menuitems: MenuitemsType[] = [
         id: uniqueId(),
         title: "Teklif Hesaplama",
         icon: IconPoint,
-        href: "/",
+        href: "/Musteri/TeklifHesaplama",
       },
       {
         id: uniqueId(),
         title: "Teklif Belgesi",
         icon: IconPoint,
-        href: "/",
+        href: "/Musteri/TeklifBelgesi",
       },
       {
         id: uniqueId(),

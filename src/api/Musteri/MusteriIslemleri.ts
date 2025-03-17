@@ -663,3 +663,222 @@ export const createIliskiliTaraflarListe = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const getMusteriTanimaSayisalBilgiler = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/MusteriTanimaSayisalBilgiler?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Sayısal Bilgiler getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateMusteriTanimaSayisalBilgiler = async (
+  token: string,
+  updatedMusteriTanimaSayisalBilgiler: any
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/MusteriTanimaSayisalBilgiler`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedMusteriTanimaSayisalBilgiler),
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getMusteriTanimaStatikBilgiler = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/MusteriTanimaStatikBilgiler?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Statik Bilgiler getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateMusteriTanimaStatikBilgiler = async (
+  token: string,
+  updatedMusteriTanimaStatikBilgiler: any
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/MusteriTanimaStatikBilgiler`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedMusteriTanimaStatikBilgiler),
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getTeklifHesaplama = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/TeklifHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Teklif Hesaplama verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateTeklifHesaplama = async (
+  token: string,
+  updatedTeklifHesaplama: any
+) => {
+  try {
+    const response = await fetch(`${url}/Denetlenen/TeklifHesaplama`, {
+      method: "PUT",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedTeklifHesaplama),
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const TeklifHesapla = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/TeklifHesapla?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const deleteTeklifHesaplama = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/TeklifHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "DELETE",
+        headers: {
+          accept: "*/*",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
