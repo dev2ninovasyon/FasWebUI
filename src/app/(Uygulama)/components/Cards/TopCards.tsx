@@ -48,8 +48,6 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
   ): MenuitemsType | null => {
     for (const item of items) {
       if (item.title === title) {
-        console.log(parentTitle);
-
         if (parentTitle && item.parentTitle !== parentTitle) {
           continue;
         }
