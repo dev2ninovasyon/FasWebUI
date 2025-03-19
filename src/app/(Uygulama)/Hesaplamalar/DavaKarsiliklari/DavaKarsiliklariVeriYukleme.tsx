@@ -213,7 +213,7 @@ const DavaKarsiliklariVeriYukleme = () => {
 
   const colHeaders = [
     "SiraNo",
-    "Aleyhte Davacının / Lehte Davalının Unvanı",
+    "Aleyhte Davacının / Lehte Davalının Ünvanı",
     "Aleyhte / Lehte ?",
     "Dava Konusu",
     "Dava Yılı",
@@ -227,7 +227,7 @@ const DavaKarsiliklariVeriYukleme = () => {
 
   const columns = [
     { type: "numeric", columnSorting: true, readOnly: true, editor: false }, // SiraNo
-    { type: "text", columnSorting: true, allowInvalid: false }, // Aleyhte Davacının / Lehte Davalının Unvanı
+    { type: "text", columnSorting: true, allowInvalid: false }, // Aleyhte Davacının / Lehte Davalının Ünvanı
     {
       type: "dropdown",
       source: ["Aleyhte", "Lehte"],

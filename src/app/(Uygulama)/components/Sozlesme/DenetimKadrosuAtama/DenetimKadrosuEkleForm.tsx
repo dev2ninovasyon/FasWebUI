@@ -98,7 +98,7 @@ const DenetimKadrosuEkleForm = () => {
             htmlFor="unvanAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Unvanı
+            Ünvanı
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>

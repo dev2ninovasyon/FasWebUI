@@ -6,6 +6,7 @@ export interface MenuitemsType {
   navlabel?: boolean;
   subheader?: string;
   title?: string;
+  parentTitle?: string;
   icon?: any;
   href?: string;
   children?: MenuitemsType[];
@@ -303,7 +304,7 @@ const Menuitems: MenuitemsType[] = [
         icon: IconPoint,
         href: "/Hesaplamalar/KidemTazminatiBobi",
         aciklama:
-          "Veri Yükleme sekmesi altında, personel verilerini sisteme girebilirsiniz. ",
+          "Veri Yükleme sekmesi altında, personel verilerini sisteme girebilirsiniz.",
       },
       {
         id: uniqueId(),
@@ -940,15 +941,106 @@ const Menuitems: MenuitemsType[] = [
   },
   {
     id: uniqueId(),
+    parentTitle: "KONSOLİDASYON",
     title: "KONSOLİDASYON",
     icon: IconLayoutGridAdd,
-    href: "/",
+    href: "/Konsolidasyon",
     children: [
       {
         id: uniqueId(),
-        title: "Konsolide Tanımlama",
+        title: "Aşamalar",
         icon: IconPoint,
-        href: "/",
+        href: "/Konsolidasyon/Asamalar",
+      },
+      {
+        id: uniqueId(),
+        title: "Tanımlama",
+        icon: IconPoint,
+        href: "/Konsolidasyon/Tanimlama",
+      },
+      {
+        id: uniqueId(),
+        title: "Birleştirilmiş Mizan",
+        icon: IconPoint,
+        href: "/Konsolidasyon/BirlestirilmisMizan",
+      },
+      {
+        id: uniqueId(),
+        title: "Eliminasyon Fiş İşlemleri",
+        icon: IconPoint,
+        href: "/Konsolidasyon/EliminasyonFisIslemleri",
+      },
+      {
+        id: uniqueId(),
+        title: "Dönüşüm İşlemi",
+        icon: IconPoint,
+        href: "/Konsolidasyon/DonusumIslemi",
+      },
+      {
+        id: uniqueId(),
+        title: "Dönüşüm Mizan",
+        icon: IconPoint,
+        href: "/Konsolidasyon/DonusumMizan",
+      },
+      {
+        id: uniqueId(),
+        parentTitle: "KONSOLİDASYON",
+        title: "Finansal Tablolar",
+        icon: IconPoint,
+        href: "/Konsolidasyon/FinansalTablolar",
+        children: [
+          {
+            id: uniqueId(),
+            parentTitle: "KONSOLİDASYON",
+            title: "Finansal Durum Tablosu",
+            icon: IconPoint,
+            href: "/Konsolidasyon/FinansalTablolar/FinansalDurumTablosu",
+          },
+          {
+            id: uniqueId(),
+            parentTitle: "KONSOLİDASYON",
+            title: "Kar / Zarar Tablosu",
+            icon: IconPoint,
+            href: "/Konsolidasyon/FinansalTablolar/KarZararTablosu",
+          },
+          {
+            id: uniqueId(),
+            parentTitle: "KONSOLİDASYON",
+            title: "Nakit Akış Tablosu",
+            icon: IconPoint,
+            href: "/Konsolidasyon/FinansalTablolar/NakitAkisTablosu",
+          },
+          {
+            id: uniqueId(),
+            parentTitle: "KONSOLİDASYON",
+            title: "Özkaynak Değişim Tablosu",
+            icon: IconPoint,
+            href: "/Konsolidasyon/FinansalTablolar/OzkaynakDegisimTablosu",
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        parentTitle: "KONSOLİDASYON",
+        title: "Rapor",
+        icon: IconPoint,
+        href: "/Konsolidasyon/Rapor",
+        children: [
+          {
+            id: uniqueId(),
+            parentTitle: "KONSOLİDASYON",
+            title: "Rapor Düzenle",
+            icon: IconPoint,
+            href: "/Konsolidasyon/Rapor/RaporDuzenle",
+          },
+          {
+            id: uniqueId(),
+            parentTitle: "KONSOLİDASYON",
+            title: "Bağımsız Denetçi Raporu",
+            icon: IconPoint,
+            href: "/Konsolidasyon/Rapor/BagimsizDenetciRaporu",
+          },
+        ],
       },
     ],
   },

@@ -34,22 +34,29 @@ function randomColor() {
 
 interface TopCardsProps {
   title: string;
+  parenTitle?: string;
 }
 
-const TopCards: React.FC<TopCardsProps> = ({ title }) => {
+const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
 
   const findItemTitle = (
     title: string,
-    items: MenuitemsType[]
+    items: MenuitemsType[],
+    parentTitle?: string
   ): MenuitemsType | null => {
     for (const item of items) {
       if (item.title === title) {
+        console.log(parentTitle);
+
+        if (parentTitle && item.parentTitle !== parentTitle) {
+          continue;
+        }
         return item;
       }
       if (item.children) {
-        const found = findItemTitle(title, item.children);
+        const found = findItemTitle(title, item.children, parentTitle);
         if (found) {
           return found;
         }
@@ -58,7 +65,7 @@ const TopCards: React.FC<TopCardsProps> = ({ title }) => {
     return null;
   };
 
-  const MenuItem = findItemTitle(title, Menuitems);
+  const MenuItem = findItemTitle(title, Menuitems, parenTitle);
 
   let TopCards: Array<{
     icon: any;

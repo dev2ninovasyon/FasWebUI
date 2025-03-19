@@ -159,7 +159,6 @@ const KullaniciTable = () => {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  {" "}
                   <Typography
                     textAlign="center"
                     variant="subtitle1"
@@ -169,7 +168,6 @@ const KullaniciTable = () => {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  {" "}
                   <Typography
                     textAlign="center"
                     variant="subtitle1"
@@ -179,7 +177,6 @@ const KullaniciTable = () => {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  {" "}
                   <Typography
                     textAlign="center"
                     variant="subtitle1"

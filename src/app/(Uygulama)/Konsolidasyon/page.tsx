@@ -3,17 +3,17 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { Box } from "@mui/material";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
-import RaporLayout from "./RaporLayout";
+import KonsolidasyonLayout from "./KonsolidasyonLayout";
 
 const Page = () => {
   return (
-    <RaporLayout>
-      <PageContainer title="Rapor" description="this is Rapor">
+    <KonsolidasyonLayout>
+      <PageContainer title="Konsolidasyon" description="this is Konsolidasyon">
         <Box>
-          <TopCards title="RAPOR" />
+          <TopCards title="KONSOLİDASYON" />
         </Box>
       </PageContainer>
-    </RaporLayout>
+    </KonsolidasyonLayout>
   );
 };
 

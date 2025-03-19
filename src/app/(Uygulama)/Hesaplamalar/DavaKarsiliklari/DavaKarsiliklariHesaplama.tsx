@@ -11,7 +11,6 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import { getDavaKarsiliklariHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
 import { getDavaKarsiliklariVerileriByDenetciDenetlenenYil } from "@/api/Veri/DavaKarsiliklari";
 
 // register Handsontable's modules
@@ -64,7 +63,7 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   }, [customizer.activeMode]);
 
   const colHeaders = [
-    "Aleyhte Davacının / Lehte Davalının Unvanı",
+    "Aleyhte Davacının / Lehte Davalının Ünvanı",
     "Aleyhte / Lehte ?",
     "Dava Konusu",
     "Dava Yılı",
@@ -84,7 +83,7 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Aleyhte Davacının / Lehte Davalının Unvanı
+    }, // Aleyhte Davacının / Lehte Davalının Ünvanı
     {
       type: "text",
       columnSorting: true,

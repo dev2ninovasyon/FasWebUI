@@ -10,7 +10,7 @@ const Page = () => {
     <RaporLayout>
       <PageContainer title="Rapor" description="this is Rapor">
         <Box>
-          <TopCards title="RAPOR" />
+          <TopCards parenTitle="KONSOLİDASYON" title="Rapor" />
         </Box>
       </PageContainer>
     </RaporLayout>

@@ -1,5 +1,30 @@
 import { url } from "@/api/apiBase";
 
+export const getGorevAtamalariByKullaniciId = async (
+  token: string,
+  kullaniciId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/GorevAtamalari/Kullanici?kullaniciId=${kullaniciId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Görev Atamaları getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const getGorevAtamalariByDenetlenenIdYil = async (
   token: string,
   denetlenenId: number,
@@ -128,7 +153,7 @@ export const getAllUnvanlar = async (token: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Unvan getirilemedi");
+      console.error("Ünvan getirilemedi");
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);

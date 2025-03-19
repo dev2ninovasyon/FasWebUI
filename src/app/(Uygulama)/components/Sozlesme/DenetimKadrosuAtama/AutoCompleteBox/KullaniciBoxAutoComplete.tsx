@@ -54,7 +54,7 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
     // Find the option that matches the initialValue
     const matchedOption = rows.find((row) => row.label === initialValue);
     setSelectedOption(matchedOption || null);
-  }, [initialValue]);
+  }, [initialValue, rows]);
 
   return (
     <Autocomplete

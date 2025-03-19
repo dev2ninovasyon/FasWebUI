@@ -24,12 +24,12 @@ import { IconX } from "@tabler/icons-react";
 
 const BCrumb = [
   {
-    to: "/Donusum",
-    title: "Dönüşüm",
+    to: "/Konsolidasyon",
+    title: "Konsolidasyon",
   },
   {
-    to: "/Donusum/FisGirisi",
-    title: "Fiş Girişi",
+    to: "/Konsolidasyon/EliminasyonFisIslemleri",
+    title: "Eliminasyon Fiş İşlemleri",
   },
 ];
 
@@ -60,8 +60,11 @@ const Page: React.FC = () => {
   };
 
   return (
-    <PageContainer title="Fiş Girişi" description="this is Fiş Girişi">
-      <Breadcrumb title="Fiş Girişi" items={BCrumb} />
+    <PageContainer
+      title="Eliminasyon Fiş İşlemleri"
+      description="this is Eliminasyon Fiş İşlemleri"
+    >
+      <Breadcrumb title="Eliminasyon Fiş İşlemleri" items={BCrumb} />
       <Grid container>
         <Grid item xs={12} lg={12} mb={2}>
           <FisGirisiKontrol

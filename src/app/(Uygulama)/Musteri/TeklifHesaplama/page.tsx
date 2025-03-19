@@ -2,10 +2,11 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import {
-  Box,
   Button,
+  Fab,
   Grid,
   MenuItem,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -26,6 +27,7 @@ import { enqueueSnackbar } from "notistack";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 const BCrumb = [
   {
@@ -404,7 +406,11 @@ const Page = () => {
                 xs={4.5}
                 md={3.9}
                 lg={5.2}
-                sx={{ display: "flex", justifyContent: "center" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
                 <CustomFormLabel
                   htmlFor="deger"
@@ -414,6 +420,11 @@ const Page = () => {
                     Değer
                   </Typography>
                 </CustomFormLabel>
+                <Tooltip title="Değer Girişi Yaparken Binlik Ayıracı Kullanmayınız">
+                  <Fab color="warning" size="small">
+                    <IconAlertCircle width={18.25} height={18.25} />
+                  </Fab>
+                </Tooltip>
               </Grid>
               {fetchedData.map((data, index) =>
                 data.siraNo < 22 ? (

@@ -111,7 +111,7 @@ const DenetimKadrosuTable = () => {
               </TableCell>
               <TableCell>
                 <Typography textAlign="center" variant="h6">
-                  Unvan
+                  Ünvan
                 </Typography>
               </TableCell>
               <TableCell>

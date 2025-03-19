@@ -11,16 +11,12 @@ import DonusumMizanKontrolCardTable from "@/app/(Uygulama)/components/DenetimKan
 
 const BCrumb = [
   {
-    to: "/DenetimKanitlari",
-    title: "Denetim Kanıtları",
+    to: "/Konsolidasyon",
+    title: "Konsolidasyon",
   },
   {
-    to: "/DenetimKanitlari/MizanKontrol",
-    title: "Mizan Kontrol",
-  },
-  {
-    to: "/DenetimKanitlari/MizanKontrol/DonusumMizanKontrol",
-    title: "Dönüşüm Mizan Kontrol",
+    to: "/Konsolidasyon/DonusumMizanK",
+    title: "Dönüşüm Mizan",
   },
 ];
 
@@ -28,11 +24,8 @@ const Page: React.FC = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
 
   return (
-    <PageContainer
-      title="Dönüşüm Mizan Kontrol"
-      description="this is Dönüşüm Mizan Kontrol"
-    >
-      <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb} />
+    <PageContainer title="Dönüşüm Mizan" description="this is Dönüşüm Mizan">
+      <Breadcrumb title="Dönüşüm Mizan" items={BCrumb} />
 
       <Grid container>
         <Grid item xs={12} lg={12}>

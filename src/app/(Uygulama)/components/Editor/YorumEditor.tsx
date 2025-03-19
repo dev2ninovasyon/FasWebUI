@@ -8,15 +8,9 @@ import {
   Grid,
   Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  createCalismaKagidiVerisi,
-  deleteAllCalismaKagidiVerileri,
-  deleteCalismaKagidiVerisiById,
-  getCalismaKagidiVerileriByDenetciDenetlenenYil,
-  updateCalismaKagidiVerisi,
-} from "@/api/CalismaKagitlari/CalismaKagitlari";
 import {
   ClassicEditor,
   AccessibilityHelp,
@@ -65,26 +59,29 @@ import {
   TextPartLanguage,
   TextTransformation,
   Undo,
-  View,
 } from "ckeditor5";
 import translations from "ckeditor5/translations/tr.js";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import "ckeditor5/ckeditor5.css";
-import debounce from "lodash/debounce";
 
 interface Veri {
   id: number;
   metin: string;
-  standartMi: boolean;
 }
 
-const YorumEditor: React.FC = ({}) => {
-  const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
-  const customizer = useSelector((state: AppState) => state.customizer);
+interface YorumEditorProps {
+  controller: string;
+}
+
+const YorumEditor: React.FC<YorumEditorProps> = ({ controller }) => {
   const user = useSelector((state: AppState) => state.userReducer);
-  const [editorData, setEditorData] = useState(""); // Track editor data
-  const [kayitMesaji, setKayitMesaji] = useState<string | null>(null); // State for save message
+  const customizer = useSelector((state: AppState) => state.customizer);
+  const theme = useTheme();
+
+  const [veriler, setVeriler] = useState<Veri[]>([]);
+  const [editorData, setEditorData] = useState("");
+  const [kayitMesaji, setKayitMesaji] = useState<string | null>(null);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -97,30 +94,65 @@ const YorumEditor: React.FC = ({}) => {
     loadStyles();
   }, [customizer.activeMode]);
 
-  const debouncedSave = useCallback(
-    debounce((data: string): void => {
-      console.log("Editor data saved:", data); // Your save logic here
-      const timestamp = `Son kaydedilme: ${new Date().toLocaleTimeString()}`;
-      setKayitMesaji(`Kaydedildi - ${timestamp}`);
-    }, 1000), // 1 second delay before saving
-    []
-  );
-  const handleChange = (event: any, editor: any) => {
-    const data = editor.getData();
-    console.log("Editor data changed:", data);
-    setEditorData(data); // Update editor data state
+  const handleUpdate = async () => {
+    /* const updatedData = { id: veriler[0].id, metin: editorData };
+    try {
+      const result = await updateCalismaKagidiVerisi(
+        controller,
+        user.token || "",
+        veriler[0]?.id,
+        updatedData
+      );
 
-    // Show the save message with the current time
-    debouncedSave(data); // Trigger debounced save function
+      if (!result) {
+        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }*/
   };
 
-  // This function will update the database when the content changes
+  const handleChange = useCallback((event: any, editor: any) => {
+    setEditorData(editor.getData());
+  }, []);
 
-  // Trigger the update when editor data changes
+  const fetchData = async () => {
+    /* try {
+      const data = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+        controller,
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0
+      );
+
+      if (data?.length > 0) {
+        setVeriler(data);
+        setEditorData(data[0].metin);
+      } else {
+        console.warn("No data found");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }*/
+  };
+
   useEffect(() => {
-    if (editorData) {
-    }
-  }, [editorData]); // This will trigger when the content changes
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!editorData) return;
+
+    const timeout = setTimeout(() => {
+      handleUpdate();
+      setKayitMesaji(
+        `Kaydedildi - Son kaydedilme: ${new Date().toLocaleTimeString()}`
+      );
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [editorData]);
 
   const editorConfig = {
     toolbar: {
@@ -253,20 +285,22 @@ const YorumEditor: React.FC = ({}) => {
       sx={{
         width: "95%",
         margin: "0 auto",
-        justifyContent: "center", // Ortalamayı sağlamak için
+        justifyContent: "center",
       }}
     >
       <Grid item xs={12} lg={12}>
-        {/* YorumEditor'ı Card içinde sarmalıyoruz */}
         <Card
           sx={{
             width: "100%",
-            borderRadius: 2, // Card köşe yuvarlatma
-            boxShadow: 3, // Hafif gölge ekleme
+            borderRadius: 2,
+            boxShadow: 3,
             backgroundColor:
-              customizer.activeMode === "dark" ? "#0e121a" : "#f5f5f5", // Dark ve Light tema için farklı arka plan
-            color: customizer.activeMode === "dark" ? "#fff" : "#000", // Tema bazlı yazı rengi
-            padding: 2, // İçerik için padding
+              customizer.activeMode === "dark" ? "#0e121a" : "#cccccc",
+            color:
+              customizer.activeMode === "dark"
+                ? theme.palette.common.white
+                : theme.palette.common.black,
+            padding: 2,
           }}
         >
           <CardHeader
@@ -287,7 +321,7 @@ const YorumEditor: React.FC = ({}) => {
                 justifyContent: "center",
                 width: "100%",
                 margin: "0 auto",
-                wordBreak: "break-word", // İçerik taşmasını önler
+                wordBreak: "break-word",
                 overflowWrap: "break-word",
               }}
             >
@@ -299,7 +333,6 @@ const YorumEditor: React.FC = ({}) => {
                   onChange={handleChange}
                 />
               </Box>
-              {/* Save message display */}
               {kayitMesaji && (
                 <Typography
                   variant="body2"

@@ -28,6 +28,35 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
   }
 };
 
+export const getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil = async (
+  controller: string,
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  kullaniciId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Çalışma kağıdı verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const createCalismaKagidiVerisi = async (
   controller: string,
   token: string,

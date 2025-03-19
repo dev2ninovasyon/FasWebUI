@@ -11,35 +11,30 @@ const KullaniciTopCards = [
   {
     icon: icon2,
     title: "Kullanıcı İşlemleri",
-    digits: "50",
     bgcolor: "primary",
     href: "/Kullanici/KullaniciIslemleri",
   },
   {
     icon: icon3,
     title: "Kullanıcı Sözleşme Saatleri",
-    digits: "3,650",
     bgcolor: "warning",
     href: "/Kullanici/KullaniciSozlesmeSaatleri",
   },
   {
     icon: icon4,
     title: "Denetçi Yıllık Taahütname",
-    digits: "356",
     bgcolor: "secondary",
     href: "/Kullanici/DenetciYillikTaahutname",
   },
   {
     icon: icon5,
     title: "Sürekli Eğitim Bilgileri",
-    digits: "696",
     bgcolor: "error",
     href: "/Kullanici/SurekliEgitimBilgileri",
   },
   {
     icon: icon6,
     title: "Denetçi Puantaj Belgesi",
-    digits: "$96k",
     bgcolor: "success",
     href: "/Kullanici/DenetciPuantajBelgesi",
   },
@@ -69,13 +64,13 @@ const KullaniciTopCard = () => {
                   {topcard.title}
                 </Typography>
 
-                <Typography
+                {/*<Typography
                   color={topcard.bgcolor + ".main"}
                   variant="h4"
                   fontWeight={600}
                 >
                   {topcard.digits}
-                </Typography>
+                </Typography>*/}
               </CardContent>
             </Box>
           </Link>
