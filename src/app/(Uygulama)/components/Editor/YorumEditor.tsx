@@ -71,7 +71,7 @@ interface Veri {
 }
 
 interface YorumEditorProps {
-  controller: string;
+  controller?: string;
 }
 
 const YorumEditor: React.FC<YorumEditorProps> = ({ controller }) => {
