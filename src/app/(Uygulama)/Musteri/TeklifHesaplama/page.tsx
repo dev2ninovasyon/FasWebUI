@@ -27,7 +27,7 @@ import { enqueueSnackbar } from "notistack";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
-import { IconAlertCircle } from "@tabler/icons-react";
+import { IconExclamationMark } from "@tabler/icons-react";
 
 const BCrumb = [
   {
@@ -422,7 +422,7 @@ const Page = () => {
                 </CustomFormLabel>
                 <Tooltip title="Değer Girişi Yaparken Binlik Ayıracı Kullanmayınız">
                   <Fab color="warning" size="small">
-                    <IconAlertCircle width={18.25} height={18.25} />
+                    <IconExclamationMark width={18.25} height={18.25} />
                   </Fab>
                 </Tooltip>
               </Grid>

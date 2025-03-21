@@ -126,7 +126,7 @@ const DenetimKadrosuTable = () => {
               </TableCell>
               <TableCell>
                 <Typography textAlign="center" variant="h6">
-                  Saat Başı Ücret
+                  Saat Başı Ücreti
                 </Typography>
               </TableCell>
               <TableCell>

@@ -3,7 +3,11 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box, Button, Grid, Typography } from "@mui/material";
+import { AppState } from "@/store/store";
+import { useSelector } from "@/store/hooks";
 import { useState } from "react";
+import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
+import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
 
 const BCrumb = [
@@ -18,13 +22,16 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const [islem, setIslem] = useState("");
   const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
+
   const [isClickedYeniGrupEkle, setIsClickedYeniGrupEkle] = useState(false);
-  const [isClickedVarsayılanaDon, setIsClickedVarsayılanaDon] = useState(false);
+  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
+  const user = useSelector((state: AppState) => state.userReducer);
   const controller = "IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme";
   const grupluMu = false;
   const alanAdi1 = "İşlem";
@@ -34,6 +41,32 @@ const Page = () => {
     setIsCreatePopUpOpen(true);
     setIsClickedYeniGrupEkle(true);
   };
+
+  const handleCreateGroup = async (islem: string) => {
+    const createdCalismaKagidiGrubu = {
+      denetlenenId: user.denetlenenId,
+      denetciId: user.denetciId,
+      yil: user.yil,
+      islem: islem,
+      tespit: "",
+    };
+
+    try {
+      const result = await createCalismaKagidiVerisi(
+        controller || "",
+        user.token || "",
+        createdCalismaKagidiGrubu
+      );
+      if (result) {
+        setIsCreatePopUpOpen(false);
+      } else {
+        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   return (
     <>
       <Breadcrumb
@@ -146,7 +179,7 @@ const Page = () => {
                 size="medium"
                 variant="outlined"
                 color="primary"
-                onClick={() => setIsClickedVarsayılanaDon(true)}
+                onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >
                 <Typography
@@ -158,6 +191,15 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
+          {isCreatePopUpOpen && (
+            <CreateGroupPopUp
+              islem={islem}
+              setIslem={setIslem}
+              isPopUpOpen={isCreatePopUpOpen}
+              setIsPopUpOpen={setIsCreatePopUpOpen}
+              handleCreateGroup={handleCreateGroup}
+            />
+          )}
         </>
       </Breadcrumb>
       <PageContainer
@@ -171,8 +213,8 @@ const Page = () => {
             alanAdi1={alanAdi1}
             alanAdi2={alanAdi2}
             isClickedYeniGrupEkle={isClickedYeniGrupEkle}
-            isClickedVarsayılanaDon={isClickedVarsayılanaDon}
-            setIsClickedVarsayılanaDon={setIsClickedVarsayılanaDon}
+            isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+            setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}
             setToplam={setToplam}
           />

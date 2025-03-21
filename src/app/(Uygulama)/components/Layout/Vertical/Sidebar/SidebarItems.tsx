@@ -1,4 +1,3 @@
-import Menuitems from "./MenuItems";
 import { usePathname } from "next/navigation";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -9,12 +8,18 @@ import NavCollapse from "./NavCollapse";
 import NavGroup from "./NavGroup/NavGroup";
 import { AppState } from "@/store/store";
 import { toggleMobileSidebar } from "@/store/customizer/CustomizerSlice";
+import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 
 const SidebarItems = () => {
   const pathname = usePathname();
   const pathDirect = pathname.split("/").slice(0, 2).join("/");
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
+  const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
+
+  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const hideMenu: any = lgUp
     ? customizer.isCollapse && !customizer.isSidebarHover

@@ -1,13 +1,10 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Box, useMediaQuery } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import {
-  createCalismaKagidiVerisi,
-  deleteAllCalismaKagidiVerileri,
-  deleteCalismaKagidiVerisiById,
-  getCalismaKagidiVerileriByDenetciDenetlenenYil,
-  updateCalismaKagidiVerisi,
-} from "@/api/CalismaKagitlari/CalismaKagitlari";
+import { Box, Typography, useMediaQuery } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { updateCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import { AppState } from "@/store/store";
+import { useSelector } from "@/store/hooks";
+import "ckeditor5/ckeditor5.css";
 import {
   ClassicEditor,
   AccessibilityHelp,
@@ -56,37 +53,34 @@ import {
   TextPartLanguage,
   TextTransformation,
   Undo,
-  View,
 } from "ckeditor5";
 import translations from "ckeditor5/translations/tr.js";
-import { AppState } from "@/store/store";
-import { useSelector } from "@/store/hooks";
 import "ckeditor5/ckeditor5.css";
 
 interface Veri {
   id: number;
   metin: string;
-  standartMi: boolean;
 }
 
-interface MaddiDogrulamaAciklamaEditorProps {
-  control: boolean;
-  control2: boolean;
-  setIsClickedVarsayilanaDon?: (deger: boolean) => void;
-  aciklama?: string;
-  handleSetSelectedAciklama: (a: string) => void;
+interface CustomEditorProps {
+  controller: string;
+  veri: Veri;
+
+  sozlesmeTarihi?: string;
 }
 
-const MaddiDogrulamaAciklamaEditor: React.FC<
-  MaddiDogrulamaAciklamaEditorProps
-> = ({ control, control2, aciklama, handleSetSelectedAciklama }) => {
-  const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
-  const [veriler, setVeriler] = useState<Veri[]>([]);
-  const customizer = useSelector((state: AppState) => state.customizer);
+const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
+  controller,
+  veri,
+
+  sozlesmeTarihi,
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
-  const [selectedId, setSelectedId] = useState(0);
-  const [editorData, setEditorData] = useState(""); // Track editor data
-  const [editorDataTemp, setEditorDataTemp] = useState(aciklama); // Track editor data
+  const customizer = useSelector((state: AppState) => state.customizer);
+  const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
+
+  const [editorData, setEditorData] = useState("");
+  const [kayitMesaji, setKayitMesaji] = useState<string | null>(null); // State for save message
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -99,21 +93,56 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
     loadStyles();
   }, [customizer.activeMode]);
 
-  const handleChange = (event: any, editor: any) => {
-    const data = editor.getData();
-    console.log("Editor data changed:", data);
-    setEditorData(data); // Update editor data state
-    handleSetSelectedAciklama(data); // Save the updated content to the database
+  const handleUpdate = async () => {
+    const updatedData = {
+      id: veri.id,
+      metin: editorData,
+      sozlesmeTarihi: sozlesmeTarihi == "" ? undefined : sozlesmeTarihi,
+    };
+    try {
+      const result = await updateCalismaKagidiVerisi(
+        controller,
+        user.token || "",
+        veri?.id,
+        updatedData
+      );
+
+      if (!result) {
+        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
   };
 
-  // This function will update the database when the content changes
+  const handleChange = useCallback((event: any, editor: any) => {
+    setEditorData(editor.getData());
+  }, []);
 
-  // Trigger the update when editor data changes
   useEffect(() => {
-    if (editorData) {
-      handleSetSelectedAciklama(editorData);
+    if (veri) {
+      setEditorData(veri.metin);
     }
-  }, [editorData]); // This will trigger when the content changes
+  }, [veri]);
+
+  useEffect(() => {
+    if (veri) {
+      handleUpdate();
+    }
+  }, [sozlesmeTarihi]);
+
+  useEffect(() => {
+    if (!editorData) return;
+
+    const timeout = setTimeout(() => {
+      handleUpdate();
+      setKayitMesaji(
+        `Kaydedildi - Son kaydedilme: ${new Date().toLocaleTimeString()}`
+      );
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [editorData]);
 
   const editorConfig = {
     toolbar: {
@@ -240,29 +269,38 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
     placeholder: "İçeriğinizi buraya yazın veya yapıştırın!",
     translations: [translations],
   };
+
   return (
     <Box
       sx={
         lgDown
-          ? {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-            }
+          ? { display: "flex", justifyContent: "center", width: "100%" }
           : {}
       }
     >
-      <Box sx={{ width: "100%", margin: "auto" }}>
+      <Box sx={{ width: "95%", margin: "auto" }}>
         <CKEditor
           editor={ClassicEditor}
           config={editorConfig}
-          data={control || control2 ? editorDataTemp : editorData}
-          onChange={handleChange} // Update content when changed
+          data={editorData}
+          onChange={handleChange}
         />
+        {kayitMesaji && (
+          <Typography
+            variant="body2"
+            sx={{
+              marginTop: 2,
+              color: "gray",
+              textAlign: "right",
+              width: "100%",
+            }}
+          >
+            {kayitMesaji}
+          </Typography>
+        )}
       </Box>
     </Box>
   );
 };
 
-export default MaddiDogrulamaAciklamaEditor;
+export default CustomEditorWVeri;

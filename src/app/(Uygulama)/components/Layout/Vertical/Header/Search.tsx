@@ -10,7 +10,10 @@ import {
 } from "@mui/material";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import SearchBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/SearchBoxAutoComplete";
-import Menuitems from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 interface menuType {
   title: string;
@@ -21,6 +24,10 @@ interface menuType {
 }
 
 const Search = () => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
+  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+
   // drawer top
   const [showDrawer2, setShowDrawer2] = useState(false);
   const [search, setSerach] = useState("");

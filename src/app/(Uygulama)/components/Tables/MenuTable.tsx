@@ -15,7 +15,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
-import Menuitems from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import Link from "next/link";
@@ -179,6 +179,10 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
 };
 
 const FilteredMenu: React.FC<{ title: string }> = ({ title }) => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
+  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+
   const mainItem = Menuitems.find(
     (item: MenuitemsType) => item.title === title
   );

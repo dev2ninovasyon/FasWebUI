@@ -43,11 +43,10 @@ interface CalismaKagidiProps {
   controller: string;
   grupluMu: boolean;
   isClickedYeniGrupEkle: boolean;
-  isClickedVarsayılanaDon: boolean;
+  isClickedVarsayilanaDon: boolean;
   alanAdi1: string;
   alanAdi2: string;
-
-  setIsClickedVarsayılanaDon: (deger: boolean) => void;
+  setIsClickedVarsayilanaDon: (deger: boolean) => void;
   setTamamlanan: (deger: number) => void;
   setToplam: (deger: number) => void;
 }
@@ -58,8 +57,8 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   alanAdi1,
   alanAdi2,
   isClickedYeniGrupEkle,
-  isClickedVarsayılanaDon,
-  setIsClickedVarsayılanaDon,
+  isClickedVarsayilanaDon,
+  setIsClickedVarsayilanaDon,
   setTamamlanan,
   setToplam,
 }) => {
@@ -82,7 +81,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const [isNew, setIsNew] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const [isDuzenlePopUpOpen, setIsDuzenlePopUpOpen] = useState(false);
+  const [isGroupPopUpOpen, setIsGroupPopUpOpen] = useState(false);
 
   const [openedGroupIndex, setOpenGroupIndex] = useState(null);
 
@@ -299,15 +298,22 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
+  const handleCardClick = (veri: any) => {
+    setSelectedId(veri.id);
+    setSelectedIslem(veri.islem);
+    setSelectedTespit(veri.tespit);
+    setIsPopUpOpen(true);
+  };
+
   const handleGroupClick = (veri: any) => {
     setSelectedGroupId(veri.id);
     setSelectedGroupIslem(veri.islem);
   };
 
-  const handleCardClick = (veri: any) => {
-    setSelectedId(veri.id);
-    setSelectedIslem(veri.islem);
-    setSelectedTespit(veri.tespit);
+  const handleNew = () => {
+    setIsNew(true);
+    setSelectedIslem("");
+    setSelectedTespit("");
     setIsPopUpOpen(true);
   };
 
@@ -316,13 +322,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedIslem("");
     setSelectedTespit("");
     setOpenGroupIndex(index);
-    setIsPopUpOpen(true);
-  };
-
-  const handleNew = () => {
-    setIsNew(true);
-    setSelectedIslem("");
-    setSelectedTespit("");
     setIsPopUpOpen(true);
   };
 
@@ -349,11 +348,11 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   }, [isClickedYeniGrupEkle]);
 
   useEffect(() => {
-    if (isClickedVarsayılanaDon) {
+    if (isClickedVarsayilanaDon) {
       handleDeleteAll();
-      setIsClickedVarsayılanaDon(false);
+      setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayılanaDon]);
+  }, [isClickedVarsayilanaDon]);
 
   return (
     <>
@@ -464,7 +463,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                                   size="medium"
                                   variant="outlined"
                                   color="primary"
-                                  onClick={() => setIsDuzenlePopUpOpen(true)}
+                                  onClick={() => setIsGroupPopUpOpen(true)}
                                   sx={{
                                     width: "100%",
                                   }}
@@ -635,12 +634,12 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           isNew={isNew}
         />
       )}
-      {isDuzenlePopUpOpen && (
+      {isGroupPopUpOpen && (
         <DuzenleGroupPopUp
           islem={selectedGroupIslem}
           setIslem={setSelectedGroupIslem}
-          isPopUpOpen={isDuzenlePopUpOpen}
-          setIsPopUpOpen={setIsDuzenlePopUpOpen}
+          isPopUpOpen={isGroupPopUpOpen}
+          setIsPopUpOpen={setIsGroupPopUpOpen}
           handleGroupUpdate={handleGroupUpdate}
           handleGroupDelete={handleGroupDelete}
         />

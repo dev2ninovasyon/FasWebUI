@@ -3,21 +3,17 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { AppState } from "@/store/store";
-import { useSelector } from "@/store/hooks";
 import { useState } from "react";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import TekTarihliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TekTarihliCalismaKagidiBelge";
+import SecimliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/SecimliCalismaKagidiBelge";
 
 const BCrumb = [
   {
-    to: "/Musteri",
-    title: "Müşteri",
-  },
-  {
-    to: "/Musteri/TeklifBelgesi",
-    title: "Teklif Belgesi",
+    to: "/Donusum",
+    title: "Dönüşüm",
   },
 ];
 
@@ -32,7 +28,8 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "TeklifBelgesi";
+
+  const controller = "DenetimTuruBelirlemeBelgesi";
   const grupluMu = false;
 
   const handleOpen = () => {
@@ -64,10 +61,16 @@ const Page = () => {
       console.error("Bir hata oluştu:", error);
     }
   };
-
   return (
     <>
-      <Breadcrumb title="Teklif Belgesi" items={BCrumb}>
+      <Breadcrumb
+        title={
+          user.denetimTuru == "Bobi"
+            ? "Bobi Frs Belirleme Belgesi"
+            : "Tms Tfrs Belirleme Belgesi"
+        }
+        items={BCrumb}
+      >
         <>
           <Grid
             container
@@ -127,7 +130,7 @@ const Page = () => {
                     }}
                   >
                     Yeni Grup Ekle
-                  </Typography>
+                  </Typography>{" "}
                 </Button>
               </Grid>
             )}
@@ -198,11 +201,11 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Teklif Belgesi"
-        description="this is Teklif Belgesi"
+        title="Denetim Türü Belirleme Belgesi"
+        description="this is Denetim Türü Belirleme Belgesi"
       >
         <Box>
-          <TekTarihliCalismaKagidiBelge
+          <SecimliCalismaKagidiBelge
             controller={controller}
             grupluMu={grupluMu}
             isClickedYeniGrupEkle={isClickedYeniGrupEkle}

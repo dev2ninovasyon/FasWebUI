@@ -7620,130 +7620,6 @@ const RaporTfrs: React.FC<RaporProps> = ({
             <table className="data-table">
               <thead>
                 <tr>
-                  <th></th>
-                  <th colSpan={5} style={{ textAlign: "center" }}>
-                    {user.yil}
-                  </th>
-                  <th colSpan={5} style={{ textAlign: "center" }}>
-                    {user.yil ? user.yil - 1 : 0}
-                  </th>
-                </tr>
-                <tr>
-                  <th>Döviz Kuru Riski</th>
-                  <th style={{ textAlign: "center" }}>TL Karşılığı</th>
-                  <th style={{ textAlign: "center" }}>USD</th>
-                  <th style={{ textAlign: "center" }}>EUR</th>
-                  <th style={{ textAlign: "center" }}>GBP</th>
-                  <th style={{ textAlign: "center" }}>Diğer</th>
-                  <th style={{ textAlign: "center" }}>TL Karşılığı</th>
-                  <th style={{ textAlign: "center" }}>USD</th>
-                  <th style={{ textAlign: "center" }}>EUR</th>
-                  <th style={{ textAlign: "center" }}>GBP</th>
-                  <th style={{ textAlign: "center" }}>Diğer</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dipnot452RowsBirlesik
-                  .filter(
-                    (x) =>
-                      x.cari.tlKarsiligi != 0 ||
-                      x.cari.usd != 0 ||
-                      x.cari.euro != 0 ||
-                      x.cari.gbp != 0 ||
-                      x.cari.diger != 0 ||
-                      x.onceki.tlKarsiligi != 0 ||
-                      x.onceki.usd != 0 ||
-                      x.onceki.euro != 0 ||
-                      x.onceki.gbp != 0 ||
-                      x.onceki.diger != 0
-                  )
-                  .map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      <td>{row.kalemAdi}</td>
-                      <td className="text-right">
-                        {row.cari.tlKarsiligi > 0
-                          ? formatNumber(row.cari.tlKarsiligi)
-                          : row.cari.tlKarsiligi == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.tlKarsiligi))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.usd > 0
-                          ? formatNumber(row.cari.usd)
-                          : row.cari.usd == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.usd))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.euro > 0
-                          ? formatNumber(row.cari.euro)
-                          : row.cari.euro == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.euro))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.gbp > 0
-                          ? formatNumber(row.cari.gbp)
-                          : row.cari.gbp == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.gbp))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.diger > 0
-                          ? formatNumber(row.cari.diger)
-                          : row.cari.diger == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.diger))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.tlKarsiligi > 0
-                          ? formatNumber(row.onceki.tlKarsiligi)
-                          : row.onceki.tlKarsiligi == 0
-                          ? "-"
-                          : `(${formatNumber(
-                              Math.abs(row.onceki.tlKarsiligi)
-                            )})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.usd > 0
-                          ? formatNumber(row.onceki.usd)
-                          : row.onceki.usd == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.usd))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.euro > 0
-                          ? formatNumber(row.onceki.euro)
-                          : row.onceki.euro == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.euro))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.gbp > 0
-                          ? formatNumber(row.onceki.gbp)
-                          : row.onceki.gbp == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.gbp))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.diger > 0
-                          ? formatNumber(row.onceki.diger)
-                          : row.onceki.diger == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.diger))})`}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-            <div className="seperator24"></div>
-          </>
-        )}
-        {dipnot452RowsBirlesik.length > 0 && (
-          <>
-            <table className="data-table">
-              <thead>
-                <tr>
                   <th>Döviz Kuru Riski ({user.yil})</th>
                   <th style={{ textAlign: "center" }}>TL Karşılığı</th>
                   <th style={{ textAlign: "center" }}>USD</th>
@@ -7753,55 +7629,46 @@ const RaporTfrs: React.FC<RaporProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {dipnot452RowsBirlesik
-                  .filter(
-                    (x) =>
-                      x.cari.tlKarsiligi != 0 ||
-                      x.cari.usd != 0 ||
-                      x.cari.euro != 0 ||
-                      x.cari.gbp != 0 ||
-                      x.cari.diger != 0
-                  )
-                  .map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      <td>{row.kalemAdi}</td>
-                      <td className="text-right">
-                        {row.cari.tlKarsiligi > 0
-                          ? formatNumber(row.cari.tlKarsiligi)
-                          : row.cari.tlKarsiligi == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.tlKarsiligi))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.usd > 0
-                          ? formatNumber(row.cari.usd)
-                          : row.cari.usd == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.usd))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.euro > 0
-                          ? formatNumber(row.cari.euro)
-                          : row.cari.euro == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.euro))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.gbp > 0
-                          ? formatNumber(row.cari.gbp)
-                          : row.cari.gbp == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.gbp))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.cari.diger > 0
-                          ? formatNumber(row.cari.diger)
-                          : row.cari.diger == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.cari.diger))})`}
-                      </td>
-                    </tr>
-                  ))}
+                {dipnot452RowsBirlesik.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    <td>{row.kalemAdi}</td>
+                    <td className="text-right">
+                      {row.cari.tlKarsiligi > 0
+                        ? formatNumber(row.cari.tlKarsiligi)
+                        : row.cari.tlKarsiligi == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.cari.tlKarsiligi))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.cari.usd > 0
+                        ? formatNumber(row.cari.usd)
+                        : row.cari.usd == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.cari.usd))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.cari.euro > 0
+                        ? formatNumber(row.cari.euro)
+                        : row.cari.euro == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.cari.euro))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.cari.gbp > 0
+                        ? formatNumber(row.cari.gbp)
+                        : row.cari.gbp == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.cari.gbp))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.cari.diger > 0
+                        ? formatNumber(row.cari.diger)
+                        : row.cari.diger == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.cari.diger))})`}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             <div className="seperator24"></div>
@@ -7821,57 +7688,46 @@ const RaporTfrs: React.FC<RaporProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {dipnot452RowsBirlesik
-                  .filter(
-                    (x) =>
-                      x.onceki.tlKarsiligi != 0 ||
-                      x.onceki.usd != 0 ||
-                      x.onceki.euro != 0 ||
-                      x.onceki.gbp != 0 ||
-                      x.onceki.diger != 0
-                  )
-                  .map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      <td>{row.kalemAdi}</td>
-                      <td className="text-right">
-                        {row.onceki.tlKarsiligi > 0
-                          ? formatNumber(row.onceki.tlKarsiligi)
-                          : row.onceki.tlKarsiligi == 0
-                          ? "-"
-                          : `(${formatNumber(
-                              Math.abs(row.onceki.tlKarsiligi)
-                            )})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.usd > 0
-                          ? formatNumber(row.onceki.usd)
-                          : row.onceki.usd == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.usd))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.euro > 0
-                          ? formatNumber(row.onceki.euro)
-                          : row.onceki.euro == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.euro))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.gbp > 0
-                          ? formatNumber(row.onceki.gbp)
-                          : row.onceki.gbp == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.gbp))})`}
-                      </td>
-                      <td className="text-right">
-                        {row.onceki.diger > 0
-                          ? formatNumber(row.onceki.diger)
-                          : row.onceki.diger == 0
-                          ? "-"
-                          : `(${formatNumber(Math.abs(row.onceki.diger))})`}
-                      </td>
-                    </tr>
-                  ))}
+                {dipnot452RowsBirlesik.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    <td>{row.kalemAdi}</td>
+                    <td className="text-right">
+                      {row.onceki.tlKarsiligi > 0
+                        ? formatNumber(row.onceki.tlKarsiligi)
+                        : row.onceki.tlKarsiligi == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.onceki.tlKarsiligi))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.onceki.usd > 0
+                        ? formatNumber(row.onceki.usd)
+                        : row.onceki.usd == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.onceki.usd))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.onceki.euro > 0
+                        ? formatNumber(row.onceki.euro)
+                        : row.onceki.euro == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.onceki.euro))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.onceki.gbp > 0
+                        ? formatNumber(row.onceki.gbp)
+                        : row.onceki.gbp == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.onceki.gbp))})`}
+                    </td>
+                    <td className="text-right">
+                      {row.onceki.diger > 0
+                        ? formatNumber(row.onceki.diger)
+                        : row.onceki.diger == 0
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.onceki.diger))})`}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             <div className="seperator24"></div>
@@ -7894,21 +7750,6 @@ const RaporTfrs: React.FC<RaporProps> = ({
               <thead>
                 <tr>
                   <th></th>
-                  <th colSpan={4} style={{ textAlign: "center" }}>
-                    {user.yil}
-                  </th>
-                  <th colSpan={4} style={{ textAlign: "center" }}>
-                    {user.yil ? user.yil - 1 : 0}
-                  </th>
-                </tr>
-                <tr>
-                  <th></th>
-                  <th colSpan={2} style={{ textAlign: "center" }}>
-                    Kar/Zarar
-                  </th>
-                  <th colSpan={2} style={{ textAlign: "center" }}>
-                    Özkaynaklar
-                  </th>
                   <th colSpan={2} style={{ textAlign: "center" }}>
                     Kar/Zarar
                   </th>
@@ -7917,19 +7758,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
                   </th>
                 </tr>
                 <tr>
-                  <th>Döviz Kuru Riski Duyarlılık Analizi</th>
-                  <th style={{ textAlign: "center" }}>
-                    Yabancı Paranın Değer Kazanması
-                  </th>
-                  <th style={{ textAlign: "center" }}>
-                    Yabancı Paranın Değer Kaybetmesi
-                  </th>
-                  <th style={{ textAlign: "center" }}>
-                    Yabancı Paranın Değer Kazanması
-                  </th>
-                  <th style={{ textAlign: "center" }}>
-                    Yabancı Paranın Değer Kaybetmesi
-                  </th>
+                  <th>Döviz Kuru Riski Duyarlılık Analizi ({user.yil})</th>
                   <th style={{ textAlign: "center" }}>
                     Yabancı Paranın Değer Kazanması
                   </th>
@@ -7991,6 +7820,57 @@ const RaporTfrs: React.FC<RaporProps> = ({
                               Math.abs(row.cari.ozKaynakDegerKaybetmesi)
                             )})`}
                       </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+            <div className="seperator24"></div>
+          </>
+        )}
+        {dipnot453RowsBirlesik.length > 0 && (
+          <>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th colSpan={2} style={{ textAlign: "center" }}>
+                    Kar/Zarar
+                  </th>
+                  <th colSpan={2} style={{ textAlign: "center" }}>
+                    Özkaynaklar
+                  </th>
+                </tr>
+                <tr>
+                  <th>
+                    Döviz Kuru Riski Duyarlılık Analizi (
+                    {user.yil ? user.yil - 1 : 0})
+                  </th>
+                  <th style={{ textAlign: "center" }}>
+                    Yabancı Paranın Değer Kazanması
+                  </th>
+                  <th style={{ textAlign: "center" }}>
+                    Yabancı Paranın Değer Kaybetmesi
+                  </th>
+                  <th style={{ textAlign: "center" }}>
+                    Yabancı Paranın Değer Kazanması
+                  </th>
+                  <th style={{ textAlign: "center" }}>
+                    Yabancı Paranın Değer Kaybetmesi
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {dipnot453RowsBirlesik.map((row, rowIndex) =>
+                  row.kalemAdi.includes("değişmesi halinde:") ? (
+                    <tr key={rowIndex}>
+                      <td colSpan={9} style={{ textAlign: "center" }}>
+                        {row.kalemAdi}
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={rowIndex}>
+                      <td>{row.kalemAdi}</td>
                       <td className="text-right">
                         {row.onceki.karZararDegerKazanmasi > 0
                           ? formatNumber(row.onceki.karZararDegerKazanmasi)

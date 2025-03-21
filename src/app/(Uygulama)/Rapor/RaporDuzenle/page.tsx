@@ -32,7 +32,7 @@ const Page: React.FC = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
 
-  const [isClickedVarsayılanaDon, setIsClickedVarsayılanaDon] = useState(false);
+  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tip, setTip] = useState("BagimsizDenetciRaporu");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -67,7 +67,7 @@ const Page: React.FC = () => {
                 size="medium"
                 variant="outlined"
                 color="primary"
-                onClick={() => setIsClickedVarsayılanaDon(true)}
+                onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >
                 <Typography
@@ -110,8 +110,8 @@ const Page: React.FC = () => {
                 >
                   <RaporDipnot
                     tip={tip}
-                    isClickedVarsayılanaDon={isClickedVarsayılanaDon}
-                    setIsClickedVarsayılanaDon={setIsClickedVarsayılanaDon}
+                    isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+                    setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
                   />
                 </Grid>
               </Grid>
@@ -134,8 +134,8 @@ const Page: React.FC = () => {
                 >
                   <RaporDipnot
                     tip={tip}
-                    isClickedVarsayılanaDon={isClickedVarsayılanaDon}
-                    setIsClickedVarsayılanaDon={setIsClickedVarsayılanaDon}
+                    isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+                    setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
                   />
                 </Grid>
               </Grid>

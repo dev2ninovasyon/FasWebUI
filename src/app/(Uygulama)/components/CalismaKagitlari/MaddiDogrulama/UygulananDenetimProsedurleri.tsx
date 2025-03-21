@@ -55,12 +55,12 @@ interface Veri {
 
 interface CalismaKagidiProps {
   controller: string;
-  isClickedVarsayılanaDon: boolean;
+  isClickedVarsayilanaDon: boolean;
   alanAdi1: string;
   alanAdi2: string;
   alanAdi3: string;
 
-  setIsClickedVarsayılanaDon: (deger: boolean) => void;
+  setIsClickedVarsayilanaDon: (deger: boolean) => void;
   setTamamlanan: (deger: number) => void;
   setToplam: (deger: number) => void;
   dipnotAdi: string; // Ek olarak dipnotAdi prop'u eklendi
@@ -72,8 +72,8 @@ const UygulananDentimProsedurleri: React.FC<CalismaKagidiProps> = ({
   alanAdi1,
   alanAdi2,
   alanAdi3,
-  isClickedVarsayılanaDon,
-  setIsClickedVarsayılanaDon,
+  isClickedVarsayilanaDon,
+  setIsClickedVarsayilanaDon,
   setTamamlanan,
   setToplam,
   dipnotAdi,
@@ -270,11 +270,11 @@ const UygulananDentimProsedurleri: React.FC<CalismaKagidiProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isClickedVarsayılanaDon) {
+    if (isClickedVarsayilanaDon) {
       handleDeleteAll();
-      setIsClickedVarsayılanaDon(false);
+      setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayılanaDon]);
+  }, [isClickedVarsayilanaDon]);
 
   return (
     <>

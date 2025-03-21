@@ -11,7 +11,10 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import { IconCircle } from "@tabler/icons-react";
-import Menuitems from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 interface BreadCrumbType {
   subtitle?: string;
@@ -21,6 +24,10 @@ interface BreadCrumbType {
 }
 
 const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
+  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+
   const itemsTitle =
     items && items.length > 0
       ? items.map((item) =>

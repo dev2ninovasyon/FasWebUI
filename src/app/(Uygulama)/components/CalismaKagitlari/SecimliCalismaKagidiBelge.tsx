@@ -8,10 +8,11 @@ import {
   Divider,
   Grid,
   IconButton,
+  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
-import CalismaKagidiTekTarihCard from "./Cards/CalismaKagidiTekTarihCard";
+import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
@@ -30,12 +31,13 @@ import {
 import { DuzenleGroupPopUp } from "./DuzenleGroupPopUp";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 
 interface Veri {
   id: number;
   islem: string;
   tespit: string;
-  tarih: string;
+  durum: string;
   baslikId?: number;
   standartMi: boolean;
 }
@@ -50,7 +52,7 @@ interface CalismaKagidiProps {
   setToplam: (deger: number) => void;
 }
 
-const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
+const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   controller,
   grupluMu,
   isClickedYeniGrupEkle,
@@ -68,7 +70,7 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const [selectedId, setSelectedId] = useState(0);
   const [selectedIslem, setSelectedIslem] = useState("");
   const [selectedTespit, setSelectedTespit] = useState("");
-  const [selectedTarih, setSelectedTarih] = useState("");
+  const [selectedDurum, setSelectedDurum] = useState("");
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [verilerWithBaslikId, setVerilerWithBaslikId] = useState<Veri[]>([]);
@@ -87,14 +89,14 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setOpenGroupIndex(openedGroupIndex === index ? null : index);
   };
 
-  const handleCreate = async (islem: string, tespit: string, tarih: string) => {
+  const handleCreate = async (islem: string, tespit: string, durum: string) => {
     const createdCalismaKagidiVerisi = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
       islem: islem,
       tespit: tespit,
-      tarih: tarih,
+      durum: durum,
     };
     try {
       const result = await createCalismaKagidiVerisi(
@@ -114,14 +116,14 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleUpdate = async (islem: string, tespit: string, tarih: string) => {
+  const handleUpdate = async (islem: string, tespit: string, durum: string) => {
     const updatedCalismaKagidiVerisi = veriler.find(
       (veri) => veri.id === selectedId
     );
     if (updatedCalismaKagidiVerisi) {
       updatedCalismaKagidiVerisi.islem = islem;
       updatedCalismaKagidiVerisi.tespit = tespit;
-      updatedCalismaKagidiVerisi.tarih = tarih;
+      updatedCalismaKagidiVerisi.durum = durum;
 
       try {
         const result = await updateCalismaKagidiVerisi(
@@ -260,7 +262,7 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           id: veri.id,
           islem: veri.islem,
           tespit: veri.tespit,
-          tarih: veri.tarih,
+          durum: veri.durum ? veri.durum : "Hayır",
           baslikId: veri.baslikId,
           standartMi: veri.standartmi,
         };
@@ -303,7 +305,8 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedId(veri.id);
     setSelectedIslem(veri.islem);
     setSelectedTespit(veri.tespit);
-    setSelectedTarih(veri.tarih);
+    setSelectedDurum(veri.durum);
+
     setIsPopUpOpen(true);
   };
 
@@ -316,7 +319,7 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setIsNew(true);
     setSelectedIslem("");
     setSelectedTespit("");
-    setSelectedTarih("");
+    setSelectedDurum("");
     setIsPopUpOpen(true);
   };
 
@@ -340,8 +343,8 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedTespit(tespit);
   };
 
-  const handleSetSelectedTarih = async (tarih: any) => {
-    setSelectedTarih(tarih);
+  const handleSetSelectedDurum = async (durum: any) => {
+    setSelectedDurum(durum);
   };
 
   useEffect(() => {
@@ -440,10 +443,11 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                                     handleCardClick(veriWithBaslikId);
                                   }}
                                 >
-                                  <CalismaKagidiTekTarihCard
-                                    title={veriWithBaslikId.islem}
+                                  <CalismaKagidiCard
+                                    title={`${index + 1}. ${
+                                      veriWithBaslikId.islem
+                                    }`}
                                     content={veriWithBaslikId.tespit}
-                                    date={veriWithBaslikId.tarih}
                                     standartMi={veriWithBaslikId.standartMi}
                                   />
                                 </Grid>
@@ -543,10 +547,9 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                   mt="20px"
                   onClick={() => handleCardClick(veri)}
                 >
-                  <CalismaKagidiTekTarihCard
-                    title={veri.islem}
+                  <CalismaKagidiCard
+                    title={`${index + 1}. ${veri.islem}`}
                     content={veri.tespit}
-                    date={veri.tarih}
                     standartMi={veri.standartMi}
                   />
                 </Grid>
@@ -629,11 +632,11 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         <PopUpComponent
           islem={selectedIslem}
           tespit={selectedTespit}
-          tarih={selectedTarih}
+          durum={selectedDurum}
           handleClose={handleClosePopUp}
           handleSetSelectedIslem={handleSetSelectedIslem}
           handleSetSelectedTespit={handleSetSelectedTespit}
-          handleSetSelectedTarih={handleSetSelectedTarih}
+          handleSetSelectedDurum={handleSetSelectedDurum}
           handleCreate={handleCreate}
           handleDelete={handleDelete}
           handleUpdate={handleUpdate}
@@ -655,12 +658,12 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   );
 };
 
-export default TekTarihliCalismaKagidiBelge;
+export default SecimliCalismaKagidiBelge;
 
 interface PopUpProps {
   islem?: string;
   tespit?: string;
-  tarih?: string;
+  durum?: string;
 
   isPopUpOpen: boolean;
   isNew: boolean;
@@ -668,22 +671,22 @@ interface PopUpProps {
   handleClose: () => void;
   handleSetSelectedIslem: (a: string) => void;
   handleSetSelectedTespit: (a: string) => void;
-  handleSetSelectedTarih: (a: string) => void;
-  handleCreate: (islem: string, tespit: string, tarih: string) => void;
+  handleSetSelectedDurum: (a: string) => void;
+  handleCreate: (islem: string, tespit: string, durum: string) => void;
   handleDelete: () => void;
-  handleUpdate: (islem: string, tespit: string, tarih: string) => void;
+  handleUpdate: (islem: string, tespit: string, durum: string) => void;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
   islem,
   tespit,
-  tarih,
+  durum,
   isPopUpOpen,
   isNew,
   handleClose,
   handleSetSelectedIslem,
   handleSetSelectedTespit,
-  handleSetSelectedTarih,
+  handleSetSelectedDurum,
   handleCreate,
   handleDelete,
   handleUpdate,
@@ -692,13 +695,13 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   const handleIsConfirm = () => {
     setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
   };
-  const formattedDate = tarih ? tarih.split("T")[0] : "";
 
+  const [control, setControl] = useState<string>("");
   return (
     <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
-          <DialogContent className="testdialog">
+          <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
             <Stack
               direction="row"
               spacing={2}
@@ -715,35 +718,12 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           </DialogContent>
           <Divider />
           <DialogContent>
-            <Box px={3} pt={2}>
-              <Typography variant="h5" mb={1} p={1}>
-                Tarih
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <CustomTextField
-                    id="date"
-                    label="Tarih"
-                    type="date"
-                    variant="outlined"
-                    value={formattedDate}
-                    onChange={(e: any) =>
-                      handleSetSelectedTarih(e.target.value)
-                    }
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
                 İşlem
               </Typography>
               <CustomTextField
-                id="Islem"
+                id="islem"
                 multiline
                 rows={8}
                 variant="outlined"
@@ -754,18 +734,40 @@ const PopUpComponent: React.FC<PopUpProps> = ({
             </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
-                Tespit
+                Yanıt Belirt
               </Typography>
-              <CustomTextField
-                id="Tespit"
-                multiline
-                rows={8}
-                variant="outlined"
-                fullWidth
-                value={tespit}
-                onChange={(e: any) => handleSetSelectedTespit(e.target.value)}
-              />
+              <CustomSelect
+                labelId="durum"
+                id="durum"
+                size="small"
+                value={durum}
+                onChange={(e: any) => {
+                  handleSetSelectedDurum(e.target.value);
+                  setControl(e.target.value);
+                }}
+                height={"36px"}
+                sx={{ width: "100%" }}
+              >
+                <MenuItem value={"Evet"}>Evet</MenuItem>
+                <MenuItem value={"Hayır"}>Hayır</MenuItem>
+              </CustomSelect>
             </Box>
+            {control == "Evet" && (
+              <Box px={3} pt={3}>
+                <Typography variant="h5" p={1}>
+                  Tespit
+                </Typography>
+                <CustomTextField
+                  id="tespit"
+                  multiline
+                  rows={8}
+                  variant="outlined"
+                  fullWidth
+                  value={tespit}
+                  onChange={(e: any) => handleSetSelectedTespit(e.target.value)}
+                />
+              </Box>
+            )}
           </DialogContent>
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
@@ -773,7 +775,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 variant="outlined"
                 color="success"
                 onClick={() =>
-                  handleUpdate(islem || "", tespit || "", tarih || "")
+                  handleUpdate(islem || "", tespit || "", durum || "")
                 }
                 sx={{ width: "20%" }}
               >
@@ -794,7 +796,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 variant="outlined"
                 color="success"
                 onClick={() =>
-                  handleCreate(islem || "", tespit || "", tarih || "")
+                  handleCreate(islem || "", tespit || "", durum || "")
                 }
                 sx={{ width: "20%" }}
               >

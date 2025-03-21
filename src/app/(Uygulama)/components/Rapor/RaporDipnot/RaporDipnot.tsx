@@ -43,14 +43,14 @@ interface Veri {
 
 interface RaporDipnotProps {
   tip: string;
-  isClickedVarsayılanaDon: boolean;
-  setIsClickedVarsayılanaDon: (bool: boolean) => void;
+  isClickedVarsayilanaDon: boolean;
+  setIsClickedVarsayilanaDon: (bool: boolean) => void;
 }
 
 const RaporDipnot: React.FC<RaporDipnotProps> = ({
   tip,
-  isClickedVarsayılanaDon,
-  setIsClickedVarsayılanaDon,
+  isClickedVarsayilanaDon,
+  setIsClickedVarsayilanaDon,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -181,11 +181,11 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
   }, [dipnotKoduVeriler]);
 
   useEffect(() => {
-    if (isClickedVarsayılanaDon) {
+    if (isClickedVarsayilanaDon) {
       handleDeleteAll();
-      setIsClickedVarsayılanaDon(false);
+      setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayılanaDon]);
+  }, [isClickedVarsayilanaDon]);
 
   return (
     <>

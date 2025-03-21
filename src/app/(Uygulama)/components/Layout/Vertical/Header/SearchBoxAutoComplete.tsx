@@ -1,9 +1,10 @@
 import React from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
-import Menuitems, {
-  MenuitemsType,
-} from "@/app/(Uygulama)/components//Layout/Vertical/Sidebar/MenuItems";
+import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 
 const pages: { label: string; href: string }[] = [];
@@ -36,36 +37,41 @@ function extractMenuItems(menuItems: MenuitemsType[]) {
   }
 }
 
-extractMenuItems(Menuitems);
-
 function handleButtonClick(link: string) {
   document.location.href = link;
 }
 
-const SearchBoxAutocomplete = () => (
-  <Autocomplete
-    disablePortal
-    id="search-box"
-    options={pages}
-    size="small"
-    fullWidth
-    onChange={(event, value) => handleButtonClick(value?.href || "")}
-    renderInput={(params) => (
-      <CustomTextField
-        {...params}
-        placeholder="Ara"
-        aria-label="MenuAra"
-        InputProps={{
-          ...params.InputProps,
-          endAdornment: (
-            <div style={{ marginRight: "-28px", marginTop: " 5px" }}>
-              <SearchIcon style={{ color: "gray" }} />
-            </div>
-          ),
-        }}
-      />
-    )}
-  />
-);
+const SearchBoxAutocomplete = () => {
+  const user = useSelector((state: AppState) => state.userReducer);
 
+  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+
+  extractMenuItems(Menuitems);
+
+  return (
+    <Autocomplete
+      disablePortal
+      id="search-box"
+      options={pages}
+      size="small"
+      fullWidth
+      onChange={(event, value) => handleButtonClick(value?.href || "")}
+      renderInput={(params) => (
+        <CustomTextField
+          {...params}
+          placeholder="Ara"
+          aria-label="MenuAra"
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <div style={{ marginRight: "-28px", marginTop: " 5px" }}>
+                <SearchIcon style={{ color: "gray" }} />
+              </div>
+            ),
+          }}
+        />
+      )}
+    />
+  );
+};
 export default SearchBoxAutocomplete;

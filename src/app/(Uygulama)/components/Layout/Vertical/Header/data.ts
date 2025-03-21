@@ -86,6 +86,7 @@ const profile: ProfileType[] = [
     personal: true,
   },
 ];
+
 // apps dropdown
 
 interface appsLinkType {

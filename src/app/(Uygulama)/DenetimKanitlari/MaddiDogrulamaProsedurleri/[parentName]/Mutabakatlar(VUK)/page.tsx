@@ -26,7 +26,7 @@ const Page = () => {
   const childNameWithSpaces = formatWithSpaces(segments[parentNameIndex + 1]);
 
   // Bileşen için gerekli state'ler
-  const [isClickedVarsayılanaDon, setIsClickedVarsayılanaDon] = useState(false);
+  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [dip, setDip] = useState(parentNameWithSpaces);
   const [tamamlanan, setTamamlanan] = useState(0);
@@ -120,7 +120,7 @@ const Page = () => {
                 size="medium"
                 variant="outlined"
                 color="primary"
-                onClick={() => setIsClickedVarsayılanaDon(true)}
+                onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >
                 <Typography

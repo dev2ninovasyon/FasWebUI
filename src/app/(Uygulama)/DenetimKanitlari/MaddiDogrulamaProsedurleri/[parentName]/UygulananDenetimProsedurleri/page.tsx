@@ -20,7 +20,7 @@ const Page = () => {
   const childNameWithSpaces = formatWithSpaces(segments[parentNameIndex + 1]);
 
   // Bileşen için gerekli state'ler
-  const [isClickedVarsayılanaDon, setIsClickedVarsayılanaDon] = useState(false);
+  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [dip, setDip] = useState("");
   const [tamamlanan, setTamamlanan] = useState(0);
@@ -102,7 +102,7 @@ const Page = () => {
                 size="medium"
                 variant="outlined"
                 color="primary"
-                onClick={() => setIsClickedVarsayılanaDon(true)}
+                onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >
                 <Typography
@@ -118,11 +118,11 @@ const Page = () => {
       </Breadcrumb>
       <UygulananDentimProsedurleri
         controller="Controller Adı"
-        isClickedVarsayılanaDon={isClickedVarsayılanaDon}
+        isClickedVarsayilanaDon={isClickedVarsayilanaDon}
         alanAdi1="Kategori"
         alanAdi2="Konu"
         alanAdi3="Açıklama"
-        setIsClickedVarsayılanaDon={setIsClickedVarsayılanaDon}
+        setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
         setTamamlanan={setTamamlanan}
         setToplam={setToplam}
         dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz

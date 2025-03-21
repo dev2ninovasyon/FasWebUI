@@ -14,9 +14,8 @@ import icon4 from "public/images/svgs/icon-mailbox.svg";
 import icon5 from "public/images/svgs/icon-favorites.svg";
 import icon6 from "public/images/svgs/icon-speech-bubble.svg";
 import Link from "next/link";
-import Menuitems, {
-  MenuitemsType,
-} from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 
@@ -38,8 +37,11 @@ interface TopCardsProps {
 }
 
 const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
+  const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+
+  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
 
   const findItemTitle = (
     title: string,
