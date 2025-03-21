@@ -354,7 +354,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isClickedYeniGrupEkle) {
+    if (!isClickedYeniGrupEkle) {
       fetchData();
     }
   }, [isClickedYeniGrupEkle]);

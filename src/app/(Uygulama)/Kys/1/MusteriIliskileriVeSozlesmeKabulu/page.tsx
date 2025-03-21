@@ -64,6 +64,7 @@ const Page = () => {
       );
       if (result) {
         setIsCreatePopUpOpen(false);
+        setIsClickedYeniGrupEkle(false);
       } else {
         console.error("Çalışma Kağıdı Verisi ekleme başarısız");
       }

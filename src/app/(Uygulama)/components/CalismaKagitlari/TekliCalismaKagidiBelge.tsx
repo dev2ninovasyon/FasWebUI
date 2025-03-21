@@ -331,7 +331,7 @@ const TekliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isClickedYeniGrupEkle) {
+    if (!isClickedYeniGrupEkle) {
       fetchData();
     }
   }, [isClickedYeniGrupEkle]);
