@@ -23,6 +23,7 @@ const Profile = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
 
+  console.log(customizer.avatarSrc);
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -77,7 +78,11 @@ const Profile = () => {
       >
         <Stack direction="row" pb={3} spacing={2} alignItems="center">
           <Avatar
-            src={customizer.avatarSrc}
+            src={
+              customizer.avatarSrc == ""
+                ? "/images/profile/user-1.jpg"
+                : customizer.avatarSrc
+            }
             alt={"ProfileImg"}
             sx={{ width: 95, height: 95 }}
           />
