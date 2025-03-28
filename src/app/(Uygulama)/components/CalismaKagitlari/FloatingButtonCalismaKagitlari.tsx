@@ -82,7 +82,9 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
   }, [control2]);
 
   useEffect(() => {
-    setMessage((text?.length || 0) > 10 ? messages.welcome : messages.empty);
+    if (!control2) {
+      setMessage((text?.length || 0) > 10 ? messages.welcome : messages.empty);
+    }
   }, [text]);
 
   return (
