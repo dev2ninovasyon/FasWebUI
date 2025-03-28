@@ -22,7 +22,7 @@ const initialState: StateType = {
   activeTheme: "BLUE_THEME", // BLUE_THEME, GREEN_THEME, BLACK_THEME, PURPLE_THEME, ORANGE_THEME
   activeMode: "light", // This can be light or dark
   activeDir: "ltr",
-  avatarSrc: "",
+  avatarSrc: "/images/profile/user-1.jpg",
   SidebarWidth: 270,
   MiniSidebarWidth: 87,
   TopbarHeight: 70,
