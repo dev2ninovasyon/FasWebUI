@@ -253,7 +253,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
 
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
   return (
-    <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
+    <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
           <DialogContent className="testdialog" sx={{ overflow: "visible" }}>

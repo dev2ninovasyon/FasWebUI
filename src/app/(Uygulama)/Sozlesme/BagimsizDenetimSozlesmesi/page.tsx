@@ -140,13 +140,15 @@ const Page = () => {
               </Fab>
             </Tooltip>
           </Grid>
-          <Grid item xs={12} sm={12} lg={12}>
-            <CustomEditorWVeri
-              controller={controller}
-              veri={veriler[0]}
-              sozlesmeTarihi={sozlesmeTarihi}
-            />
-          </Grid>
+          {sozlesmeTarihi.length > 0 && (
+            <Grid item xs={12} sm={12} lg={12}>
+              <CustomEditorWVeri
+                controller={controller}
+                veri={veriler[0]}
+                sozlesmeTarihi={sozlesmeTarihi}
+              />
+            </Grid>
+          )}
           {rows.filter((row: any) => row.asilYedek == "Asil").length > 0 && (
             <Grid item xs={12} sm={12} lg={12}>
               <Typography variant="h5" textAlign="center" mb={2}>
@@ -347,13 +349,15 @@ const Page = () => {
               </Paper>
             </Grid>
           )}
-          <Grid item xs={12} sm={12} lg={12}>
-            <CustomEditorWVeri
-              controller={controller}
-              veri={veriler[1]}
-              sozlesmeTarihi={sozlesmeTarihi}
-            />
-          </Grid>
+          {sozlesmeTarihi.length > 0 && (
+            <Grid item xs={12} sm={12} lg={12}>
+              <CustomEditorWVeri
+                controller={controller}
+                veri={veriler[1]}
+                sozlesmeTarihi={sozlesmeTarihi}
+              />
+            </Grid>
+          )}
         </Grid>
       </PageContainer>
     </BagimsizDenetimSozlesmesiLayout>

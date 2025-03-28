@@ -21,6 +21,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@google/generative-ai": "^0.24.0",
     "@handsontable/react": "^15.1.0",
     "@mui/icons-material": "^5.14.13",
     "@mui/lab": "^5.0.0-alpha.148",

@@ -30,6 +30,7 @@ const AktifPasifBoxAutocomplete: React.FC<AktifPasifBoxProps> = ({
     <Autocomplete
       id="aktifPasif-box"
       options={rows}
+      noOptionsText="Bulunamadı"
       fullWidth
       value={selectedOption}
       isOptionEqualToValue={(option, value) => option.label === value.label}

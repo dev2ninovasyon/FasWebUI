@@ -1,13 +1,9 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Box, useMediaQuery } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import {
-  createCalismaKagidiVerisi,
-  deleteAllCalismaKagidiVerileri,
-  deleteCalismaKagidiVerisiById,
-  getCalismaKagidiVerileriByDenetciDenetlenenYil,
-  updateCalismaKagidiVerisi,
-} from "@/api/CalismaKagitlari/CalismaKagitlari";
+import React, { useEffect, useRef, useState } from "react";
+import { AppState } from "@/store/store";
+import { useSelector } from "@/store/hooks";
+import "ckeditor5/ckeditor5.css";
 import {
   ClassicEditor,
   AccessibilityHelp,
@@ -59,34 +55,33 @@ import {
   View,
 } from "ckeditor5";
 import translations from "ckeditor5/translations/tr.js";
-import { AppState } from "@/store/store";
-import { useSelector } from "@/store/hooks";
 import "ckeditor5/ckeditor5.css";
 
-interface Veri {
-  id: number;
-  metin: string;
-  standartMi: boolean;
-}
-
 interface MaddiDogrulamaAciklamaEditorProps {
-  control: boolean;
+  control1: boolean;
   control2: boolean;
-  setIsClickedVarsayilanaDon?: (deger: boolean) => void;
+  isHovered?: boolean;
   aciklama?: string;
   handleSetSelectedAciklama: (a: string) => void;
+  setIsClickedVarsayilanaDon?: (deger: boolean) => void;
 }
 
 const MaddiDogrulamaAciklamaEditor: React.FC<
   MaddiDogrulamaAciklamaEditorProps
-> = ({ control, control2, aciklama, handleSetSelectedAciklama }) => {
-  const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
-  const [veriler, setVeriler] = useState<Veri[]>([]);
+> = ({
+  control1,
+  control2,
+  isHovered,
+  aciklama,
+  handleSetSelectedAciklama,
+}) => {
   const customizer = useSelector((state: AppState) => state.customizer);
-  const user = useSelector((state: AppState) => state.userReducer);
-  const [selectedId, setSelectedId] = useState(0);
-  const [editorData, setEditorData] = useState(""); // Track editor data
-  const [editorDataTemp, setEditorDataTemp] = useState(aciklama); // Track editor data
+  const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
+
+  const editorRef = useRef<any>(null);
+
+  const [editorData, setEditorData] = useState("");
+  const [editorDataTemp, setEditorDataTemp] = useState(aciklama);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -100,20 +95,37 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
   }, [customizer.activeMode]);
 
   const handleChange = (event: any, editor: any) => {
-    const data = editor.getData();
-    console.log("Editor data changed:", data);
-    setEditorData(data); // Update editor data state
-    handleSetSelectedAciklama(data); // Save the updated content to the database
+    if (control1 || control2) {
+      setEditorDataTemp(editor.getData());
+    } else {
+      setEditorData(editor.getData());
+    }
   };
 
-  // This function will update the database when the content changes
-
-  // Trigger the update when editor data changes
   useEffect(() => {
-    if (editorData) {
+    if (control1 || control2) {
+      handleSetSelectedAciklama(editorDataTemp || "");
+    } else {
       handleSetSelectedAciklama(editorData);
     }
-  }, [editorData]); // This will trigger when the content changes
+  }, [editorData, editorDataTemp]);
+
+  useEffect(() => {
+    if (aciklama) {
+      setEditorDataTemp(aciklama);
+    }
+  }, [aciklama]);
+
+  useEffect(() => {
+    if (isHovered && editorRef.current) {
+      editorRef.current.editing.view.focus();
+    } else if (!isHovered && editorRef.current) {
+      const editableElement = editorRef.current.ui.view.editable.element;
+      if (editableElement) {
+        editableElement.blur();
+      }
+    }
+  }, [isHovered]);
 
   const editorConfig = {
     toolbar: {
@@ -257,8 +269,11 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
         <CKEditor
           editor={ClassicEditor}
           config={editorConfig}
-          data={control || control2 ? editorDataTemp : editorData}
-          onChange={handleChange} // Update content when changed
+          data={control1 || control2 ? editorDataTemp : editorData}
+          onChange={handleChange}
+          onReady={(editor) => {
+            editorRef.current = editor;
+          }}
         />
       </Box>
     </Box>

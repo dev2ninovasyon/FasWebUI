@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Card,
@@ -30,6 +30,7 @@ import {
 import { DuzenleGroupPopUp } from "./DuzenleGroupPopUp";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 
 interface Veri {
   id: number;
@@ -69,6 +70,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const [selectedCalisma, setSelectedCalisma] = useState("");
   const [selectedBaslangicTarihi, setSelectedBaslangicTarihi] = useState("");
   const [selectedBitisTarihi, setSelectedBitisTarihi] = useState("");
+  const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [verilerWithBaslikId, setVerilerWithBaslikId] = useState<Veri[]>([]);
@@ -310,6 +312,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedCalisma(veri.calisma);
     setSelectedBaslangicTarihi(veri.baslangicTarihi);
     setSelectedBitisTarihi(veri.bitisTarihi);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
@@ -638,6 +641,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           calisma={selectedCalisma}
           baslangicTarihi={selectedBaslangicTarihi}
           bitisTarihi={selectedBitisTarihi}
+          standartMi={selectedStandartMi}
           handleClose={handleClosePopUp}
           handleSetSelectedCalisma={handleSetSelectedCalisma}
           handleSetSelectedBaslangicTarihi={handleSetSelectedBaslangicTarihi}
@@ -669,6 +673,7 @@ interface PopUpProps {
   calisma?: string;
   baslangicTarihi?: string;
   bitisTarihi?: string;
+  standartMi?: boolean;
 
   isPopUpOpen: boolean;
   isNew: boolean;
@@ -694,6 +699,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   calisma,
   baslangicTarihi,
   bitisTarihi,
+  standartMi,
   isPopUpOpen,
   isNew,
   handleClose,
@@ -713,8 +719,35 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     : "";
   const formattedEndDate = bitisTarihi ? bitisTarihi.split("T")[0] : "";
 
+  const textFieldRef = useRef<HTMLInputElement | null>(null);
+
+  const [control1, setControl1] = useState(false);
+  const [control2, setControl2] = useState(false);
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleControl1 = () => {
+    if (standartMi) {
+      setControl1(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!standartMi) {
+      setControl2(true);
+    }
+  }, [standartMi]);
+
+  useEffect(() => {
+    if (isHovered && textFieldRef.current) {
+      textFieldRef.current.focus();
+    } else if (!isHovered && textFieldRef.current) {
+      textFieldRef.current.blur();
+    }
+  }, [isHovered]);
+
   return (
-    <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
+    <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
           <DialogContent className="testdialog">
@@ -786,9 +819,18 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 fullWidth
                 value={calisma}
                 onChange={(e: any) => handleSetSelectedCalisma(e.target.value)}
+                inputRef={textFieldRef}
               />
             </Box>
           </DialogContent>
+          <FloatingButtonCalismaKagitlari
+            control={standartMi ? (control1 || control2 ? true : false) : true}
+            text={calisma}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+            handleClick={handleControl1}
+            handleSetSelectedText={handleSetSelectedCalisma}
+          />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button

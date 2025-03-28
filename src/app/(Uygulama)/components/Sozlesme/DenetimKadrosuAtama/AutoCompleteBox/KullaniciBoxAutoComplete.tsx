@@ -60,6 +60,7 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
     <Autocomplete
       id="kullanici-box"
       options={rows}
+      noOptionsText="Bulunamadı"
       fullWidth
       value={selectedOption}
       onChange={(event, value) => {

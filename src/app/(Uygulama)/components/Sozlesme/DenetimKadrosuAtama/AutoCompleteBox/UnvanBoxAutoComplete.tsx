@@ -58,6 +58,7 @@ const UnvanBoxAutocomplete: React.FC<UnvanBoxProps> = ({
     <Autocomplete
       id="unvan-box"
       options={rows}
+      noOptionsText="Bulunamadı"
       fullWidth
       value={selectedOption}
       onChange={(event, value) => {

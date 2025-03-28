@@ -107,7 +107,8 @@ const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
         updatedData
       );
 
-      if (!result) {
+      if (result) {
+      } else {
         console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
       }
     } catch (error) {
@@ -121,14 +122,23 @@ const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
 
   useEffect(() => {
     if (veri) {
-      setEditorData(veri.metin);
+      setEditorData(
+        veri.metin.replace(
+          "{{Sozlesme_Tarih}}",
+          sozlesmeTarihi?.split("-").reverse().join("/") ?? ""
+        )
+      );
     }
   }, [veri]);
 
   useEffect(() => {
-    if (veri) {
-      handleUpdate();
-    }
+    if (editorData != "")
+      setEditorData(
+        editorData.replace(
+          "{{Sozlesme_Tarih}}",
+          sozlesmeTarihi?.split("-").reverse().join("/") ?? ""
+        )
+      );
   }, [sozlesmeTarihi]);
 
   useEffect(() => {

@@ -61,6 +61,7 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
     <Autocomplete
       id="company-box"
       options={rows}
+      noOptionsText="Bulunamadı"
       fullWidth
       onChange={(event, value) => {
         onSelectId(value?.denetlenenId || 0);

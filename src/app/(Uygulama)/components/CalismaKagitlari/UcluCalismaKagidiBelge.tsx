@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Card,
@@ -30,6 +30,7 @@ import {
 import { DuzenleGroupPopUp } from "./DuzenleGroupPopUp";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 
 interface Veri {
   id: number;
@@ -69,6 +70,7 @@ const UcluCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const [selectedKontrolTesti, setSelectedKontrolTesti] = useState("");
   const [selectedKontrolAmaci, setSelectedKontrolAmaci] = useState("");
   const [selectedTestUygulamasi, setSelectedTestUygulamasi] = useState("");
+  const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [verilerWithBaslikId, setVerilerWithBaslikId] = useState<Veri[]>([]);
@@ -313,6 +315,7 @@ const UcluCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedKontrolTesti(veri.kontrolTesti);
     setSelectedKontrolAmaci(veri.kontrolAmaci);
     setSelectedTestUygulamasi(veri.testUygulamasi);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
@@ -640,6 +643,7 @@ const UcluCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           kontrolTesti={selectedKontrolTesti}
           kontrolAmaci={selectedKontrolAmaci}
           testUygulamasi={selectedTestUygulamasi}
+          standartMi={selectedStandartMi}
           handleClose={handleClosePopUp}
           handleSetSelectedKontrolTesti={handleSetSelectedKontrolTesti}
           handleSetSelectedKontrolAmaci={handleSetSelectedKontrolAmaci}
@@ -671,6 +675,7 @@ interface PopUpProps {
   kontrolTesti?: string;
   kontrolAmaci?: string;
   testUygulamasi?: string;
+  standartMi?: boolean;
 
   isPopUpOpen: boolean;
   isNew: boolean;
@@ -696,6 +701,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   kontrolTesti,
   kontrolAmaci,
   testUygulamasi,
+  standartMi,
   isPopUpOpen,
   isNew,
   handleClose,
@@ -710,8 +716,36 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   const handleIsConfirm = () => {
     setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
   };
+
+  const textFieldRef = useRef<HTMLInputElement | null>(null);
+
+  const [control1, setControl1] = useState(false);
+  const [control2, setControl2] = useState(false);
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleControl1 = () => {
+    if (standartMi) {
+      setControl1(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!standartMi) {
+      setControl2(true);
+    }
+  }, [standartMi]);
+
+  useEffect(() => {
+    if (isHovered && textFieldRef.current) {
+      textFieldRef.current.focus();
+    } else if (!isHovered && textFieldRef.current) {
+      textFieldRef.current.blur();
+    }
+  }, [isHovered]);
+
   return (
-    <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
+    <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
           <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
@@ -777,9 +811,18 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 onChange={(e: any) =>
                   handleSetSelectedTestUygulamasi(e.target.value)
                 }
+                inputRef={textFieldRef}
               />
             </Box>
           </DialogContent>
+          <FloatingButtonCalismaKagitlari
+            control={standartMi ? (control1 || control2 ? true : false) : true}
+            text={testUygulamasi}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+            handleClick={handleControl1}
+            handleSetSelectedText={handleSetSelectedTestUygulamasi}
+          />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button

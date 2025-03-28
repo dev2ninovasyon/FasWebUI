@@ -12,19 +12,22 @@ export const FloatingButtonFisler: React.FC<FloatingButtonProps> = ({
   warn,
   handleClick,
 }) => {
-  const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+  const customizer = useSelector((state: AppState) => state.customizer);
+
+  const [loaded, setLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Box
       sx={{
         position: "fixed",
-        bottom: 8,
+        bottom: 12,
         right: 24,
         zIndex: 1000,
         cursor: "pointer",
         pointerEvents: warn ? "visible" : "all",
+        opacity: loaded ? 1 : 0,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -37,21 +40,25 @@ export const FloatingButtonFisler: React.FC<FloatingButtonProps> = ({
           justifyContent: "center",
           animation: "float 2s linear infinite",
           "@keyframes float": {
-            "0%": { transform: "rotateY(90deg)" },
+            //"0%": { transform: "rotateY(90deg)" },
             "50%": { transform: "translateY(-2px)" },
-            "100%": { transform: "rotateY(90deg)" },
+            //"100%": { transform: "rotateY(90deg)" },
           },
+          width: 72,
         }}
       >
         <Typography
           align="center"
           variant="h6"
-          color={theme.palette.common.black}
+          color={
+            customizer.activeMode == "dark"
+              ? theme.palette.common.white
+              : theme.palette.common.black
+          }
         >
           Fas AI
         </Typography>
       </Box>
-
       <Box
         sx={{
           position: "fixed",
@@ -63,7 +70,6 @@ export const FloatingButtonFisler: React.FC<FloatingButtonProps> = ({
           backgroundColor: "white",
           borderRadius: "100%",
           overflow: "hidden",
-          mr: 3,
         }}
       >
         <iframe
@@ -74,6 +80,13 @@ export const FloatingButtonFisler: React.FC<FloatingButtonProps> = ({
             border: "0px",
             width: 63,
             height: 63,
+            transition: "all 0.3s ease-in-out",
+          }}
+          onLoad={() => {
+            const timer = setTimeout(() => {
+              setLoaded(true);
+            }, 1000);
+            return () => clearTimeout(timer);
           }}
         ></iframe>
       </Box>
@@ -82,9 +95,9 @@ export const FloatingButtonFisler: React.FC<FloatingButtonProps> = ({
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: isHovered ? "space-between" : "center",
+          justifyContent: "center",
           flexDirection: "row",
-          width: isHovered ? (warn ? 348 : 320) : 56,
+          width: isHovered ? 340 : 56,
           height: 72,
           borderTopRightRadius: "28px",
           borderTopLeftRadius: isHovered ? "0px" : "28px",
@@ -93,7 +106,7 @@ export const FloatingButtonFisler: React.FC<FloatingButtonProps> = ({
           transition: "all 0.3s ease-in-out",
           overflow: "hidden",
           padding: isHovered ? "0 16px" : "0",
-          ml: isHovered ? 5 : 1,
+          ml: isHovered ? 4 : 1,
           zIndex: 1000,
         }}
       >

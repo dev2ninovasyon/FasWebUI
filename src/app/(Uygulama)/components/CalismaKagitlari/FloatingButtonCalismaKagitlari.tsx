@@ -1,34 +1,104 @@
-import React, { useState } from "react";
-import { Box, Paper, Typography, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Divider, Paper, Typography, useTheme } from "@mui/material";
+import { enhanceText } from "@/utils/gemini";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 
 interface FloatingButtonProps {
-  warn?: boolean;
+  control?: boolean;
+  text?: string;
+  isHovered?: boolean;
+  setIsHovered: (b: boolean) => void;
   handleClick: () => void;
+  handleSetSelectedText: (enhancedText: string) => void;
 }
 
+const predefinedPrompts = [
+  {
+    label: "Dili Zenginleştir",
+    instruction:
+      "Bu metni daha profesyonel ve resmi bir dille yeniden yazın. Teknik terimleri koruyun ancak ifadeyi daha net ve anlaşılır hale getirin.",
+  },
+  {
+    label: "Özetle",
+    instruction:
+      "Bu metni ana noktaları koruyarak daha özlü bir şekilde özetleyin.",
+  },
+  {
+    label: "Detaylandır",
+    instruction:
+      "Bu metni daha detaylı ve açıklayıcı bir şekilde genişletin, önemli noktaları vurgulayın.",
+  },
+];
+
+const messages = {
+  welcome: "Metninizi geliştirmenize yardımcı olabilirim",
+  empty: "Metin girin, sonra size yardımcı olabilirim",
+  working: "Metniniz üzerinde çalışıyorum...",
+  done: "İşte geliştirilmiş metniniz!",
+};
+
 export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
-  warn,
+  control,
+  text,
+  isHovered,
+  setIsHovered,
   handleClick,
+  handleSetSelectedText,
 }) => {
-  const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
-  const [isHovered, setIsHovered] = useState(false);
+  const customizer = useSelector((state: AppState) => state.customizer);
+
+  const [message, setMessage] = useState(messages.welcome);
+
+  const [loaded, setLoaded] = useState(false);
+
+  const [aiText, setAiText] = useState("");
+
+  const [control2, setControl2] = useState(false);
+
+  const handlePromptClick = async (instruction: string) => {
+    if (!text) {
+      return;
+    }
+
+    try {
+      setControl2(true);
+      setMessage(messages.working);
+      const enhancedText = await enhanceText(text, instruction);
+      setMessage(messages.done);
+      setAiText(enhancedText);
+    } catch (error) {
+      console.error("Text enhancement error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!control2) {
+      setAiText("");
+      setMessage((text?.length || 0) > 10 ? messages.welcome : messages.empty);
+    }
+  }, [control2]);
+
+  useEffect(() => {
+    setMessage((text?.length || 0) > 10 ? messages.welcome : messages.empty);
+  }, [text]);
 
   return (
     <Box
       sx={{
         position: "fixed",
-        bottom: 8,
+        bottom: 12,
         right: 24,
         zIndex: 1000,
         cursor: "pointer",
-        pointerEvents: warn ? "visible" : "all",
+        pointerEvents: control ? "visible" : "all",
+        opacity: loaded ? 1 : 0,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={warn ? () => {} : () => handleClick()}
+      onClick={control ? () => {} : () => handleClick()}
     >
       <Box
         sx={{
@@ -37,21 +107,26 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
           justifyContent: "center",
           animation: "float 2s linear infinite",
           "@keyframes float": {
-            "0%": { transform: "rotateY(90deg)" },
+            //"0%": { transform: "rotateY(90deg)" },
             "50%": { transform: "translateY(-2px)" },
-            "100%": { transform: "rotateY(90deg)" },
+            //"100%": { transform: "rotateY(90deg)" },
           },
+          width: 72,
         }}
       >
         <Typography
           align="center"
           variant="h6"
-          color={theme.palette.common.black}
+          color={
+            customizer.activeMode == "dark"
+              ? theme.palette.common.white
+              : theme.palette.common.black
+          }
+          marginBottom={0.5}
         >
           Fas AI
         </Typography>
       </Box>
-
       <Box
         sx={{
           position: "fixed",
@@ -63,7 +138,6 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
           backgroundColor: "white",
           borderRadius: "100%",
           overflow: "hidden",
-          mr: 3,
         }}
       >
         <iframe
@@ -74,6 +148,13 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
             border: "0px",
             width: 63,
             height: 63,
+            transition: "all 0.3s ease-in-out",
+          }}
+          onLoad={() => {
+            const timer = setTimeout(() => {
+              setLoaded(true);
+            }, 1000);
+            return () => clearTimeout(timer);
           }}
         ></iframe>
       </Box>
@@ -81,32 +162,143 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
         elevation={4}
         sx={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: isHovered ? "space-between" : "center",
-          flexDirection: "row",
-          width: isHovered ? (warn ? 348 : 320) : 56,
-          height: 72,
-          borderTopRightRadius: "28px",
-          borderTopLeftRadius: isHovered ? "0px" : "28px",
-          borderBottomRightRadius: "28px",
-          borderBottomLeftRadius: isHovered ? "0px" : "28px",
+          alignItems: "start",
+          justifyContent: isHovered ? "start" : "center",
+          flexDirection: "column",
+          width: isHovered ? 376 : 56,
+          height: isHovered
+            ? control2
+              ? 500
+              : (text?.length || 0) > 10
+              ? 204
+              : 72
+            : 72,
+          borderRadius: "28px",
           transition: "all 0.3s ease-in-out",
           overflow: "hidden",
           padding: isHovered ? "0 16px" : "0",
-          ml: isHovered ? 5 : 1,
+          ml: isHovered ? 0 : 1,
           zIndex: 1000,
         }}
       >
-        {isHovered &&
-          (warn ? (
-            <Typography variant="body1" fontWeight="bold" ml={3} noWrap>
-              Cevapları sizin için daha önce oluşturdum
+        {isHovered && (
+          <>
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              noWrap
+              height={26}
+              marginY={3}
+              marginLeft={7.2}
+            >
+              {control || (text?.length || 0) > 10
+                ? message
+                : "Sizin için cevaplamamı ister misiniz?"}
             </Typography>
-          ) : (
-            <Typography variant="body1" fontWeight="bold" ml={3} noWrap>
-              Sizin için cevaplamamı ister misiniz?
-            </Typography>
-          ))}
+            {control2 ? (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    gap: 1,
+                    marginTop: 1,
+                    marginBottom: 2,
+                    width: "100%",
+                  }}
+                >
+                  <Divider sx={{ width: "100%" }} />
+                  <CustomTextField
+                    id="AiText"
+                    multiline
+                    rows={13}
+                    variant="outlined"
+                    fullWidth
+                    marginTop={2}
+                    value={aiText}
+                    onChange={(e: any) => setAiText(e.target.value)}
+                  />
+                  <Divider sx={{ width: "100%" }} />
+                  <Typography
+                    variant="body1"
+                    align="center"
+                    color={
+                      customizer.activeMode === "dark"
+                        ? theme.palette.success.dark
+                        : theme.palette.success.main
+                    }
+                    onClick={() => {
+                      handleSetSelectedText(aiText);
+                      setControl2(false);
+                    }}
+                  >
+                    Kullan
+                  </Typography>
+                  <Divider sx={{ width: "100%" }} />
+                  <Typography
+                    variant="body1"
+                    align="center"
+                    onClick={() => {
+                      setControl2(false);
+                    }}
+                  >
+                    Vazgeç
+                  </Typography>
+                </Box>
+              </>
+            ) : (
+              <>
+                {(text?.length || 0) > 10 && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                      gap: 1,
+                      marginTop: 1,
+                      marginBottom: 2,
+                      width: "100%",
+                    }}
+                  >
+                    <Divider sx={{ width: "100%" }} />
+                    <Typography
+                      variant="body1"
+                      align="center"
+                      onClick={() =>
+                        handlePromptClick(predefinedPrompts[0].instruction)
+                      }
+                    >
+                      {predefinedPrompts[0].label}
+                    </Typography>
+                    <Divider sx={{ width: "100%" }} />
+                    <Typography
+                      variant="body1"
+                      align="center"
+                      onClick={() =>
+                        handlePromptClick(predefinedPrompts[1].instruction)
+                      }
+                    >
+                      {predefinedPrompts[1].label}
+                    </Typography>
+                    <Divider sx={{ width: "100%" }} />
+                    <Typography
+                      variant="body1"
+                      align="center"
+                      onClick={() =>
+                        handlePromptClick(predefinedPrompts[2].instruction)
+                      }
+                    >
+                      {predefinedPrompts[2].label}
+                    </Typography>
+                  </Box>
+                )}
+              </>
+            )}
+          </>
+        )}
       </Paper>
     </Box>
   );

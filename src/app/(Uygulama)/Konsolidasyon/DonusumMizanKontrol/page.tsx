@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import DonusumMizanKontrol from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrol";
-import DonusumMizanKontrolCardTable from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrolCardTable";
+import DonusumMizanKontrolCardTable from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrolCardTable";
 
 const BCrumb = [
   {
@@ -15,8 +15,8 @@ const BCrumb = [
     title: "Konsolidasyon",
   },
   {
-    to: "/Konsolidasyon/DonusumMizanK",
-    title: "Dönüşüm Mizan",
+    to: "/Konsolidasyon/DonusumMizanKontrol",
+    title: "Dönüşüm Mizan Kontrol",
   },
 ];
 
@@ -24,8 +24,11 @@ const Page: React.FC = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
 
   return (
-    <PageContainer title="Dönüşüm Mizan" description="this is Dönüşüm Mizan">
-      <Breadcrumb title="Dönüşüm Mizan" items={BCrumb} />
+    <PageContainer
+      title="Dönüşüm Mizan Kontrol"
+      description="this is Dönüşüm Mizan Kontrol"
+    >
+      <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb} />
 
       <Grid container>
         <Grid item xs={12} lg={12}>

@@ -22,14 +22,29 @@ function firstLetterUpperCase(str: string) {
   return newWord;
 }
 
+const seenTitles = new Map<string, string>();
+
 function extractMenuItems(menuItems: MenuitemsType[]) {
   for (const menuItem of menuItems) {
-    if (menuItem.title !== undefined) {
-      pages.push({
-        label: firstLetterUpperCase(menuItem.title) || "",
-        href: menuItem.href || "",
-      });
+    if (!menuItem.title) continue;
+
+    const formattedTitle = firstLetterUpperCase(menuItem.title);
+    const formattedParentTitle = firstLetterUpperCase(
+      menuItem.parentTitle || ""
+    );
+
+    let finalTitle = formattedTitle;
+
+    if (seenTitles.has(formattedTitle)) {
+      finalTitle = `${formattedParentTitle} ⚬ ${formattedTitle}`;
     }
+
+    pages.push({
+      label: finalTitle,
+      href: menuItem.href || "",
+    });
+
+    seenTitles.set(finalTitle, menuItem.href || "");
 
     if (menuItem.children && menuItem.children.length > 0) {
       extractMenuItems(menuItem.children);
@@ -53,6 +68,7 @@ const SearchBoxAutocomplete = () => {
       disablePortal
       id="search-box"
       options={pages}
+      noOptionsText="Bulunamadı"
       size="small"
       fullWidth
       onChange={(event, value) => handleButtonClick(value?.href || "")}

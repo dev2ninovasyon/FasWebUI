@@ -23,6 +23,7 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
   <Autocomplete
     id="year-box"
     options={years}
+    noOptionsText="Bulunamadı"
     fullWidth
     onChange={(event, value) => {
       onSelect(value?.label || "");

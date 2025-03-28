@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Card,
@@ -30,6 +30,7 @@ import {
 import { DuzenleGroupPopUp } from "./DuzenleGroupPopUp";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 
 interface Veri {
   id: number;
@@ -69,6 +70,7 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const [selectedIslem, setSelectedIslem] = useState("");
   const [selectedTespit, setSelectedTespit] = useState("");
   const [selectedTarih, setSelectedTarih] = useState("");
+  const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [verilerWithBaslikId, setVerilerWithBaslikId] = useState<Veri[]>([]);
@@ -304,6 +306,7 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedIslem(veri.islem);
     setSelectedTespit(veri.tespit);
     setSelectedTarih(veri.tarih);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
@@ -630,6 +633,7 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           islem={selectedIslem}
           tespit={selectedTespit}
           tarih={selectedTarih}
+          standartMi={selectedStandartMi}
           handleClose={handleClosePopUp}
           handleSetSelectedIslem={handleSetSelectedIslem}
           handleSetSelectedTespit={handleSetSelectedTespit}
@@ -661,6 +665,7 @@ interface PopUpProps {
   islem?: string;
   tespit?: string;
   tarih?: string;
+  standartMi?: boolean;
 
   isPopUpOpen: boolean;
   isNew: boolean;
@@ -678,6 +683,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   islem,
   tespit,
   tarih,
+  standartMi,
   isPopUpOpen,
   isNew,
   handleClose,
@@ -694,8 +700,35 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   };
   const formattedDate = tarih ? tarih.split("T")[0] : "";
 
+  const textFieldRef = useRef<HTMLInputElement | null>(null);
+
+  const [control1, setControl1] = useState(false);
+  const [control2, setControl2] = useState(false);
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleControl1 = () => {
+    if (standartMi) {
+      setControl1(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!standartMi) {
+      setControl2(true);
+    }
+  }, [standartMi]);
+
+  useEffect(() => {
+    if (isHovered && textFieldRef.current) {
+      textFieldRef.current.focus();
+    } else if (!isHovered && textFieldRef.current) {
+      textFieldRef.current.blur();
+    }
+  }, [isHovered]);
+
   return (
-    <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
+    <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
           <DialogContent className="testdialog">
@@ -764,9 +797,18 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 fullWidth
                 value={tespit}
                 onChange={(e: any) => handleSetSelectedTespit(e.target.value)}
+                inputRef={textFieldRef}
               />
             </Box>
           </DialogContent>
+          <FloatingButtonCalismaKagitlari
+            control={standartMi ? (control1 || control2 ? true : false) : true}
+            text={tespit}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+            handleClick={handleControl1}
+            handleSetSelectedText={handleSetSelectedTespit}
+          />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button

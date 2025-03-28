@@ -459,7 +459,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
       icon: IconTimeline,
       href: "/PlanVeProgram",
       children: [
-        {
+        /*{
           id: uniqueId(),
           title: "Denetim Programı",
           icon: IconPoint,
@@ -467,10 +467,65 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
-          title: "Genel Bağımsız Denetim Planı",
+          title: "Maddi Doğrulama Görev Atamaları",
+          icon: IconPoint,
+          href: "/",
+        },*/
+        {
+          id: uniqueId(),
+          title: "Denetim Takvimi",
+          icon: IconPoint,
+          href: "/PlanVeProgram/DenetimTakvimi",
+        },
+        {
+          id: uniqueId(),
+          title: "Denetim Planı",
           icon: IconPoint,
           href: "/PlanVeProgram/DenetimPlani",
         },
+        /*{
+          id: uniqueId(),
+          title: "Denetim Ekibi Görev Tebliği",
+          icon: IconPoint,
+          href: "/",
+        },
+        {
+          id: uniqueId(),
+          title: "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+          icon: IconPoint,
+          href: "/",
+        },
+        {
+          id: uniqueId(),
+          title: "Etik Bildirim ve Değerlendirme",
+          icon: IconPoint,
+          href: "/",
+        },
+        {
+          id: uniqueId(),
+          title:
+            "Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+          icon: IconPoint,
+          href: "/",
+        },*/
+        {
+          id: uniqueId(),
+          title: "Denetim Zamanı Bildirme",
+          icon: IconPoint,
+          href: "/PlanVeProgram/DenetimZamaniBildirme",
+        },
+        /*{
+          id: uniqueId(),
+          title: "Sorumlu Denetçi Kimlik ve Deneyim Bildirim",
+          icon: IconPoint,
+          href: "/",
+        },
+       {
+          id: uniqueId(),
+          title: "Denetçi Sorumlulukları Bildirim",
+          icon: IconPoint,
+          href: "/",
+        },*/
         {
           id: uniqueId(),
           title:
@@ -480,21 +535,21 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
-          title: "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
+          title: "Denetim Risk Tespit Kılavuzu",
           icon: IconPoint,
-          href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
-        },
-        {
-          id: uniqueId(),
-          title: "İşletme Varlıklarının Korunmasına İlişkin Değerlendirme",
-          icon: IconPoint,
-          href: "/PlanVeProgram/IsletmeVarliklarininKorunmasinaIliskinDegerlendirme",
+          href: "/PlanVeProgram/",
         },
         {
           id: uniqueId(),
           title: "Denetim Risk Değerlendirme",
           icon: IconPoint,
           href: "/PlanVeProgram/DenetimRiskDegerlendirme",
+        },
+        {
+          id: uniqueId(),
+          title: "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
+          icon: IconPoint,
+          href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
         },
         {
           id: uniqueId(),
@@ -510,15 +565,9 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
-          title: "Denetim Takvimi",
+          title: "İşletme Varlıklarının Korunmasına İlişkin Değerlendirme",
           icon: IconPoint,
-          href: "/PlanVeProgram/DenetimTakvimi",
-        },
-        {
-          id: uniqueId(),
-          title: "Denetim Zamanı Bildirme",
-          icon: IconPoint,
-          href: "/PlanVeProgram/DenetimZamaniBildirme",
+          href: "/PlanVeProgram/IsletmeVarliklarininKorunmasinaIliskinDegerlendirme",
         },
       ],
     },
@@ -614,22 +663,35 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
-          title: "Uzman Yeterliliği Değerlendirme Belgesi",
-          icon: IconPoint,
-          href: "/DenetimKanitlari/UzmanYeterliligiDegerlendirme",
-        },
-        {
-          id: uniqueId(),
-          title: "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
-          icon: IconPoint,
-          href: "/DenetimKanitlari/BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme",
-        },
-        {
-          id: uniqueId(),
           title: "Diğer Kanıtlar",
           icon: IconPoint,
           href: "/DenetimKanitlari/DigerKanitlar",
           children: [
+            {
+              id: uniqueId(),
+              title: "Denetim Satratejisi Belirleme",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/DenetimStratejisiBelirleme",
+            },
+            {
+              id: uniqueId(),
+              title: "Uzman Yeterliliği Değerlendirme Belgesi",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/UzmanYeterliligiDegerlendirme",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetim Kontrol Testleri",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/DenetimKontrolTestleri",
+            },
+            {
+              id: uniqueId(),
+              title:
+                "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme",
+            },
             {
               id: uniqueId(),
               title: "Müşteri İşletme Yönetimi İle Yapılan Görüşme",
@@ -644,51 +706,15 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
             },
             {
               id: uniqueId(),
-              title: "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme",
+              title: "Uygulanan Muhasebe Politikalarının Tespiti",
               icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/GercegeUygunDegerHesaplamalariDegerlendirme",
+              href: "/DenetimKanitlari/DigerKanitlar/UygulananMuhasebePolitikalarininTespiti",
             },
             {
               id: uniqueId(),
               title: "Kullanılan Tahminlere İlişkin Değerlendirme",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/KullanilanTahminlereIliskinDegerlendirme",
-            },
-            {
-              id: uniqueId(),
-              title: "Denetim Çalışmalarının Sınırlandırılmasını Değerlendirme",
-              icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/DenetimCalismalarininSinirlandirilmasiniDegerlendirme",
-            },
-            {
-              id: uniqueId(),
-              title: "Yevmiye Kayıtları Kontrol",
-              icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/YevmiyeKayitlariKontrol",
-            },
-            {
-              id: uniqueId(),
-              title: "Risklere Karşı Uygulanan Denetim Prosedürleri",
-              icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/RisklereKarsiUygulananDenetimProsedurleri",
-            },
-            {
-              id: uniqueId(),
-              title: "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
-              icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/MuhasebeHatalariVeHileKanitlariDegerlendirme",
-            },
-            {
-              id: uniqueId(),
-              title: "Denetim Kontrol Testleri",
-              icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/DenetimKontrolTestleri",
-            },
-            {
-              id: uniqueId(),
-              title: "Yönetim Kurulu Faaliyet Raporu Değerlendirme",
-              icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/YonetimKuruluFaaliyetRaporuDegerlendirme",
             },
             {
               id: uniqueId(),
@@ -704,15 +730,39 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
             },
             {
               id: uniqueId(),
-              title: "Uygulanan Muhasebe Politikalarının Tespiti",
+              title: "Transfer Fiyatlaması ve Örtülü Kazanç Kontrol",
               icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/UygulananMuhasebePolitikalarininTespiti",
+              href: "/DenetimKanitlari/DigerKanitlar/TransferFiyatlamasiOrtuluKazanc",
             },
             {
               id: uniqueId(),
               title: "İhmal Edilen Düzeltme",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/IhmalEdilenDuzeltme",
+            },
+            {
+              id: uniqueId(),
+              title: "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/GercegeUygunDegerHesaplamalariDegerlendirme",
+            },
+            {
+              id: uniqueId(),
+              title: "Habersiz İşletme Ziyareti",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/HabersizIsletmeZiyareti",
+            },
+            {
+              id: uniqueId(),
+              title: "Risklere Karşı Uygulanan Denetim Prosedürleri",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/RisklereKarsiUygulananDenetimProsedurleri",
+            },
+            {
+              id: uniqueId(),
+              title: "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DigerKanitlar/MuhasebeHatalariVeHileKanitlariDegerlendirme",
             },
             {
               id: uniqueId(),
@@ -728,22 +778,22 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
             },
             {
               id: uniqueId(),
-              title: "Denetim Satratejisi Belirleme",
+              title: "Yönetim Kurulu Faaliyet Raporu Değerlendirme",
               icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/DenetimStratejisiBelirleme",
+              href: "/DenetimKanitlari/DigerKanitlar/YonetimKuruluFaaliyetRaporuDegerlendirme",
             },
             {
               id: uniqueId(),
-              title: "Habersiz İşletme Ziyareti",
+              title: "Yevmiye Kayıtları Kontrol",
               icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/HabersizIsletmeZiyareti",
+              href: "/DenetimKanitlari/DigerKanitlar/YevmiyeKayitlariKontrol",
             },
-            {
+            /*{
               id: uniqueId(),
-              title: "Transfer Fiyatlaması ve Örtülü Kazanç Kontrol",
+              title: "Denetim Çalışmalarının Sınırlandırılmasını Değerlendirme",
               icon: IconPoint,
-              href: "/DenetimKanitlari/DigerKanitlar/TransferFiyatlamasiOrtuluKazanc",
-            },
+              href: "/DenetimKanitlari/DigerKanitlar/DenetimCalismalarininSinirlandirilmasiniDegerlendirme",
+            },*/
           ],
         },
         {
@@ -982,15 +1032,17 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
+          parentTitle: "KONSOLİDASYON",
           title: "Dönüşüm İşlemi",
           icon: IconPoint,
           href: "/Konsolidasyon/DonusumIslemi",
         },
         {
           id: uniqueId(),
-          title: "Dönüşüm Mizan",
+          parentTitle: "KONSOLİDASYON",
+          title: "Dönüşüm Mizan Kontrol",
           icon: IconPoint,
-          href: "/Konsolidasyon/DonusumMizan",
+          href: "/Konsolidasyon/DonusumMizanKontrol",
         },
         {
           id: uniqueId(),

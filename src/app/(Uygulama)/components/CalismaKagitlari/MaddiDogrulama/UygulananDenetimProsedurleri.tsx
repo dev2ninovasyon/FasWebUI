@@ -81,11 +81,13 @@ const UygulananDentimProsedurleri: React.FC<CalismaKagidiProps> = ({
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
+
   const [selectedId, setSelectedId] = useState(0);
   const [selectedKategori, setSelectedKategori] = useState("");
   const [selectedKonu, setSelectedKonu] = useState("");
   const [selectedAciklama, setSelectedAciklama] = useState("");
   const [selectedStandartMi, setSelectedStandartMi] = useState(true);
+
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [isNew, setIsNew] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -450,12 +452,14 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
   };
 
-  const [control, setControl] = useState(false);
+  const [control1, setControl1] = useState(false);
   const [control2, setControl2] = useState(false);
 
-  const handleControl = () => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleControl1 = () => {
     if (standartMi) {
-      setControl(true);
+      setControl1(true);
     }
   };
 
@@ -466,7 +470,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   }, [standartMi]);
 
   return (
-    <Dialog fullWidth maxWidth={"lg"} open={isPopUpOpen} onClose={handleClose}>
+    <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
           <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
@@ -511,16 +515,21 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 {alanAdi3}
               </Typography>
               <MaddiDogrulamaAciklamaEditor
-                control={control}
+                control1={control1}
                 control2={control2}
+                isHovered={isHovered}
                 aciklama={aciklama}
                 handleSetSelectedAciklama={handleSetSelectedAciklama}
               />
             </Box>
           </DialogContent>
           <FloatingButtonCalismaKagitlari
-            warn={standartMi ? (control || control2 ? true : false) : true}
-            handleClick={handleControl}
+            control={standartMi ? (control1 || control2 ? true : false) : true}
+            text={aciklama}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+            handleClick={handleControl1}
+            handleSetSelectedText={handleSetSelectedAciklama}
           />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
@@ -533,7 +542,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 sx={{ width: "20%" }}
               >
                 Kaydet
-              </Button>{" "}
+              </Button>
               <Button
                 variant="outlined"
                 color="error"
@@ -613,6 +622,7 @@ const KategoriBoxAutocomplete: React.FC<KategoriBoxProps> = ({
     <Autocomplete
       id="kategori-box"
       options={kategoriler}
+      noOptionsText="Bulunamadı"
       fullWidth
       value={initial}
       onChange={(event, value) => {
