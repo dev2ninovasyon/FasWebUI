@@ -8,6 +8,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 interface FloatingButtonProps {
   control?: boolean;
   text?: string;
+  isCkEditor?: boolean;
   isHovered?: boolean;
   setIsHovered: (b: boolean) => void;
   handleClick: () => void;
@@ -18,17 +19,17 @@ const predefinedPrompts = [
   {
     label: "Dili Zenginleştir",
     instruction:
-      "Bu metni daha profesyonel ve resmi bir dille yeniden yazın. Teknik terimleri koruyun ancak ifadeyi daha net ve anlaşılır hale getirin.",
+      "Aşağıdaki metni daha profesyonel ve resmi bir dille yeniden yazın. Teknik terimleri koruyun ancak ifadeyi daha net ve anlaşılır hale getirin ve yalnızca yeniden yazılmış metni döndürün. Ek açıklama veya açıklama eklemeyin.",
   },
   {
     label: "Özetle",
     instruction:
-      "Bu metni ana noktaları koruyarak daha özlü bir şekilde özetleyin.",
+      "Aşağıdaki metni ana noktaları koruyarak daha özlü bir şekilde özetleyin ve yalnızca yeniden yazılmış metni döndürün. Ek açıklama veya açıklama eklemeyin. ",
   },
   {
     label: "Detaylandır",
     instruction:
-      "Bu metni daha detaylı ve açıklayıcı bir şekilde genişletin, önemli noktaları vurgulayın.",
+      "Aşağıdaki metni daha detaylı ve açıklayıcı bir şekilde genişletin, önemli noktaları vurgulayın ve yalnızca yeniden yazılmış metni döndürün. Ek açıklama veya açıklama eklemeyin. ",
   },
 ];
 
@@ -42,6 +43,7 @@ const messages = {
 export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
   control,
   text,
+  isCkEditor,
   isHovered,
   setIsHovered,
   handleClick,
@@ -232,7 +234,11 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                         : theme.palette.success.main
                     }
                     onClick={() => {
-                      handleSetSelectedText(aiText);
+                      if (isCkEditor) {
+                        handleSetSelectedText(aiText.replace(/\n/g, "<br />"));
+                      } else {
+                        handleSetSelectedText(aiText);
+                      }
                       setControl2(false);
                     }}
                   >

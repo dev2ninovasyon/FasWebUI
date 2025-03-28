@@ -527,6 +527,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
             control={standartMi ? (control1 || control2 ? true : false) : true}
             text={aciklama}
             isHovered={isHovered}
+            isCkEditor={true}
             setIsHovered={setIsHovered}
             handleClick={handleControl1}
             handleSetSelectedText={handleSetSelectedAciklama}
