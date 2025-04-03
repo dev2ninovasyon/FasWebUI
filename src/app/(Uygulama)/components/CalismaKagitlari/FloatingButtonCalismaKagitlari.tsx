@@ -220,7 +220,6 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                     rows={13}
                     variant="outlined"
                     fullWidth
-                    marginTop={2}
                     value={aiText}
                     onChange={(e: any) => setAiText(e.target.value)}
                   />
