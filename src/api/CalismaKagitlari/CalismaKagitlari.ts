@@ -92,6 +92,7 @@ export const updateCalismaKagidiVerisi = async (
   try {
     const response = await fetch(`${url}/${controller}/${id}`, {
       method: "PUT",
+      mode: "cors",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
