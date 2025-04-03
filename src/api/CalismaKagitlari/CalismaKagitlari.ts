@@ -98,6 +98,7 @@ export const updateCalismaKagidiVerisi = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      credentials: "include",
       body: JSON.stringify(updatedCalismaKagidiVerisi),
     });
 
@@ -124,6 +125,7 @@ export const deleteCalismaKagidiVerisiById = async (
         accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -153,6 +155,7 @@ export const deleteAllCalismaKagidiVerileri = async (
           accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 
