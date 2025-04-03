@@ -92,7 +92,6 @@ export const updateCalismaKagidiVerisi = async (
   try {
     const response = await fetch(`${url}/${controller}/${id}`, {
       method: "PUT",
-      mode: "no-cors",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
@@ -120,7 +119,6 @@ export const deleteCalismaKagidiVerisiById = async (
   try {
     const response = await fetch(`${url}/${controller}/${id}`, {
       method: "DELETE",
-      mode: "no-cors",
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${token}`,
@@ -150,7 +148,6 @@ export const deleteAllCalismaKagidiVerileri = async (
       `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
-        mode: "no-cors",
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${token}`,
