@@ -11,6 +11,8 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import { createFisGirisiVerisi } from "@/api/Donusum/FisGirisi";
+import { enqueueSnackbar } from "notistack";
 
 // register Handsontable's modules
 registerAllModules();
@@ -47,9 +49,74 @@ const KidemTazminatiBobiOrnekFisler: React.FC<Props> = ({
 
   const [fetchedData, setFetchedData] = useState<any[]>([]);
 
-  const handleKaydet = async (x: any) => {
-    console.log(x.filter((veri: any) => veri[0]));
-    setkaydetTiklandimi(false);
+  const handleKaydet = async (selectedFetchedData: any) => {
+    const keys = [
+      "denetciId",
+      "denetlenenId",
+      "yil",
+      "yevmiyeNo",
+      "fisTipi",
+      "detayKodu",
+      "hesapAdi",
+      "borc",
+      "alacak",
+      "aciklama",
+      "tarih",
+    ];
+
+    const jsonData = selectedFetchedData
+      .filter((veri: any) => veri[0])
+      .map((item: any[]) => {
+        let obj: { [key: string]: any } = {};
+
+        keys.forEach((key, i) => {
+          if (key === "denetciId") {
+            obj[key] = user.denetciId;
+          } else if (key === "denetlenenId") {
+            obj[key] = user.denetlenenId;
+          } else if (key === "yil") {
+            obj[key] = user.yil ? user.yil : 0;
+          } else if (key === "tarih") {
+            obj[key] = "";
+          } else if (key === "borc" || key === "alacak" || key === "aciklama") {
+            obj[key] = item[i - 1];
+          } else {
+            obj[key] = item[i - 2];
+          }
+        });
+
+        return obj;
+      });
+
+    try {
+      const result = await createFisGirisiVerisi(user.token || "", jsonData);
+      if (result) {
+        enqueueSnackbar("Fiş Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+          },
+        });
+      } else {
+        enqueueSnackbar("Fiş Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+          },
+        });
+      }
+      setkaydetTiklandimi(false);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
   };
 
   useEffect(() => {
@@ -301,7 +368,7 @@ const KidemTazminatiBobiOrnekFisler: React.FC<Props> = ({
   }, [data]);
 
   useEffect(() => {
-    if (kaydetTiklandimi) {
+    if (kaydetTiklandimi && fetchedData) {
       handleKaydet(fetchedData);
     }
   }, [kaydetTiklandimi]);
