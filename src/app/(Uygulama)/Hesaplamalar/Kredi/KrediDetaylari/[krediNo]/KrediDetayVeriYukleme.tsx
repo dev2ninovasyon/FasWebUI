@@ -8,31 +8,27 @@ import { AppState } from "@/store/store";
 import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import {
-  createDavaKarsiliklariVerisi,
-  deleteDavaKarsiliklariVerisi,
-  getDavaKarsiliklariVerileriByDenetciDenetlenenYil,
-} from "@/api/Veri/DavaKarsiliklari";
+  createKrediHesaplamaDetayVerisi,
+  deleteKrediHesaplamaDetayVerisi,
+  getKrediHesaplamaDetayVerileriByDenetciDenetlenenYil,
+} from "@/api/Veri/KrediHesaplamaDetay";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
+import { usePathname } from "next/navigation";
 
 // register Handsontable's modules
 registerAllModules();
 
 interface Veri {
-  aleyhteDavacininLehteDavalininUnvani: string;
-  aleyhteLehte: string;
-  davaKonusu: string;
-  davaYili: number;
-  mahkemeAsamasi: string;
-  varsaYerelMahkemeKarari: string;
-  durusmaAsamasi: string;
-  muhtemelDeger: number;
-  aleyhteKaybetmeLehteKazanmaIhtimali: string;
-  ongorulenSonuclanmaSuresi: string;
+  taksitTarihi: string;
+  taksitTutari: number;
+  faizTutari: number;
+  fonVergi: number;
+  anaPara: number;
 }
 
 interface Props {
@@ -40,11 +36,16 @@ interface Props {
   setKaydetTiklandimi: (b: boolean) => void;
 }
 
-const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
+const KrediDetayVeriYukleme: React.FC<Props> = ({
   kaydetTiklandimi,
   setKaydetTiklandimi,
 }) => {
   const hotTableComponent = useRef<any>(null);
+
+  const pathname = usePathname();
+  const segments = pathname.split("/");
+  const idIndex = segments.indexOf("KrediDetaylari") + 1;
+  const pathKrediNo = parseInt(segments[idIndex]);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -58,15 +59,13 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
   const uyari = [
-    "Boş Bırakılmaması Gereken Sütunlar: Aleyhte Davacının / Lehte Davalının Ünvanı, Aleyhte / Lehte, Dava Konusu, Dava Yılı, Mahkeme Aşaması, Duruşma Aşaması, Muhtemel Değer, Aleyhte Kaybetme / Lehte Kazanma İhtimali, Öngörülen Sonuçlanma Süresi",
-    "Aleyhte Davacının / Lehte Davalının Ünvanı Sütunu Boş Bırakılmamalıdır.",
-    "Aleyhte / Lehte, Dava Konusu, Mahkeme Aşaması, Duruşma Aşaması, Aleyhte Kaybetme / Lehte Kazanma ihtimali Ve Öngörülen Sonuçlanma Süresi Sütunları Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
-    "Dava Yılı Sütunu Boş Bırakılmamalıdır Ve Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-    "Varsa, Yerel Mahkeme Kararı Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
-    "Muhtemel Değer Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Boş Bırakılmaması Gereken Sütunlar: Taksit Tarihi, Taksit Tutarı, Faiz Tutarı",
+    "Taksit Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
+    "Taksit Tutarı Ve Faiz Tutarı Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Fon + Vergi Ve Ana Para Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
   ];
 
-  const [endRow, setEndRow] = useState(-1);
+  const [endRow, setEndRow] = useState(0);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -111,6 +110,23 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
     }, 1000);
   };
 
+  const numberValidatorAllowNull = (
+    value: string,
+    callback: (value: boolean) => void
+  ) => {
+    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
+    setTimeout(() => {
+      if (!value || String(value).trim() === "") {
+        // Eğer değer boşsa geçerli kabul et
+        callback(true);
+      } else if (numberRegex.test(value)) {
+        callback(true);
+      } else {
+        callback(false);
+      }
+    }, 1000);
+  };
+
   const integerValidator = (
     value: string,
     callback: (value: boolean) => void
@@ -118,6 +134,22 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
     const integerRegex = /^\d+$/; // Regex to match integers only
     setTimeout(() => {
       if (integerRegex.test(value)) {
+        callback(true);
+      } else {
+        callback(false);
+      }
+    }, 1000);
+  };
+
+  const dateValidator = (
+    value: string,
+    callback: (isValid: boolean) => void
+  ) => {
+    // Tarih formatı düzenli ifadesi (dd.mm.yyyy)
+    const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+
+    setTimeout(() => {
+      if (dateRegex.test(value)) {
         callback(true);
       } else {
         callback(false);
@@ -183,125 +215,50 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
   }, [duplicatesControl]);
 
   const colHeaders = [
-    "Aleyhte Davacının / Lehte Davalının Ünvanı",
-    "Aleyhte / Lehte ?",
-    "Dava Konusu",
-    "Dava Yılı",
-    "Mahkeme Aşaması",
-    "Varsa, Yerel Mahkeme Kararı",
-    "Duruşma Aşaması",
-    "Muhtemel Değer",
-    "Aleyhte Kaybetme / Lehte Kazanma İhtimali",
-    "Öngörülen Sonuçlanma Süresi",
+    "Taksit Tarihi",
+    "Taksit Tutarı",
+    "Faiz Tutarı",
+    "Fon + Vergi",
+    "Ana Para",
   ];
 
   const columns = [
     {
-      type: "text",
+      type: "date",
+      dateFormat: "DD.MM.YYYY",
       columnSorting: true,
-      className: "htLeft",
-      validator: textValidator,
+      className: "htRight",
+      validator: dateValidator,
       allowInvalid: false,
-    }, // Aleyhte Davacının / Lehte Davalının Ünvanı
-    {
-      type: "dropdown",
-      source: ["Aleyhte", "Lehte"],
-      className: "htLeft",
-      allowInvalid: false,
-    }, // Aleyhte / Lehte ?
-    {
-      type: "dropdown",
-      source: [
-        "İcra Takibi",
-        "İcra İtiraz",
-        "Alcak",
-        "Tazminat",
-        "İflas",
-        "İptal",
-        "Tespit",
-      ],
-      className: "htLeft",
-      allowInvalid: false,
-    }, // Dava Konusu
-    {
-      type: "numeric",
-      columnSorting: true,
-      className: "htLeft",
-      validator: integerValidator,
-      allowInvalid: false,
-    }, // Dava Yılı
-    {
-      type: "dropdown",
-      source: [
-        "İcra Müd.",
-        "Yerel Mah.",
-        "İstinaf",
-        "Bölge İdr.",
-        "Yargıtay",
-        "Danıştay",
-        "AYM",
-        "AiHM",
-      ],
-      className: "htLeft",
-      allowInvalid: false,
-    }, // Mahkeme Aşaması
-    {
-      type: "autocomplete",
-      source: ["Kabul", "Kısmen Kabul", "Red", "Diğer"],
-      className: "htLeft",
-      strict: false,
-      allowInvalid: false,
-    }, // Varsa, Yerel Mahkeme Kararı
-    {
-      type: "dropdown",
-      source: [
-        "İcra Takibi Sürüyor",
-        "Takip Durdurlmuş",
-        "Dilekçe Aşaması",
-        "Ön İnceleme Yapılmış",
-        "Bilirkişi Raporu Bekleniyor",
-        "Bilirkişi İncelemesi Yapılmış",
-        "Sonuçlanmış",
-        "Temyiz Edilecek",
-        "Temyiz İncelemesinde",
-        "Üst Mahkemece Bozulmuş",
-        "Üst Mahkemece Onanmış",
-        "Başka Dava Sonucu Bekleniyor",
-      ],
-      className: "htLeft",
-      allowInvalid: false,
-    }, // Duruşma Aşaması
+    }, // Taksit Tarihi
     {
       type: "numeric",
       numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
-    }, // Muhtemel Değer
+    }, // Taksit Tutarı
     {
-      type: "dropdown",
-      source: [
-        "%90'dan Fazla",
-        "%50 - %90 Arasında",
-        "%10 - %50 Arasında",
-        "%10'dan Az",
-        "Görüş Yok",
-      ],
-      className: "htLeft",
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      className: "htRight",
+      validator: numberValidator,
       allowInvalid: false,
-    }, // Aleyhte Kaybetme / Lehte Kazanma ihtimali
+    }, // Faiz Tutarı
     {
-      type: "dropdown",
-      source: [
-        "1 Yıldan Az",
-        "1 - 2 Yıl Arası",
-        "2 - 5 Yıl Arası",
-        "5 Yıldan Fazla",
-        "Görüş Yok",
-      ],
-      className: "htLeft",
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      className: "htRight",
+      validator: numberValidatorAllowNull,
       allowInvalid: false,
-    }, // Öngörülen Sonuçlanma Süresi
+    }, // Fon + Vergi
+    {
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      className: "htRight",
+      validator: numberValidatorAllowNull,
+      allowInvalid: false,
+    }, // Ana Para
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -470,27 +427,22 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
     }
   };
 
-  const handleCreateDavaKarsiliklariVerisi = async () => {
+  const handleCreateKrediHesaplamaDetayVerisi = async () => {
     if (fetchedData.filter((item: any) => item[0]).length == 0) {
-      await handleDeleteDavaKarsiliklariVerisi();
+      await handleDeleteKrediHesaplamaDetayVerisi();
       return;
     }
     const keys = [
       "denetciId",
       "denetlenenId",
       "yil",
-      "aleyhteDavacininLehteDavalininUnvani",
-      "aleyhteLehte",
-      "davaKonusu",
-      "davaYili",
-      "mahkemeAsamasi",
-      "varsaYerelMahkemeKarari",
-      "durusmaAsamasi",
-      "muhtemelDeger",
-      "aleyhteKaybetmeLehteKazanmaIhtimali",
-      "ongorulenSonuclanmaSuresi",
+      "alinanKrediNumarasi",
+      "taksitTarihi",
+      "taksitTutari",
+      "faizTutari",
+      "fonVergi",
+      "anaPara",
     ];
-
     const jsonData = fetchedData
       .filter((item: any) => item[0])
       .map((item: any) => {
@@ -502,25 +454,41 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
             obj[key] = user.denetlenenId;
           } else if (key === "yil") {
             obj[key] = user.yil;
-          } else if (key === "varsaYerelMahkemeKarari") {
+          } else if (key === "alinanKrediNumarasi") {
+            obj[key] = pathKrediNo;
+          } else if (key === "taksitTarihi") {
             if (
-              item[index - 3] == undefined ||
-              item[index - 3] == null ||
-              item[index - 3] == ""
-            ) {
-              obj[key] = "";
-            } else {
-              obj[key] = item[index - 3];
-            }
-          } else {
-            if (
-              item[index - 3] == undefined ||
-              item[index - 3] == null ||
-              item[index - 3] == ""
+              item[index - 4] == undefined ||
+              item[index - 4] == null ||
+              item[index - 4] == ""
             ) {
               obj[key] = null;
             } else {
-              obj[key] = item[index - 3];
+              const rawValue = item[index - 4];
+              const [day, month, year] = rawValue.split(".");
+              obj[key] = new Date(
+                `${year}-${month}-${day}T00:00:00Z`
+              ).toISOString();
+            }
+          } else if (key === "fonVergi" || key === "anaPara") {
+            if (
+              item[index - 4] == undefined ||
+              item[index - 4] == null ||
+              item[index - 4] == ""
+            ) {
+              obj[key] = 0.0;
+            } else {
+              obj[key] = item[index - 4];
+            }
+          } else {
+            if (
+              item[index - 4] == undefined ||
+              item[index - 4] == null ||
+              item[index - 4] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              obj[key] = item[index - 4];
             }
           }
         });
@@ -529,7 +497,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
       });
 
     try {
-      const result = await createDavaKarsiliklariVerisi(
+      const result = await createKrediHesaplamaDetayVerisi(
         user.token || "",
         jsonData
       );
@@ -564,13 +532,14 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
     }
   };
 
-  const handleDeleteDavaKarsiliklariVerisi = async () => {
+  const handleDeleteKrediHesaplamaDetayVerisi = async () => {
     try {
-      const result = await deleteDavaKarsiliklariVerisi(
+      const result = await deleteKrediHesaplamaDetayVerisi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        pathKrediNo || 0
       );
       if (result) {
         await fetchData();
@@ -606,28 +575,25 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
   const fetchData = async () => {
     setEndRow(-1);
     try {
-      const davaKarsiliklariVerileri =
-        await getDavaKarsiliklariVerileriByDenetciDenetlenenYil(
+      const krediHesaplamaDetayVerileri =
+        await getKrediHesaplamaDetayVerileriByDenetciDenetlenenYil(
           user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
-          user.yil || 0
+          user.yil || 0,
+          pathKrediNo || 0
         );
 
       const rowsAll: any = [];
-
-      davaKarsiliklariVerileri.forEach((veri: any) => {
+      krediHesaplamaDetayVerileri.forEach((veri: any) => {
         const newRow: any = [
-          veri.aleyhteDavacininLehteDavalininUnvani,
-          veri.aleyhteLehte,
-          veri.davaKonusu,
-          veri.davaYili,
-          veri.mahkemeAsamasi,
-          veri.varsaYerelMahkemeKarari,
-          veri.durusmaAsamasi,
-          veri.muhtemelDeger,
-          veri.aleyhteKaybetmeLehteKazanmaIhtimali,
-          veri.ongorulenSonuclanmaSuresi,
+          veri.taksitTarihi !== null && veri.taksitTarihi !== undefined
+            ? veri.taksitTarihi.split("T")[0].split("-").reverse().join(".")
+            : null,
+          veri.taksitTutari,
+          veri.faizTutari,
+          veri.fonVergi,
+          veri.anaPara,
         ];
         rowsAll.push(newRow);
       });
@@ -640,7 +606,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Dava Karşılıkları");
+      const format = await getFormat(user.token || "", "Kredi Hesaplama");
       setRowCount(format.satirSayisi);
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -657,7 +623,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
 
   useEffect(() => {
     if (kaydetTiklandimi) {
-      handleCreateDavaKarsiliklariVerisi();
+      handleCreateKrediHesaplamaDetayVerisi();
       setKaydetTiklandimi(false);
     }
   }, [kaydetTiklandimi]);
@@ -703,7 +669,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
         const blob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, "DavaKarsiliklariFormati.xlsx");
+        saveAs(blob, "KrediHesaplamaDetayFormati.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
@@ -767,14 +733,14 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[110, 80, 80, 80, 80, 100, 100, 80, 110, 80]}
+        colWidths={[90, 130, 110, 100, 100, 110, 100, 80, 80, 100, 100, 100]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
         rowHeights={35}
         autoWrapRow={true}
         minRows={rowCount}
-        minCols={10}
+        minCols={12}
         filters={true}
         columnSorting={true}
         dropdownMenu={[
@@ -818,4 +784,4 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
   );
 };
 
-export default DavaKarsiliklariVeriYukleme;
+export default KrediDetayVeriYukleme;

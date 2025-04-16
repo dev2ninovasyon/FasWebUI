@@ -157,8 +157,10 @@ const Page: React.FC = () => {
   const [ayrilan2023, setAyrilan2023] = useState<number>(0);
   const [personel2023, setPersonel2023] = useState<number>(0);
 
-  const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
+
+  const [hesaplaKaydetTiklandimi, setHesaplaKaydetTiklandimi] = useState(false);
+  const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -413,8 +415,31 @@ const Page: React.FC = () => {
             <Divider />
             <TabPanel value="VeriYukleme" sx={{ paddingX: 0 }}>
               <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+                >
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    sx={{ ml: 2 }}
+                    onClick={() => {
+                      setKaydetTiklandimi(true);
+                    }}
+                  >
+                    Kaydet
+                  </Button>
+                </Grid>
                 <Grid item xs={12} lg={12}>
-                  <KidemTazminatiBobiVeriYukleme />
+                  <KidemTazminatiBobiVeriYukleme
+                    kaydetTiklandimi={kaydetTiklandimi}
+                    setKaydetTiklandimi={setKaydetTiklandimi}
+                  />
                 </Grid>
               </Grid>
             </TabPanel>
@@ -443,7 +468,7 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
-                    disabled={hesaplaTiklandimi}
+                    disabled={hesaplaTiklandimi || kaydetTiklandimi}
                     variant="outlined"
                     color="primary"
                     sx={{ ml: 2, height: "100%" }}
@@ -1101,8 +1126,8 @@ const Page: React.FC = () => {
                   <DialogContent>
                     <KidemTazminatiBobiOrnekFisler
                       data={fetchedKidemTazminatiBobiOrnekFisler}
-                      kaydetTiklandimi={kaydetTiklandimi}
-                      setkaydetTiklandimi={setKaydetTiklandimi}
+                      kaydetTiklandimi={hesaplaKaydetTiklandimi}
+                      setkaydetTiklandimi={setHesaplaKaydetTiklandimi}
                     />
                   </DialogContent>
                   <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
@@ -1110,7 +1135,7 @@ const Page: React.FC = () => {
                       variant="outlined"
                       color="success"
                       onClick={() => {
-                        setKaydetTiklandimi(true);
+                        setHesaplaKaydetTiklandimi(true);
                         setFloatingButtonTiklandimi(false);
                       }}
                       sx={{ width: "20%" }}

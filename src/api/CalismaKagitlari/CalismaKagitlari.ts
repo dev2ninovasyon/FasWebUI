@@ -28,6 +28,35 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
   }
 };
 
+export const getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo = async (
+  controller: string,
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  dipnotNo: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${dipnotNo}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Çalışma kağıdı verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil = async (
   controller: string,
   token: string,
@@ -144,6 +173,36 @@ export const deleteAllCalismaKagidiVerileri = async (
   try {
     const response = await fetch(
       `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "DELETE",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const deleteAllCalismaKagidiVerileriByDipnotNo = async (
+  controller: string,
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  dipnotNo: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${dipnotNo}`,
       {
         method: "DELETE",
         headers: {

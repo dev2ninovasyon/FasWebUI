@@ -86,6 +86,8 @@ const Page: React.FC = () => {
   const [iskontoOrani180365, setIskontoOrani180365] = useState<number>(0);
   const [iskontoOrani365, setIskontoOrani365] = useState<number>(0);
 
+  const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
+
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
@@ -261,8 +263,31 @@ const Page: React.FC = () => {
             <Divider />
             <TabPanel value="VeriYukleme" sx={{ paddingX: 0 }}>
               <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+                >
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    sx={{ ml: 2 }}
+                    onClick={() => {
+                      setKaydetTiklandimi(true);
+                    }}
+                  >
+                    Kaydet
+                  </Button>
+                </Grid>
                 <Grid item xs={12} lg={12}>
-                  <CekSenetReeskontVeriYukleme />
+                  <CekSenetReeskontVeriYukleme
+                    kaydetTiklandimi={kaydetTiklandimi}
+                    setKaydetTiklandimi={setKaydetTiklandimi}
+                  />
                 </Grid>
               </Grid>
             </TabPanel>

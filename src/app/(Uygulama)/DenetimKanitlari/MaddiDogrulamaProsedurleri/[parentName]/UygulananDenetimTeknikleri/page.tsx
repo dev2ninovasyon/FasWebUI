@@ -1,12 +1,20 @@
 "use client";
-import UygulananDentimProsedurleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/UygulananDenetimProsedurleri";
+import {
+  getMaddiDogrulama,
+  getUygulananDenetimProsedurleri,
+} from "@/api/MaddiDogrulama/MaddiDogrulama";
+import UygulananDenetimTeknikleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/UygulananDenetimTeknikleri";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 import { Button, Grid, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Page = () => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
   const pathname = usePathname();
   const segments = pathname.split("/");
   const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
@@ -16,6 +24,7 @@ const Page = () => {
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [dip, setDip] = useState("");
+  const [dipnotNo, setDipnotNo] = useState<string>("");
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
@@ -34,17 +43,93 @@ const Page = () => {
     },
     {
       to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: "Uygulanan Denetim Prosedürleri",
+      title: "Uygulanan Denetim Teknikleri",
     },
   ];
 
+  function normalizeString(str: string): string {
+    const turkishChars: { [key: string]: string } = {
+      ç: "c",
+      ğ: "g",
+      ı: "i",
+      İ: "i",
+      ö: "o",
+      ş: "s",
+      ü: "u",
+      Ç: "C",
+      Ğ: "G",
+      Ö: "O",
+      Ş: "S",
+      Ü: "U",
+    };
+
+    return str.replace(
+      /[çğıöşüÇĞÖŞÜıİ]/g,
+      (match) => turkishChars[match] || match
+    );
+  }
+
+  const fetchData = async () => {
+    try {
+      const maddiDogrulama = await getMaddiDogrulama(
+        user.token || "",
+        user.denetimTuru || ""
+      );
+
+      maddiDogrulama.forEach((veri: any) => {
+        if (
+          normalizeString(veri.name.replaceAll(" ", "").toLowerCase()) ==
+          normalizeString(parentName.replaceAll(" ", "").toLowerCase())
+        ) {
+          setDip(veri.name);
+        }
+      });
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
+  const fetchData2 = async () => {
+    try {
+      const uygulananDentimProsedurleri = await getUygulananDenetimProsedurleri(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        dip || "",
+        user.tfrsmi || false
+      );
+
+      uygulananDentimProsedurleri.forEach((veri: any) => {
+        if (
+          normalizeString(veri.dipnotAdi.replaceAll(" ", "").toLowerCase()) ==
+          normalizeString(parentName.replaceAll(" ", "").toLowerCase())
+        ) {
+          setDipnotNo(veri.dipnotNo);
+        }
+      });
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (dip) {
+      fetchData2();
+    }
+  }, [dip]);
+
   return (
     <PageContainer
-      title={`${dip} | Uygulanan Denetim Prosedürleri`}
-      description="this is Uygulanan Denetim Prosedürleri"
+      title={`${dip} | Uygulanan Denetim Teknikleri`}
+      description="this is Uygulanan Denetim Teknikleri"
     >
       <Breadcrumb
-        title={"Uygulanan Denetim Prosedürleri"}
+        title={"Uygulanan Denetim Teknikleri"}
         subtitle={`${dip}`}
         items={BCrumb}
       >
@@ -109,17 +194,14 @@ const Page = () => {
           </Grid>
         </>
       </Breadcrumb>
-      <UygulananDentimProsedurleri
-        controller="UygulananDentimProsedurleri"
+
+      <UygulananDenetimTeknikleri
+        controller="UygulananDenetimTeknikleri"
         isClickedVarsayilanaDon={isClickedVarsayilanaDon}
-        alanAdi1="Kategori"
-        alanAdi2="Konu"
-        alanAdi3="Açıklama"
         setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
         setTamamlanan={setTamamlanan}
         setToplam={setToplam}
-        dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz
-        setDip={setDip}
+        dipnotNo={dipnotNo}
       />
     </PageContainer>
   );

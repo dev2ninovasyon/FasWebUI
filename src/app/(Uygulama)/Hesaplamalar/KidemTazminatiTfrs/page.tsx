@@ -47,8 +47,10 @@ const Page: React.FC = () => {
     setTip(newValue);
   };
 
-  const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
+
+  const [hesaplaKaydetTiklandimi, setHesaplaKaydetTiklandimi] = useState(false);
+  const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
   const [floatingButtonTiklandimi, setFloatingButtonTiklandimi] =
     useState(false);
@@ -107,8 +109,31 @@ const Page: React.FC = () => {
             <Divider />
             <TabPanel value="VeriYukleme" sx={{ paddingX: 0 }}>
               <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+                >
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    sx={{ ml: 2 }}
+                    onClick={() => {
+                      setKaydetTiklandimi(true);
+                    }}
+                  >
+                    Kaydet
+                  </Button>
+                </Grid>
                 <Grid item xs={12} lg={12}>
-                  <KidemTazminatiTfrsVeriYukleme />
+                  <KidemTazminatiTfrsVeriYukleme
+                    kaydetTiklandimi={kaydetTiklandimi}
+                    setKaydetTiklandimi={setKaydetTiklandimi}
+                  />
                 </Grid>
               </Grid>
             </TabPanel>
@@ -128,7 +153,7 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
-                    disabled={hesaplaTiklandimi}
+                    disabled={hesaplaTiklandimi || kaydetTiklandimi}
                     variant="outlined"
                     color="primary"
                     sx={{ ml: 2, height: "100%" }}
@@ -188,7 +213,7 @@ const Page: React.FC = () => {
                       variant="outlined"
                       color="success"
                       onClick={() => {
-                        setKaydetTiklandimi(true);
+                        setHesaplaKaydetTiklandimi(true);
                         setFloatingButtonTiklandimi(false);
                       }}
                       sx={{ width: "20%" }}

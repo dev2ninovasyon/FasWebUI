@@ -29,35 +29,10 @@ export const getKidemTazminatiBobiVerileriByDenetciDenetlenenYil = async (
 
 export const createKidemTazminatiBobiVerisi = async (
   token: string,
-  createdKidemTazminatiBobi: any
-) => {
-  try {
-    const response = await fetch(`${url}/Veri/KidemTazminatiBobi`, {
-      method: "POST",
-      headers: {
-        accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(createdKidemTazminatiBobi),
-    });
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const createMultipleKidemTazminatiBobiVerisi = async (
-  token: string,
   jsonData: any
 ) => {
   try {
-    const response = await fetch(`${url}/Veri/KidemTazminatiBobiMultiple`, {
+    const response = await fetch(`${url}/Veri/KidemTazminatiBobi`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -77,104 +52,11 @@ export const createMultipleKidemTazminatiBobiVerisi = async (
   }
 };
 
-export const createNullKidemTazminatiBobiVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: number
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/KidemTazminatiBobiNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "POST",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const updateKidemTazminatiBobiVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: number,
-  updatedKidemTazminatiBobi: any
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/KidemTazminatiBobi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "PUT",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedKidemTazminatiBobi),
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const updateMultipleKidemTazminatiBobiVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: any
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/KidemTazminatiBobiMultiple?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "PUT",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
 export const deleteKidemTazminatiBobiVerisi = async (
   token: string,
   denetciId: number,
   denetlenenId: number,
-  yil: number,
-  siraNo: number[]
+  yil: number
 ) => {
   try {
     const response = await fetch(
@@ -186,7 +68,6 @@ export const deleteKidemTazminatiBobiVerisi = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(siraNo),
       }
     );
 

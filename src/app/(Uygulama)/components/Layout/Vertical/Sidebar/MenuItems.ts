@@ -541,6 +541,12 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
+          title: "Finansal Tablolar Denetim Riski Belirleme",
+          icon: IconPoint,
+          href: "/PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme",
+        },
+        {
+          id: uniqueId(),
           title: "Denetim Risk Değerlendirme",
           icon: IconPoint,
           href: "/PlanVeProgram/DenetimRiskDegerlendirme",
@@ -658,6 +664,20 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
               title: "İşletmenin Sürekliliğine İlişkin Değerlendirme",
               icon: IconPoint,
               href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/IsletmeninSurekliligineIliskinDegerlendirme",
+            },
+          ],
+        },
+        {
+          id: uniqueId(),
+          title: "Önemlilik",
+          icon: IconPoint,
+          href: "/DenetimKanitlari/Onemlilik",
+          children: [
+            {
+              id: uniqueId(),
+              title: "Fiş İşlem Sayıları",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/Onemlilik/FisIslemSayilari",
             },
           ],
         },
@@ -989,13 +1009,19 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
       id: uniqueId(),
       title: "ENFLASYON",
       icon: IconTrendingUp,
-      href: "/",
+      href: "/Enflasyon",
       children: [
+        {
+          id: uniqueId(),
+          title: "Aşamalar",
+          icon: IconPoint,
+          href: "/Enflasyon/Asamalar",
+        },
         {
           id: uniqueId(),
           title: "Düzeltme Katsayıları",
           icon: IconPoint,
-          href: "/",
+          href: "/Enflasyon",
         },
       ],
     },
@@ -1008,6 +1034,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
       children: [
         {
           id: uniqueId(),
+          parentTitle: "KONSOLİDASYON",
           title: "Aşamalar",
           icon: IconPoint,
           href: "/Konsolidasyon/Asamalar",

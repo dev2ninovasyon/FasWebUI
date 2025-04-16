@@ -56,6 +56,7 @@ export const getUygulananDenetimProsedurleri = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
 export const createCalismaKagidiVerisi = async (
   token: string,
   createdCalismaKagidiVerisi: any
@@ -107,11 +108,7 @@ export const updateCalismaKagidiVerisi = async (
   }
 };
 
-export const deleteCalismaKagidiVerisiById = async (
-  controller: string,
-  token: string,
-  id: any
-) => {
+export const deleteCalismaKagidiVerisiById = async (token: string, id: any) => {
   try {
     const response = await fetch(`${url}/UygulananDenetimProsedurleri/${id}`, {
       method: "DELETE",

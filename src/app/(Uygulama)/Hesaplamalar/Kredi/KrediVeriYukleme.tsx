@@ -5,16 +5,12 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import {
   createKrediHesaplamaVerisi,
-  createMultipleKrediHesaplamaVerisi,
-  createNullKrediHesaplamaVerisi,
   deleteKrediHesaplamaVerisi,
   getKrediHesaplamaVerileriByDenetciDenetlenenYil,
-  updateKrediHesaplamaVerisi,
-  updateMultipleKrediHesaplamaVerisi,
 } from "@/api/Veri/KrediHesaplama";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
@@ -22,50 +18,55 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
+import { useRouter } from "next/navigation";
 
 // register Handsontable's modules
 registerAllModules();
 
 interface Veri {
-  siraNo: number;
   alinanKrediNumarasi: number;
   detayHesapKodu: string;
   hesapAdi: string;
-  taksitTarihi: string;
-  taksitTutari: number;
-  faizTutari: number;
-  fonVergi: number;
-  anaPara: number;
   paraBirimi: string;
   alinanKrediTutar: number;
   krediAlisTarhi: number;
   faizOrani: number;
 }
 
-const KrediVeriYukleme = () => {
+interface Props {
+  kaydetTiklandimi: boolean;
+  setKaydetTiklandimi: (b: boolean) => void;
+}
+
+const KrediVeriYukleme: React.FC<Props> = ({
+  kaydetTiklandimi,
+  setKaydetTiklandimi,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
+  const router = useRouter();
   const dispatch = useDispatch();
   const theme = useTheme();
 
   const [rowCount, setRowCount] = useState<number>(200);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-  const [multiplePasteData, setMultiplePasteData] = useState<any>([]);
-
-  const [afterPasteCompleted, setAfterPasteCompleted] = useState(false);
-  const [halfPasteControl, setHalfPasteControl] = useState<boolean>(false);
 
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
-  const [startRow, setStartRow] = useState(0);
-  const [endRow, setEndRow] = useState(0);
-  const [startCol, setStartCol] = useState(0);
-  const [endCol, setEndCol] = useState(0);
+  const uyari = [
+    "Boş Bırakılmaması Gereken Sütunlar: Alınan Kredi Numarası, Detay Hesap Kodu, Hesap Adı, Alınan Kredi Tutar, Kredi Alış Tarihi, Faiz Oranı (%)",
+    "Alınan Kredi Numarası Sütunu Boş Bırakılmamalıdır Ve Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Detay Hesap Kodu Ve Hesap Adı Sütunları Boş Bırakılmamalıdır.",
+    "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
+    "Alınan Kredi Tutar Ve Faiz Oranı (%) Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Kredi Alış Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
+  ];
 
-  const [control, setControl] = useState(false);
+  const [endRow, setEndRow] = useState(0);
+
   useEffect(() => {
     const loadStyles = async () => {
       dispatch(setCollapse(true));
@@ -83,6 +84,18 @@ const KrediVeriYukleme = () => {
     loadStyles();
   }, [customizer.activeMode]);
 
+  const textValidator = (value: string, callback: (value: boolean) => void) => {
+    setTimeout(() => {
+      if (!value || value.trim() === "") {
+        // Eğer değer boşsa geçersiz kabul et
+
+        callback(false);
+      } else {
+        callback(true);
+      }
+    }, 1000);
+  };
+
   const numberValidator = (
     value: string,
     callback: (value: boolean) => void
@@ -92,17 +105,6 @@ const KrediVeriYukleme = () => {
       if (numberRegex.test(value)) {
         callback(true);
       } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girmelisiniz.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
         callback(false);
       }
     }, 1000);
@@ -117,17 +119,6 @@ const KrediVeriYukleme = () => {
       if (integerRegex.test(value)) {
         callback(true);
       } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girmelisiniz.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
         callback(false);
       }
     }, 1000);
@@ -142,18 +133,52 @@ const KrediVeriYukleme = () => {
 
     setTimeout(() => {
       if (dateRegex.test(value)) {
-        const [, day, month, year] = value.match(dateRegex)!;
-
-        const date = new Date(`${year}-${month}-${day}`);
-        const isValidDate =
-          date.getFullYear() === Number(year) &&
-          date.getMonth() + 1 === Number(month) &&
-          date.getDate() === Number(day);
-
         callback(true);
       } else {
+        callback(false);
+      }
+    }, 1000);
+  };
+
+  function isRowEmpty(row: Veri): boolean {
+    return Object.values(row).every(
+      (value) =>
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+    );
+  }
+
+  function findDuplicateRows(data: Veri[]): number[] {
+    const seenRows = new Set<string>();
+    const duplicates: number[] = [];
+
+    data.forEach((row, index) => {
+      if (isRowEmpty(row)) return; // tüm değerler boşsa geç
+
+      const rowString = JSON.stringify(row, Object.keys(row).sort());
+
+      if (seenRows.has(rowString)) {
+        duplicates.push(index + 1); // 1-based row number
+      } else {
+        seenRows.add(rowString);
+      }
+    });
+
+    return duplicates;
+  }
+
+  useEffect(() => {
+    if (duplicatesControl) {
+      const duplicateRowNumbers = findDuplicateRows(fetchedData);
+
+      if (duplicateRowNumbers.length > 0) {
+        const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
+
         enqueueSnackbar(
-          "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
+          `${duplicatesMessage}Numaralı Satır${
+            duplicateRowNumbers.length > 1 ? "lar" : ""
+          } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
           {
             variant: "warning",
             autoHideDuration: 5000,
@@ -166,100 +191,16 @@ const KrediVeriYukleme = () => {
             },
           }
         );
-        callback(false);
       }
-    }, 1000);
-  };
 
-  function findDuplicateRows(data: any): Veri[] {
-    const rowsAsString = new Set<string>();
-    const duplicateRows: Veri[] = [];
-
-    const keys = Object.keys(data);
-
-    const [firstKey, ...restKeys] = keys;
-
-    for (const row of data) {
-      const { [firstKey]: _, ...rowWithoutSiraNo } = row;
-
-      const rowString = JSON.stringify(
-        rowWithoutSiraNo,
-        Object.keys(rowWithoutSiraNo).sort()
-      );
-
-      if (!rowString.includes("null") && !rowString.includes("{}")) {
-        if (rowsAsString.has(rowString)) {
-          duplicateRows.push(row);
-        } else {
-          rowsAsString.add(rowString);
-        }
-      }
-    }
-    return duplicateRows;
-  }
-
-  useEffect(() => {
-    if (duplicatesControl) {
-      const duplicatesList = findDuplicateRows(fetchedData);
-
-      let duplicatesMessage = "";
-      if (duplicatesList != undefined && duplicatesList != null) {
-        duplicatesList.forEach((item: any) => {
-          if (item[0] != undefined && item[0] != null) {
-            duplicatesMessage = duplicatesMessage + " " + item[0] + ". ";
-          }
-        });
-        if (duplicatesMessage != "") {
-          if (duplicatesList.length > 1) {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satırlar Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          } else {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satır Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-          setDuplicatesControl(false);
-        }
-      }
       setDuplicatesControl(false);
     }
   }, [duplicatesControl]);
 
   const colHeaders = [
-    "SiraNo",
     "Alınan Kredi Numarası",
     "D. Hesap Kodu",
     "Hesap Adı",
-    "Taksit Tarihi",
-    "Taksit Tutarı",
-    "Faiz Tutarı",
-    "Fon + Vergi",
-    "Ana Para",
     "Para Birimi",
     "Alınan Kredi Tutar",
     "Kredi Alış Tarihi",
@@ -267,7 +208,6 @@ const KrediVeriYukleme = () => {
   ];
 
   const columns = [
-    { type: "numeric", columnSorting: true, readOnly: true, editor: false }, // SiraNo
     {
       type: "numeric",
       columnSorting: true,
@@ -279,50 +219,16 @@ const KrediVeriYukleme = () => {
       type: "text",
       columnSorting: true,
       className: "htLeft",
+      validator: textValidator,
       allowInvalid: false,
     }, // Detay Hesap Kodu
     {
       type: "text",
       columnSorting: true,
       className: "htLeft",
+      validator: textValidator,
       allowInvalid: false,
     }, // Hesap Adı
-    {
-      type: "date",
-      dateFormat: "DD.MM.YYYY",
-      columnSorting: true,
-      className: "htRight",
-      validator: dateValidator,
-      allowInvalid: false,
-    }, // Taksit Tarihi
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      validator: numberValidator,
-      allowInvalid: false,
-    }, // Taksit Tutarı
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      validator: numberValidator,
-      allowInvalid: false,
-    }, // Faiz Tutarı
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      validator: numberValidator,
-      allowInvalid: false,
-    }, // Fon + Vergi
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      validator: numberValidator,
-      allowInvalid: false,
-    }, // Ana Para
     {
       type: "autocomplete",
       source: [
@@ -472,13 +378,7 @@ const KrediVeriYukleme = () => {
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
 
-    if (
-      row >= startRow &&
-      row <= endRow &&
-      col >= startCol &&
-      col <= endCol &&
-      value == null
-    ) {
+    if (row <= endRow && (value == undefined || value == null || value == "")) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
     }
   };
@@ -494,16 +394,9 @@ const KrediVeriYukleme = () => {
 
   const handleCreateRow = async (index: number, amount: number) => {
     if (amount == 1 && index != rowCount - 1) {
-      setStartRow(0);
-      setEndRow(0);
-      setStartCol(0);
-      setEndCol(0);
       console.log(
         `Yeni satır(lar) eklendi: ${amount} adet satır ${index} indexinden itibaren.`
       );
-      setControl(true);
-      await handleUpdateMultipleKrediHesaplamaVerisi(index);
-      await handleCreateNullKrediHesaplamaVerisi(index);
     }
   };
 
@@ -513,15 +406,9 @@ const KrediVeriYukleme = () => {
     physicalRows: number[],
     source: any
   ) => {
-    setStartRow(0);
-    setEndRow(0);
-    setStartCol(0);
-    setEndCol(0);
     console.log(
       `Satır(lar) silindi: ${amount} adet satır ${index} indexinden itibaren.${physicalRows}`
     );
-    const siraNos = physicalRows.map((row) => row + 1);
-    handleDeleteKrediHesaplamaVerisi(siraNos);
   };
 
   const afterPaste = async (data: any, coords: any) => {
@@ -531,78 +418,13 @@ const KrediVeriYukleme = () => {
     console.log("Pasted endRow coordinates:", coords[0].endRow);
     console.log("Pasted startCol coordinates:", coords[0].startCol);
     console.log("Pasted endCol coordinates:", coords[0].endCol);
-    setStartRow(coords[0].startRow);
-    setEndRow(coords[0].endRow);
-    setStartCol(coords[0].startCol);
-    setEndCol(coords[0].endCol);
 
-    if (halfPasteControl == false) {
-      let j = 0;
-      for (
-        let i = coords[0].startRow;
-        i < data.length + coords[0].startRow;
-        i++
-      ) {
-        data[j].unshift(i + 1);
-        if (data[j][4] != "" && data[j][4] != null && data[j][4] != 0) {
-          const dateParts = data[j][4].split(".");
-          if (dateParts.length === 3) {
-            const [day, month, year] = dateParts;
-            const formattedDate = `${year}-${month}-${day}`;
-            data[j][4] = new Date(formattedDate).toISOString();
-          } else {
-            enqueueSnackbar(
-              "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-        }
-        if (data[j][11] != "" && data[j][11] != null && data[j][11] != 0) {
-          const dateParts = data[j][11].split(".");
-          if (dateParts.length === 3) {
-            const [day, month, year] = dateParts;
-            const formattedDate = `${year}-${month}-${day}`;
-            data[j][11] = new Date(formattedDate).toISOString();
-          } else {
-            enqueueSnackbar(
-              "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-        }
-        j++;
-      }
-      setMultiplePasteData(data);
+    if (endRow < coords[0].endRow) {
+      setEndRow(coords[0].endRow);
     }
   };
 
   const handleAfterChange = async (changes: any, source: any) => {
-    //Değişen Cellin Satır Indexi
-    let changedRow = -1;
-    //Değişen Cellerin Satır Indexleri (Distinct)
-    let changedRows: any = [];
-    //Değişen Cellin Satır Verileri
-    let changedRowData: any;
     if (source === "loadData") {
       return; // Skip this hook on loadData
     }
@@ -611,391 +433,147 @@ const KrediVeriYukleme = () => {
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
-        changedRow = row;
-
-        if (changedRows.length == 0) {
-          changedRows.push(row);
-        }
-        if (changedRows[changedRows.length - 1] != row) {
-          changedRows.push(row);
-        }
-
-        changedRowData = await handleGetRowData(row);
-
-        //Cell Güncelleme
-        if (
-          changedRow >= 0 &&
-          changedRowData[0] != null &&
-          changedRowData[1] != null &&
-          changedRowData[2] != null &&
-          changedRowData[3] != null &&
-          changedRowData[4] != null &&
-          changedRowData[5] != null &&
-          changedRowData[6] != null &&
-          changedRowData[7] != null &&
-          changedRowData[8] != null &&
-          changedRowData[9] != null &&
-          changedRowData[10] != null &&
-          changedRowData[11] != null &&
-          changedRowData[12] != null
-        ) {
-          await handleUpdateKrediHesaplamaVerisi(changedRow);
-
-          changedRow = -1;
-          changedRows = [];
-        }
       }
-    }
-    //Tek satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length < 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null &&
-      changedRowData[8] != null &&
-      //changedRowData[9] != null &&
-      changedRowData[10] != null &&
-      changedRowData[11] != null &&
-      changedRowData[12] != null
-    ) {
-      await handleCreateKrediHesaplamaVerisi(changedRow);
-      changedRow = -1;
-      changedRows = [];
-    }
-    //Çok Satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null &&
-      changedRowData[8] != null &&
-      //changedRowData[9] != null &&
-      changedRowData[10] != null &&
-      changedRowData[11] != null &&
-      changedRowData[12] != null
-    ) {
-      //Düzgün Çok Satır Yaratma
-      if (halfPasteControl == false) {
-        setAfterPasteCompleted(true);
-        changedRow = -1;
-        changedRows = [];
-      }
-      //Yarım Yarım Çok satır Yaratma
-      else {
-        for (const x of changedRows) {
-          if (
-            changedRow >= 0 &&
-            changedRows.length >= 2 &&
-            changedRowData[0] == null &&
-            changedRowData[1] != null &&
-            changedRowData[2] != null &&
-            changedRowData[3] != null &&
-            changedRowData[4] != null &&
-            changedRowData[5] != null &&
-            changedRowData[6] != null &&
-            changedRowData[7] != null &&
-            changedRowData[8] != null &&
-            //changedRowData[9] != null &&
-            changedRowData[10] != null &&
-            changedRowData[11] != null &&
-            changedRowData[12] != null
-          ) {
-            await handleCreateKrediHesaplamaVerisi(x);
-          }
-        }
-        setHalfPasteControl(false);
-        changedRow = -1;
-        changedRows = [];
-      }
-    }
-    //Yarım Yarım Çok satır Kontrol
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      (changedRowData[1] == null ||
-        changedRowData[2] == null ||
-        changedRowData[3] == null ||
-        changedRowData[4] == null ||
-        changedRowData[5] == null ||
-        changedRowData[6] == null ||
-        changedRowData[7] == null ||
-        changedRowData[8] == null ||
-        //changedRowData[9] == null ||
-        changedRowData[10] == null ||
-        changedRowData[11] == null ||
-        changedRowData[12] == null)
-    ) {
-      setHalfPasteControl(true);
     }
   };
 
-  const handleCreateKrediHesaplamaVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-    if (rowData[9] == null || rowData[9] == "") {
-      rowData[9] = "TL";
+  const handleCreateKrediHesaplamaVerisi = async () => {
+    if (fetchedData.filter((item: any) => item[0]).length == 0) {
+      await handleDeleteKrediHesaplamaVerisi();
+      return;
     }
-    const createdKrediHesaplamaVerisi = {
-      denetciId: user.denetciId,
-      denetlenenId: user.denetlenenId,
-      yil: user.yil,
-      siraNo: row + 1,
-      alinanKrediNumarasi: rowData[1],
-      detayHesapKodu: rowData[2],
-      hesapAdi: rowData[3],
-      taksitTarihi: new Date(
-        rowData[4].split(".").reverse().join("-")
-      ).toISOString(),
-      taksitTutari: rowData[5],
-      faizTutari: rowData[6],
-      fonVergi: rowData[7],
-      anaPara: rowData[8],
-      paraBirimi: rowData[9],
-      alinanKrediTutar: rowData[10],
-      krediAlisTarihi: new Date(
-        rowData[11].split(".").reverse().join("-")
-      ).toISOString(),
-      faizOrani: rowData[12],
-    };
-
-    try {
-      const result = await createKrediHesaplamaVerisi(
-        user.token || "",
-        createdKrediHesaplamaVerisi
-      );
-      if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Kredi Hesaplama Verisi ekleme başarılı");
-      } else {
-        console.error("Kredi Hesaplama ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleCreateMultipleKrediHesaplamaVerisi = async () => {
     const keys = [
       "denetciId",
       "denetlenenId",
       "yil",
-      "siraNo",
       "alinanKrediNumarasi",
       "detayHesapKodu",
       "hesapAdi",
-      "taksitTarihi",
-      "taksitTutari",
-      "faizTutari",
-      "fonVergi",
-      "anaPara",
       "paraBirimi",
       "alinanKrediTutar",
       "krediAlisTarihi",
       "faizOrani",
     ];
+    const jsonData = fetchedData
+      .filter((item: any) => item[0])
+      .map((item: any) => {
+        let obj: { [key: string]: any } = {};
+        keys.forEach((key, index) => {
+          if (key === "denetciId") {
+            obj[key] = user.denetciId;
+          } else if (key === "denetlenenId") {
+            obj[key] = user.denetlenenId;
+          } else if (key === "yil") {
+            obj[key] = user.yil;
+          } else if (key === "krediAlisTarihi") {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              const rawValue = item[index - 3];
+              const [day, month, year] = rawValue.split(".");
+              obj[key] = new Date(
+                `${year}-${month}-${day}T00:00:00Z`
+              ).toISOString();
+            }
+          } else if (key === "paraBirimi") {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = "TL";
+            } else {
+              obj[key] = item[index - 3];
+            }
+          } else {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              obj[key] = item[index - 3];
+            }
+          }
+        });
 
-    const jsonData =
-      multiplePasteData.length === 1
-        ? keys.reduce(
-            (acc: { [key: string]: any }, key: string, index: number) => {
-              if (key === "denetciId") {
-                acc[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                acc[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                acc[key] = user.yil;
-              } else if (
-                key === "taksitTutari" ||
-                key === "faizTutari" ||
-                key === "fonVergi" ||
-                key === "anaPara" ||
-                key === "alinanKrediTutar" ||
-                key === "faizOrani"
-              ) {
-                acc[key] = parseFloat(
-                  multiplePasteData[0][index - 3].replace(",", ".")
-                );
-              } else {
-                if (
-                  key === "paraBirimi" &&
-                  (multiplePasteData[0][index - 3] == null ||
-                    multiplePasteData[0][index - 3] == "")
-                ) {
-                  acc[key] = "TL";
-                } else {
-                  acc[key] = multiplePasteData[0][index - 3];
-                }
-              }
-              return acc;
-            },
-            {}
-          )
-        : multiplePasteData.map((item: any[]) => {
-            let obj: { [key: string]: any } = {};
-            keys.forEach((key, index) => {
-              if (key === "denetciId") {
-                obj[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                obj[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                obj[key] = user.yil;
-              } else if (
-                key === "taksitTutari" ||
-                key === "faizTutari" ||
-                key === "fonVergi" ||
-                key === "anaPara" ||
-                key === "alinanKrediTutar" ||
-                key === "faizOrani"
-              ) {
-                obj[key] = parseFloat(item[index - 3].replace(",", "."));
-              } else {
-                if (
-                  key === "paraBirimi" &&
-                  (multiplePasteData[0][index - 3] == null ||
-                    multiplePasteData[0][index - 3] == "")
-                ) {
-                  obj[key] = "TL";
-                } else {
-                  obj[key] = item[index - 3];
-                }
-              }
-            });
-            return obj;
-          });
+        return obj;
+      });
 
     try {
-      const result = await createMultipleKrediHesaplamaVerisi(
+      const result = await createKrediHesaplamaVerisi(
         user.token || "",
         jsonData
       );
       if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Kredi Hesaplama Verisi ekleme başarılı");
-      } else {
-        console.error("Kredi Hesaplama Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleCreateNullKrediHesaplamaVerisi = async (siraNo: number) => {
-    try {
-      const result = await createNullKrediHesaplamaVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo + 1 || 0
-      );
-      if (result) {
-        if (halfPasteControl == false && control == false) {
-          fetchData();
-        }
-        console.log("Kredi Hesaplama Verisi ekleme başarılı");
-      } else {
-        console.error("Kredi Hesaplama Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleUpdateKrediHesaplamaVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-    if (rowData[9] == null || rowData[9] == "") {
-      rowData[9] = "TL";
-    }
-    const updatedKrediHesaplamaVerisi = {
-      alinanKrediNumarasi: rowData[1],
-      detayHesapKodu: rowData[2],
-      hesapAdi: rowData[3],
-      taksitTarihi: new Date(
-        rowData[4].split(".").reverse().join("-")
-      ).toISOString(),
-      taksitTutari: rowData[5],
-      faizTutari: rowData[6],
-      fonVergi: rowData[7],
-      anaPara: rowData[8],
-      paraBirimi: rowData[9],
-      alinanKrediTutar: rowData[10],
-      krediAlisTarihi: new Date(
-        rowData[11].split(".").reverse().join("-")
-      ).toISOString(),
-      faizOrani: rowData[12],
-    };
-
-    try {
-      const result = await updateKrediHesaplamaVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        row + 1,
-        updatedKrediHesaplamaVerisi
-      );
-      if (result) {
         await fetchData();
-        console.log("Kredi Hesaplama Verisi güncelleme başarılı");
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("Kredi Hesaplama Verisi güncelleme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
   };
 
-  const handleUpdateMultipleKrediHesaplamaVerisi = async (siraNo: number) => {
-    try {
-      const result = await updateMultipleKrediHesaplamaVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo || 0
-      );
-      if (result) {
-        console.log("Kredi Hesaplama Verisi güncelleme başarılı");
-      } else {
-        console.error("Kredi Hesaplama Verisi güncelleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleDeleteKrediHesaplamaVerisi = async (siraNo: number[]) => {
+  const handleDeleteKrediHesaplamaVerisi = async () => {
     try {
       const result = await deleteKrediHesaplamaVerisi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo
+        user.yil || 0
       );
       if (result) {
-        if (halfPasteControl == false && control == false) {
-          await fetchData();
-        }
-        console.log("Kredi Hesaplama Verisi silme başarılı");
+        await fetchData();
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("Kredi Hesaplama Verisi silme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -1003,6 +581,7 @@ const KrediVeriYukleme = () => {
   };
 
   const fetchData = async () => {
+    setEndRow(-1);
     try {
       const krediHesaplamaVerileri =
         await getKrediHesaplamaVerileriByDenetciDenetlenenYil(
@@ -1014,46 +593,18 @@ const KrediVeriYukleme = () => {
 
       const rowsAll: any = [];
       krediHesaplamaVerileri.forEach((veri: any) => {
-        if (
-          veri.taksitTarihi !== null &&
-          veri.taksitTarihi !== undefined &&
-          veri.krediAlisTarihi !== null &&
-          veri.krediAlisTarihi !== undefined
-        ) {
-          const newRow: any = [
-            veri.siraNo,
-            veri.alinanKrediNumarasi,
-            veri.detayHesapKodu,
-            veri.hesapAdi,
-            veri.taksitTarihi.split("T")[0].split("-").reverse().join("."),
-            veri.taksitTutari,
-            veri.faizTutari,
-            veri.fonVergi,
-            veri.anaPara,
-            veri.paraBirimi,
-            veri.alinanKrediTutar,
-            veri.krediAlisTarihi.split("T")[0].split("-").reverse().join("."),
-            veri.faizOrani,
-          ];
-          rowsAll.push(newRow);
-        } else {
-          const newRow: any = [
-            veri.siraNo,
-            veri.alinanKrediNumarasi,
-            veri.detayHesapKodu,
-            veri.hesapAdi,
-            veri.taksitTarihi,
-            veri.taksitTutari,
-            veri.faizTutari,
-            veri.fonVergi,
-            veri.anaPara,
-            veri.paraBirimi,
-            veri.alinanKrediTutar,
-            veri.krediAlisTarihi,
-            veri.faizOrani,
-          ];
-          rowsAll.push(newRow);
-        }
+        const newRow: any = [
+          veri.alinanKrediNumarasi,
+          veri.detayHesapKodu,
+          veri.hesapAdi,
+          veri.paraBirimi,
+          veri.alinanKrediTutar,
+          veri.krediAlisTarihi !== null && veri.krediAlisTarihi !== undefined
+            ? veri.krediAlisTarihi.split("T")[0].split("-").reverse().join(".")
+            : null,
+          veri.faizOrani,
+        ];
+        rowsAll.push(newRow);
       });
       setFetchedData(rowsAll);
       setDuplicatesControl(true);
@@ -1072,21 +623,19 @@ const KrediVeriYukleme = () => {
   };
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     fetchRowCount();
   }, []);
 
   useEffect(() => {
-    if (halfPasteControl == false) {
-      fetchData();
+    if (kaydetTiklandimi) {
+      handleCreateKrediHesaplamaVerisi();
+      setKaydetTiklandimi(false);
     }
-  }, [halfPasteControl]);
-
-  useEffect(() => {
-    if (afterPasteCompleted) {
-      handleCreateMultipleKrediHesaplamaVerisi();
-      setAfterPasteCompleted(false);
-    }
-  }, [afterPasteCompleted]);
+  }, [kaydetTiklandimi]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
@@ -1157,6 +706,29 @@ const KrediVeriYukleme = () => {
 
   return (
     <>
+      <Grid container>
+        <Grid item xs={12} lg={12}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: 1,
+              mb: 2,
+              borderRadius: 1,
+              backgroundColor: "warning.light",
+            }}
+          >
+            {uyari.map((mesaj, index) => (
+              <Typography
+                key={index}
+                variant="body1"
+                sx={{ color: "warning.dark" }}
+              >
+                - {mesaj}
+              </Typography>
+            ))}
+          </Paper>
+        </Grid>
+      </Grid>
       <HotTable
         style={{
           height: "100%",
@@ -1170,7 +742,7 @@ const KrediVeriYukleme = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 90, 130, 110, 100, 100, 110, 100, 80, 80, 100, 100, 100]}
+        colWidths={[90, 130, 110, 80, 100, 100, 100]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -1178,9 +750,6 @@ const KrediVeriYukleme = () => {
         autoWrapRow={true}
         minRows={rowCount}
         minCols={12}
-        hiddenColumns={{
-          columns: [0],
-        }}
         filters={true}
         columnSorting={true}
         dropdownMenu={[
@@ -1196,13 +765,22 @@ const KrediVeriYukleme = () => {
         afterChange={handleAfterChange} // Add afterChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
-        contextMenu={[
-          "row_above",
-          "row_below",
-          "remove_row",
-          "alignment",
-          "copy",
-        ]}
+        contextMenu={{
+          items: {
+            row_above: {},
+            row_below: {},
+            remove_row: {},
+            alignment: {},
+            copy: {},
+            fise_git: {
+              name: "Detaya Git",
+              callback: async function (key, selection) {
+                const row = await handleGetRowData(selection[0].start.row);
+                router.push(`/Hesaplamalar/Kredi/KrediDetaylari/${row[0]}`);
+              },
+            },
+          },
+        }}
       />
       <Grid container marginTop={2}>
         <Grid item xs={12} lg={10}></Grid>

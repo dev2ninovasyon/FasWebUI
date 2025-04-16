@@ -5,16 +5,12 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import {
   createCekSenetReeskontVerisi,
-  createMultipleCekSenetReeskontVerisi,
-  createNullCekSenetReeskontVerisi,
   deleteCekSenetReeskontVerisi,
   getCekSenetReeskontVerileriByDenetciDenetlenenYil,
-  updateCekSenetReeskontVerisi,
-  updateMultipleCekSenetReeskontVerisi,
 } from "@/api/Veri/CekSenetReeskont";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
@@ -27,7 +23,6 @@ import { setCollapse } from "@/store/customizer/CustomizerSlice";
 registerAllModules();
 
 interface Veri {
-  siraNo: number;
   detayhesapKodu: string;
   hesapAdi: string;
   cekSenetKayitTarihi: string;
@@ -39,7 +34,15 @@ interface Veri {
   alinanAVerilenV: string;
 }
 
-const CekSenetReeskontVeriYukleme = () => {
+interface Props {
+  kaydetTiklandimi: boolean;
+  setKaydetTiklandimi: (b: boolean) => void;
+}
+
+const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
+  kaydetTiklandimi,
+  setKaydetTiklandimi,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -50,19 +53,20 @@ const CekSenetReeskontVeriYukleme = () => {
   const [rowCount, setRowCount] = useState<number>(200);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-  const [multiplePasteData, setMultiplePasteData] = useState<any>([]);
-
-  const [afterPasteCompleted, setAfterPasteCompleted] = useState(false);
-  const [halfPasteControl, setHalfPasteControl] = useState<boolean>(false);
 
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
-  const [startRow, setStartRow] = useState(0);
-  const [endRow, setEndRow] = useState(0);
-  const [startCol, setStartCol] = useState(0);
-  const [endCol, setEndCol] = useState(0);
+  const uyari = [
+    "Boş Bırakılmaması Gereken Sütunlar: Detay Hesap Kodu, Hesap Adı, Çek / Senet Kayıt Tarihi, Muhatap Firma, Çek / Senet No, Çek / Senet Vade Tarihi, Kayıt Tutarı / Nominal Değer, Alınan (A) / Verilen (V)",
+    "Detay Hesap Kodu, Hesap Adı Ve Muhatap Firma Sütunları Boş Bırakılmamalıdır.",
+    "Çek / Senet Kayıt Tarihi Ve Çek / Senet Vade Tarihi Sütunları Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
+    "Çek / Senet No Sütunu Boş Bırakılmamalıdır Ve Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Kayıt Tutarı / Nominal Değer Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
+    "Alınan (A) / Verilen (V) Sütunu Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
+  ];
 
-  const [control, setControl] = useState(false);
+  const [endRow, setEndRow] = useState(0);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -81,6 +85,18 @@ const CekSenetReeskontVeriYukleme = () => {
     loadStyles();
   }, [customizer.activeMode]);
 
+  const textValidator = (value: string, callback: (value: boolean) => void) => {
+    setTimeout(() => {
+      if (!value || value.trim() === "") {
+        // Eğer değer boşsa geçersiz kabul et
+
+        callback(false);
+      } else {
+        callback(true);
+      }
+    }, 1000);
+  };
+
   const numberValidator = (
     value: string,
     callback: (value: boolean) => void
@@ -90,17 +106,6 @@ const CekSenetReeskontVeriYukleme = () => {
       if (numberRegex.test(value)) {
         callback(true);
       } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girmelisiniz.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
         callback(false);
       }
     }, 1000);
@@ -115,17 +120,6 @@ const CekSenetReeskontVeriYukleme = () => {
       if (integerRegex.test(value)) {
         callback(true);
       } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girmelisiniz.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
         callback(false);
       }
     }, 1000);
@@ -140,18 +134,52 @@ const CekSenetReeskontVeriYukleme = () => {
 
     setTimeout(() => {
       if (dateRegex.test(value)) {
-        const [, day, month, year] = value.match(dateRegex)!;
-
-        const date = new Date(`${year}-${month}-${day}`);
-        const isValidDate =
-          date.getFullYear() === Number(year) &&
-          date.getMonth() + 1 === Number(month) &&
-          date.getDate() === Number(day);
-
         callback(true);
       } else {
+        callback(false);
+      }
+    }, 1000);
+  };
+
+  function isRowEmpty(row: Veri): boolean {
+    return Object.values(row).every(
+      (value) =>
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+    );
+  }
+
+  function findDuplicateRows(data: Veri[]): number[] {
+    const seenRows = new Set<string>();
+    const duplicates: number[] = [];
+
+    data.forEach((row, index) => {
+      if (isRowEmpty(row)) return; // tüm değerler boşsa geç
+
+      const rowString = JSON.stringify(row, Object.keys(row).sort());
+
+      if (seenRows.has(rowString)) {
+        duplicates.push(index + 1); // 1-based row number
+      } else {
+        seenRows.add(rowString);
+      }
+    });
+
+    return duplicates;
+  }
+
+  useEffect(() => {
+    if (duplicatesControl) {
+      const duplicateRowNumbers = findDuplicateRows(fetchedData);
+
+      if (duplicateRowNumbers.length > 0) {
+        const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
+
         enqueueSnackbar(
-          "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
+          `${duplicatesMessage}Numaralı Satır${
+            duplicateRowNumbers.length > 1 ? "lar" : ""
+          } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
           {
             variant: "warning",
             autoHideDuration: 5000,
@@ -164,92 +192,12 @@ const CekSenetReeskontVeriYukleme = () => {
             },
           }
         );
-        callback(false);
       }
-    }, 1000);
-  };
 
-  function findDuplicateRows(data: any): Veri[] {
-    const rowsAsString = new Set<string>();
-    const duplicateRows: Veri[] = [];
-
-    const keys = Object.keys(data);
-
-    const [firstKey, ...restKeys] = keys;
-
-    for (const row of data) {
-      const { [firstKey]: _, ...rowWithoutSiraNo } = row;
-
-      const rowString = JSON.stringify(
-        rowWithoutSiraNo,
-        Object.keys(rowWithoutSiraNo).sort()
-      );
-
-      if (!rowString.includes("null") && !rowString.includes("{}")) {
-        if (rowsAsString.has(rowString)) {
-          duplicateRows.push(row);
-        } else {
-          rowsAsString.add(rowString);
-        }
-      }
-    }
-    return duplicateRows;
-  }
-
-  useEffect(() => {
-    if (duplicatesControl) {
-      const duplicatesList = findDuplicateRows(fetchedData);
-
-      let duplicatesMessage = "";
-      if (duplicatesList != undefined && duplicatesList != null) {
-        duplicatesList.forEach((item: any) => {
-          if (item[0] != undefined && item[0] != null) {
-            duplicatesMessage = duplicatesMessage + " " + item[0] + ". ";
-          }
-        });
-        if (duplicatesMessage != "") {
-          if (duplicatesList.length > 1) {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satırlar Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          } else {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satır Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-          setDuplicatesControl(false);
-        }
-      }
       setDuplicatesControl(false);
     }
   }, [duplicatesControl]);
-
   const colHeaders = [
-    "SiraNo",
     "D. Hesap Kodu",
     "Hesap Adı",
     "Çek / Senet Kayıt Tarihi",
@@ -262,17 +210,18 @@ const CekSenetReeskontVeriYukleme = () => {
   ];
 
   const columns = [
-    { type: "numeric", columnSorting: true, readOnly: true, editor: false }, // SiraNo
     {
       type: "text",
       columnSorting: true,
       className: "htLeft",
+      validator: textValidator,
       allowInvalid: false,
     }, // Detay Hesap Kodu
     {
       type: "text",
       columnSorting: true,
       className: "htLeft",
+      validator: textValidator,
       allowInvalid: false,
     }, // Hesap Adı
     {
@@ -283,13 +232,18 @@ const CekSenetReeskontVeriYukleme = () => {
       validator: dateValidator,
       allowInvalid: false,
     }, // Çek / Senet Kayıt Tarihi
-    { type: "text", columnSorting: true }, // Muhatap Firma
-
+    {
+      type: "text",
+      columnSorting: true,
+      className: "htLeft",
+      validator: textValidator,
+      allowInvalid: false,
+    }, // Muhatap Firma
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htLeft",
-      validator: numberValidator,
+      columnSorting: true,
+      className: "htRight",
+      validator: integerValidator,
       allowInvalid: false,
     }, // Çek / Senet No
     {
@@ -309,16 +263,27 @@ const CekSenetReeskontVeriYukleme = () => {
     }, // Kayıt Tutarı / Nominal Değer
     {
       type: "autocomplete",
-      source: ["TL", "USD", "EUR", "GBP"],
+      source: [
+        "TL",
+        "USD",
+        "EUR",
+        "GBP",
+        "CHF",
+        "RUB",
+        "CNY",
+        "JPY",
+        "SAR",
+        "Diğer",
+      ],
       className: "htLeft",
       strict: false,
       allowInvalid: false,
     }, // Para Birimi
     {
-      type: "autocomplete",
+      type: "dropdown",
       source: ["A", "V"],
+      columnSorting: true,
       className: "htLeft",
-      strict: false,
       allowInvalid: false,
     }, // Alınan (A) / Verilen (V)
   ];
@@ -430,13 +395,7 @@ const CekSenetReeskontVeriYukleme = () => {
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
 
-    if (
-      row >= startRow &&
-      row <= endRow &&
-      col >= startCol &&
-      col <= endCol &&
-      value == null
-    ) {
+    if (row <= endRow && (value == undefined || value == null || value == "")) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
     }
   };
@@ -452,16 +411,9 @@ const CekSenetReeskontVeriYukleme = () => {
 
   const handleCreateRow = async (index: number, amount: number) => {
     if (amount == 1 && index != rowCount - 1) {
-      setStartRow(0);
-      setEndRow(0);
-      setStartCol(0);
-      setEndCol(0);
       console.log(
         `Yeni satır(lar) eklendi: ${amount} adet satır ${index} indexinden itibaren.`
       );
-      setControl(true);
-      await handleUpdateMultipleCekSenetReeskontVerisi(index);
-      await handleCreateNullCekSenetReeskontVerisi(index);
     }
   };
 
@@ -471,15 +423,9 @@ const CekSenetReeskontVeriYukleme = () => {
     physicalRows: number[],
     source: any
   ) => {
-    setStartRow(0);
-    setEndRow(0);
-    setStartCol(0);
-    setEndCol(0);
     console.log(
       `Satır(lar) silindi: ${amount} adet satır ${index} indexinden itibaren.${physicalRows}`
     );
-    const siraNos = physicalRows.map((row) => row + 1);
-    handleDeleteCekSenetReeskontVerisi(siraNos);
   };
 
   const afterPaste = async (data: any, coords: any) => {
@@ -489,77 +435,13 @@ const CekSenetReeskontVeriYukleme = () => {
     console.log("Pasted endRow coordinates:", coords[0].endRow);
     console.log("Pasted startCol coordinates:", coords[0].startCol);
     console.log("Pasted endCol coordinates:", coords[0].endCol);
-    setStartRow(coords[0].startRow);
-    setEndRow(coords[0].endRow);
-    setStartCol(coords[0].startCol);
-    setEndCol(coords[0].endCol);
 
-    if (halfPasteControl == false) {
-      let j = 0;
-      for (
-        let i = coords[0].startRow;
-        i < data.length + coords[0].startRow;
-        i++
-      ) {
-        data[j].unshift(i + 1);
-        if (data[j][3] != "" && data[j][3] != null && data[j][3] != 0) {
-          const dateParts = data[j][3].split(".");
-          if (dateParts.length === 3) {
-            const [day, month, year] = dateParts;
-            const formattedDate = `${year}-${month}-${day}`;
-            data[j][3] = new Date(formattedDate).toISOString();
-          } else {
-            enqueueSnackbar(
-              "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-        } else if (data[j][6] != "" && data[j][6] != null && data[j][6] != 0) {
-          const dateParts = data[j][6].split(".");
-          if (dateParts.length === 3) {
-            const [day, month, year] = dateParts;
-            const formattedDate = `${year}-${month}-${day}`;
-            data[j][6] = new Date(formattedDate).toISOString();
-          } else {
-            enqueueSnackbar(
-              "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-        }
-        j++;
-      }
-      setMultiplePasteData(data);
+    if (endRow < coords[0].endRow) {
+      setEndRow(coords[0].endRow);
     }
   };
 
   const handleAfterChange = async (changes: any, source: any) => {
-    //Değişen Cellin Satır Indexi
-    let changedRow = -1;
-    //Değişen Cellerin Satır Indexleri (Distinct)
-    let changedRows: any = [];
-    //Değişen Cellin Satır Verileri
-    let changedRowData: any;
     if (source === "loadData") {
       return; // Skip this hook on loadData
     }
@@ -568,171 +450,20 @@ const CekSenetReeskontVeriYukleme = () => {
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
-        changedRow = row;
-
-        if (changedRows.length == 0) {
-          changedRows.push(row);
-        }
-        if (changedRows[changedRows.length - 1] != row) {
-          changedRows.push(row);
-        }
-
-        changedRowData = await handleGetRowData(row);
-
-        //Cell Güncelleme
-        if (
-          changedRow >= 0 &&
-          changedRowData[0] != null &&
-          changedRowData[1] != null &&
-          changedRowData[2] != null &&
-          changedRowData[3] != null &&
-          changedRowData[4] != null &&
-          changedRowData[5] != null &&
-          changedRowData[6] != null &&
-          changedRowData[7] != null &&
-          changedRowData[8] != null &&
-          changedRowData[9] != null
-        ) {
-          await handleUpdateCekSenetReeskontVerisi(changedRow);
-
-          changedRow = -1;
-          changedRows = [];
-        }
       }
-    }
-    //Tek satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length < 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null &&
-      //changedRowData[8] != null &&
-      changedRowData[9] != null
-    ) {
-      await handleCreateCekSenetReeskontVerisi(changedRow);
-      changedRow = -1;
-      changedRows = [];
-    }
-    //Çok Satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null &&
-      //changedRowData[8] != null &&
-      changedRowData[9] != null
-    ) {
-      //Düzgün Çok Satır Yaratma
-      if (halfPasteControl == false) {
-        setAfterPasteCompleted(true);
-        changedRow = -1;
-        changedRows = [];
-      }
-      //Yarım Yarım Çok satır Yaratma
-      else {
-        for (const x of changedRows) {
-          if (
-            changedRow >= 0 &&
-            changedRows.length >= 2 &&
-            changedRowData[0] == null &&
-            changedRowData[1] != null &&
-            changedRowData[2] != null &&
-            changedRowData[3] != null &&
-            changedRowData[4] != null &&
-            changedRowData[5] != null &&
-            changedRowData[6] != null &&
-            changedRowData[7] != null &&
-            //changedRowData[8] != null &&
-            changedRowData[9] != null
-          ) {
-            await handleCreateCekSenetReeskontVerisi(x);
-          }
-        }
-        setHalfPasteControl(false);
-        changedRow = -1;
-        changedRows = [];
-      }
-    }
-    //Yarım Yarım Çok satır Kontrol
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      (changedRowData[1] == null ||
-        changedRowData[2] == null ||
-        changedRowData[3] == null ||
-        changedRowData[4] == null ||
-        changedRowData[5] == null ||
-        changedRowData[6] == null ||
-        changedRowData[7] == null ||
-        //changedRowData[8] == null ||
-        changedRowData[9] == null)
-    ) {
-      setHalfPasteControl(true);
     }
   };
 
-  const handleCreateCekSenetReeskontVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-    if (rowData[8] == null || rowData[8] == "") {
-      rowData[8] = "TL";
+  const handleCreateCekSenetReeskontVerisi = async () => {
+    if (fetchedData.filter((item: any) => item[0]).length == 0) {
+      await handleDeleteCekSenetReeskontVerisi();
+      return;
     }
-    const createdCekSenetReeskontVerisi = {
-      denetciId: user.denetciId,
-      denetlenenId: user.denetlenenId,
-      yil: user.yil,
-      siraNo: row + 1,
-      detayHesapKodu: rowData[1],
-      hesapAdi: rowData[2],
-      cekSenetKayitTarihi: new Date(
-        rowData[3].split(".").reverse().join("-")
-      ).toISOString(),
-      muhatapFirma: rowData[4],
-      cekSenetNo: rowData[5],
-      cekSenetVadeTarihi: new Date(
-        rowData[6].split(".").reverse().join("-")
-      ).toISOString(),
-      kayitTutariNominalDeger: rowData[7],
-      paraBirimi: rowData[8],
-      alinanAVerilenV: rowData[9],
-    };
 
-    try {
-      const result = await createCekSenetReeskontVerisi(
-        user.token || "",
-        createdCekSenetReeskontVerisi
-      );
-      if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Çek Senet Reeskont Verisi ekleme başarılı");
-      } else {
-        console.error("Çek Senet Reeskont Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleCreateMultipleCekSenetReeskontVerisi = async () => {
     const keys = [
       "denetciId",
       "denetlenenId",
       "yil",
-      "siraNo",
       "detayHesapKodu",
       "hesapAdi",
       "cekSenetKayitTarihi",
@@ -744,177 +475,128 @@ const CekSenetReeskontVeriYukleme = () => {
       "alinanAVerilenV",
     ];
 
-    const jsonData =
-      multiplePasteData.length === 1
-        ? keys.reduce(
-            (acc: { [key: string]: any }, key: string, index: number) => {
-              if (key === "denetciId") {
-                acc[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                acc[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                acc[key] = user.yil;
-              } else if (key === "kayitTutariNominalDeger") {
-                acc[key] = parseFloat(
-                  multiplePasteData[0][index - 3].replace(",", ".")
-                );
-              } else {
-                if (
-                  key === "paraBirimi" &&
-                  (multiplePasteData[0][index - 3] == null ||
-                    multiplePasteData[0][index - 3] == "")
-                ) {
-                  acc[key] = "TL";
-                } else {
-                  acc[key] = multiplePasteData[0][index - 3];
-                }
-              }
-              return acc;
-            },
-            {}
-          )
-        : multiplePasteData.map((item: any[]) => {
-            let obj: { [key: string]: any } = {};
-            keys.forEach((key, index) => {
-              if (key === "denetciId") {
-                obj[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                obj[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                obj[key] = user.yil;
-              } else if (key === "kayitTutariNominalDeger") {
-                obj[key] = parseFloat(item[index - 3].replace(",", "."));
-              } else {
-                if (
-                  key === "paraBirimi" &&
-                  (multiplePasteData[0][index - 3] == null ||
-                    multiplePasteData[0][index - 3] == "")
-                ) {
-                  obj[key] = "TL";
-                } else {
-                  obj[key] = item[index - 3];
-                }
-              }
-            });
-            return obj;
-          });
+    const jsonData = fetchedData
+      .filter((item: any) => item[0])
+      .map((item: any) => {
+        let obj: { [key: string]: any } = {};
+        keys.forEach((key, index) => {
+          if (key === "denetciId") {
+            obj[key] = user.denetciId;
+          } else if (key === "denetlenenId") {
+            obj[key] = user.denetlenenId;
+          } else if (key === "yil") {
+            obj[key] = user.yil;
+          } else if (
+            key === "cekSenetKayitTarihi" ||
+            key === "cekSenetVadeTarihi"
+          ) {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              const rawValue = item[index - 3];
+              const [day, month, year] = rawValue.split(".");
+              obj[key] = new Date(
+                `${year}-${month}-${day}T00:00:00Z`
+              ).toISOString();
+            }
+          } else if (key === "paraBirimi") {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = "TL";
+            } else {
+              obj[key] = item[index - 3];
+            }
+          } else {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              obj[key] = item[index - 3];
+            }
+          }
+        });
 
+        return obj;
+      });
     try {
-      const result = await createMultipleCekSenetReeskontVerisi(
+      const result = await createCekSenetReeskontVerisi(
         user.token || "",
         jsonData
       );
       if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Çek Senet Reeskont Verisi ekleme başarılı");
-      } else {
-        console.error("Çek Senet Reeskont Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleCreateNullCekSenetReeskontVerisi = async (siraNo: number) => {
-    try {
-      const result = await createNullCekSenetReeskontVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo + 1 || 0
-      );
-      if (result) {
-        if (halfPasteControl == false && control == false) {
-          await fetchData();
-        }
-        console.log("Çek Senet Reeskont Verisi ekleme başarılı");
-      } else {
-        console.error("Çek Senet Reeskont Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleUpdateCekSenetReeskontVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-    if (rowData[8] == null || rowData[8] == "") {
-      rowData[8] = "TL";
-    }
-    const updatedCekSenetReeskontVerisi = {
-      detayHesapKodu: rowData[1],
-      hesapAdi: rowData[2],
-      cekSenetKayitTarihi: new Date(
-        rowData[3].split(".").reverse().join("-")
-      ).toISOString(),
-      muhatapFirma: rowData[4],
-      cekSenetNo: rowData[5],
-      cekSenetVadeTarihi: new Date(
-        rowData[6].split(".").reverse().join("-")
-      ).toISOString(),
-      kayitTutariNominalDeger: rowData[7],
-      paraBirimi: rowData[8],
-      alinanAVerilenV: rowData[9],
-    };
-
-    try {
-      const result = await updateCekSenetReeskontVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        row + 1,
-        updatedCekSenetReeskontVerisi
-      );
-      if (result) {
         await fetchData();
-        console.log("Çek Senet Reeskont Verisi güncelleme başarılı");
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("Çek Senet Reeskont Verisi güncelleme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
   };
 
-  const handleUpdateMultipleCekSenetReeskontVerisi = async (siraNo: number) => {
-    try {
-      const result = await updateMultipleCekSenetReeskontVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo || 0
-      );
-      if (result) {
-        console.log("Çek Senet Reeskont Verisi güncelleme başarılı");
-      } else {
-        console.error("Çek Senet Reeskont Verisi güncelleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleDeleteCekSenetReeskontVerisi = async (siraNo: number[]) => {
+  const handleDeleteCekSenetReeskontVerisi = async () => {
     try {
       const result = await deleteCekSenetReeskontVerisi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo
+        user.yil || 0
       );
       if (result) {
-        if (halfPasteControl == false && control == false) {
-          await fetchData();
-        }
-        console.log("CekSenetReeskont Verisi silme başarılı");
+        await fetchData();
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("CekSenetReeskont Verisi silme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -922,6 +604,7 @@ const CekSenetReeskontVeriYukleme = () => {
   };
 
   const fetchData = async () => {
+    setEndRow(-1);
     try {
       const cekSenetReeskontVerileri =
         await getCekSenetReeskontVerileriByDenetciDenetlenenYil(
@@ -933,48 +616,32 @@ const CekSenetReeskontVeriYukleme = () => {
 
       const rowsAll: any = [];
       cekSenetReeskontVerileri.forEach((veri: any) => {
-        if (
+        const newRow: any = [
+          veri.detayHesapKodu,
+          veri.hesapAdi,
           veri.cekSenetKayitTarihi !== null &&
-          veri.cekSenetKayitTarihi !== undefined &&
+          veri.cekSenetKayitTarihi !== undefined
+            ? veri.cekSenetKayitTarihi
+                .split("T")[0]
+                .split("-")
+                .reverse()
+                .join(".")
+            : null,
+          veri.muhatapFirma,
+          veri.cekSenetNo,
           veri.cekSenetVadeTarihi !== null &&
           veri.cekSenetVadeTarihi !== undefined
-        ) {
-          const newRow: any = [
-            veri.siraNo,
-            veri.detayHesapKodu,
-            veri.hesapAdi,
-            veri.cekSenetKayitTarihi
-              .split("T")[0]
-              .split("-")
-              .reverse()
-              .join("."),
-            veri.muhatapFirma,
-            veri.cekSenetNo,
-            veri.cekSenetVadeTarihi
-              .split("T")[0]
-              .split("-")
-              .reverse()
-              .join("."),
-            veri.kayitTutariNominalDeger,
-            veri.paraBirimi,
-            veri.alinanAVerilenV,
-          ];
-          rowsAll.push(newRow);
-        } else {
-          const newRow: any = [
-            veri.siraNo,
-            veri.detayHesapKodu,
-            veri.hesapAdi,
-            veri.cekSenetKayitTarihi,
-            veri.muhatapFirma,
-            veri.cekSenetNo,
-            veri.cekSenetVadeTarihi,
-            veri.kayitTutariNominalDeger,
-            veri.paraBirimi,
-            veri.alinanAVerilenV,
-          ];
-          rowsAll.push(newRow);
-        }
+            ? veri.cekSenetVadeTarihi
+                .split("T")[0]
+                .split("-")
+                .reverse()
+                .join(".")
+            : null,
+          veri.kayitTutariNominalDeger,
+          veri.paraBirimi,
+          veri.alinanAVerilenV,
+        ];
+        rowsAll.push(newRow);
       });
       setFetchedData(rowsAll);
       setDuplicatesControl(true);
@@ -993,21 +660,19 @@ const CekSenetReeskontVeriYukleme = () => {
   };
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     fetchRowCount();
   }, []);
 
   useEffect(() => {
-    if (halfPasteControl == false) {
-      fetchData();
+    if (kaydetTiklandimi) {
+      handleCreateCekSenetReeskontVerisi();
+      setKaydetTiklandimi(false);
     }
-  }, [halfPasteControl]);
-
-  useEffect(() => {
-    if (afterPasteCompleted) {
-      handleCreateMultipleCekSenetReeskontVerisi();
-      setAfterPasteCompleted(false);
-    }
-  }, [afterPasteCompleted]);
+  }, [kaydetTiklandimi]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
@@ -1078,6 +743,29 @@ const CekSenetReeskontVeriYukleme = () => {
 
   return (
     <>
+      <Grid container>
+        <Grid item xs={12} lg={12}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: 1,
+              mb: 2,
+              borderRadius: 1,
+              backgroundColor: "warning.light",
+            }}
+          >
+            {uyari.map((mesaj, index) => (
+              <Typography
+                key={index}
+                variant="body1"
+                sx={{ color: "warning.dark" }}
+              >
+                - {mesaj}
+              </Typography>
+            ))}
+          </Paper>
+        </Grid>
+      </Grid>
       <HotTable
         style={{
           height: "100%",
@@ -1091,7 +779,7 @@ const CekSenetReeskontVeriYukleme = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 90, 130, 110, 100, 100, 110, 100, 80, 80, 80, 100, 100]}
+        colWidths={[90, 130, 110, 100, 100, 110, 100, 80, 80, 80, 100, 100]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -1099,9 +787,6 @@ const CekSenetReeskontVeriYukleme = () => {
         autoWrapRow={true}
         minRows={rowCount}
         minCols={12}
-        hiddenColumns={{
-          columns: [0],
-        }}
         filters={true}
         columnSorting={true}
         dropdownMenu={[

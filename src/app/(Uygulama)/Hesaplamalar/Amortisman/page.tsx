@@ -4,10 +4,15 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
 import {
+  Box,
   Button,
+  Dialog,
+  DialogContent,
   Divider,
   Grid,
+  IconButton,
   MenuItem,
+  Stack,
   Tab,
   Typography,
   useTheme,
@@ -15,18 +20,14 @@ import {
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
-import {
-  createAmortismanHesaplanmis,
-  createDavaKarsiliklariHesaplanmis,
-  getIskontoOrani,
-} from "@/api/Hesaplamalar/Hesaplamalar";
+import { createAmortismanHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
-import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
-import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import AmortismanVeriYukleme from "./AmortismanVeriYukleme";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import AmortismanHesaplama from "./AmortismanHesaplama";
+import { IconX } from "@tabler/icons-react";
+import PaylasimBaglantisiPopUp from "./PaylasimBaglantisiPopup";
 
 const BCrumb = [
   {
@@ -56,9 +57,17 @@ const Page: React.FC = () => {
     setHesaplamaYontemi(event.target.value);
   };
 
+  const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
+
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
+
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const handleClosePopUp = () => {
+    setIsPopUpOpen(false);
+  };
 
   const handleHesapla = async () => {
     try {
@@ -120,8 +129,42 @@ const Page: React.FC = () => {
             <Divider />
             <TabPanel value="VeriYukleme" sx={{ paddingX: 0 }}>
               <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+                >
+                  <Button
+                    type="button"
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setIsPopUpOpen(true);
+                    }}
+                  >
+                    Paylaşım Bağlantısı
+                  </Button>
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    sx={{ ml: 2 }}
+                    onClick={() => {
+                      setKaydetTiklandimi(true);
+                    }}
+                  >
+                    Kaydet
+                  </Button>
+                </Grid>
                 <Grid item xs={12} lg={12}>
-                  <AmortismanVeriYukleme />
+                  <AmortismanVeriYukleme
+                    kaydetTiklandimi={kaydetTiklandimi}
+                    setKaydetTiklandimi={setKaydetTiklandimi}
+                  />
                 </Grid>
               </Grid>
             </TabPanel>
@@ -151,7 +194,7 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
-                    disabled={hesaplaTiklandimi}
+                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
                     variant="outlined"
                     color="primary"
                     sx={{ ml: 2 }}
@@ -176,6 +219,12 @@ const Page: React.FC = () => {
             </TabPanel>
           </TabContext>
         </Grid>
+        {isPopUpOpen && (
+          <PaylasimBaglantisiPopUp
+            isPopUpOpen={isPopUpOpen}
+            handleClosePopUp={handleClosePopUp}
+          ></PaylasimBaglantisiPopUp>
+        )}
       </Grid>
     </PageContainer>
   );

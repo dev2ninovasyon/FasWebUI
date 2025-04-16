@@ -5,16 +5,12 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import {
   createKidemTazminatiBobiVerisi,
-  createMultipleKidemTazminatiBobiVerisi,
-  createNullKidemTazminatiBobiVerisi,
   deleteKidemTazminatiBobiVerisi,
   getKidemTazminatiBobiVerileriByDenetciDenetlenenYil,
-  updateKidemTazminatiBobiVerisi,
-  updateMultipleKidemTazminatiBobiVerisi,
 } from "@/api/Veri/KidemTazminatiBobi";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
@@ -22,13 +18,11 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import { isNull } from "lodash";
 
 // register Handsontable's modules
 registerAllModules();
 
 interface Veri {
-  siraNo: number;
   tcKimlikNo: number;
   adiSoyadi: string;
   cinsiyeti: string;
@@ -43,7 +37,15 @@ interface Veri {
   kullanilmamisIzneEsasBrutUcretAylik: number;
 }
 
-const KidemTazminatiBobiVeriYukleme = () => {
+interface Props {
+  kaydetTiklandimi: boolean;
+  setKaydetTiklandimi: (b: boolean) => void;
+}
+
+const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
+  kaydetTiklandimi,
+  setKaydetTiklandimi,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -54,19 +56,22 @@ const KidemTazminatiBobiVeriYukleme = () => {
   const [rowCount, setRowCount] = useState<number>(200);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-  const [multiplePasteData, setMultiplePasteData] = useState<any>([]);
-
-  const [afterPasteCompleted, setAfterPasteCompleted] = useState(false);
-  const [halfPasteControl, setHalfPasteControl] = useState<boolean>(false);
 
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
-  const [startRow, setStartRow] = useState(0);
-  const [endRow, setEndRow] = useState(0);
-  const [startCol, setStartCol] = useState(0);
-  const [endCol, setEndCol] = useState(0);
+  const uyari = [
+    "Boş Bırakılmaması Gereken Sütunlar: Adı Soyadı, Doğum Tarihi, Görev Departmanı, Brüt Ücreti (Aylık), İşletmeye Giriş Tarihi",
+    "TC Kimlik No Sütunu Boş Bırakılabilir.",
+    "Adı Soyadı Sütunu Boş Bırakılmamalıdır.",
+    "Cinsiyeti Ve Sgk İşten Ayrılış Nedeni Kodu Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
+    "Doğum Tarihi Ve İşletmeye Giriş Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
+    "Görev Departmanı Sütununda Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
+    "Brüt Ücreti (Aylık) Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "İşletmeden Çıkış Tarihi Sütununa GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
+    "Ödenen Brüt Kıdem Tazminatı Tutarı (TL), Kullanılmamış İzin Günü Ve Kullanılmamış İzne Esas Brüt Ücret (Aylık) Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
+  ];
 
-  const [control, setControl] = useState(false);
+  const [endRow, setEndRow] = useState(-1);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -85,6 +90,18 @@ const KidemTazminatiBobiVeriYukleme = () => {
     loadStyles();
   }, [customizer.activeMode]);
 
+  const textValidator = (value: string, callback: (value: boolean) => void) => {
+    setTimeout(() => {
+      if (!value || value.trim() === "") {
+        // Eğer değer boşsa geçersiz kabul et
+
+        callback(false);
+      } else {
+        callback(true);
+      }
+    }, 1000);
+  };
+
   const numberValidator = (
     value: string,
     callback: (value: boolean) => void
@@ -94,70 +111,23 @@ const KidemTazminatiBobiVeriYukleme = () => {
       if (numberRegex.test(value)) {
         callback(true);
       } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girmelisiniz.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
         callback(false);
       }
     }, 1000);
   };
 
-  const integerValidator = (
+  const numberValidatorAllowNull = (
     value: string,
     callback: (value: boolean) => void
   ) => {
-    const integerRegex = /^\d+$/; // Regex to match integers only
+    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
     setTimeout(() => {
-      if (integerRegex.test(value)) {
-        callback(true);
-      } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girmelisiniz.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
-        callback(false);
-      }
-    }, 1000);
-  };
-
-  const integerValidatorAllowNull = (
-    value: string,
-    callback: (value: boolean) => void
-  ) => {
-    const integerRegex = /^\d+$/; // Regex to match integers only
-    setTimeout(() => {
-      if (!value) {
+      if (!value || String(value).trim() === "") {
         // Eğer değer boşsa geçerli kabul et
         callback(true);
-      } else if (integerRegex.test(value)) {
+      } else if (numberRegex.test(value)) {
         callback(true);
       } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girmelisiniz.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
         callback(false);
       }
     }, 1000);
@@ -172,30 +142,8 @@ const KidemTazminatiBobiVeriYukleme = () => {
 
     setTimeout(() => {
       if (dateRegex.test(value)) {
-        const [, day, month, year] = value.match(dateRegex)!;
-
-        const date = new Date(`${year}-${month}-${day}`);
-        const isValidDate =
-          date.getFullYear() === Number(year) &&
-          date.getMonth() + 1 === Number(month) &&
-          date.getDate() === Number(day);
-
         callback(true);
       } else {
-        enqueueSnackbar(
-          "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-          {
-            variant: "warning",
-            autoHideDuration: 5000,
-            style: {
-              backgroundColor:
-                customizer.activeMode === "dark"
-                  ? theme.palette.warning.dark
-                  : theme.palette.warning.main,
-              maxWidth: "720px",
-            },
-          }
-        );
         callback(false);
       }
     }, 1000);
@@ -223,8 +171,50 @@ const KidemTazminatiBobiVeriYukleme = () => {
 
         callback(isValidDate);
       } else {
+        callback(false);
+      }
+    }, 1000);
+  };
+
+  function isRowEmpty(row: Veri): boolean {
+    return Object.values(row).every(
+      (value) =>
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+    );
+  }
+
+  function findDuplicateRows(data: Veri[]): number[] {
+    const seenRows = new Set<string>();
+    const duplicates: number[] = [];
+
+    data.forEach((row, index) => {
+      if (isRowEmpty(row)) return; // tüm değerler boşsa geç
+
+      const rowString = JSON.stringify(row, Object.keys(row).sort());
+
+      if (seenRows.has(rowString)) {
+        duplicates.push(index + 1); // 1-based row number
+      } else {
+        seenRows.add(rowString);
+      }
+    });
+
+    return duplicates;
+  }
+
+  useEffect(() => {
+    if (duplicatesControl) {
+      const duplicateRowNumbers = findDuplicateRows(fetchedData);
+
+      if (duplicateRowNumbers.length > 0) {
+        const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
+
         enqueueSnackbar(
-          "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
+          `${duplicatesMessage}Numaralı Satır${
+            duplicateRowNumbers.length > 1 ? "lar" : ""
+          } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
           {
             variant: "warning",
             autoHideDuration: 5000,
@@ -237,92 +227,13 @@ const KidemTazminatiBobiVeriYukleme = () => {
             },
           }
         );
-        callback(false);
       }
-    }, 1000);
-  };
 
-  function findDuplicateRows(data: any): Veri[] {
-    const rowsAsString = new Set<string>();
-    const duplicateRows: Veri[] = [];
-
-    const keys = Object.keys(data);
-
-    const [firstKey, ...restKeys] = keys;
-
-    for (const row of data) {
-      const { [firstKey]: _, ...rowWithoutSiraNo } = row;
-
-      const rowString = JSON.stringify(
-        rowWithoutSiraNo,
-        Object.keys(rowWithoutSiraNo).sort()
-      );
-
-      if (!rowString.includes("null") && !rowString.includes("{}")) {
-        if (rowsAsString.has(rowString)) {
-          duplicateRows.push(row);
-        } else {
-          rowsAsString.add(rowString);
-        }
-      }
-    }
-    return duplicateRows;
-  }
-
-  useEffect(() => {
-    if (duplicatesControl) {
-      const duplicatesList = findDuplicateRows(fetchedData);
-
-      let duplicatesMessage = "";
-      if (duplicatesList != undefined && duplicatesList != null) {
-        duplicatesList.forEach((item: any) => {
-          if (item[0] != undefined && item[0] != null) {
-            duplicatesMessage = duplicatesMessage + " " + item[0] + ". ";
-          }
-        });
-        if (duplicatesMessage != "") {
-          if (duplicatesList.length > 1) {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satırlar Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          } else {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satır Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-          setDuplicatesControl(false);
-        }
-      }
       setDuplicatesControl(false);
     }
   }, [duplicatesControl]);
 
   const colHeaders = [
-    "SiraNo",
     "TC Kimlik No",
     "Adı Soyadı",
     "Cinsiyeti",
@@ -338,23 +249,21 @@ const KidemTazminatiBobiVeriYukleme = () => {
   ];
 
   const columns = [
-    { type: "numeric", columnSorting: true, readOnly: true, editor: false }, // SiraNo
     {
-      type: "numeric",
+      type: "text",
       columnSorting: true,
       className: "htLeft",
-      validator: integerValidator,
-      allowInvalid: false,
     }, // TC Kimlik No
     {
       type: "text",
       columnSorting: true,
       className: "htLeft",
+      validator: textValidator,
       allowInvalid: false,
     }, // Adı Soyadı
     {
       type: "dropdown",
-      source: ["Kadın", "Erkek"],
+      source: ["", "Kadın", "Erkek"],
       className: "htLeft",
       allowInvalid: false,
     }, // Cinsiyeti
@@ -399,12 +308,13 @@ const KidemTazminatiBobiVeriYukleme = () => {
       type: "numeric",
       numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
-      validator: integerValidatorAllowNull,
+      validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // Ödenen Brüt Kıdem Tazminatı Tutarı (TL)
     {
       type: "dropdown",
       source: [
+        "",
         "1-Deneme süreli iş sözleşmesinin işverence feshi",
         "2-Deneme süreli iş sözleşmesinin işçi tarafından feshi",
         "3-Belirsiz süreli iş sözleşmesinin işçi tarafından feshi (istifa)",
@@ -446,19 +356,18 @@ const KidemTazminatiBobiVeriYukleme = () => {
       ],
       className: "htLeft",
     }, // Sgk İşten Ayrılış Nedeni Kodu
-
     {
       type: "numeric",
       numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
-      validator: numberValidator,
+      validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // Kullanılmamış İzin Günü
     {
       type: "numeric",
       numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
-      validator: numberValidator,
+      validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // Kullanılmamış İzne Esas Brüt Ücret (Aylık)
   ];
@@ -570,13 +479,7 @@ const KidemTazminatiBobiVeriYukleme = () => {
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
 
-    if (
-      row >= startRow &&
-      row <= endRow &&
-      col >= startCol &&
-      col <= endCol &&
-      value == null
-    ) {
+    if (row <= endRow && (value == undefined || value == null || value == "")) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
     }
   };
@@ -592,16 +495,9 @@ const KidemTazminatiBobiVeriYukleme = () => {
 
   const handleCreateRow = async (index: number, amount: number) => {
     if (amount == 1 && index != rowCount - 1) {
-      setStartRow(0);
-      setEndRow(0);
-      setStartCol(0);
-      setEndCol(0);
       console.log(
         `Yeni satır(lar) eklendi: ${amount} adet satır ${index} indexinden itibaren.`
       );
-      setControl(true);
-      await handleUpdateMultipleKidemTazminatiBobiVerisi(index);
-      await handleCreateNullKidemTazminatiBobiVerisi(index);
     }
   };
 
@@ -611,15 +507,9 @@ const KidemTazminatiBobiVeriYukleme = () => {
     physicalRows: number[],
     source: any
   ) => {
-    setStartRow(0);
-    setEndRow(0);
-    setStartCol(0);
-    setEndCol(0);
     console.log(
       `Satır(lar) silindi: ${amount} adet satır ${index} indexinden itibaren.${physicalRows}`
     );
-    const siraNos = physicalRows.map((row) => row + 1);
-    handleDeleteKidemTazminatiBobiVerisi(siraNos);
   };
 
   const afterPaste = async (data: any, coords: any) => {
@@ -629,101 +519,13 @@ const KidemTazminatiBobiVeriYukleme = () => {
     console.log("Pasted endRow coordinates:", coords[0].endRow);
     console.log("Pasted startCol coordinates:", coords[0].startCol);
     console.log("Pasted endCol coordinates:", coords[0].endCol);
-    setStartRow(coords[0].startRow);
-    setEndRow(coords[0].endRow);
-    setStartCol(coords[0].startCol);
-    setEndCol(coords[0].endCol);
 
-    if (halfPasteControl == false) {
-      let j = 0;
-      for (
-        let i = coords[0].startRow;
-        i < data.length + coords[0].startRow;
-        i++
-      ) {
-        data[j].unshift(i + 1);
-        if (data[j][4] != "" && data[j][4] != null && data[j][4] != 0) {
-          const dateParts = data[j][4].split(".");
-          if (dateParts.length === 3) {
-            const [day, month, year] = dateParts;
-            const formattedDate = `${year}-${month}-${day}`;
-            data[j][4] = new Date(formattedDate).toISOString();
-          } else {
-            enqueueSnackbar(
-              "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-        }
-        if (data[j][7] != "" && data[j][7] != null && data[j][7] != 0) {
-          const dateParts = data[j][7].split(".");
-          if (dateParts.length === 3) {
-            const [day, month, year] = dateParts;
-            const formattedDate = `${year}-${month}-${day}`;
-            data[j][7] = new Date(formattedDate).toISOString();
-          } else {
-            enqueueSnackbar(
-              "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-        }
-        if (data[j][8] != "" && data[j][8] != null && data[j][8] != 0) {
-          const dateParts = data[j][8].split(".");
-          if (dateParts.length === 3) {
-            const [day, month, year] = dateParts;
-            const formattedDate = `${year}-${month}-${day}`;
-            data[j][8] = new Date(formattedDate).toISOString();
-          } else {
-            enqueueSnackbar(
-              "Hatalı Tarih Girişi. GG.AA.YYYY Formatında Tarih Girmelisiniz.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-        }
-        j++;
-      }
-      setMultiplePasteData(data);
+    if (endRow < coords[0].endRow) {
+      setEndRow(coords[0].endRow);
     }
   };
 
   const handleAfterChange = async (changes: any, source: any) => {
-    //Değişen Cellin Satır Indexi
-    let changedRow = -1;
-    //Değişen Cellerin Satır Indexleri (Distinct)
-    let changedRows: any = [];
-    //Değişen Cellin Satır Verileri
-    let changedRowData: any;
     if (source === "loadData") {
       return; // Skip this hook on loadData
     }
@@ -732,192 +534,19 @@ const KidemTazminatiBobiVeriYukleme = () => {
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
-        changedRow = row;
-
-        if (changedRows.length == 0) {
-          changedRows.push(row);
-        }
-        if (changedRows[changedRows.length - 1] != row) {
-          changedRows.push(row);
-        }
-
-        changedRowData = await handleGetRowData(row);
-
-        //Cell Güncelleme
-        if (
-          changedRow >= 0 &&
-          changedRowData[0] != null &&
-          changedRowData[1] != null &&
-          changedRowData[2] != null &&
-          changedRowData[3] != null &&
-          changedRowData[4] != null &&
-          changedRowData[5] != null &&
-          changedRowData[6] != null &&
-          changedRowData[7] != null &&
-          //changedRowData[8] != null &&
-          //changedRowData[9] != null &&
-          //changedRowData[10] != null &&
-          changedRowData[11] != null &&
-          changedRowData[12] != null
-        ) {
-          await handleUpdateKidemTazminatiBobiVerisi(changedRow);
-
-          changedRow = -1;
-          changedRows = [];
-        }
       }
-    }
-    //Tek satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length < 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null &&
-      //changedRowData[8] != null &&
-      //changedRowData[9] != null &&
-      //changedRowData[10] != null &&
-      changedRowData[11] != null &&
-      changedRowData[12] != null
-    ) {
-      await handleCreateKidemTazminatiBobiVerisi(changedRow);
-      changedRow = -1;
-      changedRows = [];
-    }
-    //Çok Satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null &&
-      //changedRowData[8] != null &&
-      //changedRowData[9] != null &&
-      //changedRowData[10] != null &&
-      changedRowData[11] != null &&
-      changedRowData[12] != null
-    ) {
-      //Düzgün Çok Satır Yaratma
-      if (halfPasteControl == false) {
-        setAfterPasteCompleted(true);
-        changedRow = -1;
-        changedRows = [];
-      }
-      //Yarım Yarım Çok satır Yaratma
-      else {
-        for (const x of changedRows) {
-          if (
-            changedRow >= 0 &&
-            changedRows.length >= 2 &&
-            changedRowData[0] == null &&
-            changedRowData[1] != null &&
-            changedRowData[2] != null &&
-            changedRowData[3] != null &&
-            changedRowData[4] != null &&
-            changedRowData[5] != null &&
-            changedRowData[6] != null &&
-            changedRowData[7] != null &&
-            //changedRowData[8] != null &&
-            //changedRowData[9] != null &&
-            //changedRowData[10] != null &&
-            changedRowData[11] != null &&
-            changedRowData[12] != null
-          ) {
-            await handleCreateKidemTazminatiBobiVerisi(x);
-          }
-        }
-        setHalfPasteControl(false);
-        changedRow = -1;
-        changedRows = [];
-      }
-    }
-    //Yarım Yarım Çok satır Kontrol
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      (changedRowData[1] == null ||
-        changedRowData[2] == null ||
-        changedRowData[3] == null ||
-        changedRowData[4] == null ||
-        changedRowData[5] == null ||
-        changedRowData[6] == null ||
-        changedRowData[7] == null ||
-        // changedRowData[8] == null ||
-        // changedRowData[9] == null ||
-        //changedRowData[10] == null ||
-        changedRowData[11] == null ||
-        changedRowData[12] == null)
-    ) {
-      setHalfPasteControl(true);
     }
   };
 
-  const handleCreateKidemTazminatiBobiVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-
-    const createdKidemTazminatiBobiVerisi = {
-      denetciId: user.denetciId,
-      denetlenenId: user.denetlenenId,
-      yil: user.yil,
-      siraNo: row + 1,
-      tcKimlikNo: rowData[1],
-      adiSoyadi: rowData[2],
-      cinsiyeti: rowData[3],
-      dogumTarihi: new Date(
-        rowData[4].split(".").reverse().join("-")
-      ).toISOString(),
-      gorevDepartmani: rowData[5],
-      brutUcretiAylik: rowData[6],
-      isletmeyeGirisTarihi: new Date(
-        rowData[7].split(".").reverse().join("-")
-      ).toISOString(),
-      isletmedenCikisTarihi:
-        rowData[8] != null && rowData[8] != ""
-          ? new Date(rowData[8].split(".").reverse().join("-")).toISOString()
-          : null,
-      odenenBrutKidemTazminatiBobiTutariTL:
-        rowData[9] != null && rowData[9] != "" ? rowData[9] : null,
-      sgkIstenAyrilisNedeniKodu:
-        rowData[10] != null && rowData[10] != "" ? rowData[10] : null,
-      kullanilmamisIzinGunu: rowData[11],
-      kullanilmamisIzneEsasBrutUcretAylik: rowData[12],
-    };
-
-    try {
-      const result = await createKidemTazminatiBobiVerisi(
-        user.token || "",
-        createdKidemTazminatiBobiVerisi
-      );
-      if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Kıdem Tazminati Bobi Verisi ekleme başarılı");
-      } else {
-        console.error("Kıdem Tazminati Bobi Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
+  const handleCreateKidemTazminatiBobiVerisi = async () => {
+    if (fetchedData.filter((item: any) => item[1]).length == 0) {
+      await handleDeleteKidemTazminatiBobiVerisi();
+      return;
     }
-  };
-
-  const handleCreateMultipleKidemTazminatiBobiVerisi = async () => {
     const keys = [
       "denetciId",
       "denetlenenId",
       "yil",
-      "siraNo",
       "tcKimlikNo",
       "adiSoyadi",
       "cinsiyeti",
@@ -932,177 +561,147 @@ const KidemTazminatiBobiVeriYukleme = () => {
       "kullanilmamisIzneEsasBrutUcretAylik",
     ];
 
-    const jsonData =
-      multiplePasteData.length === 1
-        ? keys.reduce(
-            (acc: { [key: string]: any }, key: string, index: number) => {
-              if (key === "denetciId") {
-                acc[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                acc[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                acc[key] = user.yil;
-              } else if (
-                key === "brutUcretiAylik" ||
-                key === "odenenBrutKidemTazminatiBobiTutariTL" ||
-                key === "kullanilmamisIzinGunu" ||
-                key === "kullanilmamisIzneEsasBrutUcretAylik"
-              ) {
-                acc[key] = parseFloat(
-                  multiplePasteData[0][index - 3].replace(",", ".")
-                );
-              } else {
-                acc[key] = multiplePasteData[0][index - 3];
-              }
-              return acc;
-            },
-            {}
-          )
-        : multiplePasteData.map((item: any[]) => {
-            let obj: { [key: string]: any } = {};
-            keys.forEach((key, index) => {
-              if (key === "denetciId") {
-                obj[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                obj[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                obj[key] = user.yil;
-              } else if (
-                key === "brutUcretiAylik" ||
-                key === "odenenBrutKidemTazminatiBobiTutariTL" ||
-                key === "kullanilmamisIzinGunu" ||
-                key === "kullanilmamisIzneEsasBrutUcretAylik"
-              ) {
-                obj[key] = parseFloat(item[index - 3].replace(",", "."));
-              } else {
-                obj[key] = item[index - 3];
-              }
-            });
-            return obj;
-          });
+    const jsonData = fetchedData
+      .filter((item: any) => item[1])
+      .map((item: any) => {
+        let obj: { [key: string]: any } = {};
+        keys.forEach((key, index) => {
+          if (key === "denetciId") {
+            obj[key] = user.denetciId;
+          } else if (key === "denetlenenId") {
+            obj[key] = user.denetlenenId;
+          } else if (key === "yil") {
+            obj[key] = user.yil;
+          } else if (
+            key === "dogumTarihi" ||
+            key === "isletmeyeGirisTarihi" ||
+            key === "isletmedenCikisTarihi"
+          ) {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              const rawValue = item[index - 3];
+              const [day, month, year] = rawValue.split(".");
+              obj[key] = new Date(
+                `${year}-${month}-${day}T00:00:00Z`
+              ).toISOString();
+            }
+          } else if (
+            key === "odenenBrutKidemTazminatiBobiTutariTL" ||
+            key === "kullanilmamisIzinGunu" ||
+            key === "kullanilmamisIzneEsasBrutUcretAylik"
+          ) {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = 0.0;
+            } else {
+              obj[key] = item[index - 3];
+            }
+          } else if (
+            key === "tcKimlikNo" ||
+            key === "cinsiyeti" ||
+            key === "sgkIstenAyrilisNedeniKodu"
+          ) {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = "";
+            } else {
+              obj[key] = item[index - 3];
+            }
+          } else {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              obj[key] = item[index - 3];
+            }
+          }
+        });
+        return obj;
+      });
 
     try {
-      const result = await createMultipleKidemTazminatiBobiVerisi(
+      const result = await createKidemTazminatiBobiVerisi(
         user.token || "",
         jsonData
       );
       if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Kıdem Tazminati Bobi Verisi ekleme başarılı");
+        await fetchData();
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("Kıdem Tazminati Bobi Verisi ekleme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
   };
 
-  const handleCreateNullKidemTazminatiBobiVerisi = async (siraNo: number) => {
-    try {
-      const result = await createNullKidemTazminatiBobiVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo + 1 || 0
-      );
-      if (result) {
-        if (halfPasteControl == false && control == false) {
-          await fetchData();
-        }
-        console.log("Kıdem Tazminati Bobi Verisi ekleme başarılı");
-      } else {
-        console.error("Kıdem Tazminati Bobi Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleUpdateKidemTazminatiBobiVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-
-    const updatedKidemTazminatiBobiVerisi = {
-      tcKimlikNo: rowData[1],
-      adiSoyadi: rowData[2],
-      cinsiyeti: rowData[3],
-      dogumTarihi: new Date(
-        rowData[4].split(".").reverse().join("-")
-      ).toISOString(),
-      gorevDepartmani: rowData[5],
-      brutUcretiAylik: rowData[6],
-      isletmeyeGirisTarihi: new Date(
-        rowData[7].split(".").reverse().join("-")
-      ).toISOString(),
-      isletmedenCikisTarihi:
-        rowData[8] != null && rowData[8] != ""
-          ? new Date(rowData[8].split(".").reverse().join("-")).toISOString()
-          : null,
-      odenenBrutKidemTazminatiBobiTutariTL:
-        rowData[9] != null && rowData[9] != "" ? rowData[9] : null,
-      sgkIstenAyrilisNedeniKodu:
-        rowData[10] != null && rowData[10] != "" ? rowData[10] : null,
-      kullanilmamisIzinGunu: rowData[11],
-      kullanilmamisIzneEsasBrutUcretAylik: rowData[12],
-    };
-    try {
-      const result = await updateKidemTazminatiBobiVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        row + 1,
-        updatedKidemTazminatiBobiVerisi
-      );
-      if (result) {
-        console.log("Kıdem Tazminati Bobi Verisi güncelleme başarılı");
-      } else {
-        console.error("Kıdem Tazminati Bobi Verisi güncelleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleUpdateMultipleKidemTazminatiBobiVerisi = async (
-    siraNo: number
-  ) => {
-    try {
-      const result = await updateMultipleKidemTazminatiBobiVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo || 0
-      );
-      if (result) {
-        console.log("Kıdem Tazminati Bobi Verisi güncelleme başarılı");
-      } else {
-        console.error("Kıdem Tazminati Bobi Verisi güncelleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleDeleteKidemTazminatiBobiVerisi = async (siraNo: number[]) => {
+  const handleDeleteKidemTazminatiBobiVerisi = async () => {
     try {
       const result = await deleteKidemTazminatiBobiVerisi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo
+        user.yil || 0
       );
       if (result) {
-        if (halfPasteControl == false && control == false) {
-          await fetchData();
-        }
-        console.log("Kıdem Tazminati Bobi Verisi silme başarılı");
+        await fetchData();
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("Kıdem Tazminati Bobi Verisi silme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -1110,6 +709,7 @@ const KidemTazminatiBobiVeriYukleme = () => {
   };
 
   const fetchData = async () => {
+    setEndRow(-1);
     try {
       const kidemTazminatiBobiVerileri =
         await getKidemTazminatiBobiVerileriByDenetciDenetlenenYil(
@@ -1121,63 +721,43 @@ const KidemTazminatiBobiVeriYukleme = () => {
       const rowsAll: any = [];
 
       kidemTazminatiBobiVerileri.forEach((veri: any) => {
-        if (
-          veri.dogumTarihi !== null &&
-          veri.dogumTarihi !== undefined &&
+        const newRow: any = [
+          veri.tcKimlikNo,
+          veri.adiSoyadi,
+          veri.cinsiyeti,
+          veri.dogumTarihi !== null && veri.dogumTarihi !== undefined
+            ? veri.dogumTarihi.split("T")[0].split("-").reverse().join(".")
+            : null,
+          veri.gorevDepartmani,
+          veri.brutUcretiAylik,
           veri.isletmeyeGirisTarihi !== null &&
           veri.isletmeyeGirisTarihi !== undefined
-        ) {
-          const newRow: any = [
-            veri.siraNo,
-            veri.tcKimlikNo,
-            veri.adiSoyadi,
-            veri.cinsiyeti,
-            veri.dogumTarihi.split("T")[0].split("-").reverse().join("."),
-            veri.gorevDepartmani,
-            veri.brutUcretiAylik,
-            veri.isletmeyeGirisTarihi
-              .split("T")[0]
-              .split("-")
-              .reverse()
-              .join("."),
-            veri.isletmedenCikisTarihi != null &&
-            veri.isletmedenCikisTarihi != undefined
+            ? veri.isletmeyeGirisTarihi
+                .split("T")[0]
+                .split("-")
+                .reverse()
+                .join(".")
+            : null,
+          veri.isletmedenCikisTarihi != null &&
+          veri.isletmedenCikisTarihi != undefined
+            ? veri.isletmedenCikisTarihi
+                .split("T")[0]
+                .split("-")
+                .reverse()
+                .join(".") != "01.01.0001"
               ? veri.isletmedenCikisTarihi
                   .split("T")[0]
                   .split("-")
                   .reverse()
                   .join(".")
-              : null,
-            veri.odenenBrutKidemTazminatiBobiTutariTL != null &&
-            veri.odenenBrutKidemTazminatiBobiTutariTL != undefined
-              ? veri.odenenBrutKidemTazminatiBobiTutariTL
-              : null,
-            veri.sgkIstenAyrilisNedeniKodu != null &&
-            veri.sgkIstenAyrilisNedeniKodu != undefined
-              ? veri.sgkIstenAyrilisNedeniKodu
-              : null,
-            veri.kullanilmamisIzinGunu,
-            veri.kullanilmamisIzneEsasBrutUcretAylik,
-          ];
-          rowsAll.push(newRow);
-        } else {
-          const newRow: any = [
-            veri.siraNo,
-            veri.tcKimlikNo,
-            veri.adiSoyadi,
-            veri.cinsiyeti,
-            veri.dogumTarihi,
-            veri.gorevDepartmani,
-            veri.brutUcretiAylik,
-            veri.isletmeyeGirisTarihi,
-            veri.isletmedenCikisTarihi,
-            veri.odenenBrutKidemTazminatiBobiTutariTL,
-            veri.sgkIstenAyrilisNedeniKodu,
-            veri.kullanilmamisIzinGunu,
-            veri.kullanilmamisIzneEsasBrutUcretAylik,
-          ];
-          rowsAll.push(newRow);
-        }
+              : null
+            : null,
+          veri.odenenBrutKidemTazminatiBobiTutariTL,
+          veri.sgkIstenAyrilisNedeniKodu,
+          veri.kullanilmamisIzinGunu,
+          veri.kullanilmamisIzneEsasBrutUcretAylik,
+        ];
+        rowsAll.push(newRow);
       });
       setFetchedData(rowsAll);
       setDuplicatesControl(true);
@@ -1199,21 +779,19 @@ const KidemTazminatiBobiVeriYukleme = () => {
   };
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     fetchRowCount();
   }, []);
 
   useEffect(() => {
-    if (halfPasteControl == false) {
-      fetchData();
+    if (kaydetTiklandimi) {
+      handleCreateKidemTazminatiBobiVerisi();
+      setKaydetTiklandimi(false);
     }
-  }, [halfPasteControl]);
-
-  useEffect(() => {
-    if (afterPasteCompleted) {
-      handleCreateMultipleKidemTazminatiBobiVerisi();
-      setAfterPasteCompleted(false);
-    }
-  }, [afterPasteCompleted]);
+  }, [kaydetTiklandimi]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
@@ -1284,6 +862,29 @@ const KidemTazminatiBobiVeriYukleme = () => {
 
   return (
     <>
+      <Grid container>
+        <Grid item xs={12} lg={12}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: 1,
+              mb: 2,
+              borderRadius: 1,
+              backgroundColor: "warning.light",
+            }}
+          >
+            {uyari.map((mesaj, index) => (
+              <Typography
+                key={index}
+                variant="body1"
+                sx={{ color: "warning.dark" }}
+              >
+                - {mesaj}
+              </Typography>
+            ))}
+          </Paper>
+        </Grid>
+      </Grid>
       <HotTable
         style={{
           height: "100%",
@@ -1297,7 +898,7 @@ const KidemTazminatiBobiVeriYukleme = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 80, 110, 80, 90, 100, 100, 90, 90, 110, 130, 80, 90]}
+        colWidths={[80, 110, 80, 90, 100, 100, 90, 90, 110, 130, 80, 90]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -1305,9 +906,6 @@ const KidemTazminatiBobiVeriYukleme = () => {
         autoWrapRow={true}
         minRows={rowCount}
         minCols={12}
-        hiddenColumns={{
-          columns: [0],
-        }}
         filters={true}
         columnSorting={true}
         dropdownMenu={[

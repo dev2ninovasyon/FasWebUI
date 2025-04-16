@@ -11,101 +11,72 @@ import CalismaKagidiCard from "@/app/(Uygulama)/components/CalismaKagitlari/Card
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
-import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
-import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 import { useSelector } from "@/store/hooks";
-import {
-  createCalismaKagidiVerisi,
-  deleteAllCalismaKagidiVerileri,
-  deleteCalismaKagidiVerisiById,
-  updateCalismaKagidiVerisi,
-} from "@/api/MaddiDogrulama/MaddiDogrulama";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
-import { getUygulananDenetimProsedurleri } from "@/api/MaddiDogrulama/MaddiDogrulama";
-import Autocomplete from "@mui/material/Autocomplete";
 import dynamic from "next/dynamic";
-import { FloatingButtonCalismaKagitlari } from "../FloatingButtonCalismaKagitlari";
-const MaddiDogrulamaKonuEditor = dynamic(
-  () => import("@/app/(Uygulama)/components/Editor/MaddiDogrulamaKonuEditor"),
-  { ssr: false }
-);
+import {
+  createCalismaKagidiVerisi,
+  deleteAllCalismaKagidiVerileriByDipnotNo,
+  deleteCalismaKagidiVerisiById,
+  getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo,
+  updateCalismaKagidiVerisi,
+} from "@/api/CalismaKagitlari/CalismaKagitlari";
+
 const YorumEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
   {
     ssr: false,
   }
 );
-const MaddiDogrulamaAciklamaEditor = dynamic(
-  () =>
-    import("@/app/(Uygulama)/components/Editor/MaddiDogrulamaAciklamaEditor"),
-  { ssr: false }
-);
 
 interface Veri {
   id: number;
-  kategori: string;
-  konu: string;
-  aciklama: string;
+  dipnotNo: string;
+  baslik: string;
   standartMi: boolean;
 }
 
 interface CalismaKagidiProps {
   controller: string;
   isClickedVarsayilanaDon: boolean;
-  alanAdi1: string;
-  alanAdi2: string;
-  alanAdi3: string;
-
   setIsClickedVarsayilanaDon: (deger: boolean) => void;
   setTamamlanan: (deger: number) => void;
   setToplam: (deger: number) => void;
-  dipnotAdi: string; // Ek olarak dipnotAdi prop'u eklendi
-  setDip: (str: string) => void;
+  dipnotNo: string;
 }
 
-const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
+const UygulananDenetimTeknikleri: React.FC<CalismaKagidiProps> = ({
   controller,
-  alanAdi1,
-  alanAdi2,
-  alanAdi3,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
   setTamamlanan,
   setToplam,
-  dipnotAdi,
-  setDip,
+  dipnotNo,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
 
   const [selectedId, setSelectedId] = useState(0);
-  const [selectedKategori, setSelectedKategori] = useState("");
-  const [selectedKonu, setSelectedKonu] = useState("");
-  const [selectedAciklama, setSelectedAciklama] = useState("");
+  const [selectedDipnotNo, setSelectedDipnotNo] = useState("");
+  const [selectedBaslik, setSelectedBaslik] = useState("");
   const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [isNew, setIsNew] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
-  //const router = useRouter();
-
-  const handleCreate = async (
-    kategori: string,
-    konu: string,
-    aciklama: string
-  ) => {
+  const handleCreate = async (dipnotNo: string, baslik: string) => {
     const createdCalismaKagidiVerisi = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      kategori: kategori,
-      konu: konu,
-      aciklama: aciklama,
+      dipnotNo: dipnotNo,
+      baslik: baslik,
     };
     try {
       const result = await createCalismaKagidiVerisi(
+        controller || "",
         user.token || "",
         createdCalismaKagidiVerisi
       );
@@ -121,21 +92,17 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleUpdate = async (
-    kategori: string,
-    konu: string,
-    aciklama: string
-  ) => {
+  const handleUpdate = async (dipnotNo: string, baslik: string) => {
     const updatedCalismaKagidiVerisi = veriler.find(
       (veri) => veri.id === selectedId
     );
     if (updatedCalismaKagidiVerisi) {
-      updatedCalismaKagidiVerisi.kategori = kategori;
-      updatedCalismaKagidiVerisi.konu = konu;
-      updatedCalismaKagidiVerisi.aciklama = aciklama;
+      updatedCalismaKagidiVerisi.dipnotNo = dipnotNo;
+      updatedCalismaKagidiVerisi.baslik = baslik;
 
       try {
         const result = await updateCalismaKagidiVerisi(
+          controller || "",
           user.token || "",
           selectedId,
           updatedCalismaKagidiVerisi
@@ -155,6 +122,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
   const handleDelete = async () => {
     try {
       const result = await deleteCalismaKagidiVerisiById(
+        controller || "",
         user.token || "",
         selectedId
       );
@@ -171,13 +139,13 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
 
   const handleDeleteAll = async () => {
     try {
-      const result = await deleteAllCalismaKagidiVerileri(
+      const result = await deleteAllCalismaKagidiVerileriByDipnotNo(
+        controller || "",
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        dipnotAdi || "",
-        user.tfrsmi || false
+        selectedDipnotNo || ""
       );
       if (result) {
         fetchData();
@@ -191,26 +159,25 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
 
   const fetchData = async () => {
     try {
-      const calismaKagidiVerileri = await getUygulananDenetimProsedurleri(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        dipnotAdi || "",
-        user.tfrsmi || false
-      );
+      const calismaKagidiVerileri =
+        await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0,
+          dipnotNo || ""
+        );
 
       const rowsAll: any = [];
       const tamamlanan: any[] = [];
       const toplam: any[] = [];
 
       calismaKagidiVerileri.forEach((veri: any) => {
-        setDip(veri.dipnotAdi);
         const newRow: Veri = {
           id: veri.id,
-          kategori: veri.kategori,
-          konu: veri.konu,
-          aciklama: veri.aciklama,
+          dipnotNo: veri.dipnotNo,
+          baslik: veri.baslik,
           standartMi: veri.standartmi,
         };
         rowsAll.push(newRow);
@@ -232,18 +199,16 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
-    setSelectedKategori(veri.kategori);
-    setSelectedKonu(veri.konu);
-    setSelectedAciklama(veri.aciklama);
+    setSelectedDipnotNo(veri.dipnotNo);
+    setSelectedBaslik(veri.baslik);
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
   const handleNew = () => {
     setIsNew(true);
-    setSelectedKategori("");
-    setSelectedKonu("");
-    setSelectedAciklama("");
+    setSelectedDipnotNo(dipnotNo);
+    setSelectedBaslik("");
     setIsPopUpOpen(true);
   };
 
@@ -251,21 +216,19 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
     setIsPopUpOpen(false);
   };
 
-  const handleSetSelectedKategori = async (kategori: any) => {
-    setSelectedKategori(kategori);
+  const handleSetSelectedDipnotNo = async (dipnotNo: any) => {
+    setSelectedDipnotNo(dipnotNo);
   };
 
-  const handleSetSelectedKonu = async (konu: any) => {
-    setSelectedKonu(konu);
-  };
-
-  const handleSetSelectedAciklama = async (aciklama: any) => {
-    setSelectedAciklama(aciklama);
+  const handleSetSelectedBaslik = async (baslik: any) => {
+    setSelectedBaslik(baslik);
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (dipnotNo.length > 0) {
+      fetchData();
+    }
+  }, [dipnotNo]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
@@ -296,10 +259,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
                 onClick={() => handleCardClick(veri)}
               >
                 <CalismaKagidiCard
-                  title={`${index + 1}. ${veri.kategori || "Kategori seçiniz"}`}
-                  content={veri.konu
-                    .replaceAll("<p>", "")
-                    .replaceAll("</p>", "")}
+                  title={`${index + 1}. ${veri.baslik}`}
                   standartMi={veri.standartMi}
                 />
               </Grid>
@@ -339,59 +299,22 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
                     wordWrap: "break-word",
                   }}
                 >
-                  Yeni İşlem Ekle
+                  Yeni Teknik Ekle
                 </Typography>
               </Button>
             </Grid>
           </Grid>
           <YorumEditor></YorumEditor>
         </Grid>
-
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-          }}
-        >
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <BelgeKontrolCard hazirlayan="Ahmet Geçmiş"></BelgeKontrolCard>
-          </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <BelgeKontrolCard onaylayan="Ahmet Geçmiş"></BelgeKontrolCard>
-          </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <BelgeKontrolCard kaliteKontrol="Ahmet Geçmiş"></BelgeKontrolCard>
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-            gap: 1,
-          }}
-        >
-          <Grid item xs={12} lg={12} mt={5}>
-            <IslemlerCard controller={controller} />
-          </Grid>
-        </Grid>
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent
-          kategori={selectedKategori}
-          konu={selectedKonu}
-          aciklama={selectedAciklama}
+          dipnotNo={selectedDipnotNo}
+          baslik={selectedBaslik}
           standartMi={selectedStandartMi}
-          alanAdi1={alanAdi1}
-          alanAdi2={alanAdi2}
-          alanAdi3={alanAdi3}
           handleClose={handleClosePopUp}
-          handleSetSelectedKategori={handleSetSelectedKategori}
-          handleSetSelectedKonu={handleSetSelectedKonu}
-          handleSetSelectedAciklama={handleSetSelectedAciklama}
+          handleSetSelectedDipnotNo={handleSetSelectedDipnotNo}
+          handleSetSelectedBaslik={handleSetSelectedBaslik}
           handleCreate={handleCreate}
           handleDelete={handleDelete}
           handleUpdate={handleUpdate}
@@ -403,42 +326,32 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
   );
 };
 
-export default UygulananDenetimProsedurleri;
+export default UygulananDenetimTeknikleri;
 
 interface PopUpProps {
-  kategori?: string;
-  konu?: string;
-  aciklama?: string;
+  dipnotNo?: string;
+  baslik?: string;
   standartMi?: boolean;
-  alanAdi1?: string;
-  alanAdi2?: string;
-  alanAdi3?: string;
   isPopUpOpen: boolean;
   isNew: boolean;
 
   handleClose: () => void;
-  handleSetSelectedKategori: (a: string) => void;
-  handleSetSelectedKonu: (a: string) => void;
-  handleSetSelectedAciklama: (a: string) => void;
-  handleCreate: (kategori: string, konu: string, aciklama: string) => void;
+  handleSetSelectedDipnotNo: (a: string) => void;
+  handleSetSelectedBaslik: (a: string) => void;
+  handleCreate: (dipnotNo: string, baslik: string) => void;
   handleDelete: () => void;
-  handleUpdate: (kategori: string, konu: string, aciklama: string) => void;
+  handleUpdate: (dipnotNo: string, baslik: string) => void;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
-  kategori,
-  konu,
-  aciklama,
+  dipnotNo,
+  baslik,
   standartMi,
-  alanAdi1,
-  alanAdi2,
-  alanAdi3,
   isPopUpOpen,
   isNew,
   handleClose,
-  handleSetSelectedKategori,
-  handleSetSelectedKonu,
-  handleSetSelectedAciklama,
+  handleSetSelectedDipnotNo,
+  handleSetSelectedBaslik,
   handleCreate,
   handleDelete,
   handleUpdate,
@@ -447,23 +360,6 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   const handleIsConfirm = () => {
     setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
   };
-
-  const [control1, setControl1] = useState(false);
-  const [control2, setControl2] = useState(false);
-
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleControl1 = () => {
-    if (standartMi) {
-      setControl1(true);
-    }
-  };
-
-  useEffect(() => {
-    if (!standartMi) {
-      setControl2(true);
-    }
-  }, [standartMi]);
 
   return (
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
@@ -487,55 +383,26 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           <Divider />
           <DialogContent>
             <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                {alanAdi1}
-              </Typography>
-              <KategoriBoxAutocomplete
-                onSelect={(selectedKategori) =>
-                  handleSetSelectedKategori(selectedKategori)
-                }
-                initialValue={kategori || ""}
-              ></KategoriBoxAutocomplete>
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                {alanAdi2}
-              </Typography>
-              <MaddiDogrulamaKonuEditor
-                konu={konu}
-                handleSetSelectedKonu={handleSetSelectedKonu}
-              />
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                {alanAdi3}
-              </Typography>
-              <MaddiDogrulamaAciklamaEditor
-                control1={control1}
-                control2={control2}
-                isHovered={isHovered}
-                aciklama={aciklama}
-                handleSetSelectedAciklama={handleSetSelectedAciklama}
+              <CustomTextField
+                id="baslik"
+                multiline
+                rows={1}
+                variant="outlined"
+                fullWidth
+                value={baslik}
+                InputProps={{
+                  style: { padding: 0 }, // Padding değerini sıfırla
+                }}
+                onChange={(e: any) => handleSetSelectedBaslik(e.target.value)}
               />
             </Box>
           </DialogContent>
-          <FloatingButtonCalismaKagitlari
-            control={standartMi ? (control1 || control2 ? true : false) : true}
-            text={aciklama}
-            isHovered={isHovered}
-            isCkEditor={true}
-            setIsHovered={setIsHovered}
-            handleClick={handleControl1}
-            handleSetSelectedText={handleSetSelectedAciklama}
-          />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button
                 variant="outlined"
                 color="success"
-                onClick={() =>
-                  handleUpdate(kategori || "", konu || "", aciklama || "")
-                }
+                onClick={() => handleUpdate(dipnotNo || "", baslik || "")}
                 sx={{ width: "20%" }}
               >
                 Kaydet
@@ -554,9 +421,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               <Button
                 variant="outlined"
                 color="success"
-                onClick={() =>
-                  handleCreate(kategori || "", konu || "", aciklama || "")
-                }
+                onClick={() => handleCreate(dipnotNo || "", baslik || "")}
                 sx={{ width: "20%" }}
               >
                 Kaydet
@@ -581,57 +446,5 @@ const PopUpComponent: React.FC<PopUpProps> = ({
         </>
       )}
     </Dialog>
-  );
-};
-
-interface Kategory {
-  label: string;
-}
-
-const kategoriler = [
-  {
-    label: "Finansal Tablolara İlişkin Tespit ve Açıklamalar",
-  },
-  {
-    label: "Hesaplara İlişkin Tespit ve Açıklamalar",
-  },
-  {
-    label: "Uygulanan Denetim Prosedürleri",
-  },
-];
-interface KategoriBoxProps {
-  onSelect: (selectedKategori: string) => void;
-  initialValue: string;
-}
-
-const KategoriBoxAutocomplete: React.FC<KategoriBoxProps> = ({
-  onSelect,
-  initialValue,
-}) => {
-  const [initial, setInitial] = useState<Kategory | null>(null);
-
-  useEffect(() => {
-    const matchedOption = kategoriler.find((row) => row.label === initialValue);
-    setInitial(matchedOption || null);
-  }, [initialValue]);
-
-  return (
-    <Autocomplete
-      id="kategori-box"
-      options={kategoriler}
-      noOptionsText="Bulunamadı"
-      fullWidth
-      value={initial}
-      onChange={(event, value) => {
-        onSelect(value?.label || "");
-      }}
-      renderInput={(params) => (
-        <CustomTextField
-          {...params}
-          placeholder={"Kategori Seçiniz"}
-          aria-label="Kategori Seçiniz"
-        />
-      )}
-    />
   );
 };

@@ -1,51 +1,34 @@
 "use client";
-import UygulananDentimProsedurleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/UygulananDenetimProsedurleri";
+
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Button, Grid, Typography } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { useState } from "react";
+import FinansalTablolarDenetimRiskiBelirlemeBelge from "@/app/(Uygulama)/components/CalismaKagitlari/FinansalTablolarDenetimRiskiBelirlemeBelge";
+
+const BCrumb = [
+  {
+    to: "/PlanVeProgram",
+    title: "Plan ve Program",
+  },
+  {
+    to: "/PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme",
+    title: "Finansal Tablolar Denetim Riski Belirleme",
+  },
+];
 
 const Page = () => {
-  const pathname = usePathname();
-  const segments = pathname.split("/");
-  const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
-  const parentName = segments[parentNameIndex];
-  const childName = segments[parentNameIndex + 1];
-
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
-  const [dip, setDip] = useState("");
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
-  const BCrumb = [
-    {
-      to: "/DenetimKanitlari",
-      title: "Denetim Kanıtları",
-    },
-    {
-      to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
-      title: "Maddi Doğrulama Prosedürleri",
-    },
-    {
-      to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: `${dip}`,
-    },
-    {
-      to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: "Uygulanan Denetim Prosedürleri",
-    },
-  ];
+  const controller = "FinansalTablolarDenetimRiskiBelirleme";
 
   return (
-    <PageContainer
-      title={`${dip} | Uygulanan Denetim Prosedürleri`}
-      description="this is Uygulanan Denetim Prosedürleri"
-    >
+    <>
       <Breadcrumb
-        title={"Uygulanan Denetim Prosedürleri"}
-        subtitle={`${dip}`}
+        title="Finansal Tablolar Denetim Riski Belirleme"
         items={BCrumb}
       >
         <>
@@ -61,8 +44,8 @@ const Page = () => {
             <Grid
               item
               xs={12}
-              md={4.8}
-              lg={4.8}
+              md={3.8}
+              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -83,8 +66,36 @@ const Page = () => {
             <Grid
               item
               xs={5.8}
-              md={4.8}
-              lg={4.8}
+              md={3.8}
+              lg={3.8}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                sx={{ width: "100%" }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  Ek Belge Yükle
+                </Typography>
+              </Button>
+            </Grid>
+            <Grid
+              item
+              xs={5.8}
+              md={3.8}
+              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -109,19 +120,21 @@ const Page = () => {
           </Grid>
         </>
       </Breadcrumb>
-      <UygulananDentimProsedurleri
-        controller="UygulananDentimProsedurleri"
-        isClickedVarsayilanaDon={isClickedVarsayilanaDon}
-        alanAdi1="Kategori"
-        alanAdi2="Konu"
-        alanAdi3="Açıklama"
-        setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
-        setTamamlanan={setTamamlanan}
-        setToplam={setToplam}
-        dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz
-        setDip={setDip}
-      />
-    </PageContainer>
+      <PageContainer
+        title="Finansal Tablolar Denetim Riski Belirleme"
+        description="this is Finansal Tablolar Denetim Riski Belirleme"
+      >
+        <Box>
+          <FinansalTablolarDenetimRiskiBelirlemeBelge
+            controller={controller}
+            isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+            setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+            setTamamlanan={setTamamlanan}
+            setToplam={setToplam}
+          />
+        </Box>
+      </PageContainer>
+    </>
   );
 };
 
