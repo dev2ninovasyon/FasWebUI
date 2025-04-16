@@ -27,7 +27,7 @@ import AmortismanVeriYukleme from "./AmortismanVeriYukleme";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import AmortismanHesaplama from "./AmortismanHesaplama";
 import { IconX } from "@tabler/icons-react";
-import PaylasimBaglantisiPopUp from "./PaylasimBaglantisiPopup";
+import PaylasimBaglantisiPopUp from "./PaylasimBaglantisiPopUp";
 
 const BCrumb = [
   {
