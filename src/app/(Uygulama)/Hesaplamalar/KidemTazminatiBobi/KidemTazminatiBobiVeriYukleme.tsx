@@ -799,7 +799,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
 
     const processedData = data.map((row: any) => row);
 
-    const headers = hotTableInstance.getColHeader().slice(1);
+    const headers = hotTableInstance.getColHeader();
 
     const fullData = [headers, ...processedData];
 
