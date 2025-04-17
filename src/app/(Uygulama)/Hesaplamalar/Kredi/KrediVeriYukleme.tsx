@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 registerAllModules();
 
 interface Veri {
+  id: number;
   alinanKrediNumarasi: number;
   detayHesapKodu: string;
   hesapAdi: string;
@@ -154,12 +155,17 @@ const KrediVeriYukleme: React.FC<Props> = ({
     const duplicates: number[] = [];
 
     data.forEach((row, index) => {
-      if (isRowEmpty(row)) return; // tüm değerler boşsa geç
+      if (isRowEmpty(row)) return;
 
-      const rowString = JSON.stringify(row, Object.keys(row).sort());
+      const rowWithout2Col = Object.fromEntries(Object.entries(row).slice(2));
+
+      const rowString = JSON.stringify(
+        rowWithout2Col,
+        Object.keys(rowWithout2Col).sort()
+      );
 
       if (seenRows.has(rowString)) {
-        duplicates.push(index + 1); // 1-based row number
+        duplicates.push(index + 1); // 1-based index
       } else {
         seenRows.add(rowString);
       }
@@ -198,6 +204,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
   }, [duplicatesControl]);
 
   const colHeaders = [
+    "Id",
     "Alınan Kredi Numarası",
     "D. Hesap Kodu",
     "Hesap Adı",
@@ -208,6 +215,13 @@ const KrediVeriYukleme: React.FC<Props> = ({
   ];
 
   const columns = [
+    {
+      type: "numeric",
+      columnSorting: true,
+      readOnly: true,
+      editor: false,
+      className: "htLeft",
+    }, // Id
     {
       type: "numeric",
       columnSorting: true,
@@ -438,7 +452,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
   };
 
   const handleCreateKrediHesaplamaVerisi = async () => {
-    if (fetchedData.filter((item: any) => item[0]).length == 0) {
+    if (fetchedData.filter((item: any) => item[1]).length == 0) {
       await handleDeleteKrediHesaplamaVerisi();
       return;
     }
@@ -446,6 +460,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
       "denetciId",
       "denetlenenId",
       "yil",
+      "id",
       "alinanKrediNumarasi",
       "detayHesapKodu",
       "hesapAdi",
@@ -455,7 +470,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
       "faizOrani",
     ];
     const jsonData = fetchedData
-      .filter((item: any) => item[0])
+      .filter((item: any) => item[1])
       .map((item: any) => {
         let obj: { [key: string]: any } = {};
         keys.forEach((key, index) => {
@@ -594,6 +609,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
       const rowsAll: any = [];
       krediHesaplamaVerileri.forEach((veri: any) => {
         const newRow: any = [
+          veri.id,
           veri.alinanKrediNumarasi,
           veri.detayHesapKodu,
           veri.hesapAdi,
@@ -742,7 +758,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[80, 120, 120, 80, 100, 100, 100]}
+        colWidths={[80, 80, 120, 120, 80, 100, 100, 100]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -750,6 +766,9 @@ const KrediVeriYukleme: React.FC<Props> = ({
         autoWrapRow={true}
         minRows={rowCount}
         minCols={12}
+        hiddenColumns={{
+          columns: [0],
+        }}
         filters={true}
         columnSorting={true}
         dropdownMenu={[

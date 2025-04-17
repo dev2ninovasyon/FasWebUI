@@ -5,11 +5,11 @@ export const getKrediHesaplamaDetayVerileriByDenetciDenetlenenYil = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  krediNo: number
+  krediId: number
 ) => {
   try {
     const response = await fetch(
-      `${url}/Veri/KrediHesaplamaDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&krediNo=${krediNo}`,
+      `${url}/Veri/KrediHesaplamaDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&krediId=${krediId}`,
       {
         method: "GET",
         headers: {

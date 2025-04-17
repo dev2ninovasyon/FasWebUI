@@ -27,6 +27,34 @@ export const getKrediHesaplamaVerileriByDenetciDenetlenenYil = async (
   }
 };
 
+export const getKrediHesaplamaVerileriByDenetciDenetlenenYilId = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  id: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Veri/KrediHesaplamaById?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Kredi Hesaplama verisi getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const createKrediHesaplamaVerisi = async (
   token: string,
   jsonData: any

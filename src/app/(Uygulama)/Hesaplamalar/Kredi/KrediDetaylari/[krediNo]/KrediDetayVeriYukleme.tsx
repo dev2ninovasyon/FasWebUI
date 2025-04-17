@@ -45,7 +45,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
   const pathname = usePathname();
   const segments = pathname.split("/");
   const idIndex = segments.indexOf("KrediDetaylari") + 1;
-  const pathKrediNo = parseInt(segments[idIndex]);
+  const pathKrediId = parseInt(segments[idIndex]);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -436,7 +436,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
       "denetciId",
       "denetlenenId",
       "yil",
-      "alinanKrediNumarasi",
+      "krediHesaplamaId",
       "taksitTarihi",
       "taksitTutari",
       "faizTutari",
@@ -454,8 +454,8 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
             obj[key] = user.denetlenenId;
           } else if (key === "yil") {
             obj[key] = user.yil;
-          } else if (key === "alinanKrediNumarasi") {
-            obj[key] = pathKrediNo;
+          } else if (key === "krediHesaplamaId") {
+            obj[key] = pathKrediId;
           } else if (key === "taksitTarihi") {
             if (
               item[index - 4] == undefined ||
@@ -539,7 +539,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        pathKrediNo || 0
+        pathKrediId || 0
       );
       if (result) {
         await fetchData();
@@ -581,7 +581,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
-          pathKrediNo || 0
+          pathKrediId || 0
         );
 
       const rowsAll: any = [];
