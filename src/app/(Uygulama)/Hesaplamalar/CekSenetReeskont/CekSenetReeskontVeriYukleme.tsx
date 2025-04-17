@@ -678,7 +678,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
     const hotTableInstance = hotTableComponent.current.hotInstance;
     const data = hotTableInstance.getData();
 
-    const processedData = data.map((row: any) => row.slice(1));
+    const processedData = data.map((row: any) => row);
 
     const headers = hotTableInstance.getColHeader().slice(1);
 
