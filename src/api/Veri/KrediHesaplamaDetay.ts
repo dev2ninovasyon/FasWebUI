@@ -62,7 +62,7 @@ export const deleteKrediHesaplamaDetayVerisi = async (
 ) => {
   try {
     const response = await fetch(
-      `${url}/Veri/KrediHesaplamaDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&krediNo=${krediNo}`,
+      `${url}/Veri/KrediHesaplamaDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&krediId=${krediNo}`,
       {
         method: "DELETE",
         headers: {
