@@ -68,7 +68,6 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
     "Yeniden Değerleme Artışı, İptal Edilecek Yeniden Değerleme Tutarı Ve Kalıntı Değer Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
     "Amortisman Usulü Ve Vuk Kıst Amortisman Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Faydalı Ömür Sütunu Ve Vuk Faydalı Ömür Sütunlarına Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
-    "",
   ];
 
   const [endRow, setEndRow] = useState(-1);
