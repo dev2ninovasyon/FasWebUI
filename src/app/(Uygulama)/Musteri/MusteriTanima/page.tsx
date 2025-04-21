@@ -200,11 +200,16 @@ const Page: React.FC = () => {
             mb: 2,
           }}
         >
-          <Tooltip title="Ek Bilgiler">
-            <Fab color="info" size="small" onClick={() => setShowDrawer(true)}>
-              <IconInfoCircle width={18.25} height={18.25} />
-            </Fab>
-          </Tooltip>
+          <Button
+            type="button"
+            size="medium"
+            variant="outlined"
+            color="primary"
+            onClick={() => setShowDrawer(true)}
+            sx={{ ml: 2 }}
+          >
+            Ek Bilgi
+          </Button>
           <Button
             type="button"
             size="medium"
