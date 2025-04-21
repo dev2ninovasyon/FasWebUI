@@ -504,6 +504,16 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => setShowDrawer(true)}
+                    sx={{ ml: 2 }}
+                  >
+                    Ek Bilgi
+                  </Button>
+                  <Button
+                    type="button"
+                    size="medium"
                     disabled={
                       kaydetTiklandimi ||
                       hesaplaTiklandimi ||
@@ -525,122 +535,6 @@ const Page: React.FC = () => {
                     setKaydetTiklandimi={setKaydetTiklandimi}
                   />
                 </Grid>
-              </Grid>
-            </TabPanel>
-            <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
-              <Grid container>
-                <Grid
-                  item
-                  xs={12}
-                  lg={12}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                    mb: 2,
-                  }}
-                >
-                  <Tooltip title="Ek Bilgiler">
-                    <Fab
-                      color="info"
-                      size="small"
-                      onClick={() => setShowDrawer(true)}
-                    >
-                      <IconInfoCircle width={18.25} height={18.25} />
-                    </Fab>
-                  </Tooltip>
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={hesaplaTiklandimi || kaydetTiklandimi}
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2, height: "100%" }}
-                    onClick={() => {
-                      setHesaplaTiklandimi(true);
-                      handleHesapla();
-                    }}
-                  >
-                    Hesapla
-                  </Button>
-                </Grid>
-                {fetchedKidemTazminatiCalismasi.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedKidemTazminatiCalismasi}
-                      title="Kıdem Tazminatı Çalışması"
-                    />
-                  </Grid>
-                )}
-                {fetchedHesaplananKidemTazminatiToplami.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedHesaplananKidemTazminatiToplami}
-                      title="Hesaplanan Dönem Kıdem Tazminatı Toplamı"
-                    />
-                  </Grid>
-                )}
-                {fetchedOdenenKidemTazminatiToplami.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedOdenenKidemTazminatiToplami}
-                      title="Ödenen Dönem Kıdem Tazminatı Toplamı"
-                    />
-                  </Grid>
-                )}
-                {fetchedDonemIcinKaydedilecekKidemTazminati.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedDonemIcinKaydedilecekKidemTazminati}
-                      title="Dönem İçin Kaydedilecek Kıdem Tazminatı"
-                    />
-                  </Grid>
-                )}
-                {fetchedGecmisYillarIcinKaydedilecekKidemTazminati.length >
-                  0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedGecmisYillarIcinKaydedilecekKidemTazminati}
-                      title="Geçmiş Yıllar İçin Kaydedilecek Kıdem Tazminatı"
-                    />
-                  </Grid>
-                )}
-                {fetchedIsTenCikisKodlari.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedIsTenCikisKodlari}
-                      title="İşten Çıkış Kodları ve Açıklamaları"
-                    />
-                  </Grid>
-                )}
-                {fetchedHesaplananKullanilmamisIzinKarsiligi.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedHesaplananKullanilmamisIzinKarsiligi}
-                      title="Hesaplanan Kullanılmamış İzin Karşılığı"
-                    />
-                  </Grid>
-                )}
-                {fetchedOncekiDonemKaydedilmisKullanilmamisIzinKarsiligi.length >
-                  0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={
-                        fetchedOncekiDonemKaydedilmisKullanilmamisIzinKarsiligi
-                      }
-                      title="Önceki Dönem Kaydedilmiş Kullanılmamış İzin Karşılığı"
-                    />
-                  </Grid>
-                )}
-                {fetchedOdenenKaydedilecekKullanilmamisIzinKarsiligi.length >
-                  0 && (
-                  <Grid item xs={12} lg={12}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedOdenenKaydedilecekKullanilmamisIzinKarsiligi}
-                      title="Kaydedilecek Kullanılmamış İzin Karşılığı"
-                    />
-                  </Grid>
-                )}
                 <Dialog
                   open={showDrawer}
                   onClose={() => setShowDrawer(false)}
@@ -1165,6 +1059,113 @@ const Page: React.FC = () => {
                     </Button>
                   </DialogActions>
                 </Dialog>
+              </Grid>
+            </TabPanel>
+            <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    mb: 2,
+                  }}
+                >
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={hesaplaTiklandimi || kaydetTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    sx={{ ml: 2, height: "100%" }}
+                    onClick={() => {
+                      setHesaplaTiklandimi(true);
+                      handleHesapla();
+                    }}
+                  >
+                    Hesapla
+                  </Button>
+                </Grid>
+                {fetchedKidemTazminatiCalismasi.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedKidemTazminatiCalismasi}
+                      title="Kıdem Tazminatı Çalışması"
+                    />
+                  </Grid>
+                )}
+                {fetchedHesaplananKidemTazminatiToplami.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedHesaplananKidemTazminatiToplami}
+                      title="Hesaplanan Dönem Kıdem Tazminatı Toplamı"
+                    />
+                  </Grid>
+                )}
+                {fetchedOdenenKidemTazminatiToplami.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedOdenenKidemTazminatiToplami}
+                      title="Ödenen Dönem Kıdem Tazminatı Toplamı"
+                    />
+                  </Grid>
+                )}
+                {fetchedDonemIcinKaydedilecekKidemTazminati.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedDonemIcinKaydedilecekKidemTazminati}
+                      title="Dönem İçin Kaydedilecek Kıdem Tazminatı"
+                    />
+                  </Grid>
+                )}
+                {fetchedGecmisYillarIcinKaydedilecekKidemTazminati.length >
+                  0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedGecmisYillarIcinKaydedilecekKidemTazminati}
+                      title="Geçmiş Yıllar İçin Kaydedilecek Kıdem Tazminatı"
+                    />
+                  </Grid>
+                )}
+                {fetchedIsTenCikisKodlari.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedIsTenCikisKodlari}
+                      title="İşten Çıkış Kodları ve Açıklamaları"
+                    />
+                  </Grid>
+                )}
+                {fetchedHesaplananKullanilmamisIzinKarsiligi.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedHesaplananKullanilmamisIzinKarsiligi}
+                      title="Hesaplanan Kullanılmamış İzin Karşılığı"
+                    />
+                  </Grid>
+                )}
+                {fetchedOncekiDonemKaydedilmisKullanilmamisIzinKarsiligi.length >
+                  0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiBobiHesaplama
+                      data={
+                        fetchedOncekiDonemKaydedilmisKullanilmamisIzinKarsiligi
+                      }
+                      title="Önceki Dönem Kaydedilmiş Kullanılmamış İzin Karşılığı"
+                    />
+                  </Grid>
+                )}
+                {fetchedOdenenKaydedilecekKullanilmamisIzinKarsiligi.length >
+                  0 && (
+                  <Grid item xs={12} lg={12}>
+                    <KidemTazminatiBobiHesaplama
+                      data={fetchedOdenenKaydedilecekKullanilmamisIzinKarsiligi}
+                      title="Kaydedilecek Kullanılmamış İzin Karşılığı"
+                    />
+                  </Grid>
+                )}
                 <FloatingButtonFisler
                   handleClick={() => setFloatingButtonTiklandimi(true)}
                 />

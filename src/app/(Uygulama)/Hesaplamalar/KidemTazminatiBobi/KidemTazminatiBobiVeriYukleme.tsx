@@ -60,14 +60,14 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
   const uyari = [
-    "Boş Bırakılmaması Gereken Sütunlar: Adı Soyadı, Doğum Tarihi, Görev Departmanı, Brüt Ücreti (Aylık), İşletmeye Giriş Tarihi",
+    "Boş Bırakılmaması Gereken Sütunlar: Adı Soyadı, Görev Departmanı, Brüt Ücreti (Aylık), İşletmeye Giriş Tarihi",
     "TC Kimlik No Sütunu Boş Bırakılabilir.",
     "Adı Soyadı Sütunu Boş Bırakılmamalıdır.",
     "Cinsiyeti Ve Sgk İşten Ayrılış Nedeni Kodu Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
-    "Doğum Tarihi Ve İşletmeye Giriş Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
+    "Doğum Tarihi Ve İşletmeden Çıkış Tarihi Sütunlarına GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
     "Görev Departmanı Sütununda Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Brüt Ücreti (Aylık) Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-    "İşletmeden Çıkış Tarihi Sütununa GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
+    "İşletmeye Giriş Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
     "Ödenen Brüt Kıdem Tazminatı Tutarı (TL), Kullanılmamış İzin Günü Ve Kullanılmamış İzne Esas Brüt Ücret (Aylık) Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
   ];
 
@@ -726,7 +726,10 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
           veri.adiSoyadi,
           veri.cinsiyeti,
           veri.dogumTarihi !== null && veri.dogumTarihi !== undefined
-            ? veri.dogumTarihi.split("T")[0].split("-").reverse().join(".")
+            ? veri.dogumTarihi.split("T")[0].split("-").reverse().join(".") !=
+              "01.01.0001"
+              ? veri.dogumTarihi.split("T")[0].split("-").reverse().join(".")
+              : null
             : null,
           veri.gorevDepartmani,
           veri.brutUcretiAylik,
