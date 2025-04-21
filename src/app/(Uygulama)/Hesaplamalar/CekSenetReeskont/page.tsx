@@ -38,6 +38,8 @@ import {
 import CekSenetReeskontHesaplama from "./CekSenetReeskontHesaplama";
 import CekSenetReeskontDuzeltmeFarklari from "./CekSenetReeskontDuzeltmeFarklari";
 import CekSenetReeskontHesaplamadaKullanilanDegerler from "./CekSenetReeskontHesaplamadaKullanilanDegerler";
+import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
+import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 
 const BCrumb = [
   {
@@ -49,6 +51,14 @@ const BCrumb = [
     title: "Çek / Senet Reeskont",
   },
 ];
+
+interface Veri {
+  id: number;
+  link: string;
+  baslangicTarihi: string;
+  bitisTarihi: string;
+  tip: string;
+}
 
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
@@ -86,11 +96,21 @@ const Page: React.FC = () => {
   const [iskontoOrani180365, setIskontoOrani180365] = useState<number>(0);
   const [iskontoOrani365, setIskontoOrani365] = useState<number>(0);
 
+  const [control, setControl] = useState(false);
+
+  const [fetchedData, setFetchedData] = useState<Veri | null>(null);
+
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
 
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
+
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const handleClosePopUp = () => {
+    setIsPopUpOpen(false);
+  };
 
   const handleHesapla = async () => {
     try {
@@ -235,9 +255,56 @@ const Page: React.FC = () => {
     }
   };
 
+  const fetchDataBaglanti = async () => {
+    try {
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.id || 0,
+        user.yil || 0,
+        "CekSenetReeskont"
+      );
+      if (baglantiBilgisi != undefined) {
+        // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
+        const formatDateTime = (dateTimeStr?: string) => {
+          if (!dateTimeStr) return "";
+          const date = new Date(dateTimeStr);
+          const pad = (n: number) => n.toString().padStart(2, "0");
+          return `${pad(date.getDate())}.${pad(
+            date.getMonth() + 1
+          )}.${date.getFullYear()} ${pad(date.getHours())}:${pad(
+            date.getMinutes()
+          )}`;
+        };
+
+        const newRow: Veri = {
+          id: baglantiBilgisi.id,
+          link: baglantiBilgisi.link,
+          baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
+          bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
+          tip: baglantiBilgisi.tip,
+        };
+        setFetchedData(newRow);
+      } else {
+        setFetchedData(null);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchDataBaglanti();
   }, []);
+
+  useEffect(() => {
+    if (control) {
+      fetchDataBaglanti();
+      setControl(false);
+    }
+  }, [control]);
 
   useEffect(() => {
     if (hesaplaTiklandimi) {
@@ -272,7 +339,22 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
-                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setIsPopUpOpen(true);
+                    }}
+                  >
+                    Paylaşım Bağlantısı
+                  </Button>
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={
+                      kaydetTiklandimi ||
+                      hesaplaTiklandimi ||
+                      fetchedData != null
+                    }
                     variant="outlined"
                     color="primary"
                     sx={{ ml: 2 }}
@@ -700,6 +782,14 @@ const Page: React.FC = () => {
             </TabPanel>
           </TabContext>
         </Grid>
+        {isPopUpOpen && (
+          <PaylasimBaglantisiPopUp
+            controller="CekSenetReeskont"
+            setControl={setControl}
+            isPopUpOpen={isPopUpOpen}
+            handleClosePopUp={handleClosePopUp}
+          ></PaylasimBaglantisiPopUp>
+        )}
       </Grid>
     </PageContainer>
   );

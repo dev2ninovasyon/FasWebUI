@@ -25,6 +25,8 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import KidemTazminatiTfrsVeriYukleme from "./KidemTazminatiTfrsVeriYukleme";
+import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
+import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 
 const BCrumb = [
   {
@@ -37,15 +39,29 @@ const BCrumb = [
   },
 ];
 
+interface Veri {
+  id: number;
+  link: string;
+  baslangicTarihi: string;
+  bitisTarihi: string;
+  tip: string;
+}
+
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
 
+  const controller = "KidemTazminatiTfrs";
+
   const [tip, setTip] = useState("VeriYukleme");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setTip(newValue);
   };
+
+  const [control, setControl] = useState(false);
+
+  const [fetchedData, setFetchedData] = useState<Veri | null>(null);
 
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
 
@@ -56,6 +72,12 @@ const Page: React.FC = () => {
     useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
+
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const handleClosePopUp = () => {
+    setIsPopUpOpen(false);
+  };
 
   const handleHesapla = async () => {
     try {
@@ -84,6 +106,56 @@ const Page: React.FC = () => {
       });
     }
   };
+
+  const fetchData = async () => {
+    try {
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.id || 0,
+        user.yil || 0,
+        controller
+      );
+      if (baglantiBilgisi != undefined) {
+        // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
+        const formatDateTime = (dateTimeStr?: string) => {
+          if (!dateTimeStr) return "";
+          const date = new Date(dateTimeStr);
+          const pad = (n: number) => n.toString().padStart(2, "0");
+          return `${pad(date.getDate())}.${pad(
+            date.getMonth() + 1
+          )}.${date.getFullYear()} ${pad(date.getHours())}:${pad(
+            date.getMinutes()
+          )}`;
+        };
+
+        const newRow: Veri = {
+          id: baglantiBilgisi.id,
+          link: baglantiBilgisi.link,
+          baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
+          bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
+          tip: baglantiBilgisi.tip,
+        };
+        setFetchedData(newRow);
+      } else {
+        setFetchedData(null);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (control) {
+      fetchData();
+      setControl(false);
+    }
+  }, [control]);
 
   useEffect(() => {
     if (hesaplaTiklandimi) {
@@ -118,7 +190,22 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
-                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setIsPopUpOpen(true);
+                    }}
+                  >
+                    Paylaşım Bağlantısı
+                  </Button>
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={
+                      kaydetTiklandimi ||
+                      hesaplaTiklandimi ||
+                      fetchedData != null
+                    }
                     variant="outlined"
                     color="primary"
                     sx={{ ml: 2 }}
@@ -240,6 +327,14 @@ const Page: React.FC = () => {
             </TabPanel>
           </TabContext>
         </Grid>
+        {isPopUpOpen && (
+          <PaylasimBaglantisiPopUp
+            controller={controller}
+            setControl={setControl}
+            isPopUpOpen={isPopUpOpen}
+            handleClosePopUp={handleClosePopUp}
+          ></PaylasimBaglantisiPopUp>
+        )}
       </Grid>
     </PageContainer>
   );

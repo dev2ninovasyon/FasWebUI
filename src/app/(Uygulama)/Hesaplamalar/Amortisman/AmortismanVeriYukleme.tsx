@@ -67,8 +67,8 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
     "Giriş Tutarı Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
     "Yeniden Değerleme Artışı, İptal Edilecek Yeniden Değerleme Tutarı Ve Kalıntı Değer Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
     "Amortisman Usulü Ve Vuk Kıst Amortisman Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
-    "Faydalı Ömür Sütunu Boş Bırakılmamalıdır Ve Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-    "Vuk Faydalı Ömür Sütununa Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
+    "Faydalı Ömür Sütunu Ve Vuk Faydalı Ömür Sütunlarına Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
+    "",
   ];
 
   const [endRow, setEndRow] = useState(-1);
@@ -591,7 +591,10 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
             } else {
               obj[key] = item[index - 3];
             }
-          } else if (key === "vukFaydaliOmur") {
+          } else if (
+            key === "bobiTfrsFaydaliOmur" ||
+            key === "vukFaydaliOmur"
+          ) {
             if (
               item[index - 3] == undefined ||
               item[index - 3] == null ||

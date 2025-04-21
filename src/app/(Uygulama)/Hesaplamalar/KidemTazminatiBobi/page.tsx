@@ -39,6 +39,8 @@ import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/F
 import { IconX } from "@tabler/icons-react";
 import KidemTazminatiBobiOrnekFisler from "./KidemTazminatiBobiOrnekFisler";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
+import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
+import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 
 const BCrumb = [
   {
@@ -67,10 +69,20 @@ interface Veri2 {
   aciklama: string;
 }
 
+interface Veri3 {
+  id: number;
+  link: string;
+  baslangicTarihi: string;
+  bitisTarihi: string;
+  tip: string;
+}
+
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+
+  const controller = "KidemTazminatiBobi";
 
   const [tip, setTip] = useState("VeriYukleme");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -157,12 +169,22 @@ const Page: React.FC = () => {
   const [ayrilan2023, setAyrilan2023] = useState<number>(0);
   const [personel2023, setPersonel2023] = useState<number>(0);
 
+  const [control, setControl] = useState(false);
+
+  const [fetchedData, setFetchedData] = useState<Veri3 | null>(null);
+
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
 
   const [hesaplaKaydetTiklandimi, setHesaplaKaydetTiklandimi] = useState(false);
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
+
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const handleClosePopUp = () => {
+    setIsPopUpOpen(false);
+  };
 
   const handleHesapla = async () => {
     try {
@@ -377,10 +399,57 @@ const Page: React.FC = () => {
     }
   };
 
+  const fetchData3 = async () => {
+    try {
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.id || 0,
+        user.yil || 0,
+        controller
+      );
+      if (baglantiBilgisi != undefined) {
+        // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
+        const formatDateTime = (dateTimeStr?: string) => {
+          if (!dateTimeStr) return "";
+          const date = new Date(dateTimeStr);
+          const pad = (n: number) => n.toString().padStart(2, "0");
+          return `${pad(date.getDate())}.${pad(
+            date.getMonth() + 1
+          )}.${date.getFullYear()} ${pad(date.getHours())}:${pad(
+            date.getMinutes()
+          )}`;
+        };
+
+        const newRow: Veri3 = {
+          id: baglantiBilgisi.id,
+          link: baglantiBilgisi.link,
+          baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
+          bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
+          tip: baglantiBilgisi.tip,
+        };
+        setFetchedData(newRow);
+      } else {
+        setFetchedData(null);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
     fetchData2();
+    fetchData3();
   }, []);
+
+  useEffect(() => {
+    if (control) {
+      fetchData3();
+      setControl(false);
+    }
+  }, [control]);
 
   useEffect(() => {
     if (hesaplaTiklandimi) {
@@ -424,7 +493,22 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
-                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setIsPopUpOpen(true);
+                    }}
+                  >
+                    Paylaşım Bağlantısı
+                  </Button>
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={
+                      kaydetTiklandimi ||
+                      hesaplaTiklandimi ||
+                      fetchedData != null
+                    }
                     variant="outlined"
                     color="primary"
                     sx={{ ml: 2 }}
@@ -1162,6 +1246,14 @@ const Page: React.FC = () => {
             </TabPanel>
           </TabContext>
         </Grid>
+        {isPopUpOpen && (
+          <PaylasimBaglantisiPopUp
+            controller={controller}
+            setControl={setControl}
+            isPopUpOpen={isPopUpOpen}
+            handleClosePopUp={handleClosePopUp}
+          ></PaylasimBaglantisiPopUp>
+        )}
       </Grid>
     </PageContainer>
   );
