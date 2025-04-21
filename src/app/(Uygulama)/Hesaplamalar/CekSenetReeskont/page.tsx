@@ -350,6 +350,16 @@ const Page: React.FC = () => {
                   <Button
                     type="button"
                     size="medium"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => setShowDrawer(true)}
+                    sx={{ ml: 2 }}
+                  >
+                    Ek Bilgi
+                  </Button>
+                  <Button
+                    type="button"
+                    size="medium"
                     disabled={
                       kaydetTiklandimi ||
                       hesaplaTiklandimi ||
@@ -369,60 +379,6 @@ const Page: React.FC = () => {
                   <CekSenetReeskontVeriYukleme
                     kaydetTiklandimi={kaydetTiklandimi}
                     setKaydetTiklandimi={setKaydetTiklandimi}
-                  />
-                </Grid>
-              </Grid>
-            </TabPanel>
-            <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
-              <Grid container>
-                <Grid
-                  item
-                  xs={12}
-                  lg={12}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                    mb: 2,
-                  }}
-                >
-                  <Tooltip title="Ek Bilgiler">
-                    <Fab
-                      color="info"
-                      size="small"
-                      onClick={() => setShowDrawer(true)}
-                    >
-                      <IconInfoCircle width={18.25} height={18.25} />
-                    </Fab>
-                  </Tooltip>
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={hesaplaTiklandimi}
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2, height: "100%" }}
-                    onClick={() => {
-                      setHesaplaTiklandimi(true);
-                      handleHesapla();
-                    }}
-                  >
-                    Hesapla
-                  </Button>
-                </Grid>
-                <Grid item xs={12} lg={12} marginBottom={3}>
-                  <CekSenetReeskontHesaplama
-                    hesaplaTiklandimi={hesaplaTiklandimi}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={12} marginBottom={3}>
-                  <CekSenetReeskontDuzeltmeFarklari
-                    hesaplaTiklandimi={hesaplaTiklandimi}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={12} marginBottom={3}>
-                  <CekSenetReeskontHesaplamadaKullanilanDegerler
-                    hesaplaTiklandimi={hesaplaTiklandimi}
                   />
                 </Grid>
                 <Dialog
@@ -772,6 +728,51 @@ const Page: React.FC = () => {
                     </Button>
                   </DialogActions>
                 </Dialog>
+              </Grid>
+            </TabPanel>
+            <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    mb: 2,
+                  }}
+                >
+                  <Button
+                    type="button"
+                    size="medium"
+                    disabled={hesaplaTiklandimi}
+                    variant="outlined"
+                    color="primary"
+                    sx={{ ml: 2, height: "100%" }}
+                    onClick={() => {
+                      setHesaplaTiklandimi(true);
+                      handleHesapla();
+                    }}
+                  >
+                    Hesapla
+                  </Button>
+                </Grid>
+                <Grid item xs={12} lg={12} marginBottom={3}>
+                  <CekSenetReeskontHesaplama
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={12} marginBottom={3}>
+                  <CekSenetReeskontDuzeltmeFarklari
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={12} marginBottom={3}>
+                  <CekSenetReeskontHesaplamadaKullanilanDegerler
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                  />
+                </Grid>
                 {openCartAlert && (
                   <InfoAlertCart
                     openCartAlert={openCartAlert}
