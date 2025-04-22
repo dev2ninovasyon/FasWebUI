@@ -60,7 +60,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
   const uyari = [
-    "Boş Bırakılmaması Gereken Sütunlar: Detay Hesap Kodu, Hesap Adı, Başlangıç Tarihi, Giriş Tutarı, Faydalı Ömür",
+    "Boş Bırakılmaması Gereken Sütunlar: Detay Hesap Kodu, Hesap Adı, Başlangıç Tarihi, Giriş Tutarı",
     "Detay Hesap Kodu Ve Hesap Adı Sütunları Boş Bırakılmamalıdır.",
     "Başlangıç Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
     "Elden Çıkarma Tarihi Sütununa GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
