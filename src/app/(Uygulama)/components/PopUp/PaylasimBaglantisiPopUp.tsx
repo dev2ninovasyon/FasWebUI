@@ -1,6 +1,7 @@
 import {
   createBaglantiBilgileri,
   deleteBaglantiBilgileriById,
+  getBaglantiBilgileri,
   getBaglantiBilgileriByTip,
 } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import { useSelector } from "@/store/hooks";
@@ -51,6 +52,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
   const theme = useTheme();
 
   const [fetchedData, setFetchedData] = useState<Veri | null>(null);
+  const [fetchedDatas, setFetchedDatas] = useState<Veri[] | null>(null);
 
   const [tip, setTip] = useState("");
 
@@ -119,7 +121,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
       );
       if (result) {
         await fetchData();
-        enqueueSnackbar("Bağlantı Silindi", {
+        enqueueSnackbar("Bağlantı Kaldırıldı", {
           variant: "success",
           autoHideDuration: 5000,
           style: {
@@ -131,7 +133,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
           },
         });
       } else {
-        enqueueSnackbar("Bağlantı Silinemedi", {
+        enqueueSnackbar("Bağlantı Kaldırılamadı", {
           variant: "error",
           autoHideDuration: 5000,
           style: {
@@ -150,38 +152,67 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
 
   const fetchData = async () => {
     try {
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.id || 0,
-        user.yil || 0,
-        tip
-      );
-      if (baglantiBilgisi != undefined) {
-        // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
-        const formatDateTime = (dateTimeStr?: string) => {
-          if (!dateTimeStr) return "";
-          const date = new Date(dateTimeStr);
-          const pad = (n: number) => n.toString().padStart(2, "0");
-          return `${pad(date.getDate())}.${pad(
-            date.getMonth() + 1
-          )}.${date.getFullYear()} ${pad(date.getHours())}:${pad(
-            date.getMinutes()
-          )}`;
-        };
+      // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
+      const formatDateTime = (dateTimeStr?: string) => {
+        if (!dateTimeStr) return "";
+        const date = new Date(dateTimeStr);
+        const pad = (n: number) => n.toString().padStart(2, "0");
+        return `${pad(date.getDate())}.${pad(
+          date.getMonth() + 1
+        )}.${date.getFullYear()} ${pad(date.getHours())}:${pad(
+          date.getMinutes()
+        )}`;
+      };
 
-        const newRow: Veri = {
-          id: baglantiBilgisi.id,
-          link: baglantiBilgisi.link,
-          baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
-          bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
-          tip: baglantiBilgisi.tip,
-        };
+      if (tip == "Hepsi") {
+        const baglantiBilgileri = await getBaglantiBilgileri(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.id || 0,
+          user.yil || 0
+        );
 
-        setFetchedData(newRow);
+        const rowsAll: Veri[] = [];
+        baglantiBilgileri.forEach((baglanti: any) => {
+          const newRow: Veri = {
+            id: baglanti.id,
+            link: baglanti.link,
+            baslangicTarihi: formatDateTime(baglanti.baslangicTarihi),
+            bitisTarihi: formatDateTime(baglanti.bitisTarihi),
+            tip: baglanti.tip,
+          };
+
+          rowsAll.push(newRow);
+        });
+
+        if (rowsAll.length > 0) {
+          setFetchedDatas(rowsAll);
+        } else {
+          setFetchedDatas(null);
+        }
       } else {
-        setFetchedData(null);
+        const baglantiBilgisi = await getBaglantiBilgileriByTip(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.id || 0,
+          user.yil || 0,
+          tip
+        );
+        if (baglantiBilgisi != undefined) {
+          const newRow: Veri = {
+            id: baglantiBilgisi.id,
+            link: baglantiBilgisi.link,
+            baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
+            bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
+            tip: baglantiBilgisi.tip,
+          };
+
+          setFetchedData(newRow);
+        } else {
+          setFetchedData(null);
+        }
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -248,10 +279,80 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
               </MenuItem>
             )}
             <MenuItem value={"Kredi"}>Kredi</MenuItem>
+            <MenuItem value={"Hepsi"}>Hepsi</MenuItem>
           </CustomSelect>
         </Box>
         <DialogContent>
-          {fetchedData == null ? (
+          {tip == "Hepsi" ? (
+            fetchedDatas?.map((fetchedData, index) => (
+              <Box px={3} key={index}>
+                <Grid container spacing={2} mb={3}>
+                  <Grid item xs={12}>
+                    <Typography variant="h6" p={1}>
+                      {fetchedData.tip == "CekSenetReeskont"
+                        ? "Çek Senet Reeskont"
+                        : fetchedData.tip == "DavaKarsiliklari"
+                        ? "Dava Karşılıkları"
+                        : fetchedData.tip == "KidemTazminatiBobi"
+                        ? "Kıdem Tazminatı (Bobi)"
+                        : fetchedData.tip == "KidemTazminatiTfrs"
+                        ? "Kıdem Tazminatı (Tfrs)"
+                        : fetchedData.tip}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={4} lg={4}>
+                    <Typography variant="body1" p={1}>
+                      Bağlantı:
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={8}
+                    lg={8}
+                    display="flex"
+                    alignItems="center"
+                  >
+                    <Typography
+                      variant="body1"
+                      p={1}
+                      sx={{ wordBreak: "break-all", flex: 1 }}
+                    >
+                      {fetchedData.link}
+                    </Typography>
+                    <Tooltip title={copied ? "Kopyalandı" : "Kopyala"}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleCopy(fetchedData.link)}
+                      >
+                        <ContentCopyIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
+                  <Grid item xs={12} sm={4} lg={4}>
+                    <Typography variant="body1" p={1}>
+                      Bağlantı Oluşturulma Zamanı:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={8} lg={8}>
+                    <Typography variant="body1" p={1}>
+                      {fetchedData.baslangicTarihi}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={4} lg={4}>
+                    <Typography variant="body1" p={1}>
+                      Bağlantı Erişimi Bitiş Zamanı:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={8} lg={8}>
+                    <Typography variant="body1" p={1}>
+                      {fetchedData.bitisTarihi}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
+            ))
+          ) : fetchedData == null ? (
             <>
               <Box px={3}>
                 <Typography variant="body1" p={1}>
@@ -354,7 +455,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
                   }}
                   fullWidth
                 >
-                  Paylaşım Bağlantısını Sil
+                  Paylaşım Bağlantısını Kaldır
                 </Button>
               </Box>
             </>
