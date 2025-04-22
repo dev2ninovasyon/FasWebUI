@@ -86,15 +86,12 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
   }, [customizer.activeMode]);
 
   const textValidator = (value: string, callback: (value: boolean) => void) => {
-    setTimeout(() => {
-      if (!value || value.trim() === "") {
-        // Eğer değer boşsa geçersiz kabul et
-
-        callback(false);
-      } else {
-        callback(true);
-      }
-    }, 1000);
+    if (!value || value.trim() === "") {
+      // Eğer değer boşsa geçersiz kabul et
+      callback(false);
+    } else {
+      callback(true);
+    }
   };
 
   const numberValidator = (
@@ -102,13 +99,11 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
     callback: (value: boolean) => void
   ) => {
     const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
-    setTimeout(() => {
-      if (numberRegex.test(value)) {
-        callback(true);
-      } else {
-        callback(false);
-      }
-    }, 1000);
+    if (numberRegex.test(value)) {
+      callback(true);
+    } else {
+      callback(false);
+    }
   };
 
   const integerValidator = (
@@ -116,13 +111,11 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
     callback: (value: boolean) => void
   ) => {
     const integerRegex = /^\d+$/; // Regex to match integers only
-    setTimeout(() => {
-      if (integerRegex.test(value)) {
-        callback(true);
-      } else {
-        callback(false);
-      }
-    }, 1000);
+    if (integerRegex.test(value)) {
+      callback(true);
+    } else {
+      callback(false);
+    }
   };
 
   function isRowEmpty(row: Veri): boolean {

@@ -77,11 +77,12 @@ const MaliyetCari: React.FC<Props> = ({
     callback: (value: boolean) => void
   ) => {
     const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
-    setTimeout(() => {
-      if (numberRegex.test(value)) {
-        callback(true);
-      } else {
-        enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girmelisiniz.", {
+    if (numberRegex.test(value)) {
+      callback(true);
+    } else {
+      enqueueSnackbar(
+        "Hatalı Sayı Girişi. Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+        {
           variant: "warning",
           autoHideDuration: 5000,
           style: {
@@ -91,10 +92,10 @@ const MaliyetCari: React.FC<Props> = ({
                 : theme.palette.warning.main,
             maxWidth: "720px",
           },
-        });
-        callback(false);
-      }
-    }, 1000);
+        }
+      );
+      callback(false);
+    }
   };
 
   const colHeaders = [

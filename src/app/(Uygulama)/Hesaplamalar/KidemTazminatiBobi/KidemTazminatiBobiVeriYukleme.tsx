@@ -91,15 +91,12 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   }, [customizer.activeMode]);
 
   const textValidator = (value: string, callback: (value: boolean) => void) => {
-    setTimeout(() => {
-      if (!value || value.trim() === "") {
-        // Eğer değer boşsa geçersiz kabul et
-
-        callback(false);
-      } else {
-        callback(true);
-      }
-    }, 1000);
+    if (!value || value.trim() === "") {
+      // Eğer değer boşsa geçersiz kabul et
+      callback(false);
+    } else {
+      callback(true);
+    }
   };
 
   const numberValidator = (
@@ -107,13 +104,11 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     callback: (value: boolean) => void
   ) => {
     const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
-    setTimeout(() => {
-      if (numberRegex.test(value)) {
-        callback(true);
-      } else {
-        callback(false);
-      }
-    }, 1000);
+    if (numberRegex.test(value)) {
+      callback(true);
+    } else {
+      callback(false);
+    }
   };
 
   const numberValidatorAllowNull = (
@@ -121,16 +116,14 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     callback: (value: boolean) => void
   ) => {
     const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
-    setTimeout(() => {
-      if (!value || String(value).trim() === "") {
-        // Eğer değer boşsa geçerli kabul et
-        callback(true);
-      } else if (numberRegex.test(value)) {
-        callback(true);
-      } else {
-        callback(false);
-      }
-    }, 1000);
+    if (!value || String(value).trim() === "") {
+      // Eğer değer boşsa geçerli kabul et
+      callback(true);
+    } else if (numberRegex.test(value)) {
+      callback(true);
+    } else {
+      callback(false);
+    }
   };
 
   const dateValidator = (
@@ -139,14 +132,11 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   ) => {
     // Tarih formatı düzenli ifadesi (dd.mm.yyyy)
     const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
-
-    setTimeout(() => {
-      if (dateRegex.test(value)) {
-        callback(true);
-      } else {
-        callback(false);
-      }
-    }, 1000);
+    if (dateRegex.test(value)) {
+      callback(true);
+    } else {
+      callback(false);
+    }
   };
 
   const dateValidatorAllowNull = (
@@ -155,25 +145,22 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   ) => {
     // Tarih formatı düzenli ifadesi (dd.mm.yyyy)
     const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+    if (!value || value.trim() === "") {
+      // Eğer değer boşsa geçerli kabul et
+      callback(true);
+    } else if (dateRegex.test(value)) {
+      const [, day, month, year] = value.match(dateRegex)!;
 
-    setTimeout(() => {
-      if (!value || value.trim() === "") {
-        // Eğer değer boşsa geçerli kabul et
-        callback(true);
-      } else if (dateRegex.test(value)) {
-        const [, day, month, year] = value.match(dateRegex)!;
+      const date = new Date(`${year}-${month}-${day}`);
+      const isValidDate =
+        date.getFullYear() === Number(year) &&
+        date.getMonth() + 1 === Number(month) &&
+        date.getDate() === Number(day);
 
-        const date = new Date(`${year}-${month}-${day}`);
-        const isValidDate =
-          date.getFullYear() === Number(year) &&
-          date.getMonth() + 1 === Number(month) &&
-          date.getDate() === Number(day);
-
-        callback(isValidDate);
-      } else {
-        callback(false);
-      }
-    }, 1000);
+      callback(isValidDate);
+    } else {
+      callback(false);
+    }
   };
 
   function isRowEmpty(row: Veri): boolean {
