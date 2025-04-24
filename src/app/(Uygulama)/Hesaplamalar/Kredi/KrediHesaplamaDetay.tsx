@@ -5,37 +5,24 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { getFormat } from "@/api/Veri/base";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import { getAmortismanHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
+import { getKrediHesaplanmisDetay } from "@/api/Hesaplamalar/Hesaplamalar";
 
 // register Handsontable's modules
 registerAllModules();
 
 interface Veri {
-  detayHesapKodu: string;
-  hesapAdi: string;
-  amortismanBaslangicTarihi: string;
-  amortismanBitisTarihi: string;
-  girisTutari: number;
-  yenidenDegerlemeArtisi: number;
-  iptalEdilecekYenidenDegerlemeTutari: number;
-  kalintiDeger: number;
-  bobiTfrsAmortismanOrani: number;
-  bobiTfrsCariYilAmortisman: number;
-  bobiTfrsDonemSonuBirikmisAmortisman: number;
-  itfaDurumu: string;
+  paraBirimi: string;
+  kisaVadeliAnaPara: number;
+  uzunVadeliAnaPara: number;
 }
 
 interface Props {
   hesaplaTiklandimi: boolean;
 }
-const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
+const KrediHesaplamaDetay: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -65,18 +52,9 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   }, [customizer.activeMode]);
 
   const colHeaders = [
-    "D. Hesap Kodu",
-    "Hesap Adı",
-    "A. Baş. Tarihi",
-    "A. Bit. Tarihi",
-    "Giriş Tutarı",
-    "Yen. Değ. Art.",
-    "İptal Edilecek Y. D. Tutarı",
-    "Kalıntı Değer",
-    "Bobi/Tfrs A. Oranı",
-    "Bobi/Tfrs Cari Yıl A.",
-    "Bobi/Tfrs Dönem Sonu Birikmiş A.",
-    "İtfa Durumu",
+    "Para Birimi",
+    "Kalan Uzun Vadeli Borçlanmaların Kısa Vadeye Dönüşen Ana Para Tutarları",
+    "Kalan Uzun Vadeli Borçlanmaların Ana Para Tutarları",
   ];
 
   const columns = [
@@ -87,88 +65,21 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Detay Hesap Kodu
-    {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // Hesap Adı
-    {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // A. Baş. Tarihi
-    {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // A. Bit. Tarihi
+    }, // Para Birimi
     {
       type: "numeric",
       numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Giriş Tutarı
+    }, // Kalan Uzun Vadeli Borçlanmaların Kısa Vadeye Dönüşen Ana Para Tutarları
     {
       type: "numeric",
       numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Yen. Değ. Art.
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // İptal Edilecek Y. D. Tutarı
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Kalıntı Değer
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Bobi/Tfrs A. Oranı
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Bobi/Tfrs Cari Yıl A.
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Bobi/Tfrs Dönem Sonu Birikmiş A.
-    {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // İtfa Durumu
+    }, // Kalan Uzun Vadeli Borçlanmaların Ana Para Tutarları
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -280,70 +191,23 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const amortismanVerileri = await getAmortismanHesaplanmis(
+      const krediDetayVerileri = await getKrediHesaplanmisDetay(
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
 
-      let totalYenidenDegerlemeArtisi = 0;
-      let totalYenidenDegerlemeAzalisi = 0;
-      let totalGirisTutari = 0;
-      let totalKalintiDeger = 0;
-      let totalBobiTfrsAmortismanOrani = 0;
-      let totalBobiTfrsCariYilAmortisman = 0;
-      let totalBobiTfrsDonemSonuBirikmisAmortisman = 0;
       const rowsAll: any = [];
-      amortismanVerileri.forEach((veri: any) => {
+      krediDetayVerileri.forEach((veri: any) => {
         const newRow: any = [
-          veri.detayHesapKodu,
-          veri.hesapAdi,
-          veri.amortismanBaslangicTarihi
-            .split("T")[0]
-            .split("-")
-            .reverse()
-            .join("."),
-          veri.amortismanBitisTarihi
-            .split("T")[0]
-            .split("-")
-            .reverse()
-            .join("."),
-          veri.girisTutari,
-          veri.yenidenDegerlemeArtisi,
-          veri.iptalEdilecekYenidenDegerlemeTutari,
-          veri.kalintiDeger,
-          veri.bobiTfrsAmortismanOrani,
-          veri.bobiTfrsCariYilAmortisman,
-          veri.bobiTfrsDonemSonuBirikmisAmortisman,
-          veri.itfaDurumu,
+          veri.paraBirimi,
+          veri.kisaVadeliAnaPara,
+          veri.uzunVadeliAnaPara,
         ];
         rowsAll.push(newRow);
-
-        totalYenidenDegerlemeArtisi += veri.yenidenDegerlemeArtisi;
-        totalYenidenDegerlemeAzalisi +=
-          veri.iptalEdilecekYenidenDegerlemeTutari;
-        totalGirisTutari += veri.girisTutari;
-        totalKalintiDeger += veri.kalintiDeger;
-        totalBobiTfrsAmortismanOrani += veri.bobiTfrsAmortismanOrani;
-        totalBobiTfrsCariYilAmortisman += veri.bobiTfrsCariYilAmortisman;
-        totalBobiTfrsDonemSonuBirikmisAmortisman +=
-          veri.bobiTfrsDonemSonuBirikmisAmortisman;
       });
-      rowsAll.push([
-        undefined,
-        "Toplam",
-        undefined,
-        undefined,
-        totalGirisTutari,
-        totalYenidenDegerlemeArtisi,
-        totalYenidenDegerlemeAzalisi,
-        totalKalintiDeger,
-        totalBobiTfrsAmortismanOrani,
-        totalBobiTfrsCariYilAmortisman,
-        totalBobiTfrsDonemSonuBirikmisAmortisman,
-        undefined,
-      ]);
+
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
@@ -363,56 +227,6 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       fetchData();
     }
   }, [hesaplaTiklandimi]);
-
-  const handleDownload = () => {
-    const hotTableInstance = hotTableComponent.current.hotInstance;
-    const data = hotTableInstance.getData();
-
-    const processedData = data.map((row: any) => row.slice(0));
-
-    const headers = hotTableInstance.getColHeader().slice(0);
-
-    const fullData = [headers, ...processedData];
-
-    async function createExcelFile() {
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet("Sayfa1");
-
-      fullData.forEach((row: any) => {
-        worksheet.addRow(row);
-      });
-
-      const headerRow = worksheet.getRow(1);
-      headerRow.font = {
-        name: "Calibri",
-        size: 12,
-        bold: true,
-        color: { argb: "FFFFFF" },
-      };
-      headerRow.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "1a6786" },
-      };
-      headerRow.alignment = { horizontal: "left" };
-
-      worksheet.columns.forEach((column) => {
-        column.width = 25;
-      });
-
-      try {
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        saveAs(blob, "AmortismanHesaplama.xlsx");
-        console.log("Excel dosyası başarıyla oluşturuldu");
-      } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
-      }
-    }
-    createExcelFile();
-  };
 
   useEffect(() => {
     if (hotTableComponent.current) {
@@ -446,7 +260,7 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[60, 120, 60, 60, 100, 100, 100, 100, 60, 100, 100, 80]}
+        colWidths={[60, 120, 120]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -467,24 +281,8 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         afterRenderer={afterRenderer}
         contextMenu={["alignment", "copy"]}
       />
-      <Grid container marginTop={2} marginBottom={1}>
-        <Grid item xs={12} lg={10}></Grid>
-        <Grid
-          item
-          xs={12}
-          lg={2}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <ExceleAktarButton
-            handleDownload={handleDownload}
-          ></ExceleAktarButton>
-        </Grid>
-      </Grid>
     </>
   );
 };
 
-export default AmortismanHesaplama;
+export default KrediHesaplamaDetay;

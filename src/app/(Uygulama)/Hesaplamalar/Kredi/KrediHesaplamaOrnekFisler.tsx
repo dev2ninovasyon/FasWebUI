@@ -6,36 +6,40 @@ import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import { getFormat } from "@/api/Veri/base";
+import React, { useEffect, useRef, useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import { getAmortismanHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
+import { getKrediHesaplanmisOrnekFisler } from "@/api/Hesaplamalar/Hesaplamalar";
+import { createFisGirisiVerisi } from "@/api/Donusum/FisGirisi";
+import { enqueueSnackbar } from "notistack";
 
 // register Handsontable's modules
 registerAllModules();
 
 interface Veri {
-  detayHesapKodu: string;
+  yevmiyeNo: number;
+  fisTipi: string;
+  detayKodu: string;
   hesapAdi: string;
-  amortismanBaslangicTarihi: string;
-  amortismanBitisTarihi: string;
-  girisTutari: number;
-  yenidenDegerlemeArtisi: number;
-  iptalEdilecekYenidenDegerlemeTutari: number;
-  kalintiDeger: number;
-  bobiTfrsAmortismanOrani: number;
-  bobiTfrsCariYilAmortisman: number;
-  bobiTfrsDonemSonuBirikmisAmortisman: number;
-  itfaDurumu: string;
+  paraBirimi: string;
+  borcTutari: number;
+  alacakTutari: number;
+  aciklama: string;
 }
 
 interface Props {
   hesaplaTiklandimi: boolean;
+  kaydetTiklandimi: boolean;
+  setkaydetTiklandimi(bool: boolean): void;
 }
-const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
+
+const KrediHesaplamaOrnekFisler: React.FC<Props> = ({
+  hesaplaTiklandimi,
+  kaydetTiklandimi,
+  setkaydetTiklandimi,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -45,7 +49,77 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const [rowCount, setRowCount] = useState(0);
 
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [fetchedData, setFetchedData] = useState<any[]>([]);
+
+  const handleKaydet = async (selectedFetchedData: any) => {
+    const keys = [
+      "denetciId",
+      "denetlenenId",
+      "yil",
+      "yevmiyeNo",
+      "fisTipi",
+      "detayKodu",
+      "hesapAdi",
+      "borc",
+      "alacak",
+      "aciklama",
+      "tarih",
+    ];
+
+    const jsonData = selectedFetchedData
+      .filter((veri: any) => veri[0])
+      .map((item: any[]) => {
+        let obj: { [key: string]: any } = {};
+
+        keys.forEach((key, i) => {
+          if (key === "denetciId") {
+            obj[key] = user.denetciId;
+          } else if (key === "denetlenenId") {
+            obj[key] = user.denetlenenId;
+          } else if (key === "yil") {
+            obj[key] = user.yil ? user.yil : 0;
+          } else if (key === "tarih") {
+            obj[key] = "";
+          } else if (key === "borc" || key === "alacak" || key === "aciklama") {
+            obj[key] = item[i - 1];
+          } else {
+            obj[key] = item[i - 2];
+          }
+        });
+
+        return obj;
+      });
+
+    try {
+      const result = await createFisGirisiVerisi(user.token || "", jsonData);
+      if (result) {
+        enqueueSnackbar("Fiş Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+          },
+        });
+      } else {
+        enqueueSnackbar("Fiş Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+          },
+        });
+      }
+      setkaydetTiklandimi(false);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -64,22 +138,57 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     loadStyles();
   }, [customizer.activeMode]);
 
+  const numberValidator = (
+    value: string,
+    callback: (value: boolean) => void
+  ) => {
+    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
+    if (numberRegex.test(value)) {
+      callback(true);
+    } else {
+      enqueueSnackbar(
+        "Hatalı Sayı Girişi. Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+        {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+            maxWidth: "720px",
+          },
+        }
+      );
+      callback(false);
+    }
+  };
+
   const colHeaders = [
-    "D. Hesap Kodu",
+    "Seçim",
+    "Fiş No",
+    "Fiş Tipi",
+    "Detay Kodu",
     "Hesap Adı",
-    "A. Baş. Tarihi",
-    "A. Bit. Tarihi",
-    "Giriş Tutarı",
-    "Yen. Değ. Art.",
-    "İptal Edilecek Y. D. Tutarı",
-    "Kalıntı Değer",
-    "Bobi/Tfrs A. Oranı",
-    "Bobi/Tfrs Cari Yıl A.",
-    "Bobi/Tfrs Dönem Sonu Birikmiş A.",
-    "İtfa Durumu",
+    "Para Birimi",
+    "Borç",
+    "Alacak",
+    "Açıklama",
   ];
 
   const columns = [
+    {
+      type: "checkbox",
+      className: "htCenter",
+    }, // Seçim
+    {
+      type: "numeric",
+      columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Fiş No
     {
       type: "text",
       columnSorting: true,
@@ -87,7 +196,15 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Detay Hesap Kodu
+    }, // Fiş Tipi
+    {
+      type: "text",
+      columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Detay Kodu
     {
       type: "text",
       columnSorting: true,
@@ -103,7 +220,21 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // A. Baş. Tarihi
+    }, // Para Birimi
+    {
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      className: "htRight",
+      validator: numberValidator,
+      allowInvalid: false,
+    }, // Borç
+    {
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      className: "htRight",
+      validator: numberValidator,
+      allowInvalid: false,
+    }, // Alacak
     {
       type: "text",
       columnSorting: true,
@@ -111,64 +242,7 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // A. Bit. Tarihi
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Giriş Tutarı
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Yen. Değ. Art.
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // İptal Edilecek Y. D. Tutarı
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Kalıntı Değer
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Bobi/Tfrs A. Oranı
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Bobi/Tfrs Cari Yıl A.
-    {
-      type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Bobi/Tfrs Dönem Sonu Birikmiş A.
-    {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // İtfa Durumu
+    }, // Açıklama
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -200,26 +274,60 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
     TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
 
-    // Create span for the header text
-    let span = div.querySelector("span");
-    if (!span) {
-      span = document.createElement("span");
-      div.appendChild(span);
-    }
-    span.textContent = colHeaders[col];
-    span.style.position = "absolute";
-    span.style.marginRight = "16px";
-    span.style.left = "4px";
+    if (col != 0) {
+      // Create span for the header text
+      let span = div.querySelector("span");
+      if (!span) {
+        span = document.createElement("span");
+        div.appendChild(span);
+      }
+      span.textContent = colHeaders[col];
+      span.style.position = "absolute";
+      span.style.marginRight = "16px";
+      span.style.left = "4px";
 
-    // Create button if it does not exist
-    let button = div.querySelector("button");
-    if (!button) {
-      button = document.createElement("button");
-      button.style.display = "none";
-      div.appendChild(button);
+      // Create button if it does not exist
+      let button = div.querySelector("button");
+      if (!button) {
+        button = document.createElement("button");
+        button.style.display = "none";
+        div.appendChild(button);
+      }
+      button.style.position = "absolute";
+      button.style.right = "4px";
+    } else {
+      div.style.justifyContent = "space-between";
+
+      // Destroy the button if it exists
+      let button = div.querySelector("button");
+      if (button) {
+        div.removeChild(button); // Remove the button from the DOM
+      }
+
+      // Create checkbox if it does not exist
+      let checkbox = div.querySelector("input[type='checkbox']");
+      if (!checkbox) {
+        checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = true;
+        div.appendChild(checkbox);
+      }
+
+      checkbox.onclick = function () {
+        if (checkbox.checked) {
+          fetchedData.map((item) => {
+            item[0] = true;
+          });
+        } else {
+          fetchedData.map((item) => {
+            item[0] = false;
+          });
+        }
+
+        const hotTableInstance = hotTableComponent.current.hotInstance;
+        hotTableInstance.render();
+      };
     }
-    button.style.position = "absolute";
-    button.style.right = "4px";
   };
 
   const afterGetRowHeader = (row: any, TH: any) => {
@@ -280,70 +388,30 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const amortismanVerileri = await getAmortismanHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
-        user.yil || 0,
-        user.denetlenenId || 0
-      );
+      const krediHesaplanmisOrnekFisVerileri =
+        await getKrediHesaplanmisOrnekFisler(
+          user.token || "",
+          user.denetciId || 0,
+          user.yil || 0,
+          user.denetlenenId || 0
+        );
 
-      let totalYenidenDegerlemeArtisi = 0;
-      let totalYenidenDegerlemeAzalisi = 0;
-      let totalGirisTutari = 0;
-      let totalKalintiDeger = 0;
-      let totalBobiTfrsAmortismanOrani = 0;
-      let totalBobiTfrsCariYilAmortisman = 0;
-      let totalBobiTfrsDonemSonuBirikmisAmortisman = 0;
       const rowsAll: any = [];
-      amortismanVerileri.forEach((veri: any) => {
+      krediHesaplanmisOrnekFisVerileri.forEach((veri: any) => {
         const newRow: any = [
-          veri.detayHesapKodu,
+          true,
+          veri.yevmiyeNo,
+          veri.fisTipi,
+          veri.detayKodu,
           veri.hesapAdi,
-          veri.amortismanBaslangicTarihi
-            .split("T")[0]
-            .split("-")
-            .reverse()
-            .join("."),
-          veri.amortismanBitisTarihi
-            .split("T")[0]
-            .split("-")
-            .reverse()
-            .join("."),
-          veri.girisTutari,
-          veri.yenidenDegerlemeArtisi,
-          veri.iptalEdilecekYenidenDegerlemeTutari,
-          veri.kalintiDeger,
-          veri.bobiTfrsAmortismanOrani,
-          veri.bobiTfrsCariYilAmortisman,
-          veri.bobiTfrsDonemSonuBirikmisAmortisman,
-          veri.itfaDurumu,
+          veri.paraBirimi,
+          veri.borcTutari == undefined ? "Hesaplanacak" : veri.borcTutari,
+          veri.alacakTutari == undefined ? "Hesaplanacak" : veri.alacakTutari,
+          veri.aciklama,
         ];
         rowsAll.push(newRow);
-
-        totalYenidenDegerlemeArtisi += veri.yenidenDegerlemeArtisi;
-        totalYenidenDegerlemeAzalisi +=
-          veri.iptalEdilecekYenidenDegerlemeTutari;
-        totalGirisTutari += veri.girisTutari;
-        totalKalintiDeger += veri.kalintiDeger;
-        totalBobiTfrsAmortismanOrani += veri.bobiTfrsAmortismanOrani;
-        totalBobiTfrsCariYilAmortisman += veri.bobiTfrsCariYilAmortisman;
-        totalBobiTfrsDonemSonuBirikmisAmortisman +=
-          veri.bobiTfrsDonemSonuBirikmisAmortisman;
       });
-      rowsAll.push([
-        undefined,
-        "Toplam",
-        undefined,
-        undefined,
-        totalGirisTutari,
-        totalYenidenDegerlemeArtisi,
-        totalYenidenDegerlemeAzalisi,
-        totalKalintiDeger,
-        totalBobiTfrsAmortismanOrani,
-        totalBobiTfrsCariYilAmortisman,
-        totalBobiTfrsDonemSonuBirikmisAmortisman,
-        undefined,
-      ]);
+
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
@@ -363,6 +431,12 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       fetchData();
     }
   }, [hesaplaTiklandimi]);
+
+  useEffect(() => {
+    if (kaydetTiklandimi && fetchedData) {
+      handleKaydet(fetchedData);
+    }
+  }, [kaydetTiklandimi]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
@@ -405,7 +479,7 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         const blob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, "AmortismanHesaplama.xlsx");
+        saveAs(blob, `KrediHesaplamaOrnekFisler.xlsx`);
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
@@ -437,23 +511,23 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         style={{
           height: "100%",
           width: "100%",
-          maxHeight: 684,
+          maxHeight: 342,
           maxWidth: "100%",
         }}
         language={dictionary.languageCode}
         ref={hotTableComponent}
         data={fetchedData}
-        height={684}
+        height={342}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[60, 120, 60, 60, 100, 100, 100, 100, 60, 100, 100, 80]}
+        colWidths={[40, 60, 60, 80, 100, 80, 80, 80, 80]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
         rowHeights={35}
         autoWrapRow={true}
         minRows={rowCount}
-        minCols={8}
+        minCols={9}
         filters={true}
         columnSorting={true}
         dropdownMenu={[
@@ -467,7 +541,7 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         afterRenderer={afterRenderer}
         contextMenu={["alignment", "copy"]}
       />
-      <Grid container marginTop={2} marginBottom={1}>
+      <Grid container marginTop={2}>
         <Grid item xs={12} lg={10}></Grid>
         <Grid
           item
@@ -487,4 +561,4 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   );
 };
 
-export default AmortismanHesaplama;
+export default KrediHesaplamaOrnekFisler;

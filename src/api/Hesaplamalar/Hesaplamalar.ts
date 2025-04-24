@@ -113,6 +113,60 @@ export const getKrediHesaplanmis = async (
   }
 };
 
+export const getKrediHesaplanmisDetay = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Hesaplamalar/KrediHesaplanmisDetay?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Kredi Detay Tablosu verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getKrediHesaplanmisOrnekFisler = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Hesaplamalar/KrediHesaplanmisOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Kredi Örnek Fişler getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const createDavaKarsiliklariHesaplanmis = async (
   token: string,
   denetciId: number,

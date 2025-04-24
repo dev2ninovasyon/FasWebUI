@@ -3,7 +3,20 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
-import { Button, Divider, Grid, Tab, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Divider,
+  Grid,
+  IconButton,
+  Stack,
+  Tab,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
@@ -14,6 +27,10 @@ import KrediVeriYukleme from "./KrediVeriYukleme";
 import KrediHesaplama from "./KrediHesaplama";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
+import KrediHesaplamaDetay from "./KrediHesaplamaDetay";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
+import { IconX } from "@tabler/icons-react";
+import KrediHesaplamaOrnekFisler from "./KrediHesaplamaOrnekFisler";
 
 const BCrumb = [
   {
@@ -53,6 +70,10 @@ const Page: React.FC = () => {
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
 
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
+  const [hesaplaKaydetTiklandimi, setHesaplaKaydetTiklandimi] = useState(false);
+
+  const [floatingButtonTiklandimi, setFloatingButtonTiklandimi] =
+    useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -236,9 +257,83 @@ const Page: React.FC = () => {
                     Hesapla
                   </Button>
                 </Grid>
-                <Grid item xs={12} lg={12}>
+                <Grid item xs={12} lg={12} mb={3}>
                   <KrediHesaplama hesaplaTiklandimi={hesaplaTiklandimi} />
                 </Grid>
+                <Grid item xs={12} lg={12}>
+                  <KrediHesaplamaDetay hesaplaTiklandimi={hesaplaTiklandimi} />
+                </Grid>
+                <FloatingButtonFisler
+                  handleClick={() => setFloatingButtonTiklandimi(true)}
+                />
+                <Dialog
+                  open={floatingButtonTiklandimi}
+                  onClose={() => setFloatingButtonTiklandimi(false)}
+                  fullWidth
+                  maxWidth={"lg"}
+                >
+                  <DialogContent
+                    className="testdialog"
+                    sx={{ overflow: "visible" }}
+                  >
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      justifyContent={"space-between"}
+                      alignItems="center"
+                    >
+                      <Box>
+                        <Typography variant="h5" p={1}>
+                          Sizin için oluşturduğum fişleri kaydetmek ister
+                          misiniz?
+                        </Typography>
+                        <Typography variant="body1" p={1}>
+                          Sizin için oluşturduğum fiş kayıtlarının doğruluğunu
+                          mutlaka kontrol edin. Fişlerinizi kontrol etmeden
+                          kaydetmek, hatalı kayıtların oluşmasına yol açabilir.
+                          Unutmayın, bu alanda gerçekleştirdiğiniz işlemlerden
+                          kaynaklanan hatalı kayıtlar
+                          <strong> tamamen sizin sorumluluğunuzdadır</strong>.
+                        </Typography>
+                      </Box>
+                      <IconButton
+                        size="small"
+                        onClick={() => setFloatingButtonTiklandimi(false)}
+                      >
+                        <IconX size="18" />
+                      </IconButton>
+                    </Stack>
+                  </DialogContent>
+                  <Divider />
+                  <DialogContent>
+                    <KrediHesaplamaOrnekFisler
+                      hesaplaTiklandimi={hesaplaTiklandimi}
+                      kaydetTiklandimi={hesaplaKaydetTiklandimi}
+                      setkaydetTiklandimi={setHesaplaKaydetTiklandimi}
+                    />
+                  </DialogContent>
+                  <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      onClick={() => {
+                        setHesaplaKaydetTiklandimi(true);
+                        setFloatingButtonTiklandimi(false);
+                      }}
+                      sx={{ width: "20%" }}
+                    >
+                      Evet, Kaydet
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => setFloatingButtonTiklandimi(false)}
+                      sx={{ width: "20%" }}
+                    >
+                      Hayır, Vazgeç
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 {openCartAlert && (
                   <InfoAlertCart
                     openCartAlert={openCartAlert}

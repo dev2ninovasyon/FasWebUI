@@ -71,7 +71,6 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         dispatch(setMail(email));
         dispatch(setUnvan(unvan));
 
-        setIsLoggedIn(true);
         router.push("/Anasayfa");
       } else {
         // Hata durumunda kullanıcıya bildirim gösterme veya başka bir işlem yapma
@@ -92,7 +91,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
 
       {subtext}
 
-      <Stack>
+      <Stack mb={3}>
         <Box>
           <CustomFormLabel htmlFor="username">Email</CustomFormLabel>
           <CustomTextField
@@ -112,19 +111,6 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
             onChange={(e: any) => setPassword(e.target.value)}
           />
         </Box>
-        <Stack justifyContent="end" direction="row" alignItems="center" my={2}>
-          <Typography
-            component={Link}
-            href="/auth/auth1/forgot-password"
-            fontWeight="500"
-            sx={{
-              textDecoration: "none",
-              color: "primary.main",
-            }}
-          >
-            Şifremi Unuttum
-          </Typography>
-        </Stack>
       </Stack>
       <Box>
         {!isLoggedIn && (
@@ -133,7 +119,10 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
             variant="contained"
             size="large"
             fullWidth
-            onClick={handleLogin}
+            onClick={() => {
+              setIsLoggedIn(true);
+              handleLogin();
+            }}
           >
             Giriş
           </Button>
