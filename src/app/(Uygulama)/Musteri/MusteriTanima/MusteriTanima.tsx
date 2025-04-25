@@ -16,9 +16,14 @@ import {
   getMusteriTanimaSayisalBilgiler,
   updateMusteriTanimaSayisalBilgiler,
 } from "@/api/Musteri/MusteriIslemleri";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
@@ -80,20 +85,17 @@ const MusteriTanima: React.FC<Props> = ({
     if (numberRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar(
-        "Hatalı Sayı Girişi. Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-        {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        }
-      );
+      enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
       callback(false);
     }
   };
@@ -106,20 +108,17 @@ const MusteriTanima: React.FC<Props> = ({
     if (integerRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar(
-        "Hatalı Sayı Girişi. Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-        {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        }
-      );
+      enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
       callback(false);
     }
   };
@@ -153,6 +152,7 @@ const MusteriTanima: React.FC<Props> = ({
       numericFormat: {
         pattern: "0,0.00",
         columnSorting: true,
+        culture: "tr-TR",
       },
       className: "htRight",
       validator: numberValidator,
@@ -160,63 +160,99 @@ const MusteriTanima: React.FC<Props> = ({
     }, // Aktif Büyüklük
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Ciro
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Net Kar
     {
       type: "numeric",
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: integerValidator,
       allowInvalid: false,
     }, // Yıllık Fiş Sayısı
     {
       type: "numeric",
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: integerValidator,
       allowInvalid: false,
     }, // Yıllık Fatura Sayısı
     {
       type: "numeric",
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: integerValidator,
       allowInvalid: false,
     }, // Çalışan Sayısı
     {
       type: "numeric",
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: integerValidator,
       allowInvalid: false,
     }, // Şube Sayısı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // İştirak Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Bağlı Ortaklık Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
@@ -348,6 +384,21 @@ const MusteriTanima: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
       }
     }
   };
@@ -573,6 +624,7 @@ const MusteriTanima: React.FC<Props> = ({
         afterRenderer={afterRenderer}
         afterPaste={afterPaste} // Add afterPaste hook
         afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
       />
       <Grid container marginTop={2}>
         <Grid item xs={12} lg={10}></Grid>

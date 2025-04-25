@@ -7,15 +7,19 @@ import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { getFormat } from "@/api/Veri/base";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getAmortismanHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   detayHesapKodu: string;
@@ -114,49 +118,77 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // A. Bit. Tarihi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Giriş Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Yen. Değ. Art.
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // İptal Edilecek Y. D. Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Kalıntı Değer
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Bobi/Tfrs A. Oranı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Bobi/Tfrs Cari Yıl A.
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,

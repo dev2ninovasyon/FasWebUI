@@ -27,9 +27,14 @@ import { getIliskiliTarafSiniflama } from "@/api/Hesaplamalar/Hesaplamalar";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import IliskiliTarafSiniflamaOrnekFisler from "./IliskiliTarafSiniflamaOrnekFisler";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
@@ -136,7 +141,11 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -144,7 +153,11 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
     }, // Borç
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -152,7 +165,11 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
     }, // Alacak
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

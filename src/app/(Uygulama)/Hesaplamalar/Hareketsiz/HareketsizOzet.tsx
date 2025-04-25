@@ -12,9 +12,14 @@ import {
   getHareketsizStoklarOzet,
   getHareketsizTicariAlacaklarOzet,
 } from "@/api/Hesaplamalar/Hesaplamalar";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   kebirKodu: number;
@@ -86,7 +91,11 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -94,7 +103,11 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
     }, // Borç
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -102,7 +115,11 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
     }, // Alacak
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

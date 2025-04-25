@@ -7,16 +7,19 @@ import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { getFormat } from "@/api/Veri/base";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import { getMizanVerileri } from "@/api/Veri/Mizan";
 import { getFisIslemSayilari } from "@/api/DenetimKanitlari/DenetimKanitlari";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   kebirKodu: number;
@@ -89,50 +92,78 @@ const FisIslemSayilari = () => {
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Borç
     {
       type: "numeric",
-      columnSorting: true,
-      className: "htLeft",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
       readOnly: true,
       editor: false,
     }, // Borç İşlem Sayısı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Borç Ortalaması
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Alacak
     {
       type: "numeric",
-      columnSorting: true,
-      className: "htLeft",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
       readOnly: true,
       editor: false,
     }, // Alacak İşlem Sayısı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Alacak Ortalaması
     {
       type: "numeric",
-      columnSorting: true,
-      className: "htLeft",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
       readOnly: true,
       editor: false,
     }, // Ortalama İşlem Sayısı

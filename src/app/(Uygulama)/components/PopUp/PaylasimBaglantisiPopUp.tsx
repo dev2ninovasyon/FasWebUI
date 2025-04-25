@@ -191,6 +191,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         } else {
           setFetchedDatas(null);
         }
+        setControl(true);
       } else {
         const baglantiBilgisi = await getBaglantiBilgileriByTip(
           user.token || "",

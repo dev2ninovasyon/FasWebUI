@@ -19,9 +19,14 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { usePathname } from "next/navigation";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   taksitTarihi: string;
@@ -61,8 +66,8 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
   const uyari = [
     "Boş Bırakılmaması Gereken Sütunlar: Taksit Tarihi, Taksit Tutarı, Faiz Tutarı",
     "Taksit Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
-    "Taksit Tutarı Ve Faiz Tutarı Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-    "Fon + Vergi Ve Ana Para Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
+    "Taksit Tutarı Ve Faiz Tutarı Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
+    "Fon + Vergi Ve Ana Para Sütunlarına Ondalıklı Sayı Girilmelidir Veya Boş Bırakılabilir.",
   ];
 
   const [endRow, setEndRow] = useState(0);
@@ -200,28 +205,44 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
     }, // Taksit Tarihi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Taksit Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Faiz Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // Fon + Vergi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
@@ -390,6 +411,21 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([1, 2, 3, 4].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
       }
     }
   };
@@ -721,6 +757,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         afterRenderer={afterRenderer}
         afterPaste={afterPaste} // Add afterPaste hook
         afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
         contextMenu={[

@@ -12,9 +12,14 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getCekSenetReeskontHesaplama } from "@/api/Hesaplamalar/Hesaplamalar";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   paraBirimi: string;
@@ -79,7 +84,11 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Para Birimi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -87,7 +96,11 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Alınan Nominal Değer
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -95,7 +108,11 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Verilen Nominal Değer
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -103,7 +120,11 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Alınan İç İskonto
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -111,7 +132,11 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Verilen İç İskonto
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -119,7 +144,11 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Alınan Net Bugünkü Değer
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

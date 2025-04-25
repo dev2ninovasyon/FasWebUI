@@ -22,9 +22,14 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   siraNo: number;
@@ -86,20 +91,17 @@ const VukMizan = () => {
     if (numberRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar(
-        "Hatalı Sayı Girişi. Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-        {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        }
-      );
+      enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
       callback(false);
     }
   };
@@ -112,20 +114,17 @@ const VukMizan = () => {
     if (integerRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar(
-        "Hatalı Sayı Girişi. Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-        {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        }
-      );
+      enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
       callback(false);
     }
   };
@@ -242,14 +241,22 @@ const VukMizan = () => {
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Borç Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
@@ -572,6 +579,21 @@ const VukMizan = () => {
       //changedRowData[6] == null ||
     ) {
       setHalfPasteControl(true);
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([4, 5].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
+      }
     }
   };
 
@@ -954,6 +976,7 @@ const VukMizan = () => {
         afterRenderer={afterRenderer}
         afterPaste={afterPaste} // Add afterPaste hook
         afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
         contextMenu={[

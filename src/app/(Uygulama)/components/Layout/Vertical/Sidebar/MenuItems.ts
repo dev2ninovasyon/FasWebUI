@@ -283,6 +283,12 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
     },
     {
       id: uniqueId(),
+      title: "MÜŞTERİ BELGELERİ",
+      icon: IconFileDescription,
+      href: "/",
+    },
+    {
+      id: uniqueId(),
       title: "HESAPLAMALAR",
       icon: IconCalculator,
       href: "/Hesaplamalar",
@@ -846,113 +852,6 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
     },
     {
       id: uniqueId(),
-      title: "MÜŞTERİ BELGELERİ",
-      icon: IconFileDescription,
-      href: "/",
-    },
-    {
-      id: uniqueId(),
-      title: "KYS",
-      icon: IconFileCheck,
-      href: "/Kys",
-      children: [
-        {
-          id: uniqueId(),
-          title: "KYS-1",
-          icon: IconPoint,
-          href: "/Kys/1",
-          children: [
-            {
-              id: uniqueId(),
-              title: "Risk Değerlendirme Süreci",
-              icon: IconPoint,
-              href: "/Kys/1/RiskDegerlendirmeSureci",
-              children: [
-                {
-                  id: uniqueId(),
-                  title: "Risk Belirleme",
-                  icon: IconPoint,
-                  href: "/Kys/1/RiskDegerlendirmeSureci/RiskBelirleme",
-                },
-                {
-                  id: uniqueId(),
-                  title: "Riske Karşılık Verme",
-                  icon: IconPoint,
-                  href: "/Kys/1/RiskDegerlendirmeSureci/RiskeKarsilikVerme",
-                },
-              ],
-            },
-
-            {
-              id: uniqueId(),
-              title: "Üst Yönetim ve Liderlik Yapısı",
-              icon: IconPoint,
-              href: "/Kys/1/UstYonetimVeLiderlikYapisi",
-            },
-            {
-              id: uniqueId(),
-              title: "Etik Hükümler",
-              icon: IconPoint,
-              href: "/Kys/1/EtikHukumler",
-            },
-            {
-              id: uniqueId(),
-              title:
-                "Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Ettirilmesi",
-              icon: IconPoint,
-              href: "/Kys/1/MusteriIliskileriVeSozlesmeKabulu",
-            },
-            {
-              id: uniqueId(),
-              title: "Denetimin Yürütülmesi",
-              icon: IconPoint,
-              href: "/Kys/1/DenetiminYurutulmesi",
-            },
-            {
-              id: uniqueId(),
-              title: "Kaynaklar",
-              icon: IconPoint,
-              href: "/Kys/1/Kaynaklar",
-              children: [
-                {
-                  id: uniqueId(),
-                  title: "İnsan Kaynakları",
-                  icon: IconPoint,
-                  href: "/Kys/1/Kaynaklar/InsanKaynaklari",
-                },
-                {
-                  id: uniqueId(),
-                  title:
-                    "Teknolojik, Entelektüel Kaynaklar ve Hizmet Sağlayacılar",
-                  icon: IconPoint,
-                  href: "/Kys/1/Kaynaklar/HizmetSaglayicilar",
-                },
-              ],
-            },
-            {
-              id: uniqueId(),
-              title: "Bilgi ve İletişim",
-              icon: IconPoint,
-              href: "/Kys/1/BilgiVeIletisim",
-            },
-            {
-              id: uniqueId(),
-              title: "İzleme ve Düzeltme",
-              icon: IconPoint,
-              href: "/Kys/1/IzlemeVeDuzeltme",
-            },
-          ],
-        },
-        {
-          id: uniqueId(),
-          title: "KYS-2",
-          icon: IconPoint,
-          href: "/Kys/2",
-        },
-      ],
-    },
-    {
-      id: uniqueId(),
       title: "RAPOR",
       icon: IconFileAnalytics,
       href: "/Rapor",
@@ -1021,7 +920,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           id: uniqueId(),
           title: "Düzeltme Katsayıları",
           icon: IconPoint,
-          href: "/Enflasyon",
+          href: "/Enflasyon/DuzeltmeKatsayilari",
         },
       ],
     },
@@ -1159,6 +1058,107 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           title: "Sürdürülebilirlik",
           icon: IconPoint,
           href: "/",
+        },
+      ],
+    },
+    {
+      id: uniqueId(),
+      title: "KYS",
+      icon: IconFileCheck,
+      href: "/Kys",
+      children: [
+        {
+          id: uniqueId(),
+          title: "KYS-1",
+          icon: IconPoint,
+          href: "/Kys/1",
+          children: [
+            {
+              id: uniqueId(),
+              title: "Risk Değerlendirme Süreci",
+              icon: IconPoint,
+              href: "/Kys/1/RiskDegerlendirmeSureci",
+              children: [
+                {
+                  id: uniqueId(),
+                  title: "Risk Belirleme",
+                  icon: IconPoint,
+                  href: "/Kys/1/RiskDegerlendirmeSureci/RiskBelirleme",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Riske Karşılık Verme",
+                  icon: IconPoint,
+                  href: "/Kys/1/RiskDegerlendirmeSureci/RiskeKarsilikVerme",
+                },
+              ],
+            },
+
+            {
+              id: uniqueId(),
+              title: "Üst Yönetim ve Liderlik Yapısı",
+              icon: IconPoint,
+              href: "/Kys/1/UstYonetimVeLiderlikYapisi",
+            },
+            {
+              id: uniqueId(),
+              title: "Etik Hükümler",
+              icon: IconPoint,
+              href: "/Kys/1/EtikHukumler",
+            },
+            {
+              id: uniqueId(),
+              title:
+                "Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Ettirilmesi",
+              icon: IconPoint,
+              href: "/Kys/1/MusteriIliskileriVeSozlesmeKabulu",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetimin Yürütülmesi",
+              icon: IconPoint,
+              href: "/Kys/1/DenetiminYurutulmesi",
+            },
+            {
+              id: uniqueId(),
+              title: "Kaynaklar",
+              icon: IconPoint,
+              href: "/Kys/1/Kaynaklar",
+              children: [
+                {
+                  id: uniqueId(),
+                  title: "İnsan Kaynakları",
+                  icon: IconPoint,
+                  href: "/Kys/1/Kaynaklar/InsanKaynaklari",
+                },
+                {
+                  id: uniqueId(),
+                  title:
+                    "Teknolojik, Entelektüel Kaynaklar ve Hizmet Sağlayacılar",
+                  icon: IconPoint,
+                  href: "/Kys/1/Kaynaklar/HizmetSaglayicilar",
+                },
+              ],
+            },
+            {
+              id: uniqueId(),
+              title: "Bilgi ve İletişim",
+              icon: IconPoint,
+              href: "/Kys/1/BilgiVeIletisim",
+            },
+            {
+              id: uniqueId(),
+              title: "İzleme ve Düzeltme",
+              icon: IconPoint,
+              href: "/Kys/1/IzlemeVeDuzeltme",
+            },
+          ],
+        },
+        {
+          id: uniqueId(),
+          title: "KYS-2",
+          icon: IconPoint,
+          href: "/Kys/2",
         },
       ],
     },

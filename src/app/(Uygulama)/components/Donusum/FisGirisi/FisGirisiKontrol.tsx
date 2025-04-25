@@ -10,9 +10,14 @@ import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getProgramVukMizanWithoutType } from "@/api/Veri/Mizan";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Props {
   filterValue: string;
@@ -95,7 +100,11 @@ const FisGirisiKontrol: React.FC<Props> = ({
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,

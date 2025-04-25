@@ -18,9 +18,14 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   tcKimlikNo: number;
@@ -66,9 +71,9 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     "Cinsiyeti Ve Sgk İşten Ayrılış Nedeni Kodu Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Doğum Tarihi Ve İşletmeden Çıkış Tarihi Sütunlarına GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
     "Görev Departmanı Sütununda Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
-    "Brüt Ücreti (Aylık) Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Brüt Ücreti (Aylık) Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
     "İşletmeye Giriş Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
-    "Ödenen Brüt Kıdem Tazminatı Tutarı (TL), Kullanılmamış İzin Günü Ve Kullanılmamış İzne Esas Brüt Ücret (Aylık) Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
+    "Ödenen Brüt Kıdem Tazminatı Tutarı (TL), Kullanılmamış İzin Günü Ve Kullanılmamış İzne Esas Brüt Ücret (Aylık) Sütunlarına Ondalıklı Sayı Girilmelidir Veya Boş Bırakılabilir.",
   ];
 
   const [endRow, setEndRow] = useState(-1);
@@ -270,7 +275,11 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     }, // Görev Departmanı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
@@ -293,7 +302,11 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     }, // İşletmeden Cıkış Tarihi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
@@ -345,14 +358,22 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     }, // Sgk İşten Ayrılış Nedeni Kodu
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // Kullanılmamış İzin Günü
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
@@ -521,6 +542,21 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([5, 8, 10, 11].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
       }
     }
   };
@@ -909,6 +945,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         afterRenderer={afterRenderer}
         afterPaste={afterPaste} // Add afterPaste hook
         afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
         contextMenu={[

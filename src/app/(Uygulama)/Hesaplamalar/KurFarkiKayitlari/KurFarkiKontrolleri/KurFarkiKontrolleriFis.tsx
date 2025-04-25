@@ -10,9 +10,14 @@ import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
@@ -115,7 +120,11 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
     }, // Açıklama
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       columnSorting: true,
       readOnly: true,
       editor: false,
@@ -123,7 +132,11 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
     }, // Borc
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       columnSorting: true,
       readOnly: true,
       editor: false,

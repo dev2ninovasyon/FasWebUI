@@ -27,9 +27,14 @@ import {
   getFisListesiVerileriByFisNo,
   updateFisListesiVerisi,
 } from "@/api/Donusum/FisListesi";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   [key: number]: number;
@@ -135,14 +140,20 @@ const FisDetaylari = () => {
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
     }, // Borc
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
     }, // Alacak
     {
@@ -302,6 +313,21 @@ const FisDetaylari = () => {
           await handleUpdateFisVerisi(changedRow);
 
           changedRow = -1;
+        }
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([5, 6].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
         }
       }
     }
@@ -560,6 +586,7 @@ const FisDetaylari = () => {
           afterGetRowHeader={afterGetRowHeader}
           afterRenderer={afterRenderer}
           afterChange={handleAfterChange}
+          beforeChange={handleBeforeChange}
           copyPaste={false}
           contextMenu={{
             items: {

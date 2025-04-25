@@ -12,9 +12,14 @@ import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
 import { getFisNo } from "@/api/Donusum/FisGirisi";
 import { getFisListesiVerileriByFisNo } from "@/api/Donusum/FisListesi";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Props {
   hazirFislerTiklandimi: boolean;
@@ -120,7 +125,11 @@ const SonGirilenFisler: React.FC<Props> = ({
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       columnSorting: true,
       readOnly: true,
       editor: false,
@@ -128,7 +137,11 @@ const SonGirilenFisler: React.FC<Props> = ({
     }, // Borc
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       columnSorting: true,
       readOnly: true,
       editor: false,
@@ -298,19 +311,6 @@ const SonGirilenFisler: React.FC<Props> = ({
     }
   };
 
-  const handleAfterChange = (changes: any, source: any) => {
-    if (source === "loadData") {
-      return; // Skip this hook on loadData
-    }
-    if (changes) {
-      for (const [row, prop, oldValue, newValue] of changes) {
-        console.log(
-          `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
-        );
-      }
-    }
-  };
-
   const fetchData = async () => {
     try {
       const fisVerileriByFisNo = await getFisListesiVerileriByFisNo(
@@ -435,7 +435,6 @@ const SonGirilenFisler: React.FC<Props> = ({
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
-        afterChange={handleAfterChange}
         contextMenu={{
           items: {
             fise_git: {

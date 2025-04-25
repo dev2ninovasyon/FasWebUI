@@ -17,9 +17,14 @@ import {
   updateEDefterIncelemeVerisi,
 } from "@/api/Veri/EDefterInceleme";
 import { useRouter } from "next/navigation";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
@@ -152,7 +157,11 @@ const EDefterInceleme: React.FC<Props> = ({
     }, // Muhasebe Fiş No
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       columnSorting: true,
       readOnly: true,
       editor: false,
@@ -160,13 +169,16 @@ const EDefterInceleme: React.FC<Props> = ({
     }, // Borc
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       columnSorting: true,
       readOnly: true,
       editor: false,
       className: "htRight",
     }, // Alacak
-
     {
       type: "text",
       columnSorting: true,

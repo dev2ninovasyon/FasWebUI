@@ -17,9 +17,14 @@ import {
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
@@ -79,20 +84,17 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     if (numberRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar(
-        "Hatalı Sayı Girişi. Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-        {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        }
-      );
+      enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
       callback(false);
     }
   };
@@ -192,21 +194,33 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     }, // Faiz Tahakkuk Tarihi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Bileşik Faiz Oranı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Döviz Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -214,7 +228,11 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     }, // Hesaplanan Bakiye
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -222,7 +240,11 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     }, // Mizan Bakiye
     {
       type: "numeric",
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htLeft",
       allowInvalid: false,
       readOnly: true,
@@ -230,14 +252,22 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     }, // Tahakkuk Eden Gün Sayısı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Tahakkuk Ettirilmiş Faiz Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -245,7 +275,11 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     }, // Tahakkuk Ettirilmesi Gereken Faiz Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

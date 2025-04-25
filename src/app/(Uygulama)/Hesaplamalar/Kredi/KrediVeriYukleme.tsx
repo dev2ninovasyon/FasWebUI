@@ -19,9 +19,14 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
@@ -59,10 +64,10 @@ const KrediVeriYukleme: React.FC<Props> = ({
 
   const uyari = [
     "Boş Bırakılmaması Gereken Sütunlar: Alınan Kredi Numarası, Detay Hesap Kodu, Hesap Adı, Alınan Kredi Tutar, Kredi Alış Tarihi, Faiz Oranı (%)",
-    "Alınan Kredi Numarası Sütunu Boş Bırakılmamalıdır Ve Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Alınan Kredi Numarası Sütunu Boş Bırakılmamalıdır Ve Tam Sayı Girilmelidir.",
     "Detay Hesap Kodu Ve Hesap Adı Sütunları Boş Bırakılmamalıdır.",
     "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
-    "Alınan Kredi Tutar Ve Faiz Oranı (%) Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Alınan Kredi Tutar Ve Faiz Oranı (%) Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
     "Kredi Alış Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
   ];
 
@@ -253,7 +258,11 @@ const KrediVeriYukleme: React.FC<Props> = ({
     }, // Para Birimi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
@@ -268,7 +277,11 @@ const KrediVeriYukleme: React.FC<Props> = ({
     }, // Kredi Alış Tarihi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
@@ -437,6 +450,21 @@ const KrediVeriYukleme: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([5, 7].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
       }
     }
   };
@@ -772,6 +800,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
         afterRenderer={afterRenderer}
         afterPaste={afterPaste} // Add afterPaste hook
         afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
         contextMenu={{

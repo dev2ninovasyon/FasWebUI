@@ -18,9 +18,14 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   detayhesapKodu: string;
@@ -60,8 +65,8 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
     "Boş Bırakılmaması Gereken Sütunlar: Detay Hesap Kodu, Hesap Adı, Çek / Senet Kayıt Tarihi, Muhatap Firma, Çek / Senet No, Çek / Senet Vade Tarihi, Kayıt Tutarı / Nominal Değer, Alınan (A) / Verilen (V)",
     "Detay Hesap Kodu, Hesap Adı Ve Muhatap Firma Sütunları Boş Bırakılmamalıdır.",
     "Çek / Senet Kayıt Tarihi Ve Çek / Senet Vade Tarihi Sütunları Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
-    "Çek / Senet No Sütunu Boş Bırakılmamalıdır Ve Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-    "Kayıt Tutarı / Nominal Değer Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
+    "Çek / Senet No Sütunu Boş Bırakılmamalıdır Ve Tam Sayı Girilmelidir.",
+    "Kayıt Tutarı / Nominal Değer Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
     "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Alınan (A) / Verilen (V) Sütunu Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
   ];
@@ -246,7 +251,11 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
     }, // Çek / Senet Vade Tarihi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
@@ -440,6 +449,21 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([6].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
       }
     }
   };
@@ -790,6 +814,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
         afterRenderer={afterRenderer}
         afterPaste={afterPaste} // Add afterPaste hook
         afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
         contextMenu={[

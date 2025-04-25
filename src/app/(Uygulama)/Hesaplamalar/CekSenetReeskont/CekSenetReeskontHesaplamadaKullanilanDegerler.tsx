@@ -12,9 +12,14 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getCekSenetReeskontHesaplamadaKullanilanDegerler } from "@/api/Hesaplamalar/Hesaplamalar";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   vadeyeKalanGun: string;
@@ -85,7 +90,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // Vadeye Kalan Gün
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -93,7 +102,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // Usd Libor
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -101,7 +114,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // Usd Kur
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -109,7 +126,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // Eur Libor
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -117,7 +138,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // Eur Kur
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -125,7 +150,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // Gbp Libor
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -133,7 +162,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // Gbp Kur
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -141,7 +174,11 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
     }, // TCMB Avans Oranı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

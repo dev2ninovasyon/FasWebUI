@@ -18,10 +18,15 @@ import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { createFisGirisiVerisi, getFisNo } from "@/api/Donusum/FisGirisi";
-import { IconDeviceFloppy, IconFileTypeXls } from "@tabler/icons-react";
+import { IconDeviceFloppy } from "@tabler/icons-react";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Props {
   kod: string;
@@ -109,20 +114,17 @@ const FisGirisi: React.FC<Props> = ({
     if (numberRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar(
-        "Hatalı Sayı Girişi. Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-        {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        }
-      );
+      enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
       callback(false);
     }
   };
@@ -135,20 +137,17 @@ const FisGirisi: React.FC<Props> = ({
     if (integerRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar(
-        "Hatalı Sayı Girişi. Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-        {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        }
-      );
+      enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
       callback(false);
     }
   };
@@ -253,14 +252,22 @@ const FisGirisi: React.FC<Props> = ({
     { type: "text", columnSorting: true, className: "htLeft" }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Borç
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
@@ -473,6 +480,21 @@ const FisGirisi: React.FC<Props> = ({
               ) || 0;
             return prevToplamAlacak + (newNumber - oldNumber);
           });
+        }
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([3, 4].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
         }
       }
     }
@@ -813,6 +835,7 @@ const FisGirisi: React.FC<Props> = ({
           afterCreateRow={handleCreateRow} // Add createRow hook
           afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
           afterChange={handleAfterChange} // Add afterChange hook
+          beforeChange={handleBeforeChange} // Add beforeChange hook
           afterBeginEditing={handleAfterBeginEditing}
           contextMenu={{
             items: {

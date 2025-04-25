@@ -14,9 +14,14 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import { getGecmisYilKarZararKontrolOrnekFisler } from "@/api/Hesaplamalar/Hesaplamalar";
 import { createFisGirisiVerisi } from "@/api/Donusum/FisGirisi";
 import { enqueueSnackbar } from "notistack";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   yevmiyeNo: number;
@@ -119,6 +124,29 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
     }
   };
 
+  const numberValidator = (
+    value: string,
+    callback: (value: boolean) => void
+  ) => {
+    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
+    if (numberRegex.test(value)) {
+      callback(true);
+    } else {
+      enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girilmelidir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
+      callback(false);
+    }
+  };
+
   useEffect(() => {
     const loadStyles = async () => {
       dispatch(setCollapse(true));
@@ -195,19 +223,25 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
     }, // Para Birimi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
+      validator: numberValidator,
       allowInvalid: false,
-      readOnly: true,
-      editor: false,
     }, // Borç
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
+      validator: numberValidator,
       allowInvalid: false,
-      readOnly: true,
-      editor: false,
     }, // Alacak
     {
       type: "text",
@@ -360,6 +394,34 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
     }
   };
 
+  const handleAfterChange = async (changes: any, source: any) => {
+    if (source === "loadData") {
+      return; // Skip this hook on loadData
+    }
+    if (changes) {
+      for (const [row, prop, oldValue, newValue] of changes) {
+        console.log(
+          `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
+        );
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([6, 7].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
+      }
+    }
+  };
+
   const fetchData = async () => {
     try {
       const gecmisYilKarZararKontrolOrnekFisVerileri =
@@ -504,6 +566,8 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
+        afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
         contextMenu={["alignment", "copy"]}
       />
       <Grid container marginTop={2}>

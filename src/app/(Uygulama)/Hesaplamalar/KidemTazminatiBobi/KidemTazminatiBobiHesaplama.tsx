@@ -8,9 +8,14 @@ import { AppState } from "@/store/store";
 import { useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   aciklama: string;
@@ -65,7 +70,11 @@ const KidemTazminatiBobiHesaplama: React.FC<Props> = ({ data, title }) => {
 
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

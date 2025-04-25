@@ -12,9 +12,14 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getDovizKurlariOtuzBirAralik } from "@/api/Hesaplamalar/Hesaplamalar";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   paraBirimiAdi: string;
@@ -73,7 +78,11 @@ const DovizKurlariOtuzBirAralik = () => {
     }, // Tarih
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,
@@ -81,7 +90,11 @@ const DovizKurlariOtuzBirAralik = () => {
     }, // Döviz Alış
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.0000", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.0000",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

@@ -18,9 +18,14 @@ import {
   deleteAmortismanVerisi,
   getAmortismanVerileriByDenetciDenetlenenYil,
 } from "@/api/Veri/Amortisman";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   detayHesapKodu: string;
@@ -64,10 +69,10 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
     "Detay Hesap Kodu Ve Hesap Adı Sütunları Boş Bırakılmamalıdır.",
     "Başlangıç Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
     "Elden Çıkarma Tarihi Sütununa GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
-    "Giriş Tutarı Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir.",
-    "Yeniden Değerleme Artışı, İptal Edilecek Yeniden Değerleme Tutarı Ve Kalıntı Değer Sütunlarına Ondalıklı Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
+    "Giriş Tutarı Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
+    "Yeniden Değerleme Artışı, İptal Edilecek Yeniden Değerleme Tutarı Ve Kalıntı Değer Sütunlarına Ondalıklı Sayı Girilmelidir Veya Boş Bırakılabilir.",
     "Amortisman Usulü Ve Vuk Kıst Amortisman Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
-    "Faydalı Ömür Sütunu Ve Vuk Faydalı Ömür Sütunlarına Tam Sayı 1000 Ayıracı Kullanılmadan Girilmelidir Veya Boş Bırakılabilir.",
+    "Faydalı Ömür Sütunu Ve Vuk Faydalı Ömür Sütunlarına Tam Sayı Girilmelidir Veya Boş Bırakılabilir.",
   ];
 
   const [endRow, setEndRow] = useState(-1);
@@ -279,28 +284,44 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
     }, // Elden Çıkarma Tarihi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Giriş Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // Yeniden Değerleme Artışı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // İptal Edilecek Yeniden Değerleme Tutarı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: numberValidatorAllowNull,
       allowInvalid: false,
@@ -314,14 +335,22 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
     }, // Amortisman Usulü
     {
       type: "numeric",
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: integerValidator,
       allowInvalid: false,
     }, // Bobi/Tfrs Faydalı Ömür
     {
       type: "numeric",
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       validator: integerValidator,
       allowInvalid: false,
@@ -496,6 +525,21 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+      }
+    }
+  };
+
+  const handleBeforeChange = (changes: any[]) => {
+    if (!changes) return;
+
+    for (let i = 0; i < changes.length; i++) {
+      const [row, prop, oldValue, newValue] = changes[i];
+
+      if ([4, 5, 6, 7, 9, 10].includes(prop)) {
+        if (typeof newValue === "string") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "");
+          changes[i][3] = cleanedNewValue;
+        }
       }
     }
   };
@@ -882,6 +926,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         afterRenderer={afterRenderer}
         afterPaste={afterPaste} // Add afterPaste hook
         afterChange={handleAfterChange} // Add afterChange hook
+        beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
         contextMenu={[

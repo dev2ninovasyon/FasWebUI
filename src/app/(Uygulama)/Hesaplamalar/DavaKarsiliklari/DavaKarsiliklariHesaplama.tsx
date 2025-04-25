@@ -12,9 +12,14 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getDavaKarsiliklariVerileriByDenetciDenetlenenYil } from "@/api/Veri/DavaKarsiliklari";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   aleyhteDavacininLehteDavalininUnvani: string;
@@ -134,7 +139,11 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Duruşma Aşaması
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       allowInvalid: false,
       readOnly: true,

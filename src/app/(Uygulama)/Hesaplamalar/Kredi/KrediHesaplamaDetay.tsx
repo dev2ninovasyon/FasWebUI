@@ -9,9 +9,14 @@ import { useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getKrediHesaplanmisDetay } from "@/api/Hesaplamalar/Hesaplamalar";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   paraBirimi: string;
@@ -68,14 +73,22 @@ const KrediHesaplamaDetay: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Para Birimi
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Kalan Uzun Vadeli Borçlanmaların Kısa Vadeye Dönüşen Ana Para Tutarları
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
       readOnly: true,
       editor: false,

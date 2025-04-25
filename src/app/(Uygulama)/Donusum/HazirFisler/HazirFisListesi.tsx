@@ -17,9 +17,14 @@ import {
   createFisListesineHazirFis,
   getHazirFisListesiVerileri,
 } from "@/api/Donusum/HazirFisListesi";
+import numbro from "numbro";
+import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
+
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
@@ -113,16 +118,22 @@ const HazirFisListesi = () => {
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       readOnly: true,
       editor: false,
       className: "htRight",
     }, // Borc
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0.00", columnSorting: true },
-      columnSorting: true,
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       readOnly: true,
       editor: false,
       className: "htRight",
@@ -295,19 +306,6 @@ const HazirFisListesi = () => {
     }
   };
 
-  const handleAfterChange = (changes: any, source: any) => {
-    if (source === "loadData") {
-      return; // Skip this hook on loadData
-    }
-    if (changes) {
-      for (const [row, prop, oldValue, newValue] of changes) {
-        console.log(
-          `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
-        );
-      }
-    }
-  };
-
   const fetchData = async () => {
     try {
       const hazirFisListesiVerileri = await getHazirFisListesiVerileri(
@@ -455,7 +453,6 @@ const HazirFisListesi = () => {
           afterGetColHeader={afterGetColHeader}
           afterGetRowHeader={afterGetRowHeader}
           afterRenderer={afterRenderer}
-          afterChange={handleAfterChange}
           contextMenu={{
             items: {
               fis_listesine_ekle: {
