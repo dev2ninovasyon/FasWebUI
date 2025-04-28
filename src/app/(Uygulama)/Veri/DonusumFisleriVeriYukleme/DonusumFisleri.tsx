@@ -430,7 +430,7 @@ const DonusumFisleri: React.FC<Props> = ({
     for (let i = 0; i < changes.length; i++) {
       const [row, prop, oldValue, newValue] = changes[i];
 
-      if ([5, 6].includes(prop)) {
+      if ([4, 5].includes(prop)) {
         if (typeof newValue === "string") {
           const cleanedNewValue = newValue.replaceAll(/\./g, "");
           changes[i][3] = cleanedNewValue;
