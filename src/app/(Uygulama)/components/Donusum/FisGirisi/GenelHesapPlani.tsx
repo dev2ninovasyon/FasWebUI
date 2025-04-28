@@ -7,15 +7,9 @@ import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Button, Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { enqueueSnackbar } from "notistack";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import { useRouter } from "next/navigation";
-import {
-  getFisListesiVerileri,
-  updateFisDurumu,
-} from "@/api/Donusum/FisListesi";
 import { IconFileTypeXls } from "@tabler/icons-react";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
@@ -28,30 +22,25 @@ numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
-  fisNo: number;
-  fisTipi: string;
-  detayKodu: string;
-  hesapAdi: string;
-  borc: number;
-  alacak: number;
-  aciklama: string;
+  kod: string;
+  adi: string;
+  paraBirimi: string;
 }
 
-const FisListesi = () => {
+interface Props {
+  data: Veri[];
+}
+
+const GenelHesapPlani: React.FC<Props> = ({ data }) => {
   const hotTableComponent = useRef<any>(null);
 
-  const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-
-  let control = "";
-  let controlRowNumber = -1;
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -70,19 +59,11 @@ const FisListesi = () => {
     loadStyles();
   }, [customizer.activeMode]);
 
-  const colHeaders = [
-    "Id",
-    "Fiş No",
-    "Tip",
-    "Detay Kodu",
-    "Hesap Adı",
-    "Borç",
-    "Alacak",
-    "Açıklama",
-  ];
+  const colHeaders = ["Id", "Kodu", "Hesap Adı", "Para Birimi"];
 
   const columns = [
     {
+      data: "id",
       type: "numeric",
       columnSorting: true,
       readOnly: true,
@@ -90,62 +71,30 @@ const FisListesi = () => {
       className: "htLeft",
     }, // Id
     {
-      type: "numeric",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Fiş No
-    {
+      data: "kod",
       type: "text",
       columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
       readOnly: true,
       editor: false,
-      className: "htLeft",
-    }, // Tip
+    }, // Kodu
     {
+      data: "adi",
       type: "text",
       columnSorting: true,
-      readOnly: true,
-      editor: false,
       className: "htLeft",
-    }, // Detay Kodu
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
+      allowInvalid: false,
     }, // Hesap Adı
     {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      readOnly: true,
-      editor: false,
-      className: "htRight",
-    }, // Borc
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      readOnly: true,
-      editor: false,
-      className: "htRight",
-    }, // Alacak
-    {
+      data: "paraBirimi",
       type: "text",
       columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
       readOnly: true,
       editor: false,
-      className: "htLeft",
-    }, // Açıklama
+    }, // Para Birimi
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -257,67 +206,6 @@ const FisListesi = () => {
     }
   };
 
-  const afterRenderer2 = (
-    TD: any,
-    row: any,
-    col: any,
-    prop: any,
-    value: any,
-    cellProperties: any
-  ) => {
-    //typography body1
-    TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontWeight = 500;
-    TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
-    TD.style.whiteSpace = "nowrap";
-    TD.style.overflow = "hidden";
-    //TD.style.textAlign = "left";
-
-    //color
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-
-    if (col === 1) {
-      if (parseInt(value) % 2 !== 0) {
-        control = "odd";
-      } else if (parseInt(value) % 2 == 0) {
-        control = "even";
-      }
-    }
-
-    if (control == "odd") {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-    } else if (control == "even") {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-    }
-
-    if (col === 4) {
-      if (value === "Toplam") {
-        controlRowNumber = row;
-      }
-    }
-
-    if (row === controlRowNumber && col === 7) {
-      if (value == "Aktif") {
-        TD.style.color =
-          customizer.activeMode === "dark"
-            ? theme.palette.success.dark
-            : theme.palette.success.main;
-      } else {
-        TD.style.color =
-          customizer.activeMode === "dark"
-            ? theme.palette.error.dark
-            : theme.palette.error.main;
-      }
-    }
-  };
-
   const handleGetRowData = async (row: number) => {
     if (hotTableComponent.current) {
       const hotInstance = hotTableComponent.current.hotInstance;
@@ -327,89 +215,10 @@ const FisListesi = () => {
     }
   };
 
-  const handleUpdateFisDurumu = async (fisNo: number) => {
-    try {
-      const result = await updateFisDurumu(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        fisNo
-      );
-      if (result) {
-        await fetchData();
-        enqueueSnackbar("Fiş Durumu Değiştirildi", {
-          variant: "success",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.success.light
-                : theme.palette.success.main,
-            maxWidth: "720px",
-          },
-        });
-      } else {
-        enqueueSnackbar("Fiş Durumu Değiştirilemedi", {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.light
-                : theme.palette.error.main,
-            maxWidth: "720px",
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const fetchData = async () => {
-    try {
-      const fisListesiVerileri = await getFisListesiVerileri(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
-      const rowsAll: any = [];
-      fisListesiVerileri.forEach((veri: any) => {
-        const newRow: any = [
-          veri.id,
-          veri.fisNo,
-          veri.fisTipi,
-          veri.detayKodu,
-          veri.hesapAdi,
-          veri.borc,
-          veri.alacak,
-          veri.aciklama,
-        ];
-        rowsAll.push(newRow);
-      });
-
-      setFetchedData(rowsAll);
-      setRowCount(rowsAll.length);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const hotInstance = hotTableComponent.current.hotInstance;
-
-    hotInstance.updateSettings({
-      afterRenderer: afterRenderer2,
-    });
-
-    hotInstance.render();
-  }, [fetchedData]);
+    setFetchedData(data);
+    setRowCount(data.length);
+  }, [data]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
@@ -452,7 +261,7 @@ const FisListesi = () => {
         const blob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, "FisListesi.xlsx");
+        saveAs(blob, "GenelHesapPlani.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
@@ -485,16 +294,16 @@ const FisListesi = () => {
           style={{
             height: "100%",
             width: "100%",
-            maxHeight: 684,
+            maxHeight: 586,
             maxWidth: "100%",
           }}
           language={dictionary.languageCode}
           ref={hotTableComponent}
           data={fetchedData}
-          height={684}
+          height={586}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[0, 60, 60, 60, 150, 100, 100, 100, 80]}
+          colWidths={[0, 60, 60, 60]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}
@@ -516,26 +325,7 @@ const FisListesi = () => {
           afterGetColHeader={afterGetColHeader}
           afterGetRowHeader={afterGetRowHeader}
           afterRenderer={afterRenderer}
-          contextMenu={{
-            items: {
-              fise_git: {
-                name: "Fişe Git",
-                callback: async function (key, selection) {
-                  const row = await handleGetRowData(selection[0].start.row);
-                  router.push(`/Donusum/FisListesi/FisDetaylari/${row[1]}`);
-                },
-              },
-              fise_durumu_değiştir: {
-                name: "Fiş Durumu Değiştir",
-                callback: async function (key, selection) {
-                  const row = await handleGetRowData(selection[0].start.row);
-
-                  handleUpdateFisDurumu(row[1]);
-                },
-              },
-            },
-          }}
-          copyPaste={false}
+          contextMenu={["alignment", "copy"]}
         />
       </Grid>
       <Grid item xs={12} lg={10}></Grid>
@@ -562,4 +352,4 @@ const FisListesi = () => {
   );
 };
 
-export default FisListesi;
+export default GenelHesapPlani;

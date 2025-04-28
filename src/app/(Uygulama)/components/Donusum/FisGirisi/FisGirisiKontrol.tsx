@@ -23,7 +23,6 @@ interface Props {
   filterValue: string;
   setKod: (str: string) => void;
   setAd: (str: string) => void;
-  setBakiye: (lst: any) => void;
 }
 
 interface Veri {
@@ -32,12 +31,7 @@ interface Veri {
   bakiye: number;
 }
 
-const FisGirisiKontrol: React.FC<Props> = ({
-  filterValue,
-  setKod,
-  setAd,
-  setBakiye,
-}) => {
+const FisGirisiKontrol: React.FC<Props> = ({ filterValue, setKod, setAd }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -310,7 +304,6 @@ const FisGirisiKontrol: React.FC<Props> = ({
           items: {
             alignment: {},
             copy: {},
-
             fise_aktar: {
               name: "Fişe aktar",
               callback: async function (key, selection) {
@@ -348,10 +341,6 @@ const FisGirisiKontrol: React.FC<Props> = ({
                 } else {
                   setKod(row[0]);
                   setAd(row[1]);
-                  setBakiye((prevBakiye: any) => {
-                    const nextBakiye = [row[2]];
-                    return [...prevBakiye, ...nextBakiye];
-                  });
                 }
               },
             },

@@ -29,35 +29,10 @@ export const getDonusumFisleriVerileriByDenetciDenetlenenYil = async (
 
 export const createDonusumFisleriVerisi = async (
   token: string,
-  createdDonusumFisleri: any
-) => {
-  try {
-    const response = await fetch(`${url}/Veri/DonusumFisleri`, {
-      method: "POST",
-      headers: {
-        accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(createdDonusumFisleri),
-    });
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const createMultipleDonusumFisleriVerisi = async (
-  token: string,
   jsonData: any
 ) => {
   try {
-    const response = await fetch(`${url}/Veri/DonusumFisleriMultiple`, {
+    const response = await fetch(`${url}/Veri/DonusumFisleri`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -77,104 +52,11 @@ export const createMultipleDonusumFisleriVerisi = async (
   }
 };
 
-export const createNullDonusumFisleriVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: number
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/DonusumFisleriNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "POST",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const updateDonusumFisleriVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: number,
-  updatedDonusumFisleri: any
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "PUT",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedDonusumFisleri),
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const updateMultipleDonusumFisleriVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: any
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/DonusumFisleriMultiple?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "PUT",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
 export const deleteDonusumFisleriVerisi = async (
   token: string,
   denetciId: number,
   denetlenenId: number,
-  yil: number,
-  siraNo: number[]
+  yil: number
 ) => {
   try {
     const response = await fetch(
@@ -186,7 +68,6 @@ export const deleteDonusumFisleriVerisi = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(siraNo),
       }
     );
 

@@ -5,17 +5,8 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import {
-  createDonusumFisleriVerisi,
-  createMultipleDonusumFisleriVerisi,
-  createNullDonusumFisleriVerisi,
-  deleteDonusumFisleriVerisi,
-  getDonusumFisleriVerileriByDenetciDenetlenenYil,
-  updateDonusumFisleriVerisi,
-  updateMultipleDonusumFisleriVerisi,
-} from "@/api/Veri/DonusumFisleri";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
@@ -24,6 +15,11 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
+import {
+  createDonusumFisleriVerisi,
+  deleteDonusumFisleriVerisi,
+  getDonusumFisleriVerileriByDenetciDenetlenenYil,
+} from "@/api/Veri/DonusumFisleri";
 
 // register Handsontable's modules
 registerAllModules();
@@ -32,17 +28,26 @@ numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
-  siraNo: number;
-  yevmiyeNo: number;
+  fisNo: number;
   fisTipi: string;
-  detayHesapKodu: string;
+  detayKodu: string;
   hesapAdi: string;
-  borcTutari: number;
-  alacakTutari: number;
+  borc: number;
+  alacak: number;
   aciklama: string;
 }
 
-const DonusumFisleri = () => {
+interface Props {
+  genelHesapPlaniListesi: any;
+  kaydetTiklandimi: boolean;
+  setKaydetTiklandimi: (b: boolean) => void;
+}
+
+const DonusumFisleri: React.FC<Props> = ({
+  genelHesapPlaniListesi,
+  kaydetTiklandimi,
+  setKaydetTiklandimi,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -53,19 +58,19 @@ const DonusumFisleri = () => {
   const [rowCount, setRowCount] = useState<number>(200);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-  const [multiplePasteData, setMultiplePasteData] = useState<any>([]);
-
-  const [afterPasteCompleted, setAfterPasteCompleted] = useState(false);
-  const [halfPasteControl, setHalfPasteControl] = useState<boolean>(false);
 
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
-  const [startRow, setStartRow] = useState(0);
-  const [endRow, setEndRow] = useState(0);
-  const [startCol, setStartCol] = useState(0);
-  const [endCol, setEndCol] = useState(0);
+  const uyari = [
+    "Boş Bırakılmaması Gereken Sütunlar: Fiş No, Fiş Tipi, Detay Hesap Kodu, Hesap Adı, Borç, Alacak",
+    "Fiş No Sütunu Boş Bırakılmamalıdır Ve Sütununa Tam Sayı Girilmelidir.",
+    "Fiş Tipi Ve Detay Hesap Kodu Sütunaları Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
+    "Hesap Adı Sütunu Boş Bırakılmamalıdır.",
+    "Borç Ve Alacak Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
+    "Açıklama Sütunu Boş Bırakılabilir.",
+  ];
 
-  const [control, setControl] = useState(false);
+  const [endRow, setEndRow] = useState(-1);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -92,17 +97,6 @@ const DonusumFisleri = () => {
     if (numberRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar("Hatalı Sayı Girişi. Ondalıklı Sayı Girilmelidir.", {
-        variant: "warning",
-        autoHideDuration: 5000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.warning.dark
-              : theme.palette.warning.main,
-          maxWidth: "720px",
-        },
-      });
       callback(false);
     }
   };
@@ -115,113 +109,78 @@ const DonusumFisleri = () => {
     if (integerRegex.test(value)) {
       callback(true);
     } else {
-      enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girilmelidir.", {
-        variant: "warning",
-        autoHideDuration: 5000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.warning.dark
-              : theme.palette.warning.main,
-          maxWidth: "720px",
-        },
-      });
       callback(false);
     }
   };
 
-  function findDuplicateRows(data: any): Veri[] {
-    const rowsAsString = new Set<string>();
-    const duplicateRows: Veri[] = [];
+  function isRowEmpty(row: Veri): boolean {
+    return Object.values(row).every(
+      (value) =>
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+    );
+  }
 
-    const keys = Object.keys(data);
+  function findDuplicateRows(data: Veri[]): number[] {
+    const seenRows = new Set<string>();
+    const duplicates: number[] = [];
 
-    const [firstKey, ...restKeys] = keys;
+    data.forEach((row, index) => {
+      if (isRowEmpty(row)) return; // tüm değerler boşsa geç
 
-    for (const row of data) {
-      const { [firstKey]: _, ...rowWithoutSiraNo } = row;
+      const rowString = JSON.stringify(row, Object.keys(row).sort());
 
-      const rowString = JSON.stringify(
-        rowWithoutSiraNo,
-        Object.keys(rowWithoutSiraNo).sort()
-      );
-
-      if (!rowString.includes("null") && !rowString.includes("{}")) {
-        if (rowsAsString.has(rowString)) {
-          duplicateRows.push(row);
-        } else {
-          rowsAsString.add(rowString);
-        }
+      if (seenRows.has(rowString)) {
+        duplicates.push(index + 1); // 1-based row number
+      } else {
+        seenRows.add(rowString);
       }
-    }
-    return duplicateRows;
+    });
+
+    return duplicates;
   }
 
   useEffect(() => {
     if (duplicatesControl) {
-      const duplicatesList = findDuplicateRows(fetchedData);
+      const duplicateRowNumbers = findDuplicateRows(fetchedData);
 
-      let duplicatesMessage = "";
-      if (duplicatesList != undefined && duplicatesList != null) {
-        duplicatesList.forEach((item: any) => {
-          if (item[0] != undefined && item[0] != null) {
-            duplicatesMessage = duplicatesMessage + " " + item[0] + ". ";
+      if (duplicateRowNumbers.length > 0) {
+        const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
+
+        enqueueSnackbar(
+          `${duplicatesMessage}Numaralı Satır${
+            duplicateRowNumbers.length > 1 ? "lar" : ""
+          } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
+          {
+            variant: "warning",
+            autoHideDuration: 5000,
+            style: {
+              backgroundColor:
+                customizer.activeMode === "dark"
+                  ? theme.palette.warning.dark
+                  : theme.palette.warning.main,
+              maxWidth: "720px",
+            },
           }
-        });
-        if (duplicatesMessage != "") {
-          if (duplicatesList.length > 1) {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satırlar Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          } else {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satır Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-          setDuplicatesControl(false);
-        }
+        );
       }
+
       setDuplicatesControl(false);
     }
   }, [duplicatesControl]);
 
   const colHeaders = [
-    "SiraNo",
-    "Yevmiye No",
+    "Fiş No",
     "Fiş Tipi",
     "D. Hesap Kodu",
     "Hesap Adı",
-    "Borç Tutarı",
-    "Alacak Tutarı",
+    "Borç",
+    "Alacak",
     "Açıklama",
   ];
 
   const columns = [
-    { type: "numeric", columnSorting: true, readOnly: true, editor: false }, // SiraNo
     {
       type: "numeric",
       columnSorting: true,
@@ -230,22 +189,29 @@ const DonusumFisleri = () => {
       allowInvalid: false,
     }, // Yevmiye No
     {
-      type: "text",
+      type: "dropdown",
+      source: ["Açılış", "Düzeltme", "Sınıflama", "Transfer"],
       columnSorting: true,
       className: "htLeft",
       allowInvalid: false,
     }, // Fiş Tipi
     {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
+      type: "autocomplete",
+      source: function (query: string, process: (result: string[]) => void) {
+        let results = genelHesapPlaniListesi
+          .filter((item: any) => item.kod.includes(query))
+          .slice(0, 50)
+          .map((item: any) => item.kod);
+        process(results);
+      },
+      strict: true,
       allowInvalid: false,
+      className: "htLeft",
     }, // Detay Hesap Kodu
     {
       type: "text",
       columnSorting: true,
       className: "htLeft",
-      allowInvalid: false,
     }, // Hesap Adı
     {
       type: "numeric",
@@ -257,7 +223,7 @@ const DonusumFisleri = () => {
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
-    }, // Borç Tutarı
+    }, // Borç
     {
       type: "numeric",
       numericFormat: {
@@ -268,7 +234,7 @@ const DonusumFisleri = () => {
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
-    }, // Alacak Tutarı
+    }, // Alacak
     {
       type: "text",
       columnSorting: true,
@@ -383,13 +349,7 @@ const DonusumFisleri = () => {
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
 
-    if (
-      row >= startRow &&
-      row <= endRow &&
-      col >= startCol &&
-      col <= endCol &&
-      value == null
-    ) {
+    if (row <= endRow && (value == undefined || value == null || value == "")) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
     }
   };
@@ -405,16 +365,9 @@ const DonusumFisleri = () => {
 
   const handleCreateRow = async (index: number, amount: number) => {
     if (amount == 1 && index != rowCount - 1) {
-      setStartRow(0);
-      setEndRow(0);
-      setStartCol(0);
-      setEndCol(0);
       console.log(
         `Yeni satır(lar) eklendi: ${amount} adet satır ${index} indexinden itibaren.`
       );
-      setControl(true);
-      await handleUpdateMultipleDonusumFisleriVerisi(index);
-      await handleCreateNullDonusumFisleriVerisi(index);
     }
   };
 
@@ -424,15 +377,9 @@ const DonusumFisleri = () => {
     physicalRows: number[],
     source: any
   ) => {
-    setStartRow(0);
-    setEndRow(0);
-    setStartCol(0);
-    setEndCol(0);
     console.log(
       `Satır(lar) silindi: ${amount} adet satır ${index} indexinden itibaren.${physicalRows}`
     );
-    const siraNos = physicalRows.map((row) => row + 1);
-    handleDeleteDonusumFisleriVerisi(siraNos);
   };
 
   const afterPaste = async (data: any, coords: any) => {
@@ -442,33 +389,13 @@ const DonusumFisleri = () => {
     console.log("Pasted endRow coordinates:", coords[0].endRow);
     console.log("Pasted startCol coordinates:", coords[0].startCol);
     console.log("Pasted endCol coordinates:", coords[0].endCol);
-    setStartRow(coords[0].startRow);
-    setEndRow(coords[0].endRow);
-    setStartCol(coords[0].startCol);
-    setEndCol(coords[0].endCol);
 
-    if (halfPasteControl == false) {
-      let j = 0;
-      for (
-        let i = coords[0].startRow;
-        i < data.length + coords[0].startRow;
-        i++
-      ) {
-        data[j].unshift(i + 1);
-        j++;
-      }
-
-      setMultiplePasteData(data);
+    if (endRow < coords[0].endRow) {
+      setEndRow(coords[0].endRow);
     }
   };
 
   const handleAfterChange = async (changes: any, source: any) => {
-    //Değişen Cellin Satır Indexi
-    let changedRow = -1;
-    //Değişen Cellerin Satır Indexleri (Distinct)
-    let changedRows: any = [];
-    //Değişen Cellin Satır Verileri
-    let changedRowData: any;
     if (source === "loadData") {
       return; // Skip this hook on loadData
     }
@@ -477,109 +404,23 @@ const DonusumFisleri = () => {
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
-        changedRow = row;
 
-        if (changedRows.length == 0) {
-          changedRows.push(row);
-        }
-        if (changedRows[changedRows.length - 1] != row) {
-          changedRows.push(row);
-        }
-
-        changedRowData = await handleGetRowData(row);
-
-        //Cell Güncelleme
-        if (
-          changedRow >= 0 &&
-          changedRowData[0] != null &&
-          changedRowData[1] != null &&
-          changedRowData[2] != null &&
-          changedRowData[3] != null &&
-          changedRowData[4] != null &&
-          changedRowData[5] != null &&
-          changedRowData[6] != null &&
-          changedRowData[7] != null
-        ) {
-          await handleUpdateDonusumFisleriVerisi(changedRow);
-
-          changedRow = -1;
-          changedRows = [];
-        }
-      }
-    }
-    //Tek satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length < 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null
-    ) {
-      await handleCreateDonusumFisleriVerisi(changedRow);
-      changedRow = -1;
-      changedRows = [];
-    }
-    //Çok Satır Yaratma
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      changedRowData[1] != null &&
-      changedRowData[2] != null &&
-      changedRowData[3] != null &&
-      changedRowData[4] != null &&
-      changedRowData[5] != null &&
-      changedRowData[6] != null &&
-      changedRowData[7] != null
-    ) {
-      //Düzgün Çok Satır Yaratma
-      if (halfPasteControl == false) {
-        setAfterPasteCompleted(true);
-        changedRow = -1;
-        changedRows = [];
-      }
-      //Yarım Yarım Çok satır Yaratma
-      else {
-        for (const x of changedRows) {
-          if (
-            changedRow >= 0 &&
-            changedRows.length >= 2 &&
-            changedRowData[0] == null &&
-            changedRowData[1] != null &&
-            changedRowData[2] != null &&
-            changedRowData[3] != null &&
-            changedRowData[4] != null &&
-            changedRowData[5] != null &&
-            changedRowData[6] != null &&
-            changedRowData[7] != null
-          ) {
-            await handleCreateDonusumFisleriVerisi(x);
+        if (prop === 2) {
+          const matched = genelHesapPlaniListesi.find(
+            (item: any) => item.kod === newValue
+          );
+          console.log(matched);
+          if (matched && matched.adi != "") {
+            if (hotTableComponent.current) {
+              hotTableComponent.current.hotInstance.setDataAtCell(
+                row,
+                3,
+                matched.adi
+              );
+            }
           }
         }
-        setHalfPasteControl(false);
-        changedRow = -1;
-        changedRows = [];
       }
-    }
-    //Yarım Yarım Çok satır Kontrol
-    if (
-      changedRow >= 0 &&
-      changedRows.length >= 2 &&
-      changedRowData[0] == null &&
-      (changedRowData[1] == null ||
-        changedRowData[2] == null ||
-        changedRowData[3] == null ||
-        changedRowData[4] == null ||
-        changedRowData[5] == null ||
-        changedRowData[6] == null ||
-        changedRowData[7] != null)
-    ) {
-      setHalfPasteControl(true);
     }
   };
 
@@ -598,201 +439,141 @@ const DonusumFisleri = () => {
     }
   };
 
-  const handleCreateDonusumFisleriVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-
-    const createdDonusumFisleriVerisi = {
-      denetciId: user.denetciId,
-      denetlenenId: user.denetlenenId,
-      yil: user.yil,
-      siraNo: row + 1,
-      yevmiyeNo: rowData[1],
-      fisTipi: rowData[2],
-      detayHesapKodu: rowData[3],
-      hesapAdi: rowData[4],
-      borcTutari: rowData[5],
-      alacakTutari: rowData[6],
-      aciklama: rowData[7],
-    };
-
-    try {
-      const result = await createDonusumFisleriVerisi(
-        user.token || "",
-        createdDonusumFisleriVerisi
-      );
-      if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Dönüşüm Fişleri Verisi ekleme başarılı");
-      } else {
-        console.error("Dönüşüm Fişleri Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
+  const handleCreateDonusumFisleriVerisi = async () => {
+    if (fetchedData.filter((item: any) => item[0]).length == 0) {
+      await handleDeleteDonusumFisleriVerisi();
+      return;
     }
-  };
 
-  const handleCreateMultipleDonusumFisleriVerisi = async () => {
     const keys = [
       "denetciId",
       "denetlenenId",
       "yil",
-      "siraNo",
-      "yevmiyeNo",
+      "fisNo",
       "fisTipi",
-      "detayHesapKodu",
+      "detayKodu",
       "hesapAdi",
-      "borcTutari",
-      "alacakTutari",
+      "borc",
+      "alacak",
       "aciklama",
     ];
-    const jsonData =
-      multiplePasteData.length === 1
-        ? keys.reduce(
-            (acc: { [key: string]: any }, key: string, index: number) => {
-              if (key === "denetciId") {
-                acc[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                acc[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                acc[key] = user.yil;
-              } else if (key === "borcTutari" || key === "alacakTutari") {
-                acc[key] = parseFloat(
-                  multiplePasteData[0][index - 3].replace(",", ".")
-                );
-              } else {
-                acc[key] = multiplePasteData[0][index - 3];
-              }
-              return acc;
-            },
-            {}
-          )
-        : multiplePasteData.map((item: any[]) => {
-            let obj: { [key: string]: any } = {};
-            keys.forEach((key, index) => {
-              if (key === "denetciId") {
-                obj[key] = user.denetciId;
-              } else if (key === "denetlenenId") {
-                obj[key] = user.denetlenenId;
-              } else if (key === "yil") {
-                obj[key] = user.yil;
-              } else if (key === "borcTutari" || key === "alacakTutari") {
-                obj[key] = parseFloat(item[index - 3].replace(",", "."));
-              } else {
-                obj[key] = item[index - 3];
-              }
-            });
-            return obj;
-          });
+
+    const jsonData = fetchedData
+      .filter((item: any) => item[0])
+      .map((item: any) => {
+        let obj: { [key: string]: any } = {};
+        keys.forEach((key, index) => {
+          if (key === "denetciId") {
+            obj[key] = user.denetciId;
+          } else if (key === "denetlenenId") {
+            obj[key] = user.denetlenenId;
+          } else if (key === "yil") {
+            obj[key] = user.yil;
+          } else if (key === "borc" || key === "alacak") {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = 0.0;
+            } else {
+              obj[key] = item[index - 3];
+            }
+          } else if (key === "aciklama") {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = "";
+            } else {
+              obj[key] = item[index - 3];
+            }
+          } else {
+            if (
+              item[index - 3] == undefined ||
+              item[index - 3] == null ||
+              item[index - 3] == ""
+            ) {
+              obj[key] = null;
+            } else {
+              obj[key] = item[index - 3];
+            }
+          }
+        });
+
+        return obj;
+      });
+
     try {
-      const result = await createMultipleDonusumFisleriVerisi(
+      const result = await createDonusumFisleriVerisi(
         user.token || "",
         jsonData
       );
       if (result) {
-        if (halfPasteControl == false) {
-          await fetchData();
-        }
-        console.log("Dönüşüm Fişleri Verisi ekleme başarılı");
-      } else {
-        console.error("Dönüşüm Fişleri Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleCreateNullDonusumFisleriVerisi = async (siraNo: number) => {
-    try {
-      const result = await createNullDonusumFisleriVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo + 1 || 0
-      );
-      if (result) {
-        if (halfPasteControl == false && control == false) {
-          await fetchData();
-        }
-        console.log("Dönüşüm Fişleri Verisi ekleme başarılı");
-      } else {
-        console.error("Dönüşüm Fişleri Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleUpdateDonusumFisleriVerisi = async (row: number) => {
-    const rowData = await handleGetRowData(row);
-
-    const updatedDonusumFisleriVerisi = {
-      yevmiyeNo: rowData[1],
-      fisTipi: rowData[2],
-      detayHesapKodu: rowData[3],
-      hesapAdi: rowData[4],
-      borcTutari: rowData[5],
-      alacakTutari: rowData[6],
-      aciklama: rowData[7],
-    };
-
-    try {
-      const result = await updateDonusumFisleriVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        row + 1,
-        updatedDonusumFisleriVerisi
-      );
-      if (result) {
         await fetchData();
-        console.log("Dönüşüm Fişleri Verisi güncelleme başarılı");
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("Dönüşüm Fişleri Verisi güncelleme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
   };
 
-  const handleUpdateMultipleDonusumFisleriVerisi = async (siraNo: number) => {
-    try {
-      const result = await updateMultipleDonusumFisleriVerisi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo || 0
-      );
-      if (result) {
-        console.log("Dönüşüm Fişleri Verisi güncelleme başarılı");
-      } else {
-        console.error("Dönüşüm Fişleri Verisi güncelleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleDeleteDonusumFisleriVerisi = async (siraNo: number[]) => {
+  const handleDeleteDonusumFisleriVerisi = async () => {
     try {
       const result = await deleteDonusumFisleriVerisi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0,
-        siraNo
+        user.yil || 0
       );
       if (result) {
-        if (halfPasteControl == false && control == false) {
-          await fetchData();
-        }
-        console.log("Dönüşüm Fişleri Verisi silme başarılı");
+        await fetchData();
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
       } else {
-        console.error("Dönüşüm Fişleri Verisi silme başarısız");
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -800,6 +581,7 @@ const DonusumFisleri = () => {
   };
 
   const fetchData = async () => {
+    setEndRow(-1);
     try {
       const donusumFisleriVerileri =
         await getDonusumFisleriVerileriByDenetciDenetlenenYil(
@@ -812,13 +594,12 @@ const DonusumFisleri = () => {
       const rowsAll: any = [];
       donusumFisleriVerileri.forEach((veri: any) => {
         const newRow: any = [
-          veri.siraNo,
-          veri.yevmiyeNo,
+          veri.fisNo,
           veri.fisTipi,
-          veri.detayHesapKodu,
+          veri.detayKodu,
           veri.hesapAdi,
-          veri.borcTutari,
-          veri.alacakTutari,
+          veri.borc,
+          veri.alacak,
           veri.aciklama,
         ];
         rowsAll.push(newRow);
@@ -840,21 +621,19 @@ const DonusumFisleri = () => {
   };
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     fetchRowCount();
   }, []);
 
   useEffect(() => {
-    if (halfPasteControl == false) {
-      fetchData();
+    if (kaydetTiklandimi) {
+      handleCreateDonusumFisleriVerisi();
+      setKaydetTiklandimi(false);
     }
-  }, [halfPasteControl]);
-
-  useEffect(() => {
-    if (afterPasteCompleted) {
-      handleCreateMultipleDonusumFisleriVerisi();
-      setAfterPasteCompleted(false);
-    }
-  }, [afterPasteCompleted]);
+  }, [kaydetTiklandimi]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
@@ -925,6 +704,29 @@ const DonusumFisleri = () => {
 
   return (
     <>
+      <Grid container>
+        <Grid item xs={12} lg={12}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: 1,
+              mb: 2,
+              borderRadius: 1,
+              backgroundColor: "warning.light",
+            }}
+          >
+            {uyari.map((mesaj, index) => (
+              <Typography
+                key={index}
+                variant="body1"
+                sx={{ color: "warning.dark" }}
+              >
+                - {mesaj}
+              </Typography>
+            ))}
+          </Paper>
+        </Grid>
+      </Grid>
       <HotTable
         style={{
           height: "100%",
@@ -938,7 +740,7 @@ const DonusumFisleri = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 60, 60, 80, 140, 100, 100, 200]}
+        colWidths={[60, 60, 80, 140, 100, 100, 200]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -946,9 +748,6 @@ const DonusumFisleri = () => {
         autoWrapRow={true}
         minRows={rowCount}
         minCols={7}
-        hiddenColumns={{
-          columns: [0],
-        }}
         filters={true}
         columnSorting={true}
         dropdownMenu={[

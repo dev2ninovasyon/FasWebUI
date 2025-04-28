@@ -32,11 +32,11 @@ export const getFisListesiVerileriByFisNo = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  yevmiyeNo: number
+  fisNo: number
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisleriByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&yevmiyeNo=${yevmiyeNo}`,
+      `${url}/Donusum/DonusumFisleriByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
       {
         method: "GET",
         headers: {
@@ -60,11 +60,11 @@ export const createFisListesiVerisi = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  yevmiyeNo: number
+  fisNo: number
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisleriNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&yevmiyeNo=${yevmiyeNo}`,
+      `${url}/Donusum/DonusumFisleriNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
       {
         method: "POST",
         headers: {
@@ -122,11 +122,11 @@ export const updateFisDurumu = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  yevmiyeNo: number
+  fisNo: number
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisDurumu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&yevmiyeNo=${yevmiyeNo}`,
+      `${url}/Donusum/DonusumFisDurumu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
       {
         method: "PUT",
         headers: {

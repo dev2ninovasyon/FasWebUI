@@ -113,6 +113,25 @@ export const getProgramVukMizan = async (
   }
 };
 
+export const getGenelHesapPlani = async (token: string, tip: string) => {
+  try {
+    const response = await fetch(`${url}/Mizan/GenelHesapPlani?tip=${tip}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Genel Hesap Planı verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const getProgramVukMizanWithoutType = async (
   token: string,
   denetciId: number,

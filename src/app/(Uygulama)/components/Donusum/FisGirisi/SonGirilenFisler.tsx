@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { enqueueSnackbar } from "notistack";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
 import { getFisNo } from "@/api/Donusum/FisGirisi";
@@ -28,7 +27,7 @@ interface Props {
 
 interface Veri {
   id: number;
-  yevmiyeNo: number;
+  fisNo: number;
   fisTipi: string;
   detayKodu: string;
   hesapAdi: string;
@@ -325,7 +324,7 @@ const SonGirilenFisler: React.FC<Props> = ({
       fisVerileriByFisNo.forEach((veri: any) => {
         const newRow: any = [
           veri.id,
-          veri.yevmiyeNo,
+          veri.fisNo,
           veri.fisTipi,
           veri.detayKodu,
           veri.hesapAdi,

@@ -39,7 +39,7 @@ numbro.setLanguage("tr-TR");
 interface Veri {
   [key: number]: number;
   id: number;
-  yevmiyeNo: number;
+  fisNo: number;
   fisTipi: string;
   detayKodu: string;
   hesapAdi: string;
@@ -48,7 +48,11 @@ interface Veri {
   aciklama: string;
 }
 
-const FisDetaylari = () => {
+interface Props {
+  genelHesapPlaniListesi: any;
+}
+
+const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
   const hotTableComponent = useRef<any>(null);
 
   const pathname = usePathname();
@@ -129,10 +133,18 @@ const FisDetaylari = () => {
       allowInvalid: false,
     }, // Tip
     {
-      type: "text",
-      columnSorting: true,
+      type: "autocomplete",
+      source: function (query: string, process: (result: string[]) => void) {
+        let results = genelHesapPlaniListesi
+          .filter((item: any) => item.kod.includes(query))
+          .slice(0, 50)
+          .map((item: any) => item.kod);
+        process(results);
+      },
+      strict: true,
+      allowInvalid: false,
       className: "htLeft",
-    }, // Detay Kodu
+    }, // Detay Hesap Kodu
     {
       type: "text",
       columnSorting: true,
@@ -298,6 +310,22 @@ const FisDetaylari = () => {
 
         changedRowData = await handleGetRowData(row);
 
+        if (prop === 3) {
+          const matched = genelHesapPlaniListesi.find(
+            (item: any) => item.kod === newValue
+          );
+          console.log(matched);
+          if (matched && matched.adi != "") {
+            if (hotTableComponent.current) {
+              hotTableComponent.current.hotInstance.setDataAtCell(
+                row,
+                4,
+                matched.adi
+              );
+            }
+          }
+        }
+
         //Cell Güncelleme
         if (
           changedRow >= 0 &&
@@ -443,7 +471,7 @@ const FisDetaylari = () => {
       fisVerileriByFisNo.forEach((veri: any) => {
         const newRow: any = [
           veri.id,
-          veri.yevmiyeNo,
+          veri.fisNo,
           veri.fisTipi,
           veri.detayKodu,
           veri.hesapAdi,

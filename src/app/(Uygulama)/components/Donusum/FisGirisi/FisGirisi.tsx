@@ -31,15 +31,15 @@ numbro.setLanguage("tr-TR");
 interface Props {
   kod: string;
   ad: string;
-  bakiye: number[];
   fisType: string;
+  genelHesapPlaniListesi: any;
   hazirFislerTiklandimi: boolean;
   handleFilterChange: (str: string) => void;
   setHazirFislerTiklandimi: (bool: boolean) => void;
 }
 
 interface Veri {
-  yevmiyeNo: number;
+  fisNo: number;
   detayKodu: string;
   hesapAdi: string;
   borc: number;
@@ -50,8 +50,8 @@ interface Veri {
 const FisGirisi: React.FC<Props> = ({
   kod,
   ad,
-  bakiye,
   fisType,
+  genelHesapPlaniListesi,
   hazirFislerTiklandimi,
   handleFilterChange,
   setHazirFislerTiklandimi,
@@ -62,7 +62,6 @@ const FisGirisi: React.FC<Props> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
   const dispatch = useDispatch();
   const theme = useTheme();
-
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const [rowCount, setRowCount] = useState<number>(1);
@@ -71,10 +70,7 @@ const FisGirisi: React.FC<Props> = ({
 
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
-  const [startRow, setStartRow] = useState(-1);
   const [endRow, setEndRow] = useState(-1);
-  const [startCol, setStartCol] = useState(-1);
-  const [endCol, setEndCol] = useState(-1);
 
   const [lastFisNo, setLastFisNo] = useState(1);
 
@@ -152,88 +148,66 @@ const FisGirisi: React.FC<Props> = ({
     }
   };
 
-  function findDuplicateRows(data: any): Veri[] {
-    const rowsAsString = new Set<string>();
-    const duplicateRows: Veri[] = [];
+  function isRowEmpty(row: Veri): boolean {
+    return Object.values(row).every(
+      (value) =>
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+    );
+  }
 
-    const keys = Object.keys(data);
+  function findDuplicateRows(data: Veri[]): number[] {
+    const seenRows = new Set<string>();
+    const duplicates: number[] = [];
 
-    const [firstKey, ...restKeys] = keys;
+    data.forEach((row, index) => {
+      if (isRowEmpty(row)) return; // tüm değerler boşsa geç
 
-    for (const row of data) {
-      const { [firstKey]: _, ...rowWithoutSiraNo } = row;
+      const rowString = JSON.stringify(row, Object.keys(row).sort());
 
-      const rowString = JSON.stringify(
-        rowWithoutSiraNo,
-        Object.keys(rowWithoutSiraNo).sort()
-      );
-
-      if (!rowString.includes("null") && !rowString.includes("{}")) {
-        if (rowsAsString.has(rowString)) {
-          duplicateRows.push(row);
-        } else {
-          rowsAsString.add(rowString);
-        }
+      if (seenRows.has(rowString)) {
+        duplicates.push(index + 1); // 1-based row number
+      } else {
+        seenRows.add(rowString);
       }
-    }
-    return duplicateRows;
+    });
+
+    return duplicates;
   }
 
   useEffect(() => {
     if (duplicatesControl) {
-      const duplicatesList = findDuplicateRows(fetchedData);
+      const duplicateRowNumbers = findDuplicateRows(fetchedData);
 
-      let duplicatesMessage = "";
-      if (duplicatesList != undefined && duplicatesList != null) {
-        duplicatesList.forEach((item: any) => {
-          if (item[0] != undefined && item[0] != null) {
-            duplicatesMessage = duplicatesMessage + " " + item[0] + ". ";
+      if (duplicateRowNumbers.length > 0) {
+        const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
+
+        enqueueSnackbar(
+          `${duplicatesMessage}Numaralı Satır${
+            duplicateRowNumbers.length > 1 ? "lar" : ""
+          } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
+          {
+            variant: "warning",
+            autoHideDuration: 5000,
+            style: {
+              backgroundColor:
+                customizer.activeMode === "dark"
+                  ? theme.palette.warning.dark
+                  : theme.palette.warning.main,
+              maxWidth: "720px",
+            },
           }
-        });
-        if (duplicatesMessage != "") {
-          if (duplicatesList.length > 1) {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satırlar Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          } else {
-            enqueueSnackbar(
-              duplicatesMessage +
-                "Satır Tekrar Eden Veri İçeriyor. Kontol Edin.",
-              {
-                variant: "warning",
-                autoHideDuration: 5000,
-                style: {
-                  backgroundColor:
-                    customizer.activeMode === "dark"
-                      ? theme.palette.warning.dark
-                      : theme.palette.warning.main,
-                  maxWidth: "720px",
-                },
-              }
-            );
-          }
-          setDuplicatesControl(false);
-        }
+        );
       }
+
       setDuplicatesControl(false);
     }
   }, [duplicatesControl]);
 
   const colHeaders = [
     "Fiş No",
-    "Detay Kodu",
+    "D. Hesap Kodu",
     "Hesap Adı",
     "Borç",
     "Alacak",
@@ -248,7 +222,19 @@ const FisGirisi: React.FC<Props> = ({
       validator: integerValidator,
       allowInvalid: false,
     }, // Fiş No
-    { type: "text", columnSorting: true, className: "htLeft" }, // Hesap Kodu / Adı
+    {
+      type: "autocomplete",
+      source: function (query: string, process: (result: string[]) => void) {
+        let results = genelHesapPlaniListesi
+          .filter((item: any) => item.kod.includes(query))
+          .slice(0, 50)
+          .map((item: any) => item.kod);
+        process(results);
+      },
+      strict: true,
+      allowInvalid: false,
+      className: "htLeft",
+    }, // Hesap Kodu
     { type: "text", columnSorting: true, className: "htLeft" }, // Hesap Adı
     {
       type: "numeric",
@@ -381,13 +367,7 @@ const FisGirisi: React.FC<Props> = ({
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
 
-    if (
-      row >= startRow &&
-      row <= endRow &&
-      col >= startCol &&
-      col <= endCol &&
-      value == null
-    ) {
+    if (row <= endRow && (value == undefined || value == null || value == "")) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
     }
   };
@@ -403,11 +383,6 @@ const FisGirisi: React.FC<Props> = ({
 
   const handleCreateRow = async (index: number, amount: number) => {
     if (amount == 1 && index != rowCount - 1) {
-      setStartRow(-1);
-      setEndRow(-1);
-      setStartCol(-1);
-      setEndCol(-1);
-
       console.log(
         `Yeni satır(lar) eklendi: ${amount} adet satır ${index} indexinden itibaren.`
       );
@@ -423,10 +398,6 @@ const FisGirisi: React.FC<Props> = ({
     physicalRows: number[],
     source: any
   ) => {
-    setStartRow(0);
-    setEndRow(0);
-    setStartCol(0);
-    setEndCol(0);
     console.log(
       `Satır(lar) silindi: ${amount} adet satır ${index} indexinden itibaren.${physicalRows}`
     );
@@ -439,10 +410,10 @@ const FisGirisi: React.FC<Props> = ({
     console.log("Pasted endRow coordinates:", coords[0].endRow);
     console.log("Pasted startCol coordinates:", coords[0].startCol);
     console.log("Pasted endCol coordinates:", coords[0].endCol);
-    setStartRow(coords[0].startRow);
-    setEndRow(coords[0].endRow);
-    setStartCol(coords[0].startCol);
-    setEndCol(coords[0].endCol);
+
+    if (endRow < coords[0].endRow) {
+      setEndRow(coords[0].endRow);
+    }
   };
 
   const handleAfterChange = (changes: any, source: any) => {
@@ -454,6 +425,24 @@ const FisGirisi: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+
+        if (prop === 1) {
+          handleFilterChange(newValue);
+
+          const matched = genelHesapPlaniListesi.find(
+            (item: any) => item.kod === newValue
+          );
+          console.log(matched);
+          if (matched && matched.adi != "") {
+            if (hotTableComponent.current) {
+              hotTableComponent.current.hotInstance.setDataAtCell(
+                row,
+                2,
+                matched.adi
+              );
+            }
+          }
+        }
         if (prop === 3) {
           setToplamBorc((prevToplamBorc) => {
             const newNumber =
@@ -504,53 +493,23 @@ const FisGirisi: React.FC<Props> = ({
     setFark(toplamBorc - toplamAlacak);
   }, [toplamBorc, toplamAlacak]);
 
-  const handleAfterBeginEditing = (row: number, col: number) => {
-    if (col === 1) {
-      const hotInstance = hotTableComponent.current.hotInstance;
-      const editor = hotInstance.getActiveEditor();
-      if (editor) {
-        const input = editor.TEXTAREA;
-        if (input) {
-          const handleInputEvent = (event: KeyboardEvent) => {
-            let newValue = (event.target as HTMLInputElement).value;
-            handleFilterChange(newValue);
-
-            setTimeout(() => {
-              hotInstance.setDataAtCell(row, col, newValue);
-            }, 1000);
-          };
-
-          const handleEditorBlur = () => {
-            input.removeEventListener("input", handleInputEvent);
-            input.removeEventListener("blur", handleEditorBlur);
-          };
-
-          input.addEventListener("input", handleInputEvent);
-          input.addEventListener("blur", handleEditorBlur);
-        }
-      }
-    }
-  };
-
   const handleCreateFisGirisiVerisi = async () => {
     let controlBorcAlacak = true;
     let controlAnaHesap = true;
     let controlHesaplar = true;
     let controlDetayKoduHesapAdi = true;
-    let controlBakiye = true;
 
     const keys = [
       "denetciId",
       "denetlenenId",
       "yil",
       "fisTipi",
-      "yevmiyeNo",
+      "fisNo",
       "detayKodu",
       "hesapAdi",
       "borc",
       "alacak",
       "aciklama",
-      "tarih",
     ];
 
     const jsonData = fetchedData.map((item: any[]) => {
@@ -597,10 +556,6 @@ const FisGirisi: React.FC<Props> = ({
             }
           }
         }
-        console.log(bakiye[index]);
-        if (bakiye[index] < item[3] || bakiye[index] < item[4]) {
-          controlBakiye = false;
-        }
 
         if (key === "denetciId") {
           obj[key] = user.denetciId;
@@ -610,8 +565,6 @@ const FisGirisi: React.FC<Props> = ({
           obj[key] = user.yil;
         } else if (key === "fisTipi") {
           obj[key] = fisType;
-        } else if (key === "tarih") {
-          obj[key] = "";
         } else if (key === "borc" || key === "alacak") {
           if (
             (key === "borc" || key === "alacak") &&
@@ -640,18 +593,14 @@ const FisGirisi: React.FC<Props> = ({
       controlBorcAlacak &&
       controlAnaHesap &&
       controlHesaplar &&
-      controlDetayKoduHesapAdi &&
-      controlBakiye;
+      controlDetayKoduHesapAdi;
     if (control) {
       try {
         const result = await createFisGirisiVerisi(user.token || "", jsonData);
         if (result) {
           await fetchFisNo();
           setFetchedData([]);
-          setStartRow(-1);
           setEndRow(-1);
-          setStartCol(-1);
-          setEndCol(-1);
 
           enqueueSnackbar("Fiş Kaydedildi", {
             variant: "success",
@@ -691,18 +640,7 @@ const FisGirisi: React.FC<Props> = ({
           },
         });
       } else if (!controlBorcAlacak) {
-        enqueueSnackbar("Borç Ya Da Alacak Tutarı Girmelisiniz", {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-          },
-        });
-      } else if (!controlBakiye) {
-        enqueueSnackbar("Borç Ya Da Alacak Tutarı Bakiyeden Büyük Olamaz", {
+        enqueueSnackbar("Borç Yada Alacak Tutarı Girmelisiniz", {
           variant: "warning",
           autoHideDuration: 5000,
           style: {
@@ -797,120 +735,105 @@ const FisGirisi: React.FC<Props> = ({
   }, [customizer.isCollapse]);
 
   return (
-    <Grid container>
-      <Grid item xs={12} lg={12}>
-        <HotTable
-          style={{
-            width: "100%",
-            minHeight: "100px",
-            maxHeight: 684,
-            maxWidth: "100%",
-            overflow: smDown ? "auto" : "",
-          }}
-          language={dictionary.languageCode}
-          ref={hotTableComponent}
-          data={fetchedData}
-          colHeaders={colHeaders}
-          columns={columns}
-          colWidths={[32, 100, 150, 100, 100, 100]}
-          stretchH="all"
-          manualColumnResize={true}
-          rowHeaders={true}
-          rowHeights={35}
-          autoWrapRow={true}
-          minRows={rowCount}
-          minCols={6}
-          filters={true}
-          columnSorting={true}
-          dropdownMenu={[
-            "filter_by_condition",
-            "filter_by_value",
-            "filter_action_bar",
-          ]}
-          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-          afterGetColHeader={afterGetColHeader}
-          afterGetRowHeader={afterGetRowHeader}
-          afterRenderer={afterRenderer}
-          afterPaste={afterPaste} // Add afterPaste hook
-          afterCreateRow={handleCreateRow} // Add createRow hook
-          afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
-          afterChange={handleAfterChange} // Add afterChange hook
-          beforeChange={handleBeforeChange} // Add beforeChange hook
-          afterBeginEditing={handleAfterBeginEditing}
-          contextMenu={{
-            items: {
-              row_above: {},
-              row_below: {},
-              remove_row: {},
-              alignment: {},
-              copy: {},
-
-              fis_esitle: {
-                name: "Fiş eşitle",
-                callback: async function (key, selection) {
-                  const hotInstance = hotTableComponent.current.hotInstance;
-                  if (fark < 0) {
-                    hotInstance.setDataAtCell(
-                      selection[0].start.row,
-                      3,
-                      Math.abs(fark)
-                    );
-                    hotInstance.setDataAtCell(
-                      selection[0].start.row,
-                      4,
-                      formatNumber(0)
-                    );
-                  } else if (fark == 0) {
-                    hotInstance.setDataAtCell(
-                      selection[0].start.row,
-                      3,
-                      formatNumber(0)
-                    );
-                    hotInstance.setDataAtCell(
-                      selection[0].start.row,
-                      4,
-                      formatNumber(0)
-                    );
-                  } else {
-                    hotInstance.setDataAtCell(
-                      selection[0].start.row,
-                      3,
-                      formatNumber(0)
-                    );
-                    hotInstance.setDataAtCell(
-                      selection[0].start.row,
-                      4,
-                      Math.abs(fark)
-                    );
-                  }
+    <>
+      <Grid container>
+        <Grid item xs={12} lg={12}>
+          <HotTable
+            style={{
+              width: "100%",
+              minHeight: "100px",
+              maxHeight: 684,
+              maxWidth: "100%",
+              overflow: smDown ? "auto" : "",
+            }}
+            language={dictionary.languageCode}
+            ref={hotTableComponent}
+            data={fetchedData}
+            colHeaders={colHeaders}
+            columns={columns}
+            colWidths={[32, 100, 150, 100, 100, 100]}
+            stretchH="all"
+            manualColumnResize={true}
+            rowHeaders={true}
+            rowHeights={35}
+            autoWrapRow={true}
+            minRows={rowCount}
+            minCols={6}
+            filters={true}
+            columnSorting={true}
+            dropdownMenu={[
+              "filter_by_condition",
+              "filter_by_value",
+              "filter_action_bar",
+            ]}
+            licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+            afterGetColHeader={afterGetColHeader}
+            afterGetRowHeader={afterGetRowHeader}
+            afterRenderer={afterRenderer}
+            afterPaste={afterPaste} // Add afterPaste hook
+            afterCreateRow={handleCreateRow} // Add createRow hook
+            afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
+            afterChange={handleAfterChange} // Add afterChange hook
+            beforeChange={handleBeforeChange} // Add beforeChange hook
+            contextMenu={{
+              items: {
+                row_above: {},
+                row_below: {},
+                remove_row: {},
+                alignment: {},
+                copy: {},
+                fis_esitle: {
+                  name: "Fiş eşitle",
+                  callback: async function (key, selection) {
+                    const hotInstance = hotTableComponent.current.hotInstance;
+                    if (fark < 0) {
+                      hotInstance.setDataAtCell(
+                        selection[0].start.row,
+                        3,
+                        Math.abs(fark)
+                      );
+                      hotInstance.setDataAtCell(
+                        selection[0].start.row,
+                        4,
+                        formatNumber(0)
+                      );
+                    } else if (fark == 0) {
+                      hotInstance.setDataAtCell(
+                        selection[0].start.row,
+                        3,
+                        formatNumber(0)
+                      );
+                      hotInstance.setDataAtCell(
+                        selection[0].start.row,
+                        4,
+                        formatNumber(0)
+                      );
+                    } else {
+                      hotInstance.setDataAtCell(
+                        selection[0].start.row,
+                        3,
+                        formatNumber(0)
+                      );
+                      hotInstance.setDataAtCell(
+                        selection[0].start.row,
+                        4,
+                        Math.abs(fark)
+                      );
+                    }
+                  },
                 },
               },
-            },
-          }}
-        />
+            }}
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={12} lg={6}></Grid>
-      <Grid
-        item
-        xs={12}
-        lg={4}
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          gap={2}
-          flexWrap="wrap"
-          sx={{ flex: 1 }}
-        >
+      <Grid container justifyContent={"end"} spacing={1}>
+        <Grid item xs={12} lg={2}>
           <Paper
-            elevation={0}
+            elevation={1}
             sx={{
               p: 2,
-              flex: 1,
+              width: "100%",
               backgroundColor: "primary.light",
               overflow: "auto",
             }}
@@ -922,11 +845,13 @@ const FisGirisi: React.FC<Props> = ({
               {formatNumber(toplamBorc)}
             </Typography>
           </Paper>
+        </Grid>
+        <Grid item xs={12} lg={2}>
           <Paper
-            elevation={0}
+            elevation={1}
             sx={{
               p: 2,
-              flex: 1,
+              width: "100%",
               backgroundColor: "primary.light",
               overflow: "auto",
             }}
@@ -938,28 +863,28 @@ const FisGirisi: React.FC<Props> = ({
               {formatNumber(toplamAlacak)}
             </Typography>
           </Paper>
-        </Box>
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        lg={2}
-        display={"flex"}
-        alignItems={"center"}
-        sx={{ py: 2, pl: { lg: 2 } }}
-      >
-        <Button
-          size="medium"
-          variant="outlined"
-          color="primary"
-          startIcon={<IconDeviceFloppy width={18} />}
-          onClick={() => handleCreateFisGirisiVerisi()}
-          sx={{ width: "100%" }}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          lg={2}
+          display={"flex"}
+          alignItems={"center"}
+          sx={{ py: 2, pl: { lg: 2 } }}
         >
-          Kaydet
-        </Button>
+          <Button
+            size="medium"
+            variant="outlined"
+            color="primary"
+            startIcon={<IconDeviceFloppy width={18} />}
+            onClick={() => handleCreateFisGirisiVerisi()}
+            sx={{ width: "100%" }}
+          >
+            Kaydet
+          </Button>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 

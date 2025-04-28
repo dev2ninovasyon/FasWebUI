@@ -422,13 +422,13 @@ const HazirFisListesi = () => {
           style={{
             height: "100%",
             width: "100%",
-            maxHeight: 684,
+            maxHeight: 586,
             maxWidth: "100%",
           }}
           language={dictionary.languageCode}
           ref={hotTableComponent}
           data={fetchedData}
-          height={684}
+          height={586}
           colHeaders={colHeaders}
           columns={columns}
           colWidths={[0, 60, 60, 60, 150, 100, 100, 100, 80]}
