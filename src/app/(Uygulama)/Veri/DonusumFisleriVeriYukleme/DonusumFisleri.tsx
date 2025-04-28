@@ -63,7 +63,7 @@ const DonusumFisleri: React.FC<Props> = ({
 
   const uyari = [
     "Boş Bırakılmaması Gereken Sütunlar: Fiş No, Fiş Tipi, Detay Hesap Kodu, Hesap Adı, Borç, Alacak",
-    "Fiş No Sütunu Boş Bırakılmamalıdır Ve Sütununa Tam Sayı Girilmelidir.",
+    "Fiş No Sütunu Boş Bırakılmamalıdır Ve Tam Sayı Girilmelidir.",
     "Fiş Tipi Ve Detay Hesap Kodu Sütunaları Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
     "Hesap Adı Sütunu Boş Bırakılmamalıdır.",
     "Borç Ve Alacak Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
