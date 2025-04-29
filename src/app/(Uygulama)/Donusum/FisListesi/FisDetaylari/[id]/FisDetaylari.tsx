@@ -314,7 +314,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
           const matched = genelHesapPlaniListesi.find(
             (item: any) => item.kod === newValue
           );
-          console.log(matched);
+
           if (matched && matched.adi != "") {
             if (hotTableComponent.current) {
               hotTableComponent.current.hotInstance.setDataAtCell(

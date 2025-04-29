@@ -45,11 +45,13 @@ interface Veri {
 interface Props {
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (b: boolean) => void;
+  setSonKaydedilmeTarihi: (str: string) => void;
 }
 
 const AmortismanVeriYukleme: React.FC<Props> = ({
   kaydetTiklandimi,
   setKaydetTiklandimi,
+  setSonKaydedilmeTarihi,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -69,10 +71,10 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
     "Detay Hesap Kodu Ve Hesap Adı Sütunları Boş Bırakılmamalıdır.",
     "Başlangıç Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
     "Elden Çıkarma Tarihi Sütununa GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
-    "Giriş Tutarı Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
+    "Giriş Tutarı Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
     "Yeniden Değerleme Artışı, İptal Edilecek Yeniden Değerleme Tutarı Ve Kalıntı Değer Sütunlarına Ondalıklı Sayı Girilmelidir Veya Boş Bırakılabilir.",
     "Amortisman Usulü Ve Vuk Kıst Amortisman Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
-    "Faydalı Ömür Sütunu Ve Vuk Faydalı Ömür Sütunlarına Tam Sayı Girilmelidir Veya Boş Bırakılabilir.",
+    "Faydalı Ömür Ve Vuk Faydalı Ömür Sütunlarına Tam Sayı Girilmelidir Veya Boş Bırakılabilir.",
   ];
 
   const [endRow, setEndRow] = useState(-1);
@@ -732,7 +734,22 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         );
 
       const rowsAll: any = [];
+      let kaydedilmeTarihi: Date | null = null;
+      let kaydedilmeTarihiFormatted: string | null = null;
+
       amortismanVerileri.forEach((veri: any) => {
+        const veriTarih = new Date(veri.sonKaydedilmeTarihi);
+        if (!kaydedilmeTarihi || veriTarih > kaydedilmeTarihi) {
+          kaydedilmeTarihi = veriTarih;
+          kaydedilmeTarihiFormatted = veriTarih.toLocaleString("tr-TR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
         const newRow: any = [
           veri.detayHesapKodu,
           veri.hesapAdi,
@@ -767,10 +784,16 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
           veri.vukFaydaliOmur,
           veri.vukKistAmortisman,
         ];
+
         rowsAll.push(newRow);
       });
+
       setFetchedData(rowsAll);
       setDuplicatesControl(true);
+
+      if (kaydedilmeTarihiFormatted) {
+        setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }

@@ -432,7 +432,7 @@ const FisGirisi: React.FC<Props> = ({
           const matched = genelHesapPlaniListesi.find(
             (item: any) => item.kod === newValue
           );
-          console.log(matched);
+
           if (matched && matched.adi != "") {
             if (hotTableComponent.current) {
               hotTableComponent.current.hotInstance.setDataAtCell(

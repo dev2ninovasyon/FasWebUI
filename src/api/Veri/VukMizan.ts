@@ -27,37 +27,9 @@ export const getVukMizanVerileriByDenetciDenetlenenYil = async (
   }
 };
 
-export const createVukMizanVerisi = async (
-  token: string,
-  createdVukMizan: any
-) => {
+export const createVukMizanVerisi = async (token: string, jsonData: any) => {
   try {
     const response = await fetch(`${url}/Veri/VukMizan`, {
-      method: "POST",
-      headers: {
-        accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(createdVukMizan),
-    });
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const createMultipleVukMizanVerisi = async (
-  token: string,
-  jsonData: any
-) => {
-  try {
-    const response = await fetch(`${url}/Veri/VukMizanMultiple`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -77,104 +49,11 @@ export const createMultipleVukMizanVerisi = async (
   }
 };
 
-export const createNullVukMizanVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: number
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/VukMizanNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "POST",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const updateVukMizanVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: number,
-  updatedVukMizan: any
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/VukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "PUT",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedVukMizan),
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const updateMultipleVukMizanVerisi = async (
-  token: string,
-  denetciId: number,
-  denetlenenId: number,
-  yil: number,
-  siraNo: any
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Veri/VukMizanMultiple?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&siraNo=${siraNo}`,
-      {
-        method: "PUT",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
 export const deleteVukMizanVerisi = async (
   token: string,
   denetciId: number,
   denetlenenId: number,
-  yil: number,
-  siraNo: number[]
+  yil: number
 ) => {
   try {
     const response = await fetch(
@@ -186,7 +65,6 @@ export const deleteVukMizanVerisi = async (
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(siraNo),
       }
     );
 

@@ -3,7 +3,16 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
-import { Button, Divider, Grid, MenuItem, Tab, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  MenuItem,
+  Tab,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
@@ -61,6 +70,8 @@ const Page: React.FC = () => {
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
 
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
+
+  const [sonKaydedilmeTarihi, setSonKaydedilmeTarihi] = useState("");
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -184,13 +195,25 @@ const Page: React.FC = () => {
                   item
                   xs={12}
                   lg={12}
-                  sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    mb: 2,
+                  }}
                 >
+                  {sonKaydedilmeTarihi && (
+                    <Typography variant={"body2"}>
+                      Son Kaydedilme: {sonKaydedilmeTarihi}
+                    </Typography>
+                  )}
+                  <Box flex={1}></Box>
                   <Button
                     type="button"
                     size="medium"
                     variant="outlined"
                     color="primary"
+                    sx={{ ml: 2 }}
                     onClick={() => {
                       setIsPopUpOpen(true);
                     }}
@@ -219,6 +242,7 @@ const Page: React.FC = () => {
                   <AmortismanVeriYukleme
                     kaydetTiklandimi={kaydetTiklandimi}
                     setKaydetTiklandimi={setKaydetTiklandimi}
+                    setSonKaydedilmeTarihi={setSonKaydedilmeTarihi}
                   />
                 </Grid>
               </Grid>
