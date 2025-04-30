@@ -47,45 +47,6 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
       icon: IconHome,
       href: "/Anasayfa",
     },
-    /*{ navlabel: true, subheader: "MENÜ" },*/
-    /*{
-    id: uniqueId(),
-    title: "KULLANICI",
-    icon: IconUser,
-    href: "/Kullanici",
-    children: [
-      {
-        id: uniqueId(),
-        title: "Kullanıcı İşlemleri",
-        icon: IconPoint,
-        href: "/Kullanici/KullaniciIslemleri",
-      },
-      {
-        id: uniqueId(),
-        title: "Kullanıcı Sözleşme Saatleri",
-        icon: IconPoint,
-        href: "/Kullanici/KullaniciSozlesmeSaatleri",
-      },
-      {
-        id: uniqueId(),
-        title: "Denetçi Yıllık Taahütname",
-        icon: IconPoint,
-        href: "/Kullanici/DenetciYillikTaahutname",
-      },
-      {
-        id: uniqueId(),
-        title: "Sürekli Eğitim Belge ve Bilgileri",
-        icon: IconPoint,
-        href: "/Kullanici/SurekliEgitimBelgeVeBilgileri",
-      },
-      {
-        id: uniqueId(),
-        title: "Denetçi Puantaj Belgesi",
-        icon: IconPoint,
-        href: "/Kullanici/DenetciPuantajBelgesi",
-      },
-    ],
-  },*/
     {
       id: uniqueId(),
       title: "MÜŞTERİ",
@@ -217,12 +178,6 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           icon: IconPoint,
           href: "/Veri/DefterYukleme",
         },
-        /*{
-        id: uniqueId(),
-        title: "Excel Yevmiye Yükleme",
-        icon: IconPoint,
-        href: "/Veri/ExcelYevmiyeYukleme",
-      },*/
         {
           id: uniqueId(),
           title: "Vuk Mizan Veri Yükleme",
@@ -241,12 +196,12 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           icon: IconPoint,
           href: "/Veri/DonusumFisleriVeriYukleme",
         },
-        {
+        /*{
           id: uniqueId(),
           title: "Yabancı Para Hesap Listesi Veri Yükleme",
           icon: IconPoint,
           href: "/Veri/YabanciParaHesapListesiVeriYukleme",
-        },
+        },*/
         {
           id: uniqueId(),
           title: "Mizanlar",
@@ -273,12 +228,6 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           icon: IconPoint,
           href: "/Veri/EDefterInceleme",
         },
-        /*{
-        id: uniqueId(),
-        title: "Yevmiye İnceleme",
-        icon: IconPoint,
-        href: "/",
-      },*/
       ],
     },
     {
@@ -307,7 +256,10 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
-          title: denetimTuru == "Bobi" ? "Kıdem Tazminatı" : "Kıdem Tazminatı",
+          title:
+            denetimTuru == "Bobi"
+              ? "Kıdem Tazminatı (Bobi)"
+              : "Kıdem Tazminatı (Tfrs)",
           icon: IconPoint,
           href:
             denetimTuru == "Bobi"

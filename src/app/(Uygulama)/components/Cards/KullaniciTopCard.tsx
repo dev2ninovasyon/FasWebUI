@@ -4,7 +4,6 @@ import icon2 from "public/images/svgs/icon-user-male.svg";
 import icon3 from "public/images/svgs/icon-briefcase.svg";
 import icon4 from "public/images/svgs/icon-mailbox.svg";
 import icon5 from "public/images/svgs/icon-favorites.svg";
-import icon6 from "public/images/svgs/icon-speech-bubble.svg";
 import Link from "next/link";
 
 const KullaniciTopCards = [
@@ -31,12 +30,6 @@ const KullaniciTopCards = [
     title: "Sürekli Eğitim Bilgileri",
     bgcolor: "error",
     href: "/Kullanici/SurekliEgitimBilgileri",
-  },
-  {
-    icon: icon6,
-    title: "Denetçi Puantaj Belgesi",
-    bgcolor: "success",
-    href: "/Kullanici/DenetciPuantajBelgesi",
   },
 ];
 

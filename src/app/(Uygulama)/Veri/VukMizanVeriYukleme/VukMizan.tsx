@@ -399,39 +399,59 @@ const VukMizan: React.FC<Props> = ({
   };
 
   const handleAfterChange = async (changes: any, source: any) => {
-    if (source === "loadData") {
-      return; // Skip this hook on loadData
-    }
-    if (changes) {
-      for (const [row, prop, oldValue, newValue] of changes) {
-        console.log(
-          `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
-        );
+    if (source === "loadData" || !changes) return;
 
-        if (prop === 1) {
-          const matched = genelHesapPlaniListesi.find(
-            (item: any) => item.kod === newValue
-          );
+    const hesapMap = new Map<string, { kod: string; adi: string }>(
+      genelHesapPlaniListesi.map((item: any) => [item.kod, item])
+    );
 
-          if (newValue.length >= 3) {
-            hotTableComponent.current.hotInstance.setDataAtCell(
-              row,
-              0,
-              newValue.substring(0, 3)
-            );
-          }
-          if (matched && matched.adi != "") {
-            if (hotTableComponent.current) {
-              hotTableComponent.current.hotInstance.setDataAtCell(
-                row,
-                2,
-                matched.adi
-              );
-            }
+    const rowsToUpdate = new Map<number, { kod?: string; adi?: string }>();
+
+    for (const [row, prop, oldValue, newValue] of changes) {
+      if (prop === 1 && newValue !== oldValue) {
+        const matched = hesapMap.get(newValue);
+        const currentRowData = rowsToUpdate.get(row) ?? {};
+
+        if (newValue && typeof newValue === "string" && newValue.length >= 3) {
+          if (
+            newValue.substring(0, 3) !==
+            hotTableComponent.current?.hotInstance.getDataAtCell(row, 0)
+          ) {
+            currentRowData.kod = newValue.substring(0, 3);
           }
         }
+
+        if (
+          matched?.adi &&
+          matched.adi !==
+            hotTableComponent.current?.hotInstance.getDataAtCell(row, 2)
+        ) {
+          currentRowData.adi = matched.adi;
+        }
+
+        rowsToUpdate.set(row, currentRowData);
       }
     }
+
+    // Toplu hücre güncellemeleri (tek render tetikler)
+    hotTableComponent.current?.hotInstance.batch(() => {
+      rowsToUpdate.forEach((data, row) => {
+        if (data.kod !== undefined) {
+          hotTableComponent.current?.hotInstance.setDataAtCell(
+            row,
+            0,
+            data.kod
+          );
+        }
+        if (data.adi !== undefined) {
+          hotTableComponent.current?.hotInstance.setDataAtCell(
+            row,
+            2,
+            data.adi
+          );
+        }
+      });
+    });
   };
 
   const handleBeforeChange = (changes: any[]) => {
