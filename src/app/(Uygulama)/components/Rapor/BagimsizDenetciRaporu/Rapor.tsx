@@ -3079,80 +3079,6 @@ const Rapor: React.FC<RaporProps> = ({
                   }}
                 ></div>
               ))}
-            {dipnot15AmortismanRows.length > 0 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th colSpan={7} style={{ textAlign: "center" }}>
-                        {user.yil}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th>Amortisman</th>
-                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
-                      <th style={{ textAlign: "center" }}>Girişler</th>
-                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
-                      <th style={{ textAlign: "center" }}>Değerleme</th>
-                      <th style={{ textAlign: "center" }}>Transfer</th>
-                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dipnot15AmortismanRows
-                      .filter((x) => x.yil == user.yil)
-                      .map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{row.baslik}</td>
-                          <td className="text-right">
-                            {row.donemBasi != 0
-                              ? row.donemBasi < 0
-                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
-                                : formatNumber(row.donemBasi)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.girisler != 0
-                              ? row.girisler < 0
-                                ? `(${formatNumber(Math.abs(row.girisler))})`
-                                : formatNumber(row.girisler)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.cikislar != 0
-                              ? row.cikislar < 0
-                                ? `(${formatNumber(Math.abs(row.cikislar))})`
-                                : formatNumber(row.cikislar)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.degerleme != 0
-                              ? row.degerleme < 0
-                                ? `(${formatNumber(Math.abs(row.degerleme))})`
-                                : formatNumber(row.degerleme)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.transfer != 0
-                              ? row.transfer < 0
-                                ? `(${formatNumber(Math.abs(row.transfer))})`
-                                : formatNumber(row.transfer)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.donemSonu != 0
-                              ? row.donemSonu < 0
-                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
-                                : formatNumber(row.donemSonu)
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
             {dipnot15MaliyetRows.filter((veri) => veri.yil == user.yil).length >
               0 && (
               <>
@@ -3306,40 +3232,7 @@ const Rapor: React.FC<RaporProps> = ({
                 <div className="seperator24"></div>
               </>
             )}
-          </>
-        ) : (
-          <>
-            <div style={{ textAlign: "justify" }}>Yoktur.</div>
-            <div className="seperator24"></div>
-          </>
-        )}
-        {/* Dipnot 16 */}
-        <div>
-          <h3
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(`DİPNOT 16 -
-                ${dipnotVeriler
-                  .find((veri: any) => veri.dipnotKodu == 16)
-                  ?.veriler[0].text.toLocaleUpperCase("tr-TR")}
-            `),
-            }}
-          ></h3>
-        </div>
-        {dipnot16AmortismanRows.length > 0 || dipnot16MaliyetRows.length > 0 ? (
-          <>
-            {dipnotVeriler
-              .find((veri: any) => veri.dipnotKodu == 16)
-              ?.veriler.slice(1)
-              .map((element, index) => (
-                <div
-                  key={index}
-                  style={{ textAlign: "justify" }}
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(element.text),
-                  }}
-                ></div>
-              ))}
-            {dipnot16AmortismanRows.length > 0 && (
+            {dipnot15AmortismanRows.length > 0 && (
               <>
                 <table className="data-table">
                   <thead>
@@ -3359,7 +3252,7 @@ const Rapor: React.FC<RaporProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {dipnot16AmortismanRows
+                    {dipnot15AmortismanRows
                       .filter((x) => x.yil == user.yil)
                       .map((row, rowIndex) => (
                         <tr key={rowIndex}>
@@ -3413,6 +3306,39 @@ const Rapor: React.FC<RaporProps> = ({
                 <div className="seperator24"></div>
               </>
             )}
+          </>
+        ) : (
+          <>
+            <div style={{ textAlign: "justify" }}>Yoktur.</div>
+            <div className="seperator24"></div>
+          </>
+        )}
+        {/* Dipnot 16 */}
+        <div>
+          <h3
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(`DİPNOT 16 -
+                ${dipnotVeriler
+                  .find((veri: any) => veri.dipnotKodu == 16)
+                  ?.veriler[0].text.toLocaleUpperCase("tr-TR")}
+            `),
+            }}
+          ></h3>
+        </div>
+        {dipnot16AmortismanRows.length > 0 || dipnot16MaliyetRows.length > 0 ? (
+          <>
+            {dipnotVeriler
+              .find((veri: any) => veri.dipnotKodu == 16)
+              ?.veriler.slice(1)
+              .map((element, index) => (
+                <div
+                  key={index}
+                  style={{ textAlign: "justify" }}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(element.text),
+                  }}
+                ></div>
+              ))}
             {dipnot16MaliyetRows.filter((veri) => veri.yil == user.yil).length >
               0 && (
               <>
@@ -3514,6 +3440,80 @@ const Rapor: React.FC<RaporProps> = ({
                       .filter(
                         (x) => user.yil !== undefined && x.yil == user.yil - 1
                       )
+                      .map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          <td>{row.baslik}</td>
+                          <td className="text-right">
+                            {row.donemBasi != 0
+                              ? row.donemBasi < 0
+                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
+                                : formatNumber(row.donemBasi)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.girisler != 0
+                              ? row.girisler < 0
+                                ? `(${formatNumber(Math.abs(row.girisler))})`
+                                : formatNumber(row.girisler)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.cikislar != 0
+                              ? row.cikislar < 0
+                                ? `(${formatNumber(Math.abs(row.cikislar))})`
+                                : formatNumber(row.cikislar)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.degerleme != 0
+                              ? row.degerleme < 0
+                                ? `(${formatNumber(Math.abs(row.degerleme))})`
+                                : formatNumber(row.degerleme)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.transfer != 0
+                              ? row.transfer < 0
+                                ? `(${formatNumber(Math.abs(row.transfer))})`
+                                : formatNumber(row.transfer)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.donemSonu != 0
+                              ? row.donemSonu < 0
+                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
+                                : formatNumber(row.donemSonu)
+                              : "-"}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                <div className="seperator24"></div>
+              </>
+            )}
+            {dipnot16AmortismanRows.length > 0 && (
+              <>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th colSpan={7} style={{ textAlign: "center" }}>
+                        {user.yil}
+                      </th>
+                    </tr>
+                    <tr>
+                      <th>Amortisman</th>
+                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
+                      <th style={{ textAlign: "center" }}>Girişler</th>
+                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
+                      <th style={{ textAlign: "center" }}>Değerleme</th>
+                      <th style={{ textAlign: "center" }}>Transfer</th>
+                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dipnot16AmortismanRows
+                      .filter((x) => x.yil == user.yil)
                       .map((row, rowIndex) => (
                         <tr key={rowIndex}>
                           <td>{row.baslik}</td>

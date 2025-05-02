@@ -328,13 +328,6 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       (veri.dipnotKodu == 14 || veri.dipnotKodu == 17))) && (
                     <Box>
                       <Box px={3} pt={3}>
-                        <AmortismanCari
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
-                      </Box>
-                      <Box px={3} pt={3}>
                         <MaliyetCari
                           dipnotKodu={veri.dipnotKodu}
                           kaydetTiklandimi={kaydetTiklandimi}
@@ -343,6 +336,13 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Box>
                       <Box px={3} pt={3}>
                         <MaliyetOnceki
+                          dipnotKodu={veri.dipnotKodu}
+                          kaydetTiklandimi={kaydetTiklandimi}
+                          setKaydetTiklandimi={setKaydetTiklandimi}
+                        />
+                      </Box>
+                      <Box px={3} pt={3}>
+                        <AmortismanCari
                           dipnotKodu={veri.dipnotKodu}
                           kaydetTiklandimi={kaydetTiklandimi}
                           setKaydetTiklandimi={setKaydetTiklandimi}

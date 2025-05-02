@@ -33,9 +33,9 @@ interface Veri {
   alinanKrediNumarasi: number;
   detayHesapKodu: string;
   hesapAdi: string;
-  paraBirimi: string;
   alinanKrediTutar: number;
-  krediAlisTarhi: number;
+  paraBirimi: string;
+  krediAlisTarihi: number;
   faizOrani: number;
 }
 
@@ -66,8 +66,8 @@ const KrediVeriYukleme: React.FC<Props> = ({
     "Boş Bırakılmaması Gereken Sütunlar: Alınan Kredi Numarası, Detay Hesap Kodu, Hesap Adı, Alınan Kredi Tutar, Kredi Alış Tarihi, Faiz Oranı (%)",
     "Alınan Kredi Numarası Sütunu Boş Bırakılmamalıdır Ve Tam Sayı Girilmelidir.",
     "Detay Hesap Kodu Ve Hesap Adı Sütunları Boş Bırakılmamalıdır.",
-    "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Alınan Kredi Tutar Ve Faiz Oranı (%) Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
+    "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Kredi Alış Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
   ];
 
@@ -203,8 +203,8 @@ const KrediVeriYukleme: React.FC<Props> = ({
     "Alınan Kredi Numarası",
     "D. Hesap Kodu",
     "Hesap Adı",
-    "Para Birimi",
     "Alınan Kredi Tutar",
+    "Para Birimi",
     "Kredi Alış Tarihi",
     "Faiz Oranı (%)",
   ];
@@ -239,6 +239,17 @@ const KrediVeriYukleme: React.FC<Props> = ({
       allowInvalid: false,
     }, // Hesap Adı
     {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      validator: numberValidator,
+      allowInvalid: false,
+    }, // Alınan Kredi Tutar
+    {
       type: "autocomplete",
       source: [
         "TL",
@@ -256,17 +267,6 @@ const KrediVeriYukleme: React.FC<Props> = ({
       strict: false,
       allowInvalid: false,
     }, // Para Birimi
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      validator: numberValidator,
-      allowInvalid: false,
-    }, // Alınan Kredi Tutar
     {
       type: "date",
       dateFormat: "DD.MM.YYYY",
@@ -482,8 +482,8 @@ const KrediVeriYukleme: React.FC<Props> = ({
       "alinanKrediNumarasi",
       "detayHesapKodu",
       "hesapAdi",
-      "paraBirimi",
       "alinanKrediTutar",
+      "paraBirimi",
       "krediAlisTarihi",
       "faizOrani",
     ];
@@ -631,8 +631,8 @@ const KrediVeriYukleme: React.FC<Props> = ({
           veri.alinanKrediNumarasi,
           veri.detayHesapKodu,
           veri.hesapAdi,
-          veri.paraBirimi,
           veri.alinanKrediTutar,
+          veri.paraBirimi,
           veri.krediAlisTarihi !== null && veri.krediAlisTarihi !== undefined
             ? veri.krediAlisTarihi.split("T")[0].split("-").reverse().join(".")
             : null,

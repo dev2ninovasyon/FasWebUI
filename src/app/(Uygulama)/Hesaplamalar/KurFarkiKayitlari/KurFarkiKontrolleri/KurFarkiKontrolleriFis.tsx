@@ -5,9 +5,11 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { enqueueSnackbar } from "notistack";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
 import numbro from "numbro";
@@ -266,6 +268,56 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
     setFetchedData(data);
   }, [data]);
 
+  const handleDownload = () => {
+    const hotTableInstance = hotTableComponent.current.hotInstance;
+    const data = hotTableInstance.getData();
+
+    const processedData = data.map((row: any) => row.slice(1));
+
+    const headers = hotTableInstance.getColHeader().slice(1);
+
+    const fullData = [headers, ...processedData];
+
+    async function createExcelFile() {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Sayfa1");
+
+      fullData.forEach((row: any) => {
+        worksheet.addRow(row);
+      });
+
+      const headerRow = worksheet.getRow(1);
+      headerRow.font = {
+        name: "Calibri",
+        size: 12,
+        bold: true,
+        color: { argb: "FFFFFF" },
+      };
+      headerRow.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "1a6786" },
+      };
+      headerRow.alignment = { horizontal: "left" };
+
+      worksheet.columns.forEach((column) => {
+        column.width = 25;
+      });
+
+      try {
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(blob, "KurFarkiKontrolleriFisler.xlsx");
+        console.log("Excel dosyası başarıyla oluşturuldu");
+      } catch (error) {
+        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+      }
+    }
+    createExcelFile();
+  };
+
   useEffect(() => {
     if (hotTableComponent.current) {
       const diff = customizer.isCollapse
@@ -335,6 +387,22 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
         }}
         copyPaste={false}
       />
+      <Grid container marginTop={2}>
+        <Grid item xs={12} lg={10}></Grid>
+        <Grid
+          item
+          xs={12}
+          lg={2}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <ExceleAktarButton
+            handleDownload={handleDownload}
+          ></ExceleAktarButton>
+        </Grid>
+      </Grid>
     </>
   );
 };

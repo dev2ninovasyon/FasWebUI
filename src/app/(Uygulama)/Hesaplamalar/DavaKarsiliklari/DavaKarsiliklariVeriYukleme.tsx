@@ -212,7 +212,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
       source: [
         "İcra Takibi",
         "İcra İtiraz",
-        "Alcak",
+        "Alacak",
         "Tazminat",
         "İflas",
         "İptal",

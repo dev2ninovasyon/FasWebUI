@@ -3534,80 +3534,6 @@ const RaporTfrs: React.FC<RaporProps> = ({
                   }}
                 ></div>
               ))}
-            {dipnot14AmortismanRows.length > 0 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th colSpan={7} style={{ textAlign: "center" }}>
-                        {user.yil}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th>Amortisman</th>
-                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
-                      <th style={{ textAlign: "center" }}>Girişler</th>
-                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
-                      <th style={{ textAlign: "center" }}>Değerleme</th>
-                      <th style={{ textAlign: "center" }}>Transfer</th>
-                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dipnot14AmortismanRows
-                      .filter((x) => x.yil == user.yil)
-                      .map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{row.baslik}</td>
-                          <td className="text-right">
-                            {row.donemBasi != 0
-                              ? row.donemBasi < 0
-                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
-                                : formatNumber(row.donemBasi)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.girisler != 0
-                              ? row.girisler < 0
-                                ? `(${formatNumber(Math.abs(row.girisler))})`
-                                : formatNumber(row.girisler)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.cikislar != 0
-                              ? row.cikislar < 0
-                                ? `(${formatNumber(Math.abs(row.cikislar))})`
-                                : formatNumber(row.cikislar)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.degerleme != 0
-                              ? row.degerleme < 0
-                                ? `(${formatNumber(Math.abs(row.degerleme))})`
-                                : formatNumber(row.degerleme)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.transfer != 0
-                              ? row.transfer < 0
-                                ? `(${formatNumber(Math.abs(row.transfer))})`
-                                : formatNumber(row.transfer)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.donemSonu != 0
-                              ? row.donemSonu < 0
-                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
-                                : formatNumber(row.donemSonu)
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
             {dipnot14MaliyetRows.filter((veri) => veri.yil == user.yil).length >
               0 && (
               <>
@@ -3709,6 +3635,80 @@ const RaporTfrs: React.FC<RaporProps> = ({
                       .filter(
                         (x) => user.yil !== undefined && x.yil == user.yil - 1
                       )
+                      .map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          <td>{row.baslik}</td>
+                          <td className="text-right">
+                            {row.donemBasi != 0
+                              ? row.donemBasi < 0
+                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
+                                : formatNumber(row.donemBasi)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.girisler != 0
+                              ? row.girisler < 0
+                                ? `(${formatNumber(Math.abs(row.girisler))})`
+                                : formatNumber(row.girisler)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.cikislar != 0
+                              ? row.cikislar < 0
+                                ? `(${formatNumber(Math.abs(row.cikislar))})`
+                                : formatNumber(row.cikislar)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.degerleme != 0
+                              ? row.degerleme < 0
+                                ? `(${formatNumber(Math.abs(row.degerleme))})`
+                                : formatNumber(row.degerleme)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.transfer != 0
+                              ? row.transfer < 0
+                                ? `(${formatNumber(Math.abs(row.transfer))})`
+                                : formatNumber(row.transfer)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.donemSonu != 0
+                              ? row.donemSonu < 0
+                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
+                                : formatNumber(row.donemSonu)
+                              : "-"}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                <div className="seperator24"></div>
+              </>
+            )}
+            {dipnot14AmortismanRows.length > 0 && (
+              <>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th colSpan={7} style={{ textAlign: "center" }}>
+                        {user.yil}
+                      </th>
+                    </tr>
+                    <tr>
+                      <th>Amortisman</th>
+                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
+                      <th style={{ textAlign: "center" }}>Girişler</th>
+                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
+                      <th style={{ textAlign: "center" }}>Değerleme</th>
+                      <th style={{ textAlign: "center" }}>Transfer</th>
+                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dipnot14AmortismanRows
+                      .filter((x) => x.yil == user.yil)
                       .map((row, rowIndex) => (
                         <tr key={rowIndex}>
                           <td>{row.baslik}</td>
@@ -4152,80 +4152,6 @@ const RaporTfrs: React.FC<RaporProps> = ({
                   }}
                 ></div>
               ))}
-            {dipnot17AmortismanRows.length > 0 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th colSpan={7} style={{ textAlign: "center" }}>
-                        {user.yil}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th>Amortisman</th>
-                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
-                      <th style={{ textAlign: "center" }}>Girişler</th>
-                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
-                      <th style={{ textAlign: "center" }}>Değerleme</th>
-                      <th style={{ textAlign: "center" }}>Transfer</th>
-                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dipnot17AmortismanRows
-                      .filter((x) => x.yil == user.yil)
-                      .map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{row.baslik}</td>
-                          <td className="text-right">
-                            {row.donemBasi != 0
-                              ? row.donemBasi < 0
-                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
-                                : formatNumber(row.donemBasi)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.girisler != 0
-                              ? row.girisler < 0
-                                ? `(${formatNumber(Math.abs(row.girisler))})`
-                                : formatNumber(row.girisler)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.cikislar != 0
-                              ? row.cikislar < 0
-                                ? `(${formatNumber(Math.abs(row.cikislar))})`
-                                : formatNumber(row.cikislar)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.degerleme != 0
-                              ? row.degerleme < 0
-                                ? `(${formatNumber(Math.abs(row.degerleme))})`
-                                : formatNumber(row.degerleme)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.transfer != 0
-                              ? row.transfer < 0
-                                ? `(${formatNumber(Math.abs(row.transfer))})`
-                                : formatNumber(row.transfer)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.donemSonu != 0
-                              ? row.donemSonu < 0
-                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
-                                : formatNumber(row.donemSonu)
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
             {dipnot17MaliyetRows.filter((veri) => veri.yil == user.yil).length >
               0 && (
               <>
@@ -4327,6 +4253,80 @@ const RaporTfrs: React.FC<RaporProps> = ({
                       .filter(
                         (x) => user.yil !== undefined && x.yil == user.yil - 1
                       )
+                      .map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          <td>{row.baslik}</td>
+                          <td className="text-right">
+                            {row.donemBasi != 0
+                              ? row.donemBasi < 0
+                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
+                                : formatNumber(row.donemBasi)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.girisler != 0
+                              ? row.girisler < 0
+                                ? `(${formatNumber(Math.abs(row.girisler))})`
+                                : formatNumber(row.girisler)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.cikislar != 0
+                              ? row.cikislar < 0
+                                ? `(${formatNumber(Math.abs(row.cikislar))})`
+                                : formatNumber(row.cikislar)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.degerleme != 0
+                              ? row.degerleme < 0
+                                ? `(${formatNumber(Math.abs(row.degerleme))})`
+                                : formatNumber(row.degerleme)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.transfer != 0
+                              ? row.transfer < 0
+                                ? `(${formatNumber(Math.abs(row.transfer))})`
+                                : formatNumber(row.transfer)
+                              : "-"}
+                          </td>
+                          <td className="text-right">
+                            {row.donemSonu != 0
+                              ? row.donemSonu < 0
+                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
+                                : formatNumber(row.donemSonu)
+                              : "-"}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                <div className="seperator24"></div>
+              </>
+            )}
+            {dipnot17AmortismanRows.length > 0 && (
+              <>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th colSpan={7} style={{ textAlign: "center" }}>
+                        {user.yil}
+                      </th>
+                    </tr>
+                    <tr>
+                      <th>Amortisman</th>
+                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
+                      <th style={{ textAlign: "center" }}>Girişler</th>
+                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
+                      <th style={{ textAlign: "center" }}>Değerleme</th>
+                      <th style={{ textAlign: "center" }}>Transfer</th>
+                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dipnot17AmortismanRows
+                      .filter((x) => x.yil == user.yil)
                       .map((row, rowIndex) => (
                         <tr key={rowIndex}>
                           <td>{row.baslik}</td>

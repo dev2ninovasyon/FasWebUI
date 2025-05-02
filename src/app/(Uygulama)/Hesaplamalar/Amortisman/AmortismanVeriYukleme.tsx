@@ -241,7 +241,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
   const colHeaders = [
     "D. Hesap Kodu",
     "Hesap Adı",
-    "Başlangıç Tarihi",
+    "Satın Alma Tarihi",
     "Elden Çıkarma Tarihi",
     "Giriş Tutarı",
     "Y. D. Artışı",
