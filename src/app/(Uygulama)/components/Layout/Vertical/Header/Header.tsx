@@ -16,7 +16,6 @@ import Profile from "./Profile/Profile";
 import Search from "./Search";
 import Language from "./Language";
 import { AppState } from "@/store/store";
-import MobileRightSidebar from "./MobileRightSidebar";
 import SirketPopup from "./SirketPopup";
 import SearchBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/SearchBoxAutoComplete";
 import MobileSirketPopup from "./MobileSirketPopup";
@@ -48,9 +47,6 @@ const Header = () => {
   return (
     <AppBarStyled position="sticky" color="default">
       <ToolbarStyled>
-        {/* ------------------------------------------- */}
-        {/* Toggle Button Sidebar */}
-        {/* ------------------------------------------- */}
         <Box>
           <IconButton
             color="inherit"
@@ -66,9 +62,6 @@ const Header = () => {
           {lgUp ? null : <Search />}
           {lgUp ? <SirketPopup /> : <MobileSirketPopup />}
         </Box>
-        {/* ------------------------------------------- */}
-        {/* Search Dropdown */}
-        {/* ------------------------------------------- */}
         {lgUp ? (
           <Box width={"40%"}>
             <SearchBoxAutocomplete />
@@ -77,16 +70,8 @@ const Header = () => {
 
         <Stack spacing={1} direction="row" alignItems="center">
           <Language />
-
           <Archive />
-          {/* ------------------------------------------- */}
-          {/* End Ecommerce Dropdown */}
-          {/* ------------------------------------------- */}
           <Notifications />
-          {/* ------------------------------------------- */}
-          {/* Toggle Right Sidebar for mobile */}
-          {/* ------------------------------------------- */}
-          {/*lgDown ? <MobileRightSidebar /> : null*/}
           <Profile />
         </Stack>
       </ToolbarStyled>
