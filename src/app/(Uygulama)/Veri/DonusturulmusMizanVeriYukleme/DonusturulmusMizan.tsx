@@ -70,7 +70,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
     "Kebir Kodu Sütunu Boş Bırakılmamalıdır Ve Tam Sayı Girilmelidir.",
     "Detay Hesap Kodu Sütunu Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
     "Hesap Adı Sütunu Boş Bırakılmamalıdır.",
-    "Borç, Alacak, Fiş Borç, Fiş Alacak, RaporBorç, Rapor Alacak, Borç Bakiye Ve Alacak Bakiye Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
+    "Borç, Alacak, Fiş Borç, Fiş Alacak, Rapor Borç, Rapor Alacak, Borç Bakiye Ve Alacak Bakiye Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
   ];
 
   const [endRow, setEndRow] = useState(0);
