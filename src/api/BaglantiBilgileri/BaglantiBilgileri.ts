@@ -177,3 +177,53 @@ export const deleteBaglantiBilgileriById = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const getBildirimler = async (token: string, denetciId: number) => {
+  try {
+    const response = await fetch(
+      `${url}/BaglantiBilgileri/Bildirimler?denetciId=${denetciId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Bildirimler getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateBildirimlerOkundumu = async (
+  token: string,
+  ids: number[]
+) => {
+  try {
+    const response = await fetch(
+      `${url}/BaglantiBilgileri/BildirimlerOkundumu`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(ids),
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};

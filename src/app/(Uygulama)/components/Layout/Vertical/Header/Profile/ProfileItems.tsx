@@ -1,27 +1,57 @@
-import * as Data from "@/app/(Uygulama)/components/Layout/Vertical/Header/data";
 import { usePathname } from "next/navigation";
+import { uniqueId } from "lodash";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useDispatch, useSelector } from "@/store/hooks";
 import ProfileItem from "./ProfileItem";
 import ProfileCollapse from "./ProfileCollapse";
-import { AppState } from "@/store/store";
+import { useDispatch } from "@/store/hooks";
 import { toggleMobileSidebar } from "@/store/customizer/CustomizerSlice";
+
+interface ProfileType {
+  [x: string]: any;
+  id?: string;
+  href: string;
+  title: string;
+  subtitle?: string;
+  icon: any;
+  children?: ProfileType[];
+}
+
+const profile: ProfileType[] = [
+  {
+    id: uniqueId(),
+    title: "Hesap Ayarları",
+    icon: "/images/svgs/icon-settings.png",
+    href: "/HesapAyarlari",
+    subtitle: "Hesap kişiselleştirme",
+  },
+  {
+    id: uniqueId(),
+    title: "Tema Ayarları",
+    icon: "/images/svgs/icon-settings2.png",
+    href: "/TemaAyarlari",
+    subtitle: "Tema kişiselleştirme",
+  },
+  {
+    id: uniqueId(),
+    title: "Kullanıcı",
+    icon: "/images/svgs/icon-users2.png",
+    href: "/Kullanici",
+    subtitle: "Kullanıcılar ile ilgili işlemler",
+    personal: true,
+  },
+];
 
 const ProfileItems = () => {
   const pathname = usePathname();
   const pathDirect = pathname.split("/").slice(0, 2).join("/");
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
-  const customizer = useSelector((state: AppState) => state.customizer);
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
   const dispatch = useDispatch();
   return (
     <Box sx={{ px: 0 }}>
       <List sx={{ pt: 0 }}>
-        {Data.profile.map((item) => {
-          /* eslint no-else-return: "off" */
+        {profile.map((item) => {
           if (item.children) {
             return (
               <ProfileCollapse
@@ -33,8 +63,6 @@ const ProfileItems = () => {
                 onClick={() => dispatch(toggleMobileSidebar())}
               />
             );
-
-            // {/********If Sub No Menu**********/}
           } else {
             return (
               <ProfileItem

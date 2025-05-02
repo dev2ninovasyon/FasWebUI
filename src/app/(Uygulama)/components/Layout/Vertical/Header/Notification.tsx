@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IconButton,
   Box,
@@ -7,50 +7,119 @@ import {
   MenuItem,
   Avatar,
   Typography,
-  Button,
   Chip,
+  useTheme,
 } from "@mui/material";
-import * as dropdownData from "./data";
-
-import { IconBellRinging } from "@tabler/icons-react";
-import { Stack } from "@mui/system";
-import Link from "next/link";
+import { IconBell, IconBellRinging } from "@tabler/icons-react";
+import { color, Stack } from "@mui/system";
 import Scrollbar from "@/app/(Uygulama)/components/CustomScroll/Scrollbar";
+import {
+  getBildirimler,
+  updateBildirimlerOkundumu,
+} from "@/api/BaglantiBilgileri/BaglantiBilgileri";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+
+interface Veri {
+  id: number;
+  konu: string;
+  aciklama: string;
+  okundumu: boolean;
+}
 
 const Notifications = () => {
-  const [anchorEl2, setAnchorEl2] = useState(null);
+  const [anchorEl, setanchorEl] = useState(null);
 
-  const handleClick2 = (event: any) => {
-    setAnchorEl2(event.currentTarget);
+  const handleClick = (event: any) => {
+    setanchorEl(event.currentTarget);
   };
 
-  const handleClose2 = () => {
-    setAnchorEl2(null);
+  const handleClose = () => {
+    setanchorEl(null);
   };
+
+  const user = useSelector((state: AppState) => state.userReducer);
+  const theme = useTheme();
+
+  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+
+  const handleUpdateOkundumu = async () => {
+    try {
+      const ids = fetchedData
+        .filter((item) => !item.okundumu)
+        .map((item) => item.id);
+      if (ids.length > 0) {
+        await updateBildirimlerOkundumu(user.token || "", ids);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const bildirimler = await getBildirimler(
+        user.token || "",
+        user.denetciId || 0
+      );
+      const rowsAll: any = [];
+
+      bildirimler.forEach((veri: any) => {
+        const newRow: any = {
+          id: veri.id,
+          konu: veri.konu,
+          aciklama: veri.aciklama,
+          okundumu: veri.okundumu,
+        };
+
+        rowsAll.push(newRow);
+      });
+      rowsAll.sort((a: Veri, b: Veri) => {
+        const aOkunmadi = a.okundumu === false;
+        const bOkunmadi = b.okundumu === false;
+        return bOkunmadi ? 1 : aOkunmadi ? -1 : 0;
+      });
+      setFetchedData(rowsAll);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (anchorEl) {
+      handleUpdateOkundumu();
+    }
+  }, [anchorEl]);
 
   return (
     <Box>
       <IconButton
         size="large"
-        aria-label="show 11 new notifications"
+        aria-label="show new notifications"
         color="inherit"
         aria-controls="msgs-menu"
         aria-haspopup="true"
-        onClick={handleClick2}
+        onClick={handleClick}
       >
-        <Badge variant="dot" color="primary">
-          <IconBellRinging size="20" />
-        </Badge>
+        {fetchedData.filter((item) => !item.okundumu).length > 0 ? (
+          <Badge variant="dot" color="primary">
+            <IconBellRinging size="20" />
+          </Badge>
+        ) : (
+          <IconBell size="20" />
+        )}
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
+
       <Menu
         id="msgs-menu"
-        anchorEl={anchorEl2}
+        anchorEl={anchorEl}
         keepMounted
-        open={Boolean(anchorEl2)}
-        onClose={handleClose2}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         sx={{
@@ -61,66 +130,88 @@ const Notifications = () => {
       >
         <Stack
           direction="row"
-          py={2}
-          px={4}
-          justifyContent="space-between"
+          p={2}
           alignItems="center"
+          justifyContent="space-between"
         >
           <Typography variant="h6">Bildirimler</Typography>
-          <Chip label="1 new" color="primary" size="small" />
+          {fetchedData.filter((item) => !item.okundumu).length > 0 && (
+            <Chip
+              label={`${
+                fetchedData.filter((item) => !item.okundumu).length
+              } Yeni`}
+              color="primary"
+            />
+          )}
         </Stack>
         <Scrollbar sx={{ height: "385px" }}>
-          {dropdownData.notifications.map((notification, index) => (
-            <Box key={index}>
-              <MenuItem sx={{ py: 2, px: 4 }}>
-                <Stack direction="row" spacing={2}>
-                  <Avatar
-                    src={notification.avatar}
-                    alt={notification.avatar}
-                    sx={{
-                      width: 48,
-                      height: 48,
-                    }}
-                  />
-                  <Box>
-                    <Typography
-                      variant="subtitle2"
-                      color="textPrimary"
-                      fontWeight={600}
-                      noWrap
+          {fetchedData.length === 0 ? (
+            <Typography variant="subtitle1" color="textSecondary" p={2}>
+              Henüz Hiç Bildirim Yok
+            </Typography>
+          ) : (
+            fetchedData.map((notification, index) => (
+              <Box key={index}>
+                <MenuItem
+                  sx={{
+                    p: 2,
+                    pointerEvents: "none",
+                    backgroundColor:
+                      notification.okundumu == false
+                        ? theme.palette.primary.light
+                        : theme.palette.background.default,
+                    borderLeft: 1,
+                    borderRight: 1,
+                    borderBottom: 1,
+                    borderRadius: `4px`,
+                    borderColor: theme.palette.background.default,
+                  }}
+                >
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Avatar
+                      src={"/images/svgs/icon-dot.png"}
+                      alt={"/images/svgs/icon-dot.png"}
                       sx={{
-                        width: "240px",
+                        width: 24,
+                        height: 24,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
-                    >
-                      {notification.title}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      variant="subtitle2"
-                      sx={{
-                        width: "240px",
-                      }}
-                      noWrap
-                    >
-                      {notification.subtitle}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </MenuItem>
-            </Box>
-          ))}
+                    />
+                    <Box>
+                      <Typography
+                        variant="subtitle2"
+                        color="textPrimary"
+                        fontWeight={600}
+                        sx={{
+                          width: "285px",
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                        }}
+                      >
+                        {notification.konu}
+                      </Typography>
+                      <Typography
+                        color="textSecondary"
+                        variant="subtitle2"
+                        sx={{
+                          width: "285px",
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          overflowWrap: "break-word",
+                        }}
+                      >
+                        {notification.aciklama}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </MenuItem>
+              </Box>
+            ))
+          )}
         </Scrollbar>
-        <Box p={3} pb={1}>
-          <Button
-            href="/apps/email"
-            variant="outlined"
-            component={Link}
-            color="primary"
-            fullWidth
-          >
-            Tüm Bildirimler
-          </Button>
-        </Box>
       </Menu>
     </Box>
   );
