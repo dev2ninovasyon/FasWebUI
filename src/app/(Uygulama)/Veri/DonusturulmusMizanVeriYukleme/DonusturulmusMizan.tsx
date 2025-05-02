@@ -66,7 +66,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
   const uyari = [
-    "Boş Bırakılmaması Gereken Sütunlar: Kebir Kodu, Detay Hesap Kodu, Hesap Adı, Borç, Alacak, Fiş Borç, Fiş Alacak, RaporBorç, Rapor Alacak, Borç Bakiye, Alacak Bakiye",
+    "Boş Bırakılmaması Gereken Sütunlar: Kebir Kodu, Detay Hesap Kodu, Hesap Adı, Borç, Alacak, Fiş Borç, Fiş Alacak, Rapor Borç, Rapor Alacak, Borç Bakiye, Alacak Bakiye",
     "Kebir Kodu Sütunu Boş Bırakılmamalıdır Ve Tam Sayı Girilmelidir.",
     "Detay Hesap Kodu Sütunu Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
     "Hesap Adı Sütunu Boş Bırakılmamalıdır.",
