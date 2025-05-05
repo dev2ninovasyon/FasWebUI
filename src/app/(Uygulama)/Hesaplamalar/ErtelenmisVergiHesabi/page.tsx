@@ -14,6 +14,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
@@ -42,6 +43,8 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -122,67 +125,120 @@ const Page: React.FC = () => {
           lg={12}
           sx={{
             display: "flex",
+            flexDirection: smDown ? "column" : "row",
             alignItems: "center",
             justifyContent: "flex-end",
             mb: 2,
+            gap: 1,
           }}
         >
-          <CustomFormLabel
-            htmlFor="vergiOrani"
-            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-          >
-            <Typography variant="subtitle1">Vergi Oranı:</Typography>
-          </CustomFormLabel>
-          <CustomTextField
-            id="vergiOrani"
-            type="number"
-            value={vergiOrani}
-            onChange={(e: any) => setVergiOrani(e.target.value)}
-          />
-          <CustomFormLabel
-            htmlFor="mali"
-            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mx: 2 }}
-          >
-            <Typography variant="subtitle1">
-              Mali Zarar ve Benzeri İndirimler:
-            </Typography>
-          </CustomFormLabel>
-          <CustomTextField
-            id="mali"
-            type="number"
-            value={maliZararVeBenzeriIndirimler}
-            onChange={(e: any) =>
-              setMaliZararVeBenzeriIndirimler(e.target.value)
-            }
-          />
-          <CustomFormLabel
-            htmlFor="vergi"
-            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mx: 2 }}
-          >
-            <Typography variant="subtitle1">
-              Vergi Avantaj ve Benzerleri:
-            </Typography>
-          </CustomFormLabel>
-          <CustomTextField
-            id="vergi"
-            type="number"
-            value={vergiAvantajVeBenzerleri}
-            onChange={(e: any) => setVergiAvantajVeBenzerleri(e.target.value)}
-          />
-          <Button
-            type="button"
-            size="medium"
-            disabled={hesaplaTiklandimi}
-            variant="outlined"
-            color="primary"
-            sx={{ ml: 2, height: "100%" }}
-            onClick={() => {
-              setHesaplaTiklandimi(true);
-              handleHesapla();
-            }}
-          >
-            Hesapla
-          </Button>
+          <Grid container spacing={3}>
+            <Grid
+              item
+              xs={12}
+              sm={3.5}
+              lg={3.5}
+              display="flex"
+              alignItems="center"
+              justifyContent={"flex-end"}
+            >
+              <CustomFormLabel
+                htmlFor="vergiOrani"
+                sx={{
+                  mt: 0,
+                  mb: { xs: "-10px", sm: 0 },
+                  mr: 2,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <Typography variant="subtitle1">Vergi Oranı:</Typography>
+              </CustomFormLabel>
+              <CustomTextField
+                id="vergiOrani"
+                type="number"
+                value={vergiOrani}
+                fullWidth
+                onChange={(e: any) => setVergiOrani(e.target.value)}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={3.5}
+              lg={3.5}
+              display="flex"
+              alignItems="center"
+            >
+              <CustomFormLabel
+                htmlFor="mali"
+                sx={{
+                  mt: 0,
+                  mb: { xs: "-10px", sm: 0 },
+                  mr: 2,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <Typography variant="subtitle1">
+                  Mali Zarar ve Benzeri İndirimler:
+                </Typography>
+              </CustomFormLabel>
+              <CustomTextField
+                id="mali"
+                type="number"
+                value={maliZararVeBenzeriIndirimler}
+                fullWidth
+                onChange={(e: any) =>
+                  setMaliZararVeBenzeriIndirimler(e.target.value)
+                }
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={3.5}
+              lg={3.5}
+              display="flex"
+              alignItems="center"
+            >
+              <CustomFormLabel
+                htmlFor="vergi"
+                sx={{
+                  mt: 0,
+                  mb: { xs: "-10px", sm: 0 },
+                  mr: 2,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <Typography variant="subtitle1">
+                  Vergi Avantaj ve Benzerleri:
+                </Typography>
+              </CustomFormLabel>
+              <CustomTextField
+                id="vergi"
+                type="number"
+                value={vergiAvantajVeBenzerleri}
+                fullWidth
+                onChange={(e: any) =>
+                  setVergiAvantajVeBenzerleri(e.target.value)
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={1.5} lg={1.5}>
+              <Button
+                size="medium"
+                disabled={hesaplaTiklandimi}
+                variant="outlined"
+                color="primary"
+                sx={{ width: "100%", height: "44px", whiteSpace: "nowrap" }}
+                onClick={() => {
+                  setHesaplaTiklandimi(true);
+                  handleHesapla();
+                }}
+              >
+                <Typography variant="subtitle1">Hesapla</Typography>
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12} lg={12} mb={2}>
           <VergiVarlik hesaplaTiklandimi={hesaplaTiklandimi} />

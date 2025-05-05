@@ -275,7 +275,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
       className: "htRight",
       validator: dateValidator,
       allowInvalid: false,
-    }, // Amortisman Başlangıç Tarihi
+    }, // Satın Alma Tarihi
     {
       type: "date",
       dateFormat: "DD.MM.YYYY",
@@ -739,15 +739,17 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
 
       amortismanVerileri.forEach((veri: any) => {
         const veriTarih = new Date(veri.sonKaydedilmeTarihi);
-        if (!kaydedilmeTarihi || veriTarih > kaydedilmeTarihi) {
-          kaydedilmeTarihi = veriTarih;
-          kaydedilmeTarihiFormatted = veriTarih.toLocaleString("tr-TR", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
+        if (veriTarih && !isNaN(veriTarih.getTime())) {
+          if (!kaydedilmeTarihi || veriTarih > kaydedilmeTarihi) {
+            kaydedilmeTarihi = veriTarih;
+            kaydedilmeTarihiFormatted = veriTarih.toLocaleString("tr-TR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+          }
         }
 
         const newRow: any = [

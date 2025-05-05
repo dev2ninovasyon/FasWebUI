@@ -3,7 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, useTheme } from "@mui/material";
+import { Box, Button, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
@@ -23,6 +23,8 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -87,25 +89,36 @@ const Page: React.FC = () => {
           lg={12}
           sx={{
             display: "flex",
+            flexDirection: smDown ? "column" : "row",
             alignItems: "center",
             justifyContent: "flex-end",
             mb: 2,
+            gap: 1,
           }}
         >
-          <Button
-            type="button"
-            size="medium"
-            disabled={hesaplaTiklandimi}
-            variant="outlined"
-            color="primary"
-            sx={{ ml: 2, height: "100%" }}
-            onClick={() => {
-              setHesaplaTiklandimi(true);
-              handleHesapla();
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: smDown ? "column" : "row",
+              gap: 1,
+              width: smDown ? "100%" : "auto",
             }}
           >
-            Hesapla
-          </Button>
+            <Button
+              type="button"
+              size="medium"
+              disabled={hesaplaTiklandimi}
+              variant="outlined"
+              color="primary"
+              sx={{ height: "100%" }}
+              onClick={() => {
+                setHesaplaTiklandimi(true);
+                handleHesapla();
+              }}
+            >
+              Hesapla
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs={12} lg={12}>
           <Yaslandirma hesaplaTiklandimi={hesaplaTiklandimi} />

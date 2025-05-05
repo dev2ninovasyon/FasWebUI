@@ -11,6 +11,7 @@ import {
   MenuItem,
   Tab,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
@@ -45,6 +46,8 @@ interface Veri {
 }
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -197,46 +200,59 @@ const Page: React.FC = () => {
                   lg={12}
                   sx={{
                     display: "flex",
+                    flexDirection: smDown ? "column" : "row",
                     alignItems: "center",
                     justifyContent: "flex-end",
                     mb: 2,
+                    gap: 1,
                   }}
                 >
                   {sonKaydedilmeTarihi && (
-                    <Typography variant={"body2"}>
+                    <Typography
+                      variant="body2"
+                      textAlign={"center"}
+                      sx={{ mb: smDown ? 1 : 0 }}
+                    >
                       Son Kaydedilme: {sonKaydedilmeTarihi}
                     </Typography>
                   )}
                   <Box flex={1}></Box>
-                  <Button
-                    type="button"
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2 }}
-                    onClick={() => {
-                      setIsPopUpOpen(true);
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: smDown ? "column" : "row",
+                      gap: 1,
+                      width: smDown ? "100%" : "auto",
                     }}
                   >
-                    Paylaşım Bağlantısı
-                  </Button>
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={
-                      kaydetTiklandimi ||
-                      hesaplaTiklandimi ||
-                      fetchedData != null
-                    }
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2 }}
-                    onClick={() => {
-                      setKaydetTiklandimi(true);
-                    }}
-                  >
-                    Kaydet
-                  </Button>
+                    <Button
+                      type="button"
+                      size="medium"
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        setIsPopUpOpen(true);
+                      }}
+                    >
+                      Paylaşım Bağlantısı
+                    </Button>
+                    <Button
+                      type="button"
+                      size="medium"
+                      disabled={
+                        kaydetTiklandimi ||
+                        hesaplaTiklandimi ||
+                        fetchedData != null
+                      }
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        setKaydetTiklandimi(true);
+                      }}
+                    >
+                      Kaydet
+                    </Button>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} lg={12}>
                   <AmortismanVeriYukleme
@@ -253,7 +269,14 @@ const Page: React.FC = () => {
                   item
                   xs={12}
                   lg={12}
-                  sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: smDown ? "column" : "row",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    mb: 2,
+                    gap: 1,
+                  }}
                 >
                   <CustomSelect
                     labelId="hesaplamaYontemi"
@@ -270,20 +293,28 @@ const Page: React.FC = () => {
                       Hesaplama Yöntemi: Günlük
                     </MenuItem>
                   </CustomSelect>
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={kaydetTiklandimi || hesaplaTiklandimi}
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2 }}
-                    onClick={() => {
-                      setHesaplaTiklandimi(true);
-                      handleHesapla();
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: smDown ? "column" : "row",
+                      gap: 1,
+                      width: smDown ? "100%" : "auto",
                     }}
                   >
-                    Hesapla
-                  </Button>
+                    <Button
+                      type="button"
+                      size="medium"
+                      disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        setHesaplaTiklandimi(true);
+                        handleHesapla();
+                      }}
+                    >
+                      Hesapla
+                    </Button>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} lg={12}>
                   <AmortismanHesaplama hesaplaTiklandimi={hesaplaTiklandimi} />

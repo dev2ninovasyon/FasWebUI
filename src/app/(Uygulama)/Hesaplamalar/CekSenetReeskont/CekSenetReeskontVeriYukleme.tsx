@@ -42,11 +42,13 @@ interface Veri {
 interface Props {
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (b: boolean) => void;
+  setSonKaydedilmeTarihi: (str: string) => void;
 }
 
 const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
   kaydetTiklandimi,
   setKaydetTiklandimi,
+  setSonKaydedilmeTarihi,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -71,7 +73,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
     "Alınan (A) / Verilen (V) Sütunu Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
   ];
 
-  const [endRow, setEndRow] = useState(0);
+  const [endRow, setEndRow] = useState(-1);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -629,7 +631,24 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
         );
 
       const rowsAll: any = [];
+      let kaydedilmeTarihi: Date | null = null;
+      let kaydedilmeTarihiFormatted: string | null = null;
+
       cekSenetReeskontVerileri.forEach((veri: any) => {
+        const veriTarih = new Date(veri.sonKaydedilmeTarihi);
+        if (veriTarih && !isNaN(veriTarih.getTime())) {
+          if (!kaydedilmeTarihi || veriTarih > kaydedilmeTarihi) {
+            kaydedilmeTarihi = veriTarih;
+            kaydedilmeTarihiFormatted = veriTarih.toLocaleString("tr-TR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+          }
+        }
+
         const newRow: any = [
           veri.detayHesapKodu,
           veri.hesapAdi,
@@ -659,6 +678,10 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
       });
       setFetchedData(rowsAll);
       setDuplicatesControl(true);
+
+      if (kaydedilmeTarihiFormatted) {
+        setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }

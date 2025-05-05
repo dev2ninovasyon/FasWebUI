@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Button, Grid, useTheme } from "@mui/material";
+import { Box, Button, Grid, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
@@ -45,6 +45,8 @@ interface Veri {
 
 const VadeliBankaMevduatiFaizTahakkuk = () => {
   const hotTableComponent = useRef<any>(null);
+
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -685,25 +687,36 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
         lg={12}
         sx={{
           display: "flex",
+          flexDirection: smDown ? "column" : "row",
           alignItems: "center",
           justifyContent: "flex-end",
           mb: 2,
+          gap: 1,
         }}
       >
-        <Button
-          type="button"
-          size="medium"
-          disabled={hesaplaTiklandimi}
-          variant="outlined"
-          color="primary"
-          sx={{ ml: 2, height: "100%" }}
-          onClick={() => {
-            setHesaplaTiklandimi(true);
-            handleHesapla();
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: smDown ? "column" : "row",
+            gap: 1,
+            width: smDown ? "100%" : "auto",
           }}
         >
-          Hesapla
-        </Button>
+          <Button
+            type="button"
+            size="medium"
+            disabled={hesaplaTiklandimi}
+            variant="outlined"
+            color="primary"
+            sx={{ height: "100%" }}
+            onClick={() => {
+              setHesaplaTiklandimi(true);
+              handleHesapla();
+            }}
+          >
+            Hesapla
+          </Button>
+        </Box>
       </Grid>
       <HotTable
         style={{

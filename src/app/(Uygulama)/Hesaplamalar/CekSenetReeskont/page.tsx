@@ -4,19 +4,19 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   Divider,
-  Fab,
   Grid,
   IconButton,
   MenuItem,
   Stack,
   Tab,
-  Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { IconInfoCircle, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
 import CekSenetReeskontVeriYukleme from "./CekSenetReeskontVeriYukleme";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -61,6 +61,8 @@ interface Veri {
 }
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -103,6 +105,8 @@ const Page: React.FC = () => {
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
 
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
+
+  const [sonKaydedilmeTarihi, setSonKaydedilmeTarihi] = useState("");
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -334,51 +338,81 @@ const Page: React.FC = () => {
                   item
                   xs={12}
                   lg={12}
-                  sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: smDown ? "column" : "row",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    mb: 2,
+                    gap: 1,
+                  }}
                 >
-                  <Button
-                    type="button"
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => {
-                      setIsPopUpOpen(true);
+                  {sonKaydedilmeTarihi && (
+                    <Typography
+                      variant="body2"
+                      textAlign={"center"}
+                      sx={{ mb: smDown ? 1 : 0 }}
+                    >
+                      Son Kaydedilme: {sonKaydedilmeTarihi}
+                    </Typography>
+                  )}
+                  <Box flex={1}></Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: smDown ? "column" : "row",
+                      gap: 1,
+                      width: smDown ? "100%" : "auto",
                     }}
                   >
-                    Paylaşım Bağlantısı
-                  </Button>
-                  <Button
-                    type="button"
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => setShowDrawer(true)}
-                    sx={{ ml: 2 }}
-                  >
-                    Ek Bilgi
-                  </Button>
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={
-                      kaydetTiklandimi ||
-                      hesaplaTiklandimi ||
-                      fetchedData != null
-                    }
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2 }}
-                    onClick={() => {
-                      setKaydetTiklandimi(true);
-                    }}
-                  >
-                    Kaydet
-                  </Button>
+                    <Button
+                      type="button"
+                      size="medium"
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        setIsPopUpOpen(true);
+                      }}
+                    >
+                      Paylaşım Bağlantısı
+                    </Button>
+                    <Button
+                      type="button"
+                      size="medium"
+                      disabled={
+                        kaydetTiklandimi ||
+                        hesaplaTiklandimi ||
+                        fetchedData != null
+                      }
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => setShowDrawer(true)}
+                    >
+                      Ek Bilgi
+                    </Button>
+                    <Button
+                      type="button"
+                      size="medium"
+                      disabled={
+                        kaydetTiklandimi ||
+                        hesaplaTiklandimi ||
+                        fetchedData != null
+                      }
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        setKaydetTiklandimi(true);
+                      }}
+                    >
+                      Kaydet
+                    </Button>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} lg={12}>
                   <CekSenetReeskontVeriYukleme
                     kaydetTiklandimi={kaydetTiklandimi}
                     setKaydetTiklandimi={setKaydetTiklandimi}
+                    setSonKaydedilmeTarihi={setSonKaydedilmeTarihi}
                   />
                 </Grid>
                 <Dialog
@@ -738,25 +772,36 @@ const Page: React.FC = () => {
                   lg={12}
                   sx={{
                     display: "flex",
+                    flexDirection: smDown ? "column" : "row",
                     alignItems: "center",
                     justifyContent: "flex-end",
                     mb: 2,
+                    gap: 1,
                   }}
                 >
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={hesaplaTiklandimi}
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2, height: "100%" }}
-                    onClick={() => {
-                      setHesaplaTiklandimi(true);
-                      handleHesapla();
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: smDown ? "column" : "row",
+                      gap: 1,
+                      width: smDown ? "100%" : "auto",
                     }}
                   >
-                    Hesapla
-                  </Button>
+                    <Button
+                      type="button"
+                      size="medium"
+                      disabled={hesaplaTiklandimi}
+                      variant="outlined"
+                      color="primary"
+                      sx={{ height: "100%" }}
+                      onClick={() => {
+                        setHesaplaTiklandimi(true);
+                        handleHesapla();
+                      }}
+                    >
+                      Hesapla
+                    </Button>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} lg={12} marginBottom={3}>
                   <CekSenetReeskontHesaplama

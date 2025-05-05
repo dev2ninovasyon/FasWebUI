@@ -39,11 +39,13 @@ interface Veri {
 interface Props {
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (b: boolean) => void;
+  setSonKaydedilmeTarihi: (str: string) => void;
 }
 
 const KrediDetayVeriYukleme: React.FC<Props> = ({
   kaydetTiklandimi,
   setKaydetTiklandimi,
+  setSonKaydedilmeTarihi,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -70,7 +72,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
     "Fon + Vergi Ve Ana Para Sütunlarına Ondalıklı Sayı Girilmelidir Veya Boş Bırakılabilir.",
   ];
 
-  const [endRow, setEndRow] = useState(0);
+  const [endRow, setEndRow] = useState(-1);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -588,7 +590,24 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         );
 
       const rowsAll: any = [];
+      let kaydedilmeTarihi: Date | null = null;
+      let kaydedilmeTarihiFormatted: string | null = null;
+
       krediHesaplamaDetayVerileri.forEach((veri: any) => {
+        const veriTarih = new Date(veri.sonKaydedilmeTarihi);
+        if (veriTarih && !isNaN(veriTarih.getTime())) {
+          if (!kaydedilmeTarihi || veriTarih > kaydedilmeTarihi) {
+            kaydedilmeTarihi = veriTarih;
+            kaydedilmeTarihiFormatted = veriTarih.toLocaleString("tr-TR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+          }
+        }
+
         const newRow: any = [
           veri.taksitTarihi !== null && veri.taksitTarihi !== undefined
             ? veri.taksitTarihi.split("T")[0].split("-").reverse().join(".")
@@ -602,6 +621,10 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
       });
       setFetchedData(rowsAll);
       setDuplicatesControl(true);
+
+      if (kaydedilmeTarihiFormatted) {
+        setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }

@@ -15,6 +15,7 @@ import {
   Stack,
   Tab,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
@@ -46,6 +47,8 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -166,37 +169,58 @@ const Page: React.FC = () => {
                   lg={12}
                   sx={{
                     display: "flex",
+                    flexDirection: smDown ? "column" : "row",
                     alignItems: "center",
                     justifyContent: "flex-end",
                     mb: 2,
+                    gap: 1,
                   }}
                 >
-                  <CustomFormLabel
-                    htmlFor="acilisFisNo"
-                    sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                  >
-                    <Typography variant="subtitle1">Açılış Fiş No:</Typography>
-                  </CustomFormLabel>
-                  <CustomTextField
-                    id="acilisFisNo"
-                    type="number"
-                    value={acilisFisNo}
-                    onChange={(e: any) => setAcilisFisNo(e.target.value)}
-                  />
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={hesaplaTiklandimi}
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2, height: "100%" }}
-                    onClick={() => {
-                      setHesaplaTiklandimi(true);
-                      handleHesapla();
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    Hesapla
-                  </Button>
+                    <CustomFormLabel
+                      htmlFor="acilisFisNo"
+                      sx={{ mt: 0, mb: { sm: 0 }, mr: 2 }}
+                    >
+                      <Typography variant="subtitle1">
+                        Açılış Fiş No:
+                      </Typography>
+                    </CustomFormLabel>
+                    <CustomTextField
+                      id="acilisFisNo"
+                      type="number"
+                      value={acilisFisNo}
+                      onChange={(e: any) => setAcilisFisNo(e.target.value)}
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: smDown ? "column" : "row",
+                      gap: 1,
+                      width: smDown ? "100%" : "auto",
+                    }}
+                  >
+                    <Button
+                      type="button"
+                      size="medium"
+                      disabled={hesaplaTiklandimi}
+                      variant="outlined"
+                      color="primary"
+                      sx={{ height: "100%" }}
+                      onClick={() => {
+                        setHesaplaTiklandimi(true);
+                        handleHesapla();
+                      }}
+                    >
+                      Hesapla
+                    </Button>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} lg={12}>
                   <HareketsizOzet
@@ -217,37 +241,58 @@ const Page: React.FC = () => {
                   lg={12}
                   sx={{
                     display: "flex",
+                    flexDirection: smDown ? "column" : "row",
                     alignItems: "center",
                     justifyContent: "flex-end",
                     mb: 2,
+                    gap: 1,
                   }}
                 >
-                  <CustomFormLabel
-                    htmlFor="acilisFisNo"
-                    sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mx: 2 }}
-                  >
-                    <Typography variant="subtitle1">Açılış Fiş No:</Typography>
-                  </CustomFormLabel>
-                  <CustomTextField
-                    id="acilisFisNo"
-                    type="number"
-                    value={acilisFisNo}
-                    onChange={(e: any) => setAcilisFisNo(e.target.value)}
-                  />
-                  <Button
-                    type="button"
-                    size="medium"
-                    disabled={hesaplaTiklandimi}
-                    variant="outlined"
-                    color="primary"
-                    sx={{ ml: 2, height: "100%" }}
-                    onClick={() => {
-                      setHesaplaTiklandimi(true);
-                      handleHesapla();
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    Hesapla
-                  </Button>
+                    <CustomFormLabel
+                      htmlFor="acilisFisNo"
+                      sx={{ mt: 0, mb: { sm: 0 }, mr: 2 }}
+                    >
+                      <Typography variant="subtitle1">
+                        Açılış Fiş No:
+                      </Typography>
+                    </CustomFormLabel>
+                    <CustomTextField
+                      id="acilisFisNo"
+                      type="number"
+                      value={acilisFisNo}
+                      onChange={(e: any) => setAcilisFisNo(e.target.value)}
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: smDown ? "column" : "row",
+                      gap: 1,
+                      width: smDown ? "100%" : "auto",
+                    }}
+                  >
+                    <Button
+                      type="button"
+                      size="medium"
+                      disabled={hesaplaTiklandimi}
+                      variant="outlined"
+                      color="primary"
+                      sx={{ height: "100%" }}
+                      onClick={() => {
+                        setHesaplaTiklandimi(true);
+                        handleHesapla();
+                      }}
+                    >
+                      Hesapla
+                    </Button>
+                  </Box>
                 </Grid>
                 <Grid item xs={12} lg={12}>
                   <HareketsizOzet

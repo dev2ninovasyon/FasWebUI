@@ -73,7 +73,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
     "Borç, Alacak, Fiş Borç, Fiş Alacak, Rapor Borç, Rapor Alacak, Borç Bakiye Ve Alacak Bakiye Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
   ];
 
-  const [endRow, setEndRow] = useState(0);
+  const [endRow, setEndRow] = useState(-1);
 
   useEffect(() => {
     const loadStyles = async () => {

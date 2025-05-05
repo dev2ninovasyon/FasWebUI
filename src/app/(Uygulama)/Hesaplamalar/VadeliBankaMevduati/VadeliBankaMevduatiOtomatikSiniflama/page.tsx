@@ -12,6 +12,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -42,6 +43,8 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -116,27 +119,37 @@ const Page = () => {
           lg={12}
           sx={{
             display: "flex",
+            flexDirection: smDown ? "column" : "row",
             alignItems: "center",
             justifyContent: "flex-end",
             mb: 2,
+            gap: 1,
           }}
         >
-          <Button
-            type="button"
-            size="medium"
-            disabled={hesaplaTiklandimi}
-            variant="outlined"
-            color="primary"
-            sx={{ ml: 2, height: "100%" }}
-            onClick={() => {
-              setHesaplaTiklandimi(true);
-              handleHesapla();
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: smDown ? "column" : "row",
+              gap: 1,
+              width: smDown ? "100%" : "auto",
             }}
           >
-            Hesapla
-          </Button>
+            <Button
+              type="button"
+              size="medium"
+              disabled={hesaplaTiklandimi}
+              variant="outlined"
+              color="primary"
+              sx={{ height: "100%" }}
+              onClick={() => {
+                setHesaplaTiklandimi(true);
+                handleHesapla();
+              }}
+            >
+              Hesapla
+            </Button>
+          </Box>
         </Grid>
-
         <Grid item xs={12} lg={12}>
           <VadeliBankaMevduatiOtomatikSiniflama
             hesaplaTiklandimi={hesaplaTiklandimi}

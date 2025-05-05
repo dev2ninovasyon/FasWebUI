@@ -3,7 +3,14 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
@@ -28,6 +35,8 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -116,49 +125,68 @@ const Page: React.FC = () => {
           lg={12}
           sx={{
             display: "flex",
+            flexDirection: smDown ? "column" : "row",
             alignItems: "center",
             justifyContent: "flex-end",
             mb: 2,
+            gap: 1,
           }}
         >
-          <CustomFormLabel
-            htmlFor="revize"
-            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-          >
-            <Typography variant="subtitle1">Revize Oranı:</Typography>
-          </CustomFormLabel>
-          <CustomTextField
-            id="revize"
-            type="number"
-            value={revizeOrani}
-            onChange={(e: any) => setRevizeOrani(e.target.value)}
-          />
-          <CustomFormLabel
-            htmlFor="iskonto"
-            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mx: 2 }}
-          >
-            <Typography variant="subtitle1">İskonto Oranı:</Typography>
-          </CustomFormLabel>
-          <CustomTextField
-            id="iskonto"
-            type="number"
-            value={iskontoOrani}
-            onChange={(e: any) => setIskontoOrani(e.target.value)}
-          />
-          <Button
-            type="button"
-            size="medium"
-            disabled={hesaplaTiklandimi}
-            variant="outlined"
-            color="primary"
-            sx={{ ml: 2, height: "100%" }}
-            onClick={() => {
-              setHesaplaTiklandimi(true);
-              handleHesapla();
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Hesapla
-          </Button>
+            <CustomFormLabel
+              htmlFor="revize"
+              sx={{ mt: 0, mb: { sm: 0 }, mr: 2 }}
+            >
+              <Typography variant="subtitle1">Revize Oranı:</Typography>
+            </CustomFormLabel>
+            <CustomTextField
+              id="revize"
+              type="number"
+              value={revizeOrani}
+              onChange={(e: any) => setRevizeOrani(e.target.value)}
+            />
+            <CustomFormLabel
+              htmlFor="iskonto"
+              sx={{ mt: 0, mb: { sm: 0 }, mx: 2 }}
+            >
+              <Typography variant="subtitle1">İskonto Oranı:</Typography>
+            </CustomFormLabel>
+            <CustomTextField
+              id="iskonto"
+              type="number"
+              value={iskontoOrani}
+              onChange={(e: any) => setIskontoOrani(e.target.value)}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: smDown ? "column" : "row",
+              gap: 1,
+              width: smDown ? "100%" : "auto",
+            }}
+          >
+            <Button
+              type="button"
+              size="medium"
+              disabled={hesaplaTiklandimi}
+              variant="outlined"
+              color="primary"
+              sx={{ height: "100%" }}
+              onClick={() => {
+                setHesaplaTiklandimi(true);
+                handleHesapla();
+              }}
+            >
+              Hesapla
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs={12} lg={12}>
           <BeklenenKrediZarari hesaplaTiklandimi={hesaplaTiklandimi} />
