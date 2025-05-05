@@ -8,6 +8,7 @@ import {
   MenuItem,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { useSelector } from "@/store/hooks";
@@ -49,6 +50,8 @@ interface Veri {
 }
 
 const Page = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -265,7 +268,7 @@ const Page = () => {
           <Grid
             container
             sx={{
-              width: "100%",
+              width: "95%",
               height: "100%",
               margin: "0 auto",
               justifyContent: "space-between",
@@ -279,6 +282,7 @@ const Page = () => {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "flex-end",
               }}
             >
               <Button
@@ -290,7 +294,7 @@ const Page = () => {
                   setKaydetTiklandimi(true);
                   handleSaveTeklifHesaplama();
                 }}
-                sx={{ width: "100%" }}
+                sx={{ width: "100%", height: { lg: "54px", md: "54px" } }}
               >
                 <Typography
                   variant="body1"
@@ -322,7 +326,7 @@ const Page = () => {
                   setHesaplaTiklandimi(true);
                   handleTeklifHesapla();
                 }}
-                sx={{ width: "100%" }}
+                sx={{ width: "100%", height: { lg: "54px", md: "54px" } }}
               >
                 <Typography
                   variant="body1"
@@ -350,7 +354,7 @@ const Page = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => setIsConfirmPopUpOpen(true)}
-                sx={{ width: "100%" }}
+                sx={{ width: "100%", height: { lg: "54px", md: "54px" } }}
               >
                 <Typography
                   variant="body1"

@@ -3,19 +3,19 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   Divider,
-  Fab,
   FormControlLabel,
   Grid,
   IconButton,
   MenuItem,
   Stack,
-  Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
@@ -47,6 +47,8 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -195,34 +197,44 @@ const Page: React.FC = () => {
           lg={12}
           sx={{
             display: "flex",
+            flexDirection: smDown ? "column" : "row",
             alignItems: "center",
             justifyContent: "flex-end",
             mb: 2,
+            gap: 1,
           }}
         >
-          <Button
-            type="button"
-            size="medium"
-            variant="outlined"
-            color="primary"
-            onClick={() => setShowDrawer(true)}
-            sx={{ ml: 2 }}
-          >
-            Ek Bilgi
-          </Button>
-          <Button
-            type="button"
-            size="medium"
-            disabled={kaydetTiklandimi}
-            variant="outlined"
-            color="primary"
-            sx={{ ml: 2, height: "100%" }}
-            onClick={() => {
-              setKaydetTiklandimi(true);
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: smDown ? "column" : "row",
+              gap: 1,
+              width: smDown ? "100%" : "auto",
             }}
           >
-            Kaydet
-          </Button>
+            <Button
+              type="button"
+              size="medium"
+              variant="outlined"
+              color="primary"
+              onClick={() => setShowDrawer(true)}
+            >
+              Ek Bilgi
+            </Button>
+            <Button
+              type="button"
+              size="medium"
+              disabled={kaydetTiklandimi}
+              variant="outlined"
+              color="primary"
+              sx={{ height: "100%" }}
+              onClick={() => {
+                setKaydetTiklandimi(true);
+              }}
+            >
+              Kaydet
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs={12} lg={12}>
           <MusteriTanima

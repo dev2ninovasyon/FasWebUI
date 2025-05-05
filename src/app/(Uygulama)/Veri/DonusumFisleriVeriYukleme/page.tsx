@@ -3,7 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
-import { Button, Grid } from "@mui/material";
+import { Box, Button, Grid, useMediaQuery } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import DonusumFisleri from "./DonusumFisleri";
@@ -28,6 +28,8 @@ interface Veri {
 }
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const customizer = useSelector((state: AppState) => state.customizer);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -77,21 +79,36 @@ const Page: React.FC = () => {
           item
           xs={12}
           lg={12}
-          sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+          sx={{
+            display: "flex",
+            flexDirection: smDown ? "column" : "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            mb: 2,
+            gap: 1,
+          }}
         >
-          <Button
-            type="button"
-            size="medium"
-            disabled={kaydetTiklandimi}
-            variant="outlined"
-            color="primary"
-            sx={{ ml: 2 }}
-            onClick={() => {
-              setKaydetTiklandimi(true);
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: smDown ? "column" : "row",
+              gap: 1,
+              width: smDown ? "100%" : "auto",
             }}
           >
-            Kaydet
-          </Button>
+            <Button
+              type="button"
+              size="medium"
+              disabled={kaydetTiklandimi}
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                setKaydetTiklandimi(true);
+              }}
+            >
+              Kaydet
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs={12} lg={12}>
           <DonusumFisleri

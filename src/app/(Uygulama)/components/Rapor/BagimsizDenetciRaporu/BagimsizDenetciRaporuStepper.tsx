@@ -103,6 +103,7 @@ const BagimsizDenetciRaporuStepper = () => {
   const theme = useTheme();
 
   const mdDown = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const [fdtData, setFdtData] = React.useState<VeriFT[]>([]);
   const [kztdata, setKztData] = React.useState<VeriFT[]>([]);
@@ -1585,7 +1586,7 @@ const BagimsizDenetciRaporuStepper = () => {
             )}
           </Grid>
         )}
-        {activeStep == 3 && (
+        {activeStep == 3 && !smDown && (
           <Grid container spacing={3} mb={3} wrap="wrap">
             <Grid
               item

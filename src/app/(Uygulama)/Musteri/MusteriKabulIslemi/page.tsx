@@ -2,7 +2,14 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Button, Grid, MenuItem, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  MenuItem,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
@@ -24,6 +31,8 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -92,56 +101,69 @@ const Page: React.FC = () => {
           item
           xs={12}
           lg={12}
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
+          sx={{
+            display: "flex",
+            flexDirection: smDown ? "column" : "row",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 2,
+            gap: 1,
+          }}
         >
-          <CustomSelect
-            labelId="tur"
-            id="tur"
-            size="small"
-            value={tur}
-            onChange={handleChangeTur}
-            height={"36px"}
-          >
-            <MenuItem value={"Bobi"}>Denetim Türü: Bobi</MenuItem>
-            <MenuItem value={"BobiBüyük"}>Denetim Türü: Bobi Büyük</MenuItem>
-            <MenuItem value={"Tfrs"}>Denetim Türü: Tfrs</MenuItem>
-            <MenuItem value={"TfrsDönemsel"}>
-              Denetim Türü: Tfrs Dönemsel
-            </MenuItem>
-            <MenuItem value={"ÖzelDenetim"}>
-              Denetim Türü: Özel Denetim
-            </MenuItem>
-          </CustomSelect>
-          <CustomSelect
-            labelId="enflasyon"
-            id="enflasyon"
-            size="small"
-            value={enflasyon}
-            onChange={handleChangeEnflasyon}
-            height={"36px"}
-          >
-            <MenuItem value={"Evet"}>
-              Enflasyon Düzeltmesi Uygulanacak Mı: Evet
-            </MenuItem>
-            <MenuItem value={"Hayır"}>
-              Enflasyon Düzeltmesi Uygulanacak Mı: Hayır
-            </MenuItem>
-          </CustomSelect>
-          <Button
-            type="button"
-            size="medium"
-            disabled={hesaplaTiklandimi}
-            variant="outlined"
-            color="primary"
-            sx={{ ml: 2 }}
-            onClick={() => {
-              handleDenetimeKabulEt();
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: smDown ? "column" : "row",
+              gap: 1,
+              width: smDown ? "100%" : "auto",
             }}
           >
-            Denetime Kabul Et
-          </Button>
+            <CustomSelect
+              labelId="tur"
+              id="tur"
+              size="small"
+              value={tur}
+              onChange={handleChangeTur}
+              height={"36px"}
+            >
+              <MenuItem value={"Bobi"}>Denetim Türü: Bobi</MenuItem>
+              <MenuItem value={"BobiBüyük"}>Denetim Türü: Bobi Büyük</MenuItem>
+              <MenuItem value={"Tfrs"}>Denetim Türü: Tfrs</MenuItem>
+              <MenuItem value={"TfrsDönemsel"}>
+                Denetim Türü: Tfrs Dönemsel
+              </MenuItem>
+              <MenuItem value={"ÖzelDenetim"}>
+                Denetim Türü: Özel Denetim
+              </MenuItem>
+            </CustomSelect>
+            <CustomSelect
+              labelId="enflasyon"
+              id="enflasyon"
+              size="small"
+              value={enflasyon}
+              onChange={handleChangeEnflasyon}
+              height={"36px"}
+            >
+              <MenuItem value={"Evet"}>
+                Enflasyon Düzeltmesi Uygulanacak Mı: Evet
+              </MenuItem>
+              <MenuItem value={"Hayır"}>
+                Enflasyon Düzeltmesi Uygulanacak Mı: Hayır
+              </MenuItem>
+            </CustomSelect>
+            <Button
+              type="button"
+              size="medium"
+              disabled={hesaplaTiklandimi}
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                handleDenetimeKabulEt();
+              }}
+            >
+              Denetime Kabul Et
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </PageContainer>
