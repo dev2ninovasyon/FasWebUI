@@ -30,17 +30,17 @@ interface Veri {
   id: number;
   detayKodu: string;
   hesapAdi: string;
-  paraBirimi: string;
   faizBaslangicTarihi: string;
   faizTahakkukTarihi: string;
-  bilesikFaizOrani: number;
   dovizTutari: number;
-  hesaplananBakiye: number;
+  paraBirimi: string;
+  bilesikFaizOrani: number;
   mizanBakiye: number;
   tahakkukEdenGunSayisi: number;
-  tahakkukEttirilmisFaizTutari: number;
   tahakkukEttirilmesiGerekenFaizTutari: number;
+  tahakkukEttirilmisFaizTutari: number;
   tahakkukEdilecekFaizTutari: number;
+  hesaplananBakiye: number;
 }
 
 const VadeliBankaMevduatiFaizTahakkuk = () => {
@@ -132,17 +132,17 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     "Id",
     "Detay Kodu",
     "Hesap Adı",
-    "Para Birimi",
     "Faiz Başlangıç Tarihi",
     "Faiz Tahakkuk Tarihi",
-    "Bileşik Faiz Oranı %",
     "Döviz Tutarı",
-    "Hesaplanan Bakiye",
+    "Para Birimi",
+    "Bileşik Faiz Oranı %",
     "Mizan Bakiye",
     "Tahakkuk Eden Gün Sayısı",
-    "Tahakkuk Ettirilmiş Faiz Tutarı",
     "Tahakkuk Ettirilmesi Gereken Faiz Tutarı",
+    "Tahakkuk Ettirilmiş Faiz Tutarı",
     "Tahakkuk Edilecek Faiz Tutarı",
+    "Hesaplanan Bakiye",
   ];
 
   const columns = [
@@ -171,14 +171,6 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       editor: false,
     }, // Hesap Adı
     {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // Para Birimi
-    {
       type: "date",
       dateFormat: "DD.MM.YYYY",
       columnSorting: true,
@@ -204,7 +196,15 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
-    }, // Bileşik Faiz Oranı
+    }, // Döviz Tutarı
+    {
+      type: "text",
+      columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Para Birimi
     {
       type: "numeric",
       numericFormat: {
@@ -215,19 +215,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
-    }, // Döviz Tutarı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // Hesaplanan Bakiye
+    }, // Bileşik Faiz Oranı
     {
       type: "numeric",
       numericFormat: {
@@ -260,6 +248,18 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
         culture: "tr-TR",
       },
       className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Tahakkuk Ettirilmesi Gereken Faiz Tutarı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
       validator: numberValidator,
       allowInvalid: false,
     }, // Tahakkuk Ettirilmiş Faiz Tutarı
@@ -274,7 +274,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Tahakkuk Ettirilmesi Gereken Faiz Tutarı
+    }, // Tahakkuk Edilecek Faiz Tutarı
     {
       type: "numeric",
       numericFormat: {
@@ -286,7 +286,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Tahakkuk Edilecek Faiz Tutarı
+    }, // Hesaplanan Bakiye
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -405,17 +405,17 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
         "id",
         "detayKodu",
         "hesapAdi",
-        "paraBirimi",
         "faizBaslangicTarihi",
         "faizTahakkukTarihi",
-        "bilesikFaizOrani",
         "dovizTutari",
-        "hesaplananBakiye",
+        "paraBirimi",
+        "bilesikFaizOrani",
         "mizanBakiye",
         "tahakkukEdenGunSayisi",
-        "tahakkukEttirilmisFaizTutari",
         "tahakkukEttirilmesiGerekenFaizTutari",
+        "tahakkukEttirilmisFaizTutari",
         "tahakkukEdilecekFaizTutari",
+        "hesaplananBakiye",
       ];
 
       const jsonData =
@@ -547,7 +547,6 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
             veri.id,
             veri.detayKodu,
             veri.hesapAdi,
-            veri.paraBirimi,
             veri.faizBaslangicTarihi
               .split("T")[0]
               .split("-")
@@ -558,14 +557,15 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
               .split("-")
               .reverse()
               .join("."),
-            veri.bilesikFaizOrani * 100,
             veri.dovizTutari,
-            veri.hesaplananBakiye,
+            veri.paraBirimi,
+            veri.bilesikFaizOrani * 100,
             veri.mizanBakiye,
             veri.tahakkukEdenGunSayisi,
-            veri.tahakkukEttirilmisFaizTutari,
             veri.tahakkukEttirilmesiGerekenFaizTutari,
+            veri.tahakkukEttirilmisFaizTutari,
             veri.tahakkukEdilecekFaizTutari,
+            veri.hesaplananBakiye,
           ];
           rowsAll.push(newRow);
         } else {
@@ -573,17 +573,17 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
             veri.id,
             veri.detayKodu,
             veri.hesapAdi,
-            veri.paraBirimi,
             veri.faizBaslangicTarihi,
             veri.faizTahakkukTarihi,
-            veri.bilesikFaizOrani,
             veri.dovizTutari,
-            veri.hesaplananBakiye,
+            veri.paraBirimi,
+            veri.bilesikFaizOrani,
             veri.mizanBakiye,
             veri.tahakkukEdenGunSayisi,
-            veri.tahakkukEttirilmisFaizTutari,
             veri.tahakkukEttirilmesiGerekenFaizTutari,
+            veri.tahakkukEttirilmisFaizTutari,
             veri.tahakkukEdilecekFaizTutari,
+            veri.hesaplananBakiye,
           ];
           rowsAll.push(newRow);
         }
@@ -731,7 +731,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[60, 80, 100, 60, 80, 80, 60, 80, 80, 80, 80, 80, 80, 80]}
+        colWidths={[60, 50, 100, 80, 80, 80, 60, 60, 70, 80, 85, 80, 80, 80]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
