@@ -9,9 +9,10 @@ import {
   Typography,
   Chip,
   useTheme,
+  Tooltip,
 } from "@mui/material";
 import { IconBell, IconBellRinging } from "@tabler/icons-react";
-import { color, Stack } from "@mui/system";
+import { Stack } from "@mui/system";
 import Scrollbar from "@/app/(Uygulama)/components/CustomScroll/Scrollbar";
 import {
   getBildirimler,
@@ -92,27 +93,31 @@ const Notifications = () => {
   useEffect(() => {
     if (anchorEl) {
       handleUpdateOkundumu();
+    } else {
+      fetchData();
     }
   }, [anchorEl]);
 
   return (
     <Box>
-      <IconButton
-        size="large"
-        aria-label="show new notifications"
-        color="inherit"
-        aria-controls="msgs-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        {fetchedData.filter((item) => !item.okundumu).length > 0 ? (
-          <Badge variant="dot" color="primary">
-            <IconBellRinging size="20" />
-          </Badge>
-        ) : (
-          <IconBell size="20" />
-        )}
-      </IconButton>
+      <Tooltip title="Bildirimler">
+        <IconButton
+          size="large"
+          aria-label="show new notifications"
+          color="inherit"
+          aria-controls="msgs-menu"
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          {fetchedData.filter((item) => !item.okundumu).length > 0 ? (
+            <Badge variant="dot" color="primary">
+              <IconBellRinging size="20" />
+            </Badge>
+          ) : (
+            <IconBell size="20" />
+          )}
+        </IconButton>
+      </Tooltip>
 
       <Menu
         id="msgs-menu"

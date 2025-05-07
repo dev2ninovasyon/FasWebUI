@@ -24,23 +24,34 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import { Stack } from "@mui/system";
-import { useSelector } from "@/store/hooks";
-import { AppState } from "@/store/store";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import {
   deleteDosyaBilgisiMultiple,
   getDefterYuklemeLoglari,
   getDosyaBilgileri,
 } from "@/api/Dosya/DosyaBilgileri";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 import WarnAlertCart from "@/app/(Uygulama)/components/Alerts/WarnAlertCart";
 import { IconDotsVertical, IconEye, IconX } from "@tabler/icons-react";
 import { url } from "@/api/apiBase";
 import axios from "axios";
 
+interface Veri {
+  id: number;
+  link: string;
+  baslangicTarihi: string;
+  bitisTarihi: string;
+  tip: string;
+}
+
 interface MyComponentProps {
+  rows: DosyaType[];
+  fetchedData: Veri | null;
   fileType: string;
   dosyaYuklendiMi: boolean;
+  setRows: (dosya: DosyaType[]) => void;
   setDosyaYuklendiMi: (deger: boolean) => void;
 }
 
@@ -52,21 +63,23 @@ interface DosyaType {
 }
 
 const DosyaTable: React.FC<MyComponentProps> = ({
+  rows,
+  fetchedData,
   fileType,
   dosyaYuklendiMi,
+  setRows,
   setDosyaYuklendiMi,
 }) => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const [xmlBlobUrl, setXmlBlobUrl] = useState("");
 
-  const [rows, setRows] = useState<DosyaType[]>([]);
   const [defterLoglari, setDefterLoglari] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
-
-  const user = useSelector((state: AppState) => state.userReducer);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -245,6 +258,19 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     setAnchorEl(null);
   };
 
+  const handlePreview = async (id: number) => {
+    try {
+      const defterYuklemeLoglari = await getDefterYuklemeLoglari(
+        user.token || "",
+        id
+      );
+      setDefterLoglari(defterYuklemeLoglari);
+      setIsOpen(true);
+    } catch (error) {
+      console.error("Defter Logları getirilemedi");
+    }
+  };
+
   const handlePreview2 = async () => {
     try {
       var controller =
@@ -267,19 +293,6 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       setIsOpen2(true);
     } catch (error) {
       console.error("Error fetching XML:", error);
-    }
-  };
-
-  const handlePreview = async (id: number) => {
-    try {
-      const defterYuklemeLoglari = await getDefterYuklemeLoglari(
-        user.token || "",
-        id
-      );
-      setDefterLoglari(defterYuklemeLoglari);
-      setIsOpen(true);
-    } catch (error) {
-      console.error("Defter Logları getirilemedi");
     }
   };
 
@@ -310,8 +323,10 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   };
 
   useEffect(() => {
-    if (control && control2) {
-      handleAlertPopUp();
+    if (fileType === "E-DefterKebir") {
+      if (control && control2) {
+        handleAlertPopUp();
+      }
     }
   }, [control, control2]);
 
@@ -439,15 +454,15 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                 />
               </TableCell>
               <TableCell>
-                <Typography variant="h5">Dosya Adı</Typography>
+                <Typography variant="h6">Dosya Adı</Typography>
               </TableCell>
               <TableCell>
-                <Typography textAlign={"center"} variant="h5">
+                <Typography textAlign={"center"} variant="h6">
                   Tarih
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography textAlign={"center"} variant="h5">
+                <Typography textAlign={"center"} variant="h6">
                   Durum
                 </Typography>
               </TableCell>
@@ -482,7 +497,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                     />
                   </TableCell>
                   <TableCell scope="row">
-                    <Typography variant="h6" color="textSecondary">
+                    <Typography variant="body1" color="textSecondary">
                       {fileType == "E-DefterKebir" ||
                       fileType == "E-DefterYevmiye"
                         ? row.adi.split("-").slice(1).join("-")
@@ -492,7 +507,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                   <TableCell>
                     <Typography
                       textAlign={"center"}
-                      variant="h6"
+                      variant="body1"
                       color="textSecondary"
                     >
                       {row.olusturulmaTarihi}
@@ -623,6 +638,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           variant="outlined"
           color="error"
           size="small"
+          disabled={fetchedData != null}
           onClick={() => {
             handleIsConfirm();
           }}

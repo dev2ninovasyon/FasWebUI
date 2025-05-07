@@ -3,9 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
-import React, { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
-import axios from "axios";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -14,12 +12,18 @@ import {
   Stack,
   LinearProgress,
   useMediaQuery,
+  Paper,
+  Button,
+  useTheme,
 } from "@mui/material";
+import DosyaTable from "@/app/(Uygulama)/components/Veri/DosyaTable";
+import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
+import { useDropzone } from "react-dropzone";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material/styles";
+import VeriPaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/VeriPaylasimBaglantisiPopUp";
 import { url } from "@/api/apiBase";
-import DosyaTable from "@/app/(Uygulama)/components/Veri/DosyaTable";
+import axios from "axios";
 
 const BCrumb = [
   {
@@ -27,27 +31,71 @@ const BCrumb = [
     title: "Veri",
   },
   {
-    to: "/Veri/DefterYukleme",
-    title: "Defter Yükleme",
+    to: "/Veri/DefterKVBeyannamesiYukleme",
+    title: "Defter / K.V. Beyannamesi Yükleme",
   },
 ];
 
+const months = [
+  "Ocak",
+  "Şubat",
+  "Mart",
+  "Nisan",
+  "Mayıs",
+  "Haziran",
+  "Temmuz",
+  "Ağustos",
+  "Eylül",
+  "Ekim",
+  "Kasım",
+  "Aralık",
+];
+
+interface DosyaType {
+  id: number;
+  adi: string;
+  olusturulmaTarihi: string;
+  durum: string;
+}
+
+interface Veri {
+  id: number;
+  link: string;
+  baslangicTarihi: string;
+  bitisTarihi: string;
+  tip: string;
+}
+
 const Page: React.FC = () => {
-  const [uploading, setUploading] = useState(false);
-  const [dosyaYuklendiMi, setDosyaYuklendiMi] = useState(true);
-  const [progressInfos, setProgressInfos] = useState<any[]>([]);
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const user = useSelector((state: AppState) => state.userReducer);
 
   const theme = useTheme();
   const borderColor = theme.palette.divider;
   const borderRadius = theme.shape.borderRadius;
-  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
+  const [control, setControl] = useState(false);
+
+  const [fetchedData, setFetchedData] = useState<Veri | null>(null);
 
   const [fileType, setFileType] = useState("E-DefterKebir");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFileType(event.target.value);
   };
+
+  const [rows, setRows] = useState<DosyaType[]>([]);
+
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const handleClosePopUp = () => {
+    setIsPopUpOpen(false);
+  };
+
+  const [uploading, setUploading] = useState(false);
+  const [dosyaYuklendiMi, setDosyaYuklendiMi] = useState(true);
+  const [progressInfos, setProgressInfos] = useState<any[]>([]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -117,9 +165,106 @@ const Page: React.FC = () => {
     },
   });
 
+  const fetchData = async () => {
+    try {
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.id || 0,
+        user.yil || 0,
+        "DefterKVBeyannamesi"
+      );
+      if (baglantiBilgisi != undefined) {
+        // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
+        const formatDateTime = (dateTimeStr?: string) => {
+          if (!dateTimeStr) return "";
+          const date = new Date(dateTimeStr);
+          const pad = (n: number) => n.toString().padStart(2, "0");
+          return `${pad(date.getDate())}.${pad(
+            date.getMonth() + 1
+          )}.${date.getFullYear()} ${pad(date.getHours())}:${pad(
+            date.getMinutes()
+          )}`;
+        };
+
+        const newRow: Veri = {
+          id: baglantiBilgisi.id,
+          link: baglantiBilgisi.link,
+          baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
+          bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
+          tip: baglantiBilgisi.tip,
+        };
+        setFetchedData(newRow);
+      } else {
+        setFetchedData(null);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (control) {
+      fetchData();
+      setControl(false);
+    }
+  }, [control]);
+
   return (
-    <PageContainer title="Defter Yükleme" description="this is Defter Yükleme">
-      <Breadcrumb title="Defter Yükleme" items={BCrumb} />
+    <PageContainer
+      title="Defter / K.V. Beyannamesi Yükleme"
+      description="this is Defter / K.V. Beyannamesi Yükleme"
+    >
+      <Breadcrumb title="Defter / K.V. Beyannamesi Yükleme" items={BCrumb}>
+        <>
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              height: "100%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+            }}
+          >
+            <Grid
+              item
+              xs={12}
+              md={12}
+              lg={12}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  setIsPopUpOpen(true);
+                }}
+                sx={{ width: "100%", height: { lg: "54px", md: "54px" } }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  Paylaşım Bağlantısı
+                </Typography>
+              </Button>
+            </Grid>
+          </Grid>
+        </>
+      </Breadcrumb>
 
       <Grid container spacing={3}>
         <Grid item xs={12} lg={5}>
@@ -153,7 +298,7 @@ const Page: React.FC = () => {
                 <MenuItem value={"E-DefterKebir"}>E-Defter Kebir</MenuItem>
                 <MenuItem value={"E-DefterYevmiye"}>E-Defter Yevmiye</MenuItem>
                 <MenuItem value={"KurumlarBeyannamesi"}>
-                  Kurumlar Beyannamesi
+                  K. V. Beyannamesi
                 </MenuItem>
               </CustomSelect>
             </Stack>
@@ -165,7 +310,7 @@ const Page: React.FC = () => {
                 <Typography variant="body2" marginY={"4px"}>
                   1- Örnek Dosya Adı &quot;1716152123-202001-K-000000.xml&quot;
                   Şeklinde Olan, Sadece &quot;K&quot; Harfini İçeren
-                  &quot;.xml&quot; Uzantılı EDefter Kebir Dosyalarını
+                  &quot;.xml&quot; Uzantılı E-Defter Kebir Dosyalarını
                   Yükleyiniz.
                 </Typography>
                 <Typography variant="body2" marginY={"4px"}>
@@ -183,7 +328,7 @@ const Page: React.FC = () => {
                 padding: "20px",
                 margin: "16px",
                 textAlign: "center",
-                cursor: "pointer",
+                pointerEvents: fetchedData != null ? "none" : "visible",
                 height: "285px",
                 mt: 3,
               }}
@@ -257,12 +402,56 @@ const Page: React.FC = () => {
             }}
           >
             <DosyaTable
+              rows={rows}
+              fetchedData={fetchedData}
               fileType={fileType}
               dosyaYuklendiMi={dosyaYuklendiMi}
               setDosyaYuklendiMi={(deger) => setDosyaYuklendiMi(deger)}
+              setRows={setRows}
             />
           </Box>
         </Grid>
+        {fileType === "E-DefterKebir" && (
+          <Grid item xs={12} lg={12}>
+            <Grid container spacing={2}>
+              {months.map((month, index) => {
+                const monthPart = (index + 1).toString().padStart(2, "0");
+                const count = rows.filter(
+                  (item: DosyaType) =>
+                    item.adi.split("-")[1]?.slice(-2) === monthPart
+                ).length;
+
+                return (
+                  <Grid item xs={6} md={3} lg={2} key={index}>
+                    <Paper
+                      elevation={2}
+                      sx={{
+                        p: 1,
+                        borderRadius: 1,
+                        backgroundColor: "warning.light",
+                        height: "100%",
+                      }}
+                    >
+                      <Typography
+                        variant="body1"
+                        sx={{ color: "warning.dark" }}
+                      >
+                        {month} Ayı Dosya Sayısı: {count}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Grid>
+        )}
+        {isPopUpOpen && (
+          <VeriPaylasimBaglantisiPopUp
+            setControl={setControl}
+            isPopUpOpen={isPopUpOpen}
+            handleClosePopUp={handleClosePopUp}
+          ></VeriPaylasimBaglantisiPopUp>
+        )}
       </Grid>
     </PageContainer>
   );

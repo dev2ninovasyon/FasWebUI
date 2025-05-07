@@ -174,9 +174,9 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
       children: [
         {
           id: uniqueId(),
-          title: "Defter Yükleme",
+          title: "Defter / K.V. Beyannemesi Yükleme",
           icon: IconPoint,
-          href: "/Veri/DefterYukleme",
+          href: "/Veri/DefterKVBeyannamesiYukleme",
         },
         {
           id: uniqueId(),
