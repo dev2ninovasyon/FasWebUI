@@ -328,6 +328,7 @@ const Page: React.FC = () => {
                 padding: "20px",
                 margin: "16px",
                 textAlign: "center",
+                cursor: fetchedData != null ? "none" : "pointer",
                 pointerEvents: fetchedData != null ? "none" : "visible",
                 height: "285px",
                 mt: 3,
