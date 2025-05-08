@@ -419,7 +419,8 @@ const Page: React.FC = () => {
                 const monthPart = (index + 1).toString().padStart(2, "0");
                 const count = rows.filter(
                   (item: DosyaType) =>
-                    item.adi.split("-")[1]?.slice(-2) === monthPart
+                    item.adi.split("-")[1]?.slice(-2) === monthPart &&
+                    item.durum === "Tamamlandı"
                 ).length;
 
                 return (
