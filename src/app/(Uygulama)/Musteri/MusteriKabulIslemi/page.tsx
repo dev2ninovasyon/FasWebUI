@@ -13,9 +13,12 @@ import {
 import { AppState } from "@/store/store";
 import { useSelector } from "react-redux";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import { updateDenetlenenDenetimTuru } from "@/api/Musteri/MusteriIslemleri";
+import {
+  getDenetlenenById,
+  updateDenetlenenDenetimTuru,
+} from "@/api/Musteri/MusteriIslemleri";
 import { useDispatch } from "@/store/hooks";
 import { setDenetimTuru } from "@/store/user/UserSlice";
 
@@ -62,9 +65,9 @@ const Page: React.FC = () => {
         enflasyon
       );
       if (result) {
+        fetchData();
         setHesaplaTiklandimi(false);
         await dispatch(setDenetimTuru(tur));
-
         enqueueSnackbar("Denetime Kabul Edildi", {
           variant: "success",
           autoHideDuration: 5000,
@@ -93,6 +96,23 @@ const Page: React.FC = () => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const denetlenenVerileri = await getDenetlenenById(
+        user.token || "",
+        user.denetlenenId || 0
+      );
+      setTur(denetlenenVerileri.denetimTuru);
+      setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <PageContainer title="Müşteri Kabul" description="Müşteri Kabul">
       <Breadcrumb title="Müşteri Kabul" items={BCrumb} />
@@ -113,9 +133,10 @@ const Page: React.FC = () => {
           <Box
             sx={{
               display: "flex",
+              justifyContent: "space-between",
               flexDirection: smDown ? "column" : "row",
               gap: 1,
-              width: smDown ? "100%" : "auto",
+              width: "100%",
             }}
           >
             <CustomSelect
