@@ -363,6 +363,62 @@ export const getKidemTazminatiBobiEkBilgi = async (
   }
 };
 
+export const createKidemTazminatiTfrsEkBilgi = async (
+  token: string,
+  createdKidemTazminatiTfrsEkBilgiVerisi: any
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Hesaplamalar/KidemTazminatiTfrsEkBilgi`,
+      {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(createdKidemTazminatiTfrsEkBilgiVerisi),
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getKidemTazminatiTfrsEkBilgi = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Hesaplamalar/KidemTazminatiTfrsEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status == 200) {
+      return response.json();
+    } else {
+      console.error("Kıdem Tazminatı Tfrs Ek verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const createKidemTazminatiBobiHesaplanmis = async (
   token: string,
   denetciId: number,
