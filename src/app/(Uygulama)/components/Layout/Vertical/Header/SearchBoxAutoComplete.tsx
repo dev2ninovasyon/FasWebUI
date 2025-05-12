@@ -35,9 +35,12 @@ function extractMenuItems(menuItems: MenuitemsType[]) {
 
     let finalTitle = formattedTitle;
 
-    if (seenTitles.has(formattedTitle)) {
+    if (menuItem.parentTitle && formattedParentTitle !== formattedTitle) {
       finalTitle = `${formattedParentTitle} ⚬ ${formattedTitle}`;
     }
+
+    // Aynı başlık daha önce eklendiyse, tekrar ekleme
+    if (seenTitles.has(finalTitle)) continue;
 
     pages.push({
       label: finalTitle,

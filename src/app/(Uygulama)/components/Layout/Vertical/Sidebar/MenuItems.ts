@@ -174,7 +174,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
       children: [
         {
           id: uniqueId(),
-          title: "Defter / K.V. Beyannemesi Yükleme",
+          title: "Defter / K. V. Beyannemesi Yükleme",
           icon: IconPoint,
           href: "/Veri/DefterKVBeyannamesiYukleme",
         },
@@ -858,12 +858,14 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
     },
     {
       id: uniqueId(),
+      parentTitle: "ENFLASYON",
       title: "ENFLASYON",
       icon: IconTrendingUp,
       href: "/Enflasyon",
       children: [
         {
           id: uniqueId(),
+          parentTitle: "ENFLASYON",
           title: "Aşamalar",
           icon: IconPoint,
           href: "/Enflasyon/Asamalar",
@@ -873,6 +875,12 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           title: "Düzeltme Katsayıları",
           icon: IconPoint,
           href: "/Enflasyon/DuzeltmeKatsayilari",
+        },
+        {
+          id: uniqueId(),
+          title: "Maddi Ve Maddi Olmayan Duran Varlıklar",
+          icon: IconPoint,
+          href: "/Enflasyon/MaddiVeMaddiOlmayanDuranVarliklar",
         },
       ],
     },

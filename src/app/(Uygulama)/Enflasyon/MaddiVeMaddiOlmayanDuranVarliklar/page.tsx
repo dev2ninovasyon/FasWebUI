@@ -13,8 +13,8 @@ const BCrumb = [
     title: "Enflasyon",
   },
   {
-    to: "/Enflasyon/DuzeltmeKatsayilari",
-    title: "Düzeltme Katsayıları",
+    to: "/Enflasyon/MaddiVeMaddiOlmayanDuranVarliklar",
+    title: "Maddi Ve Maddi Olmayan Duran Varlıklar",
   },
 ];
 
@@ -25,14 +25,17 @@ const Page: React.FC = () => {
 
   return (
     <PageContainer
-      title="Düzeltme Katsayıları"
-      description="this is Düzeltme Katsayıları"
+      title="Maddi Ve Maddi Olmayan Duran Varlıklar"
+      description="this is Maddi Ve Maddi Olmayan Duran Varlıklar"
     >
-      <Breadcrumb title="Düzeltme Katsayıları" items={BCrumb} />
+      <Breadcrumb
+        title="Maddi Ve Maddi Olmayan Duran Varlıklar"
+        items={BCrumb}
+      />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
           <iframe
-            src={`https://localhost:44373/EnflasyonDuzeltmesi/DuzeltmeKatSayilari?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+            src={`https://localhost:44373/EnflasyonDuzeltmesi/MaddiVeMaddiOlmayanDuranVarliklarEnflasyonDuzeltmesi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
             style={{
               border: "0px",
               width: "100%",

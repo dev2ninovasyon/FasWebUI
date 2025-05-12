@@ -32,7 +32,7 @@ const BCrumb = [
   },
   {
     to: "/Veri/DefterKVBeyannamesiYukleme",
-    title: "Defter / K.V. Beyannamesi Yükleme",
+    title: "Defter / K. V. Beyannamesi Yükleme",
   },
 ];
 
@@ -217,10 +217,10 @@ const Page: React.FC = () => {
 
   return (
     <PageContainer
-      title="Defter / K.V. Beyannamesi Yükleme"
-      description="this is Defter / K.V. Beyannamesi Yükleme"
+      title="Defter / K. V. Beyannamesi Yükleme"
+      description="this is Defter / K. V. Beyannamesi Yükleme"
     >
-      <Breadcrumb title="Defter / K.V. Beyannamesi Yükleme" items={BCrumb}>
+      <Breadcrumb title="Defter / K. V. Beyannamesi Yükleme" items={BCrumb}>
         <>
           <Grid
             container
