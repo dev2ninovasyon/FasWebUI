@@ -32,6 +32,8 @@ interface Veri {
   muhtemelDeger: number;
   aleyhteKaybetmeLehteKazanmaIhtimali: string;
   ongorulenSonuclanmaSuresi: string;
+  denetcininVardigiSonuc: string;
+  sonucunTutari: number;
 }
 
 interface Props {
@@ -78,6 +80,8 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     "Muhtemel Değer",
     "Aleyhte Kaybetme / Lehte Kazanma ihtimali",
     "Öngörülen Sonuçlanma Süresi",
+    "Denetçinin Vardığı Sonuç",
+    "Sonucun Tutarı",
   ];
 
   const columns = [
@@ -165,6 +169,26 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       readOnly: true,
       editor: false,
     }, // Öngörülen Sonuçlanma Süresi
+    {
+      type: "text",
+      columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Denetçinin Vardığı Sonuç
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Sonucun Tutarı
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -297,6 +321,8 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
           veri.muhtemelDeger,
           veri.aleyhteKaybetmeLehteKazanmaIhtimali,
           veri.ongorulenSonuclanmaSuresi,
+          veri.denetcininVardigiSonuc,
+          veri.sonucunTutari,
         ];
         rowsAll.push(newRow);
       });
@@ -405,7 +431,7 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         height={342}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[110, 80, 80, 80, 80, 100, 100, 80, 110, 80]}
+        colWidths={[110, 80, 80, 80, 80, 100, 100, 80, 110, 80, 80, 80]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
