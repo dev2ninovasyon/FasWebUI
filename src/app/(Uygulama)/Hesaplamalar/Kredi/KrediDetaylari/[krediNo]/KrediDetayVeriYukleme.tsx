@@ -21,6 +21,7 @@ import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { usePathname } from "next/navigation";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
+import { getKrediHesaplamaVerileriByDenetciDenetlenenYilId } from "@/api/Veri/KrediHesaplama";
 
 // register Handsontable's modules
 registerAllModules();
@@ -34,6 +35,7 @@ interface Veri {
   faizTutari: number;
   fonVergi: number;
   anaPara: number;
+  bakiye: number;
 }
 
 interface Props {
@@ -58,6 +60,8 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
   const dispatch = useDispatch();
   const theme = useTheme();
+
+  const [alinanKrediTutar, setAlinanKrediTutar] = useState<number>(0);
 
   const [rowCount, setRowCount] = useState<number>(200);
 
@@ -194,6 +198,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
     "Faiz Tutarı",
     "Fon + Vergi",
     "Ana Para",
+    "Kalan",
   ];
 
   const columns = [
@@ -249,6 +254,17 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
       validator: numberValidatorAllowNull,
       allowInvalid: false,
     }, // Ana Para
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Kalan
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -413,6 +429,36 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
+        if (prop === 4) {
+          const hot = hotTableComponent.current.hotInstance;
+
+          const anaParalar: number[] = [];
+          const yeniBakiyeler: number[] = [];
+
+          // 1. Ana paraları oku
+          for (let i = 0; i < fetchedData.length; i++) {
+            if (!hot.getDataAtCell(i, 0)) break;
+
+            const anaPara = Number(hot.getDataAtCell(i, 4) || 0);
+            anaParalar.push(anaPara);
+          }
+
+          // 2. Bakiyeleri hesapla
+          for (let i = 0; i < anaParalar.length; i++) {
+            if (i === 0) {
+              yeniBakiyeler[i] = alinanKrediTutar - anaParalar[i];
+            } else {
+              yeniBakiyeler[i] = yeniBakiyeler[i - 1] - anaParalar[i];
+            }
+
+            fetchedData[i].bakiye = yeniBakiyeler[i]; // veri kaynağını da güncelle
+          }
+
+          // 3. Hesaplanan bakiyeleri tabloya yaz
+          for (let i = 0; i < yeniBakiyeler.length; i++) {
+            hot.setDataAtCell(i, 5, yeniBakiyeler[i]);
+          }
+        }
       }
     }
   };
@@ -577,6 +623,25 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
     }
   };
 
+  const fetchDataKredi = async () => {
+    setEndRow(-1);
+    try {
+      const krediHesaplama =
+        await getKrediHesaplamaVerileriByDenetciDenetlenenYilId(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0,
+          pathKrediId || 0
+        );
+      if (krediHesaplama != undefined) {
+        setAlinanKrediTutar(krediHesaplama.alinanKrediTutar);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   const fetchData = async () => {
     setEndRow(-1);
     try {
@@ -641,6 +706,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
 
   useEffect(() => {
     fetchData();
+    fetchDataKredi();
   }, []);
 
   useEffect(() => {
@@ -759,7 +825,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[100, 100, 100, 100, 100]}
+        colWidths={[100, 100, 100, 100, 100, 100]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
