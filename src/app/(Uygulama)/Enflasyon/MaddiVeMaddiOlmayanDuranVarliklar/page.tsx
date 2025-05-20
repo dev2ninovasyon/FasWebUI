@@ -35,7 +35,7 @@ const Page: React.FC = () => {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
           <iframe
-            src={`https://localhost:44373/EnflasyonDuzeltmesi/MaddiVeMaddiOlmayanDuranVarliklarEnflasyonDuzeltmesi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+            src={`https://93.89.73.135/EnflasyonDuzeltmesi/MaddiVeMaddiOlmayanDuranVarliklarEnflasyonDuzeltmesi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
             style={{
               border: "0px",
               width: "100%",

@@ -13,8 +13,12 @@ const BCrumb = [
     title: "Enflasyon",
   },
   {
-    to: "/Enflasyon/DuzeltmeKatsayilari",
-    title: "Düzeltme Katsayıları",
+    to: "/Enflasyon/NetParasalPozisyon",
+    title: "Net Parasal Pozisyon",
+  },
+  {
+    to: "/Enflasyon/NetParasalPozisyon/NetParasalPozisyonTablosu",
+    title: "Net Parasal Pozisyon Tablosu",
   },
 ];
 
@@ -24,15 +28,12 @@ const Page: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <PageContainer
-      title="Düzeltme Katsayıları"
-      description="this is Düzeltme Katsayıları"
-    >
-      <Breadcrumb title="Düzeltme Katsayıları" items={BCrumb} />
+    <PageContainer title="Net Parasal Pozisyon Tablosu" description="this is Net Parasal Pozisyon Tablosu">
+      <Breadcrumb title="Net Parasal Pozisyon Tablosu" items={BCrumb} />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
           <iframe
-            src={`https://93.89.73.135/EnflasyonDuzeltmesi/DuzeltmeKatSayilari?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+            src={`https://93.89.73.135//EnflasyonDuzeltmesi/NetParasalPozisyonTablosuV2?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
             style={{
               border: "0px",
               width: "100%",

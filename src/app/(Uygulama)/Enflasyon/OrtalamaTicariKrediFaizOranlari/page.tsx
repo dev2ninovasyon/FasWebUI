@@ -13,8 +13,8 @@ const BCrumb = [
     title: "Enflasyon",
   },
   {
-    to: "/Enflasyon/DuzeltmeKatsayilari",
-    title: "Düzeltme Katsayıları",
+    to: "/Enflasyon/OrtalamaTicariKrediFaizOranlari",
+    title: "Ortalama Ticari Kredi Faiz Oranları",
   },
 ];
 
@@ -25,14 +25,17 @@ const Page: React.FC = () => {
 
   return (
     <PageContainer
-      title="Düzeltme Katsayıları"
-      description="this is Düzeltme Katsayıları"
+      title="Ortalama Ticari Kredi Faiz Oranları"
+      description="this isOrtalama Ticari Kredi Faiz Oranları"
     >
-      <Breadcrumb title="Düzeltme Katsayıları" items={BCrumb} />
+      <Breadcrumb
+        title="Ortalama Ticari Kredi Faiz Oranları"
+        items={BCrumb}
+      />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
           <iframe
-            src={`https://93.89.73.135/EnflasyonDuzeltmesi/DuzeltmeKatSayilari?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+            src={`https://93.89.73.135/EnflasyonDuzeltmesi/OrtalamaTicariKrediFaizOranlari?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
             style={{
               border: "0px",
               width: "100%",

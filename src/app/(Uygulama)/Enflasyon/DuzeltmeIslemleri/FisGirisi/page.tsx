@@ -13,8 +13,12 @@ const BCrumb = [
     title: "Enflasyon",
   },
   {
-    to: "/Enflasyon/DuzeltmeKatsayilari",
-    title: "Düzeltme Katsayıları",
+    to: "/Enflasyon/DuzeltmeIslemleri",
+    title: "Düzeltme İşlemleri",
+  },
+  {
+    to: "/Enflasyon/DuzeltmeIslemleri/FisGirisi",
+    title: "Fiş Girişi",
   },
 ];
 
@@ -24,15 +28,12 @@ const Page: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <PageContainer
-      title="Düzeltme Katsayıları"
-      description="this is Düzeltme Katsayıları"
-    >
-      <Breadcrumb title="Düzeltme Katsayıları" items={BCrumb} />
+    <PageContainer title="Fiş Girişi" description="this is Fiş Girişi">
+      <Breadcrumb title="Fiş Girişi" items={BCrumb} />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
           <iframe
-            src={`https://93.89.73.135/EnflasyonDuzeltmesi/DuzeltmeKatSayilari?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+            src={`https://93.89.73.135//EnflasyonDuzeltmesi/FisGirisi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
             style={{
               border: "0px",
               width: "100%",
