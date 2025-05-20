@@ -182,7 +182,10 @@ const Page: React.FC = () => {
 
   const fetchIskontoOrani = async () => {
     try {
-      const iskontoOraniVerisi = await getIskontoOrani(user.token || "");
+      const iskontoOraniVerisi = await getIskontoOrani(
+        user.token || "",
+        user.yil || 0
+      );
 
       if (iskontoOraniVerisi) {
         setIskontoOrani(iskontoOraniVerisi);

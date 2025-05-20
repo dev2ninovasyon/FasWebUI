@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import {
   createKidemTazminatiTfrsEkBilgi,
+  createKidemTazminatiTfrsHesapla,
   getKidemTazminatiTfrsEkBilgi,
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
@@ -36,6 +37,8 @@ import { IconX } from "@tabler/icons-react";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
+import KidemTazminatiTfrsHesaplama from "./KidemTazminatiTfrsHesaplama";
+import KidemTazminatiTfrsOrnekFisler from "./KidemTazminatiTfrsOrnekFisler";
 
 const BCrumb = [
   {
@@ -43,12 +46,28 @@ const BCrumb = [
     title: "Hesaplamalar",
   },
   {
-    to: "/Hesaplamalar/KidemTazminatiBobi",
+    to: "/Hesaplamalar/KidemTazminatiTfrs",
     title: "Kıdem Tazminatı (Tfrs)",
   },
 ];
 
 interface Veri {
+  aciklama: string;
+  sayisi: number;
+}
+
+interface Veri2 {
+  yevmiyeNo: number;
+  fisTipi: string;
+  detayKodu: string;
+  hesapAdi: string;
+  paraBirimi: string;
+  borcTutari: number;
+  alacakTutari: number;
+  aciklama: string;
+}
+
+interface Veri3 {
   id: number;
   link: string;
   baslangicTarihi: string;
@@ -75,16 +94,13 @@ const Page: React.FC = () => {
     setShowDrawer(false);
   };
 
-  const [control, setControl] = useState(false);
+  const [fetchedKidemTazminatiCalismasi, setFetchedKidemTazminatiCalismasi] =
+    useState<Veri[]>([]);
 
-  const [fetchedData, setFetchedData] = useState<Veri | null>(null);
-
-  const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
-
-  const [hesaplaKaydetTiklandimi, setHesaplaKaydetTiklandimi] = useState(false);
-  const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
-
-  const [sonKaydedilmeTarihi, setSonKaydedilmeTarihi] = useState("");
+  const [
+    fetchedKidemTazminatiTfrsOrnekFisler,
+    setFetchedKidemTazminatiTfrsOrnekFisler,
+  ] = useState<Veri2[]>([]);
 
   const [floatingButtonTiklandimi, setFloatingButtonTiklandimi] =
     useState(false);
@@ -110,6 +126,49 @@ const Page: React.FC = () => {
   const [personel2022, setPersonel2022] = useState<number>(0);
   const [ayrilan2023, setAyrilan2023] = useState<number>(0);
   const [personel2023, setPersonel2023] = useState<number>(0);
+  const [odenenKidemTazminati170, setOdenenKidemTazminati170] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi170, setKullanilmamisIzinKarsiligi170] =
+    useState<number>(0);
+  const [odenenKidemTazminati258, setOdenenKidemTazminati258] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi258, setKullanilmamisIzinKarsiligi258] =
+    useState<number>(0);
+  const [odenenKidemTazminati720, setOdenenKidemTazminati720] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi720, setKullanilmamisIzinKarsiligi720] =
+    useState<number>(0);
+  const [odenenKidemTazminati730, setOdenenKidemTazminati730] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi730, setKullanilmamisIzinKarsiligi730] =
+    useState<number>(0);
+  const [odenenKidemTazminati740, setOdenenKidemTazminati740] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi740, setKullanilmamisIzinKarsiligi740] =
+    useState<number>(0);
+  const [odenenKidemTazminati750, setOdenenKidemTazminati750] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi750, setKullanilmamisIzinKarsiligi750] =
+    useState<number>(0);
+  const [odenenKidemTazminati760, setOdenenKidemTazminati760] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi760, setKullanilmamisIzinKarsiligi760] =
+    useState<number>(0);
+  const [odenenKidemTazminati770, setOdenenKidemTazminati770] =
+    useState<number>(0);
+  const [kullanilmamisIzinKarsiligi770, setKullanilmamisIzinKarsiligi770] =
+    useState<number>(0);
+
+  const [control, setControl] = useState(false);
+
+  const [fetchedData, setFetchedData] = useState<Veri3 | null>(null);
+
+  const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
+
+  const [hesaplaKaydetTiklandimi, setHesaplaKaydetTiklandimi] = useState(false);
+  const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
+
+  const [sonKaydedilmeTarihi, setSonKaydedilmeTarihi] = useState("");
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -121,6 +180,7 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
+      await fetchData2();
       setHesaplaTiklandimi(false);
       enqueueSnackbar("Kıdem Tazminatı (Tfrs) Hesaplandı", {
         variant: "success",
@@ -167,6 +227,22 @@ const Page: React.FC = () => {
       personel2022: personel2022,
       ayrilan2023: ayrilan2023,
       personel2023: personel2023,
+      odenenKidemTazminati170: odenenKidemTazminati170,
+      kullanilmamisIzinKarsiligi170: kullanilmamisIzinKarsiligi170,
+      odenenKidemTazminati258: odenenKidemTazminati258,
+      kullanilmamisIzinKarsiligi258: kullanilmamisIzinKarsiligi258,
+      odenenKidemTazminati720: odenenKidemTazminati720,
+      kullanilmamisIzinKarsiligi720: kullanilmamisIzinKarsiligi720,
+      odenenKidemTazminati730: odenenKidemTazminati730,
+      kullanilmamisIzinKarsiligi730: kullanilmamisIzinKarsiligi730,
+      odenenKidemTazminati740: odenenKidemTazminati740,
+      kullanilmamisIzinKarsiligi740: kullanilmamisIzinKarsiligi740,
+      odenenKidemTazminati750: odenenKidemTazminati750,
+      kullanilmamisIzinKarsiligi750: kullanilmamisIzinKarsiligi750,
+      odenenKidemTazminati760: odenenKidemTazminati760,
+      kullanilmamisIzinKarsiligi760: kullanilmamisIzinKarsiligi760,
+      odenenKidemTazminati770: odenenKidemTazminati770,
+      kullanilmamisIzinKarsiligi770: kullanilmamisIzinKarsiligi770,
     };
     try {
       const result = await createKidemTazminatiTfrsEkBilgi(
@@ -228,7 +304,93 @@ const Page: React.FC = () => {
         setPersonel2022(kidemEkBilgiVerileri.personel2022);
         setAyrilan2023(kidemEkBilgiVerileri.ayrilan2023);
         setPersonel2023(kidemEkBilgiVerileri.personel2023);
+        setOdenenKidemTazminati170(
+          kidemEkBilgiVerileri.odenenKidemTazminati170
+        );
+        setKullanilmamisIzinKarsiligi170(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi170
+        );
+        setOdenenKidemTazminati258(
+          kidemEkBilgiVerileri.odenenKidemTazminati258
+        );
+        setKullanilmamisIzinKarsiligi258(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi258
+        );
+        setOdenenKidemTazminati720(
+          kidemEkBilgiVerileri.odenenKidemTazminati720
+        );
+        setKullanilmamisIzinKarsiligi720(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi720
+        );
+        setOdenenKidemTazminati730(
+          kidemEkBilgiVerileri.odenenKidemTazminati730
+        );
+        setKullanilmamisIzinKarsiligi730(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi730
+        );
+        setOdenenKidemTazminati740(
+          kidemEkBilgiVerileri.odenenKidemTazminati740
+        );
+        setKullanilmamisIzinKarsiligi740(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi740
+        );
+        setOdenenKidemTazminati750(
+          kidemEkBilgiVerileri.odenenKidemTazminati750
+        );
+        setKullanilmamisIzinKarsiligi750(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi750
+        );
+        setOdenenKidemTazminati760(
+          kidemEkBilgiVerileri.odenenKidemTazminati760
+        );
+        setKullanilmamisIzinKarsiligi760(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi760
+        );
+        setOdenenKidemTazminati770(
+          kidemEkBilgiVerileri.odenenKidemTazminati770
+        );
+        setKullanilmamisIzinKarsiligi770(
+          kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi770
+        );
       }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchData2 = async () => {
+    try {
+      const kidem = await createKidemTazminatiTfrsHesapla(
+        user.token || "",
+        user.denetciId || 0,
+        user.yil || 0,
+        user.denetlenenId || 0
+      );
+
+      const rows1: any = [];
+      const rows2: any = [];
+
+      kidem.kidemTazminatiSonuc.forEach((veri: any) => {
+        const newRow: any = [veri.aciklama, veri.sayisi];
+        rows1.push(newRow);
+      });
+
+      kidem.ornekFisler.forEach((veri: any) => {
+        const newRow: any = [
+          veri.yevmiyeNo,
+          veri.fisTipi,
+          veri.detayKodu,
+          veri.hesapAdi,
+          veri.paraBirimi,
+          veri.borcTutari,
+          veri.alacakTutari,
+          veri.aciklama,
+        ];
+        rows2.push(newRow);
+      });
+
+      setFetchedKidemTazminatiCalismasi(rows1);
+      setFetchedKidemTazminatiTfrsOrnekFisler(rows2);
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -257,7 +419,7 @@ const Page: React.FC = () => {
           )}`;
         };
 
-        const newRow: Veri = {
+        const newRow: Veri3 = {
           id: baglantiBilgisi.id,
           link: baglantiBilgisi.link,
           baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
@@ -275,6 +437,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     fetchData();
+    fetchData2();
     fetchData3();
   }, []);
 
@@ -288,6 +451,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (hesaplaTiklandimi) {
       setOpenCartAlert(true);
+      setFetchedKidemTazminatiCalismasi([]);
     } else {
       setOpenCartAlert(false);
     }
@@ -924,6 +1088,534 @@ const Page: React.FC = () => {
                           />
                         </Grid>
                       </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati170"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              170 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati170"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati170}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati170(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi170"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              170 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi170"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi170}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi170(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati258"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              258 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati258"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati258}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati258(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi258"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              258 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi258"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi258}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi258(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati720"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              720 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati720"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati720}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati720(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi720"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              720 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi720"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi720}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi720(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati730"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              730 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati730"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati730}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati730(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi730"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              730 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi730"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi730}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi730(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati740"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              740 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati740"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati740}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati740(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi740"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              740 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi740"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi740}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi740(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati750"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              750 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati750"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati750}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati750(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi750"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              750 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi750"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi750}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi750(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati760"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              760 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati760"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati760}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati760(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi760"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              760 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi760"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi760}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi760(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="odenenKidemTazminati770"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              770 Ödenen Kıdem Tazminatı Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="odenenKidemTazminati770"
+                            type="number"
+                            fullWidth
+                            value={odenenKidemTazminati770}
+                            onChange={(e: any) =>
+                              setOdenenKidemTazminati770(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="kullanilmamisIzinKarsiligi770"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              770 Kullanılmamış İzin Karşılığı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="kullanilmamisIzinKarsiligi770"
+                            type="number"
+                            fullWidth
+                            value={kullanilmamisIzinKarsiligi770}
+                            onChange={(e: any) =>
+                              setKullanilmamisIzinKarsiligi770(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </DialogContent>
                   <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
@@ -986,6 +1678,14 @@ const Page: React.FC = () => {
                     </Button>
                   </Box>
                 </Grid>
+                {fetchedKidemTazminatiCalismasi.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiTfrsHesaplama
+                      data={fetchedKidemTazminatiCalismasi}
+                      title="Kıdem Tazminatı Çalışması"
+                    />
+                  </Grid>
+                )}
                 <FloatingButtonFisler
                   handleClick={() => setFloatingButtonTiklandimi(true)}
                 />
@@ -1028,7 +1728,13 @@ const Page: React.FC = () => {
                     </Stack>
                   </DialogContent>
                   <Divider />
-                  <DialogContent></DialogContent>
+                  <DialogContent>
+                    <KidemTazminatiTfrsOrnekFisler
+                      data={fetchedKidemTazminatiTfrsOrnekFisler}
+                      kaydetTiklandimi={hesaplaKaydetTiklandimi}
+                      setkaydetTiklandimi={setHesaplaKaydetTiklandimi}
+                    />
+                  </DialogContent>
                   <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
                     <Button
                       variant="outlined"

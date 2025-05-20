@@ -24,7 +24,7 @@ import { useSelector } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import {
   createKidemTazminatiBobiEkBilgi,
-  createKidemTazminatiHesapla,
+  createKidemTazminatiBobiHesapla,
   getKidemTazminatiBobiEkBilgi,
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
@@ -304,7 +304,7 @@ const Page: React.FC = () => {
 
   const fetchData2 = async () => {
     try {
-      const kidem = await createKidemTazminatiHesapla(
+      const kidem = await createKidemTazminatiBobiHesapla(
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,

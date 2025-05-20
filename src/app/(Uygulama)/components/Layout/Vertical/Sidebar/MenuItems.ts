@@ -256,17 +256,15 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
-          title:
-            denetimTuru == "Bobi"
-              ? "Kıdem Tazminatı (Bobi)"
-              : "Kıdem Tazminatı (Tfrs)",
+          title: "Kıdem Tazminatı (Bobi)",
           icon: IconPoint,
-          href:
-            denetimTuru == "Bobi"
-              ? "/Hesaplamalar/KidemTazminatiBobi"
-              : "/Hesaplamalar/KidemTazminatiTfrs",
-          aciklama:
-            "Veri Yükleme sekmesi altında, personel verilerini sisteme girebilirsiniz.",
+          href: "/Hesaplamalar/KidemTazminatiBobi",
+        },
+        {
+          id: uniqueId(),
+          title: "Kıdem Tazminatı (Tfrs)",
+          icon: IconPoint,
+          href: "/Hesaplamalar/KidemTazminatiTfrs",
         },
         {
           id: uniqueId(),
@@ -844,20 +842,6 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
     },
     {
       id: uniqueId(),
-      title: "DİĞER İŞLEMLER",
-      icon: IconHierarchy,
-      href: "/",
-      children: [
-        {
-          id: uniqueId(),
-          title: "Arşiv",
-          icon: IconPoint,
-          href: "/",
-        },
-      ],
-    },
-    {
-      id: uniqueId(),
       parentTitle: "ENFLASYON",
       title: "ENFLASYON",
       icon: IconTrendingUp,
@@ -881,6 +865,12 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           title: "Maddi Ve Maddi Olmayan Duran Varlıklar",
           icon: IconPoint,
           href: "/Enflasyon/MaddiVeMaddiOlmayanDuranVarliklar",
+        },
+        {
+          id: uniqueId(),
+          title: "Ortalama Ticari Kredi Faiz Oranları",
+          icon: IconPoint,
+          href: "/Enflasyon/OrtalamaTicariKrediFaizOranlari",
         },
       ],
     },
@@ -1007,6 +997,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
       ],
     },
+    /*
     {
       id: uniqueId(),
       title: "SÜRDÜRÜLEBİLİRLİK",
@@ -1021,6 +1012,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
       ],
     },
+    */
     {
       id: uniqueId(),
       title: "KYS",
@@ -1119,6 +1111,20 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           title: "KYS-2",
           icon: IconPoint,
           href: "/Kys/2",
+        },
+      ],
+    },
+    {
+      id: uniqueId(),
+      title: "DİĞER İŞLEMLER",
+      icon: IconHierarchy,
+      href: "/",
+      children: [
+        {
+          id: uniqueId(),
+          title: "Arşiv",
+          icon: IconPoint,
+          href: "/",
         },
       ],
     },

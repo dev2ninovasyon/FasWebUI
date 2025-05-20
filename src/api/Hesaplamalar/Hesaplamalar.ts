@@ -280,7 +280,7 @@ export const getYaslandirmaHesaplanmis = async (
   }
 };
 
-export const createKidemTazminatiHesapla = async (
+export const createKidemTazminatiBobiHesapla = async (
   token: string,
   denetciId: number,
   yil: number,
@@ -289,6 +289,33 @@ export const createKidemTazminatiHesapla = async (
   try {
     const response = await fetch(
       `${url}/Hesaplamalar/KidemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Kıdem Tazminatı Tablosu verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const createKidemTazminatiTfrsHesapla = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Hesaplamalar/KidemHesaplaAktueryalV2?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
@@ -413,35 +440,6 @@ export const getKidemTazminatiTfrsEkBilgi = async (
       return response.json();
     } else {
       console.error("Kıdem Tazminatı Tfrs Ek verileri getirilemedi");
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const createKidemTazminatiBobiHesaplanmis = async (
-  token: string,
-  denetciId: number,
-  yil: number,
-  denetlenenId: number
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Hesaplamalar/KidemTazminati(Bobi)Hesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
-      {
-        method: "POST",
-        headers: {
-          accept: "*/*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
@@ -705,15 +703,18 @@ export const getBeklenenKrediZarariHesaplanmis = async (
   }
 };
 
-export const getIskontoOrani = async (token: string) => {
+export const getIskontoOrani = async (token: string, yil: number) => {
   try {
-    const response = await fetch(`${url}/Hesaplamalar/IskontoOrani`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${url}/Hesaplamalar/IskontoOrani?yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (response.ok) {
       return response.json();
     } else {
