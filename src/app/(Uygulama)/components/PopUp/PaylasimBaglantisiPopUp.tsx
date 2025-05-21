@@ -269,16 +269,12 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
             <MenuItem value={"Amortisman"}>Amortisman</MenuItem>
             <MenuItem value={"CekSenetReeskont"}>Çek Senet Reeskont</MenuItem>
             <MenuItem value={"DavaKarsiliklari"}>Dava Karşılıkları</MenuItem>
-            {user.denetimTuru == "Bobi" && (
-              <MenuItem value={"KidemTazminatiBobi"}>
-                Kıdem Tazminatı (Bobi)
-              </MenuItem>
-            )}
-            {user.denetimTuru == "Tfrs" && (
-              <MenuItem value={"KidemTazminatiTfrs"}>
-                Kıdem Tazminatı (Tfrs)
-              </MenuItem>
-            )}
+            <MenuItem value={"KidemTazminatiBobi"}>
+              Kıdem Tazminatı (Bobi)
+            </MenuItem>
+            <MenuItem value={"KidemTazminatiTfrs"}>
+              Kıdem Tazminatı (Tfrs)
+            </MenuItem>
             <MenuItem value={"Kredi"}>Kredi</MenuItem>
             <MenuItem value={"Hepsi"}>Hepsi</MenuItem>
           </CustomSelect>
