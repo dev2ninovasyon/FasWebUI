@@ -18,16 +18,23 @@ numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
-  aciklama: string;
-  sayisi: number;
+  adiSoyadi: string;
+  emeklilikYasi: number;
+  emekliligeKalanYil: number;
+  kidemTazminatinaEsasUcret: number;
+  brut: number;
+  iskontoluKidemTazminati: number;
+  olasilik: number;
+  toplamYukumluluk: number;
+  cariDonemHizmetBedeli: number;
+  toplamYukumlulukIzinGunu: number;
 }
 
 interface Props {
   data: Veri[];
-  title: string;
 }
 
-const KidemTazminatiTfrsHesaplama: React.FC<Props> = ({ data, title }) => {
+const KidemTazminatiTfrsHesaplanmis: React.FC<Props> = ({ data }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -56,7 +63,18 @@ const KidemTazminatiTfrsHesaplama: React.FC<Props> = ({ data, title }) => {
     loadStyles();
   }, [customizer.activeMode]);
 
-  const colHeaders = [title, ""];
+  const colHeaders = [
+    "Adı Soyadı",
+    "Emeklilik Yaşı",
+    "Emekliliğe Kalan Yıl",
+    "Kıdem Tazminatına Esas Ücret",
+    "Brüt",
+    "İskontolu Kıdem Tazminatı",
+    "Olasılık",
+    "Toplam Yükümlülük",
+    "Cari Dönem Hizmet Bedeli",
+    "Toplam Yükümlülük İzin Günü",
+  ];
 
   const columns = [
     {
@@ -66,8 +84,19 @@ const KidemTazminatiTfrsHesaplama: React.FC<Props> = ({ data, title }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Açıklama
-
+    }, // Adı Soyadı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Emeklilik Yaşı
     {
       type: "numeric",
       numericFormat: {
@@ -79,7 +108,91 @@ const KidemTazminatiTfrsHesaplama: React.FC<Props> = ({ data, title }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Sayısı
+    }, // Emekliliğe Kalan Yıl
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Kıdem Tazminatına Esas Ücret
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Brüt
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // İskontolu Kıdem Tazminatı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Olasılık
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Toplam Yükümlülük
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Cari Dönem Hizmet Bedeli
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Toplam Yükümlülük İzin Günü
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -226,7 +339,7 @@ const KidemTazminatiTfrsHesaplama: React.FC<Props> = ({ data, title }) => {
         height={468}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[240, 80]}
+        colWidths={[120, 50, 50, 80, 80, 80, 60, 80, 80, 80]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -251,4 +364,4 @@ const KidemTazminatiTfrsHesaplama: React.FC<Props> = ({ data, title }) => {
   );
 };
 
-export default KidemTazminatiTfrsHesaplama;
+export default KidemTazminatiTfrsHesaplanmis;

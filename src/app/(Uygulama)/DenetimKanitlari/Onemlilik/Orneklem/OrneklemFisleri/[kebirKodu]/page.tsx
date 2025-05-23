@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
-import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import FisIslemSayilari from "@/app/(Uygulama)/components/DenetimKanitlari/Onemlilik/FisIslemSayilari";
+import { Grid } from "@mui/material";
+import OrneklemFisleri from "./OrneklemFisleri";
 
 const BCrumb = [
   {
@@ -16,21 +15,26 @@ const BCrumb = [
     title: "Önemlilik",
   },
   {
-    to: "/DenetimKanitlari/Onemlilik/FisIslemSayilari",
-    title: "Fiş İşlem Sayıları",
+    to: "/DenetimKanitlari/Onemlilik/Orneklem",
+    title: "Örneklem",
+  },
+  {
+    to: "/DenetimKanitlari/Onemlilik/Orneklem/OrneklemFisleri",
+    title: "Örneklem Fişleri",
   },
 ];
 
 const Page = () => {
   return (
     <PageContainer
-      title="Fiş İşlem Sayıları"
-      description="this is Fiş İşlem Sayıları"
+      title="Örneklem Fişleri"
+      description="this is Örneklem Fişleri"
     >
-      <Breadcrumb title="Fiş İşlem Sayıları" items={BCrumb} />
-      <Grid container>
+      <Breadcrumb title="Örneklem Fişleri" items={BCrumb} />
+
+      <Grid container marginTop={3}>
         <Grid item xs={12} lg={12}>
-          <FisIslemSayilari />
+          <OrneklemFisleri />
         </Grid>
       </Grid>
     </PageContainer>

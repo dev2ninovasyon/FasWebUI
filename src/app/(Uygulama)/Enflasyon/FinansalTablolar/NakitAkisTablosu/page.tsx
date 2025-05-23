@@ -28,30 +28,32 @@ const Page: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <PageContainer title="Nakit Akış Tablosu" description="this is Nakit Akış Tablosu">
+    <PageContainer
+      title="Nakit Akış Tablosu"
+      description="this is Nakit Akış Tablosu"
+    >
       <Breadcrumb title="Nakit Akış Tablosu" items={BCrumb} />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
-            {
-          user.denetimTuru=="Bobi"?   <iframe
-      
-            src={`https://93.89.73.135//EnflasyonDuzeltmesi/YeniNakitAkisTablosu?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
-            style={{
-              border: "0px",
-              width: "100%",
-              height: 700,
-            }}
-          ></iframe>:   <iframe
-      
-            src={`https://93.89.73.135//EnflasyonDuzeltmesi/NakitAkisTablosuTfrs?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
-            style={{
-              border: "0px",
-              width: "100%",
-              height: 700,
-            }}
-          ></iframe>
-        }
-         
+          {user.denetimTuru == "Bobi" ? (
+            <iframe
+              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/YeniNakitAkisTablosu?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              style={{
+                border: "0px",
+                width: "100%",
+                height: 700,
+              }}
+            ></iframe>
+          ) : (
+            <iframe
+              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/NakitAkisTablosuTfrs?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              style={{
+                border: "0px",
+                width: "100%",
+                height: 700,
+              }}
+            ></iframe>
+          )}
         </Grid>
       </Grid>
     </PageContainer>

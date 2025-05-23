@@ -31,28 +31,27 @@ const Page: React.FC = () => {
     <PageContainer title="Dipnotlar" description="this is Dipnotlar">
       <Breadcrumb title="Dipnotlar" items={BCrumb} />
       <Grid container spacing={3}>
-           <Grid item xs={12} sm={12} lg={12}>
-                  {
-                user.denetimTuru=="Bobi"?   <iframe
-            
-                  src={`https://93.89.73.135//EnflasyonDuzeltmesi/DipnotlarBobi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
-                  style={{
-                    border: "0px",
-                    width: "100%",
-                    height: 700,
-                  }}
-                ></iframe>:   <iframe
-            
-                  src={`https://93.89.73.135//EnflasyonDuzeltmesi/Dipnotlar?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
-                  style={{
-                    border: "0px",
-                    width: "100%",
-                    height: 700,
-                  }}
-                ></iframe>
-              }
-               
-              </Grid>
+        <Grid item xs={12} sm={12} lg={12}>
+          {user.denetimTuru == "Bobi" ? (
+            <iframe
+              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/DipnotlarBobi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              style={{
+                border: "0px",
+                width: "100%",
+                height: 700,
+              }}
+            ></iframe>
+          ) : (
+            <iframe
+              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/Dipnotlar?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              style={{
+                border: "0px",
+                width: "100%",
+                height: 700,
+              }}
+            ></iframe>
+          )}
+        </Grid>
       </Grid>
     </PageContainer>
   );

@@ -191,6 +191,7 @@ const KidemTazminatiBobiHesaplama: React.FC<Props> = ({ data, title }) => {
 
   useEffect(() => {
     setFetchedData(data);
+    setRowCount(data.length);
   }, [data]);
 
   useEffect(() => {

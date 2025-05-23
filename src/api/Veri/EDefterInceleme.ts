@@ -35,12 +35,44 @@ export const updateEDefterIncelemeVerisi = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  id: number,
+  id: string,
   updatedEDefterInceleme: any
 ) => {
   try {
     const response = await fetch(
       `${url}/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedEDefterInceleme),
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateEDefterIncelemeListeVerisi = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  ids: string[],
+  updatedEDefterInceleme: any
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Veri/EDefterIncelemeListe?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&ids=${ids}`,
       {
         method: "PUT",
         headers: {

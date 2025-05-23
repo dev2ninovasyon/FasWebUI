@@ -28,12 +28,15 @@ const Page: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <PageContainer title="Maliyet Fark Fişi" description="this is Maliyet Fark Fişi">
+    <PageContainer
+      title="Maliyet Fark Fişi"
+      description="this is Maliyet Fark Fişi"
+    >
       <Breadcrumb title="Maliyet Fark Fişi" items={BCrumb} />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
           <iframe
-            src={`https://93.89.73.135//EnflasyonDuzeltmesi/EnflasyonMuhasebesiTasimaFisi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+            src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/EnflasyonMuhasebesiTasimaFisi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
             style={{
               border: "0px",
               width: "100%",

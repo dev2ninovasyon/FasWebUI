@@ -28,14 +28,11 @@ const Page: React.FC = () => {
       title="Proje-İnşaat Enflasyon Düzeltmesi"
       description="this is 	Proje-İnşaat Enflasyon Düzeltmesi"
     >
-      <Breadcrumb
-        title="Proje-İnşaat Enflasyon Düzeltmesi"
-        items={BCrumb}
-      />
+      <Breadcrumb title="Proje-İnşaat Enflasyon Düzeltmesi" items={BCrumb} />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
           <iframe
-            src={`https://93.89.73.135/EnflasyonDuzeltmesi/ProjeInsaatEnflasyonDuzeltmesi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+            src={`https://enflasyon.fas-audit.com.tr/EnflasyonDuzeltmesi/ProjeInsaatEnflasyonDuzeltmesi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
             style={{
               border: "0px",
               width: "100%",

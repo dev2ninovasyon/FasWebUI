@@ -635,6 +635,12 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
               icon: IconPoint,
               href: "/DenetimKanitlari/Onemlilik/FisIslemSayilari",
             },
+            {
+              id: uniqueId(),
+              title: "Örneklem",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/Onemlilik/Orneklem",
+            },
           ],
         },
         {

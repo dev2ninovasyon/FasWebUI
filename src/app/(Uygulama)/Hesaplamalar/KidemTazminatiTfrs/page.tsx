@@ -25,6 +25,8 @@ import { enqueueSnackbar } from "notistack";
 import {
   createKidemTazminatiTfrsEkBilgi,
   createKidemTazminatiTfrsHesapla,
+  getEnflasyonOrani,
+  getFaizOrani,
   getKidemTazminatiTfrsEkBilgi,
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
@@ -39,6 +41,7 @@ import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgi
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 import KidemTazminatiTfrsHesaplama from "./KidemTazminatiTfrsHesaplama";
 import KidemTazminatiTfrsOrnekFisler from "./KidemTazminatiTfrsOrnekFisler";
+import KidemTazminatiTfrsHesaplanmis from "./KidemTazminatiTfrsHesaplanmis";
 
 const BCrumb = [
   {
@@ -68,6 +71,19 @@ interface Veri2 {
 }
 
 interface Veri3 {
+  adiSoyadi: string;
+  emeklilikYasi: number;
+  emekliligeKalanYil: number;
+  kidemTazminatinaEsasUcret: number;
+  brut: number;
+  iskontoluKidemTazminati: number;
+  olasilik: number;
+  toplamYukumluluk: number;
+  cariDonemHizmetBedeli: number;
+  toplamYukumlulukIzinGunu: number;
+}
+
+interface Veri4 {
   id: number;
   link: string;
   baslangicTarihi: string;
@@ -102,6 +118,11 @@ const Page: React.FC = () => {
     setFetchedKidemTazminatiTfrsOrnekFisler,
   ] = useState<Veri2[]>([]);
 
+  const [
+    fetchedKidemTazminatiTfrsHesaplanmis,
+    setFetchedKidemTazminatiTfrsHesaplanmis,
+  ] = useState<Veri3[]>([]);
+
   const [floatingButtonTiklandimi, setFloatingButtonTiklandimi] =
     useState(false);
 
@@ -115,6 +136,8 @@ const Page: React.FC = () => {
   const [hesaplananKarsilik, setHesaplananKarsilik] = useState<number>(0);
   const [birikmisFon, setBirikmisFon] = useState<number>(0);
   const [izinKarsiligi, setIzinKarsiligi] = useState<number>(0);
+  const [enflasyonOrani, setEnflasyonOrani] = useState<number>(0);
+  const [faizOrani, setFaizOrani] = useState<number>(0);
   const [vergiOrani, setVergiOrani] = useState<number>(0);
   const [ayrilan2019, setAyrilan2019] = useState<number>(0);
   const [personel2019, setPersonel2019] = useState<number>(0);
@@ -161,7 +184,7 @@ const Page: React.FC = () => {
 
   const [control, setControl] = useState(false);
 
-  const [fetchedData, setFetchedData] = useState<Veri3 | null>(null);
+  const [fetchedData, setFetchedData] = useState<Veri4 | null>(null);
 
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
 
@@ -216,6 +239,8 @@ const Page: React.FC = () => {
       birikmisFon: birikmisFon,
       hesaplansinMi: hesaplansinMi,
       izinKarsiligi: izinKarsiligi,
+      enflasyonOrani: enflasyonOrani,
+      faizOrani: faizOrani,
       vergiOrani: vergiOrani,
       ayrilan2019: ayrilan2019,
       personel2019: personel2019,
@@ -293,6 +318,8 @@ const Page: React.FC = () => {
         setBirikmisFon(kidemEkBilgiVerileri.birikmisFon);
         setHesaplansinMi(kidemEkBilgiVerileri.hesaplansinMi);
         setIzinKarsiligi(kidemEkBilgiVerileri.izinKarsiligi);
+        setEnflasyonOrani(kidemEkBilgiVerileri.enflasyonOrani);
+        setFaizOrani(kidemEkBilgiVerileri.faizOrani);
         setVergiOrani(kidemEkBilgiVerileri.vergiOrani);
         setAyrilan2019(kidemEkBilgiVerileri.ayrilan2019);
         setPersonel2019(kidemEkBilgiVerileri.personel2019);
@@ -352,6 +379,9 @@ const Page: React.FC = () => {
         setKullanilmamisIzinKarsiligi770(
           kidemEkBilgiVerileri.kullanilmamisIzinKarsiligi770
         );
+      } else {
+        fetchEnflasyonOrani();
+        fetchFaizOrani();
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -369,6 +399,7 @@ const Page: React.FC = () => {
 
       const rows1: any = [];
       const rows2: any = [];
+      const rows3: any = [];
 
       kidem.kidemTazminatiSonuc.forEach((veri: any) => {
         const newRow: any = [veri.aciklama, veri.sayisi];
@@ -389,8 +420,25 @@ const Page: React.FC = () => {
         rows2.push(newRow);
       });
 
+      kidem.kidemTazminatiTfrsHesaplanmis.forEach((veri: any) => {
+        const newRow: any = [
+          veri.adiSoyadi,
+          veri.emeklilikYasi,
+          veri.emekliligeKalanYil,
+          veri.kidemTazminatinaEsasUcret,
+          veri.brut,
+          veri.iskontoluKidemTazminati,
+          veri.olasilik * 100,
+          veri.toplamYukumluluk,
+          veri.cariDonemHizmetBedeli,
+          veri.toplamYukumlulukIzinGunu,
+        ];
+        rows3.push(newRow);
+      });
+
       setFetchedKidemTazminatiCalismasi(rows1);
       setFetchedKidemTazminatiTfrsOrnekFisler(rows2);
+      setFetchedKidemTazminatiTfrsHesaplanmis(rows3);
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -419,7 +467,7 @@ const Page: React.FC = () => {
           )}`;
         };
 
-        const newRow: Veri3 = {
+        const newRow: Veri4 = {
           id: baglantiBilgisi.id,
           link: baglantiBilgisi.link,
           baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
@@ -429,6 +477,36 @@ const Page: React.FC = () => {
         setFetchedData(newRow);
       } else {
         setFetchedData(null);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchEnflasyonOrani = async () => {
+    try {
+      const enflasyonOraniVerisi = await getEnflasyonOrani(
+        user.token || "",
+        user.yil || 0
+      );
+
+      if (enflasyonOraniVerisi) {
+        setEnflasyonOrani(enflasyonOraniVerisi);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchFaizOrani = async () => {
+    try {
+      const faizOraniVerisi = await getFaizOrani(
+        user.token || "",
+        user.yil || 0
+      );
+
+      if (faizOraniVerisi) {
+        setFaizOrani(faizOraniVerisi);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -452,6 +530,7 @@ const Page: React.FC = () => {
     if (hesaplaTiklandimi) {
       setOpenCartAlert(true);
       setFetchedKidemTazminatiCalismasi([]);
+      setFetchedKidemTazminatiTfrsHesaplanmis([]);
     } else {
       setOpenCartAlert(false);
     }
@@ -712,6 +791,70 @@ const Page: React.FC = () => {
                             onChange={(e: any) =>
                               setIzinKarsiligi(parseInt(e.target.value))
                             }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="enflasyonOrani"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              Enflasyon Oranı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="enflasyonOrani"
+                            type="number"
+                            fullWidth
+                            value={enflasyonOrani}
+                            onChange={(e: any) =>
+                              setEnflasyonOrani(e.target.value)
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        lg={12}
+                        sx={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          mt: 1,
+                        }}
+                      >
+                        <Grid item xs={12} lg={6}>
+                          <CustomFormLabel
+                            htmlFor="faizOrani"
+                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
+                          >
+                            <Typography variant="h6" p={1}>
+                              Faiz Oranı
+                            </Typography>
+                          </CustomFormLabel>
+                        </Grid>
+                        <Grid item xs={12} lg={6}>
+                          <CustomTextField
+                            id="faizOrani"
+                            type="number"
+                            fullWidth
+                            value={faizOrani}
+                            onChange={(e: any) => setFaizOrani(e.target.value)}
                           />
                         </Grid>
                       </Grid>
@@ -1683,6 +1826,13 @@ const Page: React.FC = () => {
                     <KidemTazminatiTfrsHesaplama
                       data={fetchedKidemTazminatiCalismasi}
                       title="Kıdem Tazminatı Çalışması"
+                    />
+                  </Grid>
+                )}
+                {fetchedKidemTazminatiTfrsHesaplanmis.length > 0 && (
+                  <Grid item xs={12} lg={12} marginBottom={3}>
+                    <KidemTazminatiTfrsHesaplanmis
+                      data={fetchedKidemTazminatiTfrsHesaplanmis}
                     />
                   </Grid>
                 )}
