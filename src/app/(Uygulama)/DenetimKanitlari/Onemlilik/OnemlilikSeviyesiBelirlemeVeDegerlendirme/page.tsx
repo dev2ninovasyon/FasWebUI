@@ -22,7 +22,7 @@ const BCrumb = [
   },
   {
     to: "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme",
-    title: "Önemlilik Seviyesi Belirleme Kılavuzu",
+    title: "Önemlilik Seviyesi Belirleme Ve Değerlendirme",
   },
 ];
 
