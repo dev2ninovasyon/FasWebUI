@@ -17,7 +17,7 @@ const Language = () => {
     // GTranslate ayarlarını tanımlıyoruz
     window.gtranslateSettings = {
       default_language: "tr",
-      languages: ["tr", "en", "de", "fr", "zh-CN", "ar", "it"],
+      languages: ["tr", "en", "de", "fr", "az", "ar", "it"],
       globe_color:
         customizer.activeMode === "dark"
           ? theme.palette.primary.dark

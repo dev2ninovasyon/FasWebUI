@@ -641,6 +641,18 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
               icon: IconPoint,
               href: "/DenetimKanitlari/Onemlilik/Orneklem",
             },
+            {
+              id: uniqueId(),
+              title: "Önemlilik Seviyesi Belirleme Kılavuzu",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu",
+            },
+            {
+              id: uniqueId(),
+              title: "Önemlilik Seviyesi Belirleme Ve Değerlendirme",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme",
+            },
           ],
         },
         {
