@@ -364,3 +364,111 @@ export const updateOnemlilikHesaplamaBazi = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const getMutabakat = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  grupKodu: string,
+  hesapAdi: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&grupKodu=${grupKodu}&hesapAdi=${hesapAdi}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Mutabakat getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateMutabakat = async (token: string, json: any) => {
+  try {
+    const response = await fetch(`${url}/DenetimKanitlari/Mutabakat`, {
+      method: "PUT",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(json),
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const deleteMutabakat = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "DELETE",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getMutabakatDogrulamaMektubu = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  detayKodu: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/MutabakatDogrulamaMektubu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&detayKodu=${detayKodu}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Mutabakat Dogrulama Mektubu getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};

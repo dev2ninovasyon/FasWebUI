@@ -657,6 +657,26 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         },
         {
           id: uniqueId(),
+          title: "Mutabakat",
+          icon: IconPoint,
+          href: "/DenetimKanitlari/Mutabakat",
+          children: [
+            {
+              id: uniqueId(),
+              title: "Mutabakat Seçimi Ve Kontrol",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol",
+            },
+            {
+              id: uniqueId(),
+              title: "Doğrulama Mektuplarına Alınan Yanıtlar",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/Mutabakat/DogrulamaMektuplarinaAlinanYanitlar",
+            },
+          ],
+        },
+        {
+          id: uniqueId(),
           title: "Diğer Kanıtlar",
           icon: IconPoint,
           href: "/DenetimKanitlari/DigerKanitlar",
