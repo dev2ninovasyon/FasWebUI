@@ -175,25 +175,32 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
       children: [
         {
           id: uniqueId(),
-          title: "Defter / K. V. Beyannemesi Yükleme",
+          title: "Defter / K. V. Beyannamesi Yükleme",
+          customIcon:
+            "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
           icon: IconPoint,
           href: "/Veri/DefterKVBeyannamesiYukleme",
         },
         {
           id: uniqueId(),
           title: "Vuk Mizan Veri Yükleme",
+          customIcon: "public/images/svgs/veri/vuk-mizan-veri-yukleme.svg",
           icon: IconPoint,
           href: "/Veri/VukMizanVeriYukleme",
         },
         {
           id: uniqueId(),
           title: "Dönüştürülmüş Mizan Veri Yükleme",
+          customIcon:
+            "public/images/svgs/veri/donusturulmus-mizan-veri-yukleme.svg",
           icon: IconPoint,
           href: "/Veri/DonusturulmusMizanVeriYukleme",
         },
         {
           id: uniqueId(),
           title: "Dönüşüm Fişleri Veri Yükleme",
+          customIcon:
+            "public/images/svgs/veri/donusum-fisleri-veri-yukleme.svg",
           icon: IconPoint,
           href: "/Veri/DonusumFisleriVeriYukleme",
         },
@@ -206,18 +213,21 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Mizanlar",
+          customIcon: "public/images/svgs/veri/mizanlar.svg",
           icon: IconPoint,
           href: "/Veri/Mizanlar",
           children: [
             {
               id: uniqueId(),
               title: "E-Defter Mizan Oluşturma",
+              customIcon: "public/images/svgs/veri/mizanlar.svg",
               icon: IconPoint,
               href: "/Veri/Mizanlar/EDefterMizan",
             },
             {
               id: uniqueId(),
               title: "Vuk Mizan Oluşturma",
+              customIcon: "public/images/svgs/veri/mizanlar.svg",
               icon: IconPoint,
               href: "/Veri/Mizanlar/VukMizan",
             },
@@ -226,6 +236,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "E-Defter İnceleme",
+          customIcon: "public/images/svgs/veri/defter-inceleme.svg",
           icon: IconPoint,
           href: "/Veri/EDefterInceleme",
         },
