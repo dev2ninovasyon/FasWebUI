@@ -77,7 +77,9 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
 
   if (MenuItem && MenuItem.children && MenuItem.children.length > 0) {
     TopCards = MenuItem.children.map((child: MenuitemsType) => ({
-      icon: randomIcon(),
+      icon: child.customIcon
+        ? child.customIcon.replace("public", "")
+        : randomIcon(),
       title: child.title || "",
       href: child.href || "",
       bgcolor: randomColor(),

@@ -1,0 +1,12 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="#000000" width="256px" height="256px" viewBox="-7.2 -7.2 38.40 38.40" id="bank-2" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line">
+<g id="SVGRepo_bgCarrier" stroke-width="0">
+<rect x="-7.2" y="-7.2" width="38.40" height="38.40" rx="19.2" fill="#f9c8c8" strokewidth="0"/>
+</g>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="SVGRepo_iconCarrier">
+<polygon id="secondary" points="21 9 21 7 12 3 3 7 3 9 21 9" style="fill: #ff5252; stroke-width: 2;"/>
+<path id="primary" d="M6,9V21M18,9V21M12,9V21M3,21H21M21,9V7L12,3,3,7V9Z" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/>
+</g>
+</svg>

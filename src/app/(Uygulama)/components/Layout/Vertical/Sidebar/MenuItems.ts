@@ -8,6 +8,7 @@ export interface MenuitemsType {
   title?: string;
   parentTitle?: string;
   icon?: any;
+  customIcon?: any;
   href?: string;
   children?: MenuitemsType[];
   chip?: string;
@@ -245,30 +246,36 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Yaşlandırma",
+          customIcon: "public/images/svgs/hesaplamalar/yaslandirma.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/Yaslandirma",
         },
         {
           id: uniqueId(),
           title: "Beklenen Kredi Zararı",
+          customIcon:
+            "public/images/svgs/hesaplamalar/beklenen-kredi-zarari.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/BeklenenKrediZarari",
         },
         {
           id: uniqueId(),
           title: "Kıdem Tazminatı (Bobi)",
+          customIcon: "public/images/svgs/hesaplamalar/kidem-bobi.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/KidemTazminatiBobi",
         },
         {
           id: uniqueId(),
           title: "Kıdem Tazminatı (Tfrs)",
+          customIcon: "public/images/svgs/hesaplamalar/kidem-tfrs.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/KidemTazminatiTfrs",
         },
         {
           id: uniqueId(),
           title: "Amortisman",
+          customIcon: "public/images/svgs/hesaplamalar/amortisman.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/Amortisman",
           aciklama:
@@ -277,54 +284,69 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Kredi",
+          customIcon: "public/images/svgs/hesaplamalar/kredi.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/Kredi",
         },
         {
           id: uniqueId(),
           title: "Çek / Senet Reeskont",
+          customIcon: "public/images/svgs/hesaplamalar/cek-senet-reeskont.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/CekSenetReeskont",
         },
         {
           id: uniqueId(),
           title: "Dava Karşılıkları",
+          customIcon: "public/images/svgs/hesaplamalar/dava-karsiliklari.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/DavaKarsiliklari",
         },
         {
           id: uniqueId(),
           title: "Ertelenmiş Vergi Hesabı",
+          customIcon:
+            "public/images/svgs/hesaplamalar/ertelenmis-vergi-hesabi.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/ErtelenmisVergiHesabi",
         },
         {
           id: uniqueId(),
           title: "İlişkili Taraf Sınıflama",
+          customIcon:
+            "public/images/svgs/hesaplamalar/iliskili-taraf-siniflama.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/IliskiliTarafSiniflama",
         },
         {
           id: uniqueId(),
           title: "Vadeli Banka Mevduatı",
+          customIcon:
+            "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/VadeliBankaMevduati",
           children: [
             {
               id: uniqueId(),
               title: "Vadeli Banka Mevduatı Otomatik Sınıflama",
+              customIcon:
+                "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
               icon: IconPoint,
               href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiOtomatikSiniflama",
             },
             {
               id: uniqueId(),
               title: "Vadeli Banka Mevduatı Manuel Sınıflama",
+              customIcon:
+                "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
               icon: IconPoint,
               href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama",
             },
             {
               id: uniqueId(),
               title: "Vadeli Banka Mevduatı Faiz Tahakkuk",
+              customIcon:
+                "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
               icon: IconPoint,
               href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiFaizTahakkuk",
             },
@@ -333,30 +355,38 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Hareketsiz",
+          customIcon: "public/images/svgs/hesaplamalar/hareketsiz.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/Hareketsiz",
         },
         {
           id: uniqueId(),
           title: "Geçmiş Yıllar Kar Zarar Kontrolleri",
+          customIcon:
+            "public/images/svgs/hesaplamalar/gecmis-yillar-kar-zarar.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/GecmisYillarKarZararKontrolleri",
         },
         {
           id: uniqueId(),
           title: "Kur Farkı Kayıtları",
+          customIcon: "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
           icon: IconPoint,
           href: "/Hesaplamalar/KurFarkiKayitlari",
           children: [
             {
               id: uniqueId(),
               title: "Kur Farkı",
+              customIcon:
+                "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
               icon: IconPoint,
               href: "/Hesaplamalar/KurFarkiKayitlari/KurFarki",
             },
             {
               id: uniqueId(),
               title: "Kur Farkı Kontrolleri",
+              customIcon:
+                "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
               icon: IconPoint,
               href: "/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri",
             },
