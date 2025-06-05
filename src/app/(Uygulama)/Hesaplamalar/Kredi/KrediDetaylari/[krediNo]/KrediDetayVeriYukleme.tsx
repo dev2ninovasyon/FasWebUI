@@ -1,4 +1,5 @@
 import { HotTable } from "@handsontable/react";
+import type { ColumnSettings } from "handsontable/settings"; // Handsontable'dan ColumnSettings tipi
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -63,7 +64,9 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
 
   const [alinanKrediTutar, setAlinanKrediTutar] = useState<number>(0);
 
-  const [rowCount, setRowCount] = useState<number>(200);
+  const [tur, setTur] = useState<string>("");
+
+  const [rowCount, setRowCount] = useState<number>(1);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
 
@@ -192,80 +195,89 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
     }
   }, [duplicatesControl]);
 
-  const colHeaders = [
-    "Taksit Tarihi",
-    "Taksit Tutarı",
-    "Faiz Tutarı",
-    "Fon + Vergi",
-    "Ana Para",
-    "Kalan",
-  ];
+  const [colHeaders, setColHeaders] = useState<string[]>([]);
+  const [columns, setColumns] = useState<ColumnSettings[]>([]);
 
-  const columns = [
-    {
-      type: "date",
-      dateFormat: "DD.MM.YYYY",
-      columnSorting: true,
-      className: "htRight",
-      validator: dateValidator,
-      allowInvalid: false,
-    }, // Taksit Tarihi
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      validator: numberValidator,
-      allowInvalid: false,
-    }, // Taksit Tutarı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      validator: numberValidator,
-      allowInvalid: false,
-    }, // Faiz Tutarı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      validator: numberValidatorAllowNull,
-      allowInvalid: false,
-    }, // Fon + Vergi
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      validator: numberValidatorAllowNull,
-      allowInvalid: false,
-    }, // Ana Para
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Kalan
-  ];
+  useEffect(() => {
+    setColHeaders(
+      [
+        tur == "Taksitli Kredi" ? "Taksit Tarihi" : "Vade Tarihi",
+        tur == "Taksitli Kredi" ? "Taksit Tutarı" : "Ana Para",
+        "Faiz Tutarı",
+        "Fon + Vergi",
+        tur == "Taksitli Kredi" ? "Ana Para" : "Ödenen Tutar",
+        tur == "Taksitli Kredi" && "Kalan",
+      ].filter(Boolean) as string[]
+    );
+
+    setColumns(
+      [
+        {
+          type: "date",
+          dateFormat: "DD.MM.YYYY",
+          columnSorting: true,
+          className: "htRight",
+          validator: dateValidator,
+          allowInvalid: false,
+        }, // Taksit Tarihi - Vade Tarihi
+        {
+          type: "numeric",
+          numericFormat: {
+            pattern: "0,0.00",
+            columnSorting: true,
+            culture: "tr-TR",
+          },
+          className: "htRight",
+          validator: numberValidator,
+          allowInvalid: false,
+        }, // Taksit Tutarı - Ana Para
+        {
+          type: "numeric",
+          numericFormat: {
+            pattern: "0,0.00",
+            columnSorting: true,
+            culture: "tr-TR",
+          },
+          className: "htRight",
+          validator: numberValidator,
+          allowInvalid: false,
+        }, // Faiz Tutarı
+        {
+          type: "numeric",
+          numericFormat: {
+            pattern: "0,0.00",
+            columnSorting: true,
+            culture: "tr-TR",
+          },
+          className: "htRight",
+          validator: numberValidatorAllowNull,
+          allowInvalid: false,
+        }, // Fon + Vergi
+        {
+          type: "numeric",
+          numericFormat: {
+            pattern: "0,0.00",
+            columnSorting: true,
+            culture: "tr-TR",
+          },
+          className: "htRight",
+          validator: numberValidatorAllowNull,
+          allowInvalid: false,
+        }, // Ana Para - Ödenen Tutar
+        tur == "Taksitli Kredi" && {
+          type: "numeric",
+          numericFormat: {
+            pattern: "0,0.00",
+            columnSorting: true,
+            culture: "tr-TR",
+          },
+          className: "htRight",
+          readOnly: true,
+          editor: false,
+        }, // Kalan
+      ].filter(Boolean) as ColumnSettings[]
+    );
+  }, [tur]);
 
   const afterGetColHeader = (col: any, TH: any) => {
     // Set the height of the column headers
@@ -429,7 +441,8 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         console.log(
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
-        if (prop === 4) {
+
+        if (prop === 4 && tur == "Taksitli Kredi") {
           const hot = hotTableComponent.current.hotInstance;
 
           const anaParalar: number[] = [];
@@ -489,10 +502,10 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
       "yil",
       "krediHesaplamaId",
       "taksitTarihi",
-      "taksitTutari",
+      tur == "Taksitli Kredi" ? "taksitTutari" : "anaPara",
       "faizTutari",
       "fonVergi",
-      "anaPara",
+      tur == "Taksitli Kredi" ? "anaPara" : "taksitTutari",
     ];
     const jsonData = fetchedData
       .filter((item: any) => item[0])
@@ -636,6 +649,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         );
       if (krediHesaplama != undefined) {
         setAlinanKrediTutar(krediHesaplama.alinanKrediTutar);
+        setTur(krediHesaplama.tur);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -677,10 +691,10 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
           veri.taksitTarihi !== null && veri.taksitTarihi !== undefined
             ? veri.taksitTarihi.split("T")[0].split("-").reverse().join(".")
             : null,
-          veri.taksitTutari,
+          tur == "Taksitli Kredi" ? veri.taksitTutari : veri.anaPara,
           veri.faizTutari,
           veri.fonVergi,
-          veri.anaPara,
+          tur == "Taksitli Kredi" ? veri.anaPara : veri.taksitTutari,
         ];
         rowsAll.push(newRow);
       });
@@ -697,8 +711,12 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Kredi Hesaplama");
-      setRowCount(format.satirSayisi);
+      if (tur == "Taksitli Kredi") {
+        const format = await getFormat(user.token || "", "Kredi Hesaplama");
+        setRowCount(format.satirSayisi);
+      } else {
+        setRowCount(1);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -710,8 +728,9 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
+    fetchData();
     fetchRowCount();
-  }, []);
+  }, [tur]);
 
   useEffect(() => {
     if (kaydetTiklandimi) {
@@ -849,13 +868,21 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
-        contextMenu={[
-          "row_above",
-          "row_below",
-          "remove_row",
-          "alignment",
-          "copy",
-        ]}
+        contextMenu={
+          tur === "Taksitli Kredi"
+            ? {
+                items: [
+                  "row_above",
+                  "row_below",
+                  "remove_row",
+                  "alignment",
+                  "copy",
+                ],
+              }
+            : {
+                items: ["alignment", "copy"],
+              }
+        }
       />
       <Grid container marginTop={2}>
         <Grid item xs={12} lg={10}></Grid>

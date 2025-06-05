@@ -72,7 +72,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     "Adı Soyadı Sütunu Boş Bırakılmamalıdır.",
     "Cinsiyeti Ve Sgk İşten Ayrılış Nedeni Kodu Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Doğum Tarihi Ve İşletmeden Çıkış Tarihi Sütunlarına GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
-    "Görev Departmanı Sütununda Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
+    "Görev Departmanı Sütununda Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
     "Brüt Ücreti (Aylık) Sütunu Sütunu Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
     "İşletmeye Giriş Tarihi Sütunu Boş Bırakılmamalıdır Ve GG.AA.YYYY Formatında Tarih Girilmelidir.",
     "Ödenen Brüt Kıdem Tazminatı Tutarı (TL), Kullanılmamış İzin Günü Ve Kullanılmamış İzne Esas Brüt Ücret (Aylık) Sütunlarına Ondalıklı Sayı Girilmelidir Veya Boş Bırakılabilir.",

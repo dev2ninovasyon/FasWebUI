@@ -160,7 +160,7 @@ const Page = () => {
             <Button
               type="button"
               size="medium"
-              disabled={kaydetTiklandimi || !fetchedData}
+              disabled={kaydetTiklandimi || !fetchedData == null}
               variant="outlined"
               color="primary"
               onClick={() => {
