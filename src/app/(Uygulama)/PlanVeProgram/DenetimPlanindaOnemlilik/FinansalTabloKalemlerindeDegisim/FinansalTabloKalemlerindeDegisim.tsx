@@ -12,8 +12,8 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import {
-  getOnemlilikVeOrneklem,
-  updateOnemlilikVeOrneklem,
+  getFinansalTabloKalemlerindeDegisim,
+  updateFinansalTabloKalemlerindeDegisim,
 } from "@/api/PlanVeProgram/PlanVeProgram";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
@@ -30,14 +30,10 @@ interface Veri {
   id: number;
   kebirKodu: number;
   hesapAdi: string;
-  borcAlacakToplami: number;
-  mizanIcindekiPayi: number;
-  kabulEdilebilirYanlislik: number;
-  performansOnemliligi: number;
-  borcIslemSayisi: number;
-  alacakIslemSayisi: number;
-  toplamIslemSayisi: number;
-  risk: string;
+  oncekiDonemBakiye: number;
+  cariDonemBakiye: number;
+  degisimTutar: number;
+  degisimYuzde: number;
   tespit: string;
 }
 
@@ -45,7 +41,9 @@ interface Props {
   hesaplaTiklandimi: boolean;
 }
 
-const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
+const FinansalTabloKalemlerindeDegisim: React.FC<Props> = ({
+  hesaplaTiklandimi,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -89,14 +87,10 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     "Id",
     "Kebir Kodu",
     "Hesap Adı",
-    "Borç Alacak Toplamı",
-    "Mizan İçindeki Payı",
-    "Genel Önemlilik",
-    "Performans Önemliliği",
-    "B. Fiş Sayısı",
-    "A. Fiş Sayısı",
-    "Toplam Fiş Sayısı",
-    "Risk",
+    "Önceki Dönem Bakiye",
+    "Cari Dönem Bakiye",
+    "Değişim Tutar",
+    "Değişim (%)",
     "Tespit",
   ];
 
@@ -127,7 +121,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Borç Alacak Toplamı
+    }, // Önceki Dönem Bakiye
     {
       type: "numeric",
       numericFormat: {
@@ -138,7 +132,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Mizan İçindeki Payı
+    }, // Cari Dönem Bakiye
     {
       type: "numeric",
       numericFormat: {
@@ -149,7 +143,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Genel Önemlilik
+    }, // Değişim Tutar
     {
       type: "numeric",
       numericFormat: {
@@ -160,46 +154,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Performans Önemliliği
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Borç Fiş Sayısı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Alacak Fiş Sayısı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Toplam Fiş Sayısı
-    {
-      type: "dropdown",
-      source: ["Düşük", "Orta", "Yüksek"],
-      className: "htLeft",
-      allowInvalid: false,
-    }, // Risk
+    }, // Değişim (%)
     {
       type: "text",
       columnSorting: true,
@@ -335,7 +290,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
 
-        if (prop === 10 || prop === 11) {
+        if (prop === 7) {
           const rowData =
             hotTableComponent.current?.hotInstance.getDataAtRow(row);
           if (!rowData) return;
@@ -347,15 +302,12 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
             yil: user.yil || 0,
             kebirKodu: rowData[1],
             hesapAdi: rowData[2],
-            borcAlacakToplami: rowData[3],
-            mizanIcindekiPayi: rowData[4],
-            kabulEdilebilirYanlislik: rowData[5],
-            performansOnemliligi: rowData[6],
-            borcIslemSayisi: rowData[7],
-            alacakIslemSayisi: rowData[8],
-            toplamIslemSayisi: rowData[9],
-            risk: rowData[10],
-            tespit: rowData[11],
+            detayHesapAdi: rowData[2],
+            oncekiDonemBakiye: rowData[3],
+            cariDonemBakiye: rowData[4],
+            degisimTutar: rowData[5],
+            degisimYuzde: rowData[6],
+            tespit: rowData[7],
           };
           setOpenCartAlert(true);
           handleUpdate(obj);
@@ -366,11 +318,14 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateOnemlilikVeOrneklem(user.token || "", json);
+      const result = await updateFinansalTabloKalemlerindeDegisim(
+        user.token || "",
+        json
+      );
       if (result) {
         fetchData();
         setOpenCartAlert(false);
-        enqueueSnackbar("Örneklem Güncellendi", {
+        enqueueSnackbar("Güncellendi", {
           variant: "success",
           autoHideDuration: 5000,
           style: {
@@ -382,7 +337,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         });
       } else {
         setOpenCartAlert(false);
-        enqueueSnackbar("Örneklem Güncellenemedi", {
+        enqueueSnackbar("Güncellenemedi", {
           variant: "error",
           autoHideDuration: 5000,
           style: {
@@ -401,27 +356,24 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const fisVerileri = await getOnemlilikVeOrneklem(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
+      const finansalTabloVerilerindeDegisimVerileri =
+        await getFinansalTabloKalemlerindeDegisim(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0
+        );
 
       const rowsAll: any = [];
-      fisVerileri.forEach((veri: any) => {
+      finansalTabloVerilerindeDegisimVerileri.forEach((veri: any) => {
         const newRow: any = [
           veri.id,
           veri.kebirKodu,
           veri.hesapAdi,
-          veri.borcAlacakToplami,
-          veri.mizanIcindekiPayi,
-          veri.kabulEdilebilirYanlislik,
-          veri.performansOnemliligi,
-          veri.borcIslemSayisi,
-          veri.alacakIslemSayisi,
-          veri.toplamIslemSayisi,
-          veri.risk,
+          veri.oncekiDonemBakiye,
+          veri.cariDonemBakiye,
+          veri.degisimTutar,
+          veri.degisimYuzde,
           veri.tespit,
         ];
         rowsAll.push(newRow);
@@ -488,7 +440,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         const blob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, "OnemlilikVeOrneklem.xlsx");
+        saveAs(blob, "FinansalTabloKalemlerindeDegisim.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
@@ -529,7 +481,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 50, 100, 80, 60, 80, 80, 60, 60, 60, 50, 100]}
+        colWidths={[0, 40, 120, 80, 80, 80, 60, 120]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
@@ -580,4 +532,4 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   );
 };
 
-export default OnemlilikVeOrneklem;
+export default FinansalTabloKalemlerindeDegisim;

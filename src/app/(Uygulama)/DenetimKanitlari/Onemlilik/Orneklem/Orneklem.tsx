@@ -621,7 +621,7 @@ const Orneklem: React.FC<Props> = ({
         colHeaders={colHeaders}
         columns={columns}
         colWidths={[
-          0, 70, 100, 100, 60, 100, 100, 60, 100, 100, 60, 60, 60, 60, 100, 80,
+          0, 70, 100, 80, 60, 80, 80, 60, 80, 80, 60, 60, 60, 60, 90, 60,
         ]}
         stretchH="all"
         manualColumnResize={true}

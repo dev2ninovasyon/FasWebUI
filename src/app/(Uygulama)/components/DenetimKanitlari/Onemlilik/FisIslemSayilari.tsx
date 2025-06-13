@@ -394,7 +394,7 @@ const FisIslemSayilari = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[80, 120, 100, 60, 100, 100, 60, 100]}
+        colWidths={[50, 100, 80, 60, 80, 80, 60, 80, 60]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

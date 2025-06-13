@@ -37,7 +37,7 @@ export const createOnemlilikVeOrneklem = async (
 ) => {
   try {
     const response = await fetch(
-      `${url}/PlanVeProgram/OnemlilikVeOrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}&cevapDagilimi=50&listelemeTuru=Aya Göre`,
+      `${url}/PlanVeProgram/OnemlilikVeOrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}`,
       {
         method: "POST",
         headers: {
@@ -183,6 +183,90 @@ export const updateOnemlilikVeOrneklemHesaplamaBazi = async (
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const createFinansalTabloKalemlerindeDegisim = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/FinansalTabloKalemlerindeDegisimHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getFinansalTabloKalemlerindeDegisim = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/FinansalTabloKalemlerindeDegisim?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Finansal Tablo Kalemlerinde Değişim getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateFinansalTabloKalemlerindeDegisim = async (
+  token: string,
+  updatedFinansalTabloKalemlerindeDegisim: any
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/FinansalTabloKalemlerindeDegisim`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedFinansalTabloKalemlerindeDegisim),
       }
     );
 

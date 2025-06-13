@@ -578,6 +578,12 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem",
             },
+            {
+              id: uniqueId(),
+              title: "Finansal Tablo Kalemlerinde Değişim",
+              icon: IconPoint,
+              href: "/PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim",
+            },
           ],
         },
         {
