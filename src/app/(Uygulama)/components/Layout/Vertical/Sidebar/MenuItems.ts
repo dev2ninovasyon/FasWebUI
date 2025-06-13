@@ -552,7 +552,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           id: uniqueId(),
           title: "Denetim Risk Tespit Kılavuzu",
           icon: IconPoint,
-          href: "/PlanVeProgram/",
+          href: "/PlanVeProgram",
         },
         {
           id: uniqueId(),
@@ -565,6 +565,20 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
           title: "Denetim Risk Değerlendirme",
           icon: IconPoint,
           href: "/PlanVeProgram/DenetimRiskDegerlendirme",
+        },
+        {
+          id: uniqueId(),
+          title: "Denetim Planında Önemlilik",
+          icon: IconPoint,
+          href: "/PlanVeProgram/DenetimPlanindaOnemlilik",
+          children: [
+            {
+              id: uniqueId(),
+              title: "Önemlilik Ve Örneklem",
+              icon: IconPoint,
+              href: "/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem",
+            },
+          ],
         },
         {
           id: uniqueId(),

@@ -9,9 +9,9 @@ import { useTheme } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
-  createOnemlilikHesaplamaBazi,
-  getOnemlilikSeviyesi,
-} from "@/api/DenetimKanitlari/DenetimKanitlari";
+  createOnemlilikVeOrneklemHesaplamaBazi,
+  getOnemlilikVeOrneklemSeviyesi,
+} from "@/api/PlanVeProgram/PlanVeProgram";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
@@ -35,7 +35,7 @@ interface Props {
   hesaplaTiklandimi: boolean;
   setHesaplaTiklandimi: (bool: boolean) => void;
 }
-const Onemlilik: React.FC<Props> = ({
+const OnemlilikVeOrneklemSeviyesi: React.FC<Props> = ({
   hesaplaTiklandimi,
   setHesaplaTiklandimi,
 }) => {
@@ -265,7 +265,7 @@ const Onemlilik: React.FC<Props> = ({
         maliTablolarIcinGenelOnemlilikSeviyesi: rowData[4],
       };
 
-      const result = await createOnemlilikHesaplamaBazi(
+      const result = await createOnemlilikVeOrneklemHesaplamaBazi(
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
@@ -307,7 +307,7 @@ const Onemlilik: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const onemlilik = await getOnemlilikSeviyesi(
+      const onemlilik = await getOnemlilikVeOrneklemSeviyesi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -414,4 +414,4 @@ const Onemlilik: React.FC<Props> = ({
   );
 };
 
-export default Onemlilik;
+export default OnemlilikVeOrneklemSeviyesi;

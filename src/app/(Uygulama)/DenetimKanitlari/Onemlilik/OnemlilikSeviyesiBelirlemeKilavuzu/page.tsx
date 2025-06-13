@@ -8,7 +8,7 @@ import { getCalismaKagidiVerileriByDenetciDenetlenenYil } from "@/api/CalismaKag
 import dynamic from "next/dynamic";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import Onemlilik from "./Onemlilik";
+import OnemlilikSeviyesi from "./OnemlilikSeviyesi";
 import OnemlilikHesaplamaBazi from "./OnemlilikHesaplamaBazi";
 
 const CustomEditorWVeri = dynamic(
@@ -90,7 +90,7 @@ const Page = () => {
         </Grid>
         <Box sx={{ width: "95%", margin: "auto", mt: 5 }}>
           <Grid item xs={12} sm={12} lg={12}>
-            <Onemlilik
+            <OnemlilikSeviyesi
               hesaplaTiklandimi={hesaplaTiklandimi}
               setHesaplaTiklandimi={setHesaplaTiklandimi}
             />

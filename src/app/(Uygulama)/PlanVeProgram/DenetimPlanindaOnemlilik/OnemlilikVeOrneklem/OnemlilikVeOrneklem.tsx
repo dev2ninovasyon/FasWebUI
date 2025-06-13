@@ -12,14 +12,13 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import {
-  getOrneklem,
-  updateOrneklem,
-} from "@/api/DenetimKanitlari/DenetimKanitlari";
+  getOnemlilikVeOrneklem,
+  updateOnemlilikVeOrneklem,
+} from "@/api/PlanVeProgram/PlanVeProgram";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
-import { useRouter } from "next/navigation";
 
 // register Handsontable's modules
 registerAllModules();
@@ -31,41 +30,28 @@ interface Veri {
   id: number;
   kebirKodu: number;
   hesapAdi: string;
-  borc: number;
+  borcAlacakToplami: number;
+  mizanIcindekiPayi: number;
+  kabulEdilebilirYanlislik: number;
+  performansOnemliligi: number;
   borcIslemSayisi: number;
-  borcOrtalama: number;
-  alacak: number;
   alacakIslemSayisi: number;
-  alacakOrtalama: number;
-  kalanBakiye: number;
   toplamIslemSayisi: number;
-  orneklemSayisi: number;
-  borcOrneklemSayisi: number;
-  alacakOrneklemSayisi: number;
-  listelemeTuru: string;
-  guvenilirlikDuzeyi: string;
+  risk: string;
+  tespit: string;
 }
 
 interface Props {
-  setGuvenilirlikDuzeyi: (num: number) => void;
-  setHataPayi: (num: number) => void;
-  setListelemeTuru: (str: string) => void;
   hesaplaTiklandimi: boolean;
 }
 
-const Orneklem: React.FC<Props> = ({
-  setGuvenilirlikDuzeyi,
-  setHataPayi,
-  setListelemeTuru,
-  hesaplaTiklandimi,
-}) => {
+const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const dispatch = useDispatch();
   const theme = useTheme();
-  const router = useRouter();
 
   const [rowCount, setRowCount] = useState(0);
 
@@ -90,23 +76,28 @@ const Orneklem: React.FC<Props> = ({
     loadStyles();
   }, [customizer.activeMode]);
 
+  const textValidator = (value: string, callback: (value: boolean) => void) => {
+    if (!value || value.trim() === "") {
+      // Eğer değer boşsa geçersiz kabul et
+      callback(false);
+    } else {
+      callback(true);
+    }
+  };
+
   const colHeaders = [
     "Id",
     "Kebir Kodu",
     "Hesap Adı",
-    "Borç",
+    "Borç Alacak Toplamı",
+    "Mizan İçindeki Payı",
+    "Genel Önemlilik",
+    "Performans Önemliliği",
     "B. Fiş Sayısı",
-    "B. Ortalaması",
-    "Alacak",
     "A. Fiş Sayısı",
-    "A. Ortalaması",
-    "Bakiye",
     "Toplam Fiş Sayısı",
-    "Örneklem Sayısı",
-    "Borç Örnek Sayısı",
-    "Alacak Örnek Sayısı",
-    "Listeleme Türü",
-    "Güvenilirlik Düzeyi",
+    "Risk",
+    "Tespit",
   ];
 
   const columns = [
@@ -136,7 +127,40 @@ const Orneklem: React.FC<Props> = ({
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Borç
+    }, // Borç Alacak Toplamı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Mizan İçindeki Payı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Genel Önemlilik
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Performans Önemliliği
     {
       type: "numeric",
       numericFormat: {
@@ -151,28 +175,6 @@ const Orneklem: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Borç Ortalaması
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Alacak
-    {
-      type: "numeric",
-      numericFormat: {
         pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
@@ -184,28 +186,6 @@ const Orneklem: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Alacak Ortalaması
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Bakiye
-    {
-      type: "numeric",
-      numericFormat: {
         pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
@@ -213,52 +193,20 @@ const Orneklem: React.FC<Props> = ({
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Toplam İşlem Sayısı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Örneklem Sayısı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Borç Örnek Sayısı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Alacak Örnek Sayısı
+    }, // Toplam Fiş Sayısı
     {
       type: "dropdown",
-      source: ["Aya Göre", "Büyüklüğe Göre", "Satışa Göre", "Rastgele"],
+      source: ["Düşük", "Orta", "Yüksek"],
       className: "htLeft",
       allowInvalid: false,
-    }, // Listeleme Türü
+    }, // Risk
     {
-      type: "dropdown",
-      source: [80, 85, 90, 95],
+      type: "text",
+      columnSorting: true,
       className: "htLeft",
+      validator: textValidator,
       allowInvalid: false,
-    }, // Güvenilirlik Düzeyi
+    }, //Tespit
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -387,7 +335,7 @@ const Orneklem: React.FC<Props> = ({
           `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
         );
 
-        if (prop === 14 || prop === 15) {
+        if (prop === 10 || prop === 11) {
           const rowData =
             hotTableComponent.current?.hotInstance.getDataAtRow(row);
           if (!rowData) return;
@@ -399,19 +347,15 @@ const Orneklem: React.FC<Props> = ({
             yil: user.yil || 0,
             kebirKodu: rowData[1],
             hesapAdi: rowData[2],
-            borc: rowData[3],
-            borcIslemSayisi: rowData[4],
-            borcOrtalama: rowData[5],
-            alacak: rowData[6],
-            alacakIslemSayisi: rowData[7],
-            alacakOrtalama: rowData[8],
-            kalanBakiye: rowData[9],
-            toplamIslemSayisi: rowData[10],
-            orneklemSayisi: rowData[11],
-            borcOrneklemSayisi: rowData[12],
-            alacakOrneklemSayisi: rowData[13],
-            listelemeTuru: rowData[14],
-            guvenilirlikDuzeyi: rowData[15],
+            borcAlacakToplami: rowData[3],
+            mizanIcindekiPayi: rowData[4],
+            kabulEdilebilirYanlislik: rowData[5],
+            performansOnemliligi: rowData[6],
+            borcIslemSayisi: rowData[7],
+            alacakIslemSayisi: rowData[8],
+            toplamIslemSayisi: rowData[9],
+            risk: rowData[10],
+            tespit: rowData[11],
           };
           setOpenCartAlert(true);
           handleUpdate(obj);
@@ -422,7 +366,7 @@ const Orneklem: React.FC<Props> = ({
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateOrneklem(user.token || "", json);
+      const result = await updateOnemlilikVeOrneklem(user.token || "", json);
       if (result) {
         fetchData();
         setOpenCartAlert(false);
@@ -455,33 +399,9 @@ const Orneklem: React.FC<Props> = ({
     }
   };
 
-  const getMostFrequentValue = (data: any[], columnIndex: number) => {
-    const countMap: Record<string, number> = {};
-
-    data.forEach((row) => {
-      const value = row[columnIndex];
-      if (value != null) {
-        countMap[value] = (countMap[value] || 0) + 1;
-      }
-    });
-
-    // En çok tekrar eden değeri bul
-    let mostFrequentValue = "";
-    let maxCount = 0;
-
-    for (const key in countMap) {
-      if (countMap[key] > maxCount) {
-        maxCount = countMap[key];
-        mostFrequentValue = key;
-      }
-    }
-
-    return mostFrequentValue;
-  };
-
   const fetchData = async () => {
     try {
-      const fisVerileri = await getOrneklem(
+      const fisVerileri = await getOnemlilikVeOrneklem(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -494,29 +414,18 @@ const Orneklem: React.FC<Props> = ({
           veri.id,
           veri.kebirKodu,
           veri.hesapAdi,
-          veri.borc,
+          veri.borcAlacakToplami,
+          veri.mizanIcindekiPayi,
+          veri.kabulEdilebilirYanlislik,
+          veri.performansOnemliligi,
           veri.borcIslemSayisi,
-          veri.borcOrtalama,
-          veri.alacak,
           veri.alacakIslemSayisi,
-          veri.alacakOrtalama,
-          veri.kalanBakiye,
           veri.toplamIslemSayisi,
-          veri.orneklemSayisi,
-          veri.borcOrneklemSayisi,
-          veri.alacakOrneklemSayisi,
-          veri.listelemeTuru,
-          veri.guvenilirlikDuzeyi,
+          veri.risk,
+          veri.tespit,
         ];
         rowsAll.push(newRow);
       });
-
-      const mostListelemeTuru = getMostFrequentValue(rowsAll, 14);
-      const mostGuvenilirlikDuzeyi = getMostFrequentValue(rowsAll, 15);
-
-      setListelemeTuru(mostListelemeTuru);
-      setGuvenilirlikDuzeyi(parseInt(mostGuvenilirlikDuzeyi));
-      setHataPayi(100 - parseInt(mostGuvenilirlikDuzeyi));
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
@@ -579,7 +488,7 @@ const Orneklem: React.FC<Props> = ({
         const blob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, "Orneklem.xlsx");
+        saveAs(blob, "OnemlilikVeOrneklem.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
@@ -645,19 +554,7 @@ const Orneklem: React.FC<Props> = ({
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
         afterChange={handleAfterChange}
-        contextMenu={{
-          items: {
-            orneklem_fislerini_goster: {
-              name: "Örneklem Fişlerini Göster",
-              callback: async function (key, selection) {
-                const row = await handleGetRowData(selection[0].start.row);
-                router.push(
-                  `/DenetimKanitlari/Onemlilik/Orneklem/OrneklemFisleri/${row[1]}`
-                );
-              },
-            },
-          },
-        }}
+        contextMenu={["alignment", "copy"]}
       />
       <Grid container marginTop={2} marginBottom={1}>
         <Grid item xs={12} lg={10}></Grid>
@@ -685,4 +582,4 @@ const Orneklem: React.FC<Props> = ({
   );
 };
 
-export default Orneklem;
+export default OnemlilikVeOrneklem;

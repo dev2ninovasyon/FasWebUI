@@ -38,7 +38,7 @@ export const createOrneklem = async (
 ) => {
   try {
     const response = await fetch(
-      `${url}/DenetimKanitlari/OrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}&cevapDagilimi=50&listelemeTuru=${listelemeTuru}`,
+      `${url}/DenetimKanitlari/OrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}&listelemeTuru=${listelemeTuru}`,
       {
         method: "POST",
         headers: {
