@@ -3,11 +3,9 @@ import Drawer from "@mui/material/Drawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { useSelector, useDispatch } from "@/store/hooks";
-import {
-  hoverSidebar,
-  toggleMobileSidebar,
-} from "@/store/customizer/CustomizerSlice";
+import { toggleMobileSidebar } from "@/store/customizer/CustomizerSlice";
 import { AppState } from "@/store/store";
+import { useState } from "react";
 import CollapseLogo from "@/app/(Uygulama)/components/Layout/Shared/Logo/CollapsLogo";
 import Scrollbar from "@/app/(Uygulama)/components/CustomScroll/Scrollbar";
 import Logo from "@/app/(Uygulama)/components/Layout/Shared/Logo/Logo";
@@ -19,19 +17,22 @@ const Sidebar = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const dispatch = useDispatch();
   const theme = useTheme();
+
+  const [isSidebarHover, setIsSidebarHover] = useState(false);
+
   const toggleWidth =
-    customizer.isCollapse && !customizer.isSidebarHover
+    customizer.isCollapse && !isSidebarHover
       ? customizer.MiniSidebarWidth
       : customizer.SidebarWidth;
 
   const onHoverEnter = () => {
     if (customizer.isCollapse) {
-      dispatch(hoverSidebar(true));
+      setIsSidebarHover(true);
     }
   };
 
   const onHoverLeave = () => {
-    dispatch(hoverSidebar(false));
+    setIsSidebarHover(false);
   };
 
   if (lgUp) {
@@ -87,7 +88,7 @@ const Sidebar = () => {
               {/* Sidebar Items */}
               {/* ------------------------------------------- */}
 
-              <SidebarItems />
+              <SidebarItems isSidebarHover={isSidebarHover} />
             </Scrollbar>
           </Box>
         </Drawer>
@@ -126,7 +127,7 @@ const Sidebar = () => {
       {/* ------------------------------------------- */}
       {/* Sidebar For Mobile */}
       {/* ------------------------------------------- */}
-      <SidebarItems />
+      <SidebarItems isSidebarHover={isSidebarHover} />
     </Drawer>
   );
 };
