@@ -1,3 +1,4 @@
+import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -5,20 +6,21 @@ import { useTheme } from "@mui/material/styles";
 import { useSelector, useDispatch } from "@/store/hooks";
 import { toggleMobileSidebar } from "@/store/customizer/CustomizerSlice";
 import { AppState } from "@/store/store";
-import { useState } from "react";
 import CollapseLogo from "@/app/(Uygulama)/components/Layout/Shared/Logo/CollapsLogo";
 import Scrollbar from "@/app/(Uygulama)/components/CustomScroll/Scrollbar";
 import Logo from "@/app/(Uygulama)/components/Layout/Shared/Logo/Logo";
 import SidebarItems from "./SidebarItems";
 import MobileLogo from "@/app/(Uygulama)/components/Layout/Shared/Logo/MobileLogo";
 
-const Sidebar = () => {
+interface Props {
+  isSidebarHover: boolean;
+  setIsSidebarHover: (bool: boolean) => void;
+}
+const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const customizer = useSelector((state: AppState) => state.customizer);
   const dispatch = useDispatch();
   const theme = useTheme();
-
-  const [isSidebarHover, setIsSidebarHover] = useState(false);
 
   const toggleWidth =
     customizer.isCollapse && !isSidebarHover

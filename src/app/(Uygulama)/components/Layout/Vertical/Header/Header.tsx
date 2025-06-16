@@ -20,8 +20,12 @@ import SirketPopup from "./SirketPopup";
 import SearchBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/SearchBoxAutoComplete";
 import MobileSirketPopup from "./MobileSirketPopup";
 import Archive from "./Archive";
+import React from "react";
 
-const Header = () => {
+interface Props {
+  isSidebarHover: boolean;
+}
+const Header: React.FC<Props> = ({ isSidebarHover }) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
 
@@ -71,7 +75,7 @@ const Header = () => {
         <Stack spacing={1} direction="row" alignItems="center">
           <Language />
           <Archive />
-          <Notifications />
+          <Notifications isSidebarHover={isSidebarHover} />
           <Profile />
         </Stack>
       </ToolbarStyled>

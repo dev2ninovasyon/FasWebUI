@@ -28,7 +28,10 @@ interface Veri {
   okundumu: boolean;
 }
 
-const Notifications = () => {
+interface Props {
+  isSidebarHover: boolean;
+}
+const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   const [anchorEl, setanchorEl] = useState(null);
 
   const handleClick = (event: any) => {
@@ -89,6 +92,10 @@ const Notifications = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [isSidebarHover]);
 
   useEffect(() => {
     if (anchorEl) {

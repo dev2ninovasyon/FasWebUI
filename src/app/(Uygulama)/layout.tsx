@@ -35,12 +35,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
   const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
+  const [isSidebarHover, setIsSidebarHover] = useState(false);
   const [control, setControl] = useState(false);
   useEffect(() => {
     // Sadece client-side'da çalışmasını sağla
@@ -60,7 +59,10 @@ export default function RootLayout({
           {/* ------------------------------------------- */}
           {/* Sidebar */}
           {/* ------------------------------------------- */}
-          <Sidebar />
+          <Sidebar
+            isSidebarHover={isSidebarHover}
+            setIsSidebarHover={setIsSidebarHover}
+          />
           {/* ------------------------------------------- */}
           {/* Main Wrapper */}
           {/* ------------------------------------------- */}
@@ -77,7 +79,7 @@ export default function RootLayout({
             {/* ------------------------------------------- */}
             {/* Header */}
             {/* ------------------------------------------- */}
-            <Header />
+            <Header isSidebarHover={isSidebarHover} />
             {/* PageContent */}
             <Container
               sx={{
