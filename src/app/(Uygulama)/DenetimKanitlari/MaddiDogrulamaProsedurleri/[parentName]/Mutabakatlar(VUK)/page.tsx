@@ -1,11 +1,17 @@
 "use client";
-import UygulananDentimProsedurleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/UygulananDenetimProsedurleri";
+import {
+  getMaddiDogrulama,
+  getUygulananDenetimProsedurleri,
+} from "@/api/MaddiDogrulama/MaddiDogrulama";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Button, Grid, Typography } from "@mui/material";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Mutabakat from "./Mutabakat";
 const YorumEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
   {
@@ -13,24 +19,16 @@ const YorumEditor = dynamic(
   }
 );
 const Page = () => {
-  const formatWithSpaces = (str: string) => {
-    return str.replace(/([A-Z])/g, " $1").trim();
-  };
+  const user = useSelector((state: AppState) => state.userReducer);
+
   const pathname = usePathname();
   const segments = pathname.split("/");
   const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
   const parentName = segments[parentNameIndex];
   const childName = segments[parentNameIndex + 1];
 
-  const parentNameWithSpaces = formatWithSpaces(segments[parentNameIndex]);
-  const childNameWithSpaces = formatWithSpaces(segments[parentNameIndex + 1]);
-
-  // Bileşen için gerekli state'ler
-  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
-
-  const [dip, setDip] = useState(parentNameWithSpaces);
-  const [tamamlanan, setTamamlanan] = useState(0);
-  const [toplam, setToplam] = useState(0);
+  const [dip, setDip] = useState("");
+  const [dipnotNo, setDipnotNo] = useState<string>("");
 
   const BCrumb = [
     {
@@ -51,90 +49,102 @@ const Page = () => {
     },
   ];
 
+  function normalizeString(str: string): string {
+    const turkishChars: { [key: string]: string } = {
+      ç: "c",
+      ğ: "g",
+      ı: "i",
+      İ: "i",
+      ö: "o",
+      ş: "s",
+      ü: "u",
+      Ç: "C",
+      Ğ: "G",
+      Ö: "O",
+      Ş: "S",
+      Ü: "U",
+    };
+
+    return str.replace(
+      /[çğıöşüÇĞÖŞÜıİ]/g,
+      (match) => turkishChars[match] || match
+    );
+  }
+
+  const fetchData = async () => {
+    try {
+      const maddiDogrulama = await getMaddiDogrulama(
+        user.token || "",
+        user.denetimTuru || ""
+      );
+
+      maddiDogrulama.forEach((veri: any) => {
+        if (
+          normalizeString(veri.name.replaceAll(" ", "").toLowerCase()) ==
+          normalizeString(parentName.replaceAll(" ", "").toLowerCase())
+        ) {
+          setDip(veri.name);
+        }
+      });
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
+  const fetchData2 = async () => {
+    try {
+      const uygulananDentimProsedurleri = await getUygulananDenetimProsedurleri(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        dip || "",
+        user.tfrsmi || false
+      );
+
+      uygulananDentimProsedurleri.forEach((veri: any) => {
+        if (
+          normalizeString(veri.dipnotAdi.replaceAll(" ", "").toLowerCase()) ==
+          normalizeString(parentName.replaceAll(" ", "").toLowerCase())
+        ) {
+          setDipnotNo(veri.dipnotNo);
+        }
+      });
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (parentName && parentName.length > 0) {
+      fetchData();
+    }
+  }, [parentName]);
+
+  useEffect(() => {
+    if (dip) {
+      fetchData2();
+    }
+  }, [dip]);
+
   return (
     <PageContainer
       title={`${dip} | Mutabakatlar (VUK)`}
       description="this is Mutabakatlar (VUK)"
     >
       <Breadcrumb
-        title={`${dip} `}
-        subtitle="Mutabakatlar (VUK)"
+        title="Mutabakatlar (VUK)"
+        subtitle={`${dip}`}
         items={BCrumb}
-      >
-        <>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid
-              item
-              xs={12}
-              md={3.8}
-              lg={3.8}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                  textAlign: "center",
-                }}
-              >
-                {tamamlanan}/{toplam} Tamamlandı
-              </Typography>
-            </Grid>
-
-            <Grid
-              item
-              xs={5.8}
-              md={3.8}
-              lg={3.8}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            ></Grid>
-            <Grid
-              item
-              xs={5.8}
-              md={3.8}
-              lg={3.8}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                onClick={() => setIsClickedVarsayilanaDon(true)}
-                sx={{ width: "100%" }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                >
-                  Varsayılana Dön
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
-        </>
-      </Breadcrumb>
-      <YorumEditor></YorumEditor>
+      ></Breadcrumb>
+      <Grid container>
+        <Grid item xs={12} sm={12} lg={12} mb={3}>
+          <YorumEditor></YorumEditor>
+        </Grid>
+        <Grid item xs={12} sm={12} lg={12}>
+          {dipnotNo != "" ? <Mutabakat dipnot={dipnotNo} /> : <></>}
+        </Grid>
+      </Grid>
     </PageContainer>
   );
 };
