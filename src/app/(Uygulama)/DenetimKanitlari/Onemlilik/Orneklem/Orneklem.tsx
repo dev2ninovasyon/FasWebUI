@@ -481,7 +481,7 @@ const Orneklem: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const fisVerileri = await getOrneklem(
+      const orneklemVerileri = await getOrneklem(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -489,7 +489,7 @@ const Orneklem: React.FC<Props> = ({
       );
 
       const rowsAll: any = [];
-      fisVerileri.forEach((veri: any) => {
+      orneklemVerileri.forEach((veri: any) => {
         const newRow: any = [
           veri.id,
           veri.kebirKodu,

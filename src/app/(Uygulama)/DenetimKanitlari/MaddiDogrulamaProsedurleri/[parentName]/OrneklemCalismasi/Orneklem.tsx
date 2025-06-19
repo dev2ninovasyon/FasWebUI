@@ -8,14 +8,9 @@ import { AppState } from "@/store/store";
 import { useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import {
-  getOnemlilikHesaplamaBazi,
-  updateOnemlilikHesaplamaBazi,
-} from "@/api/DenetimKanitlari/DenetimKanitlari";
+import { getOrneklemByDipnot } from "@/api/DenetimKanitlari/DenetimKanitlari";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
-import { enqueueSnackbar } from "notistack";
-import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
 // register Handsontable's modules
 registerAllModules();
@@ -25,23 +20,27 @@ numbro.setLanguage("tr-TR");
 
 interface Veri {
   id: number;
-  hesaplamaBazi: string;
-  oran: number;
-  maliTablolarIcinGenelOnemlilikSeviyesi: number;
-  performansOnemliligi: number;
-  kabulEdilebilirYanlislikYuzdesi: string;
-  kabulEdilebilirYanlislikTutari: number;
+  kebirKodu: number;
+  hesapAdi: string;
+  borc: number;
+  borcIslemSayisi: number;
+  borcOrtalama: number;
+  alacak: number;
+  alacakIslemSayisi: number;
+  alacakOrtalama: number;
+  kalanBakiye: number;
+  toplamIslemSayisi: number;
+  orneklemSayisi: number;
+  borcOrneklemSayisi: number;
+  alacakOrneklemSayisi: number;
+  listelemeTuru: string;
+  guvenilirlikDuzeyi: string;
 }
 
 interface Props {
-  hesaplaTiklandimi: boolean;
-  setHesaplaTiklandimi: (bool: boolean) => void;
+  dipnot: string;
 }
-
-const OnemlilikHesaplamaBazi: React.FC<Props> = ({
-  hesaplaTiklandimi,
-  setHesaplaTiklandimi,
-}) => {
+const Orneklem: React.FC<Props> = ({ dipnot }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -52,8 +51,6 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-
-  const [openCartAlert, setOpenCartAlert] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -74,16 +71,32 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
 
   const colHeaders = [
     "Id",
-    "Hesaplama Bazı",
-    "Oran",
-    "Mali Tablolar İçin Genel Önemlilik Seviyesi",
-    "Performans Önemliliği",
-    "Kabul Edilebilir Yanlışlık Yüzdesi",
-    "Kabul Edilebilir Yanlışlık Tutarı",
+    "Kebir Kodu",
+    "Hesap Adı",
+    "Borç",
+    "B. Fiş Sayısı",
+    "B. Ortalaması",
+    "Alacak",
+    "A. Fiş Sayısı",
+    "A. Ortalaması",
+    "Bakiye",
+    "Toplam Fiş Sayısı",
+    "Örneklem Sayısı",
+    "Borç Örnek Sayısı",
+    "Alacak Örnek Sayısı",
+    "Listeleme Türü",
+    "Güvenilirlik Düzeyi",
   ];
 
   const columns = [
     { type: "numeric", columnSorting: true, readOnly: true, editor: false }, // Id
+    {
+      type: "numeric",
+      columnSorting: true,
+      className: "htLeft",
+      readOnly: true,
+      editor: false,
+    }, // Kebir Kodu
     {
       type: "text",
       columnSorting: true,
@@ -91,7 +104,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Hesaplama Bazı
+    }, // Hesap Adı
     {
       type: "numeric",
       numericFormat: {
@@ -102,7 +115,18 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Oran
+    }, // Borç
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Borç Fiş Sayısı
     {
       type: "numeric",
       numericFormat: {
@@ -113,7 +137,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Mali Tablolar İçin Genel Önemlilik Seviyesi
+    }, // Borç Ortalaması
     {
       type: "numeric",
       numericFormat: {
@@ -124,25 +148,100 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Performans Önemliliği
+    }, // Alacak
     {
-      type: "dropdown",
-      source: [0.1, 0.5, 1, 5],
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
       className: "htRight",
-      strict: true,
+      readOnly: true,
+      editor: false,
+    }, // Alacak Fiş Sayısı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Alacak Ortalaması
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0.00",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Bakiye
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Toplam İşlem Sayısı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Örneklem Sayısı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Borç Örnek Sayısı
+    {
+      type: "numeric",
+      numericFormat: {
+        pattern: "0,0",
+        columnSorting: true,
+        culture: "tr-TR",
+      },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // Alacak Örnek Sayısı
+    {
+      type: "text",
+      columnSorting: true,
+      className: "htLeft",
       allowInvalid: false,
-    }, // Kabul Edilebilir Yanlışlık Yüzdesi
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Kabul Edilebilir Yanlışlık Tutarı
+    }, // Listeleme Türü
+    {
+      type: "text",
+      columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Güvenilirlik Düzeyi
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -261,101 +360,41 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
     }
   };
 
-  const handleAfterChange = (changes: any, source: any) => {
-    if (source === "loadData") {
-      return; // Skip this hook on loadData
-    }
-    if (changes) {
-      for (const [row, prop, oldValue, newValue] of changes) {
-        console.log(
-          `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
-        );
-
-        if (prop === 5) {
-          const rowData =
-            hotTableComponent.current?.hotInstance.getDataAtRow(row);
-          if (!rowData) return;
-
-          const obj = {
-            id: rowData[0],
-            denetciId: user.denetciId || 0,
-            denetlenenId: user.denetlenenId || 0,
-            yil: user.yil || 0,
-            hesaplamaBazi: rowData[1],
-            oran: rowData[2],
-            maliTablolarIcinGenelOnemlilikSeviyesi: rowData[3],
-            performansOnemliligi: rowData[4],
-            kabulEdilebilirYanlislikYuzdesi: rowData[5],
-            kabulEdilebilirYanlislikTutari: rowData[6],
-          };
-          setOpenCartAlert(true);
-          handleUpdate(obj);
-        }
-      }
-    }
-  };
-
-  const handleUpdate = async (json: any) => {
-    try {
-      const result = await updateOnemlilikHesaplamaBazi(user.token || "", json);
-      if (result) {
-        fetchData();
-        setOpenCartAlert(false);
-        enqueueSnackbar("Önemlilik Hesaplama Bazı Güncellendi", {
-          variant: "success",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.success.light
-                : theme.palette.success.main,
-          },
-        });
-      } else {
-        setOpenCartAlert(false);
-        enqueueSnackbar("Önemlilik Hesaplama Bazı Güncellenemedi", {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.light
-                : theme.palette.error.main,
-            maxWidth: "720px",
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
   const fetchData = async () => {
     try {
-      const onemlilikHesaplamaBaziVerileri = await getOnemlilikHesaplamaBazi(
+      const orneklemVerileri = await getOrneklemByDipnot(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        dipnot
       );
-      if (onemlilikHesaplamaBaziVerileri) {
-        setHesaplaTiklandimi(false);
-        const rowsAll: any = [];
 
+      const rowsAll: any = [];
+      orneklemVerileri.forEach((veri: any) => {
         const newRow: any = [
-          onemlilikHesaplamaBaziVerileri.id,
-          onemlilikHesaplamaBaziVerileri.hesaplamaBazi,
-          onemlilikHesaplamaBaziVerileri.oran,
-          onemlilikHesaplamaBaziVerileri.maliTablolarIcinGenelOnemlilikSeviyesi,
-          onemlilikHesaplamaBaziVerileri.performansOnemliligi,
-          onemlilikHesaplamaBaziVerileri.kabulEdilebilirYanlislikYuzdesi,
-          onemlilikHesaplamaBaziVerileri.kabulEdilebilirYanlislikTutari,
+          veri.id,
+          veri.kebirKodu,
+          veri.hesapAdi,
+          veri.borc,
+          veri.borcIslemSayisi,
+          veri.borcOrtalama,
+          veri.alacak,
+          veri.alacakIslemSayisi,
+          veri.alacakOrtalama,
+          veri.kalanBakiye,
+          veri.toplamIslemSayisi,
+          veri.orneklemSayisi,
+          veri.borcOrneklemSayisi,
+          veri.alacakOrneklemSayisi,
+          veri.listelemeTuru,
+          veri.guvenilirlikDuzeyi,
         ];
         rowsAll.push(newRow);
+      });
 
-        setRowCount(rowsAll.length);
-        setFetchedData(rowsAll);
-      }
+      setRowCount(rowsAll.length);
+      setFetchedData(rowsAll);
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -366,10 +405,8 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (hesaplaTiklandimi) {
-      fetchData();
-    }
-  }, [hesaplaTiklandimi]);
+    fetchData();
+  }, [dipnot]);
 
   useEffect(() => {
     if (hotTableComponent.current) {
@@ -390,54 +427,47 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
 
   return (
     <>
-      {fetchedData.length > 0 && (
-        <HotTable
-          style={{
-            height: "100%",
-            width: "100%",
-            maxHeight: 168,
-            maxWidth: "100%",
-          }}
-          language={dictionary.languageCode}
-          ref={hotTableComponent}
-          data={fetchedData}
-          height={168}
-          colHeaders={colHeaders}
-          columns={columns}
-          colWidths={[0, 0, 0, 100, 100, 50, 100]}
-          stretchH="all"
-          manualColumnResize={true}
-          rowHeaders={true}
-          rowHeights={35}
-          autoWrapRow={true}
-          minRows={rowCount}
-          minCols={8}
-          hiddenColumns={{
-            columns: [0, 1, 2],
-          }}
-          filters={true}
-          columnSorting={true}
-          dropdownMenu={[
-            "filter_by_condition",
-            "filter_by_value",
-            "filter_action_bar",
-          ]}
-          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-          afterGetColHeader={afterGetColHeader}
-          afterGetRowHeader={afterGetRowHeader}
-          afterRenderer={afterRenderer}
-          afterChange={handleAfterChange}
-          contextMenu={["alignment", "copy"]}
-        />
-      )}
-      {openCartAlert && (
-        <InfoAlertCart
-          openCartAlert={openCartAlert}
-          setOpenCartAlert={setOpenCartAlert}
-        ></InfoAlertCart>
-      )}
+      <HotTable
+        style={{
+          height: "100%",
+          width: "100%",
+          maxHeight: 432,
+          maxWidth: "100%",
+        }}
+        language={dictionary.languageCode}
+        ref={hotTableComponent}
+        data={fetchedData}
+        height={432}
+        colHeaders={colHeaders}
+        columns={columns}
+        colWidths={[
+          0, 70, 100, 80, 60, 80, 80, 60, 80, 80, 60, 60, 60, 60, 90, 60,
+        ]}
+        stretchH="all"
+        manualColumnResize={true}
+        rowHeaders={true}
+        rowHeights={35}
+        autoWrapRow={true}
+        minRows={rowCount}
+        minCols={8}
+        hiddenColumns={{
+          columns: [0],
+        }}
+        filters={true}
+        columnSorting={true}
+        dropdownMenu={[
+          "filter_by_condition",
+          "filter_by_value",
+          "filter_action_bar",
+        ]}
+        licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+        afterGetColHeader={afterGetColHeader}
+        afterGetRowHeader={afterGetRowHeader}
+        afterRenderer={afterRenderer}
+        contextMenu={["alignment", "copy"]}
+      />
     </>
   );
 };
 
-export default OnemlilikHesaplamaBazi;
+export default Orneklem;

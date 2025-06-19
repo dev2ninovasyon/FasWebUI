@@ -307,7 +307,7 @@ const OnemlilikSeviyesi: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const onemlilik = await getOnemlilikSeviyesi(
+      const onemlilikSeviyesiVerileri = await getOnemlilikSeviyesi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -315,7 +315,7 @@ const OnemlilikSeviyesi: React.FC<Props> = ({
       );
 
       const rowsAll: any = [];
-      onemlilik.forEach((veri: any) => {
+      onemlilikSeviyesiVerileri.forEach((veri: any) => {
         const newRow: any = [
           veri.id,
           veri.hesaplamaBazi,
