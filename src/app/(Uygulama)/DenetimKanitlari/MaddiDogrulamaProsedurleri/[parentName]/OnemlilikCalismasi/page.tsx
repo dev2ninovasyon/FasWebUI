@@ -3,15 +3,21 @@ import {
   getMaddiDogrulama,
   getUygulananDenetimProsedurleri,
 } from "@/api/MaddiDogrulama/MaddiDogrulama";
-import UygulananDentimProsedurleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/UygulananDenetimProsedurleri";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import Onemlilik from "./Onemlilik";
+const YorumEditor = dynamic(
+  () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
+  {
+    ssr: false,
+  }
+);
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -21,12 +27,8 @@ const Page = () => {
   const parentName = segments[parentNameIndex];
   const childName = segments[parentNameIndex + 1];
 
-  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
-
   const [dip, setDip] = useState("");
   const [dipnotNo, setDipnotNo] = useState<string>("");
-  const [tamamlanan, setTamamlanan] = useState(0);
-  const [toplam, setToplam] = useState(0);
 
   const BCrumb = [
     {
@@ -43,7 +45,7 @@ const Page = () => {
     },
     {
       to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: "Uygulanan Denetim Prosedürleri",
+      title: "Önemlilik Çalışması",
     },
   ];
 
@@ -127,87 +129,22 @@ const Page = () => {
 
   return (
     <PageContainer
-      title={`${dip} | Uygulanan Denetim Prosedürleri`}
-      description="this is Uygulanan Denetim Prosedürleri"
+      title={`${dip} | Önemlilik Çalışması`}
+      description="this is Önemlilik Çalışması"
     >
       <Breadcrumb
-        title={"Uygulanan Denetim Prosedürleri"}
+        title="Önemlilik Çalışması"
         subtitle={`${dip}`}
         items={BCrumb}
-      >
-        <>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid
-              item
-              xs={12}
-              md={4}
-              lg={4}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                  textAlign: "center",
-                }}
-              >
-                {tamamlanan}/{toplam} Tamamlandı
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={6}
-              lg={6}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                onClick={() => setIsClickedVarsayilanaDon(true)}
-                sx={{ width: "100%" }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                >
-                  Varsayılana Dön
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
-        </>
-      </Breadcrumb>
-      <UygulananDentimProsedurleri
-        controller="UygulananDentimProsedurleri"
-        isClickedVarsayilanaDon={isClickedVarsayilanaDon}
-        alanAdi1="Kategori"
-        alanAdi2="Konu"
-        alanAdi3="Açıklama"
-        setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
-        setTamamlanan={setTamamlanan}
-        setToplam={setToplam}
-        dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz
-        setDip={setDip}
-      />
+      ></Breadcrumb>
+      <Grid container>
+        <Grid item xs={12} sm={12} lg={12} mb={3}>
+          <YorumEditor></YorumEditor>
+        </Grid>
+        <Grid item xs={12} sm={12} lg={12}>
+          {dipnotNo != "" ? <Onemlilik dipnot={dipnotNo} /> : <></>}
+        </Grid>
+      </Grid>
     </PageContainer>
   );
 };

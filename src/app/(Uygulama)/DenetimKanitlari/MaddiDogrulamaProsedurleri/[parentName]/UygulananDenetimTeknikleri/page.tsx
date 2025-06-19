@@ -114,8 +114,10 @@ const Page = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (parentName && parentName.length > 0) {
+      fetchData();
+    }
+  }, [parentName]);
 
   useEffect(() => {
     if (dip) {
@@ -146,8 +148,8 @@ const Page = () => {
             <Grid
               item
               xs={12}
-              md={4.8}
-              lg={4.8}
+              md={4}
+              lg={4}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -167,9 +169,9 @@ const Page = () => {
             </Grid>
             <Grid
               item
-              xs={5.8}
-              md={4.8}
-              lg={4.8}
+              xs={12}
+              md={6}
+              lg={6}
               sx={{
                 display: "flex",
                 alignItems: "center",

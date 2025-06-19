@@ -336,7 +336,7 @@ const Onemlilik: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const onemlilik = await getOnemlilik(
+      const onemlilikVerileri = await getOnemlilik(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -344,7 +344,7 @@ const Onemlilik: React.FC<Props> = ({
       );
 
       const rowsAll: any = [];
-      onemlilik.forEach((veri: any) => {
+      onemlilikVerileri.forEach((veri: any) => {
         const newRow: any = [
           veri.id,
           veri.kebirKodu,

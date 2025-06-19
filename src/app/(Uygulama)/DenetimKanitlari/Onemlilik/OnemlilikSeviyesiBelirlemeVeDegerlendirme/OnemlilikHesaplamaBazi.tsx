@@ -243,23 +243,23 @@ const OnemlilikHesaplamaBazi = () => {
 
   const fetchData = async () => {
     try {
-      const onemlilikHesaplamaBazi = await getOnemlilikHesaplamaBazi(
+      const onemlilikHesaplamaBaziVerileri = await getOnemlilikHesaplamaBazi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
-      if (onemlilikHesaplamaBazi) {
+      if (onemlilikHesaplamaBaziVerileri) {
         const rowsAll: any = [];
 
         const newRow: any = [
-          onemlilikHesaplamaBazi.id,
-          onemlilikHesaplamaBazi.hesaplamaBazi,
-          onemlilikHesaplamaBazi.oran,
-          onemlilikHesaplamaBazi.maliTablolarIcinGenelOnemlilikSeviyesi,
-          onemlilikHesaplamaBazi.performansOnemliligi,
-          onemlilikHesaplamaBazi.kabulEdilebilirYanlislikYuzdesi,
-          onemlilikHesaplamaBazi.kabulEdilebilirYanlislikTutari,
+          onemlilikHesaplamaBaziVerileri.id,
+          onemlilikHesaplamaBaziVerileri.hesaplamaBazi,
+          onemlilikHesaplamaBaziVerileri.oran,
+          onemlilikHesaplamaBaziVerileri.maliTablolarIcinGenelOnemlilikSeviyesi,
+          onemlilikHesaplamaBaziVerileri.performansOnemliligi,
+          onemlilikHesaplamaBaziVerileri.kabulEdilebilirYanlislikYuzdesi,
+          onemlilikHesaplamaBaziVerileri.kabulEdilebilirYanlislikTutari,
         ];
         rowsAll.push(newRow);
 

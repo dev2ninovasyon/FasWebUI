@@ -86,6 +86,34 @@ export const getOrneklem = async (
   }
 };
 
+export const getOrneklemByDipnot = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  dipnot: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/OrneklemByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Örneklem getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const updateOrneklem = async (token: string, json: any) => {
   try {
     const response = await fetch(`${url}/DenetimKanitlari/Orneklem`, {
@@ -247,6 +275,34 @@ export const getOnemlilik = async (
   }
 };
 
+export const getOnemlilikByDipnot = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  dipnot: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/OnemlilikByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Önemlilik getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const updateOnemlilik = async (
   token: string,
   denetciId: number,
@@ -376,6 +432,34 @@ export const getMutabakat = async (
   try {
     const response = await fetch(
       `${url}/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&grupKodu=${grupKodu}&hesapAdi=${hesapAdi}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Mutabakat getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getMutabakatByDipnot = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  dipnot: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/MutabakatByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
