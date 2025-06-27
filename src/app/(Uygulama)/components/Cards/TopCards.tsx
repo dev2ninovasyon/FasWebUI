@@ -26,7 +26,14 @@ function randomIcon() {
 }
 
 function randomColor() {
-  var colors = ["primary", "warning", "secondary", "error", "success", "info"];
+  var colors = [
+    /*"primary",*/
+    /*"warning",*/
+    /*"secondary",*/
+    "error",
+    "success",
+    "info",
+  ];
   var randomIndex = Math.floor(Math.random() * colors.length);
   return colors[randomIndex];
 }

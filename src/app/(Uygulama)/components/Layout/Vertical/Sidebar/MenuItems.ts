@@ -173,12 +173,15 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Denetim Kadrosu Atama",
+          customIcon:
+            "public/images/svgs/sozlesme/bagimsiz-denetim-sozlesmesi.svg",
           icon: IconPoint,
           href: "/Sozlesme/DenetimKadrosuAtama",
         },
         {
           id: uniqueId(),
           title: "Bağımsız Denetim Sözleşmesi",
+          customIcon: "public/images/svgs/sozlesme/denetim-kadrosu-atama.svg",
           icon: IconPoint,
           href: "/Sozlesme/BagimsizDenetimSozlesmesi",
         },
@@ -432,24 +435,28 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Fiş Girişi",
+          customIcon: "public/images/svgs/donusum/fis-girisi.svg",
           icon: IconPoint,
           href: "/Donusum/FisGirisi",
         },
         {
           id: uniqueId(),
           title: "Fiş Listesi",
+          customIcon: "public/images/svgs/donusum/fis-listesi.svg",
           icon: IconPoint,
           href: "/Donusum/FisListesi",
         },
         {
           id: uniqueId(),
           title: "Hazır Fişler",
+          customIcon: "public/images/svgs/donusum/hazir-fisler.svg",
           icon: IconPoint,
           href: "/Donusum/HazirFisler",
         },
         {
           id: uniqueId(),
           title: "Dönüşüm İşlemi",
+          customIcon: "public/images/svgs/donusum/donusum-islemi.svg",
           icon: IconPoint,
           href: "/Donusum/DonusumIslemi",
         },
@@ -459,6 +466,7 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
             denetimTuru == "Bobi"
               ? "Bobi Frs Belirleme Belgesi"
               : "Tms Tfrs Belirleme Belgesi",
+          customIcon: "public/images/svgs/donusum/belirleme-belgesi.svg",
           icon: IconPoint,
           href:
             denetimTuru == "Bobi"
@@ -621,12 +629,15 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Mizan Kontrol",
+          customIcon: "public/images/svgs/denetim-kanitlari/mizan-kontrol.svg",
           icon: IconPoint,
           href: "/DenetimKanitlari/MizanKontrol",
           children: [
             {
               id: uniqueId(),
               title: "Dönüşüm Mizan Kontrol",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/mizan-kontrol.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/MizanKontrol/DonusumMizanKontrol",
             },
@@ -635,30 +646,40 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Finansal Tablolar",
+          customIcon:
+            "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
           icon: IconPoint,
           href: "/DenetimKanitlari/FinansalTablolar",
           children: [
             {
               id: uniqueId(),
               title: "Finansal Durum Tablosu",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/FinansalTablolar/FinansalDurumTablosu",
             },
             {
               id: uniqueId(),
               title: "Kar / Zarar Tablosu",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/FinansalTablolar/KarZararTablosu",
             },
             {
               id: uniqueId(),
               title: "Nakit Akış Tablosu",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/FinansalTablolar/NakitAkisTablosu",
             },
             {
               id: uniqueId(),
               title: "Özkaynak Değişim Tablosu",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu",
             },
@@ -667,36 +688,48 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "İşletmenin Sürekliliği ve Analitik İnceleme",
+          customIcon:
+            "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
           icon: IconPoint,
           href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme",
           children: [
             {
               id: uniqueId(),
               title: "Önemli Süreçlerin İzlenmesi ve Risk Belirleme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OnemliSureclerinIzlenmesiVeRiskBelirleme",
             },
             {
               id: uniqueId(),
               title: "Karşılaştırmalı Analiz",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KarsilastirmaliAnaliz",
             },
             {
               id: uniqueId(),
               title: "Dikey Analiz",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/DikeyAnaliz",
             },
             {
               id: uniqueId(),
               title: "Kullanılan Analitik Tekniklere İlişkin Belgeler",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KullanilanAnalitikTekniklereIliskinBelgeler",
             },
             {
               id: uniqueId(),
               title: "İşletmenin Sürekliliğine İlişkin Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/IsletmeninSurekliligineIliskinDegerlendirme",
             },
@@ -705,30 +738,35 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Önemlilik",
+          customIcon: "public/images/svgs/denetim-kanitlari/onemlilik.svg",
           icon: IconPoint,
           href: "/DenetimKanitlari/Onemlilik",
           children: [
             {
               id: uniqueId(),
               title: "Fiş İşlem Sayıları",
+              customIcon: "public/images/svgs/denetim-kanitlari/onemlilik.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/Onemlilik/FisIslemSayilari",
             },
             {
               id: uniqueId(),
               title: "Örneklem",
+              customIcon: "public/images/svgs/denetim-kanitlari/onemlilik.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/Onemlilik/Orneklem",
             },
             {
               id: uniqueId(),
               title: "Önemlilik Seviyesi Belirleme Kılavuzu",
+              customIcon: "public/images/svgs/denetim-kanitlari/onemlilik.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu",
             },
             {
               id: uniqueId(),
               title: "Önemlilik Seviyesi Belirleme Ve Değerlendirme",
+              customIcon: "public/images/svgs/denetim-kanitlari/onemlilik.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme",
             },
@@ -737,18 +775,21 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Mutabakat",
+          customIcon: "public/images/svgs/denetim-kanitlari/mutabakat.svg",
           icon: IconPoint,
           href: "/DenetimKanitlari/Mutabakat",
           children: [
             {
               id: uniqueId(),
               title: "Mutabakat Seçimi Ve Kontrol",
+              customIcon: "public/images/svgs/denetim-kanitlari/mutabakat.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol",
             },
             {
               id: uniqueId(),
               title: "Doğrulama Mektuplarına Alınan Yanıtlar",
+              customIcon: "public/images/svgs/denetim-kanitlari/mutabakat.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/Mutabakat/DogrulamaMektuplarinaAlinanYanitlar",
             },
@@ -757,24 +798,31 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Diğer Kanıtlar",
+          customIcon: "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
           icon: IconPoint,
           href: "/DenetimKanitlari/DigerKanitlar",
           children: [
             {
               id: uniqueId(),
               title: "Denetim Satratejisi Belirleme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/DenetimStratejisiBelirleme",
             },
             {
               id: uniqueId(),
               title: "Uzman Yeterliliği Değerlendirme Belgesi",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/UzmanYeterliligiDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Denetim Kontrol Testleri",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/DenetimKontrolTestleri",
             },
@@ -782,108 +830,143 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
               id: uniqueId(),
               title:
                 "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Müşteri İşletme Yönetimi İle Yapılan Görüşme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/MusteriIsletmeYonetimiIleYapilanGorusme",
             },
             {
               id: uniqueId(),
               title: "Müşteri İşletme Personeli İle Yapılan Görüşme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/MusteriIsletmePersoneliIleYapilanGorusme",
             },
             {
               id: uniqueId(),
               title: "Uygulanan Muhasebe Politikalarının Tespiti",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/UygulananMuhasebePolitikalarininTespiti",
             },
             {
               id: uniqueId(),
               title: "Kullanılan Tahminlere İlişkin Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/KullanilanTahminlereIliskinDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Satış Tahsilat Kontrol",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/SatisTahsilatKontrol",
             },
             {
               id: uniqueId(),
               title: "Satın Alma Ödeme Kontrol",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/SatinAlmaOdemeKontrol",
             },
             {
               id: uniqueId(),
               title: "Transfer Fiyatlaması ve Örtülü Kazanç Kontrol",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/TransferFiyatlamasiOrtuluKazanc",
             },
             {
               id: uniqueId(),
               title: "İhmal Edilen Düzeltme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/IhmalEdilenDuzeltme",
             },
             {
               id: uniqueId(),
               title: "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/GercegeUygunDegerHesaplamalariDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Habersiz İşletme Ziyareti",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/HabersizIsletmeZiyareti",
             },
             {
               id: uniqueId(),
               title: "Risklere Karşı Uygulanan Denetim Prosedürleri",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/RisklereKarsiUygulananDenetimProsedurleri",
             },
             {
               id: uniqueId(),
               title: "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/MuhasebeHatalariVeHileKanitlariDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Denetim Kanıtları Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/DenetimKanitlariDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Tespit Edlien Hususların Yönetim Bildirimi",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/TespitEdilenHususlarinYonetimeBildirimi",
             },
             {
               id: uniqueId(),
               title: "Yönetim Kurulu Faaliyet Raporu Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/YonetimKuruluFaaliyetRaporuDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Yevmiye Kayıtları Kontrol",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/YevmiyeKayitlariKontrol",
             },
             /*{
               id: uniqueId(),
               title: "Denetim Çalışmalarının Sınırlandırılmasını Değerlendirme",
+              customIcon: "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar/DenetimCalismalarininSinirlandirilmasiniDegerlendirme",
             },*/
@@ -892,6 +975,8 @@ export function createMenuItems(denetimTuru: string): MenuitemsType[] {
         {
           id: uniqueId(),
           title: "Maddi Doğrulama Prosedürleri",
+          customIcon:
+            "public/images/svgs/denetim-kanitlari/maddi-dogrulama-prosedurleri.svg",
           icon: IconPoint,
           href: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
         },
