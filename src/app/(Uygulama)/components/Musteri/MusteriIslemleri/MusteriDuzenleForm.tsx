@@ -1,15 +1,21 @@
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, MenuItem } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   getDenetlenenById,
+  getDenetlenenKonsolideAnaSirketByDenetciId,
   updateDenetlenen,
 } from "@/api/Musteri/MusteriIslemleri";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 
+interface Veri {
+  id: number;
+  firmaAdi: string;
+}
 const MusteriDuzenleForm = () => {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -25,12 +31,17 @@ const MusteriDuzenleForm = () => {
   const [webAdresi, setWebAdresi] = useState("");
   const [ticaretSicilNo, setTicaretSicilNo] = useState("");
   const [vergiDairesi, setVergiDairesi] = useState("");
+  const [konsolideMi, setKonsolideMi] = useState("Hayır");
+  const [konsolideTipi, setKonsolideTipi] = useState("Ana Şirket");
+  const [konsolideBagliSirketId, setKonsolideBagliSirketId] = useState(0);
   const [sektor1Id, setSektor1Id] = useState(0);
   const [sektor2Id, setSektor2Id] = useState(0);
   const [sektor3Id, setSektor3Id] = useState(0);
 
   const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
+
+  const [rows, setRows] = useState<Veri[]>([]);
 
   const handleButtonClick = async () => {
     const updatedMusteri = {
@@ -42,6 +53,9 @@ const MusteriDuzenleForm = () => {
       webAdresi,
       ticaretSicilNo,
       vergiDairesi,
+      konsolideMi,
+      konsolideTipi,
+      konsolideBagliSirketId,
       sektor1Id,
       sektor2Id,
       sektor3Id,
@@ -73,6 +87,17 @@ const MusteriDuzenleForm = () => {
       setWebAdresi(musteriVerileri.webAdresi);
       setTicaretSicilNo(musteriVerileri.ticaretSicilNo);
       setVergiDairesi(musteriVerileri.vergiDairesi);
+      setKonsolideMi(musteriVerileri.konsolide ? "Evet" : "Hayır");
+      setKonsolideTipi(
+        musteriVerileri.konsolideAnaSirketmi
+          ? "Ana Şirket"
+          : musteriVerileri.konsolideAltSirketmi
+          ? "Alt Şirket"
+          : musteriVerileri.konsolideYavruSirketmi
+          ? "Yavru Şirket"
+          : "Ana Şirket"
+      );
+      setKonsolideBagliSirketId(musteriVerileri.konsolideBagliSirketId);
       setSektor1Id(musteriVerileri.sektor1Id);
       setSektor2Id(musteriVerileri.sektor2Id);
       setSektor3Id(musteriVerileri.sektor3Id);
@@ -81,8 +106,26 @@ const MusteriDuzenleForm = () => {
     }
   };
 
+  const fetchData2 = async () => {
+    try {
+      const konsolideAnaSirketVerileri =
+        await getDenetlenenKonsolideAnaSirketByDenetciId(
+          user.token || "",
+          user.denetciId || 0
+        );
+      const newRows = konsolideAnaSirketVerileri.map((musteri: any) => ({
+        id: musteri.id,
+        firmaAdi: musteri.firmaAdi,
+      }));
+      setRows(newRows);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchData2();
   }, []);
 
   return (
@@ -216,6 +259,113 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setVergiDairesi(e.target.value)}
           />
         </Grid>
+        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+          <CustomFormLabel
+            htmlFor="kosolideMi"
+            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
+          >
+            Konsolide Mi
+          </CustomFormLabel>
+        </Grid>
+        <Grid item xs={12} sm={9}>
+          <CustomSelect
+            labelId="konsolideMi"
+            id="konsolideMi"
+            size="small"
+            value={konsolideMi}
+            fullWidth
+            onChange={(e: any) => {
+              setKonsolideMi(e.target.value);
+            }}
+            sx={{
+              minWidth: 120,
+              "& .MuiSelect-select": {
+                height: "28px",
+                display: "flex",
+                alignItems: "center",
+              },
+            }}
+          >
+            <MenuItem value={"Evet"}>Evet</MenuItem>
+            <MenuItem value={"Hayır"}>Hayır</MenuItem>
+          </CustomSelect>
+        </Grid>
+        {konsolideMi === "Evet" && (
+          <>
+            <Grid item xs={12} sm={3} display="flex" alignItems="center">
+              <CustomFormLabel
+                htmlFor="kosolideTipi"
+                sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
+              >
+                Konsolide Tipi
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={9}>
+              <CustomSelect
+                labelId="konsolideTipi"
+                id="konsolideTipi"
+                size="small"
+                value={konsolideTipi}
+                fullWidth
+                onChange={(e: any) => {
+                  setKonsolideTipi(e.target.value);
+                }}
+                sx={{
+                  minWidth: 120,
+                  "& .MuiSelect-select": {
+                    height: "28px",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                }}
+              >
+                <MenuItem value={"Ana Şirket"}>Ana Şirket</MenuItem>
+                <MenuItem value={"Alt Şirket"}>Alt Şirket</MenuItem>
+                <MenuItem value={"Yavru Şirket"}>Yavru Şirket</MenuItem>
+              </CustomSelect>
+            </Grid>
+          </>
+        )}
+        {konsolideMi === "Evet" &&
+          (konsolideTipi == "Alt Şirket" ||
+            konsolideTipi == "Yavru Şirket") && (
+            <>
+              <Grid item xs={12} sm={3} display="flex" alignItems="center">
+                <CustomFormLabel
+                  htmlFor="konsolideBagliSirketId"
+                  sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
+                >
+                  Konsolide Bağlı Olduğu Şirket
+                </CustomFormLabel>
+              </Grid>
+              <Grid item xs={12} sm={9}>
+                <CustomSelect
+                  labelId="konsolideBagliSirketId"
+                  id="konsolideBagliSirketId"
+                  size="small"
+                  value={konsolideBagliSirketId}
+                  fullWidth
+                  onChange={(e: any) => {
+                    setKonsolideBagliSirketId(e.target.value);
+                  }}
+                  sx={{
+                    minWidth: 120,
+                    "& .MuiSelect-select": {
+                      height: "28px",
+                      display: "flex",
+                      alignItems: "center",
+                    },
+                  }}
+                >
+                  {rows.map((row: Veri) => (
+                    <MenuItem key={row.id} value={row.id}>
+                      {row.firmaAdi}
+                    </MenuItem>
+                  ))}
+                </CustomSelect>
+              </Grid>
+            </>
+          )}
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
           <CustomFormLabel
             htmlFor="sektor1Id"

@@ -89,7 +89,11 @@ const Profile = () => {
             alt={"ProfileImg"}
             sx={{ width: 95, height: 95 }}
           />
-          <Box>
+          <Box
+            sx={{
+              maxWidth: "calc(100% - 110px)",
+            }}
+          >
             <Typography
               variant="subtitle2"
               color="textPrimary"
@@ -109,6 +113,10 @@ const Profile = () => {
               alignItems="center"
               gap={1}
               fontSize={"12px"}
+              sx={{
+                overflowWrap: "break-word",
+                wordBreak: "break-word",
+              }}
             >
               <IconMail width={15} height={15} />
               {user.mail}

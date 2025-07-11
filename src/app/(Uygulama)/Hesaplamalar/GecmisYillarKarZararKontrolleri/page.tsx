@@ -17,7 +17,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";

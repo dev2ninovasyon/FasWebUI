@@ -5,6 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { Grid } from "@mui/material";
 import DenetimKadrosuEkleForm from "@/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/DenetimKadrosuEkleForm";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
+import ProtectedRoute from "@/app/ProtectedRoute";
 
 const BCrumb = [
   {
@@ -23,19 +24,21 @@ const BCrumb = [
 
 const Page = () => {
   return (
-    <PageContainer
-      title="Görev Ataması Ekle"
-      description="this is Görev Ataması Ekle"
-    >
-      <Breadcrumb title="Görev Ataması Ekle" items={BCrumb} />
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <ParentCard title="Yeni Görev Ataması">
-            <DenetimKadrosuEkleForm />
-          </ParentCard>
+    <ProtectedRoute allowedRoles={["DenetciAdmin"]}>
+      <PageContainer
+        title="Görev Ataması Ekle"
+        description="this is Görev Ataması Ekle"
+      >
+        <Breadcrumb title="Görev Ataması Ekle" items={BCrumb} />
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <ParentCard title="Yeni Görev Ataması">
+              <DenetimKadrosuEkleForm />
+            </ParentCard>
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedRoute>
   );
 };
 

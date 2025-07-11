@@ -1,6 +1,7 @@
 "use client";
 
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import ProtectedRoute from "@/app/ProtectedRoute";
 
 const BCrumb = [
   {
@@ -19,9 +20,11 @@ export default function MusteriIslemleriLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Breadcrumb title="Müşteri İşlemleri" items={BCrumb} />
-      {children}
-    </div>
+    <ProtectedRoute allowedRoles={["DenetciAdmin"]}>
+      <div>
+        <Breadcrumb title="Müşteri İşlemleri" items={BCrumb} />
+        {children}
+      </div>
+    </ProtectedRoute>
   );
 }

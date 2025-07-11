@@ -19,7 +19,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import { getIliskiliTarafSiniflamaHesaplar } from "@/api/Hesaplamalar/Hesaplamalar";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import IliskiliTarafSiniflama from "./IliskiliTarafSiniflama";

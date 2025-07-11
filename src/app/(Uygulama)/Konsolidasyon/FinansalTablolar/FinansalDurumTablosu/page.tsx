@@ -5,6 +5,9 @@ import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import FinansalDurumTablosu from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/FinansalDurumTablosu";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+import ProtectedPage from "@/app/ProtectedPage";
 
 const BCrumb = [
   {
@@ -22,18 +25,21 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const user = useSelector((state: AppState) => state.userReducer);
   return (
-    <PageContainer
-      title="Finansal Durum Tablosu"
-      description="this is Finansal Durum Tablosu"
-    >
-      <Breadcrumb title="Finansal Durum Tablosu" items={BCrumb} />
-      <Grid container>
-        <Grid item xs={12} lg={12}>
-          <FinansalDurumTablosu />
+    <ProtectedPage allowed={user?.konsolidemi || false}>
+      <PageContainer
+        title="Finansal Durum Tablosu"
+        description="this is Finansal Durum Tablosu"
+      >
+        <Breadcrumb title="Finansal Durum Tablosu" items={BCrumb} />
+        <Grid container>
+          <Grid item xs={12} lg={12}>
+            <FinansalDurumTablosu />
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 

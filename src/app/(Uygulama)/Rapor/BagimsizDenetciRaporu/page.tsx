@@ -5,7 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import React from "react";
 import { Grid, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import BagimsizDenetciRaporuStepper from "@/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/BagimsizDenetciRaporuStepper";
 
 const BCrumb = [

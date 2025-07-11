@@ -8,6 +8,9 @@ interface StateType {
   denetimTuru?: string;
   bobimi?: boolean;
   tfrsmi?: boolean;
+  enflasyonmu?: boolean;
+  konsolidemi?: boolean;
+  bddkmi?: boolean;
   yil?: number;
   rol?: string[];
   yetki?: string;
@@ -25,9 +28,12 @@ const initialState: StateType = {
   denetimTuru: "",
   bobimi: false,
   tfrsmi: false,
+  enflasyonmu: false,
+  konsolidemi: false,
+  bddkmi: false,
   yil: 0,
-  rol: [],
-  yetki: "",
+  rol: undefined,
+  yetki: undefined,
   unvan: "",
   kullaniciAdi: "",
   mail: "",
@@ -59,6 +65,15 @@ export const UserSlice = createSlice({
     setTfrsmi: (state: StateType, action) => {
       state.tfrsmi = action.payload;
     },
+    setEnflasyonmu: (state: StateType, action) => {
+      state.enflasyonmu = action.payload;
+    },
+    setKonsolidemi: (state: StateType, action) => {
+      state.konsolidemi = action.payload;
+    },
+    setBddkmi: (state: StateType, action) => {
+      state.bddkmi = action.payload;
+    },
     setYil: (state: StateType, action) => {
       state.yil = action.payload;
     },
@@ -84,8 +99,6 @@ export const UserSlice = createSlice({
     resetToNull: (state: StateType, action) => {
       state.denetlenenFirmaAdi = action.payload;
       state.denetimTuru = action.payload;
-      state.rol = action.payload;
-      state.yetki = action.payload;
       state.unvan = action.payload;
       state.kullaniciAdi = action.payload;
       state.mail = action.payload;
@@ -95,9 +108,13 @@ export const UserSlice = createSlice({
         state.denetciId = 0;
         state.denetlenenId = 0;
         state.yil = 0;
-        state.rol = [];
+        state.yetki = undefined;
+        state.rol = undefined;
         state.bobimi = false;
         state.tfrsmi = false;
+        state.enflasyonmu = false;
+        state.konsolidemi = false;
+        state.bddkmi = false;
       }
     },
   },
@@ -111,6 +128,9 @@ export const {
   setDenetimTuru,
   setBobimi,
   setTfrsmi,
+  setEnflasyonmu,
+  setKonsolidemi,
+  setBddkmi,
   setYil,
   setRol,
   setYetki,

@@ -5,7 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, useMediaQuery } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import DonusturulmusMizan from "./DonusturulmusMizan";
 import { getGenelHesapPlani } from "@/api/Veri/Mizan";
 

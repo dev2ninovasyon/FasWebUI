@@ -5,8 +5,9 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import React from "react";
 import { Grid, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import BagimsizDenetciRaporuStepper from "@/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/BagimsizDenetciRaporuStepper";
+import ProtectedPage from "@/app/ProtectedPage";
 
 const BCrumb = [
   {
@@ -25,17 +26,19 @@ const Page: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <PageContainer
-      title="Bağımsız Denetçi Raporu"
-      description="this is Bağımsız Denetçi Raporu"
-    >
-      <Breadcrumb title="Bağımsız Denetçi Raporu" items={BCrumb} />
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={12} lg={12}>
-          <BagimsizDenetciRaporuStepper />
+    <ProtectedPage allowed={user?.konsolidemi || false}>
+      <PageContainer
+        title="Bağımsız Denetçi Raporu"
+        description="this is Bağımsız Denetçi Raporu"
+      >
+        <Breadcrumb title="Bağımsız Denetçi Raporu" items={BCrumb} />
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} lg={12}>
+            <BagimsizDenetciRaporuStepper />
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 
