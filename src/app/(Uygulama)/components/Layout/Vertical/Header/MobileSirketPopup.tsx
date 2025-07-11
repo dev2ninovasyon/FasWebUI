@@ -10,7 +10,6 @@ import {
   Button,
 } from "@mui/material";
 import { IconBuildingSkyscraper, IconX } from "@tabler/icons-react";
-
 import CompanyBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/CompanyBoxAutoComplete";
 import YearBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/YearBoxAutoComplete";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -21,8 +20,12 @@ import {
   setBobimi,
   setTfrsmi,
   setDenetimTuru,
+  setRol,
+  setKonsolidemi,
+  setEnflasyonmu,
 } from "@/store/user/UserSlice";
 import { AppState } from "@/store/store";
+import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 
 const MobileSirketPopup = () => {
   // drawer top
@@ -34,6 +37,8 @@ const MobileSirketPopup = () => {
   const [selectedDenetimTuru, setSelectedDenetimTuru] = useState("");
   const [selectedBobimi, setSelectedBobimi] = useState(false);
   const [selectedTfrsmi, setSelectedTfrsmi] = useState(false);
+  const [selectedEnflasyonmu, setSelectedEnflasyonmu] = useState(false);
+  const [selectedKonsolidemi, setSelectedKonsolidemi] = useState(false);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedYearNumber, setSelectedYearNumber] = useState(0);
 
@@ -48,20 +53,36 @@ const MobileSirketPopup = () => {
     setShowDrawer2(false);
   };
 
-  function handleButtonClick() {
-    dispatch(setDenetlenenId(selectedId));
-    dispatch(setDenetlenenFirmaAdi(selectedAdi));
-    dispatch(setYil(selectedYearNumber));
-    dispatch(setDenetimTuru(selectedDenetimTuru));
-    dispatch(setBobimi(selectedBobimi));
-    dispatch(setTfrsmi(selectedTfrsmi));
-    setYear(parseInt(selectedYear));
-    setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
+  const handleButtonClick = async () => {
+    await dispatch(setDenetlenenId(selectedId));
+    await dispatch(setDenetlenenFirmaAdi(selectedAdi));
+    await dispatch(setYil(selectedYearNumber));
+    await dispatch(setDenetimTuru(selectedDenetimTuru));
+    await dispatch(setBobimi(selectedBobimi));
+    await dispatch(setTfrsmi(selectedTfrsmi));
+    await dispatch(setEnflasyonmu(selectedEnflasyonmu));
+    await dispatch(setKonsolidemi(selectedKonsolidemi));
+    await setYear(parseInt(selectedYear));
+    await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
 
-    window.location.reload();
+    try {
+      const rolVerileri = await getRol(
+        user.token || "",
+        user.id || 0,
+        selectedId,
+        selectedYearNumber
+      );
+      if (rolVerileri) {
+        dispatch(setRol(rolVerileri.rol));
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
 
     handleDrawerClose2();
-  }
+
+    window.location.reload();
+  };
 
   return (
     <>
@@ -116,6 +137,12 @@ const MobileSirketPopup = () => {
               onSelectTfrsmi={(selectedTfrsmi) =>
                 setSelectedTfrsmi(selectedTfrsmi)
               }
+              onSelectEnflasyonmu={(selectedEnflasyonmu) =>
+                setSelectedEnflasyonmu(selectedEnflasyonmu)
+              }
+              onSelectKonsolidemi={(selectedKonsolidemi) =>
+                setSelectedKonsolidemi(selectedKonsolidemi)
+              }
             />
           </Box>
           <Box marginBottom={3}>
@@ -127,6 +154,7 @@ const MobileSirketPopup = () => {
               onSelectYear={(selectedYear) =>
                 setSelectedYearNumber(selectedYear)
               }
+              selectedDenetlenenId={selectedId}
             />
           </Box>
           <Button

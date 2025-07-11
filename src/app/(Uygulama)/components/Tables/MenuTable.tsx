@@ -181,7 +181,13 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
 const FilteredMenu: React.FC<{ title: string }> = ({ title }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
-  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+  const Menuitems: MenuitemsType[] = createMenuItems(
+    user.rol || undefined,
+    user.denetimTuru || undefined,
+    user.enflasyonmu || undefined,
+    user.konsolidemi || undefined,
+    user.bddkmi || undefined
+  );
 
   const mainItem = Menuitems.find(
     (item: MenuitemsType) => item.title === title

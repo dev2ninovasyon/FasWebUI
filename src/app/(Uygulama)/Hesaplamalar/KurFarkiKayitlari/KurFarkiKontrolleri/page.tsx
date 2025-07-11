@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Divider, Grid, Tab, Typography, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { TabContext, TabList, TabPanel } from "@mui/lab";

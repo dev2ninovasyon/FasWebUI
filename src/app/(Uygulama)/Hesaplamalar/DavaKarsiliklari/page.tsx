@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import { enqueueSnackbar } from "notistack";
 import {
   createDavaKarsiliklariHesaplanmis,

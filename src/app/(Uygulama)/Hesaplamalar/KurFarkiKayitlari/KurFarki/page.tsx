@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 
 import { IconX } from "@tabler/icons-react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";

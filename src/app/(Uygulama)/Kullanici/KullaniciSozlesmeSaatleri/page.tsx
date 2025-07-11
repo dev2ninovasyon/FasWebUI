@@ -26,7 +26,7 @@ const Page = () => {
           <Grid item xs={12} mb={3}>
             <KullaniciBoxAutocomplete
               initialValue={user.kullaniciAdi}
-              onSelect={(selectedPersonelAdi) =>
+              onSelectAdi={(selectedPersonelAdi) =>
                 setPersonelAdi(selectedPersonelAdi)
               }
               onSelectId={(selectedPersonelId) =>

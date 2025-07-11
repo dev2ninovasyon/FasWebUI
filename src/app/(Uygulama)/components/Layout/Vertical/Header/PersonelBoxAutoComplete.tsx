@@ -2,41 +2,46 @@ import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { getKullaniciByDenetciId } from "@/api/Kullanici/KullaniciIslemleri";
+import { getKullaniciByDenetlenenYilRol } from "@/api/Kullanici/KullaniciIslemleri";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 
-interface KullaniciBoxProps {
+interface PerosnelBoxProps {
   initialValue?: string;
-
-  onSelectId: (selectedKullaniciId: number) => void;
-  onSelectAdi: (selectedKullanici: string) => void;
+  tip: string;
+  disabled?: boolean;
+  onSelectId: (selectedPerosnelId: number) => void;
+  onSelectAdi: (selectedPersonelAdi: string) => void;
 }
 
-interface Kullanici {
+interface Perosnel {
   id: number;
   personelAdi?: string;
   label?: string;
 }
 
-const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
+const PerosnelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
   initialValue,
+  tip,
+  disabled,
   onSelectId,
   onSelectAdi,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
-  const [rows, setRows] = useState<Kullanici[]>([]);
+  const [rows, setRows] = useState<Perosnel[]>([]);
 
   const fetchData = async () => {
     try {
-      const kullaniciVerileri = await getKullaniciByDenetciId(
+      const personelVerileri = await getKullaniciByDenetlenenYilRol(
         user.token || "",
-        user.denetciId || 0
+        user.denetlenenId || 0,
+        user.yil || 0,
+        tip || ""
       );
-      const newRows = kullaniciVerileri.map((veri: any) => ({
-        id: veri.id,
-        personelAdi: veri.personelAdi,
-        label: veri.personelAdi,
+      const newRows = personelVerileri.map((musteri: any) => ({
+        id: musteri.id,
+        personelAdi: musteri.personelAdi,
+        label: musteri.personelAdi,
       }));
       setRows(newRows);
     } catch (error) {
@@ -48,7 +53,7 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
     fetchData();
   }, []);
 
-  const [selectedOption, setSelectedOption] = useState<Kullanici | null>(null);
+  const [selectedOption, setSelectedOption] = useState<Perosnel | null>(null);
 
   useEffect(() => {
     // Find the option that matches the initialValue
@@ -56,13 +61,23 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
     setSelectedOption(matchedOption || null);
   }, [initialValue, rows]);
 
+  useEffect(() => {
+    if (rows.length === 1) {
+      const onlyOption = rows[0];
+      setSelectedOption(onlyOption);
+      onSelectId(onlyOption.id);
+      onSelectAdi(onlyOption.personelAdi || "");
+    }
+  }, [rows]);
   return (
     <Autocomplete
-      id="kullanici-box"
+      id="personel-box"
       options={rows}
       noOptionsText="Bulunamadı"
       fullWidth
+      disabled={disabled}
       value={selectedOption}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       onChange={(event, value) => {
         setSelectedOption(value);
         onSelectId(value?.id || 0);
@@ -79,4 +94,4 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
   );
 };
 
-export default KullaniciBoxAutocomplete;
+export default PerosnelBoxAutocomplete;

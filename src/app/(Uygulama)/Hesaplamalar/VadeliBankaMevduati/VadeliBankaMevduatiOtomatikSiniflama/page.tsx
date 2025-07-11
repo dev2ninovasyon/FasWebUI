@@ -20,7 +20,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import { enqueueSnackbar } from "notistack";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { createVadeliBankaMevduatiOtomatikSiniflama } from "@/api/Hesaplamalar/Hesaplamalar";

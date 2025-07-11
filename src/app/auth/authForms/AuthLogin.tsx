@@ -15,10 +15,12 @@ import {
   setMail,
   setUnvan,
   setRol,
+  setBddkmi,
 } from "@/store/user/UserSlice";
 import { url } from "@/api/apiBase";
 import { enqueueSnackbar } from "notistack";
 import { AppState } from "@/store/store";
+import { getDenetciOdemeBilgileri } from "@/api/Kullanici/KullaniciIslemleri";
 
 interface loginType {
   title?: string;
@@ -66,6 +68,11 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         dispatch(setKullaniciAdi(kullaniciAdi));
         dispatch(setMail(email));
         dispatch(setUnvan(unvan));
+
+        const response2 = await getDenetciOdemeBilgileri(data.denetciId);
+        if (response2.ok) {
+          dispatch(setBddkmi(response2.data.bddkmi));
+        }
 
         router.push("/Anasayfa");
       } else {

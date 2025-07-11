@@ -3,10 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import {
-  createGorevAtamalari,
-  createRole,
-} from "@/api/Sozlesme/DenetimKadrosuAtama";
+import { createGorevAtamalari } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import UnvanBoxAutocomplete from "./AutoCompleteBox/UnvanBoxAutoComplete";
 import KullaniciBoxAutocomplete from "./AutoCompleteBox/KullaniciBoxAutoComplete";
 import { enqueueSnackbar } from "notistack";
@@ -50,22 +47,26 @@ const DenetimKadrosuEkleForm = () => {
       denetimUcreti,
       aktifPasif,
     };
-    const createdRole = {
-      rolId,
-      denetlenenId,
-      kullaniciId,
-      yil,
-    };
+
     try {
       const result = await createGorevAtamalari(
         user.token || "",
         createdGorevAtamalari
       );
-      const resultRole = await createRole(user.token || "", createdRole);
-      if (result && resultRole) {
+      if (result == true) {
         router.push("/Sozlesme/DenetimKadrosuAtama");
       } else {
-        console.error("Görev Atamaları ekleme başarısız");
+        enqueueSnackbar(result && result.message, {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -85,7 +86,7 @@ const DenetimKadrosuEkleForm = () => {
         </Grid>
         <Grid item xs={12} sm={9}>
           <KullaniciBoxAutocomplete
-            onSelect={(selectedKullaniciAdi) =>
+            onSelectAdi={(selectedKullaniciAdi) =>
               setKullaniciAdi(selectedKullaniciAdi)
             }
             onSelectId={(selectedKullaniciId) =>

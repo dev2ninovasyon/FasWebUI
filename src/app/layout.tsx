@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeSettings } from "@/utils/theme/Theme";
@@ -16,13 +16,51 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "@/store/storeConfig";
-import { SnackbarProvider } from "notistack";
+import { enqueueSnackbar, SnackbarProvider } from "notistack";
 import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
+import { usePathname, useRouter } from "next/navigation";
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
   const theme = ThemeSettings();
 
   const customizer = useSelector((state: AppState) => state.customizer);
+
+  const router = useRouter();
+
+  const pathname = usePathname();
+
+  const NOT_PROTECTED_ROUTES = [
+    "/",
+    "/Anasayfa",
+    "/Musteri",
+    "/Musteri/MusteriIslemleri",
+    "/DigerIslemler",
+    "/KullanimKilavuzu",
+  ];
+
+  useEffect(() => {
+    const path = pathname;
+
+    const isNotProtected = NOT_PROTECTED_ROUTES.includes(path);
+
+    if (!isNotProtected && !user.denetlenenId) {
+      router.push("/Anasayfa");
+
+      enqueueSnackbar("Denetlenen Firma Seçmelisiniz", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
+    }
+  }, [pathname, user.denetlenenId]);
 
   return (
     <>

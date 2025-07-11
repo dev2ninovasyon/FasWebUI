@@ -63,6 +63,57 @@ export const getDenetlenenByDenetciId = async (
   }
 };
 
+export const getDenetlenenKonsolideAnaSirketByDenetciId = async (
+  token: string,
+  denetciId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/KonsolideAnaSirket/Denetci/${denetciId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Denetlenenler getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getDenetlenenByRol = async (
+  token: string,
+  denetciId: number,
+  kullaniciId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Denetlenen/Rol/${denetciId}/${kullaniciId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Denetlenenler getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const updateDenetlenen = async (
   token: string,
   id: any,

@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { getDenetlenenByDenetciId } from "@/api/Musteri/MusteriIslemleri";
-import CustomTextField from "../../../Forms/ThemeElements/CustomTextField";
+import {
+  getDenetlenenByDenetciId,
+  getDenetlenenByRol,
+} from "@/api/Musteri/MusteriIslemleri";
+import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 
 interface CompanyBoxProps {
   onSelectId: (selectedCompanyId: number) => void;
@@ -11,6 +14,8 @@ interface CompanyBoxProps {
   onSelectDenetimTuru: (selectedDenetimTuru: string) => void;
   onSelectBobimi: (selectedBobimi: boolean) => void;
   onSelectTfrsmi: (selectedTfrsmi: boolean) => void;
+  onSelectEnflasyonmu: (selectedEnflasyonmu: boolean) => void;
+  onSelectKonsolidemi: (selectedKonsolidemi: boolean) => void;
 }
 
 interface Company {
@@ -19,6 +24,8 @@ interface Company {
   denetimTuru?: string;
   bobimi?: boolean;
   tfrsmi?: boolean;
+  enflasyonmu?: boolean;
+  konsolidemi?: boolean;
   label?: string;
 }
 
@@ -28,6 +35,8 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
   onSelectDenetimTuru,
   onSelectBobimi,
   onSelectTfrsmi,
+  onSelectEnflasyonmu,
+  onSelectKonsolidemi,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -35,19 +44,40 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
 
   const fetchData = async () => {
     try {
-      const musteriVerileri = await getDenetlenenByDenetciId(
-        user.token || "",
-        user.denetciId || 0
-      );
-      const newRows = musteriVerileri.map((musteri: any) => ({
-        denetlenenId: musteri.id,
-        firmaAdi: musteri.firmaAdi,
-        denetimTuru: musteri.denetimTuru,
-        bobimi: musteri.bobi,
-        tfrsmi: musteri.tfrs,
-        label: musteri.firmaAdi,
-      }));
-      setRows(newRows);
+      if (user.yetki == "DenetciAdmin") {
+        const musteriVerileri = await getDenetlenenByDenetciId(
+          user.token || "",
+          user.denetciId || 0
+        );
+        const newRows = musteriVerileri.map((musteri: any) => ({
+          denetlenenId: musteri.id,
+          firmaAdi: musteri.firmaAdi,
+          denetimTuru: musteri.denetimTuru,
+          bobimi: musteri.bobi,
+          tfrsmi: musteri.tfrs,
+          enflasyonmu: musteri.enflasyonMu,
+          konsolidemi: musteri.konsolide,
+          label: musteri.firmaAdi,
+        }));
+        setRows(newRows);
+      } else {
+        const musteriVerileri = await getDenetlenenByRol(
+          user.token || "",
+          user.denetciId || 0,
+          user.id || 0
+        );
+        const newRows = musteriVerileri.map((musteri: any) => ({
+          denetlenenId: musteri.id,
+          firmaAdi: musteri.firmaAdi,
+          denetimTuru: musteri.denetimTuru,
+          bobimi: musteri.bobi,
+          tfrsmi: musteri.tfrs,
+          enflasyonmu: musteri.enflasyonMu,
+          konsolidemi: musteri.konsolide,
+          label: musteri.firmaAdi,
+        }));
+        setRows(newRows);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -69,6 +99,8 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
         onSelectDenetimTuru(value?.denetimTuru || "");
         onSelectBobimi(value?.bobimi || false);
         onSelectTfrsmi(value?.tfrsmi || false);
+        onSelectEnflasyonmu(value?.enflasyonmu || false);
+        onSelectKonsolidemi(value?.konsolidemi || false);
       }}
       renderInput={(params) => (
         <CustomTextField
