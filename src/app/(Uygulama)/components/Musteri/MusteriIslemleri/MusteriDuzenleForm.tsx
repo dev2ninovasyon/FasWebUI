@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   getDenetlenenById,
   getDenetlenenKonsolideAnaSirketByDenetciId,
+  getSektorKodlari,
   updateDenetlenen,
 } from "@/api/Musteri/MusteriIslemleri";
 import { useSelector } from "@/store/hooks";
@@ -16,6 +17,14 @@ interface Veri {
   id: number;
   firmaAdi: string;
 }
+
+interface Veri2 {
+  id: number;
+  adi: string;
+  kirilim: number;
+  parentId: number | null;
+}
+
 const MusteriDuzenleForm = () => {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -37,6 +46,10 @@ const MusteriDuzenleForm = () => {
   const [sektor1Id, setSektor1Id] = useState(0);
   const [sektor2Id, setSektor2Id] = useState(0);
   const [sektor3Id, setSektor3Id] = useState(0);
+
+  const [sektor1List, setSektor1List] = useState<Veri2[]>([]);
+  const [sektor2List, setSektor2List] = useState<Veri2[]>([]);
+  const [sektor3List, setSektor3List] = useState<Veri2[]>([]);
 
   const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
@@ -71,6 +84,27 @@ const MusteriDuzenleForm = () => {
       } else {
         console.error("Müşteri düzenleme başarısız");
       }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const handleSelectSektor = async (id: number) => {
+    try {
+      const sektor3 = sektor3List.find((s3) => s3.id === id);
+      if (!sektor3) return;
+
+      setSektor3Id(id);
+
+      const sektor2 = sektor2List.find((s2) => s2.id === sektor3?.parentId);
+      if (!sektor2) return;
+
+      setSektor2Id(sektor2.id);
+
+      const sektor1 = sektor1List.find((s1) => s1.id === sektor2?.parentId);
+      if (!sektor1) return;
+
+      setSektor1Id(sektor1.id);
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -123,9 +157,31 @@ const MusteriDuzenleForm = () => {
     }
   };
 
+  const fetchData3 = async () => {
+    try {
+      const sektorKodVerileri = await getSektorKodlari(user.token || "");
+
+      const newRows = sektorKodVerileri.map((kod: any) => ({
+        id: kod.id,
+        adi: kod.adi,
+        kirilim: kod.kirilim,
+        parentId: kod.parentId ?? null,
+      }));
+
+      if (newRows.length > 0) {
+        setSektor1List(newRows.filter((item: Veri2) => item.kirilim === 1));
+        setSektor2List(newRows.filter((item: Veri2) => item.kirilim === 2));
+        setSektor3List(newRows.filter((item: Veri2) => item.kirilim === 3));
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
     fetchData2();
+    fetchData3();
   }, []);
 
   return (
@@ -371,48 +427,109 @@ const MusteriDuzenleForm = () => {
             htmlFor="sektor1Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Sektör 1 Id
+            Sektör 1
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <CustomTextField
+          <CustomSelect
+            labelId="sektor1Id"
             id="sektor1Id"
+            size="small"
             value={sektor1Id}
             fullWidth
-            onChange={(e: any) => setSektor1Id(e.target.value)}
-          />
-        </Grid>{" "}
+            disabled
+            onChange={(e: any) => {
+              setSektor1Id(e.target.value);
+            }}
+            sx={{
+              minWidth: 120,
+              "& .MuiSelect-select": {
+                height: "28px",
+                display: "flex",
+                alignItems: "center",
+              },
+            }}
+          >
+            <MenuItem value={0}></MenuItem>
+            {sektor1List.map((sektor: Veri2) => (
+              <MenuItem key={sektor.id} value={sektor.id}>
+                {sektor.adi}
+              </MenuItem>
+            ))}
+          </CustomSelect>
+        </Grid>
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
           <CustomFormLabel
             htmlFor="sektor2Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Sektör 2 Id
+            Sektör 2
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <CustomTextField
+          <CustomSelect
+            labelId="sektor2Id"
             id="sektor2Id"
+            size="small"
             value={sektor2Id}
             fullWidth
-            onChange={(e: any) => setSektor2Id(e.target.value)}
-          />
+            disabled
+            onChange={(e: any) => {
+              setSektor2Id(e.target.value);
+            }}
+            sx={{
+              minWidth: 120,
+              "& .MuiSelect-select": {
+                height: "28px",
+                display: "flex",
+                alignItems: "center",
+              },
+            }}
+          >
+            <MenuItem value={0}></MenuItem>
+            {sektor2List.map((sektor: Veri2) => (
+              <MenuItem key={sektor.id} value={sektor.id}>
+                {sektor.adi}
+              </MenuItem>
+            ))}
+          </CustomSelect>
         </Grid>
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
           <CustomFormLabel
             htmlFor="sektor3Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Sektör 3 Id
+            Sektör 3
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <CustomTextField
+          <CustomSelect
+            labelId="sektor3Id"
             id="sektor3Id"
+            size="small"
             value={sektor3Id}
             fullWidth
-            onChange={(e: any) => setSektor3Id(e.target.value)}
-          />
+            onChange={(e: any) => {
+              handleSelectSektor(e.target.value);
+            }}
+            sx={{
+              minWidth: 120,
+              "& .MuiSelect-select": {
+                height: "28px",
+                display: "flex",
+                alignItems: "center",
+              },
+            }}
+          >
+            <MenuItem value={0}>
+              <em>Seçiniz</em>
+            </MenuItem>
+            {sektor3List.map((sektor: Veri2) => (
+              <MenuItem key={sektor.id} value={sektor.id}>
+                {sektor.adi}
+              </MenuItem>
+            ))}
+          </CustomSelect>
         </Grid>
         <Grid item xs={12} sm={3}></Grid>
         <Grid item xs={12} sm={9}>
