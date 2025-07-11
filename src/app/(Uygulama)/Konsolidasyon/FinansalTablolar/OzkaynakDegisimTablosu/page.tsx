@@ -5,6 +5,9 @@ import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import OzkaynakDegisimTablosu from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu";
+import ProtectedPage from "@/app/ProtectedPage";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 const BCrumb = [
   {
@@ -22,25 +25,28 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const user = useSelector((state: AppState) => state.userReducer);
   return (
-    <PageContainer
-      title="Özkaynak Değişim Tablosu"
-      description="this is Özkaynak Değişim Tablosu"
-    >
-      <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb} />
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          lg={12}
-          sx={{
-            width: "500px",
-          }}
-        >
-          <OzkaynakDegisimTablosu />
+    <ProtectedPage allowed={user?.konsolidemi || false}>
+      <PageContainer
+        title="Özkaynak Değişim Tablosu"
+        description="this is Özkaynak Değişim Tablosu"
+      >
+        <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb} />
+        <Grid container>
+          <Grid
+            item
+            xs={12}
+            lg={12}
+            sx={{
+              width: "500px",
+            }}
+          >
+            <OzkaynakDegisimTablosu />
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 

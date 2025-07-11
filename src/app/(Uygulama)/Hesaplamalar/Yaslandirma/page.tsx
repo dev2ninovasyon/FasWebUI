@@ -5,7 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import { enqueueSnackbar } from "notistack";
 import { createYaslandirmaHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";

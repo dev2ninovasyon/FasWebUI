@@ -7,7 +7,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import DikeyAnaliz from "@/app/(Uygulama)/components/DenetimKanitlari/Analizler/DikeyAnaliz";
 import { IconChartBar, IconTable } from "@tabler/icons-react";
 import { enqueueSnackbar } from "notistack";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { createDikeyAnaliz } from "@/api/Analizler/Analizler";

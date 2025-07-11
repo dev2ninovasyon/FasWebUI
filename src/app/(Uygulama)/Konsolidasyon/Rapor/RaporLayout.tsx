@@ -1,6 +1,9 @@
 "use client";
 
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import ProtectedPage from "@/app/ProtectedPage";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 const BCrumb = [
   {
@@ -18,10 +21,13 @@ export default function RaporLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const user = useSelector((state: AppState) => state.userReducer);
   return (
-    <div>
-      <Breadcrumb title="Rapor" items={BCrumb} />
-      {children}
-    </div>
+    <ProtectedPage allowed={user.konsolidemi || false}>
+      <div>
+        <Breadcrumb title="Rapor" items={BCrumb} />
+        {children}
+      </div>
+    </ProtectedPage>
   );
 }

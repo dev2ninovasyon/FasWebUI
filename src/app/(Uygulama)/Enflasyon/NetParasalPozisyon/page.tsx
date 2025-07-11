@@ -2,10 +2,12 @@
 
 import React from "react";
 import { Box } from "@mui/material";
-
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import ProtectedPage from "@/app/ProtectedPage";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 const BCrumb = [
   {
@@ -19,17 +21,21 @@ const BCrumb = [
 ];
 
 const Page = () => {
-  return (
-    <PageContainer
-      title="Net Parasal Pozisyon"
-      description="this is Net Parasal Pozisyon"
-    >
-      <Breadcrumb title="Net Parasal Pozisyon" items={BCrumb} />
+  const user = useSelector((state: AppState) => state.userReducer);
 
-      <Box>
-        <TopCards title="Net Parasal Pozisyon" />
-      </Box>
-    </PageContainer>
+  return (
+    <ProtectedPage allowed={user?.enflasyonmu || false}>
+      <PageContainer
+        title="Net Parasal Pozisyon"
+        description="this is Net Parasal Pozisyon"
+      >
+        <Breadcrumb title="Net Parasal Pozisyon" items={BCrumb} />
+
+        <Box>
+          <TopCards title="Net Parasal Pozisyon" />
+        </Box>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 

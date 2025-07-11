@@ -26,7 +26,13 @@ interface menuType {
 const Search = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
-  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+  const Menuitems: MenuitemsType[] = createMenuItems(
+    user.rol || undefined,
+    user.denetimTuru || undefined,
+    user.enflasyonmu || undefined,
+    user.konsolidemi || undefined,
+    user.bddkmi || undefined
+  );
 
   // drawer top
   const [showDrawer2, setShowDrawer2] = useState(false);

@@ -48,7 +48,13 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
 
-  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+  const Menuitems: MenuitemsType[] = createMenuItems(
+    user.rol || undefined,
+    user.denetimTuru || undefined,
+    user.enflasyonmu || undefined,
+    user.konsolidemi || undefined,
+    user.bddkmi || undefined
+  );
 
   const findItemTitle = (
     title: string,

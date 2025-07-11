@@ -614,15 +614,29 @@ const UcluCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
             justifyContent: "space-between",
           }}
         >
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <BelgeKontrolCard hazirlayan="Ahmet Geçmiş"></BelgeKontrolCard>
-          </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <BelgeKontrolCard onaylayan="Ahmet Geçmiş"></BelgeKontrolCard>
-          </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <BelgeKontrolCard kaliteKontrol="Ahmet Geçmiş"></BelgeKontrolCard>
-          </Grid>
+          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+            user.rol?.includes("SorumluDenetci") ||
+            user.rol?.includes("Denetci") ||
+            user.rol?.includes("DenetciYardimcisi")) && (
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard hazirlayan="Denetçi - Yardımcı Denetçi"></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard onaylayan="Sorumlu Denetçi"></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"></BelgeKontrolCard>
+              </Grid>
+            </Grid>
+          )}
         </Grid>
         <Grid
           container

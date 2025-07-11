@@ -54,10 +54,20 @@ const DenetimKadrosuDuzenleForm = () => {
         id,
         updatedGorevAtamalari
       );
-      if (result) {
+      if (result == true) {
         router.push("/Sozlesme/DenetimKadrosuAtama");
       } else {
-        console.error("Görev Atamaları düzenleme başarısız");
+        enqueueSnackbar(result && result.message, {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -102,7 +112,7 @@ const DenetimKadrosuDuzenleForm = () => {
         <Grid item xs={12} sm={9}>
           <KullaniciBoxAutocomplete
             initialValue={kullaniciAdi}
-            onSelect={(selectedKullaniciAdi) =>
+            onSelectAdi={(selectedKullaniciAdi) =>
               setKullaniciAdi(selectedKullaniciAdi)
             }
             onSelectId={(selectedKullaniciId) =>

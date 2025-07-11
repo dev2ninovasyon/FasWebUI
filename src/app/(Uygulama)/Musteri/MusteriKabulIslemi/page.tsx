@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
@@ -20,7 +20,8 @@ import {
   updateDenetlenenDenetimTuru,
 } from "@/api/Musteri/MusteriIslemleri";
 import { useDispatch } from "@/store/hooks";
-import { setDenetimTuru } from "@/store/user/UserSlice";
+import { setDenetimTuru, setEnflasyonmu } from "@/store/user/UserSlice";
+import { getDenetciOdemeBilgileri } from "@/api/Kullanici/KullaniciIslemleri";
 
 const BCrumb = [
   {
@@ -68,6 +69,7 @@ const Page: React.FC = () => {
         fetchData();
         setHesaplaTiklandimi(false);
         await dispatch(setDenetimTuru(tur));
+        await dispatch(setEnflasyonmu(enflasyon === "Evet"));
         enqueueSnackbar("Denetime Kabul Edildi", {
           variant: "success",
           autoHideDuration: 5000,
@@ -108,9 +110,26 @@ const Page: React.FC = () => {
       console.error("Bir hata oluştu:", error);
     }
   };
+  const [odemeBilgileriBobi, setOdemeBilgileriBobi] = useState(false);
+  const [odemeBilgileriTfrs, setOdemeBilgileriTfrs] = useState(false);
+  const [odemeBilgileriKumi, setOdemeBilgileriKumi] = useState(false);
+
+  const fetchData2 = async () => {
+    try {
+      const response = await getDenetciOdemeBilgileri(user.denetciId);
+      if (response) {
+        setOdemeBilgileriBobi(response.bobiModulu);
+        setOdemeBilgileriTfrs(response.tfrsModulu);
+        setOdemeBilgileriKumi(response.kumiModulu);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
 
   useEffect(() => {
     fetchData();
+    fetchData2();
   }, []);
 
   return (
@@ -147,12 +166,25 @@ const Page: React.FC = () => {
               onChange={handleChangeTur}
               height={"36px"}
             >
-              <MenuItem value={"Bobi"}>Denetim Türü: Bobi</MenuItem>
-              <MenuItem value={"BobiBüyük"}>Denetim Türü: Bobi Büyük</MenuItem>
-              <MenuItem value={"Tfrs"}>Denetim Türü: Tfrs</MenuItem>
-              <MenuItem value={"TfrsDönemsel"}>
-                Denetim Türü: Tfrs Dönemsel
-              </MenuItem>
+              {odemeBilgileriBobi && (
+                <MenuItem value={"Bobi"}>Denetim Türü: Bobi</MenuItem>
+              )}
+              {odemeBilgileriBobi && (
+                <MenuItem value={"BobiBüyük"}>
+                  Denetim Türü: Bobi Büyük
+                </MenuItem>
+              )}
+              {odemeBilgileriTfrs && (
+                <MenuItem value={"Tfrs"}>Denetim Türü: Tfrs</MenuItem>
+              )}
+              {odemeBilgileriTfrs && (
+                <MenuItem value={"TfrsDönemsel"}>
+                  Denetim Türü: Tfrs Dönemsel
+                </MenuItem>
+              )}
+              {odemeBilgileriKumi && (
+                <MenuItem value={"Kumi"}>Denetim Türü: Kümi</MenuItem>
+              )}
               <MenuItem value={"ÖzelDenetim"}>
                 Denetim Türü: Özel Denetim
               </MenuItem>

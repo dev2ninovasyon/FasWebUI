@@ -96,7 +96,7 @@ const SurekliEgitimBilgileriDuzenleForm = () => {
         <Grid item xs={12} sm={9}>
           <KullaniciBoxAutocomplete
             initialValue={personelAdi}
-            onSelect={(selectedPersonelAdi) =>
+            onSelectAdi={(selectedPersonelAdi) =>
               setPersonelAdi(selectedPersonelAdi)
             }
             onSelectId={(selectedPersonelId) =>

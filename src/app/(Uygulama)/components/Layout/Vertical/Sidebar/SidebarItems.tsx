@@ -20,8 +20,13 @@ const SidebarItems: React.FC<Props> = ({ isSidebarHover }) => {
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
-
-  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+  const Menuitems: MenuitemsType[] = createMenuItems(
+    user.rol || undefined,
+    user.denetimTuru || undefined,
+    user.enflasyonmu || undefined,
+    user.konsolidemi || undefined,
+    user.bddkmi || undefined
+  );
 
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const hideMenu: any = lgUp ? customizer.isCollapse && !isSidebarHover : "";

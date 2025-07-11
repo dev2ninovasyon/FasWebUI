@@ -88,7 +88,17 @@ export const createGorevAtamalari = async (
     if (response.ok) {
       return true;
     } else {
-      return false;
+      const contentType = response.headers.get("content-type");
+
+      let message = "Hata Oluştu";
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        message = errorData.message || message;
+      } else {
+        message = await response.text();
+      }
+
+      return { message };
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
@@ -114,7 +124,17 @@ export const updateGorevAtamalari = async (
     if (response.ok) {
       return true;
     } else {
-      return false;
+      const contentType = response.headers.get("content-type");
+
+      let message = "Hata Oluştu";
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        message = errorData.message || message;
+      } else {
+        message = await response.text();
+      }
+
+      return { message };
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
@@ -159,21 +179,54 @@ export const getAllUnvanlar = async (token: string) => {
     console.error("Bir hata oluştu:", error);
   }
 };
-export const createRole = async (token: string, createdRole: any) => {
-  try {
-    const response = await fetch(`${url}/GorevAtamalari/Role`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(createdRole),
-    });
 
+export const getRol = async (
+  token: string,
+  kullaniciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/GorevAtamalari/Roller?kullaniciId=${kullaniciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (response.ok) {
-      return true;
+      return response.json();
     } else {
-      return false;
+      console.error("Rol getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getKullaniciRol = async (
+  token: string,
+  kullaniciId: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/GorevAtamalari/KullaniciRol?kullaniciId=${kullaniciId}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Kullanıcı Rol getirilemedi");
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);

@@ -16,6 +16,9 @@ const MusteriDetay = () => {
   const [ticaretSicilNo, setTicaretSicilNo] = useState("");
   const [vergiDairesi, setVergiDairesi] = useState("");
   const [vergiNo, setVergiNo] = useState("");
+  const [konsolideMi, setKonsolideMi] = useState("Hayır");
+  const [konsolideTipi, setKonsolideTipi] = useState("Ana Şirket");
+  const [konsolideBagliSirketAdi, setKonsolideBagliSirketAdi] = useState("");
   const [sektor1Id, setSktor1Id] = useState(0);
   const [sektor2Id, setSektor2Id] = useState(0);
   const [sektor3Id, setSektor3Id] = useState(0);
@@ -39,9 +42,28 @@ const MusteriDetay = () => {
       setTicaretSicilNo(result.ticaretSicilNo);
       setVergiDairesi(result.vergiDairesi);
       setVergiNo(result.vergiNo);
+      setKonsolideMi(result.konsolide ? "Evet" : "Hayır");
+      setKonsolideTipi(
+        result.konsolideAnaSirketmi
+          ? "Ana Şirket"
+          : result.konsolideAltSirketmi
+          ? "Alt Şirket"
+          : result.konsolideYavruSirketmi
+          ? "Yavru Şirket"
+          : "Ana Şirket"
+      );
       setSktor1Id(result.sektor1Id);
       setSektor2Id(result.sektor2Id);
       setSektor3Id(result.sektor3Id);
+
+      if (result.konsolideBagliSirketId != 0) {
+        const result2 = await getDenetlenenById(
+          user.token || "",
+          result.konsolideBagliSirketId
+        );
+
+        setKonsolideBagliSirketAdi(result2.firmaAdi);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -171,6 +193,56 @@ const MusteriDetay = () => {
             {vergiNo}
           </Typography>
         </Grid>
+        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+          <CustomFormLabel
+            htmlFor="konsolideMi"
+            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
+          >
+            Konsolide Mi
+          </CustomFormLabel>
+        </Grid>
+        <Grid item xs={12} sm={9}>
+          <Typography textAlign="left" variant="h6">
+            {konsolideMi}
+          </Typography>
+        </Grid>
+        {konsolideMi === "Evet" && (
+          <>
+            <Grid item xs={12} sm={3} display="flex" alignItems="center">
+              <CustomFormLabel
+                htmlFor="konsolideTipi"
+                sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
+              >
+                Konsolide Tipi
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={9}>
+              <Typography textAlign="left" variant="h6">
+                {konsolideTipi}
+              </Typography>
+            </Grid>
+          </>
+        )}
+        {konsolideMi === "Evet" &&
+          (konsolideTipi == "Alt Şirket" ||
+            konsolideTipi == "Yavru Şirket") && (
+            <>
+              <Grid item xs={12} sm={3} display="flex" alignItems="center">
+                <CustomFormLabel
+                  htmlFor="konsolideBagliSirketAdi"
+                  sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
+                >
+                  Konsolide Bağlı Olduğu Şirket
+                </CustomFormLabel>
+              </Grid>
+              <Grid item xs={12} sm={9}>
+                <Typography textAlign="left" variant="h6">
+                  {konsolideBagliSirketAdi}
+                </Typography>
+              </Grid>
+            </>
+          )}
+
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
           <CustomFormLabel
             htmlFor="sektor1Id"

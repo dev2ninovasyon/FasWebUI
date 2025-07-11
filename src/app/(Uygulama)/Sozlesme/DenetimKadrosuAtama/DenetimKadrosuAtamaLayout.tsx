@@ -1,6 +1,7 @@
 "use client";
 
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import ProtectedRoute from "@/app/ProtectedRoute";
 
 const BCrumb = [
   {
@@ -19,9 +20,11 @@ export default function DenetimKadrosuAtamaLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Breadcrumb title="Denetim Kadrosu Atama" items={BCrumb} />
-      {children}
-    </div>
+    <ProtectedRoute allowedRoles={["DenetciAdmin"]}>
+      <div>
+        <Breadcrumb title="Denetim Kadrosu Atama" items={BCrumb} />
+        {children}
+      </div>
+    </ProtectedRoute>
   );
 }

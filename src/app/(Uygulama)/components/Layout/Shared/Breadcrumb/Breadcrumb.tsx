@@ -26,7 +26,13 @@ interface BreadCrumbType {
 const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
-  const Menuitems: MenuitemsType[] = createMenuItems(user.denetimTuru || "");
+  const Menuitems: MenuitemsType[] = createMenuItems(
+    user.rol || undefined,
+    user.denetimTuru || undefined,
+    user.enflasyonmu || undefined,
+    user.konsolidemi || undefined,
+    user.bddkmi || undefined
+  );
 
   const itemsTitle =
     items && items.length > 0

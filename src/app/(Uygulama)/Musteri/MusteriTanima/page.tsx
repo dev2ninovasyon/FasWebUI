@@ -19,7 +19,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { AppState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/store/hooks";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import React, { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";

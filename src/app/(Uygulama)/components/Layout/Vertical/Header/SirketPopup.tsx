@@ -12,20 +12,22 @@ import {
   useTheme,
 } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
-
 import CompanyBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/CompanyBoxAutoComplete";
 import YearBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/YearBoxAutoComplete";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "@/store/hooks";
 import {
   setBobimi,
   setDenetimTuru,
   setDenetlenenFirmaAdi,
   setDenetlenenId,
+  setEnflasyonmu,
+  setKonsolidemi,
+  setRol,
   setTfrsmi,
   setYil,
 } from "@/store/user/UserSlice";
-import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 
 const SirketPopup = () => {
   // drawer top
@@ -41,6 +43,8 @@ const SirketPopup = () => {
   const [selectedDenetimTuru, setSelectedDenetimTuru] = useState("");
   const [selectedBobimi, setSelectedBobimi] = useState(false);
   const [selectedTfrsmi, setSelectedTfrsmi] = useState(false);
+  const [selectedEnflasyonmu, setSelectedEnflasyonmu] = useState(false);
+  const [selectedKonsolidemi, setSelectedKonsolidemi] = useState(false);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedYearNumber, setSelectedYearNumber] = useState(0);
 
@@ -62,12 +66,28 @@ const SirketPopup = () => {
     await dispatch(setDenetimTuru(selectedDenetimTuru));
     await dispatch(setBobimi(selectedBobimi));
     await dispatch(setTfrsmi(selectedTfrsmi));
+    await dispatch(setEnflasyonmu(selectedEnflasyonmu));
+    await dispatch(setKonsolidemi(selectedKonsolidemi));
     await setYear(parseInt(selectedYear));
     await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
 
-    window.location.reload();
+    try {
+      const rolVerileri = await getRol(
+        user.token || "",
+        user.id || 0,
+        selectedId,
+        selectedYearNumber
+      );
+      if (rolVerileri) {
+        dispatch(setRol(rolVerileri.rol));
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
 
     handleDrawerClose2();
+
+    window.location.reload();
   };
 
   return (
@@ -143,6 +163,12 @@ const SirketPopup = () => {
               onSelectTfrsmi={(selectedTfrsmi) =>
                 setSelectedTfrsmi(selectedTfrsmi)
               }
+              onSelectEnflasyonmu={(selectedEnflasyonmu) =>
+                setSelectedEnflasyonmu(selectedEnflasyonmu)
+              }
+              onSelectKonsolidemi={(selectedKonsolidemi) =>
+                setSelectedKonsolidemi(selectedKonsolidemi)
+              }
             />
           </Box>
           <Box marginBottom={3}>
@@ -154,6 +180,7 @@ const SirketPopup = () => {
               onSelectYear={(selectedYear) =>
                 setSelectedYearNumber(selectedYear)
               }
+              selectedDenetlenenId={selectedId}
             />
           </Box>
           <Button
