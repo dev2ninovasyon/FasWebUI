@@ -189,6 +189,25 @@ export const deleteDenetlenenById = async (token: string, id: number) => {
   }
 };
 
+export const getSektorKodlari = async (token: string) => {
+  try {
+    const response = await fetch(`${url}/Denetlenen/SektorKodlari`, {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Sektör Kodları getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const createSirketYonetimKadrosu = async (
   token: string,
   createdSirketYonetimKadrosu: any
