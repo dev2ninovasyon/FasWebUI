@@ -1,10 +1,20 @@
 import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getDenetlenenById } from "@/api/Musteri/MusteriIslemleri";
+import {
+  getDenetlenenById,
+  getSektorKodlari,
+} from "@/api/Musteri/MusteriIslemleri";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
+
+interface Veri {
+  id: number;
+  adi: string;
+  kirilim: number;
+  parentId: number | null;
+}
 
 const MusteriDetay = () => {
   const [firmaAdi, setFirmaAdi] = useState("");
@@ -22,6 +32,10 @@ const MusteriDetay = () => {
   const [sektor1Id, setSktor1Id] = useState(0);
   const [sektor2Id, setSektor2Id] = useState(0);
   const [sektor3Id, setSektor3Id] = useState(0);
+
+  const [sektor1List, setSektor1List] = useState<Veri[]>([]);
+  const [sektor2List, setSektor2List] = useState<Veri[]>([]);
+  const [sektor3List, setSektor3List] = useState<Veri[]>([]);
 
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -69,8 +83,30 @@ const MusteriDetay = () => {
     }
   };
 
+  const fetchData2 = async () => {
+    try {
+      const sektorKodVerileri = await getSektorKodlari(user.token || "");
+
+      const newRows = sektorKodVerileri.map((kod: any) => ({
+        id: kod.id,
+        adi: kod.adi,
+        kirilim: kod.kirilim,
+        parentId: kod.parentId ?? null,
+      }));
+
+      if (newRows.length > 0) {
+        setSektor1List(newRows.filter((item: Veri) => item.kirilim === 1));
+        setSektor2List(newRows.filter((item: Veri) => item.kirilim === 2));
+        setSektor3List(newRows.filter((item: Veri) => item.kirilim === 3));
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchData2();
   }, []);
 
   return (
@@ -248,12 +284,12 @@ const MusteriDetay = () => {
             htmlFor="sektor1Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Sektör 1 Id
+            Sektör 1
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
           <Typography textAlign="left" variant="h6">
-            {sektor1Id}
+            {sektor1List.find((item) => item.id === sektor1Id)?.adi || ""}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
@@ -261,12 +297,12 @@ const MusteriDetay = () => {
             htmlFor="sektor2Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Sektör 2 Id
+            Sektör 2
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
           <Typography textAlign="left" variant="h6">
-            {sektor2Id}
+            {sektor2List.find((item) => item.id === sektor2Id)?.adi || ""}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
@@ -274,12 +310,12 @@ const MusteriDetay = () => {
             htmlFor="sektor3Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Sektör 3 Id
+            Sektör 3
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
           <Typography textAlign="left" variant="h6">
-            {sektor3Id}
+            {sektor3List.find((item) => item.id === sektor3Id)?.adi || ""}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={3}></Grid>
