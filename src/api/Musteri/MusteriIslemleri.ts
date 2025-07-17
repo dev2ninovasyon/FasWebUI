@@ -15,7 +15,17 @@ export const createDenetlenen = async (token: string, createdMusteri: any) => {
     if (response.ok) {
       return true;
     } else {
-      return false;
+      const contentType = response.headers.get("content-type");
+
+      let message = "Hata Oluştu";
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        message = errorData.message || message;
+      } else {
+        message = await response.text();
+      }
+
+      return { message };
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
@@ -162,7 +172,17 @@ export const updateDenetlenenDenetimTuru = async (
     if (response.ok) {
       return true;
     } else {
-      return false;
+      const contentType = response.headers.get("content-type");
+
+      let message = "Hata Oluştu";
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        message = errorData.message || message;
+      } else {
+        message = await response.text();
+      }
+
+      return { message };
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);

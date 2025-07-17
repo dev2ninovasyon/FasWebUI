@@ -5,6 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import { Grid } from "@mui/material";
 import MusteriDetay from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriDetay";
+import ProtectedRoute from "@/app/ProtectedRoute";
 
 const BCrumb = [
   {
@@ -19,16 +20,18 @@ const BCrumb = [
 
 const Page = () => {
   return (
-    <PageContainer title="Müşteri Detay" description="this is Müşteri Detay">
-      <Breadcrumb title="Müşteri Detay" items={BCrumb} />
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <ParentCard title="Müşteri Detay">
-            <MusteriDetay />
-          </ParentCard>
+    <ProtectedRoute allowedRoles={["DenetciAdmin"]}>
+      <PageContainer title="Müşteri Detay" description="this is Müşteri Detay">
+        <Breadcrumb title="Müşteri Detay" items={BCrumb} />
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <ParentCard title="Müşteri Detay">
+              <MusteriDetay />
+            </ParentCard>
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedRoute>
   );
 };
 

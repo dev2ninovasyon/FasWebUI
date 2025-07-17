@@ -614,21 +614,15 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
-              title: "Denetim Risk Tespit Kılavuzu",
+              title: "Denetim Strateji Kılavuzu",
               icon: IconPoint,
-              href: "/PlanVeProgram",
+              href: "/PlanVeProgram/DenetimStratejiKilavuzu",
             },
             {
               id: uniqueId(),
               title: "Finansal Tablolar Denetim Riski Belirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme",
-            },
-            {
-              id: uniqueId(),
-              title: "Denetim Risk Değerlendirme",
-              icon: IconPoint,
-              href: "/PlanVeProgram/DenetimRiskDegerlendirme",
             },
             {
               id: uniqueId(),
@@ -652,15 +646,15 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
-              title: "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
+              title: "Denetim Risk Değerlendirme",
               icon: IconPoint,
-              href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
+              href: "/PlanVeProgram/DenetimRiskDegerlendirme",
             },
             {
               id: uniqueId(),
-              title: "Denetim Strateji Kılavuzu",
+              title: "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
               icon: IconPoint,
-              href: "/PlanVeProgram/DenetimStratejiKilavuzu",
+              href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
             },
             {
               id: uniqueId(),
@@ -682,6 +676,30 @@ export function createMenuItems(
           icon: IconFolderOpen,
           href: "/DenetimKanitlari",
           children: [
+            {
+              id: uniqueId(),
+              title: "Denetim Satratejisi Belirleme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DenetimStratejisiBelirleme",
+            },
+            {
+              id: uniqueId(),
+              title: "Uzman Yeterliliği Değerlendirme Belgesi",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/UzmanYeterliligiDegerlendirme",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetim Kontrol Testleri",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/DenetimKontrolTestleri",
+            },
             {
               id: uniqueId(),
               title: "Mizan Kontrol",
@@ -860,45 +878,21 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
+              title:
+                "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme",
+            },
+            {
+              id: uniqueId(),
               title: "Diğer Kanıtlar",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/DigerKanitlar",
               children: [
-                {
-                  id: uniqueId(),
-                  title: "Denetim Satratejisi Belirleme",
-                  customIcon:
-                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
-                  icon: IconPoint,
-                  href: "/DenetimKanitlari/DigerKanitlar/DenetimStratejisiBelirleme",
-                },
-                {
-                  id: uniqueId(),
-                  title: "Uzman Yeterliliği Değerlendirme Belgesi",
-                  customIcon:
-                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
-                  icon: IconPoint,
-                  href: "/DenetimKanitlari/DigerKanitlar/UzmanYeterliligiDegerlendirme",
-                },
-                {
-                  id: uniqueId(),
-                  title: "Denetim Kontrol Testleri",
-                  customIcon:
-                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
-                  icon: IconPoint,
-                  href: "/DenetimKanitlari/DigerKanitlar/DenetimKontrolTestleri",
-                },
-                {
-                  id: uniqueId(),
-                  title:
-                    "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
-                  customIcon:
-                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
-                  icon: IconPoint,
-                  href: "/DenetimKanitlari/DigerKanitlar/BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme",
-                },
                 {
                   id: uniqueId(),
                   title: "Müşteri İşletme Yönetimi İle Yapılan Görüşme",
@@ -1019,14 +1013,6 @@ export function createMenuItems(
                   icon: IconPoint,
                   href: "/DenetimKanitlari/DigerKanitlar/YonetimKuruluFaaliyetRaporuDegerlendirme",
                 },
-                {
-                  id: uniqueId(),
-                  title: "Yevmiye Kayıtları Kontrol",
-                  customIcon:
-                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
-                  icon: IconPoint,
-                  href: "/DenetimKanitlari/DigerKanitlar/YevmiyeKayitlariKontrol",
-                },
                 /*{
               id: uniqueId(),
               title: "Denetim Çalışmalarının Sınırlandırılmasını Değerlendirme",
@@ -1035,6 +1021,14 @@ export function createMenuItems(
               href: "/DenetimKanitlari/DigerKanitlar/DenetimCalismalarininSinirlandirilmasiniDegerlendirme",
             },*/
               ],
+            },
+            {
+              id: uniqueId(),
+              title: "Yevmiye Kayıtları Kontrol",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/YevmiyeKayitlariKontrol",
             },
             {
               id: uniqueId(),
