@@ -1,4 +1,4 @@
-import { Grid, Button, MenuItem } from "@mui/material";
+import { Grid, Button, MenuItem, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -11,6 +11,7 @@ import {
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
+import { enqueueSnackbar } from "notistack";
 
 interface Veri {
   id: number;
@@ -45,8 +46,12 @@ const MusteriEkleForm = () => {
   const [sektor2List, setSektor2List] = useState<Veri2[]>([]);
   const [sektor3List, setSektor3List] = useState<Veri2[]>([]);
 
-  const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
+  const customizer = useSelector((state: AppState) => state.customizer);
+  const theme = useTheme();
+
+  const router = useRouter();
+
   const denetciId = user.denetciId;
 
   const [rows, setRows] = useState<Veri[]>([]);
@@ -72,10 +77,20 @@ const MusteriEkleForm = () => {
     };
     try {
       const result = await createDenetlenen(user.token || "", createdMusteri);
-      if (result) {
+      if (result == true) {
         router.push("/Musteri/MusteriIslemleri");
       } else {
-        console.error("Müşteri ekleme başarısız");
+        enqueueSnackbar(result && result.message, {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);

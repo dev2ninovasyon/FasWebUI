@@ -35,15 +35,14 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
     "/",
     "/Anasayfa",
     "/Musteri",
-    "/Musteri/MusteriIslemleri",
     "/DigerIslemler",
     "/KullanimKilavuzu",
   ];
 
   useEffect(() => {
-    const path = pathname;
-
-    const isNotProtected = NOT_PROTECTED_ROUTES.includes(path);
+    const isNotProtected = NOT_PROTECTED_ROUTES.some((route) =>
+      pathname.startsWith(route)
+    );
 
     if (!isNotProtected && !user.denetlenenId) {
       router.push("/Anasayfa");
