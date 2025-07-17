@@ -43,7 +43,7 @@ const Page: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const [tur, setTur] = useState("Bobi");
+  const [tur, setTur] = useState("Seçiniz");
   const handleChangeTur = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTur(event.target.value);
   };
@@ -59,13 +59,28 @@ const Page: React.FC = () => {
 
   const handleDenetimeKabulEt = async () => {
     try {
+      if (tur === "Seçiniz") {
+        enqueueSnackbar("Denetim Türü Seçiniz", {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+            maxWidth: "720px",
+          },
+        });
+        return;
+      }
+
       const result = await updateDenetlenenDenetimTuru(
         user.token || "",
         user.denetlenenId || 0,
         tur,
         enflasyon
       );
-      if (result) {
+      if (result == true) {
         fetchData();
         setHesaplaTiklandimi(false);
         await dispatch(setDenetimTuru(tur));
@@ -81,14 +96,14 @@ const Page: React.FC = () => {
           },
         });
       } else {
-        enqueueSnackbar("Denetime Kabul Edilemedi", {
-          variant: "error",
+        enqueueSnackbar(result && result.message, {
+          variant: "warning",
           autoHideDuration: 5000,
           style: {
             backgroundColor:
               customizer.activeMode === "dark"
-                ? theme.palette.error.light
-                : theme.palette.error.main,
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
             maxWidth: "720px",
           },
         });
@@ -104,7 +119,11 @@ const Page: React.FC = () => {
         user.token || "",
         user.denetlenenId || 0
       );
-      setTur(denetlenenVerileri.denetimTuru);
+      setTur(
+        denetlenenVerileri.denetimTuru
+          ? denetlenenVerileri.denetimTuru
+          : "Seçiniz"
+      );
       setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -114,6 +133,8 @@ const Page: React.FC = () => {
   const [odemeBilgileriTfrs, setOdemeBilgileriTfrs] = useState(false);
   const [odemeBilgileriKumi, setOdemeBilgileriKumi] = useState(false);
 
+  const [odemeBilgileriEnflasyon, setOdemeBilgileriEnflasyon] = useState(false);
+
   const fetchData2 = async () => {
     try {
       const response = await getDenetciOdemeBilgileri(user.denetciId);
@@ -121,6 +142,7 @@ const Page: React.FC = () => {
         setOdemeBilgileriBobi(response.bobiModulu);
         setOdemeBilgileriTfrs(response.tfrsModulu);
         setOdemeBilgileriKumi(response.kumiModulu);
+        setOdemeBilgileriEnflasyon(response.enflasyonModulu);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -166,6 +188,7 @@ const Page: React.FC = () => {
               onChange={handleChangeTur}
               height={"36px"}
             >
+              <MenuItem value={"Seçiniz"}>Denetim Türü: Seçiniz</MenuItem>
               {odemeBilgileriBobi && (
                 <MenuItem value={"Bobi"}>Denetim Türü: Bobi</MenuItem>
               )}
@@ -189,21 +212,23 @@ const Page: React.FC = () => {
                 Denetim Türü: Özel Denetim
               </MenuItem>
             </CustomSelect>
-            <CustomSelect
-              labelId="enflasyon"
-              id="enflasyon"
-              size="small"
-              value={enflasyon}
-              onChange={handleChangeEnflasyon}
-              height={"36px"}
-            >
-              <MenuItem value={"Evet"}>
-                Enflasyon Düzeltmesi Uygulanacak Mı: Evet
-              </MenuItem>
-              <MenuItem value={"Hayır"}>
-                Enflasyon Düzeltmesi Uygulanacak Mı: Hayır
-              </MenuItem>
-            </CustomSelect>
+            {odemeBilgileriEnflasyon && (
+              <CustomSelect
+                labelId="enflasyon"
+                id="enflasyon"
+                size="small"
+                value={enflasyon}
+                onChange={handleChangeEnflasyon}
+                height={"36px"}
+              >
+                <MenuItem value={"Evet"}>
+                  Enflasyon Düzeltmesi Uygulanacak Mı: Evet
+                </MenuItem>
+                <MenuItem value={"Hayır"}>
+                  Enflasyon Düzeltmesi Uygulanacak Mı: Hayır
+                </MenuItem>
+              </CustomSelect>
+            )}
             <Button
               type="button"
               size="medium"
