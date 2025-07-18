@@ -27,17 +27,19 @@ const BCrumb = [
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   return (
-    <PageContainer
-      title="Kar Zarar Tablosu"
-      description="this is Kar Zarar Tablosu"
-    >
-      <Breadcrumb title="Kar Zarar Tablosu" items={BCrumb} />
-      <Grid container>
-        <Grid item xs={12} lg={12}>
-          <KarZararTablosu />
+    <ProtectedPage allowed={user?.konsolidemi || false}>
+      <PageContainer
+        title="Kar Zarar Tablosu"
+        description="this is Kar Zarar Tablosu"
+      >
+        <Breadcrumb title="Kar Zarar Tablosu" items={BCrumb} />
+        <Grid container>
+          <Grid item xs={12} lg={12}>
+            <KarZararTablosu />
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 

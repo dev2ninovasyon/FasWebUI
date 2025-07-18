@@ -111,142 +111,148 @@ const Page: React.FC = () => {
   }, []);
 
   return (
-    <PageContainer
-      title="Eliminasyon Fiş İşlemleri"
-      description="this is Eliminasyon Fiş İşlemleri"
-    >
-      <Breadcrumb title="Eliminasyon Fiş İşlemleri" items={BCrumb} />
-      <Grid container>
-        <Grid item xs={12} lg={12} mb={2}>
-          <FisGirisiKontrol
-            filterValue={filterValue}
-            setKod={setKod}
-            setAd={setAd}
-          />
+    <ProtectedPage allowed={user?.konsolidemi || false}>
+      <PageContainer
+        title="Eliminasyon Fiş İşlemleri"
+        description="this is Eliminasyon Fiş İşlemleri"
+      >
+        <Breadcrumb title="Eliminasyon Fiş İşlemleri" items={BCrumb} />
+        <Grid container>
+          <Grid item xs={12} lg={12} mb={2}>
+            <FisGirisiKontrol
+              filterValue={filterValue}
+              setKod={setKod}
+              setAd={setAd}
+            />
+          </Grid>
+          <Grid item xs={12} lg={12} my={1}>
+            <Stack
+              direction={{ xs: "column", lg: "row" }}
+              alignItems={"center"}
+              justifyContent={"start"}
+            >
+              <Box display={"flex"} alignItems={"center"}>
+                <Typography
+                  variant="h6"
+                  paddingRight={"16px"}
+                  paddingY={"16px"}
+                >
+                  Fiş Tipi:
+                </Typography>
+                <CustomSelect
+                  labelId="fis"
+                  id="fis"
+                  size="small"
+                  value={fisType}
+                  onChange={handleChange}
+                  sx={{
+                    height: "32px",
+                    minWidth: "120px",
+                    marginRight: "16px",
+                  }}
+                >
+                  <MenuItem value={"Açılış"}>Açılış</MenuItem>
+                  <MenuItem value={"Düzeltme"}>Düzeltme</MenuItem>
+                  <MenuItem value={"Sınıflama"}>Sınıflama</MenuItem>
+                  <MenuItem value={"Transfer"}>Transfer</MenuItem>
+                </CustomSelect>
+              </Box>
+              <Box sx={{ flex: 1 }}></Box>
+              <Box display={"flex"} alignItems={"center"}>
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setIsPopUpOpen2(true)}
+                >
+                  Genel Hesap Planı
+                </Button>
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => setIsPopUpOpen1(true)}
+                  sx={{ ml: 2 }}
+                >
+                  Hazır Fişler
+                </Button>
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => router.push("/Donusum/FisListesi")}
+                  sx={{ ml: 2 }}
+                >
+                  Fiş Listesi
+                </Button>
+              </Box>
+            </Stack>
+          </Grid>
+          <Grid item xs={12} lg={12} mb={3}>
+            <FisGirisi
+              kod={kod}
+              ad={ad}
+              fisType={fisType}
+              hazirFislerTiklandimi={hazirFislerTiklandimi}
+              genelHesapPlaniListesi={fetchedData}
+              handleFilterChange={handleFilterChange}
+              setHazirFislerTiklandimi={setHazirFislerTiklandimi}
+            />
+          </Grid>
+          <Grid item xs={12} lg={12}>
+            <Typography variant="h6" paddingRight={"16px"} paddingY={"16px"}>
+              Son Girilen Fişler
+            </Typography>
+          </Grid>
+          <Grid item xs={12} lg={12}>
+            <SonGirilenFisler
+              hazirFislerTiklandimi={hazirFislerTiklandimi}
+              setHazirFislerTiklandimi={setHazirFislerTiklandimi}
+            />
+          </Grid>
+          {isOpenPopUp1 && (
+            <Dialog maxWidth={"md"} open={isOpenPopUp1} onClose={handleClose1}>
+              <DialogContent className="testdialog">
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  justifyContent={"space-between"}
+                  alignItems="center"
+                >
+                  <Typography variant="h5">Hazır Fişler</Typography>
+                  <IconButton size="small" onClick={handleClose1}>
+                    <IconX size="18" />
+                  </IconButton>
+                </Stack>
+              </DialogContent>
+              <DialogContent>
+                <HazirFisListesi />
+              </DialogContent>
+            </Dialog>
+          )}
+          {isOpenPopUp2 && (
+            <Dialog maxWidth={"md"} open={isOpenPopUp2} onClose={handleClose2}>
+              <DialogContent className="testdialog">
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  justifyContent={"space-between"}
+                  alignItems="center"
+                >
+                  <Typography variant="h5">Genel Hesap Planı</Typography>
+                  <IconButton size="small" onClick={handleClose2}>
+                    <IconX size="18" />
+                  </IconButton>
+                </Stack>
+              </DialogContent>
+              <DialogContent>
+                <GenelHesapPlani data={fetchedData} />
+              </DialogContent>
+            </Dialog>
+          )}
         </Grid>
-        <Grid item xs={12} lg={12} my={1}>
-          <Stack
-            direction={{ xs: "column", lg: "row" }}
-            alignItems={"center"}
-            justifyContent={"start"}
-          >
-            <Box display={"flex"} alignItems={"center"}>
-              <Typography variant="h6" paddingRight={"16px"} paddingY={"16px"}>
-                Fiş Tipi:
-              </Typography>
-              <CustomSelect
-                labelId="fis"
-                id="fis"
-                size="small"
-                value={fisType}
-                onChange={handleChange}
-                sx={{
-                  height: "32px",
-                  minWidth: "120px",
-                  marginRight: "16px",
-                }}
-              >
-                <MenuItem value={"Açılış"}>Açılış</MenuItem>
-                <MenuItem value={"Düzeltme"}>Düzeltme</MenuItem>
-                <MenuItem value={"Sınıflama"}>Sınıflama</MenuItem>
-                <MenuItem value={"Transfer"}>Transfer</MenuItem>
-              </CustomSelect>
-            </Box>
-            <Box sx={{ flex: 1 }}></Box>
-            <Box display={"flex"} alignItems={"center"}>
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                onClick={() => setIsPopUpOpen2(true)}
-              >
-                Genel Hesap Planı
-              </Button>
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                onClick={() => setIsPopUpOpen1(true)}
-                sx={{ ml: 2 }}
-              >
-                Hazır Fişler
-              </Button>
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                onClick={() => router.push("/Donusum/FisListesi")}
-                sx={{ ml: 2 }}
-              >
-                Fiş Listesi
-              </Button>
-            </Box>
-          </Stack>
-        </Grid>
-        <Grid item xs={12} lg={12} mb={3}>
-          <FisGirisi
-            kod={kod}
-            ad={ad}
-            fisType={fisType}
-            hazirFislerTiklandimi={hazirFislerTiklandimi}
-            genelHesapPlaniListesi={fetchedData}
-            handleFilterChange={handleFilterChange}
-            setHazirFislerTiklandimi={setHazirFislerTiklandimi}
-          />
-        </Grid>
-        <Grid item xs={12} lg={12}>
-          <Typography variant="h6" paddingRight={"16px"} paddingY={"16px"}>
-            Son Girilen Fişler
-          </Typography>
-        </Grid>
-        <Grid item xs={12} lg={12}>
-          <SonGirilenFisler
-            hazirFislerTiklandimi={hazirFislerTiklandimi}
-            setHazirFislerTiklandimi={setHazirFislerTiklandimi}
-          />
-        </Grid>
-        {isOpenPopUp1 && (
-          <Dialog maxWidth={"md"} open={isOpenPopUp1} onClose={handleClose1}>
-            <DialogContent className="testdialog">
-              <Stack
-                direction="row"
-                spacing={2}
-                justifyContent={"space-between"}
-                alignItems="center"
-              >
-                <Typography variant="h5">Hazır Fişler</Typography>
-                <IconButton size="small" onClick={handleClose1}>
-                  <IconX size="18" />
-                </IconButton>
-              </Stack>
-            </DialogContent>
-            <DialogContent>
-              <HazirFisListesi />
-            </DialogContent>
-          </Dialog>
-        )}
-        {isOpenPopUp2 && (
-          <Dialog maxWidth={"md"} open={isOpenPopUp2} onClose={handleClose2}>
-            <DialogContent className="testdialog">
-              <Stack
-                direction="row"
-                spacing={2}
-                justifyContent={"space-between"}
-                alignItems="center"
-              >
-                <Typography variant="h5">Genel Hesap Planı</Typography>
-                <IconButton size="small" onClick={handleClose2}>
-                  <IconX size="18" />
-                </IconButton>
-              </Stack>
-            </DialogContent>
-            <DialogContent>
-              <GenelHesapPlani data={fetchedData} />
-            </DialogContent>
-          </Dialog>
-        )}
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 

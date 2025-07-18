@@ -25,23 +25,25 @@ const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   return (
-    <PageContainer
-      title="Dönüşüm Mizan Kontrol"
-      description="this is Dönüşüm Mizan Kontrol"
-    >
-      <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb} />
+    <ProtectedPage allowed={user?.konsolidemi || false}>
+      <PageContainer
+        title="Dönüşüm Mizan Kontrol"
+        description="this is Dönüşüm Mizan Kontrol"
+      >
+        <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb} />
 
-      <Grid container>
-        <Grid item xs={12} lg={12}>
-          <DonusumMizanKontrolCardTable />
+        <Grid container>
+          <Grid item xs={12} lg={12}>
+            <DonusumMizanKontrolCardTable />
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid container>
-        <Grid item xs={12} lg={12}>
-          <DonusumMizanKontrol />
+        <Grid container>
+          <Grid item xs={12} lg={12}>
+            <DonusumMizanKontrol />
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 

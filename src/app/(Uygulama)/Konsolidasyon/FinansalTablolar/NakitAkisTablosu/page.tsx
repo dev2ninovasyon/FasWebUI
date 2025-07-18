@@ -27,17 +27,19 @@ const BCrumb = [
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   return (
-    <PageContainer
-      title="Nakit Akış Tablosu"
-      description="this is Nakit Akış Tablosu"
-    >
-      <Breadcrumb title="Nakit Akış Tablosu" items={BCrumb} />
-      <Grid container>
-        <Grid item xs={12} lg={12}>
-          <NakitAkisTablosu />
+    <ProtectedPage allowed={user?.konsolidemi || false}>
+      <PageContainer
+        title="Nakit Akış Tablosu"
+        description="this is Nakit Akış Tablosu"
+      >
+        <Breadcrumb title="Nakit Akış Tablosu" items={BCrumb} />
+        <Grid container>
+          <Grid item xs={12} lg={12}>
+            <NakitAkisTablosu />
+          </Grid>
         </Grid>
-      </Grid>
-    </PageContainer>
+      </PageContainer>
+    </ProtectedPage>
   );
 };
 
