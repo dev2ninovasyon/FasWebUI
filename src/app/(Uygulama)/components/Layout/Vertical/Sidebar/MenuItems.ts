@@ -1408,137 +1408,132 @@ export function createMenuItems(
               },
             ]
           : []),
-        ...(konsolidemi === true
-          ? [
-              {
-                id: uniqueId(),
-                parentTitle: "KONSOLİDASYON",
-                title: "KONSOLİDASYON",
-                icon: IconLayoutGridAdd,
-                href: "/Konsolidasyon",
-                children: [
-                  {
-                    id: uniqueId(),
-                    parentTitle: "KONSOLİDASYON",
-                    title: "Aşamalar",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/Asamalar",
-                  },
-                  {
-                    id: uniqueId(),
-                    title: "Tanımlama",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/Tanimlama",
-                  },
-                  {
-                    id: uniqueId(),
-                    title: "Birleştirilmiş Mizan",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/BirlestirilmisMizan",
-                  },
-                  {
-                    id: uniqueId(),
-                    title: "Eliminasyon Fiş İşlemleri",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/EliminasyonFisIslemleri",
-                  },
-                  {
-                    id: uniqueId(),
-                    parentTitle: "KONSOLİDASYON",
-                    title: "Dönüşüm İşlemi",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/DonusumIslemi",
-                  },
-                  {
-                    id: uniqueId(),
-                    parentTitle: "KONSOLİDASYON",
-                    title: "Dönüşüm Mizan Kontrol",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/DonusumMizanKontrol",
-                  },
-                  {
-                    id: uniqueId(),
-                    parentTitle: "KONSOLİDASYON",
-                    title: "Finansal Tablolar",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/FinansalTablolar",
-                    children: [
-                      {
-                        id: uniqueId(),
-                        parentTitle: "KONSOLİDASYON",
-                        title: "Finansal Durum Tablosu",
-                        icon: IconPoint,
-                        href: "/Konsolidasyon/FinansalTablolar/FinansalDurumTablosu",
-                      },
-                      {
-                        id: uniqueId(),
-                        parentTitle: "KONSOLİDASYON",
-                        title: "Kar / Zarar Tablosu",
-                        icon: IconPoint,
-                        href: "/Konsolidasyon/FinansalTablolar/KarZararTablosu",
-                      },
-                      {
-                        id: uniqueId(),
-                        parentTitle: "KONSOLİDASYON",
-                        title: "Nakit Akış Tablosu",
-                        icon: IconPoint,
-                        href: "/Konsolidasyon/FinansalTablolar/NakitAkisTablosu",
-                      },
-                      {
-                        id: uniqueId(),
-                        parentTitle: "KONSOLİDASYON",
-                        title: "Özkaynak Değişim Tablosu",
-                        icon: IconPoint,
-                        href: "/Konsolidasyon/FinansalTablolar/OzkaynakDegisimTablosu",
-                      },
-                    ],
-                  },
-                  {
-                    id: uniqueId(),
-                    parentTitle: "KONSOLİDASYON",
-                    title: "Rapor",
-                    icon: IconPoint,
-                    href: "/Konsolidasyon/Rapor",
-                    children: [
-                      {
-                        id: uniqueId(),
-                        parentTitle: "KONSOLİDASYON",
-                        title: "Rapor Düzenle",
-                        icon: IconPoint,
-                        href: "/Konsolidasyon/Rapor/RaporDuzenle",
-                      },
-                      {
-                        id: uniqueId(),
-                        parentTitle: "KONSOLİDASYON",
-                        title: "Bağımsız Denetçi Raporu",
-                        icon: IconPoint,
-                        href: "/Konsolidasyon/Rapor/BagimsizDenetciRaporu",
-                      },
-                    ],
-                  },
-                ],
-              },
-            ]
-          : []),
-        ...(bddkmi === true
-          ? [
-              {
-                id: uniqueId(),
-                title: "BDDK",
-                icon: IconFilters,
-                href: "/",
-                children: [
-                  {
-                    id: uniqueId(),
-                    title:
-                      "İşletmenin Sürekliliğine İlişkin Değerlendirme - BDDK Analizi",
-                    icon: IconPoint,
-                    href: "/",
-                  },
-                ],
-              },
-            ]
-          : []),
+
+        {
+          id: uniqueId(),
+          parentTitle: "KONSOLİDASYON",
+          title: "KONSOLİDASYON",
+          icon: IconLayoutGridAdd,
+          href: "/Konsolidasyon",
+          children: [
+            {
+              id: uniqueId(),
+              parentTitle: "KONSOLİDASYON",
+              title: "Aşamalar",
+              icon: IconPoint,
+              href: "/Konsolidasyon/Asamalar",
+            },
+            {
+              id: uniqueId(),
+              title: "Tanımlama",
+              icon: IconPoint,
+              href: "/Konsolidasyon/Tanimlama",
+            },
+            {
+              id: uniqueId(),
+              title: "Birleştirilmiş Mizan",
+              icon: IconPoint,
+              href: "/Konsolidasyon/BirlestirilmisMizan",
+            },
+            {
+              id: uniqueId(),
+              title: "Eliminasyon Fiş İşlemleri",
+              icon: IconPoint,
+              href: "/Konsolidasyon/EliminasyonFisIslemleri",
+            },
+            {
+              id: uniqueId(),
+              parentTitle: "KONSOLİDASYON",
+              title: "Dönüşüm İşlemi",
+              icon: IconPoint,
+              href: "/Konsolidasyon/DonusumIslemi",
+            },
+            {
+              id: uniqueId(),
+              parentTitle: "KONSOLİDASYON",
+              title: "Dönüşüm Mizan Kontrol",
+              icon: IconPoint,
+              href: "/Konsolidasyon/DonusumMizanKontrol",
+            },
+            {
+              id: uniqueId(),
+              parentTitle: "KONSOLİDASYON",
+              title: "Finansal Tablolar",
+              icon: IconPoint,
+              href: "/Konsolidasyon/FinansalTablolar",
+              children: [
+                {
+                  id: uniqueId(),
+                  parentTitle: "KONSOLİDASYON",
+                  title: "Finansal Durum Tablosu",
+                  icon: IconPoint,
+                  href: "/Konsolidasyon/FinansalTablolar/FinansalDurumTablosu",
+                },
+                {
+                  id: uniqueId(),
+                  parentTitle: "KONSOLİDASYON",
+                  title: "Kar / Zarar Tablosu",
+                  icon: IconPoint,
+                  href: "/Konsolidasyon/FinansalTablolar/KarZararTablosu",
+                },
+                {
+                  id: uniqueId(),
+                  parentTitle: "KONSOLİDASYON",
+                  title: "Nakit Akış Tablosu",
+                  icon: IconPoint,
+                  href: "/Konsolidasyon/FinansalTablolar/NakitAkisTablosu",
+                },
+                {
+                  id: uniqueId(),
+                  parentTitle: "KONSOLİDASYON",
+                  title: "Özkaynak Değişim Tablosu",
+                  icon: IconPoint,
+                  href: "/Konsolidasyon/FinansalTablolar/OzkaynakDegisimTablosu",
+                },
+              ],
+            },
+            {
+              id: uniqueId(),
+              parentTitle: "KONSOLİDASYON",
+              title: "Rapor",
+              icon: IconPoint,
+              href: "/Konsolidasyon/Rapor",
+              children: [
+                {
+                  id: uniqueId(),
+                  parentTitle: "KONSOLİDASYON",
+                  title: "Rapor Düzenle",
+                  icon: IconPoint,
+                  href: "/Konsolidasyon/Rapor/RaporDuzenle",
+                },
+                {
+                  id: uniqueId(),
+                  parentTitle: "KONSOLİDASYON",
+                  title: "Bağımsız Denetçi Raporu",
+                  icon: IconPoint,
+                  href: "/Konsolidasyon/Rapor/BagimsizDenetciRaporu",
+                },
+              ],
+            },
+          ],
+        },
+
+        {
+          id: uniqueId(),
+          title: "BDDK",
+          icon: IconFilters,
+          href: "/",
+          children: [
+            {
+              id: uniqueId(),
+              title:
+                "İşletmenin Sürekliliğine İlişkin Değerlendirme - BDDK Analizi",
+              icon: IconPoint,
+              href: "/",
+            },
+          ],
+        },
+
         /*
     {
       id: uniqueId(),
