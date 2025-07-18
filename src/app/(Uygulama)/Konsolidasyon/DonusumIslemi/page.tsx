@@ -22,19 +22,14 @@ const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   return (
-    <ProtectedPage allowed={user?.konsolidemi || false}>
-      <PageContainer
-        title="Dönüşüm İşlemi"
-        description="this is Dönüşüm İşlemi"
-      >
-        <Breadcrumb title="Dönüşüm İşlemi" items={BCrumb} />
-        <Grid container>
-          <Grid item xs={12} lg={12}>
-            <DonusumIslemiStepper />
-          </Grid>
+    <PageContainer title="Dönüşüm İşlemi" description="this is Dönüşüm İşlemi">
+      <Breadcrumb title="Dönüşüm İşlemi" items={BCrumb} />
+      <Grid container>
+        <Grid item xs={12} lg={12}>
+          <DonusumIslemiStepper />
         </Grid>
-      </PageContainer>
-    </ProtectedPage>
+      </Grid>
+    </PageContainer>
   );
 };
 

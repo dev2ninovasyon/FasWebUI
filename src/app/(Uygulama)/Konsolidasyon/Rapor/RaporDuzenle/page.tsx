@@ -41,115 +41,110 @@ const Page: React.FC = () => {
   };
 
   return (
-    <ProtectedPage allowed={user?.konsolidemi || false}>
-      <PageContainer title="Rapor Düzenle" description="Rapor Düzenle">
-        <Breadcrumb title="Rapor Düzenle" items={BCrumb}>
-          <>
+    <PageContainer title="Rapor Düzenle" description="Rapor Düzenle">
+      <Breadcrumb title="Rapor Düzenle" items={BCrumb}>
+        <>
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              height: "100%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+            }}
+          >
             <Grid
-              container
+              item
+              xs={12}
+              md={12}
+              lg={12}
               sx={{
-                width: "95%",
-                height: "100%",
-                margin: "0 auto",
-                justifyContent: "space-between",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <Grid
-                item
-                xs={12}
-                md={12}
-                lg={12}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                onClick={() => setIsClickedVarsayilanaDon(true)}
+                sx={{ width: "100%" }}
               >
-                <Button
-                  size="medium"
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => setIsClickedVarsayilanaDon(true)}
-                  sx={{ width: "100%" }}
+                <Typography
+                  variant="body1"
+                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
                 >
-                  <Typography
-                    variant="body1"
-                    sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                  >
-                    Varsayılana Dön
-                  </Typography>
-                </Button>
-              </Grid>
+                  Varsayılana Dön
+                </Typography>
+              </Button>
             </Grid>
-          </>
-        </Breadcrumb>
-        <Grid container spacing={3}>
-          <Grid item xs={12} lg={12}>
-            <TabContext value={tip}>
-              <TabList
-                onChange={handleChange}
-                aria-label="lab API tabs example"
-              >
-                <Tab
-                  label="Bağımsız Denetçi Raporu"
-                  value="BagimsizDenetciRaporu"
-                />
-                <Tab
-                  label="Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu"
-                  value="FaaliyetRaporunaIliskinBagimsizDenetciRaporu"
-                />
-              </TabList>
-              <Divider />
-              <TabPanel value="BagimsizDenetciRaporu" sx={{ paddingX: 0 }}>
-                <Grid container>
-                  <Grid
-                    item
-                    xs={12}
-                    lg={12}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      mb: 2,
-                    }}
-                  >
-                    <RaporDipnot
-                      tip={tip}
-                      isClickedVarsayilanaDon={isClickedVarsayilanaDon}
-                      setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
-                    />
-                  </Grid>
-                </Grid>
-              </TabPanel>
-              <TabPanel
-                value="FaaliyetRaporunaIliskinBagimsizDenetciRaporu"
-                sx={{ paddingX: 0 }}
-              >
-                <Grid container>
-                  <Grid
-                    item
-                    xs={12}
-                    lg={12}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      mb: 2,
-                    }}
-                  >
-                    <RaporDipnot
-                      tip={tip}
-                      isClickedVarsayilanaDon={isClickedVarsayilanaDon}
-                      setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
-                    />
-                  </Grid>
-                </Grid>
-              </TabPanel>
-            </TabContext>
           </Grid>
+        </>
+      </Breadcrumb>
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={12}>
+          <TabContext value={tip}>
+            <TabList onChange={handleChange} aria-label="lab API tabs example">
+              <Tab
+                label="Bağımsız Denetçi Raporu"
+                value="BagimsizDenetciRaporu"
+              />
+              <Tab
+                label="Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu"
+                value="FaaliyetRaporunaIliskinBagimsizDenetciRaporu"
+              />
+            </TabList>
+            <Divider />
+            <TabPanel value="BagimsizDenetciRaporu" sx={{ paddingX: 0 }}>
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    mb: 2,
+                  }}
+                >
+                  <RaporDipnot
+                    tip={tip}
+                    isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+                    setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                  />
+                </Grid>
+              </Grid>
+            </TabPanel>
+            <TabPanel
+              value="FaaliyetRaporunaIliskinBagimsizDenetciRaporu"
+              sx={{ paddingX: 0 }}
+            >
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  lg={12}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    mb: 2,
+                  }}
+                >
+                  <RaporDipnot
+                    tip={tip}
+                    isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+                    setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                  />
+                </Grid>
+              </Grid>
+            </TabPanel>
+          </TabContext>
         </Grid>
-      </PageContainer>
-    </ProtectedPage>
+      </Grid>
+    </PageContainer>
   );
 };
 

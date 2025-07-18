@@ -23,17 +23,15 @@ const BCrumb = [
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   return (
-    <ProtectedPage allowed={user?.konsolidemi || false}>
-      <PageContainer
-        title="Finansal Tablolar"
-        description="this is Finansal Tablolar"
-      >
-        <Breadcrumb title="Finansal Tablolar" items={BCrumb} />
-        <Box>
-          <TopCards parenTitle="KONSOLİDASYON" title="Finansal Tablolar" />
-        </Box>
-      </PageContainer>
-    </ProtectedPage>
+    <PageContainer
+      title="Finansal Tablolar"
+      description="this is Finansal Tablolar"
+    >
+      <Breadcrumb title="Finansal Tablolar" items={BCrumb} />
+      <Box>
+        <TopCards parenTitle="KONSOLİDASYON" title="Finansal Tablolar" />
+      </Box>
+    </PageContainer>
   );
 };
 

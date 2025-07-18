@@ -27,26 +27,24 @@ const BCrumb = [
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   return (
-    <ProtectedPage allowed={user?.konsolidemi || false}>
-      <PageContainer
-        title="Özkaynak Değişim Tablosu"
-        description="this is Özkaynak Değişim Tablosu"
-      >
-        <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb} />
-        <Grid container>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            sx={{
-              width: "500px",
-            }}
-          >
-            <OzkaynakDegisimTablosu />
-          </Grid>
+    <PageContainer
+      title="Özkaynak Değişim Tablosu"
+      description="this is Özkaynak Değişim Tablosu"
+    >
+      <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb} />
+      <Grid container>
+        <Grid
+          item
+          xs={12}
+          lg={12}
+          sx={{
+            width: "500px",
+          }}
+        >
+          <OzkaynakDegisimTablosu />
         </Grid>
-      </PageContainer>
-    </ProtectedPage>
+      </Grid>
+    </PageContainer>
   );
 };
 

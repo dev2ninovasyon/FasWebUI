@@ -20,11 +20,9 @@ export default function KonsolidasyonLayout({
   const user = useSelector((state: AppState) => state.userReducer);
 
   return (
-    <ProtectedPage allowed={user?.konsolidemi || false}>
-      <div>
-        <Breadcrumb title="Konsolidasyon" items={BCrumb} />
-        {children}
-      </div>
-    </ProtectedPage>
+    <div>
+      <Breadcrumb title="Konsolidasyon" items={BCrumb} />
+      {children}
+    </div>
   );
 }

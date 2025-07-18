@@ -26,19 +26,17 @@ const Page: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <ProtectedPage allowed={user?.konsolidemi || false}>
-      <PageContainer
-        title="Bağımsız Denetçi Raporu"
-        description="this is Bağımsız Denetçi Raporu"
-      >
-        <Breadcrumb title="Bağımsız Denetçi Raporu" items={BCrumb} />
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} lg={12}>
-            <BagimsizDenetciRaporuStepper />
-          </Grid>
+    <PageContainer
+      title="Bağımsız Denetçi Raporu"
+      description="this is Bağımsız Denetçi Raporu"
+    >
+      <Breadcrumb title="Bağımsız Denetçi Raporu" items={BCrumb} />
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={12} lg={12}>
+          <BagimsizDenetciRaporuStepper />
         </Grid>
-      </PageContainer>
-    </ProtectedPage>
+      </Grid>
+    </PageContainer>
   );
 };
 
