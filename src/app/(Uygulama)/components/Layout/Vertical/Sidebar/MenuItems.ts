@@ -538,18 +538,18 @@ export function createMenuItems(
           icon: IconTimeline,
           href: "/PlanVeProgram",
           children: [
-            /*{
-          id: uniqueId(),
-          title: "Denetim Programı",
-          icon: IconPoint,
-          href: "/",
-        },
-        {
-          id: uniqueId(),
-          title: "Maddi Doğrulama Görev Atamaları",
-          icon: IconPoint,
-          href: "/",
-        },*/
+            {
+              id: uniqueId(),
+              title: "Denetim Programı",
+              icon: IconPoint,
+              href: "/PlanVeProgram/DenetimProgrami",
+            },
+            {
+              id: uniqueId(),
+              title: "Maddi Doğruluk Görev Atamaları",
+              icon: IconPoint,
+              href: "/PlanVeProgram/MaddiDogrulukGorevAtamalari",
+            },
             {
               id: uniqueId(),
               title: "Denetim Takvimi",
@@ -562,13 +562,13 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimPlani",
             },
+            {
+              id: uniqueId(),
+              title: "Denetim Ekibi Görev Tebliği",
+              icon: IconPoint,
+              href: "/PlanVeProgram/GorevTebligi",
+            },
             /*{
-          id: uniqueId(),
-          title: "Denetim Ekibi Görev Tebliği",
-          icon: IconPoint,
-          href: "/",
-        },
-        {
           id: uniqueId(),
           title: "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
           icon: IconPoint,
@@ -678,7 +678,7 @@ export function createMenuItems(
           children: [
             {
               id: uniqueId(),
-              title: "Denetim Satratejisi Belirleme",
+              title: "Denetim Stratejisi Belirleme",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,

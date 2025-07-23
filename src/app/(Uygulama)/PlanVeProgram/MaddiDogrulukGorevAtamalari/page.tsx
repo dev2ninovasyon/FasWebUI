@@ -8,20 +8,16 @@ import { useSelector } from "@/store/hooks";
 import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import TekliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TekliCalismaKagidiBelge";
+import MaddiDogrulukGorevAtamalariBelge from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulukGorevAtamalariBelge";
 
 const BCrumb = [
   {
-    to: "/DenetimKanitlari",
-    title: "Denetim Kanıtları",
+    to: "/PlanVeProgram",
+    title: "Plan ve Program",
   },
   {
-    to: "/DenetimKanitlari/DigerKanitlar",
-    title: "Diğer Kanıtlar",
-  },
-  {
-    to: "/DenetimKanitlari/DigerKanitlar/DenetimStratejisiBelirleme",
-    title: "Denetim Stratejisi Belirleme",
+    to: "/PlanVeProgram/MaddiDogrulukGorevAtamalari",
+    title: "Maddi Doğruluk Görev Atamaları",
   },
 ];
 
@@ -36,9 +32,8 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "DenetimStratejisiBelirleme";
+  const controller = "MaddiDogrulukGorevAtamalari";
   const grupluMu = false;
-  const alanAdi = "İşlem";
 
   const handleOpen = () => {
     setIsCreatePopUpOpen(true);
@@ -72,7 +67,7 @@ const Page = () => {
 
   return (
     <>
-      <Breadcrumb title="Denetim Stratejisi Belirleme" items={BCrumb}>
+      <Breadcrumb title="Maddi Doğruluk Görev Atamaları" items={BCrumb}>
         <>
           <Grid
             container
@@ -203,15 +198,12 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Denetim Stratejisi Belirleme"
-        description="this is Denetim Stratejisi Belirleme"
+        title="Maddi Doğruluk Görev Atamaları"
+        description="this is Maddi Doğruluk Görev Atamaları"
       >
         <Box>
-          <TekliCalismaKagidiBelge
+          <MaddiDogrulukGorevAtamalariBelge
             controller={controller}
-            grupluMu={grupluMu}
-            alanAdi={alanAdi}
-            isClickedYeniGrupEkle={isClickedYeniGrupEkle}
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}

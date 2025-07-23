@@ -139,6 +139,32 @@ export const updateCalismaKagidiVerisi = async (
   }
 };
 
+export const updateAllCalismaKagidiVerisi = async (
+  controller: string,
+  token: string,
+  updatedAllCalismaKagidiVerisi: any
+) => {
+  try {
+    const response = await fetch(`${url}/${controller}/Hepsi`, {
+      method: "PUT",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedAllCalismaKagidiVerisi),
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const deleteCalismaKagidiVerisiById = async (
   controller: string,
   token: string,

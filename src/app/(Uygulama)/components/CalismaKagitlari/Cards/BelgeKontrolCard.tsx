@@ -7,7 +7,7 @@ import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import PerosnelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
+import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
 
 interface CardProps {
   hazirlayan?: string;
@@ -56,7 +56,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
             <CustomFormLabel htmlFor="name" sx={{ mt: 0 }}>
               Personel
             </CustomFormLabel>
-            <PerosnelBoxAutocomplete
+            <PersonelBoxAutocomplete
               initialValue={
                 hazirlayan
                   ? user.rol &&

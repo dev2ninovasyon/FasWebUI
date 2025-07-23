@@ -119,7 +119,7 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
 
   const fetchData = async () => {
     try {
-      if (controller == "YillikTaahhutname") {
+      if (controller == "YillikTaahhutname" || controller == "GorevTebligi") {
         const data =
           await getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil(
             controller,

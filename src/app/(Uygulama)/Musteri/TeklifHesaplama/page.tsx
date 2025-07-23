@@ -595,14 +595,7 @@ const Page = () => {
             />
           )}
         </Grid>
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-          }}
-        >
+        <>
           {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
             user.rol?.includes("SorumluDenetci") ||
             user.rol?.includes("Denetci") ||
@@ -610,7 +603,7 @@ const Page = () => {
             <Grid
               container
               sx={{
-                width: "95%",
+                width: "97%",
                 margin: "0 auto",
                 justifyContent: "space-between",
               }}
@@ -626,7 +619,7 @@ const Page = () => {
               </Grid>
             </Grid>
           )}
-        </Grid>
+        </>
       </PageContainer>
     </>
   );
