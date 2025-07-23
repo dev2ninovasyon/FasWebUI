@@ -52,7 +52,10 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
       pathname.startsWith(route)
     );
 
-    if (!isNotProtected && !user.denetlenenId) {
+    if (
+      (!isNotProtected && !user.denetlenenId) ||
+      pathname === "/Kullanici/DenetciYillikTaahutname"
+    ) {
       router.push("/Anasayfa");
 
       enqueueSnackbar("Denetlenen Firma Seçmelisiniz", {
