@@ -329,6 +329,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   };
 
   const handleClosePopUp = () => {
+    setIsNew(false);
     setIsPopUpOpen(false);
   };
 

@@ -28,6 +28,35 @@ export const getMaddiDogrulama = async (token: string, denetimTuru: string) => {
   }
 };
 
+export const getDenetimDosyaByFormKodu = async (
+  token: string,
+  denetimTuru: string,
+  formKodu: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimDosyaBelgeleri/FormKodu?denetimTuru=${denetimTuru}&formKodu=${formKodu}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Verileri getirilemedi");
+      return null; // Hata durumunda null döndürüyoruz
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+    return null; // Hata durumunda null döndürüyoruz
+  }
+};
+
 export const getUygulananDenetimProsedurleri = async (
   token: string,
   denetciId: number,
