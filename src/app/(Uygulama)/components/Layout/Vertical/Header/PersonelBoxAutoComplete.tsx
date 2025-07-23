@@ -19,7 +19,7 @@ interface Perosnel {
   label?: string;
 }
 
-const PerosnelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
+const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
   initialValue,
   tip,
   disabled,
@@ -56,8 +56,16 @@ const PerosnelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
   const [selectedOption, setSelectedOption] = useState<Perosnel | null>(null);
 
   useEffect(() => {
-    // Find the option that matches the initialValue
-    const matchedOption = rows.find((row) => row.label === initialValue);
+    if (!initialValue || rows.length === 0) return;
+
+    // Önce label (personelAdi) ile eşleşmeyi dene
+    let matchedOption = rows.find((row) => row.label === initialValue);
+
+    // Eğer bulunamadıysa ve initialValue bir sayıya dönüştürülebiliyorsa id ile eşleşmeyi dene
+    if (!matchedOption && !isNaN(Number(initialValue))) {
+      matchedOption = rows.find((row) => row.id === Number(initialValue));
+    }
+
     setSelectedOption(matchedOption || null);
   }, [initialValue, rows]);
 
@@ -94,4 +102,4 @@ const PerosnelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
   );
 };
 
-export default PerosnelBoxAutocomplete;
+export default PersonelBoxAutocomplete;
