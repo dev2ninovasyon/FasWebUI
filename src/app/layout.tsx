@@ -40,6 +40,8 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (
       pathname === "/" ||
+      pathname === "/HesapAyarlari" ||
+      pathname === "/TemaAyarlari" ||
       pathname === "/Musteri" ||
       pathname === "/Musteri/MusteriIslemleri"
     )
