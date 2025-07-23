@@ -32,14 +32,19 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   const NOT_PROTECTED_ROUTES = [
-    "/",
     "/Anasayfa",
-    "/Musteri",
     "/DigerIslemler",
     "/KullanimKilavuzu",
   ];
 
   useEffect(() => {
+    if (
+      pathname === "/" ||
+      pathname === "/Musteri" ||
+      pathname === "/Musteri/MusteriIslemleri"
+    )
+      return;
+
     const isNotProtected = NOT_PROTECTED_ROUTES.some((route) =>
       pathname.startsWith(route)
     );
