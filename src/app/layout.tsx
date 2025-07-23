@@ -33,6 +33,7 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
 
   const NOT_PROTECTED_ROUTES = [
     "/Anasayfa",
+    "/Kullanici",
     "/DigerIslemler",
     "/KullanimKilavuzu",
   ];
