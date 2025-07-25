@@ -23,7 +23,9 @@ import { useSelector } from "@/store/hooks";
 import {
   createCalismaKagidiVerisi,
   deleteAllCalismaKagidiVerileri,
+  deleteAllCalismaKagidiVerileriByKullanci,
   deleteCalismaKagidiVerisiById,
+  getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil,
   getCalismaKagidiVerileriByDenetciDenetlenenYil,
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
@@ -37,6 +39,7 @@ interface Veri {
   islem: string;
   tespit: string;
   baslikId?: number;
+  kullaniciId?: number;
   standartMi: boolean;
 }
 
@@ -47,6 +50,7 @@ interface CalismaKagidiProps {
   isClickedVarsayilanaDon: boolean;
   alanAdi1: string;
   alanAdi2: string;
+  kullaniciId?: number;
   setIsClickedVarsayilanaDon: (deger: boolean) => void;
   setTamamlanan: (deger: number) => void;
   setToplam: (deger: number) => void;
@@ -57,6 +61,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   grupluMu,
   alanAdi1,
   alanAdi2,
+  kullaniciId,
   isClickedYeniGrupEkle,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
@@ -96,6 +101,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       baslikId: selectedGroupId,
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
+      kullaniciId: kullaniciId,
       yil: user.yil,
       islem: islem,
       tespit: tespit,
@@ -222,17 +228,33 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleDeleteAll = async () => {
     try {
-      const result = await deleteAllCalismaKagidiVerileri(
-        controller || "",
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
-      if (result) {
-        fetchData();
+      if (kullaniciId) {
+        const result = await deleteAllCalismaKagidiVerileriByKullanci(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          kullaniciId || 0,
+          user.yil || 0
+        );
+        if (result) {
+          fetchData();
+        } else {
+          console.error("Çalışma Kağıdı Verileri silme başarısız");
+        }
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        const result = await deleteAllCalismaKagidiVerileri(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0
+        );
+        if (result) {
+          fetchData();
+        } else {
+          console.error("Çalışma Kağıdı Verileri silme başarısız");
+        }
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -241,60 +263,120 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 
   const fetchData = async () => {
     try {
-      const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
-          controller || "",
-          user.token || "",
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0
-        );
+      if (kullaniciId) {
+        const calismaKagidiVerileri =
+          await getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil(
+            controller || "",
+            user.token || "",
+            user.denetciId || 0,
+            user.denetlenenId || 0,
+            kullaniciId || 0,
+            user.yil || 0
+          );
 
-      const rowsAll: any = [];
-      const rowsWithBaslikId: Veri[] = [];
-      const rowsWithoutBaslikId: Veri[] = [];
+        const rowsAll: any = [];
+        const rowsWithBaslikId: Veri[] = [];
+        const rowsWithoutBaslikId: Veri[] = [];
 
-      const tamamlanan: any[] = [];
-      const toplam: any[] = [];
+        const tamamlanan: any[] = [];
+        const toplam: any[] = [];
 
-      calismaKagidiVerileri.forEach((veri: any) => {
-        const newRow: Veri = {
-          id: veri.id,
-          islem: veri.islem,
-          tespit: veri.tespit,
-          baslikId: veri.baslikId,
-          standartMi: veri.standartmi,
-        };
-        rowsAll.push(newRow);
+        calismaKagidiVerileri.forEach((veri: any) => {
+          const newRow: Veri = {
+            id: veri.id,
+            islem: veri.islem,
+            tespit: veri.tespit,
+            baslikId: veri.baslikId,
+            kullaniciId: veri.kullaniciId,
+            standartMi: veri.standartmi,
+          };
+          rowsAll.push(newRow);
 
-        if (grupluMu) {
-          if (veri.baslikId) {
-            rowsWithBaslikId.push(newRow);
+          if (grupluMu) {
+            if (veri.baslikId) {
+              rowsWithBaslikId.push(newRow);
+              if (newRow.standartMi) {
+                toplam.push(newRow);
+              } else {
+                tamamlanan.push(newRow);
+                toplam.push(newRow);
+              }
+            } else {
+              rowsWithoutBaslikId.push(newRow);
+              rowsAll.push(newRow);
+            }
+          } else {
             if (newRow.standartMi) {
               toplam.push(newRow);
             } else {
               tamamlanan.push(newRow);
               toplam.push(newRow);
             }
-          } else {
-            rowsWithoutBaslikId.push(newRow);
-            rowsAll.push(newRow);
           }
-        } else {
-          if (newRow.standartMi) {
-            toplam.push(newRow);
-          } else {
-            tamamlanan.push(newRow);
-            toplam.push(newRow);
-          }
-        }
-      });
-      setVeriler(rowsAll);
-      setVerilerWithBaslikId(rowsWithBaslikId);
-      setVerilerWithoutBaslikId(rowsWithoutBaslikId);
+        });
+        setVeriler(rowsAll);
+        setVerilerWithBaslikId(rowsWithBaslikId);
+        setVerilerWithoutBaslikId(rowsWithoutBaslikId);
 
-      setToplam(toplam.length);
-      setTamamlanan(tamamlanan.length);
+        setToplam(toplam.length);
+        setTamamlanan(tamamlanan.length);
+      } else {
+        const calismaKagidiVerileri =
+          await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+            controller || "",
+            user.token || "",
+            user.denetciId || 0,
+            user.denetlenenId || 0,
+            user.yil || 0
+          );
+
+        const rowsAll: any = [];
+        const rowsWithBaslikId: Veri[] = [];
+        const rowsWithoutBaslikId: Veri[] = [];
+
+        const tamamlanan: any[] = [];
+        const toplam: any[] = [];
+
+        calismaKagidiVerileri.forEach((veri: any) => {
+          const newRow: Veri = {
+            id: veri.id,
+            islem: veri.islem,
+            tespit: veri.tespit,
+            baslikId: veri.baslikId,
+            kullaniciId: veri.kullaniciId,
+            standartMi: veri.standartmi,
+          };
+          rowsAll.push(newRow);
+
+          if (grupluMu) {
+            if (veri.baslikId) {
+              rowsWithBaslikId.push(newRow);
+              if (newRow.standartMi) {
+                toplam.push(newRow);
+              } else {
+                tamamlanan.push(newRow);
+                toplam.push(newRow);
+              }
+            } else {
+              rowsWithoutBaslikId.push(newRow);
+              rowsAll.push(newRow);
+            }
+          } else {
+            if (newRow.standartMi) {
+              toplam.push(newRow);
+            } else {
+              tamamlanan.push(newRow);
+              toplam.push(newRow);
+            }
+          }
+        });
+        setVeriler(rowsAll);
+        setVerilerWithBaslikId(rowsWithBaslikId);
+        setVerilerWithoutBaslikId(rowsWithoutBaslikId);
+
+        setToplam(toplam.length);
+        setTamamlanan(tamamlanan.length);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -344,6 +426,10 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [kullaniciId]);
 
   useEffect(() => {
     if (!isClickedYeniGrupEkle) {

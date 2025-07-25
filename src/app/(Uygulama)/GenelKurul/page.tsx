@@ -22,7 +22,7 @@ const Page = () => {
             sx={{
               display: "flex",
               justifyContent: "end",
-              paddingBottom: "10px",
+              paddingBottom: showFilteredMenu ? "32px" : "0px",
               paddingRight: "10px",
             }}
           >
@@ -31,7 +31,7 @@ const Page = () => {
                 <IconLayoutGrid size={24} />
               ) : (
                 <IconList size={24} />
-              )}{" "}
+              )}
               {/* Toggle between icons */}
             </Button>
           </Box>

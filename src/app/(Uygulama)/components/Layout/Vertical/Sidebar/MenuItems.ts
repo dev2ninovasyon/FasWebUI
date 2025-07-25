@@ -568,43 +568,43 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/PlanVeProgram/GorevTebligi",
             },
-            /*{
-          id: uniqueId(),
-          title: "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
-          icon: IconPoint,
-          href: "/",
-        },
-        {
-          id: uniqueId(),
-          title: "Etik Bildirim ve Değerlendirme",
-          icon: IconPoint,
-          href: "/",
-        },
-        {
-          id: uniqueId(),
-          title:
-            "Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
-          icon: IconPoint,
-          href: "/",
-        },*/
+            {
+              id: uniqueId(),
+              title: "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+              icon: IconPoint,
+              href: "/PlanVeProgram/BagimsizlikSorumlulukBeyani",
+            },
+            {
+              id: uniqueId(),
+              title: "Etik Bildirim ve Değerlendirme",
+              icon: IconPoint,
+              href: "/PlanVeProgram/EtikGerekliliklereIliskinBildirim",
+            },
+            {
+              id: uniqueId(),
+              title:
+                "Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+              icon: IconPoint,
+              href: "/PlanVeProgram/MeslekiEtik",
+            },
             {
               id: uniqueId(),
               title: "Denetim Zamanı Bildirme",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimZamaniBildirme",
             },
-            /*{
-          id: uniqueId(),
-          title: "Sorumlu Denetçi Kimlik ve Deneyim Bildirim",
-          icon: IconPoint,
-          href: "/",
-        },
-       {
-          id: uniqueId(),
-          title: "Denetçi Sorumlulukları Bildirim",
-          icon: IconPoint,
-          href: "/",
-        },*/
+            {
+              id: uniqueId(),
+              title: "Sorumlu Denetçi Kimlik ve Deneyim Bildirim",
+              icon: IconPoint,
+              href: "/PlanVeProgram/MeslekiDeneyimYeterlilik",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetçi Sorumlulukları Bildirim",
+              icon: IconPoint,
+              href: "/PlanVeProgram/SorumlulukBildirimi",
+            },
             {
               id: uniqueId(),
               title:
