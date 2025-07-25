@@ -2,6 +2,8 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  deleteAllCalismaKagidiVerileri,
+  deleteAllCalismaKagidiVerileriByKullanci,
   getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil,
   getCalismaKagidiVerileriByDenetciDenetlenenYil,
   updateCalismaKagidiVerisi,
@@ -68,13 +70,16 @@ interface Veri {
 
 interface CustomEditorProps {
   controller: string;
-
   personelId?: number;
+  isClickedVarsayilanaDon?: boolean;
+  setIsClickedVarsayilanaDon?: (deger: boolean) => void;
 }
 
 const CustomEditor: React.FC<CustomEditorProps> = ({
   controller,
   personelId,
+  isClickedVarsayilanaDon,
+  setIsClickedVarsayilanaDon,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -117,9 +122,50 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
     setEditorData(editor.getData());
   }, []);
 
+  const handleDeleteAll = async () => {
+    try {
+      if (personelId) {
+        const result = await deleteAllCalismaKagidiVerileriByKullanci(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          personelId || 0,
+          user.yil || 0
+        );
+        if (result) {
+          fetchData();
+        } else {
+          console.error("Çalışma Kağıdı Verileri silme başarısız");
+        }
+      } else {
+        const result = await deleteAllCalismaKagidiVerileri(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0
+        );
+        if (result) {
+          fetchData();
+        } else {
+          console.error("Çalışma Kağıdı Verileri silme başarısız");
+        }
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
   const fetchData = async () => {
     try {
-      if (controller == "YillikTaahhutname" || controller == "GorevTebligi") {
+      if (
+        controller == "YillikTaahhutname" ||
+        controller == "GorevTebligi" ||
+        controller == "BagimsizlikSorumlulukBeyani" ||
+        controller == "MeslekiDeneyimYeterlilik" ||
+        controller == "SorumlulukBildirimi"
+      ) {
         const data =
           await getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil(
             controller,
@@ -160,6 +206,15 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
   useEffect(() => {
     fetchData();
   }, [personelId]);
+
+  useEffect(() => {
+    if (isClickedVarsayilanaDon) {
+      handleDeleteAll();
+      if (setIsClickedVarsayilanaDon) {
+        setIsClickedVarsayilanaDon(false);
+      }
+    }
+  }, [isClickedVarsayilanaDon]);
 
   useEffect(() => {
     if (!editorData) return;

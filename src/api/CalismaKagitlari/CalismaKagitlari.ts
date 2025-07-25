@@ -247,3 +247,33 @@ export const deleteAllCalismaKagidiVerileriByDipnotNo = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const deleteAllCalismaKagidiVerileriByKullanci = async (
+  controller: string,
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  kullaniciId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
+      {
+        method: "DELETE",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
