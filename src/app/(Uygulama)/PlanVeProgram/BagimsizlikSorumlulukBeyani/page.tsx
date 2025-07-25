@@ -7,14 +7,14 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import dynamic from "next/dynamic";
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
-import GorevTebligiLayout from "./GorevTebligiLayout";
+import BagimsizlikSorumlulukBeyaniLayout from "./BagimsizlikSorumlulukBeyaniLayout";
 
 const CustomEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditor"),
   { ssr: false }
 );
 
-const controller = "GorevTebligi";
+const controller = "BagimsizlikSorumlulukBeyani";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
@@ -23,8 +23,11 @@ const Page = () => {
   const [personelAdi, setPersonelAdi] = useState(user.kullaniciAdi);
 
   return (
-    <GorevTebligiLayout>
-      <PageContainer title="Görev Tebliği" description="this is Görev Tebliği">
+    <BagimsizlikSorumlulukBeyaniLayout>
+      <PageContainer
+        title="Bağımsızlık Sorumluluk Beyanı"
+        description="this is Bağımsızlık Sorumluluk Beyanı"
+      >
         <Grid container>
           <Grid item xs={12} mb={3}>
             <PersonelBoxAutocomplete
@@ -43,7 +46,7 @@ const Page = () => {
           <CustomEditor controller={controller} personelId={personelId || 0} />
         </Box>
       </PageContainer>
-    </GorevTebligiLayout>
+    </BagimsizlikSorumlulukBeyaniLayout>
   );
 };
 
