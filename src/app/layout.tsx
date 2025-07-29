@@ -54,7 +54,7 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
 
     if (
       (!isNotProtected && !user.denetlenenId) ||
-      pathname === "/Kullanici/DenetciYillikTaahutname"
+      (pathname === "/Kullanici/DenetciYillikTaahutname" && !user.denetlenenId)
     ) {
       router.push("/Anasayfa");
 
