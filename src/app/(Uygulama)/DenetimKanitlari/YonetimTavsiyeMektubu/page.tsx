@@ -6,18 +6,23 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { useState } from "react";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import TarihliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TarihliCalismaKagidiBelge";
+import dynamic from "next/dynamic";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
+import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
+
+const CustomEditor = dynamic(
+  () => import("@/app/(Uygulama)/components/Editor/CustomEditor"),
+  { ssr: false }
+);
 
 const BCrumb = [
   {
-    to: "/PlanVeProgram",
-    title: "Plan ve Program",
+    to: "/DenetimKanitlari",
+    title: "Denetim Kanıtları",
   },
   {
-    to: "/PlanVeProgram/DenetimTakvimi",
-    title: "Denetim Takvimi",
+    to: "/DenetimKanitlari/YonetimTavsiyeMektubu",
+    title: "Yönetim Tavsiye Mektubu",
   },
 ];
 
@@ -32,7 +37,7 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "DenetimTakvimi";
+  const controller = "YonetimTavsiyeMektubu";
   const grupluMu = false;
 
   const handleOpen = () => {
@@ -40,12 +45,12 @@ const Page = () => {
     setIsClickedYeniGrupEkle(true);
   };
 
-  const handleCreateGroup = async (calisma: string) => {
+  const handleCreateGroup = async (metin: string) => {
     const createdCalismaKagidiGrubu = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      calisma: calisma,
+      metin: metin,
     };
 
     try {
@@ -64,10 +69,9 @@ const Page = () => {
       console.error("Bir hata oluştu:", error);
     }
   };
-
   return (
     <>
-      <Breadcrumb title="Denetim Takvimi" items={BCrumb}>
+      <Breadcrumb title="Yönetim Tavsiye Mektubu" items={BCrumb}>
         <>
           <Grid
             container
@@ -198,18 +202,14 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Denetim Takvimi"
-        description="this is Denetim Takvimi"
+        title="Yönetim Tavsiye Mektubu"
+        description="this is Yönetim Tavsiye Mektubu"
       >
         <Box>
-          <TarihliCalismaKagidiBelge
+          <CustomEditor
             controller={controller}
-            grupluMu={grupluMu}
-            isClickedYeniGrupEkle={isClickedYeniGrupEkle}
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
-            setTamamlanan={setTamamlanan}
-            setToplam={setToplam}
           />
         </Box>
       </PageContainer>

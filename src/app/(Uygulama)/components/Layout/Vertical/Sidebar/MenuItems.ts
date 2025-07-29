@@ -576,7 +576,7 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
-              title: "Etik Bildirim ve Değerlendirme",
+              title: "Etik Gerekliliklere İlişkin Bildirim ve Değerlendirme",
               icon: IconPoint,
               href: "/PlanVeProgram/EtikGerekliliklereIliskinBildirim",
             },
@@ -601,7 +601,7 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
-              title: "Denetçi Sorumlulukları Bildirim",
+              title: "Sorumlu Denetçi Sorumlulukları Bildirim",
               icon: IconPoint,
               href: "/PlanVeProgram/SorumlulukBildirimi",
             },
@@ -620,9 +620,33 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
+              title: "Faaliyet Riski Belirleme Belgesi",
+              icon: IconPoint,
+              href: "/PlanVeProgram/FaaliyetRiskBelirleme",
+            },
+            {
+              id: uniqueId(),
+              title: "Beyan ve Soruşturma Sonucu Tespit Edilen Riskler",
+              icon: IconPoint,
+              href: "/PlanVeProgram/TespitEdilenRiskler",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetim Riski Belirleme Belgesi",
+              icon: IconPoint,
+              href: "/PlanVeProgram/DenetimRiskBelirleme",
+            },
+            {
+              id: uniqueId(),
               title: "Finansal Tablolar Denetim Riski Belirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme",
+            },
+            {
+              id: uniqueId(),
+              title: "Bulgu Riski Belirleme",
+              icon: IconPoint,
+              href: "/PlanVeProgram/BulguRiskiBelirleme",
             },
             {
               id: uniqueId(),
@@ -652,9 +676,33 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
+              title: "Bilgi İşlem Muhasebe Sistemi Değerlendirme",
+              icon: IconPoint,
+              href: "/PlanVeProgram/BilgiIslemMuhasebe",
+            },
+            {
+              id: uniqueId(),
+              title: "İşletmeye İlişkin İç Kontrol Tespit Belgesi",
+              icon: IconPoint,
+              href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolTespit",
+            },
+            {
+              id: uniqueId(),
+              title: "Hesaplara İlişkin İç Kontrol Tespit Belgesi",
+              icon: IconPoint,
+              href: "/PlanVeProgram/HesaplaraIliskinIcKontrolTespit",
+            },
+            {
+              id: uniqueId(),
               title: "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
               icon: IconPoint,
               href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
+            },
+            {
+              id: uniqueId(),
+              title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+              icon: IconPoint,
+              href: "/PlanVeProgram/HileUsulsuzlukBelirleme",
             },
             {
               id: uniqueId(),
@@ -951,6 +999,14 @@ export function createMenuItems(
                 },
                 {
                   id: uniqueId(),
+                  title: "Sayım ve Tespit Değerlendirme",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+                  icon: IconPoint,
+                  href: "/DenetimKanitlari/DigerKanitlar/SayimVeTespitDegerlendirme",
+                },
+                {
+                  id: uniqueId(),
                   title: "İhmal Edilen Düzeltme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
@@ -1029,6 +1085,14 @@ export function createMenuItems(
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/YevmiyeKayitlariKontrol",
+            },
+            {
+              id: uniqueId(),
+              title: "Yönetim Tavsiye Mektubu",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/YonetimTavsiyeMektubu",
             },
             {
               id: uniqueId(),

@@ -6,9 +6,9 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { useState } from "react";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import TarihliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TarihliCalismaKagidiBelge";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
+import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import HileUsulsuzlukBelirlemeBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukBelirlemeBelge";
 
 const BCrumb = [
   {
@@ -16,8 +16,8 @@ const BCrumb = [
     title: "Plan ve Program",
   },
   {
-    to: "/PlanVeProgram/DenetimTakvimi",
-    title: "Denetim Takvimi",
+    to: "/PlanVeProgram/HileUsulsuzlukBelirleme",
+    title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
   },
 ];
 
@@ -32,7 +32,7 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "DenetimTakvimi";
+  const controller = "HileUsulsuzlukBelirleme";
   const grupluMu = false;
 
   const handleOpen = () => {
@@ -40,12 +40,12 @@ const Page = () => {
     setIsClickedYeniGrupEkle(true);
   };
 
-  const handleCreateGroup = async (calisma: string) => {
+  const handleCreateGroup = async (konu: string) => {
     const createdCalismaKagidiGrubu = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      calisma: calisma,
+      konu: konu,
     };
 
     try {
@@ -67,7 +67,10 @@ const Page = () => {
 
   return (
     <>
-      <Breadcrumb title="Denetim Takvimi" items={BCrumb}>
+      <Breadcrumb
+        title="Hile Usulsüzlük ve Risk Faktörleri Belirleme"
+        items={BCrumb}
+      >
         <>
           <Grid
             container
@@ -133,7 +136,7 @@ const Page = () => {
             )}
             <Grid
               item
-              xs={5.8}
+              xs={3.8}
               md={grupluMu ? 2.8 : 3.8}
               lg={grupluMu ? 2.8 : 3.8}
               sx={{
@@ -161,7 +164,7 @@ const Page = () => {
             </Grid>
             <Grid
               item
-              xs={5.8}
+              xs={3.8}
               md={grupluMu ? 2.8 : 3.8}
               lg={grupluMu ? 2.8 : 3.8}
               sx={{
@@ -198,14 +201,12 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Denetim Takvimi"
-        description="this is Denetim Takvimi"
+        title="Hile Usulsüzlük ve Risk Faktörleri Belirleme"
+        description="this is Hile Usulsüzlük ve Risk Faktörleri Belirleme"
       >
         <Box>
-          <TarihliCalismaKagidiBelge
+          <HileUsulsuzlukBelirlemeBelge
             controller={controller}
-            grupluMu={grupluMu}
-            isClickedYeniGrupEkle={isClickedYeniGrupEkle}
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}
