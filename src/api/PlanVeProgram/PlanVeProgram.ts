@@ -279,3 +279,60 @@ export const updateFinansalTabloKalemlerindeDegisim = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const createBulguRiskiBelirleme = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  girilenRisk: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/BulguRiskiBelirlemeHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&girilenRisk=${girilenRisk}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getBulguRiskiBelirleme = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/BulguRiskiBelirleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.status == 200) {
+      return response.json();
+    } else {
+      console.error("Bulgu Riski Belirleme getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};

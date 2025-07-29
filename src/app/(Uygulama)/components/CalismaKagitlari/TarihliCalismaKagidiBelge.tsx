@@ -756,7 +756,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
-          <DialogContent className="testdialog">
+          <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
             <Stack
               direction="row"
               spacing={2}
@@ -773,46 +773,36 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           </DialogContent>
           <Divider />
           <DialogContent>
-            <Box px={3} pt={2}>
-              <Typography variant="h5" mb={1} p={1}>
-                Görev Süresi
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Başlangıç Tarihi
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <CustomTextField
-                    id="start-date"
-                    label="Başlangıç Tarihi"
-                    type="date"
-                    variant="outlined"
-                    value={formattedStartDate}
-                    onChange={(e: any) =>
-                      handleSetSelectedBaslangicTarihi(e.target.value)
-                    }
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <CustomTextField
-                    id="end-date"
-                    label="Bitiş Tarihi"
-                    type="date"
-                    variant="outlined"
-                    value={formattedEndDate}
-                    onChange={(e: any) =>
-                      handleSetSelectedBitisTarihi(e.target.value)
-                    }
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-              </Grid>
+              <CustomTextField
+                id="baslangicTarihi"
+                type="date"
+                variant="outlined"
+                fullWidth
+                value={formattedStartDate}
+                onChange={(e: any) =>
+                  handleSetSelectedBaslangicTarihi(e.target.value)
+                }
+              />
             </Box>
-            <Box px={3} pt={3}></Box>
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Bitiş Tarihi
+              </Typography>
+              <CustomTextField
+                id="bitisTarihi"
+                type="date"
+                variant="outlined"
+                fullWidth
+                value={formattedEndDate}
+                onChange={(e: any) =>
+                  handleSetSelectedBitisTarihi(e.target.value)
+                }
+              />
+            </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
                 Çalışma

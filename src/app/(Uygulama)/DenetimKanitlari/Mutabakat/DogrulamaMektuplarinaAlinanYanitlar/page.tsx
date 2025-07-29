@@ -3,8 +3,12 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box, Button, Grid, Typography } from "@mui/material";
+import { AppState } from "@/store/store";
+import { useSelector } from "@/store/hooks";
 import { useState } from "react";
-import DogrulamaMektuplarinaAlinanYanitlar from "@/app/(Uygulama)/components/CalismaKagitlari/DogrulamaMektuplarinaAlinanYanitlar";
+import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
+import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import DogrulamaMektuplarinaAlinanYanitlarBelge from "@/app/(Uygulama)/components/CalismaKagitlari/DogrulamaMektuplarinaAlinanYanitlarBelge";
 
 const BCrumb = [
   {
@@ -22,12 +26,48 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const [islem, setIslem] = useState("");
+  const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
+
+  const [isClickedYeniGrupEkle, setIsClickedYeniGrupEkle] = useState(false);
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
+  const user = useSelector((state: AppState) => state.userReducer);
   const controller = "DogrulamaMektuplarinaAlinanYanitlar";
+  const grupluMu = false;
+
+  const handleOpen = () => {
+    setIsCreatePopUpOpen(true);
+    setIsClickedYeniGrupEkle(true);
+  };
+
+  const handleCreateGroup = async (islem: string) => {
+    const createdCalismaKagidiGrubu = {
+      denetlenenId: user.denetlenenId,
+      denetciId: user.denetciId,
+      yil: user.yil,
+      islem: islem,
+    };
+
+    try {
+      const result = await createCalismaKagidiVerisi(
+        controller || "",
+        user.token || "",
+        createdCalismaKagidiGrubu
+      );
+      if (result) {
+        setIsCreatePopUpOpen(false);
+        setIsClickedYeniGrupEkle(false);
+      } else {
+        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
 
   return (
     <>
@@ -45,8 +85,8 @@ const Page = () => {
             <Grid
               item
               xs={12}
-              md={3.8}
-              lg={3.8}
+              md={grupluMu ? 2.8 : 3.8}
+              lg={grupluMu ? 2.8 : 3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -64,11 +104,42 @@ const Page = () => {
                 {tamamlanan}/{toplam} Tamamlandı
               </Typography>
             </Grid>
+            {grupluMu && (
+              <Grid
+                item
+                xs={3.8}
+                md={grupluMu ? 2.8 : 3.8}
+                lg={grupluMu ? 2.8 : 3.8}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleOpen()}
+                  sx={{ width: "100%" }}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      overflowWrap: "break-word",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    Yeni Grup Ekle
+                  </Typography>{" "}
+                </Button>
+              </Grid>
+            )}
             <Grid
               item
-              xs={5.8}
-              md={3.8}
-              lg={3.8}
+              xs={3.8}
+              md={grupluMu ? 2.8 : 3.8}
+              lg={grupluMu ? 2.8 : 3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -94,9 +165,9 @@ const Page = () => {
             </Grid>
             <Grid
               item
-              xs={5.8}
-              md={3.8}
-              lg={3.8}
+              xs={3.8}
+              md={grupluMu ? 2.8 : 3.8}
+              lg={grupluMu ? 2.8 : 3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -119,6 +190,15 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
+          {isCreatePopUpOpen && (
+            <CreateGroupPopUp
+              islem={islem}
+              setIslem={setIslem}
+              isPopUpOpen={isCreatePopUpOpen}
+              setIsPopUpOpen={setIsCreatePopUpOpen}
+              handleCreateGroup={handleCreateGroup}
+            />
+          )}
         </>
       </Breadcrumb>
       <PageContainer
@@ -126,7 +206,7 @@ const Page = () => {
         description="this is Doğrulama Mektuplarına Alınan Yanıtlar"
       >
         <Box>
-          <DogrulamaMektuplarinaAlinanYanitlar
+          <DogrulamaMektuplarinaAlinanYanitlarBelge
             controller={controller}
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}

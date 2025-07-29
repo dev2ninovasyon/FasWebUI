@@ -3,12 +3,12 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { AppState } from "@/store/store";
-import { useSelector } from "@/store/hooks";
 import { useState } from "react";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import TarihliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TarihliCalismaKagidiBelge";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
+import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import SecimliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/SecimliCalismaKagidiBelge";
 
 const BCrumb = [
   {
@@ -16,8 +16,8 @@ const BCrumb = [
     title: "Plan ve Program",
   },
   {
-    to: "/PlanVeProgram/DenetimTakvimi",
-    title: "Denetim Takvimi",
+    to: "/PlanVeProgram/BilgiIslemMuhasebe",
+    title: "Bilgi İşlem Muhasebe",
   },
 ];
 
@@ -32,7 +32,7 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "DenetimTakvimi";
+  const controller = "BilgiIslemMuhasebe";
   const grupluMu = false;
 
   const handleOpen = () => {
@@ -40,12 +40,13 @@ const Page = () => {
     setIsClickedYeniGrupEkle(true);
   };
 
-  const handleCreateGroup = async (calisma: string) => {
+  const handleCreateGroup = async (islem: string) => {
     const createdCalismaKagidiGrubu = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      calisma: calisma,
+      islem: islem,
+      tespit: "",
     };
 
     try {
@@ -64,10 +65,9 @@ const Page = () => {
       console.error("Bir hata oluştu:", error);
     }
   };
-
   return (
     <>
-      <Breadcrumb title="Denetim Takvimi" items={BCrumb}>
+      <Breadcrumb title="Bilgi İşlem Muhasebe" items={BCrumb}>
         <>
           <Grid
             container
@@ -198,11 +198,11 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Denetim Takvimi"
-        description="this is Denetim Takvimi"
+        title="Bilgi İşlem Muhasebe"
+        description="this is Bilgi İşlem Muhasebe"
       >
         <Box>
-          <TarihliCalismaKagidiBelge
+          <SecimliCalismaKagidiBelge
             controller={controller}
             grupluMu={grupluMu}
             isClickedYeniGrupEkle={isClickedYeniGrupEkle}
