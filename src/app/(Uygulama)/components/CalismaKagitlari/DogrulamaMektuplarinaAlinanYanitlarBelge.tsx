@@ -41,7 +41,9 @@ interface CalismaKagidiProps {
   setToplam: (deger: number) => void;
 }
 
-const DogrulamaMektuplarinaAlinanYanitlar: React.FC<CalismaKagidiProps> = ({
+const DogrulamaMektuplarinaAlinanYanitlarBelge: React.FC<
+  CalismaKagidiProps
+> = ({
   controller,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
@@ -392,7 +394,7 @@ const DogrulamaMektuplarinaAlinanYanitlar: React.FC<CalismaKagidiProps> = ({
   );
 };
 
-export default DogrulamaMektuplarinaAlinanYanitlar;
+export default DogrulamaMektuplarinaAlinanYanitlarBelge;
 
 interface PopUpProps {
   islem?: string;
@@ -488,7 +490,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               />
             </Box>
 
-            <Box px={3} pt={2} display="flex" gap={2}>
+            <Box px={3} pt={3} display="flex" gap={2}>
               <Box flex={1}>
                 <Typography variant="h6" p={1}>
                   Gönderilen Mutabakat
@@ -522,7 +524,6 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 />
               </Box>
             </Box>
-
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
                 Tespit

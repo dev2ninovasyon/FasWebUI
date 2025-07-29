@@ -707,7 +707,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
-          <DialogContent className="testdialog">
+          <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
             <Stack
               direction="row"
               spacing={2}
@@ -724,7 +724,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           </DialogContent>
           <Divider />
           <DialogContent>
-            <Box p={3}>
+            <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
                 {alanAdi}
               </Typography>

@@ -737,7 +737,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
       {isPopUpOpen && (
         <>
-          <DialogContent className="testdialog">
+          <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
             <Stack
               direction="row"
               spacing={2}
@@ -754,28 +754,18 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           </DialogContent>
           <Divider />
           <DialogContent>
-            <Box px={3} pt={2}>
-              <Typography variant="h5" mb={1} p={1}>
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
                 Tarih
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <CustomTextField
-                    id="date"
-                    label="Tarih"
-                    type="date"
-                    variant="outlined"
-                    value={formattedDate}
-                    onChange={(e: any) =>
-                      handleSetSelectedTarih(e.target.value)
-                    }
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Grid>
-              </Grid>
+              <CustomTextField
+                id="tarh"
+                type="date"
+                variant="outlined"
+                fullWidth
+                value={formattedDate}
+                onChange={(e: any) => handleSetSelectedTarih(e.target.value)}
+              />
             </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>

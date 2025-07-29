@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Collapse,
   Divider,
   Grid,
   IconButton,
@@ -16,19 +12,16 @@ import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
 import IslemlerCard from "./Cards/IslemlerCard";
 import { useSelector } from "@/store/hooks";
 import {
   createCalismaKagidiVerisi,
-  deleteAllCalismaKagidiVerileri,
+  deleteAllCalismaKagidiVerileriByKonu,
   deleteCalismaKagidiVerisiById,
-  getCalismaKagidiVerileriByDenetciDenetlenenYil,
+  getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu,
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import { DuzenleGroupPopUp } from "./DuzenleGroupPopUp";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
@@ -36,27 +29,26 @@ import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari
 
 interface Veri {
   id: number;
+  konu: string;
+  hesapAdi: string;
   islem: string;
   tespit: string;
   durum: string;
-  baslikId?: number;
   standartMi: boolean;
 }
 
 interface CalismaKagidiProps {
+  konu: string;
   controller: string;
-  grupluMu: boolean;
-  isClickedYeniGrupEkle: boolean;
   isClickedVarsayilanaDon: boolean;
   setIsClickedVarsayilanaDon: (deger: boolean) => void;
   setTamamlanan: (deger: number) => void;
   setToplam: (deger: number) => void;
 }
 
-const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
+const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
+  konu,
   controller,
-  grupluMu,
-  isClickedYeniGrupEkle,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
   setTamamlanan,
@@ -65,37 +57,33 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
 
-  const [selectedGroupId, setSelectedGroupId] = useState(0);
-  const [selectedGroupIslem, setSelectedGroupIslem] = useState("");
-
   const [selectedId, setSelectedId] = useState(0);
+  const [selectedKonu, setSelectedKonu] = useState(konu);
+  const [selectedHesapAdi, setSelectedHesapAdi] = useState("");
   const [selectedIslem, setSelectedIslem] = useState("");
   const [selectedTespit, setSelectedTespit] = useState("");
   const [selectedDurum, setSelectedDurum] = useState("");
   const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
-  const [verilerWithBaslikId, setVerilerWithBaslikId] = useState<Veri[]>([]);
-  const [verilerWithoutBaslikId, setVerilerWithoutBaslikId] = useState<Veri[]>(
-    []
-  );
 
   const [isNew, setIsNew] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const [isGroupPopUpOpen, setIsGroupPopUpOpen] = useState(false);
 
-  const [openedGroupIndex, setOpenGroupIndex] = useState(null);
-
-  const handleOpenGroup = (index: any) => {
-    setOpenGroupIndex(openedGroupIndex === index ? null : index);
-  };
-
-  const handleCreate = async (islem: string, tespit: string, durum: string) => {
+  const handleCreate = async (
+    konu: string,
+    hesapAdi: string,
+    islem: string,
+    tespit: string,
+    durum: string
+  ) => {
     const createdCalismaKagidiVerisi = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
+      konu: konu,
+      hesapAdi: hesapAdi,
       islem: islem,
       tespit: tespit,
       durum: durum,
@@ -118,11 +106,17 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleUpdate = async (islem: string, tespit: string, durum: string) => {
+  const handleUpdate = async (
+    hesapAdi: string,
+    islem: string,
+    tespit: string,
+    durum: string
+  ) => {
     const updatedCalismaKagidiVerisi = veriler.find(
       (veri) => veri.id === selectedId
     );
     if (updatedCalismaKagidiVerisi) {
+      updatedCalismaKagidiVerisi.hesapAdi = hesapAdi;
       updatedCalismaKagidiVerisi.islem = islem;
       updatedCalismaKagidiVerisi.tespit = tespit;
       updatedCalismaKagidiVerisi.durum = durum;
@@ -137,34 +131,6 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         if (result) {
           fetchData();
           handleClosePopUp();
-        } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
-        }
-      } catch (error) {
-        console.error("Bir hata oluştu:", error);
-      }
-    }
-  };
-
-  const handleGroupUpdate = async (islem: string) => {
-    const updatedCalismaKagidiGroupVerisi = veriler.find(
-      (veri) => veri.id === selectedGroupId
-    );
-
-    if (updatedCalismaKagidiGroupVerisi) {
-      const updatedCalismaKagidiVerisi = {
-        islem: islem,
-        tespit: "",
-      };
-      try {
-        const result = await updateCalismaKagidiVerisi(
-          controller || "",
-          user.token || "",
-          selectedGroupId,
-          updatedCalismaKagidiVerisi
-        );
-        if (result) {
-          fetchData();
         } else {
           console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
@@ -192,44 +158,15 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleGroupDelete = async () => {
-    const deletedCalismaKagidiGroupVerileri = veriler.filter(
-      (veri) => veri.baslikId === selectedGroupId
-    );
-    try {
-      const result = await deleteCalismaKagidiVerisiById(
-        controller || "",
-        user.token || "",
-        selectedGroupId
-      );
-      if (result) {
-        for (let i = 0; i < deletedCalismaKagidiGroupVerileri.length; i++) {
-          const deletedCalismaKagidiGroupVerileriWithBaslikId =
-            deletedCalismaKagidiGroupVerileri[i];
-          deleteCalismaKagidiVerisiById(
-            controller || "",
-            user.token || "",
-            deletedCalismaKagidiGroupVerileriWithBaslikId.id
-          );
-        }
-        fetchData();
-        setOpenGroupIndex(null);
-      } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
   const handleDeleteAll = async () => {
     try {
-      const result = await deleteAllCalismaKagidiVerileri(
+      const result = await deleteAllCalismaKagidiVerileriByKonu(
         controller || "",
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        konu
       );
       if (result) {
         fetchData();
@@ -244,12 +181,13 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const fetchData = async () => {
     try {
       const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+        await getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu(
           controller || "",
           user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
-          user.yil || 0
+          user.yil || 0,
+          konu
         );
 
       const rowsAll: any = [];
@@ -262,39 +200,23 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       calismaKagidiVerileri.forEach((veri: any) => {
         const newRow: Veri = {
           id: veri.id,
+          konu: veri.konu,
+          hesapAdi: veri.hesapAdi,
           islem: veri.islem,
           tespit: veri.tespit,
           durum: veri.durum ? veri.durum : "Hayır",
-          baslikId: veri.baslikId,
           standartMi: veri.standartmi,
         };
         rowsAll.push(newRow);
 
-        if (grupluMu) {
-          if (veri.baslikId) {
-            rowsWithBaslikId.push(newRow);
-            if (newRow.standartMi) {
-              toplam.push(newRow);
-            } else {
-              tamamlanan.push(newRow);
-              toplam.push(newRow);
-            }
-          } else {
-            rowsWithoutBaslikId.push(newRow);
-            rowsAll.push(newRow);
-          }
+        if (newRow.standartMi) {
+          toplam.push(newRow);
         } else {
-          if (newRow.standartMi) {
-            toplam.push(newRow);
-          } else {
-            tamamlanan.push(newRow);
-            toplam.push(newRow);
-          }
+          tamamlanan.push(newRow);
+          toplam.push(newRow);
         }
       });
       setVeriler(rowsAll);
-      setVerilerWithBaslikId(rowsWithBaslikId);
-      setVerilerWithoutBaslikId(rowsWithoutBaslikId);
 
       setToplam(toplam.length);
       setTamamlanan(tamamlanan.length);
@@ -305,6 +227,8 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
+    setSelectedKonu(konu);
+    setSelectedHesapAdi(veri.hesapAdi);
     setSelectedIslem(veri.islem);
     setSelectedTespit(veri.tespit);
     setSelectedDurum(veri.durum);
@@ -312,30 +236,23 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setIsPopUpOpen(true);
   };
 
-  const handleGroupClick = (veri: any) => {
-    setSelectedGroupId(veri.id);
-    setSelectedGroupIslem(veri.islem);
-  };
-
   const handleNew = () => {
     setIsNew(true);
+    setSelectedKonu(konu);
+    setSelectedHesapAdi("");
     setSelectedIslem("");
     setSelectedTespit("");
     setSelectedDurum("");
     setIsPopUpOpen(true);
   };
 
-  const handleNewGrouplu = (index: any) => {
-    setIsNew(true);
-    setSelectedIslem("");
-    setSelectedTespit("");
-    setOpenGroupIndex(index);
-    setIsPopUpOpen(true);
-  };
-
   const handleClosePopUp = () => {
     setIsNew(false);
     setIsPopUpOpen(false);
+  };
+
+  const handleSetSelectedHesapAdi = async (hesapAdi: any) => {
+    setSelectedHesapAdi(hesapAdi);
   };
 
   const handleSetSelectedIslem = async (islem: any) => {
@@ -355,10 +272,8 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   }, []);
 
   useEffect(() => {
-    if (!isClickedYeniGrupEkle) {
-      fetchData();
-    }
-  }, [isClickedYeniGrupEkle]);
+    fetchData();
+  }, [konu]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
@@ -370,235 +285,71 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   return (
     <>
       <Grid container>
-        {grupluMu ? (
-          <>
-            {verilerWithoutBaslikId.map(
-              (veriWithoutBaslikId: any, index: any) => (
-                <Grid
-                  key={index}
-                  container
-                  sx={{
-                    width: "95%",
-                    margin: "0 auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Grid item lg={12} xs={12}>
-                    <Card
-                      sx={{
-                        padding: 0,
-                        width: "100%",
-                        mt: "20px",
-                        bgcolor:
-                          customizer.activeMode === "dark"
-                            ? "#0e121a"
-                            : "#f5f5f5",
-                      }}
-                    >
-                      <CardHeader
-                        title={veriWithoutBaslikId.islem}
-                        action={
-                          <IconButton
-                            aria-label="expand row"
-                            size="medium"
-                            onClick={() => {
-                              handleOpenGroup(index);
-                              handleGroupClick(veriWithoutBaslikId);
-                            }}
-                          >
-                            {openedGroupIndex === index ? (
-                              <KeyboardArrowUpIcon />
-                            ) : (
-                              <KeyboardArrowDownIcon />
-                            )}
-                          </IconButton>
-                        }
-                      />
-                      <Collapse
-                        in={openedGroupIndex === index}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <Divider />
-                        <CardContent>
-                          <Grid
-                            container
-                            sx={{
-                              width: "100%",
-                              margin: "0 auto",
-                              justifyContent: "center",
-                            }}
-                          >
-                            {verilerWithBaslikId
-                              .filter(
-                                (veriWithBaslikId: any) =>
-                                  veriWithBaslikId.baslikId ===
-                                  veriWithoutBaslikId.id
-                              )
-                              .map((veriWithBaslikId: any, index: any) => (
-                                <Grid
-                                  key={index}
-                                  item
-                                  xs={12}
-                                  lg={12}
-                                  mb={3}
-                                  onClick={() => {
-                                    handleCardClick(veriWithBaslikId);
-                                  }}
-                                >
-                                  <CalismaKagidiCard
-                                    title={`${index + 1}. ${
-                                      veriWithBaslikId.islem
-                                    }`}
-                                    content={veriWithBaslikId.tespit}
-                                    standartMi={veriWithBaslikId.standartMi}
-                                  />
-                                </Grid>
-                              ))}
-                            <Grid
-                              container
-                              sx={{
-                                width: "100%",
-                                margin: "0 auto",
-                                justifyContent: "space-between",
-                              }}
-                            >
-                              <Grid
-                                item
-                                xs={12}
-                                lg={1.5}
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "start",
-                                }}
-                              >
-                                <Button
-                                  size="medium"
-                                  variant="outlined"
-                                  color="primary"
-                                  onClick={() => setIsGroupPopUpOpen(true)}
-                                  sx={{
-                                    width: "100%",
-                                  }}
-                                >
-                                  <Typography
-                                    variant="body1"
-                                    sx={{
-                                      overflowWrap: "break-word",
-                                      wordWrap: "break-word",
-                                    }}
-                                  >
-                                    Grup Düzenle
-                                  </Typography>
-                                </Button>
-                              </Grid>
-                              <Grid
-                                item
-                                xs={12}
-                                lg={1.5}
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "end",
-                                }}
-                              >
-                                <Button
-                                  size="medium"
-                                  variant="outlined"
-                                  color="primary"
-                                  onClick={() => handleNewGrouplu(index)}
-                                  sx={{
-                                    width: "100%",
-                                  }}
-                                >
-                                  <Typography
-                                    variant="body1"
-                                    sx={{
-                                      overflowWrap: "break-word",
-                                      wordWrap: "break-word",
-                                    }}
-                                  >
-                                    Yeni İşlem Ekle
-                                  </Typography>
-                                </Button>
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                        </CardContent>
-                      </Collapse>
-                    </Card>
-                  </Grid>
-                </Grid>
-              )
-            )}
-          </>
-        ) : (
-          <>
+        <Grid
+          container
+          sx={{
+            width: "95%",
+            margin: "0 auto",
+            justifyContent: "center",
+          }}
+        >
+          {veriler.map((veri, index) => (
             <Grid
-              container
-              sx={{
-                width: "95%",
-                margin: "0 auto",
-                justifyContent: "center",
-              }}
+              key={index}
+              item
+              xs={12}
+              lg={12}
+              mt="20px"
+              onClick={() => handleCardClick(veri)}
             >
-              {veriler.map((veri, index) => (
-                <Grid
-                  key={index}
-                  item
-                  xs={12}
-                  lg={12}
-                  mt="20px"
-                  onClick={() => handleCardClick(veri)}
-                >
-                  <CalismaKagidiCard
-                    title={`${index + 1}. ${veri.islem}`}
-                    content={veri.tespit}
-                    standartMi={veri.standartMi}
-                  />
-                </Grid>
-              ))}
+              <CalismaKagidiCard
+                title={`${index + 1}. ${veri.hesapAdi}`}
+                content={veri.islem}
+                standartMi={veri.standartMi}
+              />
             </Grid>
-            <Grid
-              container
+          ))}
+        </Grid>
+        <Grid
+          container
+          sx={{
+            width: "95%",
+            margin: "0 auto",
+            justifyContent: "end",
+          }}
+        >
+          <Grid
+            item
+            xs={12}
+            lg={1.5}
+            my={2}
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+            }}
+          >
+            <Button
+              size="medium"
+              variant="outlined"
+              color="primary"
+              onClick={() => handleNew()}
               sx={{
-                width: "95%",
-                margin: "0 auto",
-                justifyContent: "end",
+                width: "100%",
               }}
             >
-              <Grid
-                item
-                xs={12}
-                lg={1.5}
-                my={2}
+              <Typography
+                variant="body1"
                 sx={{
-                  display: "flex",
-                  justifyContent: "end",
+                  overflowWrap: "break-word",
+                  wordWrap: "break-word",
                 }}
               >
-                <Button
-                  size="medium"
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => handleNew()}
-                  sx={{
-                    width: "100%",
-                  }}
-                >
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      overflowWrap: "break-word",
-                      wordWrap: "break-word",
-                    }}
-                  >
-                    Yeni İşlem Ekle
-                  </Typography>
-                </Button>
-              </Grid>
-            </Grid>
-          </>
-        )}
+                Yeni İşlem Ekle
+              </Typography>
+            </Button>
+          </Grid>
+        </Grid>
+
         {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
@@ -638,11 +389,14 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent
+          konu={selectedKonu}
+          hesapAdi={selectedHesapAdi}
           islem={selectedIslem}
           tespit={selectedTespit}
           durum={selectedDurum}
           standartMi={selectedStandartMi}
           handleClose={handleClosePopUp}
+          handleSetSelectedHesapAdi={handleSetSelectedHesapAdi}
           handleSetSelectedIslem={handleSetSelectedIslem}
           handleSetSelectedTespit={handleSetSelectedTespit}
           handleSetSelectedDurum={handleSetSelectedDurum}
@@ -653,23 +407,15 @@ const SecimliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           isNew={isNew}
         />
       )}
-      {isGroupPopUpOpen && (
-        <DuzenleGroupPopUp
-          islem={selectedGroupIslem}
-          setIslem={setSelectedGroupIslem}
-          isPopUpOpen={isGroupPopUpOpen}
-          setIsPopUpOpen={setIsGroupPopUpOpen}
-          handleGroupUpdate={handleGroupUpdate}
-          handleGroupDelete={handleGroupDelete}
-        />
-      )}
     </>
   );
 };
 
-export default SecimliCalismaKagidiBelge;
+export default HesaplaraIliskinIcKontrolTespitBelge;
 
 interface PopUpProps {
+  konu?: string;
+  hesapAdi?: string;
   islem?: string;
   tespit?: string;
   durum?: string;
@@ -679,15 +425,29 @@ interface PopUpProps {
   isNew: boolean;
 
   handleClose: () => void;
+  handleSetSelectedHesapAdi: (a: string) => void;
   handleSetSelectedIslem: (a: string) => void;
   handleSetSelectedTespit: (a: string) => void;
   handleSetSelectedDurum: (a: string) => void;
-  handleCreate: (islem: string, tespit: string, durum: string) => void;
+  handleCreate: (
+    konu: string,
+    hesapAdi: string,
+    islem: string,
+    tespit: string,
+    durum: string
+  ) => void;
   handleDelete: () => void;
-  handleUpdate: (islem: string, tespit: string, durum: string) => void;
+  handleUpdate: (
+    hesapAdi: string,
+    islem: string,
+    tespit: string,
+    durum: string
+  ) => void;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
+  konu,
+  hesapAdi,
   islem,
   tespit,
   durum,
@@ -695,6 +455,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   isPopUpOpen,
   isNew,
   handleClose,
+  handleSetSelectedHesapAdi,
   handleSetSelectedIslem,
   handleSetSelectedTespit,
   handleSetSelectedDurum,
@@ -757,6 +518,20 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           </DialogContent>
           <Divider />
           <DialogContent>
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Hesap Adı
+              </Typography>
+              <CustomTextField
+                id="hesapAdi"
+                multiline
+                rows={8}
+                variant="outlined"
+                fullWidth
+                value={hesapAdi}
+                onChange={(e: any) => handleSetSelectedHesapAdi(e.target.value)}
+              />
+            </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
                 İşlem
@@ -823,7 +598,12 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 variant="outlined"
                 color="success"
                 onClick={() =>
-                  handleUpdate(islem || "", tespit || "", durum || "")
+                  handleUpdate(
+                    hesapAdi || "",
+                    islem || "",
+                    tespit || "",
+                    durum || ""
+                  )
                 }
                 sx={{ width: "20%" }}
               >
@@ -844,7 +624,13 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 variant="outlined"
                 color="success"
                 onClick={() =>
-                  handleCreate(islem || "", tespit || "", durum || "")
+                  handleCreate(
+                    konu || "",
+                    hesapAdi || "",
+                    islem || "",
+                    tespit || "",
+                    durum || ""
+                  )
                 }
                 sx={{ width: "20%" }}
               >

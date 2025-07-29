@@ -2,13 +2,14 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, MenuItem, Typography } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { useState } from "react";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import TarihliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TarihliCalismaKagidiBelge";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
+import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import HesaplaraIliskinIcKontrolTespitBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HesaplaraIliskinIcKontrolTespitBelge";
+import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 
 const BCrumb = [
   {
@@ -16,8 +17,8 @@ const BCrumb = [
     title: "Plan ve Program",
   },
   {
-    to: "/PlanVeProgram/DenetimTakvimi",
-    title: "Denetim Takvimi",
+    to: "/PlanVeProgram/HesaplaraIliskinIcKontrolTespit",
+    title: "Hesaplara İlişkin İç Kontrol Tespit",
   },
 ];
 
@@ -32,20 +33,22 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "DenetimTakvimi";
+  const controller = "HesaplaraIliskinIcKontrolTespit";
   const grupluMu = false;
+
+  const [konu, setKonu] = useState("Nakit ve Nakit Benzerleri");
 
   const handleOpen = () => {
     setIsCreatePopUpOpen(true);
     setIsClickedYeniGrupEkle(true);
   };
 
-  const handleCreateGroup = async (calisma: string) => {
+  const handleCreateGroup = async (konu: string) => {
     const createdCalismaKagidiGrubu = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      calisma: calisma,
+      konu: konu,
     };
 
     try {
@@ -67,7 +70,7 @@ const Page = () => {
 
   return (
     <>
-      <Breadcrumb title="Denetim Takvimi" items={BCrumb}>
+      <Breadcrumb title="Hesaplara İlişkin İç Kontrol Tespit" items={BCrumb}>
         <>
           <Grid
             container
@@ -133,7 +136,7 @@ const Page = () => {
             )}
             <Grid
               item
-              xs={5.8}
+              xs={3.8}
               md={grupluMu ? 2.8 : 3.8}
               lg={grupluMu ? 2.8 : 3.8}
               sx={{
@@ -161,7 +164,7 @@ const Page = () => {
             </Grid>
             <Grid
               item
-              xs={5.8}
+              xs={3.8}
               md={grupluMu ? 2.8 : 3.8}
               lg={grupluMu ? 2.8 : 3.8}
               sx={{
@@ -198,14 +201,50 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Denetim Takvimi"
-        description="this is Denetim Takvimi"
+        title="Hesaplara İlişkin İç Kontrol Tespit"
+        description="this is Hesaplara İlişkin İç Kontrol Tespit"
       >
+        <Grid container>
+          <Grid item xs={12} mb={3}>
+            <CustomSelect
+              labelId="durum"
+              id="durum"
+              size="small"
+              value={konu}
+              onChange={(e: any) => {
+                setKonu(e.target.value);
+              }}
+              height={"36px"}
+              sx={{ width: "100%" }}
+            >
+              <MenuItem value={"Nakit ve Nakit Benzerleri"}>
+                Nakit ve Nakit Benzerleri
+              </MenuItem>
+              <MenuItem value={"Alacaklar"}>Alacaklar</MenuItem>
+              <MenuItem value={"Stoklar"}>Stoklar</MenuItem>
+              <MenuItem value={"Diğer Varlıklar"}>Diğer Varlıklar</MenuItem>
+              <MenuItem value={"Duran Varlıklar"}>Duran Varlıklar</MenuItem>
+              <MenuItem value={"Finansal Borçlar"}>Finansal Borçlar</MenuItem>
+              <MenuItem value={"Borçlar"}>Borçlar</MenuItem>
+              <MenuItem value={"Diğer Yükümlülükler"}>
+                Diğer Yükümlülükler
+              </MenuItem>
+              <MenuItem value={"Borç Karşılıkları"}>Borç Karşılıkları</MenuItem>
+              <MenuItem value={"Kıdem ve İzin Karşılıkları"}>
+                Kıdem ve İzin Karşılıkları
+              </MenuItem>
+              <MenuItem value={"Sermaye"}>Sermaye</MenuItem>
+              <MenuItem value={"Hasılat"}>Hasılat</MenuItem>
+              <MenuItem value={"Maliyet"}>Maliyet</MenuItem>
+              <MenuItem value={"Diğer Gelirler"}>Diğer Gelirler</MenuItem>
+              <MenuItem value={"Diğer Giderler"}>Diğer Giderler</MenuItem>
+            </CustomSelect>
+          </Grid>
+        </Grid>
         <Box>
-          <TarihliCalismaKagidiBelge
+          <HesaplaraIliskinIcKontrolTespitBelge
             controller={controller}
-            grupluMu={grupluMu}
-            isClickedYeniGrupEkle={isClickedYeniGrupEkle}
+            konu={konu}
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}
