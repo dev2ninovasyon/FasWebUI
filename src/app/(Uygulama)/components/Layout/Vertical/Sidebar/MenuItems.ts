@@ -75,7 +75,8 @@ export function createMenuItems(
           id: uniqueId(),
           title: "DİĞER İŞLEMLER",
           icon: IconHierarchy,
-          href: "/",
+          href: "/DigerIslemler",
+          /*
           children: [
             {
               id: uniqueId(),
@@ -84,12 +85,13 @@ export function createMenuItems(
               href: "/",
             },
           ],
+          */
         },
         {
           id: uniqueId(),
           title: "KULLANIM KILAVUZU",
           icon: IconInfoCircle,
-          href: "/",
+          href: "/KullanimKilavuzu",
         },
       ]
     : [
@@ -320,7 +322,7 @@ export function createMenuItems(
           id: uniqueId(),
           title: "MÜŞTERİ BELGELERİ",
           icon: IconFileDescription,
-          href: "/",
+          href: "/MusteriBelgeleri",
         },
         {
           id: uniqueId(),
@@ -1110,12 +1112,14 @@ export function createMenuItems(
           icon: IconUsersGroup,
           href: "/GenelKurul",
           children: [
+            /*
             {
               id: uniqueId(),
               title: "Müşteri Genel Kurul Toplantısı",
               icon: IconPoint,
               href: "/",
             },
+            */
             {
               id: uniqueId(),
               title: "Denetim Çalışması İzleme",
@@ -1148,7 +1152,8 @@ export function createMenuItems(
           id: uniqueId(),
           title: "DENETİM DOSYA",
           icon: IconFolderUp,
-          href: "/",
+          href: "/DenetimDosya",
+          /*
           children: [
             {
               id: uniqueId(),
@@ -1163,6 +1168,7 @@ export function createMenuItems(
               href: "/",
             },
           ],
+          */
         },
         {
           id: uniqueId(),
@@ -1590,7 +1596,8 @@ export function createMenuItems(
                 id: uniqueId(),
                 title: "BDDK",
                 icon: IconFilters,
-                href: "/",
+                href: "/Bddk",
+                /*
                 children: [
                   {
                     id: uniqueId(),
@@ -1600,6 +1607,7 @@ export function createMenuItems(
                     href: "/",
                   },
                 ],
+                */
               },
             ]
           : []),
@@ -1623,13 +1631,13 @@ export function createMenuItems(
           id: uniqueId(),
           title: "DİĞER İŞLEMLER",
           icon: IconHierarchy,
-          href: "/",
+          href: "/DigerIslemler",
           children: [
             {
               id: uniqueId(),
               title: "Arşiv",
               icon: IconPoint,
-              href: "/",
+              href: "/DigerIslemler",
             },
           ],
         },
@@ -1637,7 +1645,7 @@ export function createMenuItems(
           id: uniqueId(),
           title: "KULLANIM KILAVUZU",
           icon: IconInfoCircle,
-          href: "/",
+          href: "/KullanimKilavuzu",
         },
       ];
 }

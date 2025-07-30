@@ -30,7 +30,7 @@ export default function Forbidden() {
         Hay Aksi!!!
       </Typography>
       <Typography align="center" variant="h4" mb={4}>
-        Bu sayfaya giriş izniniz bulunmamaktadır.{" "}
+        Bu sayfaya giriş izniniz bulunmamaktadır.
       </Typography>
       <Button
         color="primary"
