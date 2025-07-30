@@ -44,7 +44,8 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
       pathname === "/HesapAyarlari" ||
       pathname === "/TemaAyarlari" ||
       pathname === "/Musteri" ||
-      pathname === "/Musteri/MusteriIslemleri"
+      pathname === "/Musteri/MusteriIslemleri" ||
+      pathname === "/Musteri/MusteriIslemleri/KullaniciEkle"
     )
       return;
 
