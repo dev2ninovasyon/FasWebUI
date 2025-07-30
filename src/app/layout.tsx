@@ -42,12 +42,12 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
     if (
       pathname === "/" ||
       pathname === "/HesapAyarlari" ||
-      pathname === "/TemaAyarlari" ||
       pathname === "/Musteri" ||
       pathname === "/Musteri/MusteriIslemleri" ||
       pathname.startsWith("/Musteri/MusteriIslemleri/MusteriDetay") ||
       pathname.startsWith("/Musteri/MusteriIslemleri/MusteriDuzenle") ||
-      pathname === "/Musteri/MusteriIslemleri/MusteriEkle"
+      pathname === "/Musteri/MusteriIslemleri/MusteriEkle" ||
+      pathname === "/TemaAyarlari"
     )
       return;
 
