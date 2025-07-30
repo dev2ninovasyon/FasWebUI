@@ -30,7 +30,7 @@ export default function Maintenance() {
         Bakım Modu!!!
       </Typography>
       <Typography align="center" variant="h4" mb={4}>
-        Web Sitesi Bakım Aşamasındadır. Daha sonra kontrol et!
+        Web Sitesi Bakım Aşamasındadır.
       </Typography>
       <Button
         color="primary"
