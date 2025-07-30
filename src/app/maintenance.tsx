@@ -1,25 +1,30 @@
-"use client";
-
-import { Box, Container, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, useMediaQuery } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
-const Maintenance = () => (
-  <Box
-    display="flex"
-    flexDirection="column"
-    height="100vh"
-    textAlign="center"
-    justifyContent="center"
-  >
-    <Container maxWidth="md">
+export default function Maintenance() {
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      textAlign="center"
+      justifyContent="center"
+      alignItems="center"
+    >
       <Image
         priority
         src={"/images/backgrounds/maintenance2.svg"}
         alt="404"
         width={500}
-        height={500}
-        style={{ width: "100%", maxWidth: "500px", maxHeight: "500px" }}
+        height={300}
+        style={{
+          marginTop: "8%",
+          width: smDown ? "100%" : "auto",
+          height: smDown ? "auto" : "100%",
+          maxHeight: "500px",
+        }}
       />
       <Typography align="center" variant="h1" mb={4}>
         Bakım Modu!!!
@@ -36,9 +41,6 @@ const Maintenance = () => (
       >
         Anasayfaya Dön
       </Button>
-    </Container>
-  </Box>
-);
-
-Maintenance.layout = "Blank";
-export default Maintenance;
+    </Box>
+  );
+}
