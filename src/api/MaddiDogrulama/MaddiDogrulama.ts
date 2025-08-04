@@ -28,6 +28,34 @@ export const getMaddiDogrulama = async (token: string, denetimTuru: string) => {
   }
 };
 
+export const getHile = async (token: string, denetimTuru: string) => {
+  try {
+    let tfrsmi = denetimTuru == "Tfrs" ? true : false;
+    let bobimi = denetimTuru == "Bobi" ? true : false;
+
+    const response = await fetch(
+      `${url}/DenetimDosyaBelgeleri/HileListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Verileri getirilemedi");
+      return null; // Hata durumunda null döndürüyoruz
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+    return null; // Hata durumunda null döndürüyoruz
+  }
+};
+
 export const getDenetimDosyaByFormKodu = async (
   token: string,
   denetimTuru: string,

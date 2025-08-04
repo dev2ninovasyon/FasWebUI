@@ -231,7 +231,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
     }, // Alınan Kredi Numarası
     {
       type: "dropdown",
-      source: ["Taksitli Kredi", "Spot Kredi"],
+      source: ["Taksitli Kredi", "Spot Kredi", "Exim Kredi", "Reeskont Kredi"],
       className: "htLeft",
       allowInvalid: false,
     }, // Kredi Türü
