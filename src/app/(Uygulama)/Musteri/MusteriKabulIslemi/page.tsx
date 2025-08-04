@@ -20,7 +20,12 @@ import {
   updateDenetlenenDenetimTuru,
 } from "@/api/Musteri/MusteriIslemleri";
 import { useDispatch } from "@/store/hooks";
-import { setDenetimTuru, setEnflasyonmu } from "@/store/user/UserSlice";
+import {
+  setBobimi,
+  setDenetimTuru,
+  setEnflasyonmu,
+  setTfrsmi,
+} from "@/store/user/UserSlice";
 import { getDenetciOdemeBilgileri } from "@/api/Kullanici/KullaniciIslemleri";
 
 const BCrumb = [
@@ -83,6 +88,14 @@ const Page: React.FC = () => {
       if (result == true) {
         fetchData();
         setHesaplaTiklandimi(false);
+        if (tur == "Bobi" || tur == "BobiBüyük") {
+          await dispatch(setBobimi(true));
+          await dispatch(setTfrsmi(false));
+        }
+        if (tur == "Tfrs" || tur == "TfrsDönemsel") {
+          await dispatch(setBobimi(false));
+          await dispatch(setTfrsmi(true));
+        }
         await dispatch(setDenetimTuru(tur));
         await dispatch(setEnflasyonmu(enflasyon === "Evet"));
         enqueueSnackbar("Denetime Kabul Edildi", {

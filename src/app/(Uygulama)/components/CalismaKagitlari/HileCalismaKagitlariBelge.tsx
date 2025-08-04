@@ -4,7 +4,6 @@ import {
   Divider,
   Grid,
   IconButton,
-  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -12,33 +11,26 @@ import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
-import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
-import IslemlerCard from "./Cards/IslemlerCard";
 import { useSelector } from "@/store/hooks";
 import {
   createCalismaKagidiVerisi,
-  deleteAllCalismaKagidiVerileriByKonu,
+  deleteAllCalismaKagidiVerileriByUrl,
   deleteCalismaKagidiVerisiById,
-  getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu,
+  getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl,
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
-import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 
 interface Veri {
   id: number;
-  konu: string;
-  hesapAdi: string;
   islem: string;
-  tespit: string;
-  durum: string;
   standartMi: boolean;
 }
 
 interface CalismaKagidiProps {
-  konu: string;
+  url: string;
   controller: string;
   isClickedVarsayilanaDon: boolean;
   setIsClickedVarsayilanaDon: (deger: boolean) => void;
@@ -46,8 +38,8 @@ interface CalismaKagidiProps {
   setToplam: (deger: number) => void;
 }
 
-const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
-  konu,
+const HileCalismaKagitlariBelge: React.FC<CalismaKagidiProps> = ({
+  url,
   controller,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
@@ -58,11 +50,7 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
 
   const [selectedId, setSelectedId] = useState(0);
-  const [selectedKonu, setSelectedKonu] = useState(konu);
-  const [selectedHesapAdi, setSelectedHesapAdi] = useState("");
   const [selectedIslem, setSelectedIslem] = useState("");
-  const [selectedTespit, setSelectedTespit] = useState("");
-  const [selectedDurum, setSelectedDurum] = useState("");
   const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
@@ -71,22 +59,13 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
-  const handleCreate = async (
-    konu: string,
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
-  ) => {
+  const handleCreate = async (islem: string) => {
     const createdCalismaKagidiVerisi = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      konu: konu,
-      hesapAdi: hesapAdi,
+      formUrl: url,
       islem: islem,
-      tespit: tespit,
-      durum: durum,
     };
     try {
       const result = await createCalismaKagidiVerisi(
@@ -106,20 +85,12 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleUpdate = async (
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
-  ) => {
+  const handleUpdate = async (islem: string) => {
     const updatedCalismaKagidiVerisi = veriler.find(
       (veri) => veri.id === selectedId
     );
     if (updatedCalismaKagidiVerisi) {
-      updatedCalismaKagidiVerisi.hesapAdi = hesapAdi;
       updatedCalismaKagidiVerisi.islem = islem;
-      updatedCalismaKagidiVerisi.tespit = tespit;
-      updatedCalismaKagidiVerisi.durum = durum;
 
       try {
         const result = await updateCalismaKagidiVerisi(
@@ -160,13 +131,13 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleDeleteAll = async () => {
     try {
-      const result = await deleteAllCalismaKagidiVerileriByKonu(
+      const result = await deleteAllCalismaKagidiVerileriByUrl(
         controller || "",
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        konu
+        url
       );
       if (result) {
         fetchData();
@@ -181,15 +152,14 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   const fetchData = async () => {
     try {
       const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu(
+        await getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl(
           controller || "",
           user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
-          konu
+          url || ""
         );
-
       const rowsAll: any = [];
 
       const tamamlanan: any[] = [];
@@ -198,11 +168,7 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
       calismaKagidiVerileri.forEach((veri: any) => {
         const newRow: Veri = {
           id: veri.id,
-          konu: veri.konu,
-          hesapAdi: veri.hesapAdi,
           islem: veri.islem,
-          tespit: veri.tespit,
-          durum: veri.durum ? veri.durum : "Hayır",
           standartMi: veri.standartmi,
         };
         rowsAll.push(newRow);
@@ -225,22 +191,14 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
-    setSelectedKonu(konu);
-    setSelectedHesapAdi(veri.hesapAdi);
     setSelectedIslem(veri.islem);
-    setSelectedTespit(veri.tespit);
-    setSelectedDurum(veri.durum);
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
   const handleNew = () => {
     setIsNew(true);
-    setSelectedKonu(konu);
-    setSelectedHesapAdi("");
     setSelectedIslem("");
-    setSelectedTespit("");
-    setSelectedDurum("");
     setIsPopUpOpen(true);
   };
 
@@ -249,20 +207,8 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
     setIsPopUpOpen(false);
   };
 
-  const handleSetSelectedHesapAdi = async (hesapAdi: any) => {
-    setSelectedHesapAdi(hesapAdi);
-  };
-
   const handleSetSelectedIslem = async (islem: any) => {
     setSelectedIslem(islem);
-  };
-
-  const handleSetSelectedTespit = async (tespit: any) => {
-    setSelectedTespit(tespit);
-  };
-
-  const handleSetSelectedDurum = async (durum: any) => {
-    setSelectedDurum(durum);
   };
 
   useEffect(() => {
@@ -271,7 +217,7 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, [konu]);
+  }, [url]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
@@ -301,8 +247,7 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
               onClick={() => handleCardClick(veri)}
             >
               <CalismaKagidiCard
-                title={`${index + 1}. ${veri.hesapAdi}`}
-                content={veri.islem}
+                title={`${index + 1}. ${veri.islem}`}
                 standartMi={veri.standartMi}
               />
             </Grid>
@@ -347,57 +292,13 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
             </Button>
           </Grid>
         </Grid>
-
-        {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard hazirlayan="Denetçi - Yardımcı Denetçi"></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard onaylayan="Sorumlu Denetçi"></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-            gap: 1,
-          }}
-        >
-          <Grid item xs={12} lg={12} mt={5}>
-            <IslemlerCard controller={controller} />
-          </Grid>
-        </Grid>
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent
-          konu={selectedKonu}
-          hesapAdi={selectedHesapAdi}
           islem={selectedIslem}
-          tespit={selectedTespit}
-          durum={selectedDurum}
           standartMi={selectedStandartMi}
           handleClose={handleClosePopUp}
-          handleSetSelectedHesapAdi={handleSetSelectedHesapAdi}
           handleSetSelectedIslem={handleSetSelectedIslem}
-          handleSetSelectedTespit={handleSetSelectedTespit}
-          handleSetSelectedDurum={handleSetSelectedDurum}
           handleCreate={handleCreate}
           handleDelete={handleDelete}
           handleUpdate={handleUpdate}
@@ -409,54 +310,29 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   );
 };
 
-export default HesaplaraIliskinIcKontrolTespitBelge;
+export default HileCalismaKagitlariBelge;
 
 interface PopUpProps {
-  konu?: string;
-  hesapAdi?: string;
   islem?: string;
-  tespit?: string;
-  durum?: string;
   standartMi?: boolean;
 
   isPopUpOpen: boolean;
   isNew: boolean;
 
   handleClose: () => void;
-  handleSetSelectedHesapAdi: (a: string) => void;
   handleSetSelectedIslem: (a: string) => void;
-  handleSetSelectedTespit: (a: string) => void;
-  handleSetSelectedDurum: (a: string) => void;
-  handleCreate: (
-    konu: string,
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
-  ) => void;
+  handleCreate: (islem: string) => void;
   handleDelete: () => void;
-  handleUpdate: (
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
-  ) => void;
+  handleUpdate: (islem: string) => void;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
-  konu,
-  hesapAdi,
   islem,
-  tespit,
-  durum,
   standartMi,
   isPopUpOpen,
   isNew,
   handleClose,
-  handleSetSelectedHesapAdi,
   handleSetSelectedIslem,
-  handleSetSelectedTespit,
-  handleSetSelectedDurum,
   handleCreate,
   handleDelete,
   handleUpdate,
@@ -467,8 +343,6 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   };
 
   const textFieldRef = useRef<HTMLInputElement | null>(null);
-
-  const [control, setControl] = useState<string>(durum || "Hayır");
 
   const [control1, setControl1] = useState(false);
   const [control2, setControl2] = useState(false);
@@ -518,91 +392,34 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           <DialogContent>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
-                Hesap Adı
+                Çalışma
               </Typography>
               <CustomTextField
-                id="hesapAdi"
-                multiline
-                rows={8}
-                variant="outlined"
-                fullWidth
-                value={hesapAdi}
-                onChange={(e: any) => handleSetSelectedHesapAdi(e.target.value)}
-              />
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                İşlem
-              </Typography>
-              <CustomTextField
-                id="islem"
+                id="tespit"
                 multiline
                 rows={8}
                 variant="outlined"
                 fullWidth
                 value={islem}
                 onChange={(e: any) => handleSetSelectedIslem(e.target.value)}
+                inputRef={textFieldRef}
               />
             </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                Yanıt Belirt
-              </Typography>
-              <CustomSelect
-                labelId="durum"
-                id="durum"
-                size="small"
-                value={durum}
-                onChange={(e: any) => {
-                  handleSetSelectedDurum(e.target.value);
-                  setControl(e.target.value);
-                }}
-                height={"36px"}
-                sx={{ width: "100%" }}
-              >
-                <MenuItem value={"Evet"}>Evet</MenuItem>
-                <MenuItem value={"Hayır"}>Hayır</MenuItem>
-              </CustomSelect>
-            </Box>
-            {control == "Evet" && (
-              <Box px={3} pt={3}>
-                <Typography variant="h5" p={1}>
-                  Tespit
-                </Typography>
-                <CustomTextField
-                  id="tespit"
-                  multiline
-                  rows={8}
-                  variant="outlined"
-                  fullWidth
-                  value={tespit}
-                  onChange={(e: any) => handleSetSelectedTespit(e.target.value)}
-                  inputRef={textFieldRef}
-                />
-              </Box>
-            )}
           </DialogContent>
           <FloatingButtonCalismaKagitlari
             control={standartMi ? (control1 || control2 ? true : false) : true}
-            text={durum}
+            text={islem}
             isHovered={isHovered}
             setIsHovered={setIsHovered}
             handleClick={handleControl1}
-            handleSetSelectedText={handleSetSelectedDurum}
+            handleSetSelectedText={handleSetSelectedIslem}
           />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button
                 variant="outlined"
                 color="success"
-                onClick={() =>
-                  handleUpdate(
-                    hesapAdi || "",
-                    islem || "",
-                    tespit || "",
-                    durum || ""
-                  )
-                }
+                onClick={() => handleUpdate(islem || "")}
                 sx={{ width: "20%" }}
               >
                 Kaydet
@@ -621,15 +438,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               <Button
                 variant="outlined"
                 color="success"
-                onClick={() =>
-                  handleCreate(
-                    konu || "",
-                    hesapAdi || "",
-                    islem || "",
-                    tespit || "",
-                    durum || ""
-                  )
-                }
+                onClick={() => handleCreate(islem || "")}
                 sx={{ width: "20%" }}
               >
                 Kaydet

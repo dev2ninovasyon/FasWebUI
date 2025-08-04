@@ -33,6 +33,7 @@ import {
   IconHierarchy,
   IconInfoCircle,
   IconFileAnalytics,
+  IconShield,
   IconUsers,
   IconHome,
   IconCalculator,
@@ -702,6 +703,13 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
+              title:
+                "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+              icon: IconPoint,
+              href: "/PlanVeProgram/HileUsulsuzlukEkipCalismasi",
+            },
+            {
+              id: uniqueId(),
               title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/HileUsulsuzlukBelirleme",
@@ -1268,6 +1276,53 @@ export function createMenuItems(
               title: "KYS-2",
               icon: IconPoint,
               href: "/Kys/2",
+            },
+          ],
+        },
+        {
+          id: uniqueId(),
+          title: "HİLE VE USULSÜZLÜK",
+          icon: IconShield,
+          href: "/HileVeUsulsuzluk",
+          children: [
+            {
+              id: uniqueId(),
+              title: "Hile Prosedürleri",
+              icon: IconPoint,
+              href: "/HileVeUsulsuzluk/HileProsedurleri",
+              children: [
+                {
+                  id: uniqueId(),
+                  title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+                  icon: IconPoint,
+                  href: "/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukBelirleme",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme",
+                  icon: IconPoint,
+                  href: "/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukDegerlendirme",
+                },
+                {
+                  id: uniqueId(),
+                  title:
+                    "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+                  icon: IconPoint,
+                  href: "/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukEkipCalismasi",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+                  icon: IconPoint,
+                  href: "/HileVeUsulsuzluk/HileProsedurleri/MuhasebeHatalariVeHileKanitlariDegerlendirme",
+                },
+              ],
+            },
+            {
+              id: uniqueId(),
+              title: "Muhasebe Hataları ve Hileye İlişkin Çalışmalar",
+              icon: IconPoint,
+              href: "/HileVeUsulsuzluk/MuhasebeHatalariVeHile",
             },
           ],
         },

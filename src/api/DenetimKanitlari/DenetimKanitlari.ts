@@ -114,6 +114,34 @@ export const getOrneklemByDipnot = async (
   }
 };
 
+export const getOrneklemByDipnotTers = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  dipnot: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/OrneklemByDipnotTers?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Örneklem getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const updateOrneklem = async (token: string, json: any) => {
   try {
     const response = await fetch(`${url}/DenetimKanitlari/Orneklem`, {
@@ -152,6 +180,37 @@ export const getOrneklemFisleri = async (
           accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Örneklem Fişleri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getOrneklemFisleriByList = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  kebirKodu: number[]
+) => {
+  try {
+    console.log(JSON.stringify(kebirKodu));
+    const response = await fetch(
+      `${url}/DenetimKanitlari/OrneklemFisleriByList?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(kebirKodu),
       }
     );
     if (response.ok) {
