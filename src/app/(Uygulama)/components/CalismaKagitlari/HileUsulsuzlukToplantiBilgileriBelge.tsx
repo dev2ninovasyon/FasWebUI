@@ -4,7 +4,6 @@ import {
   Divider,
   Grid,
   IconButton,
-  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -12,33 +11,28 @@ import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
-import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
-import IslemlerCard from "./Cards/IslemlerCard";
 import { useSelector } from "@/store/hooks";
 import {
   createCalismaKagidiVerisi,
-  deleteAllCalismaKagidiVerileriByKonu,
+  deleteAllCalismaKagidiVerileri,
   deleteCalismaKagidiVerisiById,
-  getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu,
+  getCalismaKagidiVerileriByDenetciDenetlenenYil,
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
-import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 
 interface Veri {
   id: number;
-  konu: string;
-  hesapAdi: string;
-  islem: string;
-  tespit: string;
-  durum: string;
+  toplantiTarihi: string;
+  toplantiSaati: string;
+  toplantiYeri: string;
+  toplantiAmaci: string;
   standartMi: boolean;
 }
 
 interface CalismaKagidiProps {
-  konu: string;
   controller: string;
   isClickedVarsayilanaDon: boolean;
   setIsClickedVarsayilanaDon: (deger: boolean) => void;
@@ -46,8 +40,7 @@ interface CalismaKagidiProps {
   setToplam: (deger: number) => void;
 }
 
-const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
-  konu,
+const HileUsulsuzlukToplantiBilgileriBelge: React.FC<CalismaKagidiProps> = ({
   controller,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
@@ -58,11 +51,10 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
 
   const [selectedId, setSelectedId] = useState(0);
-  const [selectedKonu, setSelectedKonu] = useState(konu);
-  const [selectedHesapAdi, setSelectedHesapAdi] = useState("");
-  const [selectedIslem, setSelectedIslem] = useState("");
-  const [selectedTespit, setSelectedTespit] = useState("");
-  const [selectedDurum, setSelectedDurum] = useState("");
+  const [selectedToplantiTarihi, setSelectedToplantiTarihi] = useState("");
+  const [selectedToplantiSaati, setSelectedToplantiSaati] = useState("");
+  const [selectedToplantiYeri, setSelectedToplantiYeri] = useState("");
+  const [selectedToplantiAmaci, setSelectedToplantiAmaci] = useState("");
   const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
@@ -72,21 +64,19 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
   const handleCreate = async (
-    konu: string,
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
+    toplantiTarihi: string,
+    toplantiSaati: string,
+    toplantiYeri: string,
+    toplantiAmaci: string
   ) => {
     const createdCalismaKagidiVerisi = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      konu: konu,
-      hesapAdi: hesapAdi,
-      islem: islem,
-      tespit: tespit,
-      durum: durum,
+      toplantiTarihi: toplantiTarihi,
+      toplantiSaati: toplantiSaati,
+      toplantiYeri: toplantiYeri,
+      toplantiAmaci: toplantiAmaci,
     };
     try {
       const result = await createCalismaKagidiVerisi(
@@ -107,19 +97,19 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   };
 
   const handleUpdate = async (
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
+    toplantiTarihi: string,
+    toplantiSaati: string,
+    toplantiYeri: string,
+    toplantiAmaci: string
   ) => {
     const updatedCalismaKagidiVerisi = veriler.find(
       (veri) => veri.id === selectedId
     );
     if (updatedCalismaKagidiVerisi) {
-      updatedCalismaKagidiVerisi.hesapAdi = hesapAdi;
-      updatedCalismaKagidiVerisi.islem = islem;
-      updatedCalismaKagidiVerisi.tespit = tespit;
-      updatedCalismaKagidiVerisi.durum = durum;
+      updatedCalismaKagidiVerisi.toplantiTarihi = toplantiTarihi;
+      updatedCalismaKagidiVerisi.toplantiSaati = toplantiSaati;
+      updatedCalismaKagidiVerisi.toplantiYeri = toplantiYeri;
+      updatedCalismaKagidiVerisi.toplantiAmaci = toplantiAmaci;
 
       try {
         const result = await updateCalismaKagidiVerisi(
@@ -160,13 +150,12 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleDeleteAll = async () => {
     try {
-      const result = await deleteAllCalismaKagidiVerileriByKonu(
+      const result = await deleteAllCalismaKagidiVerileri(
         controller || "",
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0,
-        konu
+        user.yil || 0
       );
       if (result) {
         fetchData();
@@ -181,13 +170,12 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   const fetchData = async () => {
     try {
       const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu(
+        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
           controller || "",
           user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
-          user.yil || 0,
-          konu
+          user.yil || 0
         );
 
       const rowsAll: any = [];
@@ -198,11 +186,10 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
       calismaKagidiVerileri.forEach((veri: any) => {
         const newRow: Veri = {
           id: veri.id,
-          konu: veri.konu,
-          hesapAdi: veri.hesapAdi,
-          islem: veri.islem,
-          tespit: veri.tespit,
-          durum: veri.durum ? veri.durum : "Hayır",
+          toplantiTarihi: veri.toplantiTarihi,
+          toplantiSaati: veri.toplantiSaati,
+          toplantiYeri: veri.toplantiYeri,
+          toplantiAmaci: veri.toplantiAmaci,
           standartMi: veri.standartmi,
         };
         rowsAll.push(newRow);
@@ -225,22 +212,20 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
-    setSelectedKonu(konu);
-    setSelectedHesapAdi(veri.hesapAdi);
-    setSelectedIslem(veri.islem);
-    setSelectedTespit(veri.tespit);
-    setSelectedDurum(veri.durum);
+    setSelectedToplantiTarihi(veri.toplantiTarihi);
+    setSelectedToplantiSaati(veri.toplantiSaati);
+    setSelectedToplantiYeri(veri.toplantiYeri);
+    setSelectedToplantiAmaci(veri.toplantiAmaci);
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
   const handleNew = () => {
     setIsNew(true);
-    setSelectedKonu(konu);
-    setSelectedHesapAdi("");
-    setSelectedIslem("");
-    setSelectedTespit("");
-    setSelectedDurum("");
+    setSelectedToplantiTarihi("");
+    setSelectedToplantiSaati("");
+    setSelectedToplantiYeri("");
+    setSelectedToplantiAmaci("");
     setIsPopUpOpen(true);
   };
 
@@ -249,29 +234,25 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
     setIsPopUpOpen(false);
   };
 
-  const handleSetSelectedHesapAdi = async (hesapAdi: any) => {
-    setSelectedHesapAdi(hesapAdi);
+  const handleSetSelectedToplantiTarihi = async (toplantiTarihi: any) => {
+    setSelectedToplantiTarihi(toplantiTarihi);
   };
 
-  const handleSetSelectedIslem = async (islem: any) => {
-    setSelectedIslem(islem);
+  const handleSetSelectedToplantiSaati = async (toplantiSaati: any) => {
+    setSelectedToplantiSaati(toplantiSaati);
   };
 
-  const handleSetSelectedTespit = async (tespit: any) => {
-    setSelectedTespit(tespit);
+  const handleSetSelectedToplantiYeri = async (toplantiYeri: any) => {
+    setSelectedToplantiYeri(toplantiYeri);
   };
 
-  const handleSetSelectedDurum = async (durum: any) => {
-    setSelectedDurum(durum);
+  const handleSetSelectedToplantiAmaci = async (toplantiAmaci: any) => {
+    setSelectedToplantiAmaci(toplantiAmaci);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [konu]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
@@ -301,103 +282,25 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
               onClick={() => handleCardClick(veri)}
             >
               <CalismaKagidiCard
-                title={`${index + 1}. ${veri.hesapAdi}`}
-                content={veri.islem}
+                title={`${index + 1}. Toplantı Tarihi, Saati, Yeri ve Amacı`}
                 standartMi={veri.standartMi}
               />
             </Grid>
           ))}
         </Grid>
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "end",
-          }}
-        >
-          <Grid
-            item
-            xs={12}
-            lg={1.5}
-            my={2}
-            sx={{
-              display: "flex",
-              justifyContent: "end",
-            }}
-          >
-            <Button
-              size="medium"
-              variant="outlined"
-              color="primary"
-              onClick={() => handleNew()}
-              sx={{
-                width: "100%",
-              }}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                }}
-              >
-                Yeni İşlem Ekle
-              </Typography>
-            </Button>
-          </Grid>
-        </Grid>
-
-        {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard hazirlayan="Denetçi - Yardımcı Denetçi"></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard onaylayan="Sorumlu Denetçi"></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-            gap: 1,
-          }}
-        >
-          <Grid item xs={12} lg={12} mt={5}>
-            <IslemlerCard controller={controller} />
-          </Grid>
-        </Grid>
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent
-          konu={selectedKonu}
-          hesapAdi={selectedHesapAdi}
-          islem={selectedIslem}
-          tespit={selectedTespit}
-          durum={selectedDurum}
+          toplantiTarihi={selectedToplantiTarihi}
+          toplantiSaati={selectedToplantiSaati}
+          toplantiYeri={selectedToplantiYeri}
+          toplantiAmaci={selectedToplantiAmaci}
           standartMi={selectedStandartMi}
           handleClose={handleClosePopUp}
-          handleSetSelectedHesapAdi={handleSetSelectedHesapAdi}
-          handleSetSelectedIslem={handleSetSelectedIslem}
-          handleSetSelectedTespit={handleSetSelectedTespit}
-          handleSetSelectedDurum={handleSetSelectedDurum}
+          handleSetSelectedToplantiTarihi={handleSetSelectedToplantiTarihi}
+          handleSetSelectedToplantiSaati={handleSetSelectedToplantiSaati}
+          handleSetSelectedToplantiYeri={handleSetSelectedToplantiYeri}
+          handleSetSelectedToplantiAmaci={handleSetSelectedToplantiAmaci}
           handleCreate={handleCreate}
           handleDelete={handleDelete}
           handleUpdate={handleUpdate}
@@ -409,54 +312,51 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
   );
 };
 
-export default HesaplaraIliskinIcKontrolTespitBelge;
+export default HileUsulsuzlukToplantiBilgileriBelge;
 
 interface PopUpProps {
-  konu?: string;
-  hesapAdi?: string;
-  islem?: string;
-  tespit?: string;
-  durum?: string;
+  toplantiTarihi?: string;
+  toplantiSaati?: string;
+  toplantiYeri?: string;
+  toplantiAmaci?: string;
   standartMi?: boolean;
 
   isPopUpOpen: boolean;
   isNew: boolean;
 
   handleClose: () => void;
-  handleSetSelectedHesapAdi: (a: string) => void;
-  handleSetSelectedIslem: (a: string) => void;
-  handleSetSelectedTespit: (a: string) => void;
-  handleSetSelectedDurum: (a: string) => void;
+  handleSetSelectedToplantiTarihi: (a: string) => void;
+  handleSetSelectedToplantiSaati: (a: string) => void;
+  handleSetSelectedToplantiYeri: (a: string) => void;
+  handleSetSelectedToplantiAmaci: (a: string) => void;
   handleCreate: (
-    konu: string,
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
+    toplantiTarihi: string,
+    toplantiSaati: string,
+    toplantiYeri: string,
+    toplantiAmaci: string
   ) => void;
   handleDelete: () => void;
   handleUpdate: (
-    hesapAdi: string,
-    islem: string,
-    tespit: string,
-    durum: string
+    toplantiTarihi: string,
+    toplantiSaati: string,
+    toplantiYeri: string,
+    toplantiAmaci: string
   ) => void;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
-  konu,
-  hesapAdi,
-  islem,
-  tespit,
-  durum,
+  toplantiTarihi,
+  toplantiSaati,
+  toplantiYeri,
+  toplantiAmaci,
   standartMi,
   isPopUpOpen,
   isNew,
   handleClose,
-  handleSetSelectedHesapAdi,
-  handleSetSelectedIslem,
-  handleSetSelectedTespit,
-  handleSetSelectedDurum,
+  handleSetSelectedToplantiTarihi,
+  handleSetSelectedToplantiSaati,
+  handleSetSelectedToplantiYeri,
+  handleSetSelectedToplantiAmaci,
   handleCreate,
   handleDelete,
   handleUpdate,
@@ -465,10 +365,13 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   const handleIsConfirm = () => {
     setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
   };
+  const formattedToplantiTarihi = toplantiTarihi
+    ? toplantiTarihi.split("T")[0]
+    : "";
 
   const textFieldRef = useRef<HTMLInputElement | null>(null);
 
-  const [control, setControl] = useState<string>(durum || "Hayır");
+  const [control, setControl] = useState<string>(toplantiAmaci || "Hayır");
 
   const [control1, setControl1] = useState(false);
   const [control2, setControl2] = useState(false);
@@ -518,77 +421,75 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           <DialogContent>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
-                Hesap Adı
+                Toplantı Tarihi
               </Typography>
               <CustomTextField
-                id="hesapAdi"
-                multiline
-                rows={8}
+                id="toplantiTarihi"
+                type="date"
                 variant="outlined"
                 fullWidth
-                value={hesapAdi}
-                onChange={(e: any) => handleSetSelectedHesapAdi(e.target.value)}
+                value={formattedToplantiTarihi}
+                onChange={(e: any) =>
+                  handleSetSelectedToplantiTarihi(e.target.value)
+                }
               />
             </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
-                İşlem
+                Toplantı Saati
               </Typography>
               <CustomTextField
-                id="islem"
-                multiline
-                rows={8}
+                id="toplantiSaati"
+                type="time"
                 variant="outlined"
                 fullWidth
-                value={islem}
-                onChange={(e: any) => handleSetSelectedIslem(e.target.value)}
-              />
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                Yanıt Belirt
-              </Typography>
-              <CustomSelect
-                labelId="durum"
-                id="durum"
-                size="small"
-                value={durum}
+                value={toplantiSaati}
                 onChange={(e: any) => {
-                  handleSetSelectedDurum(e.target.value);
-                  setControl(e.target.value);
+                  handleSetSelectedToplantiSaati(e.target.value);
                 }}
-                height={"36px"}
-                sx={{ width: "100%" }}
-              >
-                <MenuItem value={"Evet"}>Evet</MenuItem>
-                <MenuItem value={"Hayır"}>Hayır</MenuItem>
-              </CustomSelect>
+              />
             </Box>
-            {control == "Evet" && (
-              <Box px={3} pt={3}>
-                <Typography variant="h5" p={1}>
-                  Tespit
-                </Typography>
-                <CustomTextField
-                  id="tespit"
-                  multiline
-                  rows={8}
-                  variant="outlined"
-                  fullWidth
-                  value={tespit}
-                  onChange={(e: any) => handleSetSelectedTespit(e.target.value)}
-                  inputRef={textFieldRef}
-                />
-              </Box>
-            )}
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Toplantı Yeri
+              </Typography>
+              <CustomTextField
+                id="toplantiYeri"
+                multiline
+                rows={2}
+                variant="outlined"
+                fullWidth
+                value={toplantiYeri}
+                onChange={(e: any) =>
+                  handleSetSelectedToplantiYeri(e.target.value)
+                }
+              />
+            </Box>
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Toplantı Amacı
+              </Typography>
+              <CustomTextField
+                id="toplantiAmacı"
+                multiline
+                rows={8}
+                variant="outlined"
+                fullWidth
+                value={toplantiAmaci}
+                onChange={(e: any) =>
+                  handleSetSelectedToplantiAmaci(e.target.value)
+                }
+                inputRef={textFieldRef}
+              />
+            </Box>
           </DialogContent>
           <FloatingButtonCalismaKagitlari
             control={standartMi ? (control1 || control2 ? true : false) : true}
-            text={durum}
+            text={toplantiAmaci}
             isHovered={isHovered}
             setIsHovered={setIsHovered}
             handleClick={handleControl1}
-            handleSetSelectedText={handleSetSelectedDurum}
+            handleSetSelectedText={handleSetSelectedToplantiAmaci}
           />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
@@ -597,10 +498,10 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 color="success"
                 onClick={() =>
                   handleUpdate(
-                    hesapAdi || "",
-                    islem || "",
-                    tespit || "",
-                    durum || ""
+                    toplantiTarihi || "",
+                    toplantiSaati || "",
+                    toplantiYeri || "",
+                    toplantiAmaci || ""
                   )
                 }
                 sx={{ width: "20%" }}
@@ -623,11 +524,10 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 color="success"
                 onClick={() =>
                   handleCreate(
-                    konu || "",
-                    hesapAdi || "",
-                    islem || "",
-                    tespit || "",
-                    durum || ""
+                    toplantiTarihi || "",
+                    toplantiSaati || "",
+                    toplantiYeri || "",
+                    toplantiAmaci || ""
                   )
                 }
                 sx={{ width: "20%" }}

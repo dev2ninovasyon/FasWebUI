@@ -183,8 +183,6 @@ const HileUsulsuzlukBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
         );
 
       const rowsAll: any = [];
-      const rowsWithBaslikId: Veri[] = [];
-      const rowsWithoutBaslikId: Veri[] = [];
 
       const tamamlanan: any[] = [];
       const toplam: any[] = [];
