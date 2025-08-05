@@ -200,7 +200,6 @@ export const getOrneklemFisleriByList = async (
   kebirKodu: number[]
 ) => {
   try {
-    console.log(JSON.stringify(kebirKodu));
     const response = await fetch(
       `${url}/DenetimKanitlari/OrneklemFisleriByList?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
