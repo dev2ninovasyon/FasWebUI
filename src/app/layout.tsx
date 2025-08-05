@@ -73,7 +73,7 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
         },
       });
     }
-  }, [pathname, user.denetlenenId]);
+  }, [pathname]);
 
   return (
     <>
