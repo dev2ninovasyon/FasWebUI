@@ -614,3 +614,30 @@ export const getMutabakatDogrulamaMektubu = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const getIliskiliTarafIncelemeHesaplari = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/DenetimKanitlari/IliskiliTarafIncelemeHesaplari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("İlişkili Taraf İnceleme Hesapları getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};

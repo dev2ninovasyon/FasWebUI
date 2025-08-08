@@ -1,0 +1,274 @@
+"use client";
+
+import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
+import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import { Button, Grid, Typography } from "@mui/material";
+import { AppState } from "@/store/store";
+import { useSelector } from "@/store/hooks";
+import { useState } from "react";
+import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
+import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
+import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
+import IliskiliTarafIncelemeBelge from "@/app/(Uygulama)/components/CalismaKagitlari/IliskiliTarafIncelemeBelge";
+import IliskiliTarafInceleme from "./IliskiliTarafInceleme";
+
+const BCrumb = [
+  {
+    to: "/DenetimKanitlari",
+    title: "Denetim Kanıtları",
+  },
+  {
+    to: "/DenetimKanitlari/DigerKanitlar",
+    title: "Diğer Kanıtlar",
+  },
+  {
+    to: "/DenetimKanitlari/DigerKanitlar/IliskiliTarafInceleme",
+    title: "İlişkili Taraf İnceleme",
+  },
+];
+
+const Page = () => {
+  const [islem, setIslem] = useState("");
+  const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
+
+  const [isClickedYeniGrupEkle, setIsClickedYeniGrupEkle] = useState(false);
+  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
+
+  const [tamamlanan, setTamamlanan] = useState(0);
+  const [toplam, setToplam] = useState(0);
+
+  const user = useSelector((state: AppState) => state.userReducer);
+  const controller = "IliskiliTarafInceleme";
+  const grupluMu = false;
+
+  const handleOpen = () => {
+    setIsCreatePopUpOpen(true);
+    setIsClickedYeniGrupEkle(true);
+  };
+
+  const handleCreateGroup = async (konu: string) => {
+    const createdCalismaKagidiGrubu = {
+      denetlenenId: user.denetlenenId,
+      denetciId: user.denetciId,
+      yil: user.yil,
+      konu: konu,
+    };
+
+    try {
+      const result = await createCalismaKagidiVerisi(
+        controller || "",
+        user.token || "",
+        createdCalismaKagidiGrubu
+      );
+      if (result) {
+        setIsCreatePopUpOpen(false);
+        setIsClickedYeniGrupEkle(false);
+      } else {
+        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  return (
+    <>
+      <Breadcrumb title="İlişkili Taraf İnceleme" items={BCrumb}>
+        <>
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              height: "100%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+            }}
+          >
+            <Grid
+              item
+              xs={12}
+              md={grupluMu ? 2.8 : 3.8}
+              lg={grupluMu ? 2.8 : 3.8}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{
+                  overflowWrap: "break-word",
+                  wordWrap: "break-word",
+                  textAlign: "center",
+                }}
+              >
+                {tamamlanan}/{toplam} Tamamlandı
+              </Typography>
+            </Grid>
+            {grupluMu && (
+              <Grid
+                item
+                xs={3.8}
+                md={grupluMu ? 2.8 : 3.8}
+                lg={grupluMu ? 2.8 : 3.8}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleOpen()}
+                  sx={{ width: "100%" }}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      overflowWrap: "break-word",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    Yeni Grup Ekle
+                  </Typography>{" "}
+                </Button>
+              </Grid>
+            )}
+            <Grid
+              item
+              xs={3.8}
+              md={grupluMu ? 2.8 : 3.8}
+              lg={grupluMu ? 2.8 : 3.8}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                sx={{ width: "100%" }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  Ek Belge Yükle
+                </Typography>
+              </Button>
+            </Grid>
+            <Grid
+              item
+              xs={3.8}
+              md={grupluMu ? 2.8 : 3.8}
+              lg={grupluMu ? 2.8 : 3.8}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                onClick={() => setIsClickedVarsayilanaDon(true)}
+                sx={{ width: "100%" }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                >
+                  Varsayılana Dön
+                </Typography>
+              </Button>
+            </Grid>
+          </Grid>
+          {isCreatePopUpOpen && (
+            <CreateGroupPopUp
+              islem={islem}
+              setIslem={setIslem}
+              isPopUpOpen={isCreatePopUpOpen}
+              setIsPopUpOpen={setIsCreatePopUpOpen}
+              handleCreateGroup={handleCreateGroup}
+            />
+          )}
+        </>
+      </Breadcrumb>
+      <PageContainer
+        title="İlişkili Taraf İnceleme"
+        description="this is İlişkili Taraf İnceleme"
+      >
+        <Grid container>
+          <Grid item xs={12} sm={12} lg={12} mb={3}>
+            <IliskiliTarafIncelemeBelge
+              controller={controller}
+              isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+              setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+              setTamamlanan={setTamamlanan}
+              setToplam={setToplam}
+            />
+          </Grid>
+          <Grid
+            item
+            sx={{
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+              gap: 1,
+            }}
+          >
+            <IliskiliTarafInceleme />
+          </Grid>
+          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+            user.rol?.includes("SorumluDenetci") ||
+            user.rol?.includes("Denetci") ||
+            user.rol?.includes("DenetciYardimcisi")) && (
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard hazirlayan="Denetçi - Yardımcı Denetçi"></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard onaylayan="Sorumlu Denetçi"></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"></BelgeKontrolCard>
+              </Grid>
+            </Grid>
+          )}
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+              gap: 1,
+            }}
+          >
+            <Grid item xs={12} lg={12} mt={5}>
+              <IslemlerCard controller={controller} />
+            </Grid>
+          </Grid>
+        </Grid>
+      </PageContainer>
+    </>
+  );
+};
+
+export default Page;
