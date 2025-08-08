@@ -704,6 +704,13 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title:
+                "İç Kontrol Değerlendirme Sonucuna Göre Uygulanan Denetim Teknikleri",
+              icon: IconPoint,
+              href: "/PlanVeProgram/IcKontrolDegerlendirme",
+            },
+            {
+              id: uniqueId(),
+              title:
                 "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
               icon: IconPoint,
               href: "/PlanVeProgram/HileUsulsuzlukEkipCalismasi",
@@ -974,6 +981,14 @@ export function createMenuItems(
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
                   href: "/DenetimKanitlari/DigerKanitlar/UygulananMuhasebePolitikalarininTespiti",
+                },
+                {
+                  id: uniqueId(),
+                  title: "İlişkili Taraf İnceleme",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+                  icon: IconPoint,
+                  href: "/DenetimKanitlari/DigerKanitlar/IliskiliTarafInceleme",
                 },
                 {
                   id: uniqueId(),
