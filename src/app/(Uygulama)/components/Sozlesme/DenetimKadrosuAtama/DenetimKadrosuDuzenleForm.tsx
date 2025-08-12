@@ -38,8 +38,15 @@ const DenetimKadrosuDuzenleForm = () => {
   const [kullaniciId, setKullaniciId] = useState(0);
   const [unvanId, setUnvanId] = useState(0);
 
+  const denetciId = user.denetciId;
+  const denetlenenId = user.denetlenenId;
+  const yil = user.yil;
+
   const handleButtonClick = async () => {
     const updatedGorevAtamalari = {
+      denetciId,
+      denetlenenId,
+      yil,
       kullaniciId,
       unvanId,
       asilYedek,

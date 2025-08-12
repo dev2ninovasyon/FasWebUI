@@ -809,14 +809,18 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               </Box>
             )}
           </DialogContent>
-          <FloatingButtonCalismaKagitlari
-            control={standartMi ? (control1 || control2 ? true : false) : true}
-            text={durum}
-            isHovered={isHovered}
-            setIsHovered={setIsHovered}
-            handleClick={handleControl1}
-            handleSetSelectedText={handleSetSelectedDurum}
-          />
+          {control == "Evet" && (
+            <FloatingButtonCalismaKagitlari
+              control={
+                standartMi ? (control1 || control2 ? true : false) : true
+              }
+              text={tespit}
+              isHovered={isHovered}
+              setIsHovered={setIsHovered}
+              handleClick={handleControl1}
+              handleSetSelectedText={handleSetSelectedDurum}
+            />
+          )}
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button

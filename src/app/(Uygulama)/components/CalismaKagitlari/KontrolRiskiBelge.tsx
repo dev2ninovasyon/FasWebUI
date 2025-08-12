@@ -803,7 +803,6 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 fullWidth
                 value={islem}
                 onChange={(e: any) => handleSetSelectedIslem(e.target.value)}
-                inputRef={textFieldRef}
               />
             </Box>
             <Box px={3} pt={3}>
@@ -818,12 +817,13 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 fullWidth
                 value={tespit}
                 onChange={(e: any) => handleSetSelectedTespit(e.target.value)}
+                inputRef={textFieldRef}
               />
             </Box>
           </DialogContent>
           <FloatingButtonCalismaKagitlari
             control={standartMi ? (control1 || control2 ? true : false) : true}
-            text={durum}
+            text={tespit}
             isHovered={isHovered}
             setIsHovered={setIsHovered}
             handleClick={handleControl1}

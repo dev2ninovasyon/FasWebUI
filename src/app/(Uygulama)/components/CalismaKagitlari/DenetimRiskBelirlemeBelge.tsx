@@ -462,7 +462,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 Konu
               </Typography>
               <CustomTextField
-                id="Konu"
+                id="konu"
                 multiline
                 rows={8}
                 variant="outlined"
@@ -476,7 +476,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 İşlem
               </Typography>
               <CustomTextField
-                id="Islem"
+                id="islem"
                 multiline
                 rows={8}
                 variant="outlined"
@@ -490,7 +490,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 Tespit
               </Typography>
               <CustomTextField
-                id="Tespit"
+                id="tespit"
                 multiline
                 rows={8}
                 variant="outlined"
