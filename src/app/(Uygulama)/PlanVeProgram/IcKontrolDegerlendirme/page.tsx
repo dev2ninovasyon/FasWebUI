@@ -2,23 +2,16 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import {
-  Box,
-  Button,
-  Grid,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Button, Grid, Typography, useMediaQuery } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { useState } from "react";
-import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
-import IcKontrolDegerlemeUnsur from "@/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeUnsurBelge";
+import IcKontrolDegerlemeUnsurBelge from "@/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeUnsurBelge";
+import IcKontrolDegerlemeAnketBelge from "@/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeAnketBelge";
+import IcKontrolDegerlemeTeknikBelge from "@/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeTeknikBelge";
 
 const BCrumb = [
   {
@@ -34,14 +27,6 @@ const BCrumb = [
 const Page = () => {
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
-  const [islem1, setIslem1] = useState("");
-  const [isCreatePopUpOpen1, setIsCreatePopUpOpen1] = useState(false);
-  const [islem2, setIslem2] = useState("");
-  const [isCreatePopUpOpen2, setIsCreatePopUpOpen2] = useState(false);
-
-  const [isClickedYeniGrupEkle1, setIsClickedYeniGrupEkle1] = useState(false);
-  const [isClickedYeniGrupEkle2, setIsClickedYeniGrupEkle2] = useState(false);
-
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tamamlanan1, setTamamlanan1] = useState(0);
@@ -50,70 +35,12 @@ const Page = () => {
   const [tamamlanan2, setTamamlanan2] = useState(0);
   const [toplam2, setToplam2] = useState(0);
 
+  const [tamamlanan3, setTamamlanan3] = useState(0);
+  const [toplam3, setToplam3] = useState(0);
+
   const user = useSelector((state: AppState) => state.userReducer);
-  const customizer = useSelector((state: AppState) => state.customizer);
-  const theme = useTheme();
   const controller = "IcKontrolDegerlendirme";
-
-  const handleOpen1 = () => {
-    setIsCreatePopUpOpen1(true);
-    setIsClickedYeniGrupEkle1(true);
-  };
-
-  const handleOpen2 = () => {
-    setIsCreatePopUpOpen2(true);
-    setIsClickedYeniGrupEkle2(true);
-  };
-
-  const handleCreateGroup1 = async (islem: string) => {
-    const createdCalismaKagidiGrubu = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      islem: islem,
-    };
-
-    try {
-      const result = await createCalismaKagidiVerisi(
-        "DogalRisk",
-        user.token || "",
-        createdCalismaKagidiGrubu
-      );
-      if (result) {
-        setIsCreatePopUpOpen1(false);
-        setIsClickedYeniGrupEkle1(false);
-      } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleCreateGroup2 = async (konu: string) => {
-    const createdCalismaKagidiGrubu = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      konu: konu,
-    };
-
-    try {
-      const result = await createCalismaKagidiVerisi(
-        "KontrolRiski",
-        user.token || "",
-        createdCalismaKagidiGrubu
-      );
-      if (result) {
-        setIsCreatePopUpOpen2(false);
-        setIsClickedYeniGrupEkle2(false);
-      } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
+  const grupluMu = false;
 
   return (
     <>
@@ -183,24 +110,6 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
-          {isCreatePopUpOpen1 && (
-            <CreateGroupPopUp
-              islem={islem1}
-              setIslem={setIslem1}
-              isPopUpOpen={isCreatePopUpOpen1}
-              setIsPopUpOpen={setIsCreatePopUpOpen1}
-              handleCreateGroup={handleCreateGroup1}
-            />
-          )}
-          {isCreatePopUpOpen2 && (
-            <CreateGroupPopUp
-              islem={islem2}
-              setIslem={setIslem2}
-              isPopUpOpen={isCreatePopUpOpen2}
-              setIsPopUpOpen={setIsCreatePopUpOpen2}
-              handleCreateGroup={handleCreateGroup2}
-            />
-          )}
         </>
       </Breadcrumb>
       <PageContainer
@@ -246,12 +155,110 @@ const Page = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <IcKontrolDegerlemeUnsur
+              <IcKontrolDegerlemeUnsurBelge
                 controller={"IcKontrolDegerlemeUnsur"}
                 isClickedVarsayilanaDon={isClickedVarsayilanaDon}
                 setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
                 setTamamlanan={setTamamlanan1}
                 setToplam={setToplam1}
+              />
+            </>
+          </ParentCard>
+        </Box>
+        <Box
+          sx={{
+            width: "95%",
+            margin: "0 auto",
+            justifyContent: "space-between",
+            mb: 3,
+          }}
+        >
+          <ParentCard title="Genel İç Kontrol Anketine Göre;">
+            <>
+              <Grid
+                container
+                sx={{
+                  width: "95%",
+                  margin: "0 auto",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  lg={12}
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"flex-end"}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      overflowWrap: "break-word",
+                      wordWrap: "break-word",
+                      textAlign: "center",
+                    }}
+                  >
+                    {tamamlanan2}/{toplam2} Tamamlandı
+                  </Typography>
+                </Grid>
+              </Grid>
+              <IcKontrolDegerlemeAnketBelge
+                controller={"IcKontrolDegerlemeAnket"}
+                isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+                setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                setTamamlanan={setTamamlanan2}
+                setToplam={setToplam2}
+              />
+            </>
+          </ParentCard>
+        </Box>
+        <Box
+          sx={{
+            width: "95%",
+            margin: "0 auto",
+            justifyContent: "space-between",
+            mb: 3,
+          }}
+        >
+          <ParentCard title="Hesapların İç Kontrol Anketlerine Göre Uygulanacak Denetim Teknikleri">
+            <>
+              <Grid
+                container
+                sx={{
+                  width: "95%",
+                  margin: "0 auto",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  lg={12}
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"flex-end"}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      overflowWrap: "break-word",
+                      wordWrap: "break-word",
+                      textAlign: "center",
+                    }}
+                  >
+                    {tamamlanan3}/{toplam3} Tamamlandı
+                  </Typography>
+                </Grid>
+              </Grid>
+              <IcKontrolDegerlemeTeknikBelge
+                controller={"IcKontrolDegerlemeTeknik"}
+                isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+                setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                setTamamlanan={setTamamlanan3}
+                setToplam={setToplam3}
               />
             </>
           </ParentCard>

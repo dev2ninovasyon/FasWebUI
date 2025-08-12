@@ -259,7 +259,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
     setSelectedAnalitikProsedurler(veri.analitikProsedurler);
     setSelectedDetayTestler(veri.detayTestler);
     setSelectedGenelDenetimYaklasimi(veri.genelDenetimYaklasimi);
-    setSelectedStandartMi(veri.genelDenetimYaklasimi);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 

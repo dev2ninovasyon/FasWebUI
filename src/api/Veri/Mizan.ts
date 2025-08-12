@@ -85,6 +85,34 @@ export const getKurumlarVergisiBeyannamesiKarsilastirma = async (
   }
 };
 
+export const getKurumlarVergisiBeyannamesiKarsilastirmaHaric = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  type: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Mizan/KurumlarBeyannamesiKarsilastirmaHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("E Defter Mizan verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const getProgramVukMizan = async (
   token: string,
   denetciId: number,
@@ -216,6 +244,35 @@ export const createAnaHesapMizan = async (
   }
 };
 
+export const createAnaHesapMizanHaric = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  mizanbaslangicTarihi: string,
+  mizanBitisTarihi: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Mizan/AnaHesapMizanOlusturHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Ana Hesap Mizan oluşturulamadı");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const createDetayHesapMizan = async (
   token: string,
   denetciId: number,
@@ -227,6 +284,35 @@ export const createDetayHesapMizan = async (
   try {
     const response = await fetch(
       `${url}/Mizan/DetayHesapMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Detay Hesap Mizan oluşturulamadı");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const createDetayHesapMizanHaric = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  mizanbaslangicTarihi: string,
+  mizanBitisTarihi: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Mizan/DetayHesapMizanOlusturHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
       {
         method: "POST",
         headers: {

@@ -567,7 +567,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           </DialogContent>
           <FloatingButtonCalismaKagitlari
             control={standartMi ? (control1 || control2 ? true : false) : true}
-            text={durum}
+            text={tespit}
             isHovered={isHovered}
             setIsHovered={setIsHovered}
             handleClick={handleControl1}

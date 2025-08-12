@@ -6,8 +6,6 @@ import { Box, Button, Grid, Typography, useMediaQuery } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { useState } from "react";
-import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import HileUsulsuzlukToplantiBilgileriBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukToplantiBilgileriBelge";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
@@ -29,14 +27,6 @@ const BCrumb = [
 const Page = () => {
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
-  const [islem1, setIslem1] = useState("");
-  const [isCreatePopUpOpen1, setIsCreatePopUpOpen1] = useState(false);
-  const [islem2, setIslem2] = useState("");
-  const [isCreatePopUpOpen2, setIsCreatePopUpOpen2] = useState(false);
-
-  const [isClickedYeniGrupEkle1, setIsClickedYeniGrupEkle1] = useState(false);
-  const [isClickedYeniGrupEkle2, setIsClickedYeniGrupEkle2] = useState(false);
-
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tamamlanan1, setTamamlanan1] = useState(0);
@@ -48,66 +38,6 @@ const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const controller = "HileUsulsuzlukEkipCalismasi";
   const grupluMu = false;
-
-  const handleOpen1 = () => {
-    setIsCreatePopUpOpen1(true);
-    setIsClickedYeniGrupEkle1(true);
-  };
-
-  const handleOpen2 = () => {
-    setIsCreatePopUpOpen2(true);
-    setIsClickedYeniGrupEkle2(true);
-  };
-
-  const handleCreateGroup1 = async (islem: string) => {
-    const createdCalismaKagidiGrubu = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      islem: islem,
-    };
-
-    try {
-      const result = await createCalismaKagidiVerisi(
-        "HileUsulsuzlukToplantiBilgileri",
-        user.token || "",
-        createdCalismaKagidiGrubu
-      );
-      if (result) {
-        setIsCreatePopUpOpen1(false);
-        setIsClickedYeniGrupEkle1(false);
-      } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleCreateGroup2 = async (konu: string) => {
-    const createdCalismaKagidiGrubu = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      konu: konu,
-    };
-
-    try {
-      const result = await createCalismaKagidiVerisi(
-        "HileUsulsuzlukToplantidaGorusulenHususlar",
-        user.token || "",
-        createdCalismaKagidiGrubu
-      );
-      if (result) {
-        setIsCreatePopUpOpen2(false);
-        setIsClickedYeniGrupEkle2(false);
-      } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
 
   return (
     <>
@@ -180,24 +110,6 @@ const Page = () => {
               </Button>
             </Grid>
           </Grid>
-          {isCreatePopUpOpen1 && (
-            <CreateGroupPopUp
-              islem={islem1}
-              setIslem={setIslem1}
-              isPopUpOpen={isCreatePopUpOpen1}
-              setIsPopUpOpen={setIsCreatePopUpOpen1}
-              handleCreateGroup={handleCreateGroup1}
-            />
-          )}
-          {isCreatePopUpOpen2 && (
-            <CreateGroupPopUp
-              islem={islem2}
-              setIslem={setIslem2}
-              isPopUpOpen={isCreatePopUpOpen2}
-              setIsPopUpOpen={setIsCreatePopUpOpen2}
-              handleCreateGroup={handleCreateGroup2}
-            />
-          )}
         </>
       </Breadcrumb>
       <PageContainer

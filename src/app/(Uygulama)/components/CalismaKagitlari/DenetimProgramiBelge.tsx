@@ -308,7 +308,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedCalismaSuresi(veri.calismaSuresi);
     setSelectedCalismaTakvimi(veri.calismaTakvimi);
     setSelectedIlgiliFormKodlari(veri.ilgiliFormKodlari);
-    setSelectedStandartMi(veri.genelDenetimYaklasimi);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 

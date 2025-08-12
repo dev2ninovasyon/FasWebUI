@@ -278,7 +278,7 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedCalismaSuresi(veri.calismaSuresi);
     setSelectedBaslangicTarihi(veri.baslangicTarihi);
     setSelectedBitisTarihi(veri.bitisTarihi);
-    setSelectedStandartMi(veri.genelDenetimYaklasimi);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
