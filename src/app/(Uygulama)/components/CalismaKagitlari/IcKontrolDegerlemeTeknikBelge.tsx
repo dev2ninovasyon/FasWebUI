@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -11,8 +11,6 @@ import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
-import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
-import IslemlerCard from "./Cards/IslemlerCard";
 import { useSelector } from "@/store/hooks";
 import {
   createCalismaKagidiVerisi,
@@ -23,13 +21,15 @@ import {
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
-import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 
 interface Veri {
   id: number;
-  detayKodu: string;
-  islem: string;
-  tespit: string;
+  aciklama: string;
+  deger1: string;
+  deger2: string;
+  deger3: string;
+  deger4: string;
+  deger5: string;
   standartMi: boolean;
 }
 
@@ -41,7 +41,7 @@ interface CalismaKagidiProps {
   setToplam: (deger: number) => void;
 }
 
-const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
+const IcKontrolDegerlemeTeknikBelge: React.FC<CalismaKagidiProps> = ({
   controller,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
@@ -52,9 +52,12 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
 
   const [selectedId, setSelectedId] = useState(0);
-  const [selectedDetayKodu, setSelectedDetayKodu] = useState("");
-  const [selectedIslem, setSelectedIslem] = useState("");
-  const [selectedTespit, setSelectedTespit] = useState("");
+  const [selectedAciklama, setSelectedAciklama] = useState("");
+  const [selectedDeger1, setSelectedDeger1] = useState("");
+  const [selectedDeger2, setSelectedDeger2] = useState("");
+  const [selectedDeger3, setSelectedDeger3] = useState("");
+  const [selectedDeger4, setSelectedDeger4] = useState("");
+  const [selectedDeger5, setSelectedDeger5] = useState("");
   const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
@@ -64,17 +67,23 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
   const handleCreate = async (
-    detayKodu: string,
-    islem: string,
-    tespit: string
+    aciklama: string,
+    deger1: string,
+    deger2: string,
+    deger3: string,
+    deger4: string,
+    deger5: string
   ) => {
     const createdCalismaKagidiVerisi = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      detayKodu: detayKodu,
-      islem: islem,
-      tespit: tespit,
+      aciklama: aciklama,
+      deger1: deger1,
+      deger2: deger2,
+      deger3: deger3,
+      deger4: deger4,
+      deger5: deger5,
     };
     try {
       const result = await createCalismaKagidiVerisi(
@@ -95,17 +104,23 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
   };
 
   const handleUpdate = async (
-    detayKodu: string,
-    islem: string,
-    tespit: string
+    aciklama: string,
+    deger1: string,
+    deger2: string,
+    deger3: string,
+    deger4: string,
+    deger5: string
   ) => {
     const updatedCalismaKagidiVerisi = veriler.find(
       (veri) => veri.id === selectedId
     );
     if (updatedCalismaKagidiVerisi) {
-      updatedCalismaKagidiVerisi.detayKodu = detayKodu;
-      updatedCalismaKagidiVerisi.islem = islem;
-      updatedCalismaKagidiVerisi.tespit = tespit;
+      updatedCalismaKagidiVerisi.aciklama = aciklama;
+      updatedCalismaKagidiVerisi.deger1 = deger1;
+      updatedCalismaKagidiVerisi.deger2 = deger2;
+      updatedCalismaKagidiVerisi.deger3 = deger3;
+      updatedCalismaKagidiVerisi.deger4 = deger4;
+      updatedCalismaKagidiVerisi.deger5 = deger5;
 
       try {
         const result = await updateCalismaKagidiVerisi(
@@ -175,8 +190,6 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
         );
 
       const rowsAll: any = [];
-      const rowsWithBaslikId: Veri[] = [];
-      const rowsWithoutBaslikId: Veri[] = [];
 
       const tamamlanan: any[] = [];
       const toplam: any[] = [];
@@ -184,9 +197,12 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
       calismaKagidiVerileri.forEach((veri: any) => {
         const newRow: Veri = {
           id: veri.id,
-          detayKodu: veri.detayKodu,
-          islem: veri.islem,
-          tespit: veri.tespit,
+          aciklama: veri.aciklama,
+          deger1: veri.deger1,
+          deger2: veri.deger2,
+          deger3: veri.deger3,
+          deger4: veri.deger4,
+          deger5: veri.deger5,
           standartMi: veri.standartmi,
         };
         rowsAll.push(newRow);
@@ -209,18 +225,24 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
-    setSelectedDetayKodu(veri.detayKodu);
-    setSelectedIslem(veri.islem);
-    setSelectedTespit(veri.tespit);
+    setSelectedAciklama(veri.aciklama);
+    setSelectedDeger1(veri.deger1);
+    setSelectedDeger2(veri.deger2);
+    setSelectedDeger3(veri.deger3);
+    setSelectedDeger4(veri.deger4);
+    setSelectedDeger5(veri.deger5);
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 
   const handleNew = () => {
     setIsNew(true);
-    setSelectedDetayKodu("");
-    setSelectedIslem("");
-    setSelectedTespit("");
+    setSelectedAciklama("");
+    setSelectedDeger1("");
+    setSelectedDeger2("");
+    setSelectedDeger3("");
+    setSelectedDeger4("");
+    setSelectedDeger5("");
     setIsPopUpOpen(true);
   };
 
@@ -229,16 +251,28 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
     setIsPopUpOpen(false);
   };
 
-  const handleSetSelectedDetayKodu = async (detayKodu: any) => {
-    setSelectedDetayKodu(detayKodu);
+  const handleSetSelectedAciklama = async (value: string) => {
+    setSelectedAciklama(value);
   };
 
-  const handleSetSelectedIslem = async (islem: any) => {
-    setSelectedIslem(islem);
+  const handleSetSelectedDeger1 = async (value: string) => {
+    setSelectedDeger1(value);
   };
 
-  const handleSetSelectedTespit = async (tespit: any) => {
-    setSelectedTespit(tespit);
+  const handleSetSelectedDeger2 = async (value: string) => {
+    setSelectedDeger2(value);
+  };
+
+  const handleSetSelectedDeger3 = async (value: string) => {
+    setSelectedDeger3(value);
+  };
+
+  const handleSetSelectedDeger4 = async (value: string) => {
+    setSelectedDeger4(value);
+  };
+
+  const handleSetSelectedDeger5 = async (value: string) => {
+    setSelectedDeger5(value);
   };
 
   useEffect(() => {
@@ -273,8 +307,7 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
               onClick={() => handleCardClick(veri)}
             >
               <CalismaKagidiCard
-                title={`${index + 1}. ${veri.detayKodu} ${veri.islem}`}
-                content={veri.tespit}
+                title={`${index + 1}. ${veri.aciklama}`}
                 standartMi={veri.standartMi}
               />
             </Grid>
@@ -319,53 +352,23 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
             </Button>
           </Grid>
         </Grid>
-        {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard hazirlayan="Denetçi - Yardımcı Denetçi"></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard onaylayan="Sorumlu Denetçi"></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-            gap: 1,
-          }}
-        >
-          <Grid item xs={12} lg={12} mt={5}>
-            <IslemlerCard controller={controller} />
-          </Grid>
-        </Grid>
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent
-          detayKodu={selectedDetayKodu}
-          islem={selectedIslem}
-          tespit={selectedTespit}
+          aciklama={selectedAciklama}
+          deger1={selectedDeger1}
+          deger2={selectedDeger2}
+          deger3={selectedDeger3}
+          deger4={selectedDeger4}
+          deger5={selectedDeger5}
           standartMi={selectedStandartMi}
           handleClose={handleClosePopUp}
-          handleSetSelectedDetayKodu={handleSetSelectedDetayKodu}
-          handleSetSelectedIslem={handleSetSelectedIslem}
-          handleSetSelectedTespit={handleSetSelectedTespit}
+          handleSetSelectedAciklama={handleSetSelectedAciklama}
+          handleSetSelectedDeger1={handleSetSelectedDeger1}
+          handleSetSelectedDeger2={handleSetSelectedDeger2}
+          handleSetSelectedDeger3={handleSetSelectedDeger3}
+          handleSetSelectedDeger4={handleSetSelectedDeger4}
+          handleSetSelectedDeger5={handleSetSelectedDeger5}
           handleCreate={handleCreate}
           handleDelete={handleDelete}
           handleUpdate={handleUpdate}
@@ -377,37 +380,69 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
   );
 };
 
-export default SayimVeTespitDegerlendirmeBelge;
+export default IcKontrolDegerlemeTeknikBelge;
 
 interface PopUpProps {
-  detayKodu?: string;
-  islem?: string;
-  tespit?: string;
+  aciklama?: string;
+  deger1?: string;
+  deger2?: string;
+  deger3?: string;
+  deger4?: string;
+  deger5?: string;
+
   standartMi?: boolean;
 
   isPopUpOpen: boolean;
   isNew: boolean;
 
   handleClose: () => void;
-  handleSetSelectedDetayKodu: (a: string) => void;
-  handleSetSelectedIslem: (a: string) => void;
-  handleSetSelectedTespit: (a: string) => void;
-  handleCreate: (detayKodu: string, islem: string, tespit: string) => void;
+
+  handleSetSelectedAciklama: (a: string) => void;
+  handleSetSelectedDeger1: (a: string) => void;
+  handleSetSelectedDeger2: (a: string) => void;
+  handleSetSelectedDeger3: (a: string) => void;
+  handleSetSelectedDeger4: (a: string) => void;
+  handleSetSelectedDeger5: (a: string) => void;
+
+  handleCreate: (
+    aciklama: string,
+    deger1: string,
+    deger2: string,
+    deger3: string,
+    deger4: string,
+    deger5: string
+  ) => void;
   handleDelete: () => void;
-  handleUpdate: (detayKodu: string, islem: string, tespit: string) => void;
+  handleUpdate: (
+    aciklama: string,
+    deger1: string,
+    deger2: string,
+    deger3: string,
+    deger4: string,
+    deger5: string
+  ) => void;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
-  detayKodu,
-  islem,
-  tespit,
+  aciklama,
+  deger1,
+  deger2,
+  deger3,
+  deger4,
+  deger5,
+
   standartMi,
   isPopUpOpen,
   isNew,
   handleClose,
-  handleSetSelectedDetayKodu,
-  handleSetSelectedIslem,
-  handleSetSelectedTespit,
+
+  handleSetSelectedAciklama,
+  handleSetSelectedDeger1,
+  handleSetSelectedDeger2,
+  handleSetSelectedDeger3,
+  handleSetSelectedDeger4,
+  handleSetSelectedDeger5,
+
   handleCreate,
   handleDelete,
   handleUpdate,
@@ -416,33 +451,6 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   const handleIsConfirm = () => {
     setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
   };
-
-  const textFieldRef = useRef<HTMLInputElement | null>(null);
-
-  const [control1, setControl1] = useState(false);
-  const [control2, setControl2] = useState(false);
-
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleControl1 = () => {
-    if (standartMi) {
-      setControl1(true);
-    }
-  };
-
-  useEffect(() => {
-    if (!standartMi) {
-      setControl2(true);
-    }
-  }, [standartMi]);
-
-  useEffect(() => {
-    if (isHovered && textFieldRef.current) {
-      textFieldRef.current.focus();
-    } else if (!isHovered && textFieldRef.current) {
-      textFieldRef.current.blur();
-    }
-  }, [isHovered]);
 
   return (
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
@@ -467,70 +475,126 @@ const PopUpComponent: React.FC<PopUpProps> = ({
           <DialogContent>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
-                Detay Kodu
+                Açıklama
               </Typography>
               <CustomTextField
-                id="DetayKodu"
+                id="aciklama"
                 multiline
-                rows={8}
+                rows={1}
                 variant="outlined"
                 fullWidth
-                value={detayKodu}
-                onChange={(e: any) =>
-                  handleSetSelectedDetayKodu(e.target.value)
-                }
+                value={aciklama}
+                InputProps={{
+                  style: { padding: 0 }, // Padding değerini sıfırla
+                }}
+                onChange={(e: any) => handleSetSelectedAciklama(e.target.value)}
               />
             </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
-                İşlem
+                Teknik 1
               </Typography>
               <CustomTextField
-                id="islem"
+                id="deger1"
                 multiline
-                rows={8}
+                rows={1}
                 variant="outlined"
                 fullWidth
-                value={islem}
-                onChange={(e: any) => handleSetSelectedIslem(e.target.value)}
+                value={deger1}
+                InputProps={{
+                  style: { padding: 0 }, // Padding değerini sıfırla
+                }}
+                onChange={(e: any) => handleSetSelectedDeger1(e.target.value)}
               />
             </Box>
             <Box px={3} pt={3}>
               <Typography variant="h5" p={1}>
-                Tespit
+                Teknik 2
               </Typography>
               <CustomTextField
-                id="tespit"
+                id="deger2"
                 multiline
-                rows={8}
+                rows={1}
                 variant="outlined"
                 fullWidth
-                value={tespit}
-                onChange={(e: any) => handleSetSelectedTespit(e.target.value)}
-                inputRef={textFieldRef}
+                value={deger2}
+                InputProps={{
+                  style: { padding: 0 }, // Padding değerini sıfırla
+                }}
+                onChange={(e: any) => handleSetSelectedDeger2(e.target.value)}
+              />
+            </Box>
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Teknik 3
+              </Typography>
+              <CustomTextField
+                id="deger3"
+                multiline
+                rows={1}
+                variant="outlined"
+                fullWidth
+                value={deger3}
+                InputProps={{
+                  style: { padding: 0 }, // Padding değerini sıfırla
+                }}
+                onChange={(e: any) => handleSetSelectedDeger3(e.target.value)}
+              />
+            </Box>
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Teknik 4
+              </Typography>
+              <CustomTextField
+                id="deger4"
+                multiline
+                rows={1}
+                variant="outlined"
+                fullWidth
+                value={deger4}
+                InputProps={{
+                  style: { padding: 0 }, // Padding değerini sıfırla
+                }}
+                onChange={(e: any) => handleSetSelectedDeger4(e.target.value)}
+              />
+            </Box>
+            <Box px={3} pt={3}>
+              <Typography variant="h5" p={1}>
+                Teknik 5
+              </Typography>
+              <CustomTextField
+                id="deger5"
+                multiline
+                rows={1}
+                variant="outlined"
+                fullWidth
+                value={deger5}
+                InputProps={{
+                  style: { padding: 0 }, // Padding değerini sıfırla
+                }}
+                onChange={(e: any) => handleSetSelectedDeger5(e.target.value)}
               />
             </Box>
           </DialogContent>
-          <FloatingButtonCalismaKagitlari
-            control={standartMi ? (control1 || control2 ? true : false) : true}
-            text={tespit}
-            isHovered={isHovered}
-            setIsHovered={setIsHovered}
-            handleClick={handleControl1}
-            handleSetSelectedText={handleSetSelectedTespit}
-          />
           {!isNew ? (
             <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
               <Button
                 variant="outlined"
                 color="success"
                 onClick={() =>
-                  handleUpdate(detayKodu || "", islem || "", tespit || "")
+                  handleUpdate(
+                    aciklama || "",
+                    deger1 || "",
+                    deger2 || "",
+                    deger3 || "",
+                    deger4 || "",
+                    deger5 || ""
+                  )
                 }
                 sx={{ width: "20%" }}
               >
                 Kaydet
-              </Button>{" "}
+              </Button>
               <Button
                 variant="outlined"
                 color="error"
@@ -546,12 +610,19 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 variant="outlined"
                 color="success"
                 onClick={() =>
-                  handleCreate(detayKodu || "", islem || "", tespit || "")
+                  handleCreate(
+                    aciklama || "",
+                    deger1 || "",
+                    deger2 || "",
+                    deger3 || "",
+                    deger4 || "",
+                    deger5 || ""
+                  )
                 }
                 sx={{ width: "20%" }}
               >
                 Kaydet
-              </Button>{" "}
+              </Button>
               <Button
                 variant="outlined"
                 color="error"

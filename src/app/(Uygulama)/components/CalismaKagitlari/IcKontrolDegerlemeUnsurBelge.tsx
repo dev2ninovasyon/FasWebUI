@@ -234,7 +234,7 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
     setSelectedIyi(veri.iyi);
     setSelectedOrta(veri.orta);
     setSelectedKotu(veri.kotu);
-    setSelectedStandartMi(veri.genelDenetimYaklasimi);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 

@@ -250,7 +250,7 @@ const TespitEdilenRisklerBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedDogrulukDonemsellik(veri.dogrulukDonemsellik);
     setSelectedDegerleme(veri.degerleme);
     setSelectedSiniflama(veri.siniflama);
-    setSelectedStandartMi(veri.genelDenetimYaklasimi);
+    setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
 

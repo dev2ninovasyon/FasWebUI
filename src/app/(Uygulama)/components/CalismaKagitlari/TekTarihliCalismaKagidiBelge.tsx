@@ -759,7 +759,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 Tarih
               </Typography>
               <CustomTextField
-                id="tarh"
+                id="tarih"
                 type="date"
                 variant="outlined"
                 fullWidth
@@ -772,7 +772,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 İşlem
               </Typography>
               <CustomTextField
-                id="Islem"
+                id="islem"
                 multiline
                 rows={8}
                 variant="outlined"
@@ -786,7 +786,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 Tespit
               </Typography>
               <CustomTextField
-                id="Tespit"
+                id="tespit"
                 multiline
                 rows={8}
                 variant="outlined"
