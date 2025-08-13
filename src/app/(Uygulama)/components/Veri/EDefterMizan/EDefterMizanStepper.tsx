@@ -47,9 +47,9 @@ import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
 const steps = [
   "Hariç Fiş Belirleme",
-  "E-Defter Mizan Oluştuma",
+  "E-Defter Mizan",
   "KV. B. Karşılaştırma",
-  "P. F. Dönüştürme",
+  "P. F.",
 ];
 
 const EDefterMizanStepper = () => {

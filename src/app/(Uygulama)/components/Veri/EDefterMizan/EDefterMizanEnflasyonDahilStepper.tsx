@@ -37,11 +37,7 @@ import MizanTable from "@/app/(Uygulama)/components/Veri/Mizan/MizanTable";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import HaricFisListesiTable from "@/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListesiTable";
 
-const steps = [
-  "Hariç Fiş Belirleme",
-  "E-Defter Mizan Oluştuma",
-  "KV. B. Karşılaştırma",
-];
+const steps = ["Hariç Fiş Belirleme", "E-Defter Mizan", "KV. B. Karşılaştırma"];
 
 const EDefterMizanEnflasyonStepper = () => {
   const [activeStep, setActiveStep] = React.useState(0);
