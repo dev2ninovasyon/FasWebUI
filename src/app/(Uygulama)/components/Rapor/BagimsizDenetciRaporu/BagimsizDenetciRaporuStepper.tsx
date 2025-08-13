@@ -758,6 +758,17 @@ const BagimsizDenetciRaporuStepper = () => {
     });
   };
 
+  const handleStepClick = (stepName: string) => {
+    const stepIndex = steps.indexOf(stepName);
+    if (stepIndex !== -1) {
+      setActiveStep(stepIndex);
+    }
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
   async function createPDF() {
     const reportElement = document.querySelector("div#report") as HTMLElement;
     const reportPage = document.querySelector(
@@ -900,7 +911,9 @@ const BagimsizDenetciRaporuStepper = () => {
             <Step key={label} {...stepProps}>
               <StepLabel
                 {...labelProps}
+                onClick={() => handleStepClick(label)}
                 sx={{
+                  cursor: "pointer !important",
                   "& .MuiStepLabel-label": {
                     fontSize: theme.typography.h6,
                   },

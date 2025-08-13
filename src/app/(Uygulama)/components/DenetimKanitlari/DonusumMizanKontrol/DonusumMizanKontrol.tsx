@@ -36,7 +36,15 @@ interface Veri {
   alacakBakiye: number;
 }
 
-const DonusumMizanKontrol = () => {
+interface Props {
+  donusumIslemiYapTiklandiMi?: boolean;
+  setDonusumIslemiYapTiklandiMi?: (bool: boolean) => void;
+}
+
+const DonusumMizanKontrol: React.FC<Props> = ({
+  donusumIslemiYapTiklandiMi,
+  setDonusumIslemiYapTiklandiMi,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -399,6 +407,15 @@ const DonusumMizanKontrol = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!donusumIslemiYapTiklandiMi) {
+      fetchData();
+    } else {
+      setRowCount(0);
+      setFetchedData([]);
+    }
+  }, [donusumIslemiYapTiklandiMi]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
