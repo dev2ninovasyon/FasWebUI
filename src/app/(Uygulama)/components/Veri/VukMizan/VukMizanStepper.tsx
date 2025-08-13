@@ -38,11 +38,7 @@ import MizanTable from "@/app/(Uygulama)/components/Veri/Mizan/MizanTable";
 import { MizanConfirmPopUpComponent } from "@/app/(Uygulama)/components/Veri/Mizan/MizanConfirmPopUpComponent";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
-const steps = [
-  "Vuk Mizan Oluşturma",
-  "KV. B. Karşılaştırma",
-  "P. F. Dönüştürme",
-];
+const steps = ["Vuk Mizan", "KV. B. Karşılaştırma", "P. F."];
 
 const VukMizanStepper = () => {
   const [activeStep, setActiveStep] = React.useState(0);
