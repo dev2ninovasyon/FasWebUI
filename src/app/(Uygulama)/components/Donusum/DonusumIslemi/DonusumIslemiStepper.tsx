@@ -14,6 +14,8 @@ import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/Custom
 import { DonusumIslemiYap } from "@/api/Donusum/Donusum";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { FinansalTabloOlustur } from "@/api/FinansalTablolar/FinansalToblolar";
+import DonusumMizanKontrol from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrol";
+import DonusumMizanKontrolCardTable from "../../DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrolCardTable";
 
 const steps = ["Dönüşüm", "Finansal Tablo"];
 
@@ -189,6 +191,13 @@ const DonusumIslemiStepper = () => {
     });
   };
 
+  const handleStepClick = (stepName: string) => {
+    const stepIndex = steps.indexOf(stepName);
+    if (stepIndex !== -1) {
+      setActiveStep(stepIndex);
+    }
+  };
+
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -220,7 +229,9 @@ const DonusumIslemiStepper = () => {
             <Step key={label} {...stepProps}>
               <StepLabel
                 {...labelProps}
+                onClick={() => handleStepClick(label)}
                 sx={{
+                  cursor: "pointer !important",
                   "& .MuiStepLabel-label": {
                     fontSize: theme.typography.h6,
                   },
@@ -300,6 +311,22 @@ const DonusumIslemiStepper = () => {
                   alignItems={"center"}
                 >
                   <DonusumIslemiCard
+                    donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
+                    setDonusumIslemiYapTiklandiMi={
+                      setDonusumIslemiYapTiklandiMi
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} lg={12} mt={1} padding={1}>
+                  <DonusumMizanKontrolCardTable
+                    donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
+                    setDonusumIslemiYapTiklandiMi={
+                      setDonusumIslemiYapTiklandiMi
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} lg={12} padding={1}>
+                  <DonusumMizanKontrol
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi
@@ -386,6 +413,22 @@ const DonusumIslemiStepper = () => {
                   alignItems={"center"}
                 >
                   <DonusumIslemiCard
+                    donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
+                    setDonusumIslemiYapTiklandiMi={
+                      setDonusumIslemiYapTiklandiMi
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} lg={12} mt={1} padding={1}>
+                  <DonusumMizanKontrolCardTable
+                    donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
+                    setDonusumIslemiYapTiklandiMi={
+                      setDonusumIslemiYapTiklandiMi
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} lg={12} padding={1}>
+                  <DonusumMizanKontrol
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi

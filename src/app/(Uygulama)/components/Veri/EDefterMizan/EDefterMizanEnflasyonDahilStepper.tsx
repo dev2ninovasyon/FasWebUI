@@ -258,6 +258,13 @@ const EDefterMizanEnflasyonStepper = () => {
     });
   };
 
+  const handleStepClick = (stepName: string) => {
+    const stepIndex = steps.indexOf(stepName);
+    if (stepIndex !== -1) {
+      setActiveStep(stepIndex);
+    }
+  };
+
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -289,7 +296,9 @@ const EDefterMizanEnflasyonStepper = () => {
             <Step key={label} {...stepProps}>
               <StepLabel
                 {...labelProps}
+                onClick={() => handleStepClick(label)}
                 sx={{
+                  cursor: "pointer !important",
                   "& .MuiStepLabel-label": {
                     fontSize: theme.typography.h6,
                   },
@@ -442,7 +451,7 @@ const EDefterMizanEnflasyonStepper = () => {
                               handleAnaHesapMizan();
                             }}
                           >
-                            Ana Hesap Mizan
+                            Mizan
                           </Button>
                         </Grid>
                         <Grid item xs={12} mb={2}>
@@ -546,7 +555,7 @@ const EDefterMizanEnflasyonStepper = () => {
                               handleAnaHesapMizan();
                             }}
                           >
-                            Ana Hesap Mizan
+                            Mizan
                           </Button>
                           <Button
                             size="medium"
