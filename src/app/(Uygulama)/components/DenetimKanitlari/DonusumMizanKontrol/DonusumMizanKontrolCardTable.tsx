@@ -36,7 +36,15 @@ interface DonusumMizanHesaplari {
   alacakBakiye: number;
 }
 
-const DonusumMizanKontrolCardTable = () => {
+interface Props {
+  donusumIslemiYapTiklandiMi?: boolean;
+  setDonusumIslemiYapTiklandiMi?: (bool: boolean) => void;
+}
+
+const DonusumMizanKontrolCardTable: React.FC<Props> = ({
+  donusumIslemiYapTiklandiMi,
+  setDonusumIslemiYapTiklandiMi,
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const formatNumber = (num: number) => {
@@ -113,6 +121,16 @@ const DonusumMizanKontrolCardTable = () => {
     fetchProgramVukMizanHesaplari();
     fetchDonusumMizanHesaplari();
   }, []);
+
+  useEffect(() => {
+    if (!donusumIslemiYapTiklandiMi) {
+      fetchProgramVukMizanHesaplari();
+      fetchDonusumMizanHesaplari();
+    } else {
+      setProgramVukMizanHesaplari([]);
+      setDonusumMizanHesaplari([]);
+    }
+  }, [donusumIslemiYapTiklandiMi]);
 
   return (
     <Grid container>

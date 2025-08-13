@@ -262,6 +262,13 @@ const VukMizanStepper = () => {
     });
   };
 
+  const handleStepClick = (stepName: string) => {
+    const stepIndex = steps.indexOf(stepName);
+    if (stepIndex !== -1) {
+      setActiveStep(stepIndex);
+    }
+  };
+
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -293,7 +300,9 @@ const VukMizanStepper = () => {
             <Step key={label} {...stepProps}>
               <StepLabel
                 {...labelProps}
+                onClick={() => handleStepClick(label)}
                 sx={{
+                  cursor: "pointer !important",
                   "& .MuiStepLabel-label": {
                     fontSize: theme.typography.h6,
                   },
