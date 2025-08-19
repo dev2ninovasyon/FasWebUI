@@ -12,15 +12,19 @@ import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/Cal
 
 const BCrumb = [
   {
-    to: "/HileVeUsulsuzluk",
+    to: "/DenetimKanitlari",
+    title: "Denetim Kanıtları",
+  },
+  {
+    to: "/DenetimKanitlari/HileVeUsulsuzluk",
     title: "Hile Ve Usulsüzlük",
   },
   {
-    to: "/HileVeUsulsuzluk/HileProsedurleri",
+    to: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri",
     title: "Hile Prosedürleri",
   },
   {
-    to: "/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukDegerlendirme",
+    to: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukDegerlendirme",
     title: "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme",
   },
 ];

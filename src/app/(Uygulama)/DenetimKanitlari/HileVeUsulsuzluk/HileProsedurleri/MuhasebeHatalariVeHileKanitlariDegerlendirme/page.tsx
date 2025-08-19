@@ -8,20 +8,24 @@ import { useSelector } from "@/store/hooks";
 import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import HileUsulsuzlukBelirlemeBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukBelirlemeBelge";
+import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
 
 const BCrumb = [
   {
-    to: "/HileVeUsulsuzluk",
+    to: "/DenetimKanitlari",
+    title: "Denetim Kanıtları",
+  },
+  {
+    to: "/DenetimKanitlari/HileVeUsulsuzluk",
     title: "Hile Ve Usulsüzlük",
   },
   {
-    to: "/HileVeUsulsuzluk/HileProsedurleri",
+    to: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri",
     title: "Hile Prosedürleri",
   },
   {
-    to: "/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukBelirleme",
-    title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+    to: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/MuhasebeHatalariVeHileKanitlariDegerlendirme",
+    title: "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
   },
 ];
 
@@ -36,20 +40,23 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "HileUsulsuzlukBelirleme";
+  const controller = "MuhasebeHatalariVeHileKanitlariDegerlendirme";
   const grupluMu = false;
+  const alanAdi1 = "İşlem";
+  const alanAdi2 = "Tespit";
 
   const handleOpen = () => {
     setIsCreatePopUpOpen(true);
     setIsClickedYeniGrupEkle(true);
   };
 
-  const handleCreateGroup = async (konu: string) => {
+  const handleCreateGroup = async (islem: string) => {
     const createdCalismaKagidiGrubu = {
       denetlenenId: user.denetlenenId,
       denetciId: user.denetciId,
       yil: user.yil,
-      konu: konu,
+      islem: islem,
+      tespit: "",
     };
 
     try {
@@ -68,11 +75,10 @@ const Page = () => {
       console.error("Bir hata oluştu:", error);
     }
   };
-
   return (
     <>
       <Breadcrumb
-        title="Hile Usulsüzlük ve Risk Faktörleri Belirleme"
+        title="Muhasebe Hataları ve Hile Kanıtları Değerlendirme"
         items={BCrumb}
       >
         <>
@@ -140,7 +146,7 @@ const Page = () => {
             )}
             <Grid
               item
-              xs={3.8}
+              xs={5.8}
               md={grupluMu ? 2.8 : 3.8}
               lg={grupluMu ? 2.8 : 3.8}
               sx={{
@@ -168,7 +174,7 @@ const Page = () => {
             </Grid>
             <Grid
               item
-              xs={3.8}
+              xs={5.8}
               md={grupluMu ? 2.8 : 3.8}
               lg={grupluMu ? 2.8 : 3.8}
               sx={{
@@ -205,12 +211,16 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Hile Usulsüzlük ve Risk Faktörleri Belirleme"
-        description="this is Hile Usulsüzlük ve Risk Faktörleri Belirleme"
+        title="Muhasebe Hataları ve Hile Kanıtları Değerlendirme"
+        description="this is Muhasebe Hataları ve Hile Kanıtları Değerlendirme"
       >
         <Box>
-          <HileUsulsuzlukBelirlemeBelge
+          <CalismaKagidiBelge
             controller={controller}
+            grupluMu={grupluMu}
+            alanAdi1={alanAdi1}
+            alanAdi2={alanAdi2}
+            isClickedYeniGrupEkle={isClickedYeniGrupEkle}
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}

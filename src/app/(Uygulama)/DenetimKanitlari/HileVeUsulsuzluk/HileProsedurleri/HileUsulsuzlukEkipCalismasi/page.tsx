@@ -14,15 +14,19 @@ import HileUsulsuzlukToplantidaGorusulenHususlarBelge from "@/app/(Uygulama)/com
 
 const BCrumb = [
   {
-    to: "/HileVeUsulsuzluk",
+    to: "/DenetimKanitlari",
+    title: "Denetim Kanıtları",
+  },
+  {
+    to: "/DenetimKanitlari/HileVeUsulsuzluk",
     title: "Hile Ve Usulsüzlük",
   },
   {
-    to: "/HileVeUsulsuzluk/HileProsedurleri",
+    to: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri",
     title: "Hile Prosedürleri",
   },
   {
-    to: "/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukEkipCalismasi",
+    to: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukEkipCalismasi",
     title:
       "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme",
   },
