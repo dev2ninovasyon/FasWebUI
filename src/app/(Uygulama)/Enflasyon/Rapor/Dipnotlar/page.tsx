@@ -15,7 +15,7 @@ const BCrumb = [
   },
   {
     to: "/Enflasyon/Rapor",
-    title: "Dipnotlar",
+    title: "Rapor",
   },
   {
     to: "/Enflasyon/Rapor/Dipnotlar",

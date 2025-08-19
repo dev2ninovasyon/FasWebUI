@@ -32,7 +32,7 @@ const Page: React.FC = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} lg={12}>
             <iframe
-              src={`https://enflasyon.fas-audit.com.tr/EnflasyonDuzeltmesi/FinansmanMaliyeti?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/FinansmanMaliyeti?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
               style={{
                 border: "0px",
                 width: "100%",
