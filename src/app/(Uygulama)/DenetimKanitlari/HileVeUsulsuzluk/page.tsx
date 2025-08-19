@@ -13,7 +13,7 @@ const Page = () => {
         description="this is Hile Ve Usulsüzlük"
       >
         <Box>
-          <TopCards title="HİLE VE USULSÜZLÜK" />
+          <TopCards title="Hile ve Usulsüzlük" />
         </Box>
       </PageContainer>
     </HileVeUsulsuzlukLayout>

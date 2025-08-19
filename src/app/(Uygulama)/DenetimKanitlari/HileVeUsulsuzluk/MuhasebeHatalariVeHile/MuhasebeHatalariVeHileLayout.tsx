@@ -4,11 +4,15 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 
 const BCrumb = [
   {
-    to: "/HileVeUsulsuzluk",
+    to: "/DenetimKanitlari",
+    title: "Denetim Kanıtları",
+  },
+  {
+    to: "/DenetimKanitlari/HileVeUsulsuzluk",
     title: "Hile Ve Usulsüzlük",
   },
   {
-    to: "/HileVeUsulsuzluk/MuhasebeHatalariVeHile",
+    to: "/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile",
     title: "Muhasebe Hataları Ve Hileye İlişkin Çalışmalar",
   },
 ];
