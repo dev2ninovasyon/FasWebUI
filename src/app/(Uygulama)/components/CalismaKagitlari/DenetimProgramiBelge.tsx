@@ -305,8 +305,16 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedId(veri.id);
     setSelectedDenetimProgram(veri.denetimProgram);
     setSelectedGorevliId(veri.gorevliId);
-    setSelectedCalismaSuresi(veri.calismaSuresi);
-    setSelectedCalismaTakvimi(veri.calismaTakvimi);
+    setSelectedCalismaSuresi(
+      veri.calismaSuresi && veri.calismaSuresi !== ""
+        ? veri.calismaSuresi
+        : "01:00"
+    );
+    setSelectedCalismaTakvimi(
+      veri.calismaTakvimi && veri.calismaTakvimi !== ""
+        ? veri.calismaTakvimi
+        : `${user.yil}-01-01`
+    );
     setSelectedIlgiliFormKodlari(veri.ilgiliFormKodlari);
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);

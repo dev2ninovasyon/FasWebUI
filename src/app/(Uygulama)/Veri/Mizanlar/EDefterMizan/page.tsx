@@ -29,7 +29,7 @@ const BCrumb = [
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
-  const [tip, setTip] = useState("EnflasyonHaric");
+  const [tip, setTip] = useState("EnflasyonDahil");
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setTip(newValue);
   };
@@ -43,21 +43,21 @@ const Page: React.FC = () => {
       {user.yil == 2024 ? (
         <TabContext value={tip}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Enflasyon Hariç Mizan" value="EnflasyonHaric" />
             <Tab label="Enflasyon Dahil Mizan" value="EnflasyonDahil" />
+            <Tab label="Enflasyon Hariç Mizan" value="EnflasyonHaric" />
           </TabList>
           <Divider />
-          <TabPanel value="EnflasyonHaric" sx={{ paddingX: 0 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} lg={12}>
-                <EDefterMizanEnflasyonHaricStepper />
-              </Grid>
-            </Grid>
-          </TabPanel>
           <TabPanel value="EnflasyonDahil" sx={{ paddingX: 0 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} lg={12}>
                 <EDefterMizanEnflasyonDahilStepper />
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel value="EnflasyonHaric" sx={{ paddingX: 0 }}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} lg={12}>
+                <EDefterMizanEnflasyonHaricStepper />
               </Grid>
             </Grid>
           </TabPanel>
