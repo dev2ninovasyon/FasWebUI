@@ -25,17 +25,17 @@ const Page: React.FC = () => {
   return (
     <ProtectedPage allowed={user?.enflasyonmu || false}>
       <PageContainer
-        title="	Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi"
-        description="this is 	Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi"
+        title="Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi"
+        description="this is Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi"
       >
         <Breadcrumb
-          title="	Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi"
+          title="Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi"
           items={BCrumb}
         />
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} lg={12}>
             <iframe
-              src={`https://enflasyon.fas-audit.com.tr/EnflasyonDuzeltmesi/DigerVarlikVeKaynaklarEnflasyonDuzeltmesi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/DigerVarlikVeKaynaklarEnflasyonDuzeltmesi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
               style={{
                 border: "0px",
                 width: "100%",
