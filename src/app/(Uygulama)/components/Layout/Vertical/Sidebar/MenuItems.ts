@@ -1130,24 +1130,32 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Hile ve Usulsüzlük",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/HileVeUsulsuzluk",
               children: [
                 {
                   id: uniqueId(),
                   title: "Hile Prosedürleri",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                   icon: IconPoint,
                   href: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri",
                   children: [
                     {
                       id: uniqueId(),
                       title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+                      customIcon:
+                        "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
                       href: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukBelirleme",
                     },
                     {
                       id: uniqueId(),
                       title: "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme",
+                      customIcon:
+                        "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
                       href: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukDegerlendirme",
                     },
@@ -1155,6 +1163,8 @@ export function createMenuItems(
                       id: uniqueId(),
                       title:
                         "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+                      customIcon:
+                        "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
                       href: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukEkipCalismasi",
                     },
@@ -1162,6 +1172,8 @@ export function createMenuItems(
                       id: uniqueId(),
                       title:
                         "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+                      customIcon:
+                        "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
                       href: "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/MuhasebeHatalariVeHileKanitlariDegerlendirme",
                     },
@@ -1170,6 +1182,8 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Muhasebe Hataları ve Hileye İlişkin Çalışmalar",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                   icon: IconPoint,
                   href: "/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile",
                 },
