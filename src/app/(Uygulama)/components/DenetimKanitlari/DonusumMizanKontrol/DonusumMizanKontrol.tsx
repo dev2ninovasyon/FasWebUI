@@ -351,6 +351,15 @@ const DonusumMizanKontrol: React.FC<Props> = ({
           return;
         }
 
+        // Negatif bakiye düzeltme
+        if (veri.borcBakiye < 0) {
+          veri.alacakBakiye = Math.abs(veri.borcBakiye);
+          veri.borcBakiye = 0;
+        } else if (veri.alacakBakiye < 0) {
+          veri.borcBakiye = Math.abs(veri.alacakBakiye);
+          veri.alacakBakiye = 0;
+        }
+
         const newRow: any = [
           veri.kebirKodu,
           veri.detayKodu,

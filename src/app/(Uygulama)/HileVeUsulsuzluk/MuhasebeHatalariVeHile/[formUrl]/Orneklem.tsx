@@ -534,7 +534,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, tersMi }) => {
               <Tooltip title={detayTiklandimi ? "Detay Gizle" : "Detay Göster"}>
                 <Fab
                   color="warning"
-                  size="medium"
+                  size="small"
                   onClick={() => setDetayTiklandimi(!detayTiklandimi)}
                 >
                   {detayTiklandimi ? (
