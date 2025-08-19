@@ -6,7 +6,9 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Fab,
   Grid,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -22,6 +24,7 @@ import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import BeklenenKrediZarari from "./BeklenenKrediZarari";
+import { IconExclamationMark } from "@tabler/icons-react";
 
 const BCrumb = [
   {
@@ -170,11 +173,17 @@ const Page: React.FC = () => {
           <Box
             sx={{
               display: "flex",
+              alignItems: "center",
               flexDirection: smDown ? "column" : "row",
               gap: 1,
               width: smDown ? "100%" : "auto",
             }}
           >
+            <Tooltip title="TCMB Faiz Oranı veya Müşterilerin Kullandığı Kredilerin Ortalama Faiz Oranı Alınabilir">
+              <Fab color="warning" size="small">
+                <IconExclamationMark width={18.25} height={18.25} />
+              </Fab>
+            </Tooltip>
             <Button
               type="button"
               size="medium"
