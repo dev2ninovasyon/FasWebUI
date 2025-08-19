@@ -53,7 +53,9 @@ const MuhasebeHatalariVeHileTopCard = () => {
         icon: randomIcon(),
         title: item.name,
         bgcolor: randomColor(),
-        href: `${item.url.replace(/\s/g, "")}`,
+        href: `${item.url
+          .replace(/\s/g, "")
+          .replace("/HileVeUsulsuzluk", "/DenetimKanitlari/HileVeUsulsuzluk")}`,
       }));
 
       setMuhasebeHatalariVeHileTopCars(enriched);
