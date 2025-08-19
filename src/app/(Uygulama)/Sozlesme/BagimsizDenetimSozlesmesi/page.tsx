@@ -2,8 +2,8 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import dynamic from "next/dynamic";
-import BagimsizDenetimSozlesmesiLayout from "./BagimsizDenetimSozlesmesiLayout";
 import {
+  Button,
   Fab,
   Grid,
   Paper,
@@ -21,30 +21,68 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import { useEffect, useState } from "react";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { getCalismaKagidiVerileriByDenetciDenetlenenYil } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import {
+  deleteAllCalismaKagidiVerileri,
+  getCalismaKagidiVerileriByDenetciDenetlenenYil,
+} from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { IconExclamationMark } from "@tabler/icons-react";
 import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadrosuAtama";
+import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 
 const CustomEditorWVeri = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditorWVeri"),
   { ssr: false }
 );
 
+const BCrumb = [
+  {
+    to: "/Sozlesme",
+    title: "Sözleşme",
+  },
+  {
+    to: "/Musteri/BagimsizDenetimSozlesmesi",
+    title: "Bağımsız Denetim Sözleşmesi",
+  },
+];
+
 interface Veri {
   id: number;
   metin: string;
 }
-
-const controller = "DenetimSozlesmesi";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const [sozlesmeTarihi, setSozlesmeTarihi] = useState<string>("");
 
+  const [tempSozlesmeTarihi, setTempSozlesmeTarihi] = useState(sozlesmeTarihi);
+
   const [veriler, setVeriler] = useState<Veri[]>([]);
 
   const [rows, setRows] = useState([]);
+
+  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
+
+  const controller = "DenetimSozlesmesi";
+
+  const handleDeleteAll = async () => {
+    try {
+      const result = await deleteAllCalismaKagidiVerileri(
+        controller || "",
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0
+      );
+      if (result) {
+        fetchData();
+      } else {
+        console.error("Çalışma Kağıdı Verileri silme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -58,6 +96,9 @@ const Page = () => {
         );
 
       if (sozlesmeVerileri?.length > 0) {
+        setTempSozlesmeTarihi(
+          sozlesmeVerileri[0].sozlesmeTarihi?.split("T")[0] || ""
+        );
         setSozlesmeTarihi(
           sozlesmeVerileri[0].sozlesmeTarihi?.split("T")[0] || ""
         );
@@ -101,8 +142,55 @@ const Page = () => {
     fetchData2();
   }, []);
 
+  useEffect(() => {
+    if (isClickedVarsayilanaDon) {
+      handleDeleteAll();
+      setIsClickedVarsayilanaDon(false);
+    }
+  }, [isClickedVarsayilanaDon]);
+
   return (
-    <BagimsizDenetimSozlesmesiLayout>
+    <>
+      <Breadcrumb title="Bağımsız Denetim Sözleşmesi" items={BCrumb}>
+        <>
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              height: "100%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+            }}
+          >
+            <Grid
+              item
+              xs={12}
+              md={12}
+              lg={12}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                onClick={() => setIsClickedVarsayilanaDon(true)}
+                sx={{ width: "100%" }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                >
+                  Varsayılana Dön
+                </Typography>
+              </Button>
+            </Grid>
+          </Grid>
+        </>
+      </Breadcrumb>
       <PageContainer
         title="Bağımsız Denetim Sözleşmesi"
         description="this is Bağımsız Denetim Sözleşmesi"
@@ -131,8 +219,9 @@ const Page = () => {
             <CustomTextField
               id="sozlesmeTarihi"
               type="date"
-              value={sozlesmeTarihi}
-              onChange={(e: any) => setSozlesmeTarihi(e.target.value)}
+              value={tempSozlesmeTarihi}
+              onChange={(e: any) => setTempSozlesmeTarihi(e.target.value)}
+              onBlur={() => setSozlesmeTarihi(tempSozlesmeTarihi)}
             />
             <Tooltip title="Sözleşme Tarihi Girmeyi Unutmayınız">
               <Fab color="warning" size="small" sx={{ marginLeft: 2 }}>
@@ -360,7 +449,7 @@ const Page = () => {
           )}
         </Grid>
       </PageContainer>
-    </BagimsizDenetimSozlesmesiLayout>
+    </>
   );
 };
 

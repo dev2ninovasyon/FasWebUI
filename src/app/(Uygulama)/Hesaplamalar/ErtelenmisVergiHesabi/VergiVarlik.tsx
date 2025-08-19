@@ -221,7 +221,7 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         const newRow: any = [
           veri.hesapAdi,
           veri.geciciFarkVarlik,
-          veri.ertelenenVergiVarlik,
+          veri.ertelenenVergiVarligi,
         ];
         rowsAll.push(newRow);
       });

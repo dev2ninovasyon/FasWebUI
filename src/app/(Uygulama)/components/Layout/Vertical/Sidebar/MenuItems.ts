@@ -1159,9 +1159,9 @@ export function createMenuItems(
           children: [
             {
               id: uniqueId(),
-              title: "Rapor Düzenle",
+              title: "Dipnotlar",
               icon: IconPoint,
-              href: "/Rapor/RaporDuzenle",
+              href: "/Rapor/Dipnotlar",
             },
             {
               id: uniqueId(),
@@ -1643,9 +1643,9 @@ export function createMenuItems(
                       {
                         id: uniqueId(),
                         parentTitle: "KONSOLİDASYON",
-                        title: "Rapor Düzenle",
+                        title: "Dipnotlar",
                         icon: IconPoint,
-                        href: "/Konsolidasyon/Rapor/RaporDuzenle",
+                        href: "/Konsolidasyon/Rapor/Dipnotlar",
                       },
                       {
                         id: uniqueId(),

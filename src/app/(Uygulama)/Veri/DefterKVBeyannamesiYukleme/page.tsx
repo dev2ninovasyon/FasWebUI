@@ -437,8 +437,9 @@ const Page: React.FC = () => {
                       <Typography
                         variant="body1"
                         sx={{ color: "warning.dark" }}
+                        textAlign={"center"}
                       >
-                        {month} Ayı Dosya Sayısı: {count}
+                        {month}: {count}
                       </Typography>
                     </Paper>
                   </Grid>

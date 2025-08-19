@@ -19,8 +19,11 @@ import { store, persistor } from "@/store/storeConfig";
 import { enqueueSnackbar, SnackbarProvider } from "notistack";
 import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
 import { usePathname, useRouter } from "next/navigation";
+import useAutoLogout from "@/utils/useAutoLogOut";
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
+  useAutoLogout(45 * 60 * 1000);
+
   const user = useSelector((state: AppState) => state.userReducer);
 
   const theme = ThemeSettings();

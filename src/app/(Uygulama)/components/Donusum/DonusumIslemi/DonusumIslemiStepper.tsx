@@ -15,7 +15,7 @@ import { DonusumIslemiYap } from "@/api/Donusum/Donusum";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { FinansalTabloOlustur } from "@/api/FinansalTablolar/FinansalToblolar";
 import DonusumMizanKontrol from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrol";
-import DonusumMizanKontrolCardTable from "../../DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrolCardTable";
+import DonusumMizanKontrolCardTable from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrolCardTable";
 
 const steps = ["Dönüşüm", "Finansal Tablo"];
 

@@ -5,8 +5,10 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import {
   Box,
   Button,
+  Fab,
   Grid,
   MenuItem,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -27,6 +29,7 @@ import {
   setTfrsmi,
 } from "@/store/user/UserSlice";
 import { getDenetciOdemeBilgileri } from "@/api/Kullanici/KullaniciIslemleri";
+import { IconExclamationMark } from "@tabler/icons-react";
 
 const BCrumb = [
   {
@@ -59,6 +62,8 @@ const Page: React.FC = () => {
   ) => {
     setEnflasyon(event.target.value);
   };
+
+  const [kabulEdildimi, setKabulEdildimi] = useState(false);
 
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
@@ -132,12 +137,15 @@ const Page: React.FC = () => {
         user.token || "",
         user.denetlenenId || 0
       );
-      setTur(
-        denetlenenVerileri.denetimTuru
-          ? denetlenenVerileri.denetimTuru
-          : "Seçiniz"
-      );
-      setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
+      if (denetlenenVerileri) {
+        setKabulEdildimi(true);
+        setTur(
+          denetlenenVerileri.denetimTuru
+            ? denetlenenVerileri.denetimTuru
+            : "Seçiniz"
+        );
+        setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -242,18 +250,39 @@ const Page: React.FC = () => {
                 </MenuItem>
               </CustomSelect>
             )}
-            <Button
-              type="button"
-              size="medium"
-              disabled={hesaplaTiklandimi}
-              variant="outlined"
-              color="primary"
-              onClick={() => {
-                handleDenetimeKabulEt();
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 1,
+                gap: 1,
               }}
             >
-              Denetime Kabul Et
-            </Button>
+              {kabulEdildimi ? (
+                <>
+                  <Tooltip title="Bu Firma Zaten Denetime Kabul Edildi">
+                    <Fab color="warning" size="small">
+                      <IconExclamationMark width={18.25} height={18.25} />
+                    </Fab>
+                  </Tooltip>
+                </>
+              ) : (
+                <></>
+              )}
+              <Button
+                type="button"
+                size="medium"
+                disabled={hesaplaTiklandimi}
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  handleDenetimeKabulEt();
+                }}
+              >
+                Denetime Kabul Et
+              </Button>
+            </Box>
           </Box>
         </Grid>
       </Grid>
