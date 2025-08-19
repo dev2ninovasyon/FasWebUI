@@ -22,8 +22,8 @@ const BCrumb = [
     title: "Rapor",
   },
   {
-    to: "/Rapor/RaporDuzenle",
-    title: "Rapor Düzenle",
+    to: "/Rapor/Dipnotlar",
+    title: "Dipnotlar",
   },
 ];
 
@@ -40,8 +40,8 @@ const Page: React.FC = () => {
   };
 
   return (
-    <PageContainer title="Rapor Düzenle" description="Rapor Düzenle">
-      <Breadcrumb title="Rapor Düzenle" items={BCrumb}>
+    <PageContainer title="Dipnotlar" description="Dipnotlar">
+      <Breadcrumb title="Dipnotlar" items={BCrumb}>
         <>
           <Grid
             container

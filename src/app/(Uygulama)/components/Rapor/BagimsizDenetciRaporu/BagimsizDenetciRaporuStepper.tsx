@@ -131,16 +131,16 @@ const BagimsizDenetciRaporuStepper = () => {
     setRaporGorusu(event.target.value);
   };
 
-  const [ticariAlacaklar, setTicariAlacaklar] = React.useState(true);
-  const [stoklar, setStoklar] = React.useState(true);
-  const [maddiDuranVarliklar, setMaddiDuranVarliklar] = React.useState(true);
-  const [hasilat, setHasilat] = React.useState(true);
-  const [ticariBorclar, setTicariBorclar] = React.useState(true);
+  const [ticariAlacaklar, setTicariAlacaklar] = React.useState(false);
+  const [stoklar, setStoklar] = React.useState(false);
+  const [maddiDuranVarliklar, setMaddiDuranVarliklar] = React.useState(false);
+  const [hasilat, setHasilat] = React.useState(false);
+  const [ticariBorclar, setTicariBorclar] = React.useState(false);
   const [nakitVeNakitBenzerleri, setNakitVeNakitBenzerleri] =
-    React.useState(true);
-  const [satislarinMaliyeti, setSatislarinMaliyeti] = React.useState(true);
-  const [satislar, setSatislar] = React.useState(true);
-  const [enflasyonMuhasebesi, setEnflasyonMuhasebesi] = React.useState(true);
+    React.useState(false);
+  const [satislarinMaliyeti, setSatislarinMaliyeti] = React.useState(false);
+  const [satislar, setSatislar] = React.useState(false);
+  const [enflasyonMuhasebesi, setEnflasyonMuhasebesi] = React.useState(false);
   const [diger, setDiger] = React.useState(false);
 
   const handleChangeTicariAlacaklar = (

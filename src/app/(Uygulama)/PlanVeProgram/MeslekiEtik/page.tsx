@@ -9,7 +9,7 @@ import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
-import PersonelBoxAutocomplete from "../../components/Layout/Vertical/Header/PersonelBoxAutoComplete";
+import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
 
 const BCrumb = [
   {

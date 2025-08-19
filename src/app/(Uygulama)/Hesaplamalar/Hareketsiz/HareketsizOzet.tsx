@@ -321,7 +321,7 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
-          ? "99.9%"
+          ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
             diff,
       });
@@ -329,18 +329,16 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
   }, [customizer.isCollapse]);
 
   return (
-    <>
+    <div style={{ maxHeight: 342, overflowY: "auto" }}>
       <HotTable
         style={{
-          height: "100%",
-          width: "99%",
-          maxHeight: 342,
-          maxWidth: "99.9%",
+          width: "calc(100% - 15px)",
+          overflowX: "hidden",
         }}
         language={dictionary.languageCode}
         ref={hotTableComponent}
         data={fetchedData}
-        height={342}
+        height={"auto"}
         colHeaders={colHeaders}
         columns={columns}
         colWidths={[60, 175, 80, 80, 80, 80]}
@@ -364,7 +362,7 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
         afterRenderer={afterRenderer}
         contextMenu={["alignment", "copy"]}
       />
-    </>
+    </div>
   );
 };
 

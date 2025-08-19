@@ -10,7 +10,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import NextLink from "next/link";
-import { IconCircle } from "@tabler/icons-react";
+import { IconChevronLeft, IconCircle } from "@tabler/icons-react";
 import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { useSelector } from "@/store/hooks";
@@ -91,14 +91,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         <Typography variant="h4">{title}</Typography>
 
         <Breadcrumbs
-          separator={
-            <IconCircle
-              size="5"
-              fill="textSecondary"
-              fillOpacity={"0.6"}
-              style={{ margin: "0 5px" }}
-            />
-          }
+          separator={null}
           sx={{ alignItems: "center", mt: items ? "10px" : "" }}
           aria-label="breadcrumb"
         >
@@ -108,7 +101,15 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                 .map((item) => (
                   <div key={item.title}>
                     {item.to ? (
-                      <NextLink href={item.to} passHref>
+                      <NextLink
+                        href={item.to}
+                        passHref
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <Typography
                           color={
                             item.title === subtitle ? "white" : "textSecondary"
@@ -121,8 +122,12 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                             px: item.title === subtitle ? 1 : 0,
                             borderRadius: (theme: Theme) =>
                               theme.shape.borderRadius / 4,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}
                         >
+                          <IconChevronLeft style={{ marginRight: 4 }} />
                           {item.title}
                         </Typography>
                       </NextLink>

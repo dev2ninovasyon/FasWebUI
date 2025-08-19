@@ -19,7 +19,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
 
   const handleDownload = async () => {
     axios({
-      url: `${url}/${controller}/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
+      url: `${url}/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
       method: "GET",
       responseType: "blob",
     }).then((response) => {
@@ -35,7 +35,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
   const handlePreview = async () => {
     try {
       const response = await axios({
-        url: `${url}/${controller}/PdfDosyasiGoster?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
+        url: `${url}/ArsivIslemleri/PdfDosyasiGoster?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
         method: "GET",
         responseType: "blob",
       });
