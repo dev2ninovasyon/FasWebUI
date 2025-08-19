@@ -1,11 +1,5 @@
 import Image from "next/image";
 import { Box, CardContent, Grid, Typography } from "@mui/material";
-import icon1 from "public/images/svgs/icon-user-male.svg";
-import icon2 from "public/images/svgs/icon-user-male.svg";
-import icon3 from "public/images/svgs/icon-briefcase.svg";
-import icon4 from "public/images/svgs/icon-mailbox.svg";
-import icon5 from "public/images/svgs/icon-favorites.svg";
-import icon6 from "public/images/svgs/icon-favorites.svg";
 import Link from "next/link";
 import { getHile } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { useSelector } from "react-redux";
@@ -23,7 +17,7 @@ const MuhasebeHatalariVeHileTopCard = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   function randomIcon() {
-    var icons = [icon1, icon2, icon3, icon4, icon5, icon6];
+    var icons = ["/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg"];
     var randomIndex = Math.floor(Math.random() * icons.length);
     return icons[randomIndex];
   }
