@@ -18,8 +18,8 @@ const BCrumb = [
     title: "Net Parasal Pozisyon",
   },
   {
-    to: "/Enflasyon/NetParasalPozisyon/ErtelenenVergi",
-    title: "Ertelenen Vergi",
+    to: "/Enflasyon/NetParasalPozisyon/NetParasalPozisyonTablosu",
+    title: "NPP Kayıp/Kazanç",
   },
 ];
 
@@ -29,14 +29,14 @@ const Page: React.FC = () => {
   return (
     <ProtectedPage allowed={user?.enflasyonmu || false}>
       <PageContainer
-        title="Ertelenen Vergi"
-        description="this is Ertelenen Vergi"
+        title="NPP Kayıp/Kazanç"
+        description="this is NPP Kayıp/Kazanç"
       >
-        <Breadcrumb title="Ertelenen Vergi" items={BCrumb} />
+        <Breadcrumb title="NPP Kayıp/Kazanç" items={BCrumb} />
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} lg={12}>
             <iframe
-              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/NetParasalPozisyonTablosuErtelenmisVergiV1?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/NetParasalPozisyonTablosuV2?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
               style={{
                 border: "0px",
                 width: "100%",
