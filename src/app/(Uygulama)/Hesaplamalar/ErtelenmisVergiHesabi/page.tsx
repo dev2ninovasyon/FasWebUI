@@ -49,7 +49,7 @@ const Page: React.FC = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
 
-  const [vergiOrani, setVergiOrani] = useState<number>(22);
+  const [vergiOrani, setVergiOrani] = useState<number>(25);
   const [maliZararVeBenzeriIndirimler, setMaliZararVeBenzeriIndirimler] =
     useState<number>(0);
   const [vergiAvantajVeBenzerleri, setVergiAvantajVeBenzerleri] =
