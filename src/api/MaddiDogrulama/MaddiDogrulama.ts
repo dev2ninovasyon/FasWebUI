@@ -1,5 +1,89 @@
 import { url } from "@/api/apiBase";
 
+export const getCariDosya = async (token: string, denetimTuru: string) => {
+  try {
+    let tfrsmi = denetimTuru == "Tfrs" ? true : false;
+    let bobimi = denetimTuru == "Bobi" ? true : false;
+
+    const response = await fetch(
+      `${url}/DenetimDosyaBelgeleri/CariDosyaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Verileri getirilemedi");
+      return null; // Hata durumunda null döndürüyoruz
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+    return null; // Hata durumunda null döndürüyoruz
+  }
+};
+
+export const getSurekliDosya = async (token: string, denetimTuru: string) => {
+  try {
+    let tfrsmi = denetimTuru == "Tfrs" ? true : false;
+    let bobimi = denetimTuru == "Bobi" ? true : false;
+
+    const response = await fetch(
+      `${url}/DenetimDosyaBelgeleri/SurekliDosyaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Verileri getirilemedi");
+      return null; // Hata durumunda null döndürüyoruz
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+    return null; // Hata durumunda null döndürüyoruz
+  }
+};
+
+export const getDenetimDosya = async (token: string, denetimTuru: string) => {
+  try {
+    let tfrsmi = denetimTuru == "Tfrs" ? true : false;
+    let bobimi = denetimTuru == "Bobi" ? true : false;
+
+    const response = await fetch(
+      `${url}/DenetimDosyaBelgeleri/DenetimDosyaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Verileri getirilemedi");
+      return null; // Hata durumunda null döndürüyoruz
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+    return null; // Hata durumunda null döndürüyoruz
+  }
+};
+
 export const getMaddiDogrulama = async (token: string, denetimTuru: string) => {
   try {
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;

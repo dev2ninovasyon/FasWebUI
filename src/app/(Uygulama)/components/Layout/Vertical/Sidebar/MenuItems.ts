@@ -1238,22 +1238,23 @@ export function createMenuItems(
           title: "DENETİM DOSYA",
           icon: IconFolderUp,
           href: "/DenetimDosya",
-          /*
+
           children: [
             {
               id: uniqueId(),
               title: "Bağımsız Denetim Metodolojisi",
               icon: IconPoint,
-              href: "/",
+              href: "/DenetimDosya/BagimsizDenetimMetodolojisi",
             },
+            /*
             {
               id: uniqueId(),
               title: "Denetim Dosyası Yazdır",
               icon: IconPoint,
               href: "/",
             },
+            */
           ],
-          */
         },
         {
           id: uniqueId(),
