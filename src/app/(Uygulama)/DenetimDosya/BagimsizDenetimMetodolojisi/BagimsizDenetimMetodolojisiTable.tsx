@@ -122,7 +122,7 @@ const BagimsizDenetimMetodolojisiTable = () => {
               </TableCell>
               <TableCell>
                 <Typography variant="body1" textAlign={"center"}>
-                  Referean No
+                  Referans No
                 </Typography>
               </TableCell>
               <TableCell>
