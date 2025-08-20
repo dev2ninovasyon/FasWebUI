@@ -1,7 +1,22 @@
 "use client";
 
-import Maintenance from "@/app/maintenance";
+import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 
-export default function DenetimDosyaLayout() {
-  return <Maintenance></Maintenance>;
+const BCrumb = [
+  {
+    to: "/DenetimDosya",
+    title: "Denetim Dosya",
+  },
+];
+export default function DenetimDosyaLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <Breadcrumb title="Denetim Dosya" items={BCrumb} />
+      {children}
+    </div>
+  );
 }
