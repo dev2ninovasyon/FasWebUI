@@ -69,9 +69,15 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         dispatch(setMail(email));
         dispatch(setUnvan(unvan));
 
-        const response2 = await getDenetciOdemeBilgileri(data.denetciId);
+        const response2 = await getDenetciOdemeBilgileri(
+          userToken,
+          userDenetciId
+        );
         if (response2.ok) {
-          dispatch(setBddkmi(response2.data.bddkmi));
+          const data2 = await response2.json();
+          const bddkmi = data2.bddkmi;
+
+          dispatch(setBddkmi(bddkmi));
         }
 
         router.push("/Anasayfa");
