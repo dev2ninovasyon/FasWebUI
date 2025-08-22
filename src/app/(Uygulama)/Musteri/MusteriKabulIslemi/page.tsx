@@ -158,7 +158,10 @@ const Page: React.FC = () => {
 
   const fetchData2 = async () => {
     try {
-      const response = await getDenetciOdemeBilgileri(user.denetciId);
+      const response = await getDenetciOdemeBilgileri(
+        user.token || "",
+        user.denetciId || 0
+      );
       if (response) {
         setOdemeBilgileriBobi(response.bobiModulu);
         setOdemeBilgileriTfrs(response.tfrsModulu);

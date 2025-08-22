@@ -48,10 +48,11 @@ const SirketPopup = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedYearNumber, setSelectedYearNumber] = useState(0);
 
+  const [year, setYear] = useState(user.yil);
+
   const [company, setCompany] = useState(
     user.denetlenenFirmaAdi?.split(" ").slice(0, 2).join(" ")
   );
-  const [year, setYear] = useState(user.yil);
 
   const dispatch = useDispatch();
 

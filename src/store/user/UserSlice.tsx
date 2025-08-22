@@ -97,24 +97,24 @@ export const UserSlice = createSlice({
     },
 
     resetToNull: (state: StateType, action) => {
-      state.denetlenenFirmaAdi = action.payload;
-      state.denetimTuru = action.payload;
-      state.unvan = action.payload;
-      state.kullaniciAdi = action.payload;
-      state.mail = action.payload;
-      state.token = action.payload;
       if (action.payload == "") {
-        state.id = 0;
-        state.denetciId = 0;
-        state.denetlenenId = 0;
-        state.yil = 0;
-        state.yetki = undefined;
+        state.id = undefined;
+        state.denetciId = undefined;
+        state.denetlenenId = undefined;
+        state.denetlenenFirmaAdi = undefined;
+        state.denetimTuru = undefined;
+        state.bobimi = undefined;
+        state.tfrsmi = undefined;
+        state.enflasyonmu = undefined;
+        state.konsolidemi = undefined;
+        state.bddkmi = undefined;
+        state.yil = undefined;
         state.rol = undefined;
-        state.bobimi = false;
-        state.tfrsmi = false;
-        state.enflasyonmu = false;
-        state.konsolidemi = false;
-        state.bddkmi = false;
+        state.yetki = undefined;
+        state.unvan = undefined;
+        state.kullaniciAdi = undefined;
+        state.mail = undefined;
+        state.token = undefined;
       }
     },
   },

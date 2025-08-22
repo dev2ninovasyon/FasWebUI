@@ -22,7 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
-  useAutoLogout(45 * 60 * 1000);
+  useAutoLogout(45 * 60 * 1000, 40 * 60 * 1000); // 45 dakika idle süresi, 40 dakika refresh süresi
 
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -59,8 +59,9 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
     );
 
     if (
-      (!isNotProtected && !user.denetlenenId) ||
-      (pathname === "/Kullanici/DenetciYillikTaahutname" && !user.denetlenenId)
+      user.token &&
+      !user.denetlenenId &&
+      (!isNotProtected || pathname === "/Kullanici/DenetciYillikTaahutname")
     ) {
       router.push("/Anasayfa");
 
@@ -76,7 +77,7 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
         },
       });
     }
-  }, [pathname]);
+  }, [user, pathname]);
 
   return (
     <>
