@@ -155,12 +155,16 @@ export const deleteKullaniciById = async (token: string, id: number) => {
   }
 };
 
-export const getDenetciOdemeBilgileri = async (denetciId: any) => {
+export const getDenetciOdemeBilgileri = async (
+  token: string,
+  denetciId: number
+) => {
   try {
     const response = await fetch(`${url}/Denetci/OdemeBilgileri/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
