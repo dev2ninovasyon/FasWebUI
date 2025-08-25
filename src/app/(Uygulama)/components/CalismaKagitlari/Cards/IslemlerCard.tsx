@@ -22,6 +22,9 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       url: `${url}/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
       method: "GET",
       responseType: "blob",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
     }).then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -38,6 +41,9 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
         url: `${url}/ArsivIslemleri/PdfDosyasiGoster?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
         method: "GET",
         responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       });
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
