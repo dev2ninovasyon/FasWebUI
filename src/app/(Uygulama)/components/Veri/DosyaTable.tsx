@@ -282,6 +282,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         headers: {
           Accept:
             fileType === "E-DefterKebir" ? "text/html" : "application/pdf",
+          Authorization: `Bearer ${user.token}`,
         },
       });
 

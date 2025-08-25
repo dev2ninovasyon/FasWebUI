@@ -95,7 +95,6 @@ export const UserSlice = createSlice({
     setToken: (state: StateType, action) => {
       state.token = action.payload;
     },
-
     resetToNull: (state: StateType, action) => {
       if (action.payload == "") {
         state.id = undefined;
