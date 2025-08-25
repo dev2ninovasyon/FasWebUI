@@ -84,19 +84,17 @@ export default function RootLayout({
             <Container
               sx={{
                 maxWidth:
-                  customizer.isLayout === "boxed" ? "lg" : "100%!important",
+                  customizer.isLayout === "boxed" ? "lg" : "100% !important",
               }}
             >
               {/* ------------------------------------------- */}
               {/* PageContent */}
               {/* ------------------------------------------- */}
-
               <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
                 {/* <Outlet /> */}
                 {children}
                 {/* <Index /> */}
               </Box>
-
               {/* ------------------------------------------- */}
               {/* End Page */}
               {/* ------------------------------------------- */}

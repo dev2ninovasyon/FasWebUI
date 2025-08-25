@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Link from "next/link";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
@@ -11,7 +10,6 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-
 import { IconMail } from "@tabler/icons-react";
 import { Stack } from "@mui/system";
 import ProfileItems from "./ProfileItems";
