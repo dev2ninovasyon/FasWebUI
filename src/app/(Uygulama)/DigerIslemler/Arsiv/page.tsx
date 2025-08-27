@@ -278,7 +278,12 @@ const Page = () => {
                   data={selectedNode.children}
                 />
               ) : (
-                <Typography variant="body1" color="text.secondary" mt={1}>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  mt={1}
+                  ml={1}
+                >
                   Bu klasörde dosya bulunamadı
                 </Typography>
               )}
