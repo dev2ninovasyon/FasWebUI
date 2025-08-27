@@ -8,6 +8,8 @@ import {
   Box,
   Button,
   Grid,
+  IconButton,
+  InputAdornment,
   styled,
   Typography,
   useTheme,
@@ -20,6 +22,7 @@ import { useState } from "react";
 import ChildCard from "@/app/(Uygulama)/components/Layout/Shared/ChildCard/ChildCard";
 import { enqueueSnackbar } from "notistack";
 import { updatekullaniciSifre } from "@/api/Kullanici/KullaniciIslemleri";
+import { IconLock, IconLockOpen } from "@tabler/icons-react";
 interface avatars {
   id: number;
   src: string;
@@ -64,6 +67,10 @@ const Page = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleButtonClick = async () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -198,13 +205,27 @@ const Page = () => {
                 </CustomFormLabel>
               </Grid>
               <Grid item xs={12} sm={9}>
-                <CustomTextField
-                  id="oldPassword"
-                  type={"text"}
-                  value={oldPassword}
-                  fullWidth
-                  onChange={(e: any) => setOldPassword(e.target.value)}
-                />
+                <form autoComplete="off">
+                  <CustomTextField
+                    id="oldPassword"
+                    type={showOldPassword ? "text" : "password"}
+                    value={oldPassword}
+                    fullWidth
+                    onChange={(e: any) => setOldPassword(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowOldPassword(!showOldPassword)}
+                            edge="end"
+                          >
+                            {showOldPassword ? <IconLockOpen /> : <IconLock />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </form>
               </Grid>
               {/* Yeni Şifre */}
               <Grid item xs={12} sm={3} display="flex" alignItems="center">
@@ -216,13 +237,27 @@ const Page = () => {
                 </CustomFormLabel>
               </Grid>
               <Grid item xs={12} sm={9}>
-                <CustomTextField
-                  id="newPassword"
-                  type={"text"}
-                  value={newPassword}
-                  fullWidth
-                  onChange={(e: any) => setNewPassword(e.target.value)}
-                />
+                <form autoComplete="off">
+                  <CustomTextField
+                    id="newPassword"
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    fullWidth
+                    onChange={(e: any) => setNewPassword(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowNewPassword(!showNewPassword)}
+                            edge="end"
+                          >
+                            {showNewPassword ? <IconLockOpen /> : <IconLock />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </form>
               </Grid>
               {/* Yeni Şifre Tekrar */}
               <Grid item xs={12} sm={3} display="flex" alignItems="center">
@@ -234,13 +269,33 @@ const Page = () => {
                 </CustomFormLabel>
               </Grid>
               <Grid item xs={12} sm={9}>
-                <CustomTextField
-                  id="confirmPassword"
-                  type={"text"}
-                  value={confirmPassword}
-                  fullWidth
-                  onChange={(e: any) => setConfirmPassword(e.target.value)}
-                />
+                <form autoComplete="off">
+                  <CustomTextField
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    fullWidth
+                    onChange={(e: any) => setConfirmPassword(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            edge="end"
+                          >
+                            {showConfirmPassword ? (
+                              <IconLockOpen />
+                            ) : (
+                              <IconLock />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </form>
               </Grid>
               {/* Kaydet Butonu */}
               <Grid item xs={12} sm={3}></Grid>

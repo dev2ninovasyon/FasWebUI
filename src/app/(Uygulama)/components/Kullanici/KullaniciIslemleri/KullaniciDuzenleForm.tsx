@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, InputAdornment, IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -11,6 +11,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import AktifPasifBoxAutocomplete from "@/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/AktifPasifYedekBoxAutoComplete";
 import UnvanBoxAutocomplete from "@/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/UnvanBoxAutoComplete";
+import { IconLock, IconLockOpen } from "@tabler/icons-react";
 
 const KullaniciDuzenleForm = () => {
   const pathname = usePathname();
@@ -27,6 +28,8 @@ const KullaniciDuzenleForm = () => {
   const [email, setEmail] = useState("");
   const [sifre, setSifre] = useState("");
   const [aktifPasif, setAktifPasif] = useState(true);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const router = useRouter();
@@ -166,16 +169,31 @@ const KullaniciDuzenleForm = () => {
             htmlFor="sifre"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
           >
-            Sifre
+            Şifre
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <CustomTextField
-            id="sifre"
-            value={sifre}
-            fullWidth
-            onChange={(e: any) => setSifre(e.target.value)}
-          />
+          <form autoComplete="off">
+            <CustomTextField
+              id="sifre"
+              type={showPassword ? "text" : "password"}
+              value={sifre}
+              fullWidth
+              onChange={(e: any) => setSifre(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <IconLockOpen /> : <IconLock />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </form>
         </Grid>
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
           <CustomFormLabel
