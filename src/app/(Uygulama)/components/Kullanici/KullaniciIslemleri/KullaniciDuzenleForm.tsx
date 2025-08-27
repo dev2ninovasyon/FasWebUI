@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   getKullaniciById,
-  updatekullanici,
+  updateKullanici,
 } from "@/api/Kullanici/KullaniciIslemleri";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -42,7 +42,7 @@ const KullaniciDuzenleForm = () => {
       aktifPasif,
     };
     try {
-      const result = await updatekullanici(
+      const result = await updateKullanici(
         user.token || "",
         id,
         updatedKullanici

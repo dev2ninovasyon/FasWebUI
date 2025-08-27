@@ -103,6 +103,28 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
   const [message, setMessage] = useState<string>("");
 
+  function normalizeString(str: string): string {
+    const turkishChars: { [key: string]: string } = {
+      ç: "c",
+      ğ: "g",
+      ı: "i",
+      ö: "o",
+      ş: "s",
+      ü: "u",
+      Ç: "C",
+      Ğ: "G",
+      İ: "I",
+      Ö: "O",
+      Ş: "S",
+      Ü: "U",
+    };
+
+    return str.replace(
+      /[çğıöşüÇĞÖŞÜıİ]/g,
+      (match) => turkishChars[match] || match
+    );
+  }
+
   const extractParts = (
     adi: string
   ): { datePart: string; serialPart: string } => {
@@ -364,7 +386,9 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   };
 
   const filteredRows = rows.filter((row) =>
-    row.adi.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeString(row.adi)
+      .toLowerCase()
+      .includes(normalizeString(searchTerm).toLowerCase())
   );
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
@@ -417,11 +441,10 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
   return (
     <>
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" mb={1}>
         <Box padding={"16px"} width={"100%"}>
           <Typography variant="h5">Yüklenmiş Dosya Bilgileri</Typography>
         </Box>
-
         <TextField
           placeholder="Arama"
           variant="outlined"

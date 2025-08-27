@@ -47,6 +47,28 @@ const BagimsizDenetimMetodolojisiTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
 
+  function normalizeString(str: string): string {
+    const turkishChars: { [key: string]: string } = {
+      ç: "c",
+      ğ: "g",
+      ı: "i",
+      ö: "o",
+      ş: "s",
+      ü: "u",
+      Ç: "C",
+      Ğ: "G",
+      İ: "I",
+      Ö: "O",
+      Ş: "S",
+      Ü: "U",
+    };
+
+    return str.replace(
+      /[çğıöşüÇĞÖŞÜıİ]/g,
+      (match) => turkishChars[match] || match
+    );
+  }
+
   // recursive şekilde children'ları düz liste haline getirelim
   const flattenData = (
     data: Veri[],
@@ -88,7 +110,9 @@ const BagimsizDenetimMetodolojisiTable = () => {
   };
 
   const filteredRows = flattenData(rows).filter((row) =>
-    row.name.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeString(row.name)
+      .toLowerCase()
+      .includes(normalizeString(searchTerm).toLowerCase())
   );
 
   return (
@@ -127,17 +151,17 @@ const BagimsizDenetimMetodolojisiTable = () => {
               </TableCell>
               <TableCell>
                 <Typography variant="body1" textAlign={"center"}>
-                  İlgili BDS
+                  BDS No
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="body1" textAlign={"center"}>
-                  Arşiv Klasörü
+                  Arşiv
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="body1" textAlign={"center"}>
-                  Form Link
+                  Link
                 </Typography>
               </TableCell>
             </TableRow>
