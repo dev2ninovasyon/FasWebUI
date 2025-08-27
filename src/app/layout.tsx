@@ -83,7 +83,9 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <NextAppDirEmotionCacheProvider options={{ key: "modernize" }}>
+      <NextAppDirEmotionCacheProvider
+        options={{ key: "financial-audit-software" }}
+      >
         <ThemeProvider theme={theme}>
           <RTL direction={customizer.activeDir}>
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
