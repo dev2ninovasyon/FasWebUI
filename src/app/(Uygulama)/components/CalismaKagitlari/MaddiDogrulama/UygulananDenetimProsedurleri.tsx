@@ -25,7 +25,7 @@ import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitl
 import { getUygulananDenetimProsedurleri } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import Autocomplete from "@mui/material/Autocomplete";
 import dynamic from "next/dynamic";
-import { FloatingButtonCalismaKagitlari } from "../FloatingButtonCalismaKagitlari";
+import { FloatingButtonCalismaKagitlari } from "@/app/(Uygulama)/components/CalismaKagitlari/FloatingButtonCalismaKagitlari";
 const MaddiDogrulamaKonuEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/MaddiDogrulamaKonuEditor"),
   { ssr: false }

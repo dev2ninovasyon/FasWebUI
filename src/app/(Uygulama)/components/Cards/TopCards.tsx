@@ -124,7 +124,7 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
                 },
               }}
             >
-              <Link href={topcard.href}>
+              <Link href={topcard.href} passHref>
                 <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
                   <CardContent style={{ height: "180px" }}>
                     <Image
@@ -147,7 +147,7 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
               </Link>
             </Tooltip>
           ) : (
-            <Link href={topcard.href}>
+            <Link href={topcard.href} passHref>
               <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
                 <CardContent style={{ height: "180px" }}>
                   <Image

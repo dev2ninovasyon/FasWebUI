@@ -78,6 +78,28 @@ const HaricFisListesiTable: React.FC<Props> = ({
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
+  function normalizeString(str: string): string {
+    const turkishChars: { [key: string]: string } = {
+      ç: "c",
+      ğ: "g",
+      ı: "i",
+      ö: "o",
+      ş: "s",
+      ü: "u",
+      Ç: "C",
+      Ğ: "G",
+      İ: "I",
+      Ö: "O",
+      Ş: "S",
+      Ü: "U",
+    };
+
+    return str.replace(
+      /[çğıöşüÇĞÖŞÜıİ]/g,
+      (match) => turkishChars[match] || match
+    );
+  }
+
   const createSelectedRows = () => {
     const selectedRows = rows.map((row) => ({
       id: row.id,
@@ -183,7 +205,9 @@ const HaricFisListesiTable: React.FC<Props> = ({
   };
 
   const filteredRows = rows.filter((row) =>
-    row.aciklama.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeString(row.aciklama)
+      .toLowerCase()
+      .includes(normalizeString(searchTerm).toLowerCase())
   );
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;

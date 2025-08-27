@@ -109,7 +109,7 @@ export const createKullanici = async (token: string, createdKullanici: any) => {
   }
 };
 
-export const updatekullanici = async (
+export const updateKullanici = async (
   token: string,
   id: any,
   updatedKullanici: any
@@ -123,6 +123,32 @@ export const updatekullanici = async (
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedKullanici),
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updatekullaniciSifre = async (
+  token: string,
+  id: any,
+  updatedPassdord: any
+) => {
+  try {
+    const response = await fetch(`${url}/Kullanici/Sifre/${id}`, {
+      method: "PUT",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedPassdord),
     });
 
     if (response.ok) {
@@ -149,28 +175,6 @@ export const deleteKullaniciById = async (token: string, id: number) => {
       return true;
     } else {
       return false;
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
-export const getDenetciOdemeBilgileri = async (
-  token: string,
-  denetciId: number
-) => {
-  try {
-    const response = await fetch(`${url}/Denetci/OdemeBilgileri/${denetciId}`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (response.ok) {
-      return response.json();
-    } else {
-      console.error("Denetci Ödeme Bilgileri getirilemedi");
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
