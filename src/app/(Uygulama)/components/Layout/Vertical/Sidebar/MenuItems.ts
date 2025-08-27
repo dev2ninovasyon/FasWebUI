@@ -77,16 +77,26 @@ export function createMenuItems(
           title: "DİĞER İŞLEMLER",
           icon: IconHierarchy,
           href: "/DigerIslemler",
-          /*
           children: [
             {
               id: uniqueId(),
               title: "Arşiv",
               icon: IconPoint,
-              href: "/",
+              href: "/DigerIslemler/Arsiv",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetçi Firma Bilgileri",
+              icon: IconPoint,
+              href: "/DigerIslemler/DenetciFirmaBilgileri",
+            },
+            {
+              id: uniqueId(),
+              title: "Üyelik Bilgileri",
+              icon: IconPoint,
+              href: "/DigerIslemler/UyelikBilgileri",
             },
           ],
-          */
         },
         {
           id: uniqueId(),
@@ -281,12 +291,6 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/Veri/DonusumFisleriVeriYukleme",
             },
-            /*{
-          id: uniqueId(),
-          title: "Yabancı Para Hesap Listesi Veri Yükleme",
-          icon: IconPoint,
-          href: "/Veri/YabanciParaHesapListesiVeriYukleme",
-        },*/
             {
               id: uniqueId(),
               title: "Mizanlar",
@@ -1723,7 +1727,19 @@ export function createMenuItems(
               id: uniqueId(),
               title: "Arşiv",
               icon: IconPoint,
-              href: "/DigerIslemler",
+              href: "/DigerIslemler/Arsiv",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetçi Firma Bilgileri",
+              icon: IconPoint,
+              href: "/DigerIslemler/DenetciFirmaBilgileri",
+            },
+            {
+              id: uniqueId(),
+              title: "Üyelik Bilgileri",
+              icon: IconPoint,
+              href: "/DigerIslemler/UyelikBilgileri",
             },
           ],
         },

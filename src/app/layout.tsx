@@ -61,7 +61,9 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
     if (
       user.token &&
       !user.denetlenenId &&
-      (!isNotProtected || pathname === "/Kullanici/DenetciYillikTaahutname")
+      (!isNotProtected ||
+        pathname === "/Kullanici/DenetciYillikTaahutname" ||
+        pathname === "/DigerIslemler/Arsiv")
     ) {
       router.push("/Anasayfa");
 

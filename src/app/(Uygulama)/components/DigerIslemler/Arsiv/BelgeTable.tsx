@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -7,49 +7,58 @@ import {
   TableBody,
   Typography,
   TableHead,
+  IconButton,
   TableFooter,
   TablePagination,
   TextField,
+  Box,
   useMediaQuery,
   Checkbox,
   Button,
-  Chip,
+  Menu,
+  MenuItem,
+  ListItemIcon,
 } from "@mui/material";
 import { Stack } from "@mui/system";
+import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
-import {
-  deleteMizanBilgisiMultiple,
-  getMizanBilgileri,
-} from "@/api/Veri/Mizan";
+import { IconDotsVertical, IconDownload } from "@tabler/icons-react";
 
-interface Props {
-  type: string;
-}
-
-interface DosyaType {
+interface Veri {
   id: number;
-  tip: string;
-  durum: string;
-  baslamaZamani: string;
-  bitisZamani: string;
-  gecenSure: string;
+  parentId?: number;
+  name: string;
+  bds?: string;
+  code?: string;
+  url?: string;
+  reference?: string;
+  archiveFileName?: string;
+  children: Veri[];
 }
 
-const MizanTable: React.FC<Props> = ({ type }) => {
-  const [rows, setRows] = useState<DosyaType[]>([]);
+interface MyComponentProps {
+  title: string;
+  data: Veri[];
+}
 
+const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
-  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const [selected, setSelected] = useState<number[]>([]);
+  const [selectedId, setSelectedId] = useState(0);
+
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+  const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -83,53 +92,34 @@ const MizanTable: React.FC<Props> = ({ type }) => {
     setIsConfirmPopUpOpen(false);
   };
 
-  const fetchData = async () => {
-    try {
-      const mizanBilgileri = await getMizanBilgileri(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        type
-      );
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    id: number
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedId(id);
+  };
 
-      const newRows = mizanBilgileri.map((mizan: DosyaType) => {
-        const baslama = new Date(mizan.baslamaZamani);
-        const bitis = new Date(
-          mizan.bitisZamani ? mizan.bitisZamani : new Date()
-        );
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-        const gecenSureMs = bitis.getTime() - baslama.getTime();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-        // Toplam geçen süreyi dakika ve saniye olarak hesapla
-        const minutes = Math.floor(gecenSureMs / (1000 * 60)); // Toplam dakika
-        const seconds = Math.floor((gecenSureMs % (1000 * 60)) / 1000); // Kalan saniye
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
-        const gecenSure = `${minutes} dakika, ${seconds} saniye`;
-
-        return {
-          id: mizan.id,
-          tip: mizan.tip,
-          durum: mizan.durum,
-          baslamaZamani: mizan.baslamaZamani.split("T")[1].split(".")[0],
-          bitisZamani: mizan.bitisZamani
-            ? mizan.bitisZamani.split("T")[1].split(".")[0]
-            : "Devam Ediyor",
-          gecenSure: gecenSure,
-        };
-      });
-      setRows(newRows);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      console.log("Seçilen dosyalar:", files);
+      // Burada dosyaları işleyebilirsin
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   const handleChangePage = (event: any, newPage: any) => {
     setPage(newPage);
@@ -140,8 +130,8 @@ const MizanTable: React.FC<Props> = ({ type }) => {
     setPage(0);
   };
 
-  const filteredRows = rows.filter((row) =>
-    normalizeString(row.tip)
+  const filteredRows = data.filter((row) =>
+    normalizeString(row.name)
       .toLowerCase()
       .includes(normalizeString(searchTerm).toLowerCase())
   );
@@ -179,16 +169,6 @@ const MizanTable: React.FC<Props> = ({ type }) => {
 
   const deleteSelected = async () => {
     try {
-      const result = await deleteMizanBilgisiMultiple(
-        user.token || "",
-        selected || 0
-      );
-      if (result) {
-        selected.length = 0;
-        fetchData();
-      } else {
-        console.error("Dosya Bilgileri silinemedi");
-      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -196,22 +176,24 @@ const MizanTable: React.FC<Props> = ({ type }) => {
 
   return (
     <>
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" pl={2} mb={1}>
+        <Box width={"100%"}>
+          <Typography variant="h6">{title}</Typography>
+        </Box>
         <TextField
           placeholder="Arama"
           variant="outlined"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           fullWidth
-          sx={{ margin: "16px" }}
+          sx={{ marginRight: "16px" }}
         />
       </Stack>
       <TableContainer
         sx={{
           mt: 0.5,
-          paddingX: "16px",
-          minHeight: "320px",
-          maxHeight: "320px",
+          maxHeight: "434px",
+          minHeight: "434px",
         }}
       >
         <Table stickyHeader aria-label="sticky table">
@@ -231,30 +213,19 @@ const MizanTable: React.FC<Props> = ({ type }) => {
                 />
               </TableCell>
               <TableCell>
-                <Typography textAlign={"left"} variant="h6">
-                  Mizan Türü
+                <Typography variant="h6">Belge Adı</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography textAlign={"center"} variant="h6">
+                  Tarih
                 </Typography>
               </TableCell>
               <TableCell>
                 <Typography textAlign={"center"} variant="h6">
-                  Durum
+                  Boyut
                 </Typography>
               </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="h6">
-                  Başlangıç
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="h6">
-                  Bitiş
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="h6">
-                  Süre
-                </Typography>
-              </TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -267,7 +238,6 @@ const MizanTable: React.FC<Props> = ({ type }) => {
             ).map((row, index) => {
               const isItemSelected = isSelected(row.id);
               const labelId = `enhanced-table-checkbox-${index}`;
-
               return (
                 <TableRow
                   key={index}
@@ -278,66 +248,62 @@ const MizanTable: React.FC<Props> = ({ type }) => {
                   selected={isItemSelected}
                   tabIndex={-1}
                 >
-                  <TableCell padding="checkbox">
+                  <TableCell padding="checkbox" sx={{ paddingY: 0 }}>
                     <Checkbox
                       checked={isItemSelected}
                       inputProps={{ "aria-labelledby": labelId }}
                     />
                   </TableCell>
-                  <TableCell scope="row">
-                    <Typography
-                      textAlign={"left"}
-                      variant="h6"
-                      color="textSecondary"
-                    >
-                      {row.tip}
+                  <TableCell sx={{ paddingY: 0 }}>
+                    <Typography variant="body1" color="textSecondary">
+                      {row.name}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Chip
-                      label={row.durum}
-                      sx={{
-                        backgroundColor:
-                          row.durum === "Tamamlandı"
-                            ? (theme) => theme.palette.success.light
-                            : row.durum === "Oluşturuluyor"
-                            ? (theme) => theme.palette.info.light
-                            : (theme) => theme.palette.error.light,
-                        color:
-                          row.durum === "Tamamlandı"
-                            ? (theme) => theme.palette.success.main
-                            : row.durum === "Oluşturuluyor"
-                            ? (theme) => theme.palette.info.main
-                            : (theme) => theme.palette.error.main,
+                  <TableCell sx={{ paddingY: 0 }}>
+                    <Typography
+                      textAlign={"center"}
+                      variant="body1"
+                      color="textSecondary"
+                    >
+                      {new Date().toLocaleDateString()}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ paddingY: 0 }}>
+                    <Typography
+                      textAlign={"center"}
+                      variant="body1"
+                      color="textSecondary"
+                    >
+                      10KB
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ paddingY: 0 }}>
+                    <IconButton
+                      id="basic-button"
+                      aria-controls={open ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                      onClick={(event) => handleClick(event, row.id)}
+                    >
+                      <IconDotsVertical width={18} />
+                    </IconButton>
+
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
                       }}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Typography
-                      textAlign={"center"}
-                      variant="h6"
-                      color="textSecondary"
                     >
-                      {row.baslamaZamani}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Typography
-                      textAlign={"center"}
-                      variant="h6"
-                      color="textSecondary"
-                    >
-                      {row.bitisZamani}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Typography
-                      textAlign={"center"}
-                      variant="h6"
-                      color="textSecondary"
-                    >
-                      {row.gecenSure}
-                    </Typography>
+                      <MenuItem>
+                        <ListItemIcon>
+                          <IconDownload width={18} />
+                        </ListItemIcon>
+                        İndir
+                      </MenuItem>
+                    </Menu>
                   </TableCell>
                 </TableRow>
               );
@@ -361,13 +327,52 @@ const MizanTable: React.FC<Props> = ({ type }) => {
           sx={{
             position: smDown ? "relative" : "absolute",
             width: smDown ? "100%" : "auto",
-            marginLeft: smDown ? "" : "16px",
+            marginLeft: smDown ? "" : "10px",
             marginY: smDown ? "8px" : "12px",
-            bottom: 0,
           }}
         >
           {selected.length} Kayıt Sil
         </Button>
+      )}
+      {selected.length !== 0 && (
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={() => {}}
+          sx={{
+            position: smDown ? "relative" : "absolute",
+            width: smDown ? "100%" : "auto",
+            marginLeft: smDown ? "" : "100px",
+            marginY: smDown ? "8px" : "12px",
+          }}
+        >
+          {selected.length} Kayıt İndir
+        </Button>
+      )}
+      {selected.length === 0 && (
+        <>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+          <Button
+            variant="outlined"
+            color="primary"
+            size="small"
+            onClick={handleButtonClick}
+            sx={{
+              position: smDown ? "relative" : "absolute",
+              width: smDown ? "100%" : "auto",
+              marginLeft: smDown ? "" : "10px",
+              marginY: smDown ? "8px" : "12px",
+            }}
+          >
+            Yükle
+          </Button>
+        </>
       )}
       <Table>
         <TableFooter
@@ -412,4 +417,4 @@ const MizanTable: React.FC<Props> = ({ type }) => {
   );
 };
 
-export default MizanTable;
+export default BelgeTable;

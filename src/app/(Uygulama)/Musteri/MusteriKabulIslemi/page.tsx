@@ -28,7 +28,7 @@ import {
   setEnflasyonmu,
   setTfrsmi,
 } from "@/store/user/UserSlice";
-import { getDenetciOdemeBilgileri } from "@/api/Kullanici/KullaniciIslemleri";
+import { getDenetciOdemeBilgileri } from "@/api/Denetci/Denetci";
 import { IconExclamationMark } from "@tabler/icons-react";
 
 const BCrumb = [

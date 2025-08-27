@@ -16,11 +16,12 @@ import {
   setUnvan,
   setRol,
   setBddkmi,
+  setDenetciFirmaAdi,
 } from "@/store/user/UserSlice";
 import { url } from "@/api/apiBase";
 import { enqueueSnackbar } from "notistack";
 import { AppState } from "@/store/store";
-import { getDenetciOdemeBilgileri } from "@/api/Kullanici/KullaniciIslemleri";
+import { getDenetciOdemeBilgileri } from "@/api/Denetci/Denetci";
 
 interface loginType {
   title?: string;
@@ -55,6 +56,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         const userToken = data.token;
         const userId = data.kullaniciId;
         const userDenetciId = data.denetciId;
+        const userDenetciFirmaAdi = data.denetciFirmaAdi;
         const yetki = data.yetki;
         const rol = data.rol;
         const kullaniciAdi = data.kullaniciAdi;
@@ -63,6 +65,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         dispatch(setToken(userToken));
         dispatch(setId(userId));
         dispatch(setDenetciId(userDenetciId));
+        dispatch(setDenetciFirmaAdi(userDenetciFirmaAdi));
         dispatch(setYetki(yetki));
         dispatch(setRol(rol));
         dispatch(setKullaniciAdi(kullaniciAdi));

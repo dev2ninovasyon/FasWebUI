@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 interface StateType {
   id?: number;
   denetciId?: number;
+  denetciFirmaAdi?: string;
   denetlenenId?: number;
   denetlenenFirmaAdi?: string;
   denetimTuru?: string;
@@ -23,6 +24,7 @@ interface StateType {
 const initialState: StateType = {
   id: 0,
   denetciId: 0,
+  denetciFirmaAdi: "",
   denetlenenId: 0,
   denetlenenFirmaAdi: "",
   denetimTuru: "",
@@ -49,6 +51,9 @@ export const UserSlice = createSlice({
     },
     setDenetciId: (state: StateType, action) => {
       state.denetciId = action.payload;
+    },
+    setDenetciFirmaAdi: (state: StateType, action) => {
+      state.denetciFirmaAdi = action.payload;
     },
     setDenetlenenId: (state: StateType, action) => {
       state.denetlenenId = action.payload;
@@ -99,6 +104,7 @@ export const UserSlice = createSlice({
       if (action.payload == "") {
         state.id = undefined;
         state.denetciId = undefined;
+        state.denetciFirmaAdi = undefined;
         state.denetlenenId = undefined;
         state.denetlenenFirmaAdi = undefined;
         state.denetimTuru = undefined;
@@ -122,6 +128,7 @@ export const UserSlice = createSlice({
 export const {
   setId,
   setDenetciId,
+  setDenetciFirmaAdi,
   setDenetlenenId,
   setDenetlenenFirmaAdi,
   setDenetimTuru,
