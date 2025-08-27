@@ -33,11 +33,14 @@ const LogoDuzenleForm = () => {
       const objectURL = URL.createObjectURL(file);
       setFirmaLogoImage(objectURL);
 
+      const formData = new FormData();
+      formData.append("logo", file);
+
       try {
         const success = await createLogo(
           user.token || "",
-          file,
-          user.denetciId || 0
+          user.denetciId || 0,
+          formData
         );
 
         if (success) {
