@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+import { Grid, Button, InputAdornment, IconButton } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createKullanici } from "@/api/Kullanici/KullaniciIslemleri";
@@ -7,6 +7,7 @@ import { AppState } from "@/store/store";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import UnvanBoxAutocomplete from "@/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/UnvanBoxAutoComplete";
+import { IconLock, IconLockOpen } from "@tabler/icons-react";
 
 const KullaniciEkleForm = () => {
   const [bdScilNo, setBdSicilNo] = useState("");
@@ -19,6 +20,8 @@ const KullaniciEkleForm = () => {
   const [sifre, setSifre] = useState("");
   const [personelDosyaArsivId, setPersonelDosyaArsivId] = useState("");
   const [aktifPasif, setAktifPasif] = useState(true);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
@@ -152,13 +155,27 @@ const KullaniciEkleForm = () => {
           </CustomFormLabel>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <CustomTextField
-            id="sifre"
-            fullWidth
-            onChange={(e: any) => setSifre(e.target.value)}
-          />
+          <form autoComplete="off">
+            <CustomTextField
+              id="sifre"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              onChange={(e: any) => setSifre(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <IconLockOpen /> : <IconLock />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </form>
         </Grid>
-
         <Grid item xs={12} sm={3}></Grid>
         <Grid item xs={12} sm={9}>
           <Button
