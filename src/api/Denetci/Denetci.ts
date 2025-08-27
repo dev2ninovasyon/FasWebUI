@@ -107,13 +107,10 @@ export const getLogo = async (token: string, denetciId: any) => {
 
 export const createLogo = async (
   token: string,
-  logo: File,
-  denetciId: number
+  denetciId: number,
+  formData: FormData
 ) => {
   try {
-    const formData = new FormData();
-    formData.append("logo", logo);
-
     const response = await fetch(`${url}/Denetci/Logo/${denetciId}`, {
       method: "POST",
       headers: {
