@@ -98,7 +98,16 @@ export const getLogo = async (token: string, denetciId: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Logo getirilemedi");
+      const contentType = response.headers.get("content-type");
+      let message = "Hata Oluştu";
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        message = errorData || message;
+      } else {
+        message = await response.text();
+      }
+
+      return { message };
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
