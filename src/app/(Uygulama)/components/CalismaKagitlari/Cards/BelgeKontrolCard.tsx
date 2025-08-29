@@ -1,29 +1,319 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { Button, CardHeader, Grid } from "@mui/material";
+import { Button, CardHeader, Grid, useTheme } from "@mui/material";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
+import {
+  getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu,
+  updateFormHazirlayanOnaylayan,
+} from "@/api/CalismaKagitlari/CalismaKagitlari";
+import { enqueueSnackbar } from "notistack";
 
 interface CardProps {
   hazirlayan?: string;
   onaylayan?: string;
   kaliteKontrol?: string;
+  controller: string;
+}
+
+interface Veri {
+  id?: number;
+  hazirlayanId?: number;
+  onaylayanId?: number;
+  kontrolEdenId?: number;
+  hazirlanmaTarihi?: string;
+  onaylanmaTarihi?: string;
+  kontrolTarihi?: string;
 }
 
 const BelgeKontrolCard: React.FC<CardProps> = ({
   hazirlayan,
   onaylayan,
   kaliteKontrol,
+  controller,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const customizer = useSelector((state: AppState) => state.customizer);
+  const theme = useTheme();
 
-  const [selectedId, setSelectedId] = React.useState<number | null>(null);
-  const [selectedAdi, setSelectedAdi] = React.useState<string | null>(null);
+  const [id, setId] = React.useState<number | undefined>(undefined);
+
+  const [selectedId, setSelectedId] = React.useState<number | undefined>(
+    undefined
+  );
+  const [selectedAdi, setSelectedAdi] = React.useState<string | undefined>(
+    undefined
+  );
+  const [selectedDate, setSelectedDate] = React.useState<string | undefined>(
+    undefined
+  );
+
+  const [hazirlayanId, setHazirlayanId] = React.useState<number | undefined>(
+    undefined
+  );
+  const [onaylayanId, setOnaylayanId] = React.useState<number | undefined>(
+    undefined
+  );
+  const [kontrolEdenId, setKontrolEdenId] = React.useState<number | undefined>(
+    undefined
+  );
+
+  const [hazirlayanTarih, setHazirlayanTarih] = React.useState<
+    string | undefined
+  >(undefined);
+  const [onaylayanTarih, setOnaylayanTarih] = React.useState<
+    string | undefined
+  >(undefined);
+  const [kontrolEdenTarih, setKontrolEdenTarih] = React.useState<
+    string | undefined
+  >(undefined);
+
+  const [isClickedUpdate, setIsClickedUpdate] = React.useState<boolean>(false);
+
+  const handleOnayla = async () => {
+    if (!selectedDate) {
+      enqueueSnackbar("Tarih Seçmelisiniz", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+        },
+      });
+      return;
+    }
+    let updatedFormHazirlayanOnaylayanVerisi: Veri = {
+      hazirlayanId: hazirlayanId,
+      onaylayanId: onaylayanId,
+      kontrolEdenId: kontrolEdenId,
+      hazirlanmaTarihi: hazirlayanTarih,
+      onaylanmaTarihi: onaylayanTarih,
+      kontrolTarihi: kontrolEdenTarih,
+    };
+
+    if (hazirlayan) {
+      updatedFormHazirlayanOnaylayanVerisi.hazirlayanId = selectedId;
+      updatedFormHazirlayanOnaylayanVerisi.hazirlanmaTarihi = selectedDate;
+    }
+    if (onaylayan) {
+      updatedFormHazirlayanOnaylayanVerisi.onaylayanId = selectedId;
+      updatedFormHazirlayanOnaylayanVerisi.onaylanmaTarihi = selectedDate;
+    }
+    if (kaliteKontrol) {
+      updatedFormHazirlayanOnaylayanVerisi.kontrolEdenId = selectedId;
+      updatedFormHazirlayanOnaylayanVerisi.kontrolTarihi = selectedDate;
+    }
+
+    setIsClickedUpdate(true);
+    try {
+      const result = await updateFormHazirlayanOnaylayan(
+        user.token || "",
+        id,
+        updatedFormHazirlayanOnaylayanVerisi
+      );
+      if (result) {
+        setIsClickedUpdate(false);
+        enqueueSnackbar("Onaylandı", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
+      } else {
+        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const handleOnayiKaldir = async () => {
+    let updatedFormHazirlayanOnaylayanVerisi: Veri = {
+      hazirlayanId: hazirlayanId,
+      onaylayanId: onaylayanId,
+      kontrolEdenId: kontrolEdenId,
+      hazirlanmaTarihi: hazirlayanTarih,
+      onaylanmaTarihi: onaylayanTarih,
+      kontrolTarihi: kontrolEdenTarih,
+    };
+
+    if (hazirlayan) {
+      updatedFormHazirlayanOnaylayanVerisi.hazirlayanId = undefined;
+      updatedFormHazirlayanOnaylayanVerisi.hazirlanmaTarihi = undefined;
+    }
+    if (onaylayan) {
+      updatedFormHazirlayanOnaylayanVerisi.onaylayanId = undefined;
+      updatedFormHazirlayanOnaylayanVerisi.onaylanmaTarihi = undefined;
+    }
+    if (kaliteKontrol) {
+      updatedFormHazirlayanOnaylayanVerisi.kontrolEdenId = undefined;
+      updatedFormHazirlayanOnaylayanVerisi.kontrolTarihi = undefined;
+    }
+
+    setIsClickedUpdate(true);
+    try {
+      const result = await updateFormHazirlayanOnaylayan(
+        user.token || "",
+        id,
+        updatedFormHazirlayanOnaylayanVerisi
+      );
+      if (result) {
+        setIsClickedUpdate(false);
+        enqueueSnackbar("Onay Kaldırıldı", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
+      } else {
+        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const formHazirlayanOnaylayanVerileri =
+        await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0,
+          controller
+        );
+
+      setId(formHazirlayanOnaylayanVerileri.id);
+
+      if (formHazirlayanOnaylayanVerileri.hazirlayanId) {
+        setHazirlayanId(formHazirlayanOnaylayanVerileri.hazirlayanId);
+        setHazirlayanTarih(
+          formHazirlayanOnaylayanVerileri?.hazirlanmaTarihi?.split("T")[0] ||
+            undefined
+        );
+      } else {
+        if (hazirlayan) {
+          if (
+            user.rol &&
+            (user.rol.at(-1) == "Denetci" ||
+              user.rol.at(-1) == "DenetciYardimcisi")
+          ) {
+            setSelectedId(user.id);
+          }
+        }
+      }
+      /*
+      if (hazirlayan) {
+        if (formHazirlayanOnaylayanVerileri.hazirlayanId) {
+          setHazirlayanId(formHazirlayanOnaylayanVerileri.hazirlayanId);
+          setHazirlayanTarih(
+            formHazirlayanOnaylayanVerileri?.hazirlanmaTarihi?.split("T")[0] ||
+              undefined
+          );
+        } else if (
+          user.rol &&
+          (user.rol.at(-1) == "Denetci" ||
+            user.rol.at(-1) == "DenetciYardimcisi")
+        ) {
+          setSelectedId(user.id);
+        }
+      }
+      */
+      if (formHazirlayanOnaylayanVerileri.onaylayanId) {
+        setOnaylayanId(formHazirlayanOnaylayanVerileri.onaylayanId);
+        setOnaylayanTarih(
+          formHazirlayanOnaylayanVerileri?.onaylanmaTarihi?.split("T")[0] ||
+            undefined
+        );
+      } else {
+        if (onaylayan) {
+          if (user.rol && user.rol.at(-1) == "SorumluDenetci") {
+            setSelectedId(user.id);
+          }
+        }
+      }
+      /*
+      if (onaylayan) {
+        if (formHazirlayanOnaylayanVerileri.onaylayanId) {
+          setOnaylayanId(formHazirlayanOnaylayanVerileri.onaylayanId);
+          setOnaylayanTarih(
+            formHazirlayanOnaylayanVerileri?.onaylanmaTarihi?.split("T")[0] ||
+              undefined
+          );
+        } else if (user.rol && user.rol.at(-1) == "SorumluDenetci") {
+          setSelectedId(user.id);
+        }
+      }
+      */
+      if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
+        setKontrolEdenId(formHazirlayanOnaylayanVerileri.kontrolEdenId);
+        setKontrolEdenTarih(
+          formHazirlayanOnaylayanVerileri?.kontrolTarihi?.split("T")[0] ||
+            undefined
+        );
+      } else {
+        if (kaliteKontrol) {
+          if (user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci") {
+            setSelectedId(user.id);
+          }
+        }
+      }
+      /*
+      if (kaliteKontrol) {
+        if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
+          setKontrolEdenId(formHazirlayanOnaylayanVerileri.kontrolEdenId);
+          setKontrolEdenTarih(
+            formHazirlayanOnaylayanVerileri?.kontrolTarihi?.split("T")[0] ||
+              undefined
+          );
+        } else if (
+          user.rol &&
+          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+        ) {
+          setSelectedId(user.id);
+        }
+      }
+      */
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!isClickedUpdate) {
+      fetchData();
+    } else {
+      setSelectedDate(undefined);
+      setHazirlayanId(undefined);
+      setOnaylayanId(undefined);
+      setKontrolEdenId(undefined);
+      setHazirlayanTarih(undefined);
+      setOnaylayanTarih(undefined);
+      setKontrolEdenTarih(undefined);
+    }
+  }, [isClickedUpdate]);
 
   return (
     <Grid container>
@@ -59,17 +349,24 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
             <PersonelBoxAutocomplete
               initialValue={
                 hazirlayan
-                  ? user.rol &&
-                    (user.rol.at(-1) == "Denetci" ||
-                      user.rol.at(-1) == "DenetciYardimcisi")
+                  ? hazirlayanId
+                    ? hazirlayanId
+                    : user.rol &&
+                      (user.rol.at(-1) == "Denetci" ||
+                        user.rol.at(-1) == "DenetciYardimcisi")
                     ? user.kullaniciAdi
                     : undefined
                   : onaylayan
-                  ? user.rol && user.rol.at(-1) == "SorumluDenetci"
+                  ? onaylayanId
+                    ? onaylayanId
+                    : user.rol && user.rol.at(-1) == "SorumluDenetci"
                     ? user.kullaniciAdi
                     : undefined
                   : kaliteKontrol
-                  ? user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                  ? kontrolEdenId
+                    ? kontrolEdenId
+                    : user.rol &&
+                      user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                     ? user.kullaniciAdi
                     : undefined
                   : undefined
@@ -84,21 +381,47 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                   : ""
               }
               disabled={
-                hazirlayan
-                  ? user.rol &&
-                    (user.rol.at(-1) == "Denetci" ||
-                      user.rol.at(-1) == "DenetciYardimcisi")
+                (hazirlayan
+                  ? hazirlayanId
+                    ? hazirlayanId == user.id
+                      ? false
+                      : true
+                    : user.rol &&
+                      (user.rol.at(-1) == "Denetci" ||
+                        user.rol.at(-1) == "DenetciYardimcisi")
                     ? false
                     : true
                   : onaylayan
-                  ? user.rol && user.rol.at(-1) == "SorumluDenetci"
+                  ? onaylayanId
+                    ? onaylayanId == user.id
+                      ? false
+                      : true
+                    : user.rol && user.rol.at(-1) == "SorumluDenetci"
                     ? false
                     : true
                   : kaliteKontrol
-                  ? user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                  ? kontrolEdenId
+                    ? kontrolEdenId == user.id
+                      ? false
+                      : true
+                    : user.rol &&
+                      user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                     ? false
                     : true
-                  : true
+                  : true) ||
+                (hazirlayan && hazirlayanId ? true : false) ||
+                (onaylayan && onaylayanId ? true : false) ||
+                (kaliteKontrol && kontrolEdenId ? true : false)
+                /*
+                ||
+                (hazirlayanId
+                  ? true
+                  : false || onaylayanId
+                  ? true
+                  : false || kontrolEdenId
+                  ? true
+                  : false)
+                */
               }
               onSelectId={(selectedId) => setSelectedId(selectedId)}
               onSelectAdi={(selectedAdi) => setSelectedAdi(selectedAdi)}
@@ -109,22 +432,69 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
               id="date"
               type="date"
               variant="outlined"
-              disabled={
+              value={
                 hazirlayan
-                  ? user.rol &&
-                    (user.rol.at(-1) == "Denetci" ||
-                      user.rol.at(-1) == "DenetciYardimcisi")
+                  ? hazirlayanTarih ?? ""
+                  : onaylayan
+                  ? onaylayanTarih ?? ""
+                  : kaliteKontrol
+                  ? kontrolEdenTarih ?? ""
+                  : ""
+              }
+              onChange={(e: any) => {
+                const newValue = e.target.value;
+
+                if (hazirlayan) {
+                  setHazirlayanTarih(newValue);
+                } else if (onaylayan) {
+                  setOnaylayanTarih(newValue);
+                } else if (kaliteKontrol) {
+                  setKontrolEdenTarih(newValue);
+                }
+                setSelectedDate(newValue);
+              }}
+              disabled={
+                (hazirlayan
+                  ? hazirlayanId
+                    ? hazirlayanId == user.id
+                      ? false
+                      : true
+                    : user.rol &&
+                      (user.rol.at(-1) == "Denetci" ||
+                        user.rol.at(-1) == "DenetciYardimcisi")
                     ? false
                     : true
                   : onaylayan
-                  ? user.rol && user.rol.at(-1) == "SorumluDenetci"
+                  ? onaylayanId
+                    ? onaylayanId == user.id
+                      ? false
+                      : true
+                    : user.rol && user.rol.at(-1) == "SorumluDenetci"
                     ? false
                     : true
                   : kaliteKontrol
-                  ? user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                  ? kontrolEdenId
+                    ? kontrolEdenId == user.id
+                      ? false
+                      : true
+                    : user.rol &&
+                      user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                     ? false
                     : true
-                  : true
+                  : true) ||
+                (hazirlayan && hazirlayanId ? true : false) ||
+                (onaylayan && onaylayanId ? true : false) ||
+                (kaliteKontrol && kontrolEdenId ? true : false)
+                /*
+                ||
+                (hazirlayanId
+                  ? true
+                  : false || onaylayanId
+                  ? true
+                  : false || kontrolEdenId
+                  ? true
+                  : false)
+                */
               }
               fullWidth
               InputLabelProps={{
@@ -132,31 +502,93 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
               }}
             />
 
-            <Button
-              size="medium"
-              variant="outlined"
-              color="primary"
-              disabled={
-                hazirlayan
-                  ? user.rol &&
-                    (user.rol.at(-1) == "Denetci" ||
-                      user.rol.at(-1) == "DenetciYardimcisi")
-                    ? false
+            {(hazirlayan && hazirlayanId ? true : false) ||
+            (onaylayan && onaylayanId ? true : false) ||
+            (kaliteKontrol && kontrolEdenId ? true : false) ? (
+              <Button
+                size="medium"
+                variant="outlined"
+                color="error"
+                disabled={
+                  hazirlayan
+                    ? hazirlayanId
+                      ? hazirlayanId == user.id
+                        ? false
+                        : true
+                      : user.rol &&
+                        (user.rol.at(-1) == "Denetci" ||
+                          user.rol.at(-1) == "DenetciYardimcisi")
+                      ? false
+                      : true
+                    : onaylayan
+                    ? onaylayanId
+                      ? onaylayanId == user.id
+                        ? false
+                        : true
+                      : user.rol && user.rol.at(-1) == "SorumluDenetci"
+                      ? false
+                      : true
+                    : kaliteKontrol
+                    ? kontrolEdenId
+                      ? kontrolEdenId == user.id
+                        ? false
+                        : true
+                      : user.rol &&
+                        user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                      ? false
+                      : true
                     : true
-                  : onaylayan
-                  ? user.rol && user.rol.at(-1) == "SorumluDenetci"
-                    ? false
+                }
+                onClick={() => {
+                  handleOnayiKaldir();
+                }}
+                sx={{ width: "100%", mt: 5 }}
+              >
+                Onayı Kaldır
+              </Button>
+            ) : (
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                disabled={
+                  hazirlayan
+                    ? hazirlayanId
+                      ? hazirlayanId == user.id
+                        ? false
+                        : true
+                      : user.rol &&
+                        (user.rol.at(-1) == "Denetci" ||
+                          user.rol.at(-1) == "DenetciYardimcisi")
+                      ? false
+                      : true
+                    : onaylayan
+                    ? onaylayanId
+                      ? onaylayanId == user.id
+                        ? false
+                        : true
+                      : user.rol && user.rol.at(-1) == "SorumluDenetci"
+                      ? false
+                      : true
+                    : kaliteKontrol
+                    ? kontrolEdenId
+                      ? kontrolEdenId == user.id
+                        ? false
+                        : true
+                      : user.rol &&
+                        user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                      ? false
+                      : true
                     : true
-                  : kaliteKontrol
-                  ? user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
-                    ? false
-                    : true
-                  : true
-              }
-              sx={{ width: "100%", mt: 5 }}
-            >
-              Onayla
-            </Button>
+                }
+                onClick={() => {
+                  handleOnayla();
+                }}
+                sx={{ width: "100%", mt: 5 }}
+              >
+                Onayla
+              </Button>
+            )}
           </CardContent>
         </Card>
       </Grid>

@@ -6,7 +6,7 @@ import { getKullaniciByDenetlenenYilRol } from "@/api/Kullanici/KullaniciIslemle
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 
 interface PerosnelBoxProps {
-  initialValue?: string;
+  initialValue?: string | number;
   tip: string;
   disabled?: boolean;
   onSelectId: (selectedPerosnelId: number) => void;

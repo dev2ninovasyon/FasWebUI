@@ -5,7 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 const BCrumb = [
   {
     to: "/Kys",
-    title: "KYS",
+    title: "Kalite Yönetim Sistemi",
   },
 ];
 

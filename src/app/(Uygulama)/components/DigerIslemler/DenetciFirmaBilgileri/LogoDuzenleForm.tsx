@@ -78,10 +78,10 @@ const LogoDuzenleForm = () => {
   const fetchData = async () => {
     try {
       const denetciLogo = await getLogo(user.token || "", user.denetciId);
-      if (denetciLogo) {
-        setFirmaLogoImage(denetciLogo);
+      if (!denetciLogo.message) {
+        setFirmaLogoImage(denetciLogo.logoBase64);
       } else {
-        enqueueSnackbar("Logo Bulunamadı", {
+        enqueueSnackbar(denetciLogo && denetciLogo.message, {
           variant: "warning",
           autoHideDuration: 5000,
           style: {

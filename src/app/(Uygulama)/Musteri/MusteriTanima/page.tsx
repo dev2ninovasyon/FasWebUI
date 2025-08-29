@@ -23,7 +23,6 @@ import { useSelector } from "@/store/hooks";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import React, { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import { IconInfoCircle } from "@tabler/icons-react";
 import { IconX } from "@tabler/icons-react";
 import {
   getMusteriTanimaStatikBilgiler,
@@ -34,6 +33,7 @@ import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomTextAreaAutoSize from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextAreaAutoSize";
 import MusteriTanima from "./MusteriTanima";
+import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 
 const BCrumb = [
   {
@@ -52,6 +52,8 @@ const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+
+  const controller = "MusteriTanimaStatikBilgiler-MusteriTanimaSayisalBilgiler";
 
   const [showDrawer, setShowDrawer] = React.useState(false);
   const handleDrawerClose = () => {
@@ -241,6 +243,40 @@ const Page: React.FC = () => {
             kaydetTiklandimi={kaydetTiklandimi}
             setKaydetTiklandimi={setKaydetTiklandimi}
           />
+        </Grid>
+        <Grid item xs={12} lg={12}>
+          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+            user.rol?.includes("SorumluDenetci") ||
+            user.rol?.includes("Denetci") ||
+            user.rol?.includes("DenetciYardimcisi")) && (
+            <Grid
+              container
+              sx={{
+                width: "100%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+            </Grid>
+          )}
         </Grid>
       </Grid>
       <Dialog

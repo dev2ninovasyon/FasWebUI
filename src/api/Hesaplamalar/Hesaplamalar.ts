@@ -575,7 +575,7 @@ export const getCekSenetReeskontHesaplama = async (
       }
     );
 
-    if (response.status == 200) {
+    if (response.ok) {
       return response.json();
     } else {
       console.error("Çek Senet Reeskont Hesaplama verileri getirilemedi");
@@ -603,7 +603,7 @@ export const getCekSenetReeskontDuzeltmeFarklari = async (
       }
     );
 
-    if (response.status == 200) {
+    if (response.ok) {
       return response.json();
     } else {
       console.error(
@@ -633,7 +633,7 @@ export const getCekSenetReeskontHesaplamadaKullanilanDegerler = async (
       }
     );
 
-    if (response.status == 200) {
+    if (response.ok) {
       return response.json();
     } else {
       console.error(
