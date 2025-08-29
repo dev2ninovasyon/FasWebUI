@@ -124,7 +124,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl = async (
   formUrl: string
 ) => {
   try {
-    console.log();
     const response = await fetch(
       `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&url=${formUrl}`,
       {
@@ -386,6 +385,60 @@ export const deleteAllCalismaKagidiVerileriByUrl = async (
         },
       }
     );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  formKodu: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/FormHazirlayanOnaylayan/${denetciId}/${yil}/${denetlenenId}/${formKodu}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Form Hazırlayan Onaylayan verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const updateFormHazirlayanOnaylayan = async (
+  token: string,
+  id: any,
+  updatedFormHazirlayanOnaylayanVerisi: any
+) => {
+  try {
+    const response = await fetch(`${url}/FormHazirlayanOnaylayan/${id}`, {
+      method: "PUT",
+      headers: {
+        accept: "*/*",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedFormHazirlayanOnaylayanVerisi),
+    });
 
     if (response.ok) {
       return true;

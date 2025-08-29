@@ -16,11 +16,10 @@ export const createDenetlenen = async (token: string, createdMusteri: any) => {
       return true;
     } else {
       const contentType = response.headers.get("content-type");
-
       let message = "Hata Oluştu";
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
-        message = errorData.message || message;
+        message = errorData || message;
       } else {
         message = await response.text();
       }
@@ -173,11 +172,10 @@ export const updateDenetlenenDenetimTuru = async (
       return true;
     } else {
       const contentType = response.headers.get("content-type");
-
       let message = "Hata Oluştu";
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
-        message = errorData.message || message;
+        message = errorData || message;
       } else {
         message = await response.text();
       }

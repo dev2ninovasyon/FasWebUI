@@ -66,7 +66,7 @@ const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
-  const controller = "BulguRiskiBelirleme";
+  const controller = "DogalRisk-KontrolRiski";
 
   const handleOpen1 = () => {
     setIsCreatePopUpOpen1(true);
@@ -495,13 +495,22 @@ const Page = () => {
             }}
           >
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard hazirlayan="Denetçi - Yardımcı Denetçi"></BelgeKontrolCard>
+              <BelgeKontrolCard
+                hazirlayan="Denetçi - Yardımcı Denetçi"
+                controller={controller}
+              ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard onaylayan="Sorumlu Denetçi"></BelgeKontrolCard>
+              <BelgeKontrolCard
+                onaylayan="Sorumlu Denetçi"
+                controller={controller}
+              ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"></BelgeKontrolCard>
+              <BelgeKontrolCard
+                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                controller={controller}
+              ></BelgeKontrolCard>
             </Grid>
           </Grid>
         ) : (

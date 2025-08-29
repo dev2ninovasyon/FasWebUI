@@ -82,7 +82,7 @@ export const getDefterYuklemeLoglari = async (token: string, id: number) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (response) {
+    if (response.ok) {
       return response.json();
     } else {
       console.error("Defter Yükleme Logları getirilemedi");

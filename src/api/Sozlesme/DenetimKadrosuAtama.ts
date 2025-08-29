@@ -89,11 +89,10 @@ export const createGorevAtamalari = async (
       return true;
     } else {
       const contentType = response.headers.get("content-type");
-
       let message = "Hata Oluştu";
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
-        message = errorData.message || message;
+        message = errorData || message;
       } else {
         message = await response.text();
       }
@@ -125,11 +124,10 @@ export const updateGorevAtamalari = async (
       return true;
     } else {
       const contentType = response.headers.get("content-type");
-
       let message = "Hata Oluştu";
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
-        message = errorData.message || message;
+        message = errorData || message;
       } else {
         message = await response.text();
       }
