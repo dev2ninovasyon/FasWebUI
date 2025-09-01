@@ -22,6 +22,7 @@ interface colors {
   id: number;
   bgColor: string;
   disp?: string;
+  disp2?: string;
 }
 const Page = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -42,36 +43,56 @@ const Page = () => {
     },
   }));
 
+  const StyledBox2 = styled(Box)<BoxProps>(({ theme }) => ({
+    boxShadow: theme.shadows[8],
+    padding: "20px",
+    cursor: "pointer",
+    justifyContent: "center",
+    display: "flex",
+    transition: "0.1s ease-in",
+    border: "1px solid rgba(145, 158, 171, 0.12)",
+    position: "relative",
+    "&:hover": {
+      transform: "scale(1.03)",
+    },
+  }));
+
   const thColors: colors[] = [
     {
       id: 1,
       bgColor: "#5D87FF",
       disp: "BLUE_THEME",
+      disp2: "Mavi Tema",
     },
     {
       id: 2,
       bgColor: "#0074BA",
       disp: "AQUA_THEME",
+      disp2: "Aqua Tema",
     },
     {
       id: 3,
       bgColor: "#763EBD",
       disp: "PURPLE_THEME",
+      disp2: "Mor Tema",
     },
     {
       id: 4,
       bgColor: "#0A7EA4",
       disp: "GREEN_THEME",
+      disp2: "Yeşil Tema",
     },
     {
       id: 5,
       bgColor: "#01C0C8",
       disp: "CYAN_THEME",
+      disp2: "Cyan Tema",
     },
     {
       id: 6,
       bgColor: "#FA896B",
       disp: "ORANGE_THEME",
+      disp2: "Turuncu Tema",
     },
   ];
 
@@ -85,7 +106,7 @@ const Page = () => {
           <Typography variant="h5" gutterBottom>
             Tema Seçenekleri
           </Typography>
-          <Stack direction={"row"} gap={2} my={2}>
+          <Stack direction={"row"} gap={2}>
             <StyledBox
               onClick={() => dispatch(setDarkMode("light"))}
               display="flex"
@@ -120,8 +141,8 @@ const Page = () => {
           <Grid container spacing={2}>
             {thColors.map((thcolor) => (
               <Grid item xs={4} key={thcolor.id}>
-                <StyledBox onClick={() => dispatch(setTheme(thcolor.disp))}>
-                  <Tooltip title={`${thcolor.disp}`} placement="top">
+                <StyledBox2 onClick={() => dispatch(setTheme(thcolor.disp))}>
+                  <Tooltip title={`${thcolor.disp2}`} placement="top">
                     <Box
                       sx={{
                         backgroundColor: thcolor.bgColor,
@@ -142,7 +163,7 @@ const Page = () => {
                       )}
                     </Box>
                   </Tooltip>
-                </StyledBox>
+                </StyledBox2>
               </Grid>
             ))}
           </Grid>
