@@ -1211,9 +1211,27 @@ export function createMenuItems(
             */
             {
               id: uniqueId(),
+              title: "Genel Kurul Toplantısı Görevlendirme Belgesi",
+              icon: IconPoint,
+              href: "/GenelKurul/GorevlendirmeBelgesi",
+            },
+            {
+              id: uniqueId(),
+              title: "Genel Kurul Toplantısı Katılım Belgesi",
+              icon: IconPoint,
+              href: "/GenelKurul/KatilimBelgesi",
+            },
+            {
+              id: uniqueId(),
               title: "Denetim Çalışması İzleme",
               icon: IconPoint,
-              href: "/GenelKurul/DenetimCalimasiIzleme",
+              href: "/GenelKurul/DenetimCalismasiIzleme",
+            },
+            {
+              id: uniqueId(),
+              title: "Denetim Çalışması İzleme Sonuç",
+              icon: IconPoint,
+              href: "/GenelKurul/DenetimCalismasiIzlemeSonuc",
             },
           ],
         },

@@ -26,9 +26,10 @@ import {
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { enqueueSnackbar } from "notistack";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 import { IconExclamationMark } from "@tabler/icons-react";
+import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
+import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
 const BCrumb = [
   {
@@ -630,6 +631,19 @@ const Page = () => {
               </Grid>
             </Grid>
           )}
+          <Grid
+            container
+            sx={{
+              width: "97%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+              gap: 1,
+            }}
+          >
+            <Grid item xs={12} lg={12} mt={5}>
+              <IslemlerCard controller={controller} />
+            </Grid>
+          </Grid>
         </>
       </PageContainer>
     </>

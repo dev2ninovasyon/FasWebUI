@@ -19,12 +19,12 @@ const CustomEditor = dynamic(
 
 const BCrumb = [
   {
-    to: "/PlanVeProgram",
-    title: "Plan ve Program",
+    to: "/GenelKurul",
+    title: "Genel Kurul",
   },
   {
-    to: "/PlanVeProgram/MeslekiDeneyimYeterlilik",
-    title: "Mesleki Deneyim Yeterlilik",
+    to: "/GenelKurul/DenetimCalismasiIzlemeSonuc",
+    title: "Denetim Çalışması İzleme Sonuç",
   },
 ];
 
@@ -39,7 +39,7 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "MeslekiDeneyimYeterlilik";
+  const controller = "DenetimCalismasiIzlemeSonuc";
   const grupluMu = false;
 
   const handleOpen = () => {
@@ -73,7 +73,7 @@ const Page = () => {
   };
   return (
     <>
-      <Breadcrumb title="Mesleki Deneyim Yeterlilik" items={BCrumb}>
+      <Breadcrumb title="Denetim Çalışması İzleme Sonuç" items={BCrumb}>
         <>
           <Grid
             container
@@ -204,8 +204,8 @@ const Page = () => {
         </>
       </Breadcrumb>
       <PageContainer
-        title="Mesleki Deneyim Yeterlilik"
-        description="this is Mesleki Deneyim Yeterlilik"
+        title="Denetim Çalışması İzleme Sonuç"
+        description="this is Denetim Çalışması İzleme Sonuç"
       >
         <Box>
           <CustomEditor
@@ -214,54 +214,54 @@ const Page = () => {
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
           />
         </Box>
-      </PageContainer>
-      <Box>
-        {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi")) && (
+        <Box>
+          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+            user.rol?.includes("SorumluDenetci") ||
+            user.rol?.includes("Denetci") ||
+            user.rol?.includes("DenetciYardimcisi")) && (
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+            </Grid>
+          )}
           <Grid
             container
             sx={{
               width: "95%",
               margin: "0 auto",
               justifyContent: "space-between",
+              gap: 1,
             }}
           >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid item xs={12} lg={12} mt={5}>
+              <IslemlerCard controller={controller} />
             </Grid>
           </Grid>
-        )}
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-            gap: 1,
-          }}
-        >
-          <Grid item xs={12} lg={12} mt={5}>
-            <IslemlerCard controller={controller} />
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </PageContainer>
     </>
   );
 };

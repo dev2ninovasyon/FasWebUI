@@ -9,6 +9,8 @@ import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
+import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
+import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
 const BCrumb = [
   {
@@ -16,7 +18,7 @@ const BCrumb = [
     title: "Genel Kurul",
   },
   {
-    to: "/GenelKurul/DenetimCalimasiIzleme",
+    to: "/GenelKurul/DenetimCalismasiIzleme",
     title: "Denetim Çalışması İzleme",
   },
 ];
@@ -32,7 +34,7 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "DenetimCalimasiIzleme";
+  const controller = "DenetimCalismasiIzleme";
   const grupluMu = false;
   const alanAdi1 = "İşlem";
   const alanAdi2 = "Tespit";
@@ -215,6 +217,53 @@ const Page = () => {
             setTamamlanan={setTamamlanan}
             setToplam={setToplam}
           />
+        </Box>
+        <Box>
+          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+            user.rol?.includes("SorumluDenetci") ||
+            user.rol?.includes("Denetci") ||
+            user.rol?.includes("DenetciYardimcisi")) && (
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+            </Grid>
+          )}
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+              gap: 1,
+            }}
+          >
+            <Grid item xs={12} lg={12} mt={5}>
+              <IslemlerCard controller={controller} />
+            </Grid>
+          </Grid>
         </Box>
       </PageContainer>
     </>
