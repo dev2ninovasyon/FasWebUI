@@ -34,6 +34,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import CustomTextAreaAutoSize from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextAreaAutoSize";
 import MusteriTanima from "./MusteriTanima";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
+import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
 const BCrumb = [
   {
@@ -277,6 +278,19 @@ const Page: React.FC = () => {
               </Grid>
             </Grid>
           )}
+          <Grid
+            container
+            sx={{
+              width: "100%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+              gap: 1,
+            }}
+          >
+            <Grid item xs={12} lg={12} mt={5}>
+              <IslemlerCard controller={controller} />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Dialog

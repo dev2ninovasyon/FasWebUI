@@ -8,6 +8,8 @@ import { AppState } from "@/store/store";
 import dynamic from "next/dynamic";
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
 import SorumlulukBildirimiLayout from "./SorumlulukBildirimiLayout";
+import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
+import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
 const CustomEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditor"),
@@ -46,6 +48,53 @@ const Page = () => {
           <CustomEditor controller={controller} personelId={personelId || 0} />
         </Box>
       </PageContainer>
+      <Box>
+        {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+          user.rol?.includes("SorumluDenetci") ||
+          user.rol?.includes("Denetci") ||
+          user.rol?.includes("DenetciYardimcisi")) && (
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+            }}
+          >
+            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <BelgeKontrolCard
+                hazirlayan="Denetçi - Yardımcı Denetçi"
+                controller={controller}
+              ></BelgeKontrolCard>
+            </Grid>
+            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <BelgeKontrolCard
+                onaylayan="Sorumlu Denetçi"
+                controller={controller}
+              ></BelgeKontrolCard>
+            </Grid>
+            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <BelgeKontrolCard
+                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                controller={controller}
+              ></BelgeKontrolCard>
+            </Grid>
+          </Grid>
+        )}
+        <Grid
+          container
+          sx={{
+            width: "95%",
+            margin: "0 auto",
+            justifyContent: "space-between",
+            gap: 1,
+          }}
+        >
+          <Grid item xs={12} lg={12} mt={5}>
+            <IslemlerCard controller={controller} />
+          </Grid>
+        </Grid>
+      </Box>
     </SorumlulukBildirimiLayout>
   );
 };
