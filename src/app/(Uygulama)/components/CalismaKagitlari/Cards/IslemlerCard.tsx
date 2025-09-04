@@ -7,6 +7,7 @@ import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
 import { url } from "@/api/apiBase";
+import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
 interface Props {
   controller: string;
@@ -16,6 +17,8 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const [isOpen, setIsOpen] = useState(false);
   const [pdfBlobUrl, setPdfBlobUrl] = useState("");
+
+  const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const handleDownload = async () => {
     axios({
@@ -32,6 +35,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       link.setAttribute("download", `${controller}.docx`);
       document.body.appendChild(link);
       link.click();
+      setOpenCartAlert(false);
     });
   };
 
@@ -50,6 +54,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       const pdfBlobUrl = window.URL.createObjectURL(pdfBlob);
       setPdfBlobUrl(pdfBlobUrl);
       setIsOpen(true);
+      setOpenCartAlert(false);
     } catch (error) {
       console.error("Error fetching PDF:", error);
     }
@@ -88,7 +93,10 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
                   variant="outlined"
                   color="primary"
                   startIcon={<IconFileTypePdf width={18} />}
-                  onClick={() => handlePreview()}
+                  onClick={() => {
+                    setOpenCartAlert(true);
+                    handlePreview();
+                  }}
                   sx={{ width: "100%" }}
                 >
                   Önizleme
@@ -108,7 +116,10 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
                   variant="outlined"
                   color="primary"
                   startIcon={<IconFileTypeDocx width={18} />}
-                  onClick={() => handleDownload()}
+                  onClick={() => {
+                    setOpenCartAlert(true);
+                    handleDownload();
+                  }}
                   sx={{ width: "100%" }}
                 >
                   İndir
@@ -128,6 +139,12 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
           <iframe src={pdfBlobUrl} width="100%" height="700px"></iframe>
         </DialogContent>
       </Dialog>
+      {openCartAlert && (
+        <InfoAlertCart
+          openCartAlert={openCartAlert}
+          setOpenCartAlert={setOpenCartAlert}
+        ></InfoAlertCart>
+      )}
     </Grid>
   );
 };
