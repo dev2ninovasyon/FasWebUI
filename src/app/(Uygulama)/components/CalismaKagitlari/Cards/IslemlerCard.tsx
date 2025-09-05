@@ -21,22 +21,27 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const handleDownload = async () => {
-    axios({
-      url: `${url}/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
-      method: "GET",
-      responseType: "blob",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    }).then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+    try {
+      const response = await axios({
+        url: `${url}/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
+        method: "GET",
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      const urlFile = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
-      link.href = url;
+      link.href = urlFile;
       link.setAttribute("download", `${controller}.docx`);
       document.body.appendChild(link);
       link.click();
+    } catch (error) {
+      console.error("İndirme hatası:", error);
+    } finally {
       setOpenCartAlert(false);
-    });
+    }
   };
 
   const handlePreview = async () => {
@@ -54,9 +59,10 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       const pdfBlobUrl = window.URL.createObjectURL(pdfBlob);
       setPdfBlobUrl(pdfBlobUrl);
       setIsOpen(true);
-      setOpenCartAlert(false);
     } catch (error) {
       console.error("Error fetching PDF:", error);
+    } finally {
+      setOpenCartAlert(false);
     }
   };
 
@@ -93,6 +99,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
                   variant="outlined"
                   color="primary"
                   startIcon={<IconFileTypePdf width={18} />}
+                  disabled={openCartAlert}
                   onClick={() => {
                     setOpenCartAlert(true);
                     handlePreview();
@@ -116,6 +123,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
                   variant="outlined"
                   color="primary"
                   startIcon={<IconFileTypeDocx width={18} />}
+                  disabled={openCartAlert}
                   onClick={() => {
                     setOpenCartAlert(true);
                     handleDownload();

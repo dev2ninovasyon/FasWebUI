@@ -310,8 +310,16 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
     setSelectedCalisma(veri.calisma);
-    setSelectedBaslangicTarihi(veri.baslangicTarihi);
-    setSelectedBitisTarihi(veri.bitisTarihi);
+    setSelectedBaslangicTarihi(
+      veri.baslangicTarihi && veri.baslangicTarihi !== ""
+        ? veri.baslangicTarihi
+        : `${user.yil}-01-01`
+    );
+    setSelectedBitisTarihi(
+      veri.bitisTarihi && veri.bitisTarihi !== ""
+        ? veri.bitisTarihi
+        : `${user.yil}-01-01`
+    );
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
@@ -324,8 +332,8 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const handleNew = () => {
     setIsNew(true);
     setSelectedCalisma("");
-    setSelectedBaslangicTarihi("");
-    setSelectedBitisTarihi("");
+    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
+    setSelectedBitisTarihi(`${user.yil}-01-01`);
     setIsPopUpOpen(true);
   };
 

@@ -73,10 +73,17 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const createSelectedRows = () => {
@@ -177,9 +184,7 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
   };
 
   const filteredRows = rows.filter((row) =>
-    normalizeString(row.detayHesapAdi)
-      .toLowerCase()
-      .includes(normalizeString(searchTerm).toLowerCase())
+    normalizeString(row.detayHesapAdi).includes(normalizeString(searchTerm))
   );
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
