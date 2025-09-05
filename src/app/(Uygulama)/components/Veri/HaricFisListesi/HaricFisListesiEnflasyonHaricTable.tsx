@@ -97,10 +97,17 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const createSelectedRows = () => {
@@ -208,9 +215,7 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
   };
 
   const filteredRows = rows.filter((row) =>
-    normalizeString(row.aciklama)
-      .toLowerCase()
-      .includes(normalizeString(searchTerm).toLowerCase())
+    normalizeString(row.aciklama).includes(normalizeString(searchTerm))
   );
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;

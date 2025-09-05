@@ -119,10 +119,17 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const extractParts = (
@@ -386,9 +393,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   };
 
   const filteredRows = rows.filter((row) =>
-    normalizeString(row.adi)
-      .toLowerCase()
-      .includes(normalizeString(searchTerm).toLowerCase())
+    normalizeString(row.adi).includes(normalizeString(searchTerm))
   );
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;

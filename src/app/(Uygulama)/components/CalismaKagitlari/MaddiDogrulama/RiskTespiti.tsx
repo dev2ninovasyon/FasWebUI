@@ -112,10 +112,17 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const handleUpdate = async (
@@ -193,7 +200,6 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
           user.denetlenenId || 0,
           user.yil || 0
         );
-
       const rowsAll: any = [];
       calismaKagidiVerileri.forEach((veri: any) => {
         const newRow: Veri = {
@@ -220,11 +226,9 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
           genelDenetimYaklasimi: veri.genelDenetimYaklasimi,
           standartMi: veri.standartmi,
         };
-
         if (
-          normalizeString(
-            newRow.finansalTabloHesaplar.replaceAll(" ", "").toLowerCase()
-          ) == normalizeString(dipnotAdi.replaceAll(" ", "").toLowerCase())
+          normalizeString(newRow.finansalTabloHesaplar) ==
+          normalizeString(dipnotAdi)
         ) {
           rowsAll.push(newRow);
           setDip(newRow.finansalTabloHesaplar);

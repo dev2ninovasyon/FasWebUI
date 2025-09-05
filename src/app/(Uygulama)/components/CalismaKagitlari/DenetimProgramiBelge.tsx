@@ -28,12 +28,14 @@ import {
   getCalismaKagidiVerileriByDenetciDenetlenenYil,
   updateAllCalismaKagidiVerisi,
   updateCalismaKagidiVerisi,
+  updateOtomatikCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
 import { getDenetimDosyaByFormKodu } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadrosuAtama";
+import { FloatingButtonDenetimProgrami } from "./FloatingButtonDenetimProgrami";
 
 interface Veri {
   id: number;
@@ -96,6 +98,11 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
   const [isAll, setIsAll] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const [warn, setWarn] = useState<boolean>(false);
+
+  const [floatingButtonTiklandimi, setFloatingButtonTiklandimi] =
+    useState(false);
 
   const handleUpdate = async (
     denetimProgram: string,
@@ -162,6 +169,26 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
         fetchData();
         handleClosePopUp();
         setIsAll(false);
+      } else {
+        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const handleUpdateOtomatik = async () => {
+    try {
+      const result = await updateOtomatikCalismaKagidiVerisi(
+        controller || "",
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0
+      );
+      if (result) {
+        setWarn(true);
+        setFloatingButtonTiklandimi(false);
       } else {
         console.error("Çalışma Kağıdı Verisi ekleme başarısız");
       }
@@ -323,9 +350,9 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
   const handleAll = () => {
     setIsAll(true);
     setSelectedDenetimProgram("");
-    setSelectedGorevliId(0);
-    setSelectedCalismaSuresi("");
-    setSelectedCalismaTakvimi("");
+    setSelectedGorevliId(selectedGorevliId);
+    setSelectedCalismaSuresi("01:00");
+    setSelectedCalismaTakvimi(`${user.yil}-01-01`);
     setSelectedIlgiliFormKodlari("");
     setIsPopUpOpen(true);
   };
@@ -366,6 +393,15 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
       setIsClickedVarsayilanaDon(false);
     }
   }, [isClickedVarsayilanaDon]);
+
+  useEffect(() => {
+    if (floatingButtonTiklandimi) {
+      handleUpdateOtomatik();
+    } else {
+      fetchData();
+      fetchData2();
+    }
+  }, [floatingButtonTiklandimi]);
 
   return (
     <>
@@ -579,6 +615,10 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
             <IslemlerCard controller={controller} />
           </Grid>
         </Grid>
+        <FloatingButtonDenetimProgrami
+          warn={warn}
+          handleClick={() => setFloatingButtonTiklandimi(true)}
+        />
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent

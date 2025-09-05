@@ -67,10 +67,17 @@ const MizanTable: React.FC<Props> = ({ type }) => {
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const [isConfirmPopUpOpen, setIsConfirmPopUpOpen] = useState(false);
@@ -141,9 +148,7 @@ const MizanTable: React.FC<Props> = ({ type }) => {
   };
 
   const filteredRows = rows.filter((row) =>
-    normalizeString(row.tip)
-      .toLowerCase()
-      .includes(normalizeString(searchTerm).toLowerCase())
+    normalizeString(row.tip).includes(normalizeString(searchTerm))
   );
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;

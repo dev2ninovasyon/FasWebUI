@@ -275,9 +275,21 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedMaddiDogrulukId(veri.maddiDogrulukId);
     setSelectedMaddiDogruluk(veri.maddiDogruluk);
     setSelectedGorevliId(veri.gorevliId);
-    setSelectedCalismaSuresi(veri.calismaSuresi);
-    setSelectedBaslangicTarihi(veri.baslangicTarihi);
-    setSelectedBitisTarihi(veri.bitisTarihi);
+    setSelectedCalismaSuresi(
+      veri.calismaSuresi && veri.calismaSuresi !== ""
+        ? veri.calismaSuresi
+        : "00:30"
+    );
+    setSelectedBaslangicTarihi(
+      veri.baslangicTarihi && veri.baslangicTarihi !== ""
+        ? veri.baslangicTarihi
+        : `${user.yil}-01-01`
+    );
+    setSelectedBitisTarihi(
+      veri.bitisTarihi && veri.bitisTarihi !== ""
+        ? veri.bitisTarihi
+        : `${user.yil}-01-01`
+    );
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
@@ -286,10 +298,10 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setIsNew(true);
     setSelectedMaddiDogrulukId(0);
     setSelectedMaddiDogruluk("");
-    setSelectedGorevliId(0);
-    setSelectedCalismaSuresi("");
-    setSelectedBaslangicTarihi("");
-    setSelectedBitisTarihi("");
+    setSelectedGorevliId(selectedGorevliId);
+    setSelectedCalismaSuresi("00:30");
+    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
+    setSelectedBitisTarihi(`${user.yil}-01-01`);
     setIsPopUpOpen(true);
   };
 
@@ -297,10 +309,10 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setIsAll(true);
     setSelectedMaddiDogrulukId(0);
     setSelectedMaddiDogruluk("");
-    setSelectedGorevliId(0);
-    setSelectedCalismaSuresi("");
-    setSelectedBaslangicTarihi("");
-    setSelectedBitisTarihi("");
+    setSelectedGorevliId(selectedGorevliId);
+    setSelectedCalismaSuresi("00:30");
+    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
+    setSelectedBitisTarihi(`${user.yil}-01-01`);
     setIsPopUpOpen(true);
   };
 

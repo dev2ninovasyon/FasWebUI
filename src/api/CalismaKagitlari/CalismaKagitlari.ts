@@ -223,6 +223,36 @@ export const updateAllCalismaKagidiVerisi = async (
   }
 };
 
+export const updateOtomatikCalismaKagidiVerisi = async (
+  controller: string,
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
 export const deleteCalismaKagidiVerisiById = async (
   controller: string,
   token: string,

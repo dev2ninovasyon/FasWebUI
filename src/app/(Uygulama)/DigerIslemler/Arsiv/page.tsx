@@ -82,10 +82,17 @@ const Page = () => {
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   function MinusSquare(props: SvgIconProps) {
@@ -167,11 +174,11 @@ const Page = () => {
   const filterTree = (nodes: Veri[], term: string): Veri[] => {
     if (!term) return nodes;
 
-    const normalizedTerm = normalizeString(term).toLowerCase();
+    const normalizedTerm = normalizeString(term);
 
     return nodes
       .map((node) => {
-        const normalizedName = normalizeString(node.name).toLowerCase();
+        const normalizedName = normalizeString(node.name);
 
         if (node.children) {
           const filteredChildren = filterTree(node.children, term);

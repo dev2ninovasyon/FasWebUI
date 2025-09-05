@@ -65,10 +65,17 @@ const Page = () => {
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const fetchData = async () => {
@@ -79,10 +86,7 @@ const Page = () => {
       );
 
       maddiDogrulama.forEach((veri: any) => {
-        if (
-          normalizeString(veri.name.replaceAll(" ", "").toLowerCase()) ==
-          normalizeString(parentName.replaceAll(" ", "").toLowerCase())
-        ) {
+        if (normalizeString(veri.name) == normalizeString(parentName)) {
           setDip(veri.name);
         }
       });
@@ -103,10 +107,7 @@ const Page = () => {
       );
 
       uygulananDentimProsedurleri.forEach((veri: any) => {
-        if (
-          normalizeString(veri.dipnotAdi.replaceAll(" ", "").toLowerCase()) ==
-          normalizeString(parentName.replaceAll(" ", "").toLowerCase())
-        ) {
+        if (normalizeString(veri.dipnotAdi) == normalizeString(parentName)) {
           setDipnotNo(veri.dipnotNo);
         }
       });
