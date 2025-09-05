@@ -97,7 +97,7 @@ export const FloatingButtonDenetimProgrami: React.FC<FloatingButtonProps> = ({
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "row",
-          width: isHovered ? 412 : 56,
+          width: isHovered ? (warn ? 340 : 412) : 56,
           height: 72,
           borderTopRightRadius: "28px",
           borderTopLeftRadius: isHovered ? "0px" : "28px",
