@@ -24,6 +24,9 @@ const Page = () => {
 
   const [dip, setDip] = useState("");
   const [dipnotNo, setDipnotNo] = useState<string>("");
+
+  const [code, setCode] = useState("");
+
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
@@ -66,22 +69,27 @@ const Page = () => {
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const fetchData = async () => {
     try {
       const hile = await getHile(user.token || "", user.denetimTuru || "");
       hile.forEach((veri: any) => {
-        if (
-          normalizeString(veri.url.replaceAll(" ", "").toLowerCase()).includes(
-            normalizeString(formUrl.replaceAll(" ", "").toLowerCase())
-          )
-        ) {
+        if (normalizeString(veri.url).includes(normalizeString(formUrl))) {
           setDip(veri.name);
+          setCode(veri.code.replace("/", ":"));
+
           const [sol, sag] = veri.code.split("/");
           if (user.bobimi && sol) {
             setDipnotNo(sol);
@@ -202,53 +210,55 @@ const Page = () => {
             <></>
           )}
         </Grid>
-        <Grid item xs={12} sm={12} lg={12}>
-          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-            user.rol?.includes("SorumluDenetci") ||
-            user.rol?.includes("Denetci") ||
-            user.rol?.includes("DenetciYardimcisi")) && (
+        {code.length > 2 && (
+          <Grid item xs={12} sm={12} lg={12}>
+            {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+              user.rol?.includes("SorumluDenetci") ||
+              user.rol?.includes("Denetci") ||
+              user.rol?.includes("DenetciYardimcisi")) && (
+              <Grid
+                container
+                sx={{
+                  width: "95%",
+                  margin: "0 auto",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                  <BelgeKontrolCard
+                    hazirlayan="Denetçi - Yardımcı Denetçi"
+                    controller={code}
+                  ></BelgeKontrolCard>
+                </Grid>
+                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                  <BelgeKontrolCard
+                    onaylayan="Sorumlu Denetçi"
+                    controller={code}
+                  ></BelgeKontrolCard>
+                </Grid>
+                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                  <BelgeKontrolCard
+                    kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                    controller={code}
+                  ></BelgeKontrolCard>
+                </Grid>
+              </Grid>
+            )}
             <Grid
               container
               sx={{
                 width: "95%",
                 margin: "0 auto",
                 justifyContent: "space-between",
+                gap: 1,
               }}
             >
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-                <BelgeKontrolCard
-                  hazirlayan="Denetçi - Yardımcı Denetçi"
-                  controller={controller}
-                ></BelgeKontrolCard>
+              <Grid item xs={12} lg={12} mt={5}>
+                <IslemlerCard controller={code} />
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-                <BelgeKontrolCard
-                  onaylayan="Sorumlu Denetçi"
-                  controller={controller}
-                ></BelgeKontrolCard>
-              </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-                <BelgeKontrolCard
-                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                  controller={controller}
-                ></BelgeKontrolCard>
-              </Grid>
-            </Grid>
-          )}
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-              gap: 1,
-            }}
-          >
-            <Grid item xs={12} lg={12} mt={5}>
-              <IslemlerCard controller={"HileCalismaKagitlari"} />
             </Grid>
           </Grid>
-        </Grid>
+        )}
       </Grid>
     </PageContainer>
   );

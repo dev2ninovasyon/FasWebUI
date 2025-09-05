@@ -76,10 +76,17 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
       Ü: "U",
     };
 
-    return str.replace(
+    // Türkçe karakterleri değiştir
+    let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
+
+    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+    normalized = normalized.replace(/\s+/g, "");
+
+    // Küçük harfe çevir
+    return normalized.toLowerCase();
   }
 
   const [isConfirmPopUpOpen, setIsConfirmPopUpOpen] = useState(false);
@@ -131,9 +138,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
   };
 
   const filteredRows = data.filter((row) =>
-    normalizeString(row.name)
-      .toLowerCase()
-      .includes(normalizeString(searchTerm).toLowerCase())
+    normalizeString(row.name).includes(normalizeString(searchTerm))
   );
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;

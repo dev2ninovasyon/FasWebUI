@@ -347,8 +347,8 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
           </Grid>
           <YorumEditor></YorumEditor>
         </Grid>
-
-        {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+        {/*
+        (user.rol?.includes("KaliteKontrolSorumluDenetci") ||
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi")) && (
@@ -379,20 +379,23 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
               ></BelgeKontrolCard>
             </Grid>
           </Grid>
-        )}
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-            gap: 1,
-          }}
-        >
-          <Grid item xs={12} lg={12} mt={5}>
-            <IslemlerCard controller={controller} />
+        )
+        */}
+        {/*
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+              gap: 1,
+            }}
+          >
+            <Grid item xs={12} lg={12} mt={5}>
+              <IslemlerCard controller={controller} />
+            </Grid>
           </Grid>
-        </Grid>
+        */}
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent
