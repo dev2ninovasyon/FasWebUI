@@ -82,7 +82,9 @@ const Page = () => {
     try {
       const maddiDogrulama = await getMaddiDogrulama(
         user.token || "",
-        user.denetimTuru || ""
+        user.denetimTuru || "",
+        user.denetlenenId || 0,
+        user.yil || 0
       );
 
       maddiDogrulama.forEach((veri: any) => {

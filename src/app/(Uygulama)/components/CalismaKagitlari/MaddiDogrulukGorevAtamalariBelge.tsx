@@ -28,6 +28,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
+import CalismaKagidiTarihCard from "./Cards/CalismaKagidiTarihCard";
 
 interface Veri {
   id: number;
@@ -298,7 +299,7 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setIsNew(true);
     setSelectedMaddiDogrulukId(0);
     setSelectedMaddiDogruluk("");
-    setSelectedGorevliId(selectedGorevliId);
+    setSelectedGorevliId(0);
     setSelectedCalismaSuresi("00:30");
     setSelectedBaslangicTarihi(`${user.yil}-01-01`);
     setSelectedBitisTarihi(`${user.yil}-01-01`);
@@ -398,8 +399,10 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
               mt="20px"
               onClick={() => handleCardClick(veri)}
             >
-              <CalismaKagidiCard
+              <CalismaKagidiTarihCard
                 title={`${index + 1}. ${veri.maddiDogruluk}`}
+                startDate={veri.baslangicTarihi}
+                endDate={veri.bitisTarihi}
                 standartMi={veri.standartMi}
               />
             </Grid>
@@ -621,7 +624,9 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     try {
       const data = await getMaddiDogrulama(
         user.token || "",
-        user.denetimTuru || ""
+        user.denetimTuru || "",
+        user.denetlenenId || 0,
+        user.yil || 0
       );
       setBelgeler(data || []); // Store fetched data in state
     } catch (error) {
