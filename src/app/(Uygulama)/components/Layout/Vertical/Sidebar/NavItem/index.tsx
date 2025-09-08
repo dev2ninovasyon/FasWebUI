@@ -68,7 +68,7 @@ export default function NavItem({
       level > 1 && pathDirect === item?.href
         ? `white !important`
         : theme.palette.text.secondary,
-    paddingLeft: hideMenu ? "10px" : level > 2 ? `${level * 15}px` : "10px",
+    paddingLeft: hideMenu ? "9.15px" : level > 2 ? `${level * 15}px` : "9.15px",
     "&:hover": {
       backgroundColor:
         customizer.activeMode === "dark"
@@ -116,7 +116,7 @@ export default function NavItem({
           <ListItemIcon
             sx={{
               minWidth: "36px",
-              p: "3px 0",
+              p: "3px 0px",
               color:
                 level > 1 && pathDirect === item?.href
                   ? `white !important`
