@@ -81,7 +81,7 @@ const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
             {/* ------------------------------------------- */}
             {/* Logo */}
             {/* ------------------------------------------- */}
-            <Box px={2.5} marginBottom={2}>
+            <Box px={3} marginBottom={2}>
               {customizer.isCollapse ? <CollapseLogo /> : <Logo />}
             </Box>
 
@@ -123,7 +123,7 @@ const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
       {/* ------------------------------------------- */}
       {/* Logo */}
       {/* ------------------------------------------- */}
-      <Box px={2.5} marginBottom={2}>
+      <Box px={3} marginBottom={2}>
         {<MobileLogo />}
       </Box>
       {/* ------------------------------------------- */}

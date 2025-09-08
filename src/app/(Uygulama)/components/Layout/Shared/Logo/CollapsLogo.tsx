@@ -9,9 +9,8 @@ const CollapseLogo = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const LinkStyled = styled(Link)(() => ({
     height: customizer.TopbarHeight,
-    width: customizer.isCollapse ? "45px" : "188px",
-    marginTop: customizer.isCollapse ? "10px" : "0px",
-    paddingLeft: "2px",
+    width: customizer.isCollapse ? "40px" : "188px",
+    marginTop: customizer.isCollapse ? "12px" : "0px",
     overflow: "hidden",
     display: "block",
   }));
@@ -24,8 +23,8 @@ const CollapseLogo = () => {
             src="/images/logos/fas-logo.png"
             alt="logo"
             height={45}
-            width={42}
-            style={{ padding: "2px" }}
+            width={40}
+            style={{ width: "100%" }}
             priority
           />
         ) : (
@@ -33,8 +32,8 @@ const CollapseLogo = () => {
             src={"/images/logos/fas-logo.png"}
             alt="logo"
             height={45}
-            width={42}
-            style={{ padding: "2px" }}
+            width={40}
+            style={{ width: "100%" }}
             priority
           />
         )}
@@ -49,8 +48,8 @@ const CollapseLogo = () => {
           src="/images/logos/fas-logo.png"
           alt="logo"
           height={45}
-          width={42}
-          style={{ padding: "2px" }}
+          width={40}
+          style={{ width: "100%" }}
           priority
         />
       ) : (
@@ -58,8 +57,8 @@ const CollapseLogo = () => {
           src="/images/logos/fas-logo.png"
           alt="logo"
           height={45}
-          width={42}
-          style={{ padding: "2px" }}
+          width={40}
+          style={{ width: "100%" }}
           priority
         />
       )}
