@@ -15,6 +15,7 @@ export interface MenuitemsType {
   chipColor?: string;
   variant?: string;
   external?: boolean;
+  formKodu?: string;
   aciklama?: string;
 }
 import {
@@ -33,7 +34,6 @@ import {
   IconHierarchy,
   IconInfoCircle,
   IconFileAnalytics,
-  IconShield,
   IconUsers,
   IconHome,
   IconCalculator,
@@ -128,6 +128,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Şirket Yönetim Kadrosu",
+              formKodu: "SirketYonetimKadrosu",
               customIcon:
                 "public/images/svgs/musteri/sirket-yonetim-kadrosu.svg",
               icon: IconPoint,
@@ -136,6 +137,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Şubeler",
+              formKodu: "Subeler",
               customIcon: "public/images/svgs/musteri/subeler.svg",
               icon: IconPoint,
               href: "/Musteri/Subeler",
@@ -143,6 +145,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Hissedarlar",
+              formKodu: "Hissedarlar",
               customIcon: "public/images/svgs/musteri/hissedarlar.svg",
               icon: IconPoint,
               href: "/Musteri/Hissedarlar",
@@ -150,6 +153,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "İlişkili Taraflar",
+              formKodu: "IliskiliTaraflar",
               customIcon: "public/images/svgs/musteri/iliskili-taraflar.svg",
               icon: IconPoint,
               href: "/Musteri/IliskiliTaraflar",
@@ -157,6 +161,8 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Müşteri Tanıma",
+              formKodu:
+                "MusteriTanimaStatikBilgiler-MusteriTanimaSayisalBilgiler",
               customIcon: "public/images/svgs/musteri/musteri-tanima.svg",
               icon: IconPoint,
               href: "/Musteri/MusteriTanima",
@@ -164,6 +170,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "İşletme Tanıma",
+              formKodu: "IsletmeTanimaBelgesi",
               customIcon: "public/images/svgs/musteri/isletme-tanima.svg",
               icon: IconPoint,
               href: "/Musteri/IsletmeTanima",
@@ -171,6 +178,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "İşletme Faaliyet ve Çevresi Tanıma",
+              formKodu: "IsletmeFaaliyetveCevreTanima",
               customIcon:
                 "public/images/svgs/musteri/isletme-faaliyet-ve-cevresi-tanima.svg",
               icon: IconPoint,
@@ -179,6 +187,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Teklif Hesaplama",
+              formKodu: "TeklifHesaplama",
               customIcon: "public/images/svgs/musteri/teklif-hesaplama.svg",
               icon: IconPoint,
               href: "/Musteri/TeklifHesaplama",
@@ -186,6 +195,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Teklif Belgesi",
+              formKodu: "TeklifBelgesi",
               customIcon: "public/images/svgs/musteri/teklif-belgesi.svg",
               icon: IconPoint,
               href: "/Musteri/TeklifBelgesi",
@@ -193,6 +203,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Teklif Mektubu",
+              formKodu: "TeklifMektubu",
               customIcon: "public/images/svgs/musteri/teklif-mektubu.svg",
               icon: IconPoint,
               href: "/Musteri/TeklifMektubu",
@@ -200,6 +211,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Kendi Yetkinliğini Değerlendirme",
+              formKodu: "KendiYetkinliginiDegerlendirmeBelgesi",
               customIcon:
                 "public/images/svgs/musteri/kendi-yetkinligini-degerlendirme.svg",
               icon: IconPoint,
@@ -208,6 +220,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Müşteri Dürüstlüğünü Değerlendirme",
+              formKodu: "MusteriDurustlugunuDegerlendirme",
               customIcon:
                 "public/images/svgs/musteri/musteri-durustlugunu-degerlendirme.svg",
               icon: IconPoint,
@@ -223,6 +236,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Sözleşme Kabul Belgesi",
+              formKodu: "SozlesmeKabul",
               customIcon: "public/images/svgs/musteri/sozlesme-kabul.svg",
               icon: IconPoint,
               href: "/Musteri/SozlesmeKabul",
@@ -246,6 +260,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Bağımsız Denetim Sözleşmesi",
+              formKodu: "DenetimSozlesmesi",
               customIcon:
                 "public/images/svgs/sozlesme/denetim-kadrosu-atama.svg",
               icon: IconPoint,
@@ -529,6 +544,7 @@ export function createMenuItems(
                 denetimTuru && denetimTuru == "Bobi"
                   ? "Bobi Frs Belirleme Belgesi"
                   : "Tms Tfrs Belirleme Belgesi",
+              formKodu: "DenetimTuruBelirlemeBelgesi",
               customIcon: "public/images/svgs/donusum/belirleme-belgesi.svg",
               icon: IconPoint,
               href:
@@ -548,42 +564,49 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Denetim Programı",
+              formKodu: "DenetimProgrami",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimProgrami",
             },
             {
               id: uniqueId(),
               title: "Maddi Doğruluk Görev Atamaları",
+              formKodu: "MaddiDogrulukGorevAtamalari",
               icon: IconPoint,
               href: "/PlanVeProgram/MaddiDogrulukGorevAtamalari",
             },
             {
               id: uniqueId(),
               title: "Denetim Takvimi",
+              formKodu: "DenetimTakvimi",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimTakvimi",
             },
             {
               id: uniqueId(),
               title: "Denetim Planı",
+              formKodu: "DenetimPlani",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimPlani",
             },
             {
               id: uniqueId(),
               title: "Denetim Ekibi Görev Tebliği",
+              formKodu: "GorevTebligi",
               icon: IconPoint,
               href: "/PlanVeProgram/GorevTebligi",
             },
             {
               id: uniqueId(),
               title: "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+              formKodu: "BagimsizlikSorumlulukBeyani",
               icon: IconPoint,
               href: "/PlanVeProgram/BagimsizlikSorumlulukBeyani",
             },
             {
               id: uniqueId(),
               title: "Etik Gerekliliklere İlişkin Bildirim ve Değerlendirme",
+              formKodu: "EtikGerekliliklereIliskinBildirim",
               icon: IconPoint,
               href: "/PlanVeProgram/EtikGerekliliklereIliskinBildirim",
             },
@@ -591,24 +614,28 @@ export function createMenuItems(
               id: uniqueId(),
               title:
                 "Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+              formKodu: "MeslekiEtik",
               icon: IconPoint,
               href: "/PlanVeProgram/MeslekiEtik",
             },
             {
               id: uniqueId(),
               title: "Denetim Zamanı Bildirme",
+              formKodu: "DenetimZamaniBildirme",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimZamaniBildirme",
             },
             {
               id: uniqueId(),
               title: "Sorumlu Denetçi Kimlik ve Deneyim Bildirim",
+              formKodu: "MeslekiDeneyimYeterlilik",
               icon: IconPoint,
               href: "/PlanVeProgram/MeslekiDeneyimYeterlilik",
             },
             {
               id: uniqueId(),
               title: "Sorumlu Denetçi Sorumlulukları Bildirim",
+              formKodu: "SorumlulukBildirimi",
               icon: IconPoint,
               href: "/PlanVeProgram/SorumlulukBildirimi",
             },
@@ -616,42 +643,50 @@ export function createMenuItems(
               id: uniqueId(),
               title:
                 "Denetlenen İşletmenin Tabi Olduğu Mevzuata İlişkin Değerlendirme",
+              formKodu:
+                "DenetlenenIsletmeninTabiOlduguMevzuataIliskinDegerlendirme",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetlenenIsletmeninTabiOlduguMevzuataIliskinDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Denetim Strateji Kılavuzu",
+              formKodu: "DenetimStratejiKilavuzu",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimStratejiKilavuzu",
             },
             {
               id: uniqueId(),
               title: "Faaliyet Riski Belirleme Belgesi",
+              formKodu: "FaaliyetRiskBelirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/FaaliyetRiskBelirleme",
             },
             {
               id: uniqueId(),
               title: "Beyan ve Soruşturma Sonucu Tespit Edilen Riskler",
+              formKodu: "TespitEdilenRiskler",
               icon: IconPoint,
               href: "/PlanVeProgram/TespitEdilenRiskler",
             },
             {
               id: uniqueId(),
               title: "Denetim Riski Belirleme Belgesi",
+              formKodu: "DenetimRiskBelirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimRiskBelirleme",
             },
             {
               id: uniqueId(),
               title: "Finansal Tablolar Denetim Riski Belirleme",
+              formKodu: "FinansalTablolarDenetimRiskiBelirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme",
             },
             {
               id: uniqueId(),
               title: "Bulgu Riski Belirleme",
+              formKodu: "DogalRisk-KontrolRiski",
               icon: IconPoint,
               href: "/PlanVeProgram/BulguRiskiBelirleme",
             },
@@ -664,12 +699,14 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Önemlilik Ve Örneklem",
+                  formKodu: "OnemlilikVeOrneklem",
                   icon: IconPoint,
                   href: "/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem",
                 },
                 {
                   id: uniqueId(),
                   title: "Finansal Tablo Kalemlerinde Değişim",
+                  formKodu: "FinansalTabloKalemlerindeDegisim",
                   icon: IconPoint,
                   href: "/PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim",
                 },
@@ -678,30 +715,35 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Denetim Risk Değerlendirme",
+              formKodu: "DenetimRiskDegerlendirme",
               icon: IconPoint,
               href: "/PlanVeProgram/DenetimRiskDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "Bilgi İşlem Muhasebe Sistemi Değerlendirme",
+              formKodu: "BilgiIslemMuhasebe",
               icon: IconPoint,
               href: "/PlanVeProgram/BilgiIslemMuhasebe",
             },
             {
               id: uniqueId(),
               title: "İşletmeye İlişkin İç Kontrol Tespit Belgesi",
+              formKodu: "IsletmeyeIliskinIcKontrolTespit",
               icon: IconPoint,
               href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolTespit",
             },
             {
               id: uniqueId(),
               title: "Hesaplara İlişkin İç Kontrol Tespit Belgesi",
+              formKodu: "HesaplaraIliskinIcKontrolTespit",
               icon: IconPoint,
               href: "/PlanVeProgram/HesaplaraIliskinIcKontrolTespit",
             },
             {
               id: uniqueId(),
               title: "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
+              formKodu: "IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
               icon: IconPoint,
               href: "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
             },
@@ -709,6 +751,8 @@ export function createMenuItems(
               id: uniqueId(),
               title:
                 "İç Kontrol Değerlendirme Sonucuna Göre Uygulanan Denetim Teknikleri",
+              formKodu:
+                "IcKontrolDegerlemeUnsur-IcKontrolDegerlemeAnket-IcKontrolDegerlemeTeknik",
               icon: IconPoint,
               href: "/PlanVeProgram/IcKontrolDegerlendirme",
             },
@@ -716,24 +760,29 @@ export function createMenuItems(
               id: uniqueId(),
               title:
                 "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+              formKodu:
+                "HileUsulsuzlukToplantiBilgileri-HileUsulsuzlukToplantidaGorusulenHususlar",
               icon: IconPoint,
               href: "/PlanVeProgram/HileUsulsuzlukEkipCalismasi",
             },
             {
               id: uniqueId(),
               title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+              formKodu: "HileUsulsuzlukBelirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/HileUsulsuzlukBelirleme",
             },
             {
               id: uniqueId(),
               title: "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme",
+              formKodu: "HileUsulsuzlukDegerlendirme",
               icon: IconPoint,
               href: "/PlanVeProgram/HileUsulsuzlukDegerlendirme",
             },
             {
               id: uniqueId(),
               title: "İşletme Varlıklarının Korunmasına İlişkin Değerlendirme",
+              formKodu: "IsletmeVarliklarininKorunmasinaIliskinDegerlendirme",
               icon: IconPoint,
               href: "/PlanVeProgram/IsletmeVarliklarininKorunmasinaIliskinDegerlendirme",
             },
@@ -748,6 +797,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Denetim Stratejisi Belirleme",
+              formKodu: "DenetimStratejisiBelirleme",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
@@ -756,6 +806,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Uzman Yeterliliği Değerlendirme Belgesi",
+              formKodu: "UzmanYeterliligiDegerlendirme",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
@@ -764,6 +815,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Denetim Kontrol Testleri",
+              formKodu: "DenetimKontrolTestleri",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
@@ -780,6 +832,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Dönüşüm Mizan Kontrol",
+                  formKodu: "DonusumMizan",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/mizan-kontrol.svg",
                   icon: IconPoint,
@@ -840,6 +893,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Önemli Süreçlerin İzlenmesi ve Risk Belirleme",
+                  formKodu: "OnemliSureclerinIzlenmesiVeRiskBelirleme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
                   icon: IconPoint,
@@ -864,6 +918,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Kullanılan Analitik Tekniklere İlişkin Belgeler",
+                  formKodu: "KullanilanAnalitikTekniklereIliskinBelgeler",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
                   icon: IconPoint,
@@ -872,6 +927,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "İşletmenin Sürekliliğine İlişkin Değerlendirme",
+                  formKodu: "IsletmeninSurekliligineIliskinDegerlendirme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
                   icon: IconPoint,
@@ -889,6 +945,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Fiş İşlem Sayıları",
+                  formKodu: "FisIslemSayilari",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/onemlilik.svg",
                   icon: IconPoint,
@@ -897,6 +954,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Örneklem",
+                  formKodu: "Orneklem",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/onemlilik.svg",
                   icon: IconPoint,
@@ -905,6 +963,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Önemlilik Seviyesi Belirleme Kılavuzu",
+                  formKodu: "OnemlilikSeviyesiBelirlemeKilavuzu",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/onemlilik.svg",
                   icon: IconPoint,
@@ -913,6 +972,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Önemlilik Seviyesi Belirleme Ve Değerlendirme",
+                  formKodu: "OnemlilikSeviyesiKayitlari",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/onemlilik.svg",
                   icon: IconPoint,
@@ -932,12 +992,14 @@ export function createMenuItems(
                   title: "Mutabakat Seçimi Ve Kontrol",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/mutabakat.svg",
+                  formKodu: "MutabakatKontrolKayitlari",
                   icon: IconPoint,
                   href: "/DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol",
                 },
                 {
                   id: uniqueId(),
                   title: "Doğrulama Mektuplarına Alınan Yanıtlar",
+                  formKodu: "DogrulamaMektuplarinaAlinanYanitlar",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/mutabakat.svg",
                   icon: IconPoint,
@@ -949,6 +1011,8 @@ export function createMenuItems(
               id: uniqueId(),
               title:
                 "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+              formKodu:
+                "BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
@@ -965,6 +1029,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Müşteri İşletme Yönetimi İle Yapılan Görüşme",
+                  formKodu: "MusteriIsletmeYonetimiIleYapilanGorusme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -973,6 +1038,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Müşteri İşletme Personeli İle Yapılan Görüşme",
+                  formKodu: "MusteriIsletmePersoneliIleYapilanGorusme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -981,6 +1047,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Uygulanan Muhasebe Politikalarının Tespiti",
+                  formKodu: "UygulananMuhasebePolitikalarininTespiti",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -989,6 +1056,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "İlişkili Taraf İnceleme",
+                  formKodu: "IliskiliTarafInceleme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -997,6 +1065,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Kullanılan Tahminlere İlişkin Değerlendirme",
+                  formKodu: "KullanilanTahminlereIliskinDegerlendirme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1005,6 +1074,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Satış Tahsilat Kontrol",
+                  formKodu: "SatisTahsilatKontrol",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1013,6 +1083,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Satın Alma Ödeme Kontrol",
+                  formKodu: "SatinAlmaOdemeKontrol",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1021,6 +1092,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Transfer Fiyatlaması ve Örtülü Kazanç Kontrol",
+                  formKodu: "TransferFiyatlamasiOrtuluKazanc",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1029,6 +1101,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Sayım ve Tespit Değerlendirme",
+                  formKodu: "SayimVeTespitDegerlendirme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1037,6 +1110,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "İhmal Edilen Düzeltme",
+                  formKodu: "IhmalEdilenDuzeltme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1045,6 +1119,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme",
+                  formKodu: "GercegeUygunDegerHesaplamalariDegerlendirme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1053,6 +1128,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Habersiz İşletme Ziyareti",
+                  formKodu: "HabersizIsletmeZiyareti",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1061,6 +1137,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Risklere Karşı Uygulanan Denetim Prosedürleri",
+                  formKodu: "RisklereKarsiUygulananDenetimProsedurleri",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1069,6 +1146,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+                  formKodu: "MuhasebeHatalariVeHileKanitlariDegerlendirme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1077,6 +1155,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Denetim Kanıtları Değerlendirme",
+                  formKodu: "DenetimKanitlariDegerlendirme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1085,6 +1164,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Tespit Edlien Hususların Yönetim Bildirimi",
+                  formKodu: "TespitEdilenHususlarinYonetimeBildirimi",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1093,6 +1173,7 @@ export function createMenuItems(
                 {
                   id: uniqueId(),
                   title: "Yönetim Kurulu Faaliyet Raporu Değerlendirme",
+                  formKodu: "YonetimKuruluFaaliyetRaporuDegerlendirme",
                   customIcon:
                     "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
                   icon: IconPoint,
@@ -1110,6 +1191,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Yevmiye Kayıtları Kontrol",
+              formKodu: "YevmiyeKayitlariKontrol",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
@@ -1118,6 +1200,7 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Yönetim Tavsiye Mektubu",
+              formKodu: "YonetimTavsiyeMektubu",
               customIcon:
                 "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
               icon: IconPoint,
@@ -1150,6 +1233,7 @@ export function createMenuItems(
                     {
                       id: uniqueId(),
                       title: "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+                      formKodu: "HileUsulsuzlukBelirleme",
                       customIcon:
                         "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
@@ -1158,6 +1242,7 @@ export function createMenuItems(
                     {
                       id: uniqueId(),
                       title: "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme",
+                      formKodu: "HileUsulsuzlukDegerlendirme",
                       customIcon:
                         "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
@@ -1167,6 +1252,8 @@ export function createMenuItems(
                       id: uniqueId(),
                       title:
                         "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+                      formKodu:
+                        "HileUsulsuzlukToplantiBilgileri-HileUsulsuzlukToplantidaGorusulenHususlar",
                       customIcon:
                         "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
@@ -1176,6 +1263,7 @@ export function createMenuItems(
                       id: uniqueId(),
                       title:
                         "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+                      formKodu: "MuhasebeHatalariVeHileKanitlariDegerlendirme",
                       customIcon:
                         "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
                       icon: IconPoint,
@@ -1212,24 +1300,29 @@ export function createMenuItems(
             {
               id: uniqueId(),
               title: "Genel Kurul Toplantısı Görevlendirme Belgesi",
+              formKodu: "GorevlendirmeBelgesi",
               icon: IconPoint,
               href: "/GenelKurul/GorevlendirmeBelgesi",
             },
             {
               id: uniqueId(),
               title: "Genel Kurul Toplantısı Katılım Belgesi",
+              formKodu:
+                "GenelKurulToplantiBilgileri-GenelKurulToplantidaGorusulenHususlar",
               icon: IconPoint,
               href: "/GenelKurul/KatilimBelgesi",
             },
             {
               id: uniqueId(),
               title: "Denetim Çalışması İzleme",
+              formKodu: "DenetimCalismasiIzleme",
               icon: IconPoint,
               href: "/GenelKurul/DenetimCalismasiIzleme",
             },
             {
               id: uniqueId(),
               title: "Denetim Çalışması İzleme Sonuç",
+              formKodu: "DenetimCalismasiIzlemeSonuc",
               icon: IconPoint,
               href: "/GenelKurul/DenetimCalismasiIzlemeSonuc",
             },

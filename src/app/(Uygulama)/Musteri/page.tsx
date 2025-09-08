@@ -1,7 +1,6 @@
 "use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
-
 import MusteriLayout from "./MusteriLayout";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
 import FilteredMenu from "@/app/(Uygulama)/components/Tables/MenuTable";
