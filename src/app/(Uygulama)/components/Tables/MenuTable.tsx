@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -20,6 +20,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import Link from "next/link";
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
+import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
 
 interface NestedMenuItemProps {
   item: MenuitemsType;
@@ -35,13 +36,12 @@ const StatusIcon: React.FC<{ status: boolean }> = ({ status }) => {
 };
 
 const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
+  const user = useSelector((state: AppState) => state.userReducer);
+
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const customizer = useSelector((state: AppState) => state.customizer);
 
-  const isPrepared = item.isPrepared;
-  const isApproved = item.isApproved;
-  const isQualityChecked = item.isQualityChecked;
   const hasChildren = item.children && item.children.length > 0;
 
   // Typography stilini hiyerarşi seviyesi
@@ -57,6 +57,41 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
       typographyVariant = "body1"; // Alt seviye
   }
 
+  const [hazirlayan, setHazirlayan] = React.useState<boolean>(false);
+  const [onaylayan, setOnaylayan] = React.useState<boolean>(false);
+  const [kontrolEden, setKontrolEden] = React.useState<boolean>(false);
+
+  const fetchData = async () => {
+    if (!item.formKodu) {
+      return;
+    }
+    try {
+      const formHazirlayanOnaylayanVerileri =
+        await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0,
+          item.formKodu
+        );
+
+      if (formHazirlayanOnaylayanVerileri.hazirlayanId) {
+        setHazirlayan(true);
+      }
+      if (formHazirlayanOnaylayanVerileri.onaylayanId) {
+        setOnaylayan(true);
+      }
+      if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
+        setKontrolEden(true);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <>
       <TableRow
@@ -85,17 +120,17 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
 
         {/* Hazırlandı mı Icon */}
         <TableCell sx={{ textAlign: "center", width: "15%" }}>
-          {!hasChildren && <StatusIcon status={isPrepared} />}
+          {!hasChildren && item.formKodu && <StatusIcon status={hazirlayan} />}
         </TableCell>
 
         {/* Onaylandı mı Icon */}
         <TableCell sx={{ textAlign: "center", width: "15%" }}>
-          {!hasChildren && <StatusIcon status={isApproved} />}
+          {!hasChildren && item.formKodu && <StatusIcon status={onaylayan} />}
         </TableCell>
 
         {/* Kalite Kontrol Icon */}
         <TableCell sx={{ textAlign: "center", width: "15%" }}>
-          {!hasChildren && <StatusIcon status={isQualityChecked} />}
+          {!hasChildren && item.formKodu && <StatusIcon status={kontrolEden} />}
         </TableCell>
 
         {/* Expand/Collapse or Arrow Icon */}
