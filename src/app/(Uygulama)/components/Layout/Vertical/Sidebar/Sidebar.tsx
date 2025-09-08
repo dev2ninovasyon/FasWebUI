@@ -81,7 +81,10 @@ const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
             {/* ------------------------------------------- */}
             {/* Logo */}
             {/* ------------------------------------------- */}
-            <Box px={3} marginBottom={2}>
+            <Box
+              px={customizer.isCollapse ? "23px" : "24px"}
+              marginBottom={customizer.isCollapse ? 0 : 1.5}
+            >
               {customizer.isCollapse ? <CollapseLogo /> : <Logo />}
             </Box>
 
