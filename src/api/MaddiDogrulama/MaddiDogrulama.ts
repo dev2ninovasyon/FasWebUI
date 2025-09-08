@@ -84,13 +84,18 @@ export const getDenetimDosya = async (token: string, denetimTuru: string) => {
   }
 };
 
-export const getMaddiDogrulama = async (token: string, denetimTuru: string) => {
+export const getMaddiDogrulama = async (
+  token: string,
+  denetimTuru: string,
+  denetlenenId: number,
+  yil: number
+) => {
   try {
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;
     let bobimi = denetimTuru == "Bobi" ? true : false;
 
     const response = await fetch(
-      `${url}/DenetimDosyaBelgeleri/MaddiDogrulamaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
+      `${url}/DenetimDosyaBelgeleri/MaddiDogrulamaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {

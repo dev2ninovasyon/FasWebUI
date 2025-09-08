@@ -87,7 +87,9 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = () => {
     try {
       const data = await getMaddiDogrulama(
         user.token || "",
-        user.denetimTuru || ""
+        user.denetimTuru || "",
+        user.denetlenenId || 0,
+        user.yil || 0
       );
       setCalismaKagidiVerileri(data || []); // Store fetched data in state
     } catch (error) {

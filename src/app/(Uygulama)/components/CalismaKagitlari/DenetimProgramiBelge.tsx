@@ -36,6 +36,7 @@ import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical
 import { getDenetimDosyaByFormKodu } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { FloatingButtonDenetimProgrami } from "./FloatingButtonDenetimProgrami";
+import CalismaKagidiTekTarihCard from "./Cards/CalismaKagidiTekTarihCard";
 
 interface Veri {
   id: number;
@@ -563,8 +564,9 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
               mt="20px"
               onClick={() => handleCardClick(veri)}
             >
-              <CalismaKagidiCard
+              <CalismaKagidiTekTarihCard
                 title={`${index + 1}. ${veri.denetimProgram}`}
+                date={veri.calismaTakvimi}
                 standartMi={veri.standartMi}
               />
             </Grid>

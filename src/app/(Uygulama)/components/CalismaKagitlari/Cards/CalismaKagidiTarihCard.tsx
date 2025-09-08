@@ -6,16 +6,16 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { Box, Tooltip } from "@mui/material";
 
 interface CardProps {
+  title?: string;
   startDate?: string;
   endDate?: string;
-  content?: string;
   standartMi?: boolean;
 }
 
 const CalismaKagidiTarihCard: React.FC<CardProps> = ({
+  title,
   startDate,
   endDate,
-  content,
   standartMi,
 }) => {
   const formattedStartDate = startDate ? startDate.split("T")[0] : "";
@@ -46,7 +46,7 @@ const CalismaKagidiTarihCard: React.FC<CardProps> = ({
             component="div"
             sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
           >
-            {content}
+            {title}
           </Typography>
           {startDate && endDate && (
             <Typography variant="h6" component="div">

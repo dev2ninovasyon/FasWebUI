@@ -25,6 +25,7 @@ import {
   deleteAllCalismaKagidiVerileri,
   deleteCalismaKagidiVerisiById,
   getCalismaKagidiVerileriByDenetciDenetlenenYil,
+  updateAllCalismaKagidiVerisi,
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { DuzenleGroupPopUp } from "./DuzenleGroupPopUp";
@@ -79,6 +80,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   );
 
   const [isNew, setIsNew] = useState(false);
+  const [isAll, setIsAll] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [isGroupPopUpOpen, setIsGroupPopUpOpen] = useState(false);
@@ -149,6 +151,37 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       } catch (error) {
         console.error("Bir hata oluştu:", error);
       }
+    }
+  };
+
+  const handleUpdateAll = async (
+    calisma: string,
+    baslangicTarihi: string,
+    bitisTarihi: string
+  ) => {
+    const updatedAllCalismaKagidiVerisi = {
+      denetlenenId: user.denetlenenId,
+      denetciId: user.denetciId,
+      yil: user.yil,
+      calisma: calisma,
+      baslangicTarihi: baslangicTarihi,
+      bitisTarihi: bitisTarihi,
+    };
+    try {
+      const result = await updateAllCalismaKagidiVerisi(
+        controller || "",
+        user.token || "",
+        updatedAllCalismaKagidiVerisi
+      );
+      if (result) {
+        fetchData();
+        handleClosePopUp();
+        setIsAll(false);
+      } else {
+        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
     }
   };
 
@@ -337,6 +370,14 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setIsPopUpOpen(true);
   };
 
+  const handleAll = () => {
+    setIsAll(true);
+    setSelectedCalisma(selectedCalisma);
+    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
+    setSelectedBitisTarihi(`${user.yil}-01-01`);
+    setIsPopUpOpen(true);
+  };
+
   const handleNewGrouplu = (index: any) => {
     setIsNew(true);
     setSelectedCalisma("");
@@ -346,6 +387,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 
   const handleClosePopUp = () => {
     setIsNew(false);
+    setIsAll(false);
     setIsPopUpOpen(false);
   };
 
@@ -458,7 +500,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                                   }}
                                 >
                                   <CalismaKagidiTarihCard
-                                    content={`${index + 1}. ${
+                                    title={`${index + 1}. ${
                                       veriWithBaslikId.calisma
                                     }`}
                                     startDate={veriWithBaslikId.baslangicTarihi}
@@ -553,6 +595,27 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                 justifyContent: "center",
               }}
             >
+              <Grid item xs={12} lg={1.5} my={2}>
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleAll()}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      overflowWrap: "break-word",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    Tümünü Tamamla
+                  </Typography>
+                </Button>
+              </Grid>
               {veriler.map((veri, index) => (
                 <Grid
                   key={index}
@@ -563,7 +626,7 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                   onClick={() => handleCardClick(veri)}
                 >
                   <CalismaKagidiTarihCard
-                    content={`${index + 1}. ${veri.calisma}`}
+                    title={`${index + 1}. ${veri.calisma}`}
                     startDate={veri.baslangicTarihi}
                     endDate={veri.bitisTarihi}
                     standartMi={veri.standartMi}
@@ -672,8 +735,10 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           handleCreate={handleCreate}
           handleDelete={handleDelete}
           handleUpdate={handleUpdate}
+          handleUpdateAll={handleUpdateAll}
           isPopUpOpen={isPopUpOpen}
           isNew={isNew}
+          isAll={isAll}
         />
       )}
       {isGroupPopUpOpen && (
@@ -700,6 +765,7 @@ interface PopUpProps {
 
   isPopUpOpen: boolean;
   isNew: boolean;
+  isAll: boolean;
 
   handleClose: () => void;
   handleSetSelectedCalisma: (a: string) => void;
@@ -716,6 +782,11 @@ interface PopUpProps {
     baslangicTarihi: string,
     bitisTarihi: string
   ) => void;
+  handleUpdateAll: (
+    calisma: string,
+    baslangicTarihi: string,
+    bitisTarihi: string
+  ) => void;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
@@ -725,6 +796,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   standartMi,
   isPopUpOpen,
   isNew,
+  isAll,
   handleClose,
   handleSetSelectedCalisma,
   handleSetSelectedBaslangicTarihi,
@@ -732,6 +804,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   handleCreate,
   handleDelete,
   handleUpdate,
+  handleUpdateAll,
 }) => {
   const [isConfirmPopUpOpen, setIsConfirmPopUpOpen] = useState(false);
   const handleIsConfirm = () => {
@@ -820,21 +893,25 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                 }
               />
             </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                Çalışma
-              </Typography>
-              <CustomTextField
-                id="calisma"
-                multiline
-                rows={8}
-                variant="outlined"
-                fullWidth
-                value={calisma}
-                onChange={(e: any) => handleSetSelectedCalisma(e.target.value)}
-                inputRef={textFieldRef}
-              />
-            </Box>
+            {!isAll && (
+              <Box px={3} pt={3}>
+                <Typography variant="h5" p={1}>
+                  Çalışma
+                </Typography>
+                <CustomTextField
+                  id="calisma"
+                  multiline
+                  rows={8}
+                  variant="outlined"
+                  fullWidth
+                  value={calisma}
+                  onChange={(e: any) =>
+                    handleSetSelectedCalisma(e.target.value)
+                  }
+                  inputRef={textFieldRef}
+                />
+              </Box>
+            )}
           </DialogContent>
           <FloatingButtonCalismaKagitlari
             control={standartMi ? (control1 || control2 ? true : false) : true}
@@ -849,13 +926,21 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               <Button
                 variant="outlined"
                 color="success"
-                onClick={() =>
-                  handleUpdate(
-                    calisma || "",
-                    baslangicTarihi || "",
-                    bitisTarihi || ""
-                  )
-                }
+                onClick={() => {
+                  if (isAll) {
+                    handleUpdateAll(
+                      calisma || "",
+                      baslangicTarihi || "",
+                      bitisTarihi || ""
+                    );
+                  } else {
+                    handleUpdate(
+                      calisma || "",
+                      baslangicTarihi || "",
+                      bitisTarihi || ""
+                    );
+                  }
+                }}
                 sx={{ width: "20%" }}
               >
                 Kaydet
@@ -863,10 +948,16 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               <Button
                 variant="outlined"
                 color="error"
-                onClick={() => handleIsConfirm()}
+                onClick={() => {
+                  if (isAll) {
+                    handleClose();
+                  } else {
+                    handleIsConfirm();
+                  }
+                }}
                 sx={{ width: "20%" }}
               >
-                Sil
+                {isAll ? "Kapat" : "Sil"}
               </Button>
             </DialogActions>
           ) : (
