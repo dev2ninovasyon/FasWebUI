@@ -457,23 +457,36 @@ export const getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu = async (
 export const updateFormHazirlayanOnaylayan = async (
   token: string,
   id: any,
-  updatedFormHazirlayanOnaylayanVerisi: any
+  updatedFormHazirlayanOnaylayanVerisi: any,
+  control: boolean
 ) => {
   try {
-    const response = await fetch(`${url}/FormHazirlayanOnaylayan/${id}`, {
-      method: "PUT",
-      headers: {
-        accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedFormHazirlayanOnaylayanVerisi),
-    });
+    const response = await fetch(
+      `${url}/FormHazirlayanOnaylayan/${id}/${control}`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedFormHazirlayanOnaylayanVerisi),
+      }
+    );
 
     if (response.ok) {
       return true;
     } else {
-      return false;
+      const contentType = response.headers.get("content-type");
+      let message = "Hata Oluştu";
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        message = errorData || message;
+      } else {
+        message = await response.text();
+      }
+
+      return { message };
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);

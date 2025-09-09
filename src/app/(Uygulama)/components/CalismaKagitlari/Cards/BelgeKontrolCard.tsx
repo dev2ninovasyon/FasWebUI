@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { Button, CardHeader, Grid, useTheme } from "@mui/material";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
-import { useSelector } from "@/store/hooks";
+import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
 import {
@@ -13,6 +13,7 @@ import {
   updateFormHazirlayanOnaylayan,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { enqueueSnackbar } from "notistack";
+import { setFormHazirlayanOnaylayan } from "@/store/user/UserSlice";
 
 interface CardProps {
   hazirlayan?: string;
@@ -40,6 +41,8 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+
+  const dispatch = useDispatch();
 
   const [id, setId] = React.useState<number | undefined>(undefined);
 
@@ -116,9 +119,10 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       const result = await updateFormHazirlayanOnaylayan(
         user.token || "",
         id,
-        updatedFormHazirlayanOnaylayanVerisi
+        updatedFormHazirlayanOnaylayanVerisi,
+        false
       );
-      if (result) {
+      if (result == true) {
         setIsClickedUpdate(false);
         enqueueSnackbar("Onaylandı", {
           variant: "success",
@@ -132,7 +136,18 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
           },
         });
       } else {
-        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+        setIsClickedUpdate(false);
+        enqueueSnackbar(result && result.message, {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -167,10 +182,12 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       const result = await updateFormHazirlayanOnaylayan(
         user.token || "",
         id,
-        updatedFormHazirlayanOnaylayanVerisi
+        updatedFormHazirlayanOnaylayanVerisi,
+        true
       );
-      if (result) {
+      if (result == true) {
         setIsClickedUpdate(false);
+        dispatch(setFormHazirlayanOnaylayan(true));
         enqueueSnackbar("Onay Kaldırıldı", {
           variant: "success",
           autoHideDuration: 5000,
@@ -183,7 +200,19 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
           },
         });
       } else {
-        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+        setIsClickedUpdate(false);
+        dispatch(setFormHazirlayanOnaylayan(true));
+        enqueueSnackbar(result && result.message, {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+            maxWidth: "720px",
+          },
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -217,26 +246,13 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
               user.rol.at(-1) == "DenetciYardimcisi")
           ) {
             setSelectedId(user.id);
+          } else {
+            setSelectedId(undefined);
+            setHazirlayanId(undefined);
+            setHazirlayanTarih(undefined);
           }
         }
       }
-      /*
-      if (hazirlayan) {
-        if (formHazirlayanOnaylayanVerileri.hazirlayanId) {
-          setHazirlayanId(formHazirlayanOnaylayanVerileri.hazirlayanId);
-          setHazirlayanTarih(
-            formHazirlayanOnaylayanVerileri?.hazirlanmaTarihi?.split("T")[0] ||
-              undefined
-          );
-        } else if (
-          user.rol &&
-          (user.rol.at(-1) == "Denetci" ||
-            user.rol.at(-1) == "DenetciYardimcisi")
-        ) {
-          setSelectedId(user.id);
-        }
-      }
-      */
       if (formHazirlayanOnaylayanVerileri.onaylayanId) {
         setOnaylayanId(formHazirlayanOnaylayanVerileri.onaylayanId);
         setOnaylayanTarih(
@@ -247,22 +263,13 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
         if (onaylayan) {
           if (user.rol && user.rol.at(-1) == "SorumluDenetci") {
             setSelectedId(user.id);
+          } else {
+            setSelectedId(undefined);
+            setOnaylayanId(undefined);
+            setOnaylayanTarih(undefined);
           }
         }
       }
-      /*
-      if (onaylayan) {
-        if (formHazirlayanOnaylayanVerileri.onaylayanId) {
-          setOnaylayanId(formHazirlayanOnaylayanVerileri.onaylayanId);
-          setOnaylayanTarih(
-            formHazirlayanOnaylayanVerileri?.onaylanmaTarihi?.split("T")[0] ||
-              undefined
-          );
-        } else if (user.rol && user.rol.at(-1) == "SorumluDenetci") {
-          setSelectedId(user.id);
-        }
-      }
-      */
       if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
         setKontrolEdenId(formHazirlayanOnaylayanVerileri.kontrolEdenId);
         setKontrolEdenTarih(
@@ -273,25 +280,13 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
         if (kaliteKontrol) {
           if (user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci") {
             setSelectedId(user.id);
+          } else {
+            setSelectedId(undefined);
+            setKontrolEdenId(undefined);
+            setKontrolEdenTarih(undefined);
           }
         }
       }
-      /*
-      if (kaliteKontrol) {
-        if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
-          setKontrolEdenId(formHazirlayanOnaylayanVerileri.kontrolEdenId);
-          setKontrolEdenTarih(
-            formHazirlayanOnaylayanVerileri?.kontrolTarihi?.split("T")[0] ||
-              undefined
-          );
-        } else if (
-          user.rol &&
-          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
-        ) {
-          setSelectedId(user.id);
-        }
-      }
-      */
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -314,6 +309,13 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       setKontrolEdenTarih(undefined);
     }
   }, [isClickedUpdate]);
+
+  useEffect(() => {
+    if (user.formHazirlayanOnaylayan) {
+      fetchData();
+      dispatch(setFormHazirlayanOnaylayan(false));
+    }
+  }, [user.formHazirlayanOnaylayan]);
 
   return (
     <Grid container>
@@ -412,16 +414,6 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                 (hazirlayan && hazirlayanId ? true : false) ||
                 (onaylayan && onaylayanId ? true : false) ||
                 (kaliteKontrol && kontrolEdenId ? true : false)
-                /*
-                ||
-                (hazirlayanId
-                  ? true
-                  : false || onaylayanId
-                  ? true
-                  : false || kontrolEdenId
-                  ? true
-                  : false)
-                */
               }
               onSelectId={(selectedId) => setSelectedId(selectedId)}
               onSelectAdi={(selectedAdi) => setSelectedAdi(selectedAdi)}
@@ -485,16 +477,6 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                 (hazirlayan && hazirlayanId ? true : false) ||
                 (onaylayan && onaylayanId ? true : false) ||
                 (kaliteKontrol && kontrolEdenId ? true : false)
-                /*
-                ||
-                (hazirlayanId
-                  ? true
-                  : false || onaylayanId
-                  ? true
-                  : false || kontrolEdenId
-                  ? true
-                  : false)
-                */
               }
               fullWidth
               InputLabelProps={{
