@@ -19,6 +19,7 @@ interface StateType {
   kullaniciAdi?: string;
   mail?: string;
   token?: string;
+  formHazirlayanOnaylayan?: boolean;
 }
 
 const initialState: StateType = {
@@ -40,6 +41,7 @@ const initialState: StateType = {
   kullaniciAdi: "",
   mail: "",
   token: "",
+  formHazirlayanOnaylayan: false,
 };
 
 export const UserSlice = createSlice({
@@ -100,6 +102,9 @@ export const UserSlice = createSlice({
     setToken: (state: StateType, action) => {
       state.token = action.payload;
     },
+    setFormHazirlayanOnaylayan: (state: StateType, action) => {
+      state.formHazirlayanOnaylayan = action.payload;
+    },
     resetToNull: (state: StateType, action) => {
       if (action.payload == "") {
         state.id = undefined;
@@ -120,6 +125,7 @@ export const UserSlice = createSlice({
         state.kullaniciAdi = undefined;
         state.mail = undefined;
         state.token = undefined;
+        state.formHazirlayanOnaylayan = undefined;
       }
     },
   },
@@ -145,6 +151,7 @@ export const {
   setMail,
   setToken,
   resetToNull,
+  setFormHazirlayanOnaylayan,
 } = UserSlice.actions;
 
 export default UserSlice.reducer;
