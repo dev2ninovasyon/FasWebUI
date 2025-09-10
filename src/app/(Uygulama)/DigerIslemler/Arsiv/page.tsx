@@ -23,15 +23,16 @@ import { useSpring, animated } from "react-spring";
 import { Collapse } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import {
+  IconFileText,
   IconFolderPlus,
   IconFolderMinus,
   IconFolder,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { getDenetimDosya } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import BelgeTable from "@/app/(Uygulama)/components/DigerIslemler/Arsiv/BelgeTable";
+import { getArsiv } from "@/api/Arsiv/Arsiv";
 
 const BCrumb = [
   {
@@ -53,18 +54,28 @@ interface Veri {
   url?: string;
   reference?: string;
   archiveFileName?: string;
+  size?: string;
+  date?: string;
   children: Veri[];
 }
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
+  const theme = useTheme();
+  const borderColor = theme.palette.divider;
+  const borderRadius = theme.shape.borderRadius;
+
   const [rows, setRows] = useState<Veri[]>([]);
-  const [selectedNode, setSelectedNode] = useState<Veri | null>(null);
+  const [selectedRow, setSelectedRow] = useState<Veri | null>(null);
+
+  const [silTiklandimi, setSilTiklandimi] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
+  const hasExtension = (name: string) => /\.[a-z0-9]{1,10}$/i.test(name);
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -153,23 +164,38 @@ const Page = () => {
     },
   }));
 
-  const renderTree = (node: Veri, level: number = 0) => (
-    <StyledTreeItem
-      key={node.id}
-      nodeId={node.id.toString()}
-      label={
-        <Typography variant={level == 0 ? "h6" : "body1"}>
-          {node.name}
-        </Typography>
-      }
-      onClick={() => setSelectedNode(node)}
-      sx={{ my: 1, p: 0 }}
-    >
-      {Array.isArray(node.children) &&
-        node.children.length > 0 &&
-        node.children.map((child) => renderTree(child, level + 1))}
-    </StyledTreeItem>
-  );
+  const renderTree = (node: Veri, level: number = 0) => {
+    const isFile = hasExtension(node.name);
+
+    return (
+      <StyledTreeItem
+        key={node.id}
+        nodeId={node.id.toString()}
+        label={
+          <Typography variant={level === 0 ? "h6" : "body1"}>
+            {node.name}
+          </Typography>
+        }
+        // Belge ise tıklanmasın
+        disabled={isFile}
+        // Belge için ikon
+        endIcon={
+          isFile ? (
+            <IconFileText style={{ width: 20, height: 20 }} />
+          ) : undefined
+        }
+        // Klasörse seçim yap
+        onClick={isFile ? undefined : () => setSelectedRow(node)}
+        sx={{ my: 1, p: 0 }}
+      >
+        {/* Belge ise çocukları render etme; klasörse devam */}
+        {!isFile &&
+          Array.isArray(node.children) &&
+          node.children.length > 0 &&
+          node.children.map((child) => renderTree(child, level + 1))}
+      </StyledTreeItem>
+    );
+  };
 
   const filterTree = (nodes: Veri[], term: string): Veri[] => {
     if (!term) return nodes;
@@ -202,9 +228,11 @@ const Page = () => {
 
   const fetchData = async () => {
     try {
-      const data = await getDenetimDosya(
+      const data = await getArsiv(
         user.token || "",
-        user.denetimTuru || ""
+        user.denetciId || 0,
+        user.yil || 0,
+        user.denetlenenId || 0
       );
       setRows(data);
     } catch (error) {
@@ -216,9 +244,16 @@ const Page = () => {
     fetchData();
   }, []);
 
-  const theme = useTheme();
-  const borderColor = theme.palette.divider;
-  const borderRadius = theme.shape.borderRadius;
+  useEffect(() => {
+    if (!silTiklandimi) {
+      fetchData();
+    } else {
+      setRows([]);
+      setSelectedRow(null);
+      setSearchTerm("");
+    }
+  }, [silTiklandimi]);
+
   return (
     <PageContainer title="Arşiv" description="this is Arşiv">
       <Breadcrumb title="Arşiv" items={BCrumb} />
@@ -268,7 +303,7 @@ const Page = () => {
           </Box>
         </Grid>
         <Grid item xs={12} md={12} lg={8} mb={3}>
-          {selectedNode ? (
+          {selectedRow ? (
             <Box
               sx={{
                 paddingTop: 1,
@@ -279,10 +314,12 @@ const Page = () => {
               }}
             >
               {/* Dosya listesi */}
-              {selectedNode.children && selectedNode.children.length > 0 ? (
+              {selectedRow.children && selectedRow.children.length > 0 ? (
                 <BelgeTable
-                  title={selectedNode.name}
-                  data={selectedNode.children}
+                  title={selectedRow.name}
+                  data={selectedRow.children}
+                  silTiklandimi={silTiklandimi}
+                  setSilTiklandimi={setSilTiklandimi}
                 />
               ) : (
                 <Typography
