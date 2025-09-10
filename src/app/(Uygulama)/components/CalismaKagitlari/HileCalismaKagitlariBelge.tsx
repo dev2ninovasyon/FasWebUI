@@ -30,6 +30,7 @@ interface Veri {
 }
 
 interface CalismaKagidiProps {
+  refresh: boolean;
   url: string;
   controller: string;
   isClickedVarsayilanaDon: boolean;
@@ -39,6 +40,7 @@ interface CalismaKagidiProps {
 }
 
 const HileCalismaKagitlariBelge: React.FC<CalismaKagidiProps> = ({
+  refresh,
   url,
   controller,
   isClickedVarsayilanaDon,
@@ -225,6 +227,12 @@ const HileCalismaKagitlariBelge: React.FC<CalismaKagidiProps> = ({
       setIsClickedVarsayilanaDon(false);
     }
   }, [isClickedVarsayilanaDon]);
+
+  useEffect(() => {
+    if (refresh) {
+      fetchData();
+    }
+  }, [refresh]);
 
   return (
     <>

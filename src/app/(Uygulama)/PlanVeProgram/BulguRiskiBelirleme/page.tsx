@@ -63,6 +63,8 @@ const Page = () => {
   const [tamamlanan2, setTamamlanan2] = useState(0);
   const [toplam2, setToplam2] = useState(0);
 
+  const [isRefresh, setIsRefresh] = useState(false);
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -324,6 +326,7 @@ const Page = () => {
               </Grid>
 
               <DogalRiskBelge
+                refresh={isRefresh}
                 controller={"DogalRisk"}
                 grupluMu={true}
                 isClickedYeniGrupEkle={isClickedYeniGrupEkle1}
@@ -391,6 +394,7 @@ const Page = () => {
                 </Grid>
               </Grid>
               <KontrolRiskiBelge
+                refresh={isRefresh}
                 controller={"KontrolRiski"}
                 grupluMu={true}
                 isClickedYeniGrupEkle={isClickedYeniGrupEkle2}
@@ -496,18 +500,27 @@ const Page = () => {
           >
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={() => {
+                  setIsRefresh(true);
+                }}
                 hazirlayan="Denetçi - Yardımcı Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={() => {
+                  setIsRefresh(true);
+                }}
                 onaylayan="Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={() => {
+                  setIsRefresh(true);
+                }}
                 kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
