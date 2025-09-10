@@ -35,6 +35,7 @@ interface Veri {
 }
 
 interface CalismaKagidiProps {
+  refresh: boolean;
   controller: string;
   isClickedVarsayilanaDon: boolean;
   setIsClickedVarsayilanaDon: (deger: boolean) => void;
@@ -43,6 +44,7 @@ interface CalismaKagidiProps {
 }
 
 const GenelKurulToplantiBilgileriBelge: React.FC<CalismaKagidiProps> = ({
+  refresh,
   controller,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
@@ -282,6 +284,12 @@ const GenelKurulToplantiBilgileriBelge: React.FC<CalismaKagidiProps> = ({
       setIsClickedVarsayilanaDon(false);
     }
   }, [isClickedVarsayilanaDon]);
+
+  useEffect(() => {
+    if (refresh) {
+      fetchData();
+    }
+  }, [refresh]);
 
   return (
     <>

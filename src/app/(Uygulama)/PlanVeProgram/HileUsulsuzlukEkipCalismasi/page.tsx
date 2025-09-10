@@ -35,6 +35,8 @@ const Page = () => {
   const [tamamlanan2, setTamamlanan2] = useState(0);
   const [toplam2, setToplam2] = useState(0);
 
+  const [isRefresh, setIsRefresh] = useState(false);
+
   const user = useSelector((state: AppState) => state.userReducer);
   const controller =
     "HileUsulsuzlukToplantiBilgileri-HileUsulsuzlukToplantidaGorusulenHususlar";
@@ -158,6 +160,7 @@ const Page = () => {
               </Grid>
 
               <HileUsulsuzlukToplantiBilgileriBelge
+                refresh={isRefresh}
                 controller={"HileUsulsuzlukToplantiBilgileri"}
                 isClickedVarsayilanaDon={isClickedVarsayilanaDon}
                 setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
@@ -207,6 +210,7 @@ const Page = () => {
                 </Grid>
               </Grid>
               <HileUsulsuzlukToplantidaGorusulenHususlarBelge
+                refresh={isRefresh}
                 controller={"HileUsulsuzlukToplantidaGorusulenHususlar"}
                 isClickedVarsayilanaDon={isClickedVarsayilanaDon}
                 setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
@@ -238,18 +242,27 @@ const Page = () => {
           >
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={() => {
+                  setIsRefresh(true);
+                }}
                 hazirlayan="Denetçi - Yardımcı Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={() => {
+                  setIsRefresh(true);
+                }}
                 onaylayan="Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={() => {
+                  setIsRefresh(true);
+                }}
                 kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>

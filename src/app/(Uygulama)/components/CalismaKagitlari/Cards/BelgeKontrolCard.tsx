@@ -16,6 +16,7 @@ import { enqueueSnackbar } from "notistack";
 import { setFormHazirlayanOnaylayan } from "@/store/user/UserSlice";
 
 interface CardProps {
+  fetch?: () => void;
   hazirlayan?: string;
   onaylayan?: string;
   kaliteKontrol?: string;
@@ -33,6 +34,7 @@ interface Veri {
 }
 
 const BelgeKontrolCard: React.FC<CardProps> = ({
+  fetch,
   hazirlayan,
   onaylayan,
   kaliteKontrol,
@@ -135,6 +137,9 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
             maxWidth: "720px",
           },
         });
+        if (hazirlayan && fetch) {
+          fetch();
+        }
       } else {
         setIsClickedUpdate(false);
         enqueueSnackbar(result && result.message, {
