@@ -19,12 +19,16 @@ import {
   MenuItem,
   ListItemIcon,
 } from "@mui/material";
-import { Stack } from "@mui/system";
+import { Stack, useTheme } from "@mui/system";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 import { IconDotsVertical, IconDownload } from "@tabler/icons-react";
+import axios from "axios";
+import { url } from "@/api/apiBase";
+import { deleteAllArsiv, deleteArsiv } from "@/api/Arsiv/Arsiv";
+import { enqueueSnackbar } from "notistack";
 
 interface Veri {
   id: number;
@@ -35,16 +39,27 @@ interface Veri {
   url?: string;
   reference?: string;
   archiveFileName?: string;
+  size?: string;
+  date?: string;
   children: Veri[];
 }
 
 interface MyComponentProps {
   title: string;
   data: Veri[];
+  silTiklandimi: boolean;
+  setSilTiklandimi: (bool: boolean) => void;
 }
 
-const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
+const BelgeTable: React.FC<MyComponentProps> = ({
+  title,
+  data,
+  silTiklandimi,
+  setSilTiklandimi,
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const customizer = useSelector((state: AppState) => state.customizer);
+  const theme = useTheme();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -59,6 +74,8 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
+
+  const hasExtension = (name: string) => /\.[a-z0-9]{1,10}$/i.test(name);
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -137,9 +154,11 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
     setPage(0);
   };
 
-  const filteredRows = data.filter((row) =>
-    normalizeString(row.name).includes(normalizeString(searchTerm))
-  );
+  const filteredRows = data
+    .filter((row) => hasExtension(row.name)) // sadece belgeler
+    .filter((row) =>
+      normalizeString(row.name).includes(normalizeString(searchTerm))
+    );
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -172,10 +191,140 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
     setSelected(newSelected);
   };
 
-  const deleteSelected = async () => {
+  const deleteSelected = async (veri: Veri) => {
     try {
+      setSilTiklandimi(true);
+
+      const response = await deleteArsiv(user.token || "", veri.url || "");
+      if (response) {
+        setSilTiklandimi(false);
+        enqueueSnackbar("Dosya Silindi.", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+          },
+        });
+      } else {
+        setSilTiklandimi(false);
+        enqueueSnackbar("Dosya Silinemedi.", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+          },
+        });
+      }
+      setSelected([]);
+      handleIsConfirm();
+    } catch (error: any) {
+      console.error("Silme hatası:", error);
+    }
+  };
+
+  const deleteAllSelected = async () => {
+    try {
+      setSilTiklandimi(true);
+      const paths = selected
+        .map((id) => data.find((x) => x.id === id))
+        .map((row) => (row?.url?.trim() ? row.url : null))
+        .filter((p): p is string => !!p);
+
+      const response = await deleteAllArsiv(user.token || "", paths);
+      if (response) {
+        setSilTiklandimi(false);
+        enqueueSnackbar("Dosyalar Silindi.", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+          },
+        });
+      } else {
+        setSilTiklandimi(false);
+        enqueueSnackbar("Dosyalar Silinemedi.", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+          },
+        });
+      }
+      setSelected([]);
+      handleIsConfirm();
+    } catch (error: any) {
+      console.error("Silme hatası:", error);
+    }
+  };
+
+  const downloadSelected = async (veri: Veri) => {
+    try {
+      const response = await axios({
+        url: `${url}/ArsivIslemleri/Indir?path=${veri.url}`,
+        method: "GET",
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      const urlFile = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = urlFile;
+      link.setAttribute("download", `${veri.name}`);
+      document.body.appendChild(link);
+      link.click();
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.error("İndirme hatası:", error);
+    }
+  };
+
+  const downloadAllSelected = async () => {
+    try {
+      const paths = selected
+        .map((id) => data.find((x) => x.id === id))
+        .map((row) => (row?.url?.trim() ? row.url : null))
+        .filter((p): p is string => !!p);
+
+      const response = await axios.post(
+        `${url}/ArsivIslemleri/IndirToplu`,
+        paths,
+        {
+          responseType: "blob",
+          headers: {
+            accept: "*/*",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+
+      const urlFile = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = urlFile;
+      link.setAttribute(
+        "download",
+        `arsiv_${new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace(/[-:T]/g, "")}.zip`
+      );
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error("İndirme hatası:", error);
     }
   };
 
@@ -270,7 +419,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
                       variant="body1"
                       color="textSecondary"
                     >
-                      {new Date().toLocaleDateString()}
+                      {row.date}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ paddingY: 0 }}>
@@ -279,7 +428,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
                       variant="body1"
                       color="textSecondary"
                     >
-                      10KB
+                      {row.size}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ paddingY: 0 }}>
@@ -302,7 +451,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
                         "aria-labelledby": "basic-button",
                       }}
                     >
-                      <MenuItem>
+                      <MenuItem onClick={() => downloadSelected(row)}>
                         <ListItemIcon>
                           <IconDownload width={18} />
                         </ListItemIcon>
@@ -344,7 +493,9 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
           variant="outlined"
           color="primary"
           size="small"
-          onClick={() => {}}
+          onClick={() => {
+            downloadAllSelected();
+          }}
           sx={{
             position: smDown ? "relative" : "absolute",
             width: smDown ? "100%" : "auto",
@@ -355,7 +506,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
           {selected.length} Kayıt İndir
         </Button>
       )}
-      {selected.length === 0 && (
+      {/*selected.length === 0 && (
         <>
           <input
             type="file"
@@ -378,7 +529,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
             Yükle
           </Button>
         </>
-      )}
+      )*/}
       <Table>
         <TableFooter
           sx={{
@@ -415,7 +566,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({ title, data }) => {
         <ConfirmPopUpComponent
           isConfirmPopUp={isConfirmPopUpOpen}
           handleClose={handleCloseConfirmPopUp}
-          handleDelete={deleteSelected}
+          handleDelete={deleteAllSelected}
         />
       )}
     </>
