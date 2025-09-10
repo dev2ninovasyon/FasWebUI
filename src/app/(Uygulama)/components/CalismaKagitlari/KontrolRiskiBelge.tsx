@@ -43,6 +43,7 @@ interface Veri {
 }
 
 interface CalismaKagidiProps {
+  refresh: boolean;
   controller: string;
   grupluMu: boolean;
   isClickedYeniGrupEkle: boolean;
@@ -53,6 +54,7 @@ interface CalismaKagidiProps {
 }
 
 const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
+  refresh,
   controller,
   grupluMu,
   isClickedYeniGrupEkle,
@@ -387,6 +389,12 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
       setIsClickedVarsayilanaDon(false);
     }
   }, [isClickedVarsayilanaDon]);
+
+  useEffect(() => {
+    if (refresh) {
+      fetchData();
+    }
+  }, [refresh]);
 
   return (
     <>

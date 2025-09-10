@@ -30,6 +30,8 @@ const Page = () => {
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
+  const [isRefresh, setIsRefresh] = useState(false);
+
   const [tersMi, setTersMi] = useState(false);
 
   const controller = dipnotNo;
@@ -187,6 +189,7 @@ const Page = () => {
       <Grid container>
         <Grid item xs={12} sm={12} lg={12} mb={3}>
           <HileCalismaKagitlariBelge
+            refresh={isRefresh}
             url={formUrl}
             controller="HileCalismaKagitlari"
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
@@ -226,18 +229,27 @@ const Page = () => {
               >
                 <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
                   <BelgeKontrolCard
+                    fetch={() => {
+                      setIsRefresh(true);
+                    }}
                     hazirlayan="Denetçi - Yardımcı Denetçi"
                     controller={code}
                   ></BelgeKontrolCard>
                 </Grid>
                 <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
                   <BelgeKontrolCard
+                    fetch={() => {
+                      setIsRefresh(true);
+                    }}
                     onaylayan="Sorumlu Denetçi"
                     controller={code}
                   ></BelgeKontrolCard>
                 </Grid>
                 <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
                   <BelgeKontrolCard
+                    fetch={() => {
+                      setIsRefresh(true);
+                    }}
                     kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
                     controller={code}
                   ></BelgeKontrolCard>

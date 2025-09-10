@@ -38,6 +38,8 @@ const Page = () => {
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
+  const [isRefresh, setIsRefresh] = useState(false);
+
   const user = useSelector((state: AppState) => state.userReducer);
   const controller = "IliskiliTarafInceleme";
   const grupluMu = false;
@@ -211,6 +213,7 @@ const Page = () => {
         <Grid container>
           <Grid item xs={12} sm={12} lg={12} mb={3}>
             <IliskiliTarafIncelemeBelge
+              refresh={isRefresh}
               controller={controller}
               isClickedVarsayilanaDon={isClickedVarsayilanaDon}
               setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
@@ -243,18 +246,27 @@ const Page = () => {
             >
               <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
                 <BelgeKontrolCard
+                  fetch={() => {
+                    setIsRefresh(true);
+                  }}
                   hazirlayan="Denetçi - Yardımcı Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
               <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
                 <BelgeKontrolCard
+                  fetch={() => {
+                    setIsRefresh(true);
+                  }}
                   onaylayan="Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
               <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
                 <BelgeKontrolCard
+                  fetch={() => {
+                    setIsRefresh(true);
+                  }}
                   kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>

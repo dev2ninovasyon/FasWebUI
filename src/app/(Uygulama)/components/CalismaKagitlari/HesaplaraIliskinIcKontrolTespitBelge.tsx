@@ -362,18 +362,21 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
           >
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={fetchData}
                 hazirlayan="Denetçi - Yardımcı Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={fetchData}
                 onaylayan="Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
             <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
               <BelgeKontrolCard
+                fetch={fetchData}
                 kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
