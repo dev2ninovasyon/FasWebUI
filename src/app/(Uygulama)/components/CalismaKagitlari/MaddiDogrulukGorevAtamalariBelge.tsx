@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
+import CalismaKagidiTarihCard from "./Cards/CalismaKagidiTarihCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
@@ -28,7 +28,6 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
-import CalismaKagidiTarihCard from "./Cards/CalismaKagidiTarihCard";
 
 interface Veri {
   id: number;
@@ -284,12 +283,12 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedBaslangicTarihi(
       veri.baslangicTarihi && veri.baslangicTarihi !== ""
         ? veri.baslangicTarihi
-        : `${user.yil}-01-01`
+        : `${user.yil}-03-01`
     );
     setSelectedBitisTarihi(
       veri.bitisTarihi && veri.bitisTarihi !== ""
         ? veri.bitisTarihi
-        : `${user.yil}-01-01`
+        : `${user.yil}-03-01`
     );
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
@@ -301,8 +300,8 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedMaddiDogruluk("");
     setSelectedGorevliId(0);
     setSelectedCalismaSuresi("00:30");
-    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
-    setSelectedBitisTarihi(`${user.yil}-01-01`);
+    setSelectedBaslangicTarihi(`${user.yil}-03-01`);
+    setSelectedBitisTarihi(`${user.yil}-03-01`);
     setIsPopUpOpen(true);
   };
 
@@ -312,8 +311,8 @@ const MaddiDogrulukGorevAtamalariBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedMaddiDogruluk("");
     setSelectedGorevliId(selectedGorevliId);
     setSelectedCalismaSuresi("00:30");
-    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
-    setSelectedBitisTarihi(`${user.yil}-01-01`);
+    setSelectedBaslangicTarihi(`${user.yil}-03-01`);
+    setSelectedBitisTarihi(`${user.yil}-03-01`);
     setIsPopUpOpen(true);
   };
 

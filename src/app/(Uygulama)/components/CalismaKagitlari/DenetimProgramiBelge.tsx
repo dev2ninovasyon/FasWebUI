@@ -15,7 +15,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
+import CalismaKagidiTekTarihCard from "./Cards/CalismaKagidiTekTarihCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
@@ -36,7 +36,6 @@ import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical
 import { getDenetimDosyaByFormKodu } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { FloatingButtonDenetimProgrami } from "./FloatingButtonDenetimProgrami";
-import CalismaKagidiTekTarihCard from "./Cards/CalismaKagidiTekTarihCard";
 
 interface Veri {
   id: number;
@@ -341,7 +340,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedCalismaTakvimi(
       veri.calismaTakvimi && veri.calismaTakvimi !== ""
         ? veri.calismaTakvimi
-        : `${user.yil}-01-01`
+        : `${user.yil}-03-01`
     );
     setSelectedIlgiliFormKodlari(veri.ilgiliFormKodlari);
     setSelectedStandartMi(veri.standartMi);
@@ -353,7 +352,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedDenetimProgram("");
     setSelectedGorevliId(selectedGorevliId);
     setSelectedCalismaSuresi("01:00");
-    setSelectedCalismaTakvimi(`${user.yil}-01-01`);
+    setSelectedCalismaTakvimi(`${user.yil}-03-01`);
     setSelectedIlgiliFormKodlari("");
     setIsPopUpOpen(true);
   };

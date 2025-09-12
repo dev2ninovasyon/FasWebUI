@@ -305,7 +305,9 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedId(veri.id);
     setSelectedIslem(veri.islem);
     setSelectedTespit(veri.tespit);
-    setSelectedTarih(veri.tarih);
+    setSelectedTarih(
+      veri.tarih && veri.tarih !== "" ? veri.tarih : `${user.yil}-03-01`
+    );
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
   };
@@ -319,7 +321,7 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setIsNew(true);
     setSelectedIslem("");
     setSelectedTespit("");
-    setSelectedTarih("");
+    setSelectedTarih(`${user.yil}-03-01`);
     setIsPopUpOpen(true);
   };
 

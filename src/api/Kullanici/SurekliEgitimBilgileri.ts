@@ -28,7 +28,7 @@ export const getSurekliEgitimBilgileriByDenetciId = async (
 ) => {
   try {
     const response = await fetch(
-      `${url}/Kullanici/SurekliEgitimBilgileri/${denetciId}`,
+      `${url}/Kullanici/SurekliEgitimBilgileri/Denetci/${denetciId}`,
       {
         method: "GET",
         headers: {
