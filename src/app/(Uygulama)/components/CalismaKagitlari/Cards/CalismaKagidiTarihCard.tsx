@@ -18,8 +18,12 @@ const CalismaKagidiTarihCard: React.FC<CardProps> = ({
   endDate,
   standartMi,
 }) => {
-  const formattedStartDate = startDate ? startDate.split("T")[0] : "";
-  const formattedEndDate = endDate ? endDate.split("T")[0] : "";
+  const formattedStartDate = startDate
+    ? startDate.split("T")[0].split("-").reverse().join(".")
+    : "";
+  const formattedEndDate = endDate
+    ? endDate.split("T")[0].split("-").reverse().join(".")
+    : "";
   return (
     <Card
       sx={{

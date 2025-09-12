@@ -346,12 +346,12 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     setSelectedBaslangicTarihi(
       veri.baslangicTarihi && veri.baslangicTarihi !== ""
         ? veri.baslangicTarihi
-        : `${user.yil}-01-01`
+        : `${user.yil}-03-01`
     );
     setSelectedBitisTarihi(
       veri.bitisTarihi && veri.bitisTarihi !== ""
         ? veri.bitisTarihi
-        : `${user.yil}-01-01`
+        : `${user.yil}-03-01`
     );
     setSelectedStandartMi(veri.standartMi);
     setIsPopUpOpen(true);
@@ -365,16 +365,16 @@ const TarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const handleNew = () => {
     setIsNew(true);
     setSelectedCalisma("");
-    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
-    setSelectedBitisTarihi(`${user.yil}-01-01`);
+    setSelectedBaslangicTarihi(`${user.yil}-03-01`);
+    setSelectedBitisTarihi(`${user.yil}-03-01`);
     setIsPopUpOpen(true);
   };
 
   const handleAll = () => {
     setIsAll(true);
     setSelectedCalisma(selectedCalisma);
-    setSelectedBaslangicTarihi(`${user.yil}-01-01`);
-    setSelectedBitisTarihi(`${user.yil}-01-01`);
+    setSelectedBaslangicTarihi(`${user.yil}-03-01`);
+    setSelectedBitisTarihi(`${user.yil}-03-01`);
     setIsPopUpOpen(true);
   };
 
