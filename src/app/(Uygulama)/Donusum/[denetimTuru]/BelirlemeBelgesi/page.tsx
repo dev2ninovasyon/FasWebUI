@@ -9,6 +9,7 @@ import { AppState } from "@/store/store";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import SecimliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/SecimliCalismaKagidiBelge";
+import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 
 const BCrumb = [
   {
@@ -31,6 +32,10 @@ const Page = () => {
 
   const controller = "DenetimTuruBelirlemeBelgesi";
   const grupluMu = false;
+
+  const uyari = [
+    "Çalışma kağıdında durumu 'Evet' olanlar, 'Denetim Kanıtları' menüsünde 'Maddi Doğrulama Prosedürleri' altında listelenecektir. Durumu 'Hayır' olanlar ise görüntülenmeyecektir.",
+  ];
 
   const handleOpen = () => {
     setIsCreatePopUpOpen(true);
@@ -205,6 +210,15 @@ const Page = () => {
         title="Denetim Türü Belirleme Belgesi"
         description="this is Denetim Türü Belirleme Belgesi"
       >
+        <Box
+          sx={{
+            width: "95%",
+            margin: "0 auto",
+            justifyContent: "center",
+          }}
+        >
+          <WarnBox warn={uyari} noMargin />
+        </Box>
         <Box>
           <SecimliCalismaKagidiBelge
             controller={controller}

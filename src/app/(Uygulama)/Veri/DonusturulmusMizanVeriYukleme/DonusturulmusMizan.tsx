@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, Paper, Typography, useTheme } from "@mui/material";
+import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
@@ -20,6 +20,7 @@ import {
   deleteDonusturulmusMizanVerisi,
   getDonusturulmusMizanVerileriByDenetciDenetlenenYil,
 } from "@/api/Veri/DonusturulmusMizan";
+import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 
 // register Handsontable's modules
 registerAllModules();
@@ -814,29 +815,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
 
   return (
     <>
-      <Grid container>
-        <Grid item xs={12} lg={12}>
-          <Paper
-            elevation={2}
-            sx={{
-              p: 1,
-              mb: 2,
-              borderRadius: 1,
-              backgroundColor: "warning.light",
-            }}
-          >
-            {uyari.map((mesaj, index) => (
-              <Typography
-                key={index}
-                variant="body1"
-                sx={{ color: "warning.dark" }}
-              >
-                - {mesaj}
-              </Typography>
-            ))}
-          </Paper>
-        </Grid>
-      </Grid>
+      <WarnBox warn={uyari} />
       <HotTable
         style={{
           height: "100%",
