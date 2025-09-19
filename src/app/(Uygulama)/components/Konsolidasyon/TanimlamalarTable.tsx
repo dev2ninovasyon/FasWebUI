@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { IconDotsVertical, IconEdit } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { getTanimlamalarByDenetlenenId } from "@/api/Konsolidasyon/Konsolidasyon";
+import { getTanimlamalar } from "@/api/Konsolidasyon/Konsolidasyon";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
@@ -48,8 +48,10 @@ const TanimlamalarTable = () => {
 
   const fetchData = async () => {
     try {
-      const tanimlamalarVerileri = await getTanimlamalarByDenetlenenId(
+      const tanimlamalarVerileri = await getTanimlamalar(
         user.token || "",
+        user.denetciId || 0,
+        user.yil || 0,
         user.denetlenenId || 0
       );
       const newRows = tanimlamalarVerileri.map((tanimlamalar: any) => ({
