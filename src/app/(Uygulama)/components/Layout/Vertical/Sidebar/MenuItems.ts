@@ -1703,9 +1703,10 @@ export function createMenuItems(
                   },
                   {
                     id: uniqueId(),
-                    title: "Tanımlama",
+                    parentTitle: "KONSOLİDASYON",
+                    title: "Tanımlamalar",
                     icon: IconPoint,
-                    href: "/Konsolidasyon/Tanimlama",
+                    href: "/Konsolidasyon/Tanimlamalar",
                   },
                   {
                     id: uniqueId(),
