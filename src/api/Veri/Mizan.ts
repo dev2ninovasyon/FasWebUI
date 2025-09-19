@@ -341,7 +341,7 @@ export const createVukMizan = async (
 ) => {
   try {
     const response = await fetch(
-      `${url}/Mizan/VukMizanMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+      `${url}/Mizan/VukMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
       {
         method: "POST",
         headers: {
@@ -354,6 +354,33 @@ export const createVukMizan = async (
       return response.json();
     } else {
       console.error("Vuk Mizan oluşturulamadı");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+
+export const createBirlestirilmisMizan = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Mizan/BirlestirilmisMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Birleştirilmiş Mizan oluşturulamadı");
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
