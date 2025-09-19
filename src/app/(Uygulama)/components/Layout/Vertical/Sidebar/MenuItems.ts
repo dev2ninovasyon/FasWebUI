@@ -96,6 +96,12 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/DigerIslemler/UyelikBilgileri",
             },
+            {
+              id: uniqueId(),
+              title: "Veri Aktarma",
+              icon: IconPoint,
+              href: "/DigerIslemler/VeriAktarma",
+            },
           ],
         },
         {
@@ -1851,6 +1857,12 @@ export function createMenuItems(
               title: "Üyelik Bilgileri",
               icon: IconPoint,
               href: "/DigerIslemler/UyelikBilgileri",
+            },
+            {
+              id: uniqueId(),
+              title: "Veri Aktarma",
+              icon: IconPoint,
+              href: "/DigerIslemler/VeriAktarma",
             },
           ],
         },

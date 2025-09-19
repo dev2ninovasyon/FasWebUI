@@ -19,10 +19,7 @@ import { useDropzone } from "react-dropzone";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import axios from "axios";
-import {
-  getCariDosya,
-  getSurekliDosya,
-} from "@/api/MaddiDogrulama/MaddiDogrulama";
+import { getCariDosya, getSurekliDosya } from "@/api/DenetimDosya/DenetimDosya";
 
 const BCrumb = [
   {

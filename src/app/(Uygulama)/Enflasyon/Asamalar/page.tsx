@@ -3,7 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React from "react";
-import { Grid } from "@mui/material";
+import { Grid, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import ProtectedPage from "@/app/ProtectedPage";
@@ -21,6 +21,7 @@ const BCrumb = [
 
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const theme = useTheme();
 
   return (
     <ProtectedPage allowed={user?.enflasyonmu || false}>
@@ -29,8 +30,10 @@ const Page: React.FC = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} lg={12}>
             <iframe
-              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/Index?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              //src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/Index?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              src={`/templates/EnflasyonAsamalar.html`}
               style={{
+                background: theme.palette.common.white,
                 border: "0px",
                 width: "100%",
                 height: 700,

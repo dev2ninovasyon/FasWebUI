@@ -1,5 +1,5 @@
 import { Grid, Button, MenuItem } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   getDenetlenenById,
@@ -12,6 +12,7 @@ import { AppState } from "@/store/store";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
+import { FloatingButtonMusteriIslemleri } from "@/app/(Uygulama)/components/CalismaKagitlari/FloatingButtonMusteriIslemleri";
 
 interface Veri {
   id: number;
@@ -50,6 +51,16 @@ const MusteriDuzenleForm = () => {
   const [sektor1List, setSektor1List] = useState<Veri2[]>([]);
   const [sektor2List, setSektor2List] = useState<Veri2[]>([]);
   const [sektor3List, setSektor3List] = useState<Veri2[]>([]);
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const [control, setControl] = useState(false);
+
+  const textFieldRef = useRef<HTMLInputElement | null>(null);
+
+  const handleControl = () => {
+    setControl(true);
+  };
 
   const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
@@ -184,6 +195,14 @@ const MusteriDuzenleForm = () => {
     fetchData3();
   }, []);
 
+  useEffect(() => {
+    if (isHovered && textFieldRef.current) {
+      textFieldRef.current.focus();
+    } else if (!isHovered && textFieldRef.current) {
+      textFieldRef.current.blur();
+    }
+  }, [isHovered]);
+
   return (
     <div>
       <Grid container spacing={3}>
@@ -281,8 +300,9 @@ const MusteriDuzenleForm = () => {
             value={webAdresi}
             fullWidth
             onChange={(e: any) => setWebAdresi(e.target.value)}
+            inputRef={textFieldRef}
           />
-        </Grid>{" "}
+        </Grid>
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
           <CustomFormLabel
             htmlFor="ticaretSicilNo"
@@ -541,6 +561,13 @@ const MusteriDuzenleForm = () => {
             Müşteri Düzenle
           </Button>
         </Grid>
+        <FloatingButtonMusteriIslemleri
+          control={control}
+          text={webAdresi}
+          isHovered={isHovered}
+          setIsHovered={setIsHovered}
+          handleClick={handleControl}
+        />
       </Grid>
     </div>
   );

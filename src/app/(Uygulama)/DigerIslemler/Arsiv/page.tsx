@@ -33,6 +33,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import BelgeTable from "@/app/(Uygulama)/components/DigerIslemler/Arsiv/BelgeTable";
 import { getArsiv } from "@/api/Arsiv/Arsiv";
+import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 
 const BCrumb = [
   {
@@ -74,6 +75,10 @@ const Page = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
+  const uyari = [
+    "Arşivin oluşturulabilmesi için öncelikle 'Sözleşme' menüsünde 'Bağımsız Denetim Sözleşmesi' oluşturulmalıdır.",
+  ];
 
   const hasExtension = (name: string) => /\.[a-z0-9]{1,10}$/i.test(name);
 
@@ -259,6 +264,9 @@ const Page = () => {
       <Breadcrumb title="Arşiv" items={BCrumb} />
 
       <Grid container spacing={3}>
+        <Grid item xs={12} md={12} lg={12}>
+          <WarnBox warn={uyari} noMargin />
+        </Grid>
         <Grid item xs={12} md={12} lg={4} mb={3}>
           <Box
             sx={{
