@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Box, CardContent, Grid, Typography } from "@mui/material";
 import Link from "next/link";
-import { getHile } from "@/api/MaddiDogrulama/MaddiDogrulama";
+import { getHile } from "@/api/DenetimDosya/DenetimDosya";
 import { useSelector } from "react-redux";
 import { AppState } from "@/store/store";
 import { useEffect, useState } from "react";

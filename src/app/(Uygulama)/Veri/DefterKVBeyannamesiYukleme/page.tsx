@@ -415,6 +415,11 @@ const Page: React.FC = () => {
         {fileType === "E-DefterKebir" && (
           <Grid item xs={12} lg={12}>
             <Grid container spacing={2}>
+              <Grid item xs={12} md={12} lg={12}>
+                <Typography variant="h6" textAlign="left" mb={1}>
+                  Yüklenen Defter Sayıları:
+                </Typography>
+              </Grid>
               {months.map((month, index) => {
                 const monthPart = (index + 1).toString().padStart(2, "0");
                 const count = rows.filter(

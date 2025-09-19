@@ -1,5 +1,5 @@
 "use client";
-import { getHile } from "@/api/MaddiDogrulama/MaddiDogrulama";
+import { getHile } from "@/api/DenetimDosya/DenetimDosya";
 import HileCalismaKagitlariBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileCalismaKagitlariBelge";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";

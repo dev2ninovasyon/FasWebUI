@@ -33,7 +33,7 @@ import {
 import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
-import { getDenetimDosyaByFormKodu } from "@/api/MaddiDogrulama/MaddiDogrulama";
+import { getDenetimDosyaByFormKodu } from "@/api/DenetimDosya/DenetimDosya";
 import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { FloatingButtonDenetimProgrami } from "./FloatingButtonDenetimProgrami";
 

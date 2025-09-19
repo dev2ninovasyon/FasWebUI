@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { getDenetimDosya } from "@/api/MaddiDogrulama/MaddiDogrulama";
+import { getDenetimDosya } from "@/api/DenetimDosya/DenetimDosya";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import Link from "next/link";
