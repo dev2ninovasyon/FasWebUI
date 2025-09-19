@@ -1,5 +1,5 @@
 import { Grid, Button, MenuItem, useTheme } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -12,6 +12,7 @@ import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { enqueueSnackbar } from "notistack";
+import { FloatingButtonMusteriIslemleri } from "@/app/(Uygulama)/components/CalismaKagitlari/FloatingButtonMusteriIslemleri";
 
 interface Veri {
   id: number;
@@ -45,6 +46,16 @@ const MusteriEkleForm = () => {
   const [sektor1List, setSektor1List] = useState<Veri2[]>([]);
   const [sektor2List, setSektor2List] = useState<Veri2[]>([]);
   const [sektor3List, setSektor3List] = useState<Veri2[]>([]);
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const [control, setControl] = useState(false);
+
+  const textFieldRef = useRef<HTMLInputElement | null>(null);
+
+  const handleControl = () => {
+    setControl(true);
+  };
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -161,6 +172,14 @@ const MusteriEkleForm = () => {
     fetchData2();
   }, []);
 
+  useEffect(() => {
+    if (isHovered && textFieldRef.current) {
+      textFieldRef.current.focus();
+    } else if (!isHovered && textFieldRef.current) {
+      textFieldRef.current.blur();
+    }
+  }, [isHovered]);
+
   return (
     <div>
       <Grid container spacing={3}>
@@ -252,6 +271,7 @@ const MusteriEkleForm = () => {
             id="webAdresi"
             fullWidth
             onChange={(e: any) => setWebAdresi(e.target.value)}
+            inputRef={textFieldRef}
           />
         </Grid>
         <Grid item xs={12} sm={3} display="flex" alignItems="center">
@@ -526,6 +546,13 @@ const MusteriEkleForm = () => {
             Müşteri Ekle
           </Button>
         </Grid>
+        <FloatingButtonMusteriIslemleri
+          control={control}
+          text={webAdresi}
+          isHovered={isHovered}
+          setIsHovered={setIsHovered}
+          handleClick={handleControl}
+        />
       </Grid>
     </div>
   );
