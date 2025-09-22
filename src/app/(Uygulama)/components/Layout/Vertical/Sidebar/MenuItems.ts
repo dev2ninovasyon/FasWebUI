@@ -333,6 +333,13 @@ export function createMenuItems(
                   icon: IconPoint,
                   href: "/Veri/Mizanlar/VukMizan",
                 },
+                {
+                  id: uniqueId(),
+                  title: "Oluşturulmuş Mizanlar",
+                  customIcon: "public/images/svgs/veri/mizanlar.svg",
+                  icon: IconPoint,
+                  href: "/Veri/Mizanlar/OlusturulmusMizanlar",
+                },
               ],
             },
             {
