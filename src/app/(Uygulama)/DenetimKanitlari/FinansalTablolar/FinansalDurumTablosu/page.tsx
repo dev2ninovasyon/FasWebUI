@@ -30,7 +30,7 @@ const Page = () => {
       <Breadcrumb title="Finansal Durum Tablosu" items={BCrumb} />
       <Grid container>
         <Grid item xs={12} lg={12}>
-          <FinansalDurumTablosu />
+          <FinansalDurumTablosu konsolidasyonMu={false} />
         </Grid>
       </Grid>
     </PageContainer>

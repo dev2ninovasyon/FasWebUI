@@ -21,6 +21,7 @@ numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Props {
+  konsolidasyonMu?: boolean;
   hazirFislerTiklandimi: boolean;
   setHazirFislerTiklandimi: (bool: boolean) => void;
 }
@@ -37,6 +38,7 @@ interface Veri {
 }
 
 const SonGirilenFisler: React.FC<Props> = ({
+  konsolidasyonMu = false,
   hazirFislerTiklandimi,
   setHazirFislerTiklandimi,
 }) => {
@@ -317,7 +319,8 @@ const SonGirilenFisler: React.FC<Props> = ({
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        lastFisNo
+        lastFisNo,
+        konsolidasyonMu
       );
       const rowsAll: any = [];
 
@@ -348,7 +351,8 @@ const SonGirilenFisler: React.FC<Props> = ({
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        konsolidasyonMu
       );
       setLastFisNo(fisNo);
     } catch (error) {

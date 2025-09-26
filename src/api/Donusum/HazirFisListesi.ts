@@ -31,11 +31,12 @@ export const createFisListesineHazirFis = async (
   denetlenenId: number,
   yil: number,
   denetimTuru: string,
-  hazirFisId: number
+  hazirFisId: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/HazirFisler/DonusumFis?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&denetimTuru=${denetimTuru}&hazirFisId=${hazirFisId}`,
+      `${url}/HazirFisler/DonusumFis?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&denetimTuru=${denetimTuru}&hazirFisId=${hazirFisId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "POST",
         headers: {

@@ -1,0 +1,34 @@
+/* Set the page size for print and screen. */
+/* Example uses A4 portrait. 21cm x 29.7cm */
+/* Microsoft Word's Narrow margin is 0.5in */
+
+@page {
+  size: A4 portrait;
+  margin: 0.5in;
+}
+@media screen {
+  .page-container {
+    --background-color: white;
+    --page-color: white;
+    --page-width: 21cm;
+    --page-height: 30.4cm;
+    --page-min-height: var(--page-height);
+
+    /* --page-padding: 0.5in; */
+    /* --page-gap-y: 0.5in; */
+
+    position: relative;
+    min-width: var(--page-width);
+    border: none !important;
+  }
+}
+
+.page {
+  font-family: "Roboto", sans-serif !important;
+  font-size: 12px;
+  color: #000 !important;
+}
+
+.page > *:first-child {
+  margin-top: 0;
+}

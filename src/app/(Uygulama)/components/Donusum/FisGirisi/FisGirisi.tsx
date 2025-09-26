@@ -29,6 +29,7 @@ numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Props {
+  konsolidasyonMu?: boolean;
   kod: string;
   ad: string;
   fisType: string;
@@ -48,6 +49,7 @@ interface Veri {
 }
 
 const FisGirisi: React.FC<Props> = ({
+  konsolidasyonMu = false,
   kod,
   ad,
   fisType,
@@ -596,7 +598,11 @@ const FisGirisi: React.FC<Props> = ({
       controlDetayKoduHesapAdi;
     if (control) {
       try {
-        const result = await createFisGirisiVerisi(user.token || "", jsonData);
+        const result = await createFisGirisiVerisi(
+          user.token || "",
+          jsonData,
+          konsolidasyonMu
+        );
         if (result) {
           await fetchFisNo();
           setFetchedData([]);
@@ -685,7 +691,8 @@ const FisGirisi: React.FC<Props> = ({
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        konsolidasyonMu
       );
       setLastFisNo(fisNo + 1);
       const hotInstance = hotTableComponent.current.hotInstance;

@@ -334,7 +334,8 @@ const FisListesi = () => {
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        fisNo
+        fisNo,
+        false
       );
       if (result) {
         await fetchData();
@@ -373,7 +374,8 @@ const FisListesi = () => {
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        false
       );
       const rowsAll: any = [];
       fisListesiVerileri.forEach((veri: any) => {

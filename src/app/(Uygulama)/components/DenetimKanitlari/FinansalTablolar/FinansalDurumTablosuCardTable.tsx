@@ -12,7 +12,6 @@ import {
   Tooltip,
   Fab,
 } from "@mui/material";
-
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getDonusumMizan } from "@/api/Donusum/Donusum";
@@ -50,10 +49,14 @@ interface Veri {
 }
 
 interface Props {
+  konsolidasyonMu?: boolean;
   fdtData: Veri[];
 }
 
-const FinansalDurumCardTable = ({ fdtData }: Props) => {
+const FinansalDurumCardTable = ({
+  konsolidasyonMu = false,
+  fdtData,
+}: Props) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const formatNumber = (num: number) => {
@@ -94,7 +97,8 @@ const FinansalDurumCardTable = ({ fdtData }: Props) => {
           getDonusumMizan(
             user.token || "",
             user.denetlenenId || 0,
-            (user.yil || 0) + yilFarki
+            (user.yil || 0) + yilFarki,
+            konsolidasyonMu
           )
         )
       );

@@ -181,6 +181,7 @@ const Page: React.FC = () => {
         </Grid>
         <Grid item xs={12} lg={12} mb={3}>
           <FisGirisi
+            konsolidasyonMu={false}
             kod={kod}
             ad={ad}
             fisType={fisType}
@@ -197,6 +198,7 @@ const Page: React.FC = () => {
         </Grid>
         <Grid item xs={12} lg={12}>
           <SonGirilenFisler
+            konsolidasyonMu={false}
             hazirFislerTiklandimi={hazirFislerTiklandimi}
             setHazirFislerTiklandimi={setHazirFislerTiklandimi}
           />
@@ -217,7 +219,7 @@ const Page: React.FC = () => {
               </Stack>
             </DialogContent>
             <DialogContent>
-              <HazirFisListesi />
+              <HazirFisListesi konsolidasyonMu={false} />
             </DialogContent>
           </Dialog>
         )}

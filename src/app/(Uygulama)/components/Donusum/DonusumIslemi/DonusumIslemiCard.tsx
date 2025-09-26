@@ -6,11 +6,13 @@ import DonusumIslemiCardTable from "./DonusumIslemiCardTable";
 import { getDonusumMizan } from "@/api/Donusum/Donusum";
 
 interface Props {
+  konsolidasyonMu?: boolean;
   donusumIslemiYapTiklandiMi: boolean;
   setDonusumIslemiYapTiklandiMi: (bool: boolean) => void;
 }
 
 const DonusumIslemiCard: React.FC<Props> = ({
+  konsolidasyonMu = false,
   donusumIslemiYapTiklandiMi,
   setDonusumIslemiYapTiklandiMi,
 }) => {
@@ -30,7 +32,8 @@ const DonusumIslemiCard: React.FC<Props> = ({
       const donusumMizanVerileri = await getDonusumMizan(
         user.token || "",
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        konsolidasyonMu
       );
 
       let totalAktifBorcTutari = 0;

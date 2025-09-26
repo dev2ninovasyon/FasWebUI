@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Button, useTheme } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import MizanCard from "@/app/(Uygulama)/components/Veri/Mizan/MizanCard";
 import Mizan from "@/app/(Uygulama)/components/Veri/Mizan/Mizan";
-import { createBirlestirilmisMizan } from "@/api/Veri/Mizan";
 import { enqueueSnackbar } from "notistack";
+import { createBirlestirilmisMizan } from "@/api/Konsolidasyon/Konsolidasyon";
+import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
 const BirlestirilmisMizan = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -13,6 +14,8 @@ const BirlestirilmisMizan = () => {
   const theme = useTheme();
 
   const [mizanOlusturTiklandimi, setMizanOlusturTiklandimi] = useState(false);
+
+  const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const handleBirlestirilmisMizan = async () => {
     try {
@@ -51,6 +54,15 @@ const BirlestirilmisMizan = () => {
       console.error("Bir hata oluştu:", error);
     }
   };
+
+  useEffect(() => {
+    if (mizanOlusturTiklandimi) {
+      setOpenCartAlert(true);
+    } else {
+      setOpenCartAlert(false);
+    }
+  }, [mizanOlusturTiklandimi]);
+
   return (
     <>
       <Grid container marginTop={3}>
@@ -96,6 +108,12 @@ const BirlestirilmisMizan = () => {
           />
         </Grid>
       </Grid>
+      {openCartAlert && (
+        <InfoAlertCart
+          openCartAlert={openCartAlert}
+          setOpenCartAlert={setOpenCartAlert}
+        ></InfoAlertCart>
+      )}
     </>
   );
 };

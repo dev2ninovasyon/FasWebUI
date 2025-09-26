@@ -28,7 +28,13 @@ interface Veri {
   formulOzkaynakNavigationId: number;
 }
 
-const OzkaynakDegisimTablosu: React.FC = () => {
+interface Props {
+  konsolidasyonMu?: boolean;
+}
+
+const OzkaynakDegisimTablosu: React.FC<Props> = ({
+  konsolidasyonMu = false,
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -55,7 +61,8 @@ const OzkaynakDegisimTablosu: React.FC = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        konsolidasyonMu
       );
 
       const ozkaynakData: Veri[] = [];
