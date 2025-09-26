@@ -26,6 +26,10 @@ registerAllModules();
 numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
+interface Props {
+  konsolidasyonMu?: boolean;
+}
+
 interface Veri {
   id: number;
   yevmiyeNo: number;
@@ -37,7 +41,7 @@ interface Veri {
   aciklama: string;
 }
 
-const HazirFisListesi = () => {
+const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -466,7 +470,8 @@ const HazirFisListesi = () => {
                       user.denetlenenId || 0,
                       user.yil || 0,
                       user.denetimTuru || "",
-                      row[0]
+                      row[0],
+                      konsolidasyonMu
                     );
                     if (result) {
                       enqueueSnackbar("Fiş Listesine Eklendi", {

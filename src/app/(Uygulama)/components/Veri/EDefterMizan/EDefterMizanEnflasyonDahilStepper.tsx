@@ -22,7 +22,11 @@ import {
 } from "@mui/material";
 import { IconHistory } from "@tabler/icons-react";
 import { IconX } from "@tabler/icons-react";
-import { createAnaHesapMizan, createDetayHesapMizan } from "@/api/Veri/Mizan";
+import {
+  createAnaHesapMizan,
+  createDetayHesapMizan,
+  getMizanVerileri,
+} from "@/api/Veri/Mizan";
 import {
   getStandartYevmiyeFisNo,
   getYevmiyeFisNo,
@@ -204,7 +208,26 @@ const EDefterMizanEnflasyonStepper = () => {
 
   useEffect(() => {
     fetchData();
+    fetchMizanControl();
   }, []);
+
+  const fetchMizanControl = async () => {
+    const type = "E-Defter";
+    try {
+      const mizanVerileri = await getMizanVerileri(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        type
+      );
+      if (mizanVerileri.length > 0) {
+        setActiveStep(1);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
 
   const isStepOptional = (step: number) => {
     return step == -1;

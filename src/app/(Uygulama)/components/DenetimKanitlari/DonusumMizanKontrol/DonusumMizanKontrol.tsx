@@ -37,11 +37,13 @@ interface Veri {
 }
 
 interface Props {
+  konsolidasyonMu?: boolean;
   donusumIslemiYapTiklandiMi?: boolean;
   setDonusumIslemiYapTiklandiMi?: (bool: boolean) => void;
 }
 
 const DonusumMizanKontrol: React.FC<Props> = ({
+  konsolidasyonMu = false,
   donusumIslemiYapTiklandiMi,
   setDonusumIslemiYapTiklandiMi,
 }) => {
@@ -321,7 +323,8 @@ const DonusumMizanKontrol: React.FC<Props> = ({
       const donusumMizanVerileri = await getDonusumMizan(
         user.token || "",
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        konsolidasyonMu
       );
 
       let totalVukBorc = 0;

@@ -1302,14 +1302,6 @@ export function createMenuItems(
           icon: IconUsersGroup,
           href: "/GenelKurul",
           children: [
-            /*
-            {
-              id: uniqueId(),
-              title: "Müşteri Genel Kurul Toplantısı",
-              icon: IconPoint,
-              href: "/",
-            },
-            */
             {
               id: uniqueId(),
               title: "Genel Kurul Toplantısı Görevlendirme Belgesi",
@@ -1338,6 +1330,13 @@ export function createMenuItems(
               formKodu: "DenetimCalismasiIzlemeSonuc",
               icon: IconPoint,
               href: "/GenelKurul/DenetimCalismasiIzlemeSonuc",
+            },
+            {
+              id: uniqueId(),
+              title: "Faaliyet Raporu",
+              formKodu: "FaaliyetRaporu",
+              icon: IconPoint,
+              href: "/GenelKurul/FaaliyetRaporu",
             },
           ],
         },
@@ -1374,14 +1373,12 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/DenetimDosya/BagimsizDenetimMetodolojisi",
             },
-            /*
             {
               id: uniqueId(),
-              title: "Denetim Dosyası Yazdır",
+              title: "Denetim Dosya Yazdır",
               icon: IconPoint,
-              href: "/",
+              href: "/DenetimDosya/DenetimDosyaYazdir",
             },
-            */
           ],
         },
         {

@@ -96,7 +96,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
         bottom: 12,
         right: 24,
         zIndex: 1000,
-        cursor: "pointer",
+        cursor: control || (text?.length || 0) > 10 ? "default" : "pointer",
         pointerEvents: control ? "visible" : "all",
         opacity: loaded ? 1 : 0,
       }}
@@ -240,6 +240,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                       }
                       setControl2(false);
                     }}
+                    sx={{ cursor: "pointer" }}
                   >
                     Kullan
                   </Typography>
@@ -250,6 +251,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                     onClick={() => {
                       setControl2(false);
                     }}
+                    sx={{ cursor: "pointer" }}
                   >
                     Vazgeç
                   </Typography>
@@ -277,6 +279,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                       onClick={() =>
                         handlePromptClick(predefinedPrompts[0].instruction)
                       }
+                      sx={{ cursor: "pointer" }}
                     >
                       {predefinedPrompts[0].label}
                     </Typography>
@@ -287,6 +290,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                       onClick={() =>
                         handlePromptClick(predefinedPrompts[1].instruction)
                       }
+                      sx={{ cursor: "pointer" }}
                     >
                       {predefinedPrompts[1].label}
                     </Typography>
@@ -297,6 +301,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                       onClick={() =>
                         handlePromptClick(predefinedPrompts[2].instruction)
                       }
+                      sx={{ cursor: "pointer" }}
                     >
                       {predefinedPrompts[2].label}
                     </Typography>

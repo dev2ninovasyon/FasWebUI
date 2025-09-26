@@ -17,9 +17,13 @@ import { FinansalTabloOlustur } from "@/api/FinansalTablolar/FinansalToblolar";
 import DonusumMizanKontrol from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrol";
 import DonusumMizanKontrolCardTable from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrolCardTable";
 
+interface Props {
+  konsolidasyonMu?: boolean;
+}
+
 const steps = ["Dönüşüm", "Finansal Tablo"];
 
-const DonusumIslemiStepper = () => {
+const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
@@ -68,7 +72,8 @@ const DonusumIslemiStepper = () => {
         user.token || "",
         user.denetlenenId || 0,
         user.yil || 0,
-        user.denetimTuru || ""
+        user.denetimTuru || "",
+        konsolidasyonMu
       );
       if (donusumIslemi) {
         setDonusumIslemiYapTiklandiMi(false);
@@ -109,7 +114,8 @@ const DonusumIslemiStepper = () => {
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        nakitAkisYontemi || ""
+        nakitAkisYontemi || "",
+        konsolidasyonMu
       );
       if (finansalTabloOlustur) {
         setFinansalTabloOlusturTiklandiMi(false);
@@ -311,6 +317,7 @@ const DonusumIslemiStepper = () => {
                   alignItems={"center"}
                 >
                   <DonusumIslemiCard
+                    konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi
@@ -319,6 +326,7 @@ const DonusumIslemiStepper = () => {
                 </Grid>
                 <Grid item xs={12} lg={12} mt={1} padding={1}>
                   <DonusumMizanKontrolCardTable
+                    konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi
@@ -327,6 +335,7 @@ const DonusumIslemiStepper = () => {
                 </Grid>
                 <Grid item xs={12} lg={12} padding={1}>
                   <DonusumMizanKontrol
+                    konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi
@@ -413,6 +422,7 @@ const DonusumIslemiStepper = () => {
                   alignItems={"center"}
                 >
                   <DonusumIslemiCard
+                    konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi
@@ -421,6 +431,7 @@ const DonusumIslemiStepper = () => {
                 </Grid>
                 <Grid item xs={12} lg={12} mt={1} padding={1}>
                   <DonusumMizanKontrolCardTable
+                    konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi
@@ -429,6 +440,7 @@ const DonusumIslemiStepper = () => {
                 </Grid>
                 <Grid item xs={12} lg={12} padding={1}>
                   <DonusumMizanKontrol
+                    konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
                     setDonusumIslemiYapTiklandiMi={
                       setDonusumIslemiYapTiklandiMi

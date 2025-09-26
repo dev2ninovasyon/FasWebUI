@@ -50,7 +50,11 @@ interface Veri {
   hesaplar?: DonusumMizan[] | null;
 }
 
-const FinansalDurumTablosu: React.FC = () => {
+interface Props {
+  konsolidasyonMu?: boolean;
+}
+
+const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const theme = useTheme();
   const bgColor = theme.palette.background.default;
@@ -86,7 +90,8 @@ const FinansalDurumTablosu: React.FC = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        konsolidasyonMu
       );
 
       setTitle(finansalDurumTablosu[0]?.kalemAdi);
@@ -114,7 +119,8 @@ const FinansalDurumTablosu: React.FC = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        konsolidasyonMu
       );
 
       const newRowsKzt = karZararTablosu.slice(1).map((veri: Veri) => ({

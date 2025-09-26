@@ -4,11 +4,12 @@ export const DonusumIslemiYap = async (
   token: string,
   denetlenenId: number,
   yil: number,
-  denetimTuru: string
+  denetimTuru: string,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumIslemiYap?denetlenenId=${denetlenenId}&yil=${yil}&denetimTuru=${denetimTuru}`,
+      `${url}/Donusum/DonusumIslemiYap?denetlenenId=${denetlenenId}&yil=${yil}&denetimTuru=${denetimTuru}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "Post",
         headers: {
@@ -30,11 +31,12 @@ export const DonusumIslemiYap = async (
 export const getDonusumMizan = async (
   token: string,
   denetlenenId: number,
-  yil: number
+  yil: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumMizan?denetlenenId=${denetlenenId}&yil=${yil}`,
+      `${url}/Donusum/DonusumMizan?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -56,11 +58,12 @@ export const getDonusumMizan = async (
 export const getTersBakiyeVerenProgramVukMizanHesaplari = async (
   token: string,
   denetlenenId: number,
-  yil: number
+  yil: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/TersBakiyeVerenProgramVukMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}`,
+      `${url}/Donusum/TersBakiyeVerenProgramVukMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -82,11 +85,12 @@ export const getTersBakiyeVerenProgramVukMizanHesaplari = async (
 export const getTersBakiyeVerenDonusumMizanHesaplari = async (
   token: string,
   denetlenenId: number,
-  yil: number
+  yil: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/TersBakiyeVerenDonusumMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}`,
+      `${url}/Donusum/TersBakiyeVerenDonusumMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {

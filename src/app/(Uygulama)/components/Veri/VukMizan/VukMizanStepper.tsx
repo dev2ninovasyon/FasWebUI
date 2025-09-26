@@ -25,6 +25,7 @@ import { IconX } from "@tabler/icons-react";
 import {
   createProgramVukMizan,
   createVukMizan,
+  getMizanVerileri,
   getProgramVukMizanControl,
 } from "@/api/Veri/Mizan";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
@@ -208,7 +209,26 @@ const VukMizanStepper = () => {
 
   useEffect(() => {
     fetchControl();
+    fetchMizanControl();
   }, []);
+
+  const fetchMizanControl = async () => {
+    const type = "VukMizan";
+    try {
+      const mizanVerileri = await getMizanVerileri(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        type
+      );
+      if (mizanVerileri.length > 0) {
+        setActiveStep(1);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
 
   const isStepOptional = (step: number) => {
     return step == -1;

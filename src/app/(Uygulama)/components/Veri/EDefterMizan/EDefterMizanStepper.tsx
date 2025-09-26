@@ -26,6 +26,7 @@ import {
   createAnaHesapMizan,
   createDetayHesapMizan,
   createProgramVukMizan,
+  getMizanVerileri,
   getProgramVukMizanControl,
 } from "@/api/Veri/Mizan";
 import {
@@ -274,6 +275,7 @@ const EDefterMizanStepper = () => {
   useEffect(() => {
     fetchData();
     fetchControl();
+    fetchMizanControl();
   }, []);
 
   const handleContinue = async () => {
@@ -304,6 +306,24 @@ const EDefterMizanStepper = () => {
       if (programVukMizanControl != "") {
         setControl(true);
         setTip(programVukMizanControl);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchMizanControl = async () => {
+    const type = "E-Defter";
+    try {
+      const mizanVerileri = await getMizanVerileri(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        type
+      );
+      if (mizanVerileri.length > 0) {
+        setActiveStep(1);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
