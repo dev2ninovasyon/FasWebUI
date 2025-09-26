@@ -372,7 +372,8 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        pathFisNo
+        pathFisNo,
+        false
       );
       if (result) {
         if (true) {
@@ -406,7 +407,8 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         user.denetlenenId || 0,
         user.yil || 0,
         rowData[0],
-        updatedFisVerisi
+        updatedFisVerisi,
+        false
       );
       if (result) {
         await fetchData();
@@ -426,7 +428,8 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        ids
+        ids,
+        false
       );
       if (result) {
         await fetchData();
@@ -464,7 +467,8 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        pathFisNo
+        pathFisNo,
+        false
       );
       const rowsAll: any = [];
 

@@ -5,7 +5,18 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import {
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import ExcelJS from "exceljs";
@@ -48,6 +59,13 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat("tr-TR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(num);
+  };
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -337,6 +355,69 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
 
   return (
     <>
+      {/*<Grid container mb={3}>
+        <Grid item xs={12} lg={12} sx={{ mb: { xs: 2, lg: 0 } }}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: 1,
+              borderRadius: 1,
+              backgroundColor: "primary.light",
+            }}
+          >
+            <TableContainer sx={{ maxHeight: 400 }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      align="left"
+                      sx={{ backgroundColor: "primary.light", borderBottom: 0 }}
+                    >
+                      <Typography variant="h6">Kategory</Typography>
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{ backgroundColor: "primary.light", borderBottom: 0 }}
+                    >
+                      <Typography variant="h6">Borç</Typography>
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{ backgroundColor: "primary.light", borderBottom: 0 }}
+                    >
+                      <Typography variant="h6">Alacak</Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="left" sx={{ border: "none" }}>
+                      Ticari
+                    </TableCell>
+                    <TableCell align="right" sx={{ border: "none" }}>
+                      {formatNumber(0)}
+                    </TableCell>
+                    <TableCell align="right" sx={{ border: "none" }}>
+                      {formatNumber(0)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left" sx={{ border: "none" }}>
+                      Finansal
+                    </TableCell>
+                    <TableCell align="right" sx={{ border: "none" }}>
+                      {formatNumber(0)}
+                    </TableCell>
+                    <TableCell align="right" sx={{ border: "none" }}>
+                      {formatNumber(0)}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Grid>
+      </Grid>*/}
       <HotTable
         style={{
           height: "100%",

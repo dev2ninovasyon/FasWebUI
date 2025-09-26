@@ -89,6 +89,8 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
 
   const [selected, setSelected] = useState<string[]>([]);
 
+  const [openCartAlert, setOpenCartAlert] = useState(false);
+
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   function normalizeString(str: string): string {
@@ -249,6 +251,14 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
 
     setSelected(newSelected);
   };
+
+  useEffect(() => {
+    if (verileriAktarTiklandimi) {
+      setOpenCartAlert(true);
+    } else {
+      setOpenCartAlert(false);
+    }
+  }, [verileriAktarTiklandimi]);
 
   return (
     <>
@@ -512,10 +522,10 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
           </TableRow>
         </TableFooter>
       </Table>
-      {verileriAktarTiklandimi && (
+      {openCartAlert && (
         <InfoAlertCart
-          openCartAlert={verileriAktarTiklandimi}
-          setOpenCartAlert={setVerileriAktarTiklandimi}
+          openCartAlert={openCartAlert}
+          setOpenCartAlert={setOpenCartAlert}
         ></InfoAlertCart>
       )}
     </>

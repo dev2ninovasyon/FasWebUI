@@ -37,11 +37,13 @@ interface DonusumMizanHesaplari {
 }
 
 interface Props {
+  konsolidasyonMu?: boolean;
   donusumIslemiYapTiklandiMi?: boolean;
   setDonusumIslemiYapTiklandiMi?: (bool: boolean) => void;
 }
 
 const DonusumMizanKontrolCardTable: React.FC<Props> = ({
+  konsolidasyonMu = false,
   donusumIslemiYapTiklandiMi,
   setDonusumIslemiYapTiklandiMi,
 }) => {
@@ -68,7 +70,8 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
         await getTersBakiyeVerenProgramVukMizanHesaplari(
           user.token || "",
           user.denetlenenId || 0,
-          user.yil || 0
+          user.yil || 0,
+          konsolidasyonMu
         );
       const rowsAll: any = [];
 
@@ -95,7 +98,8 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
         await getTersBakiyeVerenDonusumMizanHesaplari(
           user.token || "",
           user.denetlenenId || 0,
-          user.yil || 0
+          user.yil || 0,
+          konsolidasyonMu
         );
       const rowsAll: any = [];
 

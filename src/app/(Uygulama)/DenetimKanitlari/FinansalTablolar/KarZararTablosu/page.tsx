@@ -30,7 +30,7 @@ const Page = () => {
       <Breadcrumb title="Kar Zarar Tablosu" items={BCrumb} />
       <Grid container>
         <Grid item xs={12} lg={12}>
-          <KarZararTablosu />
+          <KarZararTablosu konsolidasyonMu={false} />
         </Grid>
       </Grid>
     </PageContainer>

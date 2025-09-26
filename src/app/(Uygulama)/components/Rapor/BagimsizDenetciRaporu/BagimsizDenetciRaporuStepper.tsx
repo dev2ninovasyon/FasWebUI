@@ -390,7 +390,8 @@ const BagimsizDenetciRaporuStepper = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        false
       );
       const newRowsFdt = finansalDurumTablosu.slice(1).map((veri: VeriFT) => ({
         id: veri.id,
@@ -418,7 +419,8 @@ const BagimsizDenetciRaporuStepper = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        false
       );
 
       const newRowsKzt = karZararTablosu.slice(1).map((veri: VeriFT) => ({
@@ -447,7 +449,8 @@ const BagimsizDenetciRaporuStepper = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        false
       );
 
       const newRowsNat = nakitAkisTablosu.slice(1).map((veri: VeriFT) => ({
@@ -476,7 +479,8 @@ const BagimsizDenetciRaporuStepper = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        false
       );
 
       const ozkaynakDataCari: VeriFT2[] = [];
@@ -552,7 +556,8 @@ const BagimsizDenetciRaporuStepper = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil ? user.yil - 1 : 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        false
       );
 
       const ozkaynakDataOnceki: VeriFT2[] = [];

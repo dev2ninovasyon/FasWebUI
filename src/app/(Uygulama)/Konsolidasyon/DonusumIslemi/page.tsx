@@ -30,7 +30,7 @@ const Page: React.FC = () => {
         <Breadcrumb title="Dönüşüm İşlemi" items={BCrumb} />
         <Grid container>
           <Grid item xs={12} lg={12}>
-            <DonusumIslemiStepper />
+            <DonusumIslemiStepper konsolidasyonMu={true} />
           </Grid>
         </Grid>
       </PageContainer>

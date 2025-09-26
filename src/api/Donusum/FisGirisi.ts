@@ -1,16 +1,23 @@
 import { url } from "@/api/apiBase";
 
-export const createFisGirisiVerisi = async (token: string, jsonData: any) => {
+export const createFisGirisiVerisi = async (
+  token: string,
+  jsonData: any,
+  konsolidasyonMu: boolean
+) => {
   try {
-    const response = await fetch(`${url}/Donusum/DonusumFisleri`, {
-      method: "POST",
-      headers: {
-        accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(jsonData),
-    });
+    const response = await fetch(
+      `${url}/Donusum/DonusumFisleri?konsolidasyonMu=${konsolidasyonMu}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(jsonData),
+      }
+    );
 
     if (response.ok) {
       return true;
@@ -26,11 +33,12 @@ export const getFisNo = async (
   token: string,
   denetciId: number,
   denetlenenId: number,
-  yil: number
+  yil: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `${url}/Donusum/DonusumFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {

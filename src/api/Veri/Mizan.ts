@@ -360,33 +360,6 @@ export const createVukMizan = async (
   }
 };
 
-export const createBirlestirilmisMizan = async (
-  token: string,
-  denetciId: number,
-  yil: number,
-  denetlenenId: number
-) => {
-  try {
-    const response = await fetch(
-      `${url}/Mizan/BirlestirilmisMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
-      {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    if (response.ok) {
-      return response.json();
-    } else {
-      console.error("Birleştirilmiş Mizan oluşturulamadı");
-    }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
-  }
-};
-
 export const createProgramVukMizan = async (
   token: string,
   denetciId: number,

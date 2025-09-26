@@ -37,7 +37,7 @@ const Page = () => {
             width: "500px",
           }}
         >
-          <OzkaynakDegisimTablosu />
+          <OzkaynakDegisimTablosu konsolidasyonMu={false} />
         </Grid>
       </Grid>
     </PageContainer>

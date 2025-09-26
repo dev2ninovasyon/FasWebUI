@@ -36,12 +36,12 @@ const Page: React.FC = () => {
 
       <Grid container>
         <Grid item xs={12} lg={12}>
-          <DonusumMizanKontrolCardTable />
+          <DonusumMizanKontrolCardTable konsolidasyonMu={false} />
         </Grid>
       </Grid>
       <Grid container>
         <Grid item xs={12} lg={12}>
-          <DonusumMizanKontrol />
+          <DonusumMizanKontrol konsolidasyonMu={false} />
         </Grid>
       </Grid>
     </PageContainer>

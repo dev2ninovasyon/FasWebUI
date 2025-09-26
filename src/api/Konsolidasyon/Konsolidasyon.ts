@@ -71,3 +71,30 @@ export const updateTanimlamalar = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const createBirlestirilmisMizan = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Konsolidasyon/MizanBirlestir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Birleştirilmiş Mizan oluşturulamadı");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};

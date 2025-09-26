@@ -95,7 +95,11 @@ const VadeliBankaMevduatiManuelSiniflamaOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(user.token || "", jsonData);
+      const result = await createFisGirisiVerisi(
+        user.token || "",
+        jsonData,
+        false
+      );
       if (result) {
         enqueueSnackbar("Fiş Kaydedildi", {
           variant: "success",

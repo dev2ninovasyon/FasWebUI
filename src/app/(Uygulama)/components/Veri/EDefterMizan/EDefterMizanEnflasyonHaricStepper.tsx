@@ -26,6 +26,7 @@ import {
   createAnaHesapMizanHaric,
   createDetayHesapMizanHaric,
   createProgramVukMizan,
+  getMizanVerileri,
   getProgramVukMizanControl,
 } from "@/api/Veri/Mizan";
 import { getStandartYevmiyeFisNoHaric } from "@/api/Veri/HaricFisListesi";
@@ -271,6 +272,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
   useEffect(() => {
     fetchData();
     fetchControl();
+    fetchMizanControl();
   }, []);
 
   const handleContinue = async () => {
@@ -301,6 +303,24 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       if (programVukMizanControl != "") {
         setControl(true);
         setTip(programVukMizanControl);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  };
+
+  const fetchMizanControl = async () => {
+    const type = "E-DefterHaric";
+    try {
+      const mizanVerileri = await getMizanVerileri(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        type
+      );
+      if (mizanVerileri.length > 0) {
+        setActiveStep(1);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);

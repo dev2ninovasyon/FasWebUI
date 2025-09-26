@@ -120,6 +120,7 @@ const Page: React.FC = () => {
         <Grid container>
           <Grid item xs={12} lg={12} mb={2}>
             <FisGirisiKontrol
+              konsolidasyonMu={true}
               filterValue={filterValue}
               setKod={setKod}
               setAd={setAd}
@@ -180,7 +181,7 @@ const Page: React.FC = () => {
                   size="medium"
                   variant="outlined"
                   color="primary"
-                  onClick={() => router.push("/Donusum/FisListesi")}
+                  onClick={() => router.push("/Konsolidasyon/FisListesi")}
                   sx={{ ml: 2 }}
                 >
                   Fiş Listesi
@@ -190,6 +191,7 @@ const Page: React.FC = () => {
           </Grid>
           <Grid item xs={12} lg={12} mb={3}>
             <FisGirisi
+              konsolidasyonMu={true}
               kod={kod}
               ad={ad}
               fisType={fisType}
@@ -206,6 +208,7 @@ const Page: React.FC = () => {
           </Grid>
           <Grid item xs={12} lg={12}>
             <SonGirilenFisler
+              konsolidasyonMu={true}
               hazirFislerTiklandimi={hazirFislerTiklandimi}
               setHazirFislerTiklandimi={setHazirFislerTiklandimi}
             />
@@ -226,7 +229,7 @@ const Page: React.FC = () => {
                 </Stack>
               </DialogContent>
               <DialogContent>
-                <HazirFisListesi />
+                <HazirFisListesi konsolidasyonMu={true} />
               </DialogContent>
             </Dialog>
           )}

@@ -9,7 +9,10 @@ import { useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import { getProgramVukMizanWithoutType } from "@/api/Veri/Mizan";
+import {
+  getMizanVerileri,
+  getProgramVukMizanWithoutType,
+} from "@/api/Veri/Mizan";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
@@ -20,6 +23,7 @@ numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Props {
+  konsolidasyonMu?: boolean;
   filterValue: string;
   setKod: (str: string) => void;
   setAd: (str: string) => void;
@@ -31,7 +35,12 @@ interface Veri {
   bakiye: number;
 }
 
-const FisGirisiKontrol: React.FC<Props> = ({ filterValue, setKod, setAd }) => {
+const FisGirisiKontrol: React.FC<Props> = ({
+  konsolidasyonMu = false,
+  filterValue,
+  setKod,
+  setAd,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -223,22 +232,42 @@ const FisGirisiKontrol: React.FC<Props> = ({ filterValue, setKod, setAd }) => {
 
   const fetchData = async () => {
     try {
-      const programVukMizanVerileri = await getProgramVukMizanWithoutType(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
+      if (konsolidasyonMu) {
+        const birlestirilmisMizanVerileri = await getMizanVerileri(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0,
+          "BirlestirilmisMizan"
+        );
 
-      const rowsAll: any = [];
-      programVukMizanVerileri.forEach((veri: any) => {
-        const newRow: any = [veri.detayKodu, veri.hesapAdi, veri.netBakiye];
-        rowsAll.push(newRow);
-      });
+        const rowsAll: any = [];
+        birlestirilmisMizanVerileri.forEach((veri: any) => {
+          const newRow: any = [veri.detayKodu, veri.hesapAdi, veri.netBakiye];
+          rowsAll.push(newRow);
+        });
 
-      setRowCount(rowsAll.length);
-      setFetchedData(rowsAll);
-      setFilteredData(rowsAll);
+        setRowCount(rowsAll.length);
+        setFetchedData(rowsAll);
+        setFilteredData(rowsAll);
+      } else {
+        const programVukMizanVerileri = await getProgramVukMizanWithoutType(
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0
+        );
+
+        const rowsAll: any = [];
+        programVukMizanVerileri.forEach((veri: any) => {
+          const newRow: any = [veri.detayKodu, veri.hesapAdi, veri.netBakiye];
+          rowsAll.push(newRow);
+        });
+
+        setRowCount(rowsAll.length);
+        setFetchedData(rowsAll);
+        setFilteredData(rowsAll);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }

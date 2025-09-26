@@ -25,7 +25,7 @@ export const FloatingButtonDenetimProgrami: React.FC<FloatingButtonProps> = ({
         bottom: 12,
         right: 24,
         zIndex: 1000,
-        cursor: "pointer",
+        cursor: warn ? "default" : "pointer",
         pointerEvents: warn ? "visible" : "all",
         opacity: loaded ? 1 : 0,
       }}

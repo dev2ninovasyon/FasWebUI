@@ -4,11 +4,12 @@ export const getFisListesiVerileri = async (
   token: string,
   denetciId: number,
   denetlenenId: number,
-  yil: number
+  yil: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `${url}/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -32,11 +33,12 @@ export const getFisListesiVerileriByFisNo = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  fisNo: number
+  fisNo: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisleriByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
+      `${url}/Donusum/DonusumFisleriByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -60,11 +62,12 @@ export const createFisListesiVerisi = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  fisNo: number
+  fisNo: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisleriNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
+      `${url}/Donusum/DonusumFisleriNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "POST",
         headers: {
@@ -91,11 +94,12 @@ export const updateFisListesiVerisi = async (
   denetlenenId: number,
   yil: number,
   id: number,
-  updatedFis: any
+  updatedFis: any,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
+      `${url}/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "PUT",
         headers: {
@@ -122,11 +126,12 @@ export const updateFisDurumu = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  fisNo: number
+  fisNo: number,
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisDurumu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
+      `${url}/Donusum/DonusumFisDurumu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "PUT",
         headers: {
@@ -152,11 +157,12 @@ export const deleteFisListesiVerisi = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  ids: number[]
+  ids: number[],
+  konsolidasyonMu: boolean
 ) => {
   try {
     const response = await fetch(
-      `${url}/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `${url}/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "DELETE",
         headers: {
