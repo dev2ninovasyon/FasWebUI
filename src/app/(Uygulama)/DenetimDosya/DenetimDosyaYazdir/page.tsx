@@ -4,6 +4,8 @@ import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import DenetimDosyaYazdirTable from "./DenetimDosyaYazdirTable";
+import BlankCard from "../../components/Layout/Shared/BlankCard/BlankCard";
+import DenetimDosyaYazdirPdfTable from "./DenetimDosyaYazdirTable";
 
 const BCrumb = [
   {
@@ -26,7 +28,9 @@ const Page = () => {
       <Grid container>
         <Grid item xs={12} lg={12} mb={3}>
           <DenetimDosyaYazdirTable />
+
         </Grid>
+        
       </Grid>
     </PageContainer>
   );
