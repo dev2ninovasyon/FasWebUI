@@ -9,6 +9,7 @@ import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import UcluCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/UcluCalismaKagidiBelge";
+import SatisCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/SatisCalismaKagidiBelge";
 
 const BCrumb = [
   {
@@ -208,7 +209,7 @@ const Page = () => {
         description="this is Satış Tahsilat Kontrol"
       >
         <Box>
-          <UcluCalismaKagidiBelge
+          <SatisCalismaKagidiBelge
             controller={controller}
             grupluMu={grupluMu}
             isClickedYeniGrupEkle={isClickedYeniGrupEkle}
