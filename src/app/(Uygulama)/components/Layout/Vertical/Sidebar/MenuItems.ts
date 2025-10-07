@@ -289,6 +289,14 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/Veri/DefterKVBeyannamesiYukleme",
             },
+                        {
+              id: uniqueId(),
+              title: "Fatura",
+              customIcon:
+                "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
+              icon: IconPoint,
+              href: "/Veri/Fatura",
+            },
             {
               id: uniqueId(),
               title: "Vuk Mizan Veri Yükleme",
@@ -1219,6 +1227,14 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/DenetimKanitlari/YonetimTavsiyeMektubu",
             },
+                        {
+              id: uniqueId(),
+              title: "Fatura İnceleme",
+              customIcon:
+                "public/images/svgs/veri/defter-inceleme.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/FaturaInceleme",
+            },
             {
               id: uniqueId(),
               title: "Maddi Doğrulama Prosedürleri",
@@ -1226,6 +1242,14 @@ export function createMenuItems(
                 "public/images/svgs/denetim-kanitlari/maddi-dogrulama-prosedurleri.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
+            },
+                        {
+              id: uniqueId(),
+              title: "Benford Analizi",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/maddi-dogrulama-prosedurleri.svg",
+              icon: IconPoint,
+              href: "/DenetimKanitlari/Benford",
             },
             {
               id: uniqueId(),

@@ -21,6 +21,8 @@ import { AppState } from "@/store/store";
 import Link from "next/link";
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
 import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import { useRouter } from "next/navigation";
+
 
 interface NestedMenuItemProps {
   item: MenuitemsType;
@@ -41,6 +43,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const customizer = useSelector((state: AppState) => state.customizer);
+  const router = useRouter();
 
   const hasChildren = item.children && item.children.length > 0;
 
@@ -110,10 +113,15 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
           // BorderBottom ayarları
           borderBottom: level === 0 ? 1 : 0,
           borderColor: theme.palette.divider,
-          cursor: hasChildren ? "pointer" : "default",
+          cursor: "pointer",
         }}
-        onClick={() => hasChildren && setOpen(!open)}
-      >
+        onClick={() => {
+          if (hasChildren) {
+            setOpen(!open);
+          } else if (item.href) {
+            router.push(item.href);
+          }
+        }}      >
         <TableCell sx={{ width: "40%" }}>
           <Typography variant={typographyVariant}>{item.title}</Typography>
         </TableCell>
