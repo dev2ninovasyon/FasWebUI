@@ -307,12 +307,13 @@ const Page: React.FC = () => {
                 <Typography variant="body2" marginY={"4px"}>
                   UYARI!
                 </Typography>
-                <Typography variant="body2" marginY={"4px"}>
-                  1- Örnek Dosya Adı &quot;1716152123-202001-K-000000.xml&quot;
-                  Şeklinde Olan, Sadece &quot;K&quot; Harfini İçeren
-                  &quot;.xml&quot; Uzantılı E-Defter Kebir Dosyalarını
-                  Yükleyiniz.
-                </Typography>
+               {/* eslint-disable-next-line react/no-unescaped-entities */}
+<Typography variant="body2" marginY={"4px"}>
+  1- Örnek Dosya Adı &quot;1716152123-202001-K-000000.xml&quot;
+  Şeklinde Olan, Sadece &quot;K&quot; Harfini İçeren
+  &quot;.xml&quot; Uzantılı E-Defter Kebir Dosyalarını
+  Yükleyiniz.
+</Typography>
                 <Typography variant="body2" marginY={"4px"}>
                   2- Aynı İsimde Dosya Yüklenmesi Durumunda Son Yüklenen Dosya
                   Geçerli Olacaktır.
