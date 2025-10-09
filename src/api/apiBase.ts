@@ -1,1 +1,1 @@
-export const url = "https://2ninovasyon.online/api";
+export const url = "https://betaapi.fasmart.app/api";
