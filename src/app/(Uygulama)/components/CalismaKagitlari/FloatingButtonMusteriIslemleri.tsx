@@ -7,28 +7,54 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 
 interface FloatingButtonProps {
   control?: boolean;
-  text?: string; // <- web adresi buraya geliyor
+  text?: string;
   isHovered?: boolean;
   setIsHovered: (b: boolean) => void;
   handleClick: () => void;
+  onJson?: (data: any) => void;
+  onClear?: () => void;        // <— eklendi
 }
 
-const predefinedPrompts = [
-  {
-    label: "Şirket Bilgilerini Getir",
-    instruction:
-      "Verilen web sayfasını analiz et ve yalnızca şirket bilgilerini madde madde listele. " +
-      "Sadece listeyi döndür; açıklama ekleme. Aşağıdaki alanları sırayla ve varsa doldur: " +
-      "Firma Adı; Web; Telefon; E-posta; Adres; Vergi Dairesi; Vergi No; Ticaret Sicil No. " +
-      "KAYNAK: Kullanıcının verdiği URL. Eğer bilgi yoksa alanı atla.",
-  },
-];
 
 const messages = {
   welcome: "Firma bilgilerini doldurmanıza yardımcı olabilirim",
   empty: "Web adresi girin, sonra size yardımcı olabilirim",
   working: "Bilgiler üzerinde çalışıyorum...",
   done: "İşte Firma bilgileri!",
+};
+// Boş olmayan string kontrolü
+const nonEmpty = (v: any) => typeof v === "string" && v.trim().length > 0;
+
+// JSON’da doldurulabilir alan var mı? (temel alanları say)
+const countFoundFields = (p: any) => {
+  if (!p || typeof p !== "object") return 0;
+  const i = p?.iletisim ?? {};
+  const s = p?.sosyalMedya ?? {};
+  const list = [
+    p.sirketAdi,
+    p.slogan,
+    p.hakkindaOzet,
+    String(p.kurulusYili ?? "").trim(),
+    i.adres,
+    i.telefon,
+    i.eposta,
+    i.haritaLinki,
+    s.linkedin,
+    s.twitter_x,
+    s.facebook,
+    s.instagram,
+    ...(Array.isArray(p.anahtarHizmetler) ? p.anahtarHizmetler : []),
+    p.analizEdilenUrl,
+  ];
+  return list.filter(nonEmpty).length;
+};
+
+// Kullanıcıya gösterilecek mesajı üret
+const buildUserMessage = (foundCount: number) => {
+  if (foundCount > 0) {
+    return "Şirket ile ilgili bulabildiğim bilgileri forma doldurdum. Kalan alanları siz doldurabilirsiniz.";
+  }
+  return "Üzgünüm, bu web sayfasında doldurabileceğim net şirket bilgisi bulamadım. Bilgileri sizin girmeniz gerekiyor.";
 };
 
 export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
@@ -37,6 +63,8 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
   isHovered,
   setIsHovered,
   handleClick,
+  onJson,
+  onClear,  
 }) => {
   const theme = useTheme();
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -44,46 +72,11 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
   const [message, setMessage] = useState(messages.welcome);
   const [loaded, setLoaded] = useState(false);
   const [aiText, setAiText] = useState("");
-
   const [control2, setControl2] = useState(false);
-
-  const handlePromptClick = async (instruction: string) => {
-    if (!text || !isValidUrl(text)) {
-      setControl2(false);
-      setMessage(messages.empty);
-      setAiText("");
-      return;
-    }
-
-    try {
-      setControl2(true);
-      setMessage(messages.working);
-      setAiText("");
-
-      const enhanced = await enhanceText(normalizeUrl(text), instruction);
-      const safeOut = (enhanced || "").trim();
-
-      if (!safeOut) {
-        setControl2(false);
-        setMessage(messages.empty);
-        setAiText("");
-      } else {
-        setMessage(messages.done);
-        setAiText(safeOut);
-      }
-    } catch (error) {
-      console.error("Gemini fetch error:", error);
-      setControl2(false);
-      setMessage(messages.empty);
-      setAiText("");
-    }
-  };
 
   const normalizeUrl = (val?: string) => {
     if (!val) return "";
-    return val.startsWith("http://") || val.startsWith("https://")
-      ? val
-      : `https://${val}`;
+    return val.startsWith("http://") || val.startsWith("https://") ? val : `https://${val}`;
   };
 
   const isValidUrl = (val?: string) => {
@@ -96,6 +89,110 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
     }
   };
 
+  const buildJsonPrompt = (url: string) => `GÖREV
+Sağlanan URL'deki web sitesine erişim sağla. Sitenin içeriğini oku ve analiz et. Bu içerikten halka açık şirket bilgilerini çıkararak belirtilen JSON formatında sun.
+ROL
+Sen, web sitelerine erişim sağlayabilen, içeriklerini analiz edip halka açık bilgileri yapılandırılmış JSON formatına dönüştüren uzman bir veri çıkarım asistanısın.
+İŞ AKIŞI
+URL'ye Eriş: Aşağıda # HEDEF URL bölümünde verilen adrese web erişim aracını kullanarak git.
+İçeriği Oku: Sayfanın metin içeriğini al.
+Bilgileri Çıkar: Okuduğun içerikten, istenen JSON şemasındaki alanlara karşılık gelen bilgileri bul.
+JSON Oluştur: Çıkardığın bilgileri kullanarak, kurallara uygun şekilde JSON çıktısını oluştur.
+KURALLAR
+Sadece Erişilen İçeriği Kullan: Dışarıdan veya kendi bilginden veri ekleme. Tüm bilgiler erişilen URL'nin içeriğinden alınmalıdır.
+Bilgi Bulunamazsa null Kullan: Eğer istenen bir bilgi metinde mevcut değilse, o alanın değeri olarak null ata.
+Kesin JSON Çıktısı: Cevabın SADECE ve SADECE geçerli bir JSON objesi olmalıdır. Öncesinde veya sonrasında herhangi bir açıklama, yorum veya metin ekleme.
+Şemaya Tam Uyum: Aşağıda belirtilen JSON şemasının anahtar (key) isimlerini ve yapısını birebir koru.
+Erişim Hatası Durumu: Eğer sağlanan URL'ye erişilemedi veya içerik okunamadıysa, şu JSON'u döndür:
+{
+"hata": "URL'ye erişilemedi veya içerik alınamadı.",
+"url": "[Sağlanan URL]"
+}
+İSTENEN JSON ŞEMASI
+{
+"sirketAdi": "Şirketin tam yasal veya ticari adı.",
+"slogan": "Şirketin web sitesinde geçen sloganı veya mottosu.",
+"hakkindaOzet": "Şirket hakkında genel bir özet veya 'Hakkımızda' bölümünden kısa bir metin.",
+"kurulusYili": "Şirketin kurulduğu yıl (Sadece sayı olarak, örn: 2005).",
+"iletisim": {
+"adres": "Şirketin tam ve açık adresi.",
+"telefon": "Genel iletişim telefon numarası.",
+"eposta": "Genel iletişim e-posta adresi.",
+"haritaLinki": "Google Maps veya benzeri bir harita linki (varsa)."
+},
+"sosyalMedya": {
+"linkedin": "LinkedIn sayfasının tam URL'si.",
+"twitter_x": "Twitter (X) profilinin tam URL'si.",
+"facebook": "Facebook sayfasının tam URL'si.",
+"instagram": "Instagram profilinin tam URL'si."
+},
+"anahtarHizmetler": [
+"Listelenen ana hizmet veya ürün 1",
+"Listelenen ana hizmet veya ürün 2"
+],
+"analizEdilenUrl": "Bilginin çıkarıldığı web sitesinin tam URL'si."
+}
+# HEDEF URL
+${url}`;
+
+const handleJsonClick = async () => {
+  // 1) önce formu temizle
+  if (typeof onClear === "function") {
+    onClear();
+    await Promise.resolve();   // state flush (opsiyonel ama faydalı)
+  }
+
+  const url = normalizeUrl(text);
+  if (!isValidUrl(url)) {
+    setControl2(false);
+    setMessage(messages.empty);
+    setAiText("");
+    return;
+  }
+
+  try {
+    setControl2(true);
+    setMessage(messages.working);
+    setAiText("");
+
+    const raw = await enhanceText("", buildJsonPrompt(url));
+    const out = (raw || "").trim();
+    setAiText(out);
+
+    // JSON parse
+    let parsed: any;
+    try {
+      parsed = JSON.parse(out);
+    } catch {
+      const picked = extractFirstJsonObject(out);
+      if (!picked) throw new Error("JSON bulunamadı");
+      parsed = JSON.parse(picked);
+    }
+
+
+    setMessage(messages.done);
+     onJson?.(parsed);
+      const filledCount = countFoundFields(parsed);
+      setMessage(messages.done);
+      setAiText(buildUserMessage(filledCount));
+  } catch (err) {
+    console.error("Gemini fetch/parse error:", err);
+    setControl2(false);
+    setMessage("Çıktı JSON formatında değil, metin gösterildi.");
+  }
+};
+
+const stripCodeFences = (t: string) =>
+  t.replace(/^\s*```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
+
+// Basit ama sağlam çıkarıcı: ilk '{' ile SON eşleşen '}' arası
+const extractFirstJsonObject = (t: string): string | null => {
+  const s = stripCodeFences(t);
+  const start = s.indexOf("{");
+  const end = s.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) return null;
+  return s.slice(start, end + 1).trim();
+};
   useEffect(() => {
     if (!control2) {
       setAiText("");
@@ -135,9 +232,7 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
           alignItems: "center",
           justifyContent: "center",
           animation: "float 2s linear infinite",
-          "@keyframes float": {
-            "50%": { transform: "translateY(-2px)" },
-          },
+          "@keyframes float": { "50%": { transform: "translateY(-2px)" } },
           width: 72,
         }}
       >
@@ -171,18 +266,12 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
         <iframe
           src="https://widget.galichat.com/chat/6691wb9cakfml2mjro2x19"
           scrolling="no"
-          style={{
-            pointerEvents: "none",
-            border: "0px",
-            width: 63,
-            height: 63,
-            transition: "all 0.3s ease-in-out",
-          }}
+          style={{ pointerEvents: "none", border: 0, width: 63, height: 63, transition: "all 0.3s ease-in-out" }}
           onLoad={() => {
             const timer = setTimeout(() => setLoaded(true), 1000);
             return () => clearTimeout(timer);
           }}
-        ></iframe>
+        />
       </Box>
 
       <Paper
@@ -201,7 +290,7 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
           borderRadius: "28px",
           transition: "all 0.3s ease-in-out",
           overflow: "hidden",
-          padding: isHovered ? "0 16px" : "0",
+          padding: isHovered ? "0 16px" : 0,
           ml: isHovered ? 0 : 1,
           zIndex: 1000,
         }}
@@ -215,13 +304,9 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
               height={26}
               marginY={3}
               marginLeft={7.2}
-              onClick={() =>
-                handlePromptClick(predefinedPrompts[0].instruction)
-              }
+              onClick={handleJsonClick}
             >
-              {control || (text?.length || 0) > 3
-                ? message
-                : "Firma bilgilerini doldurmanıza yardımcı olabilirim"}
+              {control || (text?.length || 0) > 3 ? message : messages.welcome}
             </Typography>
 
             {control && control2 ? (
@@ -232,8 +317,8 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
                   justifyContent: "center",
                   flexDirection: "column",
                   gap: 1,
-                  marginTop: 1,
-                  marginBottom: 2,
+                  mt: 1,
+                  mb: 2,
                   width: "100%",
                 }}
               >
@@ -248,12 +333,11 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
                   onChange={(e: any) => setAiText(e.target.value)}
                 />
               </Box>
-            ) : (
-              <></>
-            )}
+            ) : null}
           </>
         )}
       </Paper>
     </Box>
   );
 };
+
