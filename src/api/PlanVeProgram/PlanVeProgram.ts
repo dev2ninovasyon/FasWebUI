@@ -336,3 +336,30 @@ export const getBulguRiskiBelirleme = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const getFisBuyukluguAnalizi = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/FisBuyukluguAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.status == 200) {
+      return response.json();
+    } else {
+      console.error("Bulgu Riski Belirleme getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};

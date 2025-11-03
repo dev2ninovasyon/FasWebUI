@@ -730,6 +730,12 @@ export function createMenuItems(
                   formKodu: "FinansalTabloKalemlerindeDegisim",
                   icon: IconPoint,
                   href: "/PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim",
+                },{
+                  id: uniqueId(),
+                  title: "Fiş Büyüklüğü Analizi",
+                  formKodu: "FisBuyukluguAnalizi",
+                  icon: IconPoint,
+                  href: "/PlanVeProgram/DenetimPlanindaOnemlilik/FisBuyukluguAnalizi",
                 },
               ],
             },
