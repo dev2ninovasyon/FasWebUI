@@ -1,107 +1,153 @@
 "use client";
 
-import dynamic from "next/dynamic";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import { useTheme } from "@mui/material/styles";
-import ParentCard from "./ParentCard";
 import React from "react";
-import { ApexOptions } from "apexcharts";
+import dynamic from "next/dynamic";
+import { useTheme } from "@mui/material/styles";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Stack,
+  TextField,
+  Button,
+  Box,
+} from "@mui/material";
+import type { ApexOptions } from "apexcharts";
 
-const FisBuyukluguAnaliziChart = () => {
-  // chart color
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
+export type FisAyVerisi = {
+  ay: string;
+  gunler: string[];
+  seri: { name: string; data: number[] }[];
+  not?: string;
+};
+
+type Props = {
+  title?: string;
+  aylar: FisAyVerisi[];
+  onNotChange?: (ay: string, value: string) => void;
+  onSaveNote?: (ay: string) => void;    // ⬅️ eklendi
+  saveLoading?: boolean;                 // ⬅️ eklendi
+  registerChartDom?: (ay: string, el: HTMLDivElement | null) => void;
+};
+
+const FisBuyukluguAnaliziChart: React.FC<Props> = ({
+  title = "Fiş Büyüklüğü",
+  aylar,
+  onNotChange,
+  onSaveNote,
+  saveLoading = false,
+  registerChartDom,
+}) => {
   const theme = useTheme();
   const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary.main;
-  const error = theme.palette.error.main;
 
-  const optionscolumnchart: ApexOptions = {
+  const baseOptions: ApexOptions = {
     chart: {
-      id: "column-chart",
+      type: "bar",
       fontFamily: "'Plus Jakarta Sans', sans-serif",
-      foreColor: "#adb0bb",
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
+      animations: { enabled: false },
     },
-    colors: [primary, secondary, error],
+    colors: [primary],
     plotOptions: {
       bar: {
         horizontal: false,
-
-        columnWidth: "20%",
+        columnWidth: "40%",
+        borderRadius: 6,
+        dataLabels: { position: "top" },
       },
     },
     dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ["transparent"],
+      enabled: true,
+      offsetY: -14,
+      style: {
+        fontSize: "13px",
+        fontWeight: "bold",
+        colors: [theme.palette.mode === "dark" ? "#fff" : "#000"],
+      },
+      formatter: (val: number) =>
+        Intl.NumberFormat("tr-TR", { maximumFractionDigits: 0 }).format(val),
+      dropShadow: {
+        enabled: true,
+        top: 1,
+        left: 1,
+        blur: 1,
+        color: theme.palette.mode === "dark" ? "#000" : "#ccc",
+        opacity: 0.6,
+      },
     },
     xaxis: {
-      categories: [
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-      ],
+      categories: [],
+      labels: { rotate: -45, style: { fontSize: "11px" } },
+      title: { text: "Günler" },
     },
-    yaxis: {
-      title: {
-        text: "$ (thousands)",
-      },
-    },
-    fill: {
-      opacity: 1,
-    },
+    yaxis: { title: { text: "Fiş Sayısı" } },
+    legend: { show: false },
     tooltip: {
+      theme: theme.palette.mode === "dark" ? "dark" : "light",
       y: {
-        formatter(val) {
-          return `$ ${val} thousands`;
-        },
+        formatter: (val: number): string =>
+          `${Intl.NumberFormat("tr-TR").format(val)} fiş`,
       },
-      theme: "dark",
-    },
-    grid: {
-      show: false,
-    },
-    legend: {
-      show: true,
-      position: "bottom",
-
     },
   };
-  const seriescolumnchart = [
-    {
-      name: "Günlük",
-      data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
-    },
-    {
-      name: "Aylık",
-      data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
-    },
-    {
-      name: "Yıllık",
-      data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
-    },
-  ];
 
   return (
-    <ParentCard title="Column Chart" >
-      <Chart
-        options={optionscolumnchart}
-        series={seriescolumnchart}
-        type="bar" 
-        height="300px"
-        width={"100%"}
-      />
-    </ParentCard>
+    <Stack spacing={3}>
+      {aylar.map((item) => {
+        const gunlukData = item.seri[0].data;
+        const chartId = `fis-${item.ay}`;
+
+        const options: ApexOptions = {
+          ...baseOptions,
+          chart: { ...(baseOptions.chart as ApexOptions["chart"]), id: chartId },
+          xaxis: { ...(baseOptions.xaxis as ApexOptions["xaxis"]), categories: item.gunler },
+        };
+
+        const series = [{ name: "Günlük Fiş Sayısı", data: gunlukData }];
+
+    return (
+  <Card key={item.ay} variant="outlined">
+    <CardHeader title={`${item.ay} Ayı Fişleri`} sx={{ pb: 0 }} />
+    <CardContent sx={{ pt: 1 }}>
+      <div id={`chart-wrap-${item.ay}`} ref={(el) => registerChartDom?.(item.ay, el)}>
+        <Chart options={options} series={series} type="bar" height={300} width="100%" />
+      </div>
+
+      <Divider sx={{ my: 2 }} />
+
+      {/* Not alanı + alt köşede buton */}
+      <Box>
+        <TextField
+          label={`${item.ay} Notu`}
+          fullWidth
+          multiline
+          minRows={3}
+          value={item.not ?? ""}
+          onChange={(e) => onNotChange?.(item.ay, e.target.value)}
+        />
+
+        {/* Buton sağ alt köşede, text alanının dışında */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+          <Button
+            variant="contained"
+            size="small"
+            disableElevation
+            onClick={() => onSaveNote?.(item.ay)}
+            disabled={saveLoading}
+          >
+            {saveLoading ? "Kaydediliyor..." : "Notu Kaydet"}
+          </Button>
+        </Box>
+      </Box>
+    </CardContent>
+  </Card>
+);
+      })}
+    </Stack>
   );
 };
 

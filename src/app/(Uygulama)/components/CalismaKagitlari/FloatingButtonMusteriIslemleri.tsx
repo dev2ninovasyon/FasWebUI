@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Divider, Paper, Typography, useTheme } from "@mui/material";
-import { enhanceText } from "@/utils/gemini";
+import { runTaskWithGemini } from "@/utils/gemini";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import { parse } from "path";
 
 interface FloatingButtonProps {
   control?: boolean;
@@ -110,36 +111,73 @@ Erişim Hatası Durumu: Eğer sağlanan URL'ye erişilemedi veya içerik okunama
 }
 İSTENEN JSON ŞEMASI
 {
-"sirketAdi": "Şirketin tam yasal veya ticari adı.",
-"slogan": "Şirketin web sitesinde geçen sloganı veya mottosu.",
-"hakkindaOzet": "Şirket hakkında genel bir özet veya 'Hakkımızda' bölümünden kısa bir metin.",
-"kurulusYili": "Şirketin kurulduğu yıl (Sadece sayı olarak, örn: 2005).",
-"iletisim": {
-"adres": "Şirketin tam ve açık adresi.",
-"telefon": "Genel iletişim telefon numarası.",
-"eposta": "Genel iletişim e-posta adresi.",
-"haritaLinki": "Google Maps veya benzeri bir harita linki (varsa)."
-},
-"sosyalMedya": {
-"linkedin": "LinkedIn sayfasının tam URL'si.",
-"twitter_x": "Twitter (X) profilinin tam URL'si.",
-"facebook": "Facebook sayfasının tam URL'si.",
-"instagram": "Instagram profilinin tam URL'si."
-},
-"anahtarHizmetler": [
-"Listelenen ana hizmet veya ürün 1",
-"Listelenen ana hizmet veya ürün 2"
-],
-"analizEdilenUrl": "Bilginin çıkarıldığı web sitesinin tam URL'si."
+  "sirketAdi": "Şirketin tam yasal veya ticari adı.",
+  "iletisim": {
+    "adres": "Şirketin tam ve açık adresi.",
+    "telefon": "Genel iletişim telefon numarası.",
+    "eposta": "Genel iletişim e-posta adresi."
+  }
 }
 # HEDEF URL
 ${url}`;
 
+const stripFences = (s: string) =>
+  s.replace(/```json\s*([\s\S]*?)```/gi, "$1")
+   .replace(/```\s*([\s\S]*?)```/g, "$1");
+
+const stripBOM = (s: string) => s.replace(/^\uFEFF/, "");
+
+const fixSmartQuotes = (s: string) =>
+  s.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+
+// Basit trailing comma temizleyici: } , ] öncesi virgülleri temizler
+const stripTrailingCommas = (s: string) =>
+  s.replace(/,\s*([}\]])/g, "$1");
+
+// Metin içinden İLK geçerli JSON'u (obje veya dizi) denge sayacıyla ayıklar
+function extractFirstJson(text: string): string | null {
+  const s = text.trim();
+  const start = s.search(/[\{\[]/);
+  if (start < 0) return null;
+
+  const openChar = s[start];
+  const closeChar = openChar === "{" ? "}" : "]";
+  let depth = 0;
+  for (let i = start; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === openChar) depth++;
+    else if (ch === closeChar) depth--;
+
+    if (depth === 0) {
+      return s.slice(start, i + 1);
+    }
+  }
+  return null; // kapanış bulunamadı
+}
+
+function safeParseJson(raw: string): any {
+  const candidates: string[] = [];
+  // 1) doğrudan
+  candidates.push(raw);
+  // 2) çit temizle + BOM + smart quotes + trailing comma
+  candidates.push(stripTrailingCommas(fixSmartQuotes(stripBOM(stripFences(raw)))));
+  // 3) metin içinden ilk JSON'u ayıkla
+  const picked = extractFirstJson(candidates[1]) || extractFirstJson(candidates[0]);
+  if (picked) {
+    try { return JSON.parse(picked); } catch {}
+    try { return JSON.parse(stripTrailingCommas(picked)); } catch {}
+  }
+  // 4) son çare
+  try { return JSON.parse(candidates[1]); } catch (e) {
+    throw new Error("Geçerli JSON bulunamadı.");
+  }
+}
+// --- /helpers ---
+
 const handleJsonClick = async () => {
-  // 1) önce formu temizle
   if (typeof onClear === "function") {
     onClear();
-    await Promise.resolve();   // state flush (opsiyonel ama faydalı)
+    await Promise.resolve();
   }
 
   const url = normalizeUrl(text);
@@ -155,26 +193,35 @@ const handleJsonClick = async () => {
     setMessage(messages.working);
     setAiText("");
 
-    const raw = await enhanceText("", buildJsonPrompt(url));
+    const raw = await runTaskWithGemini(buildJsonPrompt(url),url);
     const out = (raw || "").trim();
+
+    // Kullanıcıya gördürdüğünüz metin JSON değilse kafa karıştırabilir,
+    // isterseniz bunu setAiText yerine parse başarılı olunca doldurun.
     setAiText(out);
 
-    // JSON parse
+    // Güvenli parse
     let parsed: any;
     try {
-      parsed = JSON.parse(out);
-    } catch {
-      const picked = extractFirstJsonObject(out);
-      if (!picked) throw new Error("JSON bulunamadı");
-      parsed = JSON.parse(picked);
+      parsed = safeParseJson(out);
+    } catch (e) {
+      console.error("JSON parse failed:", e, "Sample:", out.slice(0, 200));
+      setControl2(false);
+      setMessage("Çıktı JSON formatında değil, metin gösterildi.");
+      return;
     }
 
-
-    setMessage(messages.done);
-     onJson?.(parsed);
+    if (parsed != null) {
       const filledCount = countFoundFields(parsed);
-      setMessage(messages.done);
+      if (filledCount <= 0) {
+        setAiText(buildUserMessage(0));
+        setMessage(messages.done);
+        return;
+      }
       setAiText(buildUserMessage(filledCount));
+      onJson?.(parsed);
+      setMessage(messages.done);
+    }
   } catch (err) {
     console.error("Gemini fetch/parse error:", err);
     setControl2(false);
