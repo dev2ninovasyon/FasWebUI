@@ -34,7 +34,7 @@ export const enhanceText = async (text: string, instruction: string) => {
 // utils/gemini.ts
 // utils/gemini.ts
 export const enhanceTextSettingWith = async (text: string, instruction: string) => {
-  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY!;
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY2!;
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 console.log("veri"+instruction)
 

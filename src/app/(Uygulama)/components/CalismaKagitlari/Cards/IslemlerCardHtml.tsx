@@ -3,36 +3,45 @@
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { Button, Dialog, DialogContent, Grid , useTheme} from "@mui/material";
-import { IconFileTypeDocx, IconFileTypePdf } from "@tabler/icons-react";
+import { Button, Dialog, DialogContent, Grid, useTheme } from "@mui/material";
+import { IconFileTypeDocx, IconFileTypePdf, IconArchive } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
 import { url } from "@/api/apiBase";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { enqueueSnackbar } from "notistack";
+
 interface Props {
   controller: string;
   buildHtmlAsync?: () => Promise<string>; // 🔑
-  previewEndpoint?: string;               // opsiyonel override
+  previewEndpoint?: string; // opsiyonel override (şimdilik kullanılmıyor)
 }
 
-const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, previewEndpoint }) => {
+const IslemlerCardHtml: React.FC<Props> = ({
+  controller,
+  buildHtmlAsync,
+  previewEndpoint,
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const customizer = useSelector((state: AppState) => state.customizer);
+  const theme = useTheme();
+
   const [isOpen, setIsOpen] = useState(false);
   const [pdfBlobUrl, setPdfBlobUrl] = useState("");
   const [openCartAlert, setOpenCartAlert] = useState(false);
- const customizer = useSelector((state: AppState) => state.customizer);
-   const theme = useTheme();
+
   const handleDownload = async () => {
     try {
-       setOpenCartAlert(true);
+      setOpenCartAlert(true);
       if (!buildHtmlAsync) {
         alert("Önizleme için HTML üretici (buildHtmlAsync) bulunamadı.");
         return;
       }
-       const endpoint =`${url}/ArsivIslemleri/WordDosyasiIndirHtml`;
-  const html = await buildHtmlAsync();
+
+      const endpoint = `${url}/ArsivIslemleri/WordDosyasiIndirHtml`;
+      const html = await buildHtmlAsync();
+
       const response = await axios.post(
         endpoint,
         {
@@ -41,7 +50,7 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
           denetlenenId: user.denetlenenId,
           title: controller,
           modelAdi: controller,
-             html,
+          html,
           save: true, // arşive kaydet
         },
         {
@@ -53,6 +62,7 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
           responseType: "blob",
         }
       );
+
       const urlFile = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = urlFile;
@@ -62,17 +72,17 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
       link.remove();
     } catch (error) {
       console.error("İndirme hatası:", error);
-             enqueueSnackbar("İndirme sırasında hata oluştu..", {
-               variant: "error",
-               autoHideDuration: 5000,
-               style: {
-                 backgroundColor:
-                   customizer.activeMode === "dark"
-                     ? theme.palette.error.light
-                     : theme.palette.error.main,
-                 maxWidth: "720px",
-               },
-             });
+      enqueueSnackbar("İndirme sırasında hata oluştu.", {
+        variant: "error",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.error.light
+              : theme.palette.error.main,
+          maxWidth: "720px",
+        },
+      });
     } finally {
       setOpenCartAlert(false);
     }
@@ -88,7 +98,7 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
       }
 
       const html = await buildHtmlAsync();
-      const endpoint =`${url}/ArsivIslemleri/PreviewFromHtml`;
+      const endpoint = previewEndpoint || `${url}/ArsivIslemleri/PreviewFromHtml`;
 
       const response = await axios.post(
         endpoint,
@@ -117,17 +127,78 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
       setIsOpen(true);
     } catch (error: any) {
       console.error("Önizleme/Export hatası:", error?.response || error);
-       enqueueSnackbar("Önizleme sırasında hata oluştu.", {
-               variant: "error",
-               autoHideDuration: 5000,
-               style: {
-                 backgroundColor:
-                   customizer.activeMode === "dark"
-                     ? theme.palette.error.light
-                     : theme.palette.error.main,
-                 maxWidth: "720px",
-               },
-             });
+      enqueueSnackbar("Önizleme sırasında hata oluştu.", {
+        variant: "error",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.error.light
+              : theme.palette.error.main,
+          maxWidth: "720px",
+        },
+      });
+    } finally {
+      setOpenCartAlert(false);
+    }
+  };
+
+  // 🔸 Sadece arşive kaydet (indir / preview yok)
+  const handleArchive = async () => {
+    try {
+      setOpenCartAlert(true);
+      if (!buildHtmlAsync) {
+        alert("Arşive kaydetme için HTML üretici (buildHtmlAsync) bulunamadı.");
+        return;
+      }
+
+      const html = await buildHtmlAsync();
+      const endpoint = `${url}/ArsivIslemleri/ArsiveKaydetHtml`; // 🔴 Backend'de bu endpoint'i karşılamalısın
+
+      await axios.post(
+        endpoint,
+        {
+          denetciId: user.denetciId,
+          yil: user.yil,
+          denetlenenId: user.denetlenenId,
+          title: controller,
+          modelAdi: controller,
+          html,
+          save: true,
+        },
+        {
+          baseURL: url,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token || ""}`,
+          },
+        }
+      );
+
+      enqueueSnackbar("Belge başarıyla arşive kaydedildi.", {
+        variant: "success",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.success.light
+              : theme.palette.success.main,
+          maxWidth: "720px",
+        },
+      });
+    } catch (error: any) {
+      console.error("Arşive kaydetme hatası:", error?.response || error);
+      enqueueSnackbar("Arşive kaydedilirken hata oluştu.", {
+        variant: "error",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.error.light
+              : theme.palette.error.main,
+          maxWidth: "720px",
+        },
+      });
     } finally {
       setOpenCartAlert(false);
     }
@@ -138,8 +209,21 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
       <Grid item xs={12} lg={12}>
         <Card sx={{ width: "100%", bgcolor: "primary.light" }}>
           <CardContent sx={{ bgcolor: "primary.light" }}>
-            <Grid container sx={{ width: "100%", margin: "0 auto", justifyContent: "space-between", gap: 1 }}>
-              <Grid item xs={12} lg={5.75} sx={{ display: "flex", justifyContent: "center" }}>
+            <Grid
+              container
+              sx={{
+                width: "100%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
+            >
+              <Grid
+                item
+                xs={12}
+                lg={3.75}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
@@ -153,7 +237,12 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
                 </Button>
               </Grid>
 
-              <Grid item xs={12} lg={5.75} sx={{ display: "flex", justifyContent: "center" }}>
+              <Grid
+                item
+                xs={12}
+                lg={3.75}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
@@ -166,32 +255,52 @@ const IslemlerCardHtml: React.FC<Props> = ({ controller, buildHtmlAsync, preview
                   İndir
                 </Button>
               </Grid>
+
+              <Grid
+                item
+                xs={12}
+                lg={3.75}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<IconArchive width={18} />}
+                  disabled={openCartAlert}
+                  onClick={handleArchive}
+                  sx={{ width: "100%" }}
+                >
+                  Arşive Kaydet
+                </Button>
+              </Grid>
             </Grid>
           </CardContent>
         </Card>
       </Grid>
 
-<Dialog
-  open={isOpen}
-  onClose={() => setIsOpen(false)}
-  fullWidth
-  maxWidth="xl"
-  // scroll="paper" // (default) kalsın; body yerine dialog kâğıdı scroll olur
->
-  <DialogContent sx={{ p: 0, overflow: "hidden" }}>
-    <div style={{ width: "100%", height: "80vh", overflow: "hidden" }}>
-      <iframe
-        src={`${pdfBlobUrl}#navpanes=0`} // yan paneli kapat
-        style={{ width: "100%", height: "100%", border: 0 }}
-        title="preview"
-      />
-    </div>
-  </DialogContent>
-</Dialog>
-
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        fullWidth
+        maxWidth="xl"
+      >
+        <DialogContent sx={{ p: 0, overflow: "hidden" }}>
+          <div style={{ width: "100%", height: "80vh", overflow: "hidden" }}>
+            <iframe
+              src={`${pdfBlobUrl}#navpanes=0`}
+              style={{ width: "100%", height: "100%", border: 0 }}
+              title="preview"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {openCartAlert && (
-        <InfoAlertCart openCartAlert={openCartAlert} setOpenCartAlert={setOpenCartAlert} />
+        <InfoAlertCart
+          openCartAlert={openCartAlert}
+          setOpenCartAlert={setOpenCartAlert}
+        />
       )}
     </Grid>
   );

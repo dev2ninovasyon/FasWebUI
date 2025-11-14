@@ -104,7 +104,7 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
     </>
   );
 };
-
+import Script from "next/script";
 export default function RootLayout({
   children,
 }: {
@@ -117,6 +117,10 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <body>
+        <Script
+          src="/libs/html-docx.js"
+          strategy="beforeInteractive"
+        />
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             {loading ? (
@@ -137,6 +141,7 @@ export default function RootLayout({
             )}
           </PersistGate>
         </Provider>
+        
       </body>
     </html>
   );
