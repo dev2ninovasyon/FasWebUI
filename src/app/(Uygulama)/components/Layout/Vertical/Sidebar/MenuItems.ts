@@ -865,6 +865,23 @@ export function createMenuItems(
                     "public/images/svgs/denetim-kanitlari/mizan-kontrol.svg",
                   icon: IconPoint,
                   href: "/DenetimKanitlari/MizanKontrol/DonusumMizanKontrol",
+                },  {
+                  id: uniqueId(),
+                  title: "Özet Denetim Mizan Kontrol Belgesi",
+                  formKodu: "OzetDonusumMizan",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/mizan-kontrol.svg",
+                  icon: IconPoint,
+                  href: "/DenetimKanitlari/MizanKontrol/OzetDonusumMizanKontrol",
+                }, 
+                {
+                  id: uniqueId(),
+                  title: "Vuk Mizan Dönüşüm Mizan Karşılaştırma",
+                  formKodu: "VukMizanDonusumMizanKarsilastirma",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/mizan-kontrol.svg",
+                  icon: IconPoint,
+                  href: "/DenetimKanitlari/MizanKontrol/VukMizanDonusumMizanKarsilastirma",
                 },
               ],
             },

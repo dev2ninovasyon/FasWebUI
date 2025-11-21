@@ -54,7 +54,32 @@ export const getDonusumMizan = async (
     console.error("Bir hata oluştu:", error);
   }
 };
-
+export const getOzetDonusumMizan = async (
+  token: string,
+  denetlenenId: number,
+  yil: number,
+  konsolidasyonMu: boolean
+) => {
+  try {
+    const response = await fetch(
+      `${url}/Donusum/DonusumOzetMizan?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Donusum Mizan verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
 export const getTersBakiyeVerenProgramVukMizanHesaplari = async (
   token: string,
   denetlenenId: number,
