@@ -92,7 +92,7 @@ const handleAiJson = (data: any) => {
   setTel(data?.iletisim?.telefon ?? "");
   setEmail(data?.iletisim?.eposta ?? "");
   setAdres(data?.iletisim?.adres ?? "");
-  setWebAdresi(data?.analizEdilenUrl ?? "");
+// setWebAdresi(data?.analizEdilenUrl ?? "");
 
   setVergiDairesi(data?.vergiDairesi ?? "");
   setVergiNo(data?.vergiNo ?? "");

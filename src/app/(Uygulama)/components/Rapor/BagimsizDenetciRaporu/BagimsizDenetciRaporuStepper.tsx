@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import axios, { AxiosProgressEvent } from "axios";
+import { IconFileTypeDocx, IconFileTypePdf, IconArchive } from "@tabler/icons-react";
 import {
   CardContent,
   CardMedia,
@@ -22,8 +24,11 @@ import {
   MenuItem,
   Stack,
   useMediaQuery,
-  useTheme,
+  useTheme,Card
 } from "@mui/material";
+
+
+import Script from "next/script";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import CustomSwitch from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSwitch";
 import { IconFileTypeDoc, IconX } from "@tabler/icons-react";
@@ -43,9 +48,9 @@ import dynamic from "next/dynamic";
 import Rapor from "./Rapor";
 import jsPDF from "jspdf";
 import { base64FontBold, base64FontRegular } from "./Roboto";
-import { IconFileTypePdf } from "@tabler/icons-react";
 import RaporTfrs from "./RaporTfrs";
-
+import { words } from "lodash";
+import { url } from "@/api/apiBase";
 const RaporGorusEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Rapor/RaporGorus/RaporGorusEditor"),
   { ssr: false }
@@ -119,6 +124,7 @@ const BagimsizDenetciRaporuStepper = () => {
   const [ozkYatayDataOnceki, setOzkYatayDataOnceki] = React.useState<VeriFT2[]>(
     []
   );
+
 
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [gorusVeriler, setGorusVeriler] = useState<Veri[]>([]);
@@ -887,9 +893,108 @@ const BagimsizDenetciRaporuStepper = () => {
     link.click();
     document.body.removeChild(link);
   }
+async function handleArchiveWord() {
+  try {
+    const reportElement = document.querySelector("#report") as HTMLElement | null;
+    if (!reportElement) {
+      enqueueSnackbar("#report elementi bulunamadı. Rapor henüz render edilmemiş olabilir.", {
+        variant: "warning",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.dark
+              : theme.palette.warning.main,
+          maxWidth: "720px",
+        },
+      });
+      return;
+    }
+
+
+const clonedElement = reportElement.cloneNode(true) as HTMLElement;
+
+// Başlıklar
+clonedElement.querySelectorAll("h1").forEach(el => {
+  (el as HTMLElement).style.fontSize = "20pt";
+  (el as HTMLElement).style.lineHeight = "24pt";
+});
+clonedElement.querySelectorAll("h2").forEach(el => {
+  (el as HTMLElement).style.fontSize = "18pt";
+  (el as HTMLElement).style.lineHeight = "22pt";
+});
+// h3–h6 için de aynı şekilde…
+
+// Tablo
+clonedElement.querySelectorAll("table.data-table").forEach(tbl => {
+  (tbl as HTMLElement).style.width = "100%";
+  (tbl as HTMLElement).style.borderCollapse = "collapse";
+});
+clonedElement.querySelectorAll("table.data-table th, table.data-table td").forEach(cell => {
+  const h = cell as HTMLElement;
+  h.style.padding = "3pt";
+  h.style.border = "0.5pt solid #555555";
+  h.style.textAlign = "left";
+});
+   const htmlContent = clonedElement.outerHTML;
+
+const wordDocument = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <title>FAS Rapor</title>
+</head>
+<body>
+  ${htmlContent}
+</body>
+</html>`;
+
+
+    if (!window.htmlDocx || typeof window.htmlDocx.asBlob !== "function") {
+      console.error("htmlDocx globali bulunamadı.");
+      enqueueSnackbar("DOCX kütüphanesi yüklenemedi.", { /* ... */ });
+      return;
+    }
+
+    const fileBlob = window.htmlDocx.asBlob(wordDocument);
+
+   const formData = new FormData();
+formData.append("html", htmlContent);
+formData.append("denetciId", String(user.denetciId ?? 0));
+formData.append("yil", String(user.yil ?? 0));
+formData.append("denetlenenId", String(user.denetlenenId ?? 0));
+formData.append("title", "BagimsizDenetciRaporu");
+formData.append("modelAdi", "BagimsizDenetciRaporu");
+formData.append("save", "true");
+
+
+    await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
+      headers: {
+        Authorization: `Bearer ${user.token || ""}`,
+      },
+    });
+
+    enqueueSnackbar("Rapor arşive kaydedildi.", { /* success style */ });
+  } catch (error) {
+    console.error("Arşive kaydetme hatası:", error);
+    enqueueSnackbar("Rapor arşive kaydedilirken hata oluştu.", { /* error style */ });
+  }
+}
+
+
 
   return (
+  
     <Box>
+         <Script
+        src="/libs/html-docx.js"
+        strategy="afterInteractive"
+        onLoad={() => {
+          console.log("html-docx.js yüklendi, window.htmlDocx:", window.htmlDocx);
+        }}
+      />
       <Stepper
         activeStep={activeStep}
         sx={{
@@ -1606,37 +1711,75 @@ const BagimsizDenetciRaporuStepper = () => {
         )}
         {activeStep == 3 && !smDown && (
           <Grid container spacing={3} mb={3} wrap="wrap">
+            <Grid item xs={12} lg={12}>
+        <Card sx={{ width: "100%", bgcolor: "primary.light" }}>
+          <CardContent sx={{ bgcolor: "primary.light" }}>
             <Grid
-              item
-              xs={12}
-              sm={12}
-              lg={12}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
+              container
+              sx={{
+                width: "100%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
             >
-              <Button
-                type="button"
-                size="medium"
-                variant="outlined"
-                color="primary"
-                startIcon={<IconFileTypePdf width={18} />}
-                onClick={createPDF}
-                sx={{ marginRight: 3 }}
+              <Grid
+                item
+                xs={12}
+                lg={3.75}
+                sx={{ display: "flex", justifyContent: "center" }}
               >
-                Pdf Olarak İndir
-              </Button>
-              <Button
-                type="button"
-                size="medium"
-                variant="outlined"
-                color="primary"
-                startIcon={<IconFileTypeDoc width={18} />}
-                onClick={createWord}
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<IconFileTypePdf width={18} />}
+                  onClick={createPDF}
+                  sx={{ width: "100%" }}
+                >
+                  Pdf
+                </Button>
+              </Grid>
+
+              <Grid
+                item
+                xs={12}
+                lg={3.75}
+                sx={{ display: "flex", justifyContent: "center" }}
               >
-                Word Olarak İndir
-              </Button>
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<IconFileTypeDocx width={18} />}
+                  onClick={createWord}
+                  sx={{ width: "100%" }}
+                >
+                  İndir
+                </Button>
+              </Grid>
+
+              <Grid
+                item
+                xs={12}
+                lg={3.75}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<IconArchive width={18} />}
+                  onClick={handleArchiveWord}
+                  sx={{ width: "100%" }}
+                >
+                  Arşive Kaydet
+                </Button>
+              </Grid>
             </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
             <Grid
               item
               xs={12}

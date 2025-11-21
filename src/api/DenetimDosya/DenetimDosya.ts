@@ -343,3 +343,36 @@ export async function getLastBirlesikPdf(
     return null;
   }
 }
+export async function sendBulkOnay(
+  token: string,
+  payload: {
+    denetciId: number;
+    denetlenenId: number;
+    yil: number;
+    denetimTuru: string;
+    hazirlayanId: number | null;
+    onaylayanId: number | null;
+    kaliteKontrolId: number | null;
+    items: Array<{ belgeId: number; belgeAdi: string ; formKodu: string}>;
+  }
+): Promise<{ results: Array<{ belgeId: number; success: boolean; message?: string }> }> {
+  console.log("api")
+  const res = await fetch(`${url}/FormHazirlayanOnaylayan/TopluOnay`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    // hata durumunda hepsini başarısız işaretleyelim
+    return { results: payload.items.map(i => ({ belgeId: i.belgeId, success: false })) };
+  }
+  const data = await res.json().catch(() => null);
+  // beklenen örnek response:
+  // { results: [{ belgeId: 123, success: true }, { belgeId: 456, success: false, message: "..." }] }
+  return data ?? { results: [] };
+}
+ 

@@ -1,5 +1,5 @@
 "use client";
-
+import Script from "next/script";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React from "react";
@@ -32,6 +32,13 @@ const Page: React.FC = () => {
       <Breadcrumb title="Bağımsız Denetçi Raporu" items={BCrumb} />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} lg={12}>
+          <Script
+        src="/libs/html-docx.js"
+        strategy="afterInteractive"
+        onLoad={() => {
+          console.log("html-docx-js yüklendi", window.htmlDocx);
+        }}
+      />
           <BagimsizDenetciRaporuStepper />
         </Grid>
       </Grid>

@@ -292,7 +292,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
       )}
       <Stack  direction="row" alignItems="center" marginBottom={2} gap={2}>
         <Box width={"100%"}>
-          <Typography variant="h6">Denetim Dosya Listesi</Typography>
+          <Typography variant="h6">Denetim Dosya Listesi V2</Typography>
         </Box>
         <TextField
           placeholder="Arama"

@@ -71,7 +71,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
-
+ 
   const [selectedGroupId, setSelectedGroupId] = useState(0);
   const [selectedGroupIslem, setSelectedGroupIslem] = useState("");
 
@@ -428,22 +428,26 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     fetchData();
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [kullaniciId]);
+useEffect(() => {
+  fetchData();
+  console.log("kullaniciId")
+}, [kullaniciId]);          // 1) kullaniciId değişince çalışır (mount dahil)
 
-  useEffect(() => {
-    if (!isClickedYeniGrupEkle) {
-      fetchData();
-    }
-  }, [isClickedYeniGrupEkle]);
+useEffect(() => {
+  if (!isClickedYeniGrupEkle) {
+    console.log("isClickedYeniGrupEkle")
+    fetchData();            // 2) component ilk mount olduğunda 
+                            // isClickedYeniGrupEkle muhtemelen false => tekrar çalışır
+  }
+}, [isClickedYeniGrupEkle]);
 
-  useEffect(() => {
-    if (isClickedVarsayilanaDon) {
-      handleDeleteAll();
-      setIsClickedVarsayilanaDon(false);
-    }
-  }, [isClickedVarsayilanaDon]);
+useEffect(() => {
+  if (isClickedVarsayilanaDon) {
+    console.log("isClickedVarsayilanaDon")
+    handleDeleteAll();
+    setIsClickedVarsayilanaDon(false);
+  }
+}, [isClickedVarsayilanaDon]);
 
   return (
     <>

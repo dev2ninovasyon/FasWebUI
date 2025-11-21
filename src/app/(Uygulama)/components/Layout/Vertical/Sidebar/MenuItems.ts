@@ -38,6 +38,7 @@ import {
   IconHome,
   IconCalculator,
   IconRepeat,
+  IconAddressBook,
 } from "@tabler/icons-react";
 
 export function createMenuItems(
@@ -730,6 +731,12 @@ export function createMenuItems(
                   formKodu: "FinansalTabloKalemlerindeDegisim",
                   icon: IconPoint,
                   href: "/PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim",
+                },{
+                  id: uniqueId(),
+                  title: "Fiş Büyüklüğü Analizi",
+                  formKodu: "FisBuyukluguAnalizi",
+                  icon: IconPoint,
+                  href: "/PlanVeProgram/DenetimPlanindaOnemlilik/FisBuyukluguAnalizi",
                 },
               ],
             },
@@ -1506,6 +1513,57 @@ export function createMenuItems(
             },
           ],
         },
+           {
+              id: uniqueId(),
+              title: "SÜRDÜRÜLEBİLİRLİK",
+              customIcon:
+                "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
+              icon: IconFileAnalytics,
+              href: "/Surdurulebilirlik",
+              children: [
+                {
+                  id: uniqueId(),
+                  title: "Genel Bilgiler",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
+                  icon: IconPoint,
+                  href: "/Surdurulebilirlik/SurdurulebilirlikGenelBilgiler",
+          
+                },
+                {
+                  id: uniqueId(),
+                  title: "Çevresel Etkiler",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
+                  icon: IconPoint,
+                  href: "/Surdurulebilirlik/SurdurulebilirlikCevreselEtkiler",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Sosyal Sorumluluk",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
+                  icon: IconPoint,
+                  href: "/Surdurulebilirlik/SurdurulebilirlikSosyalSorumluluk",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Kurumsal Yönetişim",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
+                  icon: IconPoint,
+                  href: "/Surdurulebilirlik/SurdurulebilirlikKurumsalYonetisim",
+                },
+                 {
+                  id: uniqueId(),
+                  title: "Ek Bilgiler",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg",
+                  icon: IconPoint,
+                  href: "/Surdurulebilirlik/SurdurulebilirlikEkBilgiler",
+                },
+              ],
+            },
         ...(enflasyonmu === true
           ? [
               {

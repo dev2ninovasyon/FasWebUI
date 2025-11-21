@@ -336,3 +336,69 @@ export const getBulguRiskiBelirleme = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const getFisBuyukluguAnaliziYillik = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  sadeceVerisiOlanAylar:boolean
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/FisBuyukluguAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.status == 200) {
+      return response.json();
+    } else {
+      console.error("Bulgu Riski Belirleme getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+export const upsertFisBuyukluguAylikNot = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  ay: number, // 1..12
+  not: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/PlanVeProgram/UpdateFisBuyukluguAnalizi`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          denetciId,
+          denetlenenId,
+          yil,
+          ay,
+          not,
+        }),
+      }
+    );
+
+    if (response.status === 200) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Fiş büyüklüğü notu kaydedilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
