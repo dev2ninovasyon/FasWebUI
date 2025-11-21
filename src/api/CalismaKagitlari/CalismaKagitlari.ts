@@ -492,3 +492,39 @@ export const updateFormHazirlayanOnaylayan = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+export async function uploadEkBelge(
+  token: string,
+  formData: FormData
+): Promise<boolean | { success: boolean; message?: string }> {
+  try {
+    const response = await fetch(
+      `${url}/CalismaKagitlari/upload-ek-belge`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // ❗ DİKKAT: Burada "Content-Type" KESİNLİKLE yazılmaz.
+          // Çünkü FormData kendi boundary bilgisini oluşturur.
+        },
+        body: formData,
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    }
+
+    const data = await response.json().catch(() => null);
+
+    return {
+      success: false,
+      message: data?.message || "Ek belge yüklenemedi",
+    };
+  } catch (error) {
+    console.error("uploadEkBelge hata:", error);
+    return {
+      success: false,
+      message: "Sunucuya bağlanırken bir hata oluştu.",
+    };
+  }
+}

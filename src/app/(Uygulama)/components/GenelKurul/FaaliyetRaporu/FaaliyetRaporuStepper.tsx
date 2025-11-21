@@ -30,6 +30,7 @@ import jsPDF from "jspdf";
 import { base64FontBold, base64FontRegular } from "./Roboto";
 import { IconFileTypePdf } from "@tabler/icons-react";
 import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 import { getCalismaKagidiVerileriByDenetciDenetlenenYil } from "@/api/CalismaKagitlari/CalismaKagitlari";
 
 const steps = ["Rapor Düzenleme", "Kapak Tasarımı", "Faaliyet Raporu"];

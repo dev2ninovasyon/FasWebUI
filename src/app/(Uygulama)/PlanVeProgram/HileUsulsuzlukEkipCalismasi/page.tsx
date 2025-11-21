@@ -11,6 +11,7 @@ import HileUsulsuzlukToplantiBilgileriBelge from "@/app/(Uygulama)/components/Ca
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 import HileUsulsuzlukToplantidaGorusulenHususlarBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukToplantidaGorusulenHususlarBelge";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton"
 
 const BCrumb = [
   {
@@ -69,22 +70,11 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                sx={{ width: "100%" }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    overflowWrap: "break-word",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Ek Belge Yükle
-                </Typography>
-              </Button>
+              <EkBelgeYukleButton
+        formKodu={controller}
+        fullWidth={false}           // sağda küçük buton
+        text="Ek Belge Yükle"
+      />
             </Grid>
             <Grid
               item
@@ -97,10 +87,11 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-              <Button
+                 <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
+                disabled={isClickedVarsayilanaDon}
                 onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >

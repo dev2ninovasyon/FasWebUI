@@ -9,7 +9,7 @@ import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import TekliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TekliCalismaKagidiBelge";
-
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton"
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -147,22 +147,11 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                sx={{ width: "100%" }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    overflowWrap: "break-word",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Ek Belge Yükle
-                </Typography>
-              </Button>
+              <EkBelgeYukleButton
+        formKodu={controller}
+        fullWidth={false}           // sağda küçük buton
+        text="Ek Belge Yükle"
+      />
             </Grid>
             <Grid
               item
@@ -175,10 +164,11 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-              <Button
+                 <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
+                disabled={isClickedVarsayilanaDon}
                 onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >

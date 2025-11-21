@@ -12,6 +12,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+
+import { enqueueSnackbar } from "notistack";
 import CalismaKagidiCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/CalismaKagidiCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
@@ -240,8 +242,14 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         );
         if (result) {
           fetchData();
+             enqueueSnackbar("Kayıtlar varsayılana başarıyla döndürüldü.", {
+        variant: "success",
+      });
         } else {
-          console.error("Çalışma Kağıdı Verileri silme başarısız");
+           enqueueSnackbar(
+        "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
+        { variant: "error" }
+      );
         }
       } else {
         const result = await deleteAllCalismaKagidiVerileri(
@@ -253,12 +261,21 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         );
         if (result) {
           fetchData();
+             enqueueSnackbar("Kayıtlar varsayılana başarıyla döndürüldü.", {
+        variant: "success",
+      });
         } else {
-          console.error("Çalışma Kağıdı Verileri silme başarısız");
+          enqueueSnackbar(
+        "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
+        { variant: "error" }
+      );
         }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+       enqueueSnackbar(
+        "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
+        { variant: "error" }
+      );
     }
   };
 
@@ -443,11 +460,15 @@ useEffect(() => {
 
 useEffect(() => {
   if (isClickedVarsayilanaDon) {
-    console.log("isClickedVarsayilanaDon")
-    handleDeleteAll();
-    setIsClickedVarsayilanaDon(false);
+    console.log("isClickedVarsayilanaDon");
+    (async () => {
+      await handleDeleteAll(); // snackbar + fetchData burada
+      // işlem bittiğinde butonu tekrar aktif et
+      setIsClickedVarsayilanaDon(false);
+    })();
   }
 }, [isClickedVarsayilanaDon]);
+
 
   return (
     <>

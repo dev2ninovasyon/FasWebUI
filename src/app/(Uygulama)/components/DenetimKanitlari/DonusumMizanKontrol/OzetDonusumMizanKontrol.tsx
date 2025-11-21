@@ -14,6 +14,7 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import { getOzetDonusumMizan } from "@/api/Donusum/Donusum";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
+import FormOnayBolumu from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/FormOnayBolumu";
 
 // register Handsontable's modules
 registerAllModules();
@@ -546,9 +547,19 @@ console.log("Gitti")
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>
+
+          
         </Grid>
       </Grid>
-      
+        <FormOnayBolumu
+      controller="OzetDonusumMizan" // backend’de kullandığın form kodu / controller string ne ise onu ver
+      showHazirlayan
+      showOnaylayan
+      showKaliteKontrol
+      onHazirlayanChange={fetchData}      // istersen tabloyu yenile
+      onOnaylayanChange={fetchData}
+      onKaliteKontrolChange={fetchData}
+    />
     </>
   );
 };

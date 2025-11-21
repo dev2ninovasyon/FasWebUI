@@ -8,6 +8,8 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import OzetDonusumMizanKontrol from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/OzetDonusumMizanKontrol";
 import DonusumMizanKontrolCardTable from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrolCardTable";
+// Ek import:
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton"
 
 const BCrumb = [
   {
@@ -32,7 +34,15 @@ const Page: React.FC = () => {
       title="Özet Dönüşüm Mizan Kontrol"
       description="this is  Özet Dönüşüm Mizan Kontrol"
     >
-      <Breadcrumb title="Özet Dönüşüm Mizan Kontrol" items={BCrumb} />
+     <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb}>
+  <>
+    <EkBelgeYukleButton
+        formKodu="OzetDonusumMizan"
+        fullWidth={false}           // sağda küçük buton
+        text="Ek Belge Yükle"
+      />
+  </>
+</Breadcrumb>
 
       <Grid container>
         <Grid item xs={12} lg={12}>

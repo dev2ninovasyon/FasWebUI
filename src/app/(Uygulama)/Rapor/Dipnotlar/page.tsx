@@ -63,10 +63,11 @@ const Page: React.FC = () => {
                 justifyContent: "center",
               }}
             >
-              <Button
+                 <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
+                disabled={isClickedVarsayilanaDon}
                 onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >
