@@ -33,7 +33,6 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
     user.konsolidemi || undefined,
     user.bddkmi || undefined
   );
-
   const itemsTitle =
     items && items.length > 0
       ? items.map((item) =>
@@ -66,7 +65,6 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
 
   const mdDown = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
-
   return (
     <Grid
       container
