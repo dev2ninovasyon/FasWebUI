@@ -1,4 +1,5 @@
 import { url } from "@/api/apiBase";
+import { DonusumMizanKarsilastirmaItem } from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/VukMizanDonusumMizanKarsilastirma";
 
 export const DonusumIslemiYap = async (
   token: string,
@@ -80,6 +81,29 @@ export const getOzetDonusumMizan = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+
+export const getDonusumMizanKarsilastirma = async () => {
+  const res = await fetch(
+    "https://betaapi.fasmart.app/api/Mizan/VukMizanDonusumMizanKarsilastirma?denetciId=2&yil=2023&denetlenenId=1&tip=E-Defter",
+    { cache: "no-store" }
+  );
+  if (!res.ok) {
+    throw new Error("Veri alınamadı");
+  }
+
+  const data: DonusumMizanKarsilastirmaItem[] = await res.json();
+
+  const finansalDurum = data
+    .filter((item) => item.tabloAdi === "finansaldurum")
+    .sort((a, b) => Number(a.sira ?? 0) - Number(b.sira ?? 0));
+
+  const karZarar = data
+    .filter((item) => item.tabloAdi === "karzarar")
+    .sort((a, b) => Number(a.sira ?? 0) - Number(b.sira ?? 0));
+
+  return [...finansalDurum, ...karZarar];
+};
+
 export const getTersBakiyeVerenProgramVukMizanHesaplari = async (
   token: string,
   denetlenenId: number,

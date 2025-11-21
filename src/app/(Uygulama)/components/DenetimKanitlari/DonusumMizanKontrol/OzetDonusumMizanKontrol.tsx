@@ -326,7 +326,7 @@ const OzetDonusumMizanKontrol: React.FC<Props> = ({
         user.yil || 0,
         konsolidasyonMu
       );
-console.log("Gitti")
+      console.log("Gitti");
       let totalVukBorc = 0;
       let totalVukAlacak = 0;
 
@@ -548,7 +548,6 @@ console.log("Gitti")
           ></ExceleAktarButton>
         </Grid>
       </Grid>
-      
     </>
   );
 };
