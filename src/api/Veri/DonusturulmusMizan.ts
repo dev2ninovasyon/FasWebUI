@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getDonusturulmusMizanVerileriByDenetciDenetlenenYil = async (
   token: string,
@@ -7,8 +8,8 @@ export const getDonusturulmusMizanVerileriByDenetciDenetlenenYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/DonusturulmusMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/DonusturulmusMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -32,7 +33,7 @@ export const createDonusturulmusMizanVerisi = async (
   jsonData: any
 ) => {
   try {
-    const response = await fetch(`${url}/Veri/DonusturulmusMizan`, {
+    const response =await apiFetch(`/Veri/DonusturulmusMizan`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -59,8 +60,8 @@ export const deleteDonusturulmusMizanVerisi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/DonusturulmusMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/DonusturulmusMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {

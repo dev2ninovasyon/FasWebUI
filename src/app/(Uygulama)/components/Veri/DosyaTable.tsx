@@ -35,7 +35,8 @@ import { AppState } from "@/store/store";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 import WarnAlertCart from "@/app/(Uygulama)/components/Alerts/WarnAlertCart";
 import { IconDotsVertical, IconEye, IconX } from "@tabler/icons-react";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 import axios from "axios";
 
 interface Veri {
@@ -305,7 +306,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       var controller =
         fileType === "E-DefterKebir" ? "DosyaGoster" : "PdfDosyasiGoster";
       const response = await axios({
-        url: `${url}/Veri/${controller}/${selectedId}`,
+        url: `/Veri/${controller}/${selectedId}`,
         method: "GET",
         responseType: "blob",
         headers: {

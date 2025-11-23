@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Box,
   Typography,
@@ -35,12 +35,22 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
   const aktifPasifFark = Math.abs(aktifFark - pasifFark);
   const aktifPasifFarkAltiliFark = Math.abs(aktifPasifFark - altiliFark);
 
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat("tr-TR", {
+  const formatNumber = (num: number) =>
+    new Intl.NumberFormat("tr-TR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(num);
-  };
+
+  // 🔹 Sayısal toleransla kontrol et (0,00’a yuvarlanacak kadar küçük mü?)
+  const isAktifPasifBalanced = useMemo(
+    () => Math.abs(aktifPasifFark) < 0.005,
+    [aktifPasifFark]
+  );
+
+  const aktifPasifBgColor = isAktifPasifBalanced ? "success.light" : "error.light";
+  const aktifPasifText = isAktifPasifBalanced
+    ? "Aktif Pasif Farkı (Aktif Toplamı Pasif Toplamına Eşit)"
+    : "Aktif Pasif Farkı (Aktif Toplamı Pasif Toplamına Eşit Değil)";
 
   return (
     <Grid container>
@@ -54,7 +64,7 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
           }}
         >
           <TableContainer sx={{ maxHeight: 400 }}>
-            <Table stickyHeader>
+            <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
                   <TableCell
@@ -67,13 +77,13 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
                     align="right"
                     sx={{ backgroundColor: "primary.light", borderBottom: 0 }}
                   >
-                    <Typography variant="h6">Aktif</Typography>
+                    <Typography variant="h6">Borç</Typography>
                   </TableCell>
                   <TableCell
                     align="right"
                     sx={{ backgroundColor: "primary.light", borderBottom: 0 }}
                   >
-                    <Typography variant="h6">Pasif</Typography>
+                    <Typography variant="h6">Alacak</Typography>
                   </TableCell>
                   <TableCell
                     align="right"
@@ -84,6 +94,7 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
                 </TableRow>
               </TableHead>
               <TableBody>
+                {/* 1-2 Grubu */}
                 <TableRow>
                   <TableCell align="left" sx={{ border: "none" }}>
                     1-2 Grubu (Aktif)
@@ -98,6 +109,8 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
                     {formatNumber(aktifFark)}
                   </TableCell>
                 </TableRow>
+
+                {/* 3-4-5 Grubu */}
                 <TableRow>
                   <TableCell align="left" sx={{ border: "none" }}>
                     3-4-5 Grubu (Pasif)
@@ -112,6 +125,8 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
                     {formatNumber(pasifFark)}
                   </TableCell>
                 </TableRow>
+
+                {/* Aktif-Pasif Farkı Bilgi Satırı */}
                 <TableRow>
                   <TableCell
                     colSpan={3}
@@ -122,42 +137,30 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
                     }}
                   >
                     <Box
-                      bgcolor={
-                        formatNumber(aktifPasifFark) == "0,00"
-                          ? "success.light"
-                          : "error.light"
-                      }
+                      bgcolor={aktifPasifBgColor}
                       sx={{
                         p: 2,
                         border: "none",
                         borderRadius: 0,
                       }}
                     >
-                      {formatNumber(aktifPasifFark) == "0,00" ? (
-                        <Typography variant="body2" align="left">
-                          Aktif Pasif Farkı (Aktif Toplamı Pasif Toplamına Eşit)
-                        </Typography>
-                      ) : (
-                        <Typography variant="body2" align="left">
-                          Aktif Pasif Farkı (Aktif Toplamı Pasif Toplamına Eşit
-                          Değil)
-                        </Typography>
-                      )}
+                      <Typography variant="body2" align="left">
+                        {aktifPasifText}
+                      </Typography>
                     </Box>
                   </TableCell>
                   <TableCell
                     align="right"
                     sx={{
                       border: "none",
-                      bgcolor:
-                        formatNumber(aktifPasifFark) == "0,00"
-                          ? "success.light"
-                          : "error.light",
+                      bgcolor: aktifPasifBgColor,
                     }}
                   >
                     {formatNumber(aktifPasifFark)}
                   </TableCell>
                 </TableRow>
+
+                {/* 6 Grubu */}
                 <TableRow>
                   <TableCell align="left" sx={{ border: "none" }}>
                     6 Grubu
@@ -172,12 +175,14 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
                     {formatNumber(altiliFark)}
                   </TableCell>
                 </TableRow>
+
+                {/* Aktif Pasif - 6 Grubu Farkı */}
                 <TableRow>
                   <TableCell align="left" sx={{ border: "none" }}>
                     Aktif Pasif Farkı - 6 Grubu Farkı
                   </TableCell>
-                  <TableCell align="right" sx={{ border: "none" }}></TableCell>
-                  <TableCell align="right" sx={{ border: "none" }}></TableCell>
+                  <TableCell align="right" sx={{ border: "none" }} />
+                  <TableCell align="right" sx={{ border: "none" }} />
                   <TableCell align="right" sx={{ border: "none" }}>
                     {formatNumber(aktifPasifFarkAltiliFark)}
                   </TableCell>

@@ -1,9 +1,10 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getSurekliEgitimBilgileriById = async (token: string, id: any) => {
   try {
-    const response = await fetch(
-      `${url}/Kullanici/SurekliEgitimBilgileri/${id}`,
+    const response =await apiFetch(
+      `/Kullanici/SurekliEgitimBilgileri/${id}`,
       {
         method: "GET",
         headers: {
@@ -27,8 +28,8 @@ export const getSurekliEgitimBilgileriByDenetciId = async (
   denetciId: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Kullanici/SurekliEgitimBilgileri/Denetci/${denetciId}`,
+    const response =await apiFetch(
+      `/Kullanici/SurekliEgitimBilgileri/Denetci/${denetciId}`,
       {
         method: "GET",
         headers: {
@@ -52,7 +53,7 @@ export const createSurekliEgitimBilgileri = async (
   createdSurekliEgitimBilgileri: any
 ) => {
   try {
-    const response = await fetch(`${url}/Kullanici/SurekliEgitimBilgileri`, {
+    const response =await apiFetch(`/Kullanici/SurekliEgitimBilgileri`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -78,8 +79,8 @@ export const updateSurekliEgitimBilgileri = async (
   updatedSurekliEgitimBilgileri: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Kullanici/SurekliEgitimBilgileri/${id}`,
+    const response =await apiFetch(
+      `/Kullanici/SurekliEgitimBilgileri/${id}`,
       {
         method: "PUT",
         headers: {
@@ -106,8 +107,8 @@ export const deleteSurekliEgitimBilgileriById = async (
   id: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Kullanici/SurekliEgitimBilgileri/${id}`,
+    const response =await apiFetch(
+      `/Kullanici/SurekliEgitimBilgileri/${id}`,
       {
         method: "DELETE",
         headers: {

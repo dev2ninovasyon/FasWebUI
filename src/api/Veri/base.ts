@@ -1,8 +1,9 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getFormat = async (token: string, name: string) => {
   try {
-    const response = await fetch(`${url}/Format/ByAdi/${name}`, {
+    const response =await apiFetch(`/Format/ByAdi/${name}`, {
       method: "GET",
       headers: {
         accept: "application/json",

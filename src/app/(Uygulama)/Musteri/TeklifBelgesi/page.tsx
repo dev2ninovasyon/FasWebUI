@@ -9,6 +9,7 @@ import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import TekTarihliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TekTarihliCalismaKagidiBelge";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton"
 
 const BCrumb = [
   {

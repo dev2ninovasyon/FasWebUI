@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil = async (
   token: string,
@@ -7,8 +8,8 @@ export const getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/KidemTazminatiTfrs?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/KidemTazminatiTfrs?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -32,7 +33,7 @@ export const createKidemTazminatiTfrsVerisi = async (
   jsonData: any
 ) => {
   try {
-    const response = await fetch(`${url}/Veri/KidemTazminatiTfrs`, {
+    const response =await apiFetch(`/Veri/KidemTazminatiTfrs`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -59,8 +60,8 @@ export const deleteKidemTazminatiTfrsVerisi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/KidemTazminatiTfrs?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/KidemTazminatiTfrs?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {

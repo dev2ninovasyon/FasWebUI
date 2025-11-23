@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getVukMizanVerileriByDenetciDenetlenenYil = async (
   token: string,
@@ -7,8 +8,8 @@ export const getVukMizanVerileriByDenetciDenetlenenYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/VukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/VukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -29,7 +30,7 @@ export const getVukMizanVerileriByDenetciDenetlenenYil = async (
 
 export const createVukMizanVerisi = async (token: string, jsonData: any) => {
   try {
-    const response = await fetch(`${url}/Veri/VukMizan`, {
+    const response =await apiFetch(`/Veri/VukMizan`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -56,8 +57,8 @@ export const deleteVukMizanVerisi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/VukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/VukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {

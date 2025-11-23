@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getYevmiyeFisNo = async (
   token: string,
@@ -7,8 +8,8 @@ export const getYevmiyeFisNo = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/EDefter/HaricYevmiyeNolar?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
+    const response =await apiFetch(
+      `/EDefter/HaricYevmiyeNolar?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
       {
         method: "GET",
         headers: {
@@ -34,8 +35,8 @@ export const getStandartYevmiyeFisNo = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/EDefter/StandartFisleriGetir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
+    const response =await apiFetch(
+      `/EDefter/StandartFisleriGetir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
       {
         method: "GET",
         headers: {
@@ -61,8 +62,8 @@ export const getStandartYevmiyeFisNoHaric = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/EDefter/StandartFisleriGetirHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
+    const response =await apiFetch(
+      `/EDefter/StandartFisleriGetirHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
       {
         method: "GET",
         headers: {
@@ -92,7 +93,7 @@ export const getFisListesi = async (
   bitisTarihi: string
 ) => {
   try {
-    const response = await fetch(`${url}/EDefter/HaricFisleriGoster`, {
+    const response =await apiFetch(`/EDefter/HaricFisleriGoster`, {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -132,7 +133,7 @@ export const getFisListesiHaric = async (
   bitisTarihi: string
 ) => {
   try {
-    const response = await fetch(`${url}/EDefter/HaricFisleriGosterHaric`, {
+    const response =await apiFetch(`/EDefter/HaricFisleriGosterHaric`, {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -169,8 +170,8 @@ export const saveHaricFisListesi = async (
   haricFisListe: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/EDefter/HaricFisKaydet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/EDefter/HaricFisKaydet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",
         headers: {
@@ -199,8 +200,8 @@ export const saveHaricFisListesiHaric = async (
   haricFisListe: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/EDefter/HaricFisKaydetHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/EDefter/HaricFisKaydetHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",
         headers: {

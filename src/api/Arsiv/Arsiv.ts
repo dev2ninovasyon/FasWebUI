@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getArsiv = async (
   token: string,
@@ -7,8 +8,8 @@ export const getArsiv = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/ArsivIslemleri/Getir?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/ArsivIslemleri/Getir?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
@@ -29,7 +30,7 @@ export const getArsiv = async (
 
 export const deleteArsiv = async (token: string, path: string) => {
   try {
-    const response = await fetch(`${url}/ArsivIslemleri/Sil?path=${path}`, {
+    const response =await apiFetch(`/ArsivIslemleri/Sil?path=${path}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
@@ -49,7 +50,7 @@ export const deleteArsiv = async (token: string, path: string) => {
 
 export const deleteAllArsiv = async (token: string, paths: string[]) => {
   try {
-    const response = await fetch(`${url}/ArsivIslemleri/SilToplu?`, {
+    const response =await apiFetch(`/ArsivIslemleri/SilToplu?`, {
       method: "DELETE",
       headers: {
         accept: "*/*",

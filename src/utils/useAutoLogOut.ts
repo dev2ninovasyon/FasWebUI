@@ -3,7 +3,8 @@ import { resetToNull, setToken } from "@/store/user/UserSlice";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useCallback } from "react";
 import { AppState } from "@/store/store";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 const STORAGE_KEY = "user";
 const TIMEOUT_KEY = "user_expiry";
@@ -40,7 +41,7 @@ export default function useAutoLogout(
     if (!user?.token) return;
 
     try {
-      const response = await fetch(`${url}/Auth/refresh`, {
+      const response =await apiFetch(`/Auth/refresh`, {
         method: "POST",
         headers: {
           accept: "application/json",

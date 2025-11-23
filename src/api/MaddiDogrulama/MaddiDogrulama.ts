@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getMaddiDogrulama = async (
   token: string,
@@ -10,8 +11,8 @@ export const getMaddiDogrulama = async (
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;
     let bobimi = denetimTuru == "Bobi" ? true : false;
 
-    const response = await fetch(
-      `${url}/DenetimDosyaBelgeleri/MaddiDogrulamaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/DenetimDosyaBelgeleri/MaddiDogrulamaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
@@ -42,8 +43,8 @@ export const getUygulananDenetimProsedurleri = async (
   tfrsmi: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/UygulananDenetimProsedurleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotAdi=${dipnotAdi}&tfrsmi=${tfrsmi}`,
+    const response =await apiFetch(
+      `/UygulananDenetimProsedurleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotAdi=${dipnotAdi}&tfrsmi=${tfrsmi}`,
       {
         method: "GET",
         headers: {
@@ -67,7 +68,7 @@ export const createCalismaKagidiVerisi = async (
   createdCalismaKagidiVerisi: any
 ) => {
   try {
-    const response = await fetch(`${url}/UygulananDenetimProsedurleri`, {
+    const response =await apiFetch(`/UygulananDenetimProsedurleri`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -93,7 +94,7 @@ export const updateCalismaKagidiVerisi = async (
   updatedCalismaKagidiVerisi: any
 ) => {
   try {
-    const response = await fetch(`${url}/UygulananDenetimProsedurleri/${id}`, {
+    const response =await apiFetch(`/UygulananDenetimProsedurleri/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -115,7 +116,7 @@ export const updateCalismaKagidiVerisi = async (
 
 export const deleteCalismaKagidiVerisiById = async (token: string, id: any) => {
   try {
-    const response = await fetch(`${url}/UygulananDenetimProsedurleri/${id}`, {
+    const response =await apiFetch(`/UygulananDenetimProsedurleri/${id}`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
@@ -142,8 +143,8 @@ export const deleteAllCalismaKagidiVerileri = async (
   tfrsmi: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/UygulananDenetimProsedurleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotAdi=${dipnotAdi}&tfrsmi=${tfrsmi}`,
+    const response =await apiFetch(
+      `/UygulananDenetimProsedurleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotAdi=${dipnotAdi}&tfrsmi=${tfrsmi}`,
       {
         method: "DELETE",
         headers: {

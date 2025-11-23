@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getEDefterIncelemeVerileri = async (
   token: string,
@@ -10,8 +11,8 @@ export const getEDefterIncelemeVerileri = async (
   bitisTarihi: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
+    const response =await apiFetch(
+      `/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
       {
         method: "GET",
         headers: {
@@ -39,8 +40,8 @@ export const updateEDefterIncelemeVerisi = async (
   updatedEDefterInceleme: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
+    const response =await apiFetch(
+      `/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
       {
         method: "PUT",
         headers: {
@@ -71,8 +72,8 @@ export const updateEDefterIncelemeListeVerisi = async (
   updatedEDefterInceleme: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/EDefterIncelemeListe?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&ids=${ids}`,
+    const response =await apiFetch(
+      `/Veri/EDefterIncelemeListe?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&ids=${ids}`,
       {
         method: "PUT",
         headers: {
@@ -102,8 +103,8 @@ export const getEDefterIncelemeVerileriByFisNo = async (
   fisNo: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/EDefterIncelemeByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
+    const response =await apiFetch(
+      `/Veri/EDefterIncelemeByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
       {
         method: "GET",
         headers: {

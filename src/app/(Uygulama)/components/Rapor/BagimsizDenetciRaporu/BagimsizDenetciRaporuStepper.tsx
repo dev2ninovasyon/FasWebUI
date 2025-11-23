@@ -50,7 +50,8 @@ import jsPDF from "jspdf";
 import { base64FontBold, base64FontRegular } from "./Roboto";
 import RaporTfrs from "./RaporTfrs";
 import { words } from "lodash";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 const RaporGorusEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Rapor/RaporGorus/RaporGorusEditor"),
   { ssr: false }
@@ -970,7 +971,7 @@ formData.append("modelAdi", "BagimsizDenetciRaporu");
 formData.append("save", "true");
 
 
-    await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
+    await axios.post(`/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
       headers: {
         Authorization: `Bearer ${user.token || ""}`,
       },

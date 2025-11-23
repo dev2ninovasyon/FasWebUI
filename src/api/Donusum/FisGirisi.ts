@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const createFisGirisiVerisi = async (
   token: string,
@@ -6,8 +7,8 @@ export const createFisGirisiVerisi = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Donusum/DonusumFisleri?konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/Donusum/DonusumFisleri?konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "POST",
         headers: {
@@ -37,8 +38,8 @@ export const getFisNo = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Donusum/DonusumFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/Donusum/DonusumFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {

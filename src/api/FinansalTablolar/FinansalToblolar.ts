@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getFinansalDurumTablosu = async (
   token: string,
@@ -8,8 +9,8 @@ export const getFinansalDurumTablosu = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/FinansalDurumTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/FinansalDurumTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -36,8 +37,8 @@ export const getKarZararTablosu = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/KarZararTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/KarZararTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -64,8 +65,8 @@ export const getNakitAkisTablosu = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/NakitAkisTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/NakitAkisTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -92,8 +93,8 @@ export const getOzkaynakTablosu = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/OzkaynakTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/OzkaynakTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -121,8 +122,8 @@ export const FinansalTabloOlustur = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/FinansalTablolariOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&nakitAkisYontemi=${nakitAkisType}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/FinansalTablolariOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&nakitAkisYontemi=${nakitAkisType}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "Post",
         headers: {

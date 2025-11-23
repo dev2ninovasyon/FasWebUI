@@ -5,7 +5,7 @@ export const enhanceText = async (text: string, instruction: string) => {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     const prompt = `${instruction}\n\nMetin: ${text}`;
-    const response = await fetch(endpoint, {
+    const response =await apiFetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ console.log("veri"+instruction)
     },
   };
 
-  const res = await fetch(endpoint, {
+  const res =await apiFetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

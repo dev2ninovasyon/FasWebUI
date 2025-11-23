@@ -1,6 +1,7 @@
 import axios, { AxiosProgressEvent } from "axios";
 
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 export type Taraf = {
   id: string;
   ad?: string | null;
@@ -82,7 +83,7 @@ export async function fetchPagedFaturalarFull(
   filters: Record<string, string[]> = {}
 ): Promise<PagedResult<Fatura>> {
   const apiurl =
-    `${url}/Invoices/FilteredPagedFull` +
+    `/Invoices/FilteredPagedFull` +
     `?denetciId=${denetciId}&yil=${yil}` +
     `&denetlenenId=${denetlenenId}&page=${page}&pageSize=${pageSize}` +
     `&tip=${encodeURIComponent(tip)}`;
@@ -106,7 +107,7 @@ export const uploadFaturaDosyalari = async (
     tip
   )}&islemAdi=${encodeURIComponent(islemAdi)}`;
 
-  return axios.post(`${url}/Invoices/Upload?${qs}`, form, {
+  return axios.post(`/Invoices/Upload?${qs}`, form, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${user.token}`,
@@ -116,8 +117,8 @@ export const uploadFaturaDosyalari = async (
 };
 
 export const getYuklemeIslemleri = async (user:any) => {
-  const r = await fetch(
-    `${url}/Invoices/GetYuklemeIslemleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
+  const r =await apiFetch(
+    `/Invoices/GetYuklemeIslemleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
     { headers:{ accept:"application/json", Authorization:`Bearer ${user.token}` } }
   );
   if (!r.ok) throw new Error("Yükleme işlemleri alınamadı");
@@ -125,7 +126,7 @@ export const getYuklemeIslemleri = async (user:any) => {
 };
 
 export const previewFaturaHtmlNewTab = async (user: any, dosyaId: string) => {
-  const res = await axios.get(`${url}/Invoices/PreviewHtml/${dosyaId}`, {
+  const res = await axios.get(`/Invoices/PreviewHtml/${dosyaId}`, {
     responseType: "text",
     headers: { Authorization: `Bearer ${user.token}` },
   });
@@ -148,7 +149,7 @@ export const previewFaturaHtmlNewTab = async (user: any, dosyaId: string) => {
 };
 
 export const deleteYuklemeIslemleri = async (user:any, ids:string[]) => {
-  const r = await fetch(`${url}/Invoices/DeleteYuklemeIslemleri`, {
+  const r =await apiFetch(`/Invoices/DeleteYuklemeIslemleri`, {
     method:"DELETE",
     headers:{ "Content-Type":"application/json", Authorization:`Bearer ${user.token}` },
     body: JSON.stringify(ids)
@@ -172,7 +173,7 @@ export type InvoiceYevmiyeRow = {
 
 export async function findInvoiceYevmiyeRowsByVkn(user:any, tip:string, vkn:string): Promise<InvoiceYevmiyeRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}&tip=${encodeURIComponent(tip)}&vkn=${encodeURIComponent(vkn)}`;
-  const r = await fetch(`${url}/Invoices/FindInvoiceYevmiyeRowsByVkn?${qs}`, {
+  const r =await apiFetch(`/Invoices/FindInvoiceYevmiyeRowsByVkn?${qs}`, {
     headers:{ accept:"application/json", Authorization:`Bearer ${user.token}` }
   });
   if (!r.ok) throw new Error("Satırlar alınamadı");
@@ -182,7 +183,7 @@ export async function findInvoiceYevmiyeRowsByVkn(user:any, tip:string, vkn:stri
 // opsiyonel: persist
 export async function saveInvoiceYevmiyeMatches(user:any, rows:InvoiceYevmiyeRow[]) {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
-  const r = await fetch(`${url}/Invoices/SaveInvoiceYevmiyeMatches?${qs}`, {
+  const r =await apiFetch(`/Invoices/SaveInvoiceYevmiyeMatches?${qs}`, {
     method: "POST",
     headers: { "Content-Type":"application/json", Authorization:`Bearer ${user.token}` },
     body: JSON.stringify(rows)
@@ -206,7 +207,7 @@ export type SentInvoiceMatchRow = {
 
 export async function getSentInvoiceMatches(user:any): Promise<SentInvoiceMatchRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
-  const r = await fetch(`${url}/Invoices/GetSentInvoiceMatches?${qs}`, {
+  const r =await apiFetch(`/Invoices/GetSentInvoiceMatches?${qs}`, {
     headers: { accept: "application/json", Authorization: `Bearer ${user.token}` }
   });
   if (!r.ok) throw new Error("Eşleşmeler alınamadı");
@@ -226,7 +227,7 @@ export type ReceivedInvoiceMatchRow = {
 
 export async function getReceivedInvoiceMatches(user:any): Promise<ReceivedInvoiceMatchRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
-  const r = await fetch(`${url}/Invoices/GetReceivedInvoiceMatches?${qs}`, {
+  const r =await apiFetch(`/Invoices/GetReceivedInvoiceMatches?${qs}`, {
     headers: { accept: "application/json", Authorization: `Bearer ${user.token}` },
   });
   if (!r.ok) throw new Error("Alınan eşleşmeleri alınamadı");

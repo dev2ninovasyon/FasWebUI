@@ -1,5 +1,6 @@
 // /api/CalismaKagitlari/CalismaKagitlari.ts
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 export interface EkBelgeDto {
   id: number;
   orijinalDosyaAdi: string;
@@ -13,8 +14,8 @@ export async function uploadEkBelge(
   formData: FormData
 ): Promise<boolean | { success: boolean; message?: string }> {
   try {
-    const response = await fetch(
-      `${url}/ArsivIslemleri/upload-ek-belge`,
+    const response =await apiFetch(
+      `/ArsivIslemleri/upload-ek-belge`,
       {
         method: "POST",
         headers: {
@@ -57,8 +58,8 @@ export async function getEkBelgeler(
     formKodu: formKodu,
   });
 
-  const response = await fetch(
-    `${url}/ArsivIslemleri/ek-belge-listesi?${params.toString()}`,
+  const response =await apiFetch(
+    `/ArsivIslemleri/ek-belge-listesi?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -79,7 +80,7 @@ export async function downloadEkBelge(
   token: string,
   id: number
 ): Promise<{ blob: Blob; fileName: string | null }> {
-  const response = await fetch(`${url}/ArsivIslemleri/ek-belge-indir/${id}`, {
+  const response =await apiFetch(`/ArsivIslemleri/ek-belge-indir/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -115,8 +116,8 @@ export async function deleteEkBelge(
   id: number
 ): Promise<boolean> {
   try {
-    const response = await fetch(
-      `${url}/ArsivIslemleri/ek-belge-sil/${id}`,
+    const response =await apiFetch(
+      `/ArsivIslemleri/ek-belge-sil/${id}`,
       {
         method: "DELETE",
         headers: {

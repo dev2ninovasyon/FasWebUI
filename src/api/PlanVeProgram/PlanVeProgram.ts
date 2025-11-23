@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getOnemlilikVeOrneklemSeviyesi = async (
   token: string,
@@ -7,8 +8,8 @@ export const getOnemlilikVeOrneklemSeviyesi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/OnemlilikVeOrneklemSeviyesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/OnemlilikVeOrneklemSeviyesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -36,8 +37,8 @@ export const createOnemlilikVeOrneklem = async (
   hataPayi: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/OnemlilikVeOrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/OnemlilikVeOrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}`,
       {
         method: "POST",
         headers: {
@@ -65,8 +66,8 @@ export const getOnemlilikVeOrneklem = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/OnemlilikVeOrneklem?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/OnemlilikVeOrneklem?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -90,7 +91,7 @@ export const updateOnemlilikVeOrneklem = async (
   updatedOnemlilikVeOrneklem: any
 ) => {
   try {
-    const response = await fetch(`${url}/PlanVeProgram/OnemlilikVeOrneklem`, {
+    const response =await apiFetch(`/PlanVeProgram/OnemlilikVeOrneklem`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -118,8 +119,8 @@ export const createOnemlilikVeOrneklemHesaplamaBazi = async (
   json: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
@@ -148,8 +149,8 @@ export const getOnemlilikVeOrneklemHesaplamaBazi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -173,8 +174,8 @@ export const updateOnemlilikVeOrneklemHesaplamaBazi = async (
   json: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi`,
+    const response =await apiFetch(
+      `/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi`,
       {
         method: "PUT",
         headers: {
@@ -203,8 +204,8 @@ export const createFinansalTabloKalemlerindeDegisim = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/FinansalTabloKalemlerindeDegisimHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/FinansalTabloKalemlerindeDegisimHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
@@ -232,8 +233,8 @@ export const getFinansalTabloKalemlerindeDegisim = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/FinansalTabloKalemlerindeDegisim?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/FinansalTabloKalemlerindeDegisim?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -257,8 +258,8 @@ export const updateFinansalTabloKalemlerindeDegisim = async (
   updatedFinansalTabloKalemlerindeDegisim: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/FinansalTabloKalemlerindeDegisim`,
+    const response =await apiFetch(
+      `/PlanVeProgram/FinansalTabloKalemlerindeDegisim`,
       {
         method: "PUT",
         headers: {
@@ -288,8 +289,8 @@ export const createBulguRiskiBelirleme = async (
   girilenRisk: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/BulguRiskiBelirlemeHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&girilenRisk=${girilenRisk}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/BulguRiskiBelirlemeHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&girilenRisk=${girilenRisk}`,
       {
         method: "POST",
         headers: {
@@ -317,8 +318,8 @@ export const getBulguRiskiBelirleme = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/BulguRiskiBelirleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/BulguRiskiBelirleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -345,8 +346,8 @@ export const getFisBuyukluguAnaliziYillik = async (
   sadeceVerisiOlanAylar:boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/FisBuyukluguAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/PlanVeProgram/FisBuyukluguAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -373,8 +374,8 @@ export const upsertFisBuyukluguAylikNot = async (
   not: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/PlanVeProgram/UpdateFisBuyukluguAnalizi`,
+    const response =await apiFetch(
+      `/PlanVeProgram/UpdateFisBuyukluguAnalizi`,
       {
         method: "POST",
         headers: {

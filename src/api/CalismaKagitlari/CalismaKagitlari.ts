@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
   controller: string,
@@ -8,8 +9,8 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -37,8 +38,8 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo = async (
   dipnotNo: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${dipnotNo}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${dipnotNo}`,
       {
         method: "GET",
         headers: {
@@ -66,8 +67,8 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
       {
         method: "GET",
         headers: {
@@ -95,8 +96,8 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu = async (
   konu: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konu=${konu}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konu=${konu}`,
       {
         method: "GET",
         headers: {
@@ -124,8 +125,8 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl = async (
   formUrl: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&url=${formUrl}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&url=${formUrl}`,
       {
         method: "GET",
         headers: {
@@ -150,7 +151,7 @@ export const createCalismaKagidiVerisi = async (
   createdCalismaKagidiVerisi: any
 ) => {
   try {
-    const response = await fetch(`${url}/${controller}`, {
+    const response =await apiFetch(`/${controller}`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -177,7 +178,7 @@ export const updateCalismaKagidiVerisi = async (
   updatedCalismaKagidiVerisi: any
 ) => {
   try {
-    const response = await fetch(`${url}/${controller}/${id}`, {
+    const response =await apiFetch(`/${controller}/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -203,7 +204,7 @@ export const updateAllCalismaKagidiVerisi = async (
   updatedAllCalismaKagidiVerisi: any
 ) => {
   try {
-    const response = await fetch(`${url}/${controller}/Hepsi`, {
+    const response =await apiFetch(`/${controller}/Hepsi`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -231,8 +232,8 @@ export const updateOtomatikCalismaKagidiVerisi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",
         headers: {
@@ -259,7 +260,7 @@ export const deleteCalismaKagidiVerisiById = async (
   id: any
 ) => {
   try {
-    const response = await fetch(`${url}/${controller}/${id}`, {
+    const response =await apiFetch(`/${controller}/${id}`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
@@ -285,8 +286,8 @@ export const deleteAllCalismaKagidiVerileri = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
@@ -315,8 +316,8 @@ export const deleteAllCalismaKagidiVerileriByDipnotNo = async (
   dipnotNo: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${dipnotNo}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${dipnotNo}`,
       {
         method: "DELETE",
         headers: {
@@ -345,8 +346,8 @@ export const deleteAllCalismaKagidiVerileriByKullanci = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
       {
         method: "DELETE",
         headers: {
@@ -375,8 +376,8 @@ export const deleteAllCalismaKagidiVerileriByKonu = async (
   konu: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konu=${konu}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konu=${konu}`,
       {
         method: "DELETE",
         headers: {
@@ -405,8 +406,8 @@ export const deleteAllCalismaKagidiVerileriByUrl = async (
   formUrl: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&url=${formUrl}`,
+    const response =await apiFetch(
+      `/${controller}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&url=${formUrl}`,
       {
         method: "DELETE",
         headers: {
@@ -434,8 +435,8 @@ export const getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu = async (
   formKodu: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FormHazirlayanOnaylayan/${denetciId}/${yil}/${denetlenenId}/${formKodu}`,
+    const response =await apiFetch(
+      `/FormHazirlayanOnaylayan/${denetciId}/${yil}/${denetlenenId}/${formKodu}`,
       {
         method: "GET",
         headers: {
@@ -461,8 +462,8 @@ export const updateFormHazirlayanOnaylayan = async (
   control: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FormHazirlayanOnaylayan/${id}/${control}`,
+    const response =await apiFetch(
+      `/FormHazirlayanOnaylayan/${id}/${control}`,
       {
         method: "PUT",
         headers: {
@@ -497,8 +498,8 @@ export async function uploadEkBelge(
   formData: FormData
 ): Promise<boolean | { success: boolean; message?: string }> {
   try {
-    const response = await fetch(
-      `${url}/CalismaKagitlari/upload-ek-belge`,
+    const response =await apiFetch(
+      `/CalismaKagitlari/upload-ek-belge`,
       {
         method: "POST",
         headers: {

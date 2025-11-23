@@ -1,8 +1,9 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getDenetciById = async (token: string, id: any) => {
   try {
-    const response = await fetch(`${url}/Denetci/${id}`, {
+    const response =await apiFetch(`/Denetci/${id}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -25,7 +26,7 @@ export const updateDenetci = async (
   updatedDenetci: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetci/${id}`, {
+    const response =await apiFetch(`/Denetci/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -50,7 +51,7 @@ export const getDenetciOdemeBilgileri = async (
   denetciId: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetci/OdemeBilgileri/${denetciId}`, {
+    const response =await apiFetch(`/Denetci/OdemeBilgileri/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -69,7 +70,7 @@ export const getDenetciOdemeBilgileri = async (
 
 export const getDenetciKotaGecmisi = async (token: string, denetciId: any) => {
   try {
-    const response = await fetch(`${url}/Denetci/KotaGecmisi/${denetciId}`, {
+    const response =await apiFetch(`/Denetci/KotaGecmisi/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -88,7 +89,7 @@ export const getDenetciKotaGecmisi = async (token: string, denetciId: any) => {
 
 export const getLogo = async (token: string, denetciId: any) => {
   try {
-    const response = await fetch(`${url}/Denetci/Logo/${denetciId}`, {
+    const response =await apiFetch(`/Denetci/Logo/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -120,7 +121,7 @@ export const createLogo = async (
   formData: FormData
 ) => {
   try {
-    const response = await fetch(`${url}/Denetci/Logo/${denetciId}`, {
+    const response =await apiFetch(`/Denetci/Logo/${denetciId}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

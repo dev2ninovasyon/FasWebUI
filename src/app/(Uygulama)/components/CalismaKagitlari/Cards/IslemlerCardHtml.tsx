@@ -8,7 +8,8 @@ import { IconFileTypeDocx, IconFileTypePdf, IconArchive } from "@tabler/icons-re
 import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { enqueueSnackbar } from "notistack";
 
@@ -39,7 +40,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
         return;
       }
 
-      const endpoint = `${url}/ArsivIslemleri/WordDosyasiIndirHtml`;
+      const endpoint = `/ArsivIslemleri/WordDosyasiIndirHtml`;
       const html = await buildHtmlAsync();
 
       const response = await axios.post(
@@ -98,7 +99,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
       }
 
       const html = await buildHtmlAsync();
-      const endpoint = previewEndpoint || `${url}/ArsivIslemleri/PreviewFromHtml`;
+      const endpoint = previewEndpoint || `/ArsivIslemleri/PreviewFromHtml`;
 
       const response = await axios.post(
         endpoint,
@@ -153,7 +154,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
       }
 
       const html = await buildHtmlAsync();
-      const endpoint = `${url}/ArsivIslemleri/ArsiveKaydetHtml`; // 🔴 Backend'de bu endpoint'i karşılamalısın
+      const endpoint = `/ArsivIslemleri/ArsiveKaydetHtml`; // 🔴 Backend'de bu endpoint'i karşılamalısın
 
       await axios.post(
         endpoint,

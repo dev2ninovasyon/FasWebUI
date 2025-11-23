@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getBenfordHesapKodlari = async (
   token: string,
@@ -6,8 +7,8 @@ export const getBenfordHesapKodlari = async (
   denetlenenId: number
 ): Promise<number[] | undefined> => {
   try {
-    const res = await fetch(
-      `${url}/Benford/HesapKodlari?yil=${yil}&denetlenenId=${denetlenenId}`,
+    const res =await apiFetch(
+      `/Benford/HesapKodlari?yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -39,7 +40,7 @@ export const getBenfordDagilim = async (
   if (kebirKodu) search.append("kebirKodu", String(kebirKodu));
 
   try {
-    const res = await fetch(`${url}/Benford/Dagilim?${search.toString()}`, {
+    const res =await apiFetch(`/Benford/Dagilim?${search.toString()}`, {
       method: "GET",
       headers: {
         accept: "application/json",

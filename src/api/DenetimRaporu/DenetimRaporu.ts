@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getRaporDipnot = async (
   token: string,
@@ -8,8 +9,8 @@ export const getRaporDipnot = async (
   denetimTuru: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/RaporDipnot?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tur=${denetimTuru}`,
+    const response =await apiFetch(
+      `/Rapor/RaporDipnot?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tur=${denetimTuru}`,
       {
         method: "GET",
         headers: {
@@ -36,8 +37,8 @@ export const getFaaliyetRaporDipnot = async (
   denetimTuru: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/FaaliyetRaporDipnot?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tur=${denetimTuru}`,
+    const response =await apiFetch(
+      `/Rapor/FaaliyetRaporDipnot?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tur=${denetimTuru}`,
       {
         method: "GET",
         headers: {
@@ -61,7 +62,7 @@ export const updateRaporDipnot = async (
   updatedRaporDipnot: any
 ) => {
   try {
-    const response = await fetch(`${url}/Rapor/RaporDipnot`, {
+    const response =await apiFetch(`/Rapor/RaporDipnot`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -90,8 +91,8 @@ export const getRaporGorus = async (
   tip: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/RaporGorus?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tur=${denetimTuru}&tip=${tip}`,
+    const response =await apiFetch(
+      `/Rapor/RaporGorus?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tur=${denetimTuru}&tip=${tip}`,
       {
         method: "GET",
         headers: {
@@ -115,7 +116,7 @@ export const updateRaporGorus = async (
   updatedRaporGorus: any
 ) => {
   try {
-    const response = await fetch(`${url}/Rapor/RaporGorus`, {
+    const response =await apiFetch(`/Rapor/RaporGorus`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -143,8 +144,8 @@ export const deleteAllRaporDipnotVerileri = async (
   tip: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/RaporDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`,
+    const response =await apiFetch(
+      `/Rapor/RaporDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`,
       {
         method: "DELETE",
         headers: {
@@ -171,8 +172,8 @@ export const getDipnot15Amortisman = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/Dipnot15Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/Dipnot15Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -198,8 +199,8 @@ export const getDipnot16Amortisman = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/Dipnot16Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/Dipnot16Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -225,8 +226,8 @@ export const getDipnot15Maliyet = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/Dipnot15Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/Dipnot15Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -252,8 +253,8 @@ export const getDipnot16Maliyet = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/Dipnot16Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/Dipnot16Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -277,7 +278,7 @@ export const updateDipnotMaliyet = async (
   updatedDipnotMaliyet: any
 ) => {
   try {
-    const response = await fetch(`${url}/Rapor/DipnotMaliyet`, {
+    const response =await apiFetch(`/Rapor/DipnotMaliyet`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -302,7 +303,7 @@ export const updateDipnotAmortisman = async (
   updatedDipnotAmortisman: any
 ) => {
   try {
-    const response = await fetch(`${url}/Rapor/DipnotAmortisman`, {
+    const response =await apiFetch(`/Rapor/DipnotAmortisman`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -329,8 +330,8 @@ export const getDipnot25 = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/Dipnot25?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/Dipnot25?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -356,8 +357,8 @@ export const getDipnot34 = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/Dipnot34?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/Dipnot34?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -383,8 +384,8 @@ export const getKrediRiski = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/KrediRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/KrediRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -408,7 +409,7 @@ export const updateKrediRiski = async (
   updatedKrediRiski: any
 ) => {
   try {
-    const response = await fetch(`${url}/Rapor/KrediRiski`, {
+    const response =await apiFetch(`/Rapor/KrediRiski`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -435,8 +436,8 @@ export const getDovizKuruRiski = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/DovizKuruRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/DovizKuruRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -460,7 +461,7 @@ export const updateDovizKuruRiski = async (
   updatedDovizKuruRiski: any
 ) => {
   try {
-    const response = await fetch(`${url}/Rapor/DovizKuruRiski`, {
+    const response =await apiFetch(`/Rapor/DovizKuruRiski`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -487,8 +488,8 @@ export const getDovizKuruRiskiDuyarlilikAnalizi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/DovizKuruRiskiDuyarlilikAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Rapor/DovizKuruRiskiDuyarlilikAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -515,8 +516,8 @@ export const getDipnotAnaHesaplar = async (
   tur: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Rapor/TumDipnotHesaplariniGetirRapor?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tur=${tur}`,
+    const response =await apiFetch(
+      `/Rapor/TumDipnotHesaplariniGetirRapor?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tur=${tur}`,
       {
         method: "GET",
         headers: {

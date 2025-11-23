@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getKrediHesaplamaVerileriByDenetciDenetlenenYil = async (
   token: string,
@@ -7,8 +8,8 @@ export const getKrediHesaplamaVerileriByDenetciDenetlenenYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/KrediHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/KrediHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -35,8 +36,8 @@ export const getKrediHesaplamaVerileriByDenetciDenetlenenYilId = async (
   id: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/KrediHesaplamaById?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
+    const response =await apiFetch(
+      `/Veri/KrediHesaplamaById?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
       {
         method: "GET",
         headers: {
@@ -60,7 +61,7 @@ export const createKrediHesaplamaVerisi = async (
   jsonData: any
 ) => {
   try {
-    const response = await fetch(`${url}/Veri/KrediHesaplama`, {
+    const response =await apiFetch(`/Veri/KrediHesaplama`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -87,8 +88,8 @@ export const deleteKrediHesaplamaVerisi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/KrediHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/KrediHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {

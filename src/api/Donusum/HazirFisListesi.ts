@@ -1,12 +1,13 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getHazirFisListesiVerileri = async (
   token: string,
   denetimTuru: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/HazirFisler/HazirFisler?denetimTuru=${denetimTuru}`,
+    const response =await apiFetch(
+      `/HazirFisler/HazirFisler?denetimTuru=${denetimTuru}`,
       {
         method: "GET",
         headers: {
@@ -35,8 +36,8 @@ export const createFisListesineHazirFis = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/HazirFisler/DonusumFis?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&denetimTuru=${denetimTuru}&hazirFisId=${hazirFisId}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/HazirFisler/DonusumFis?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&denetimTuru=${denetimTuru}&hazirFisId=${hazirFisId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "POST",
         headers: {

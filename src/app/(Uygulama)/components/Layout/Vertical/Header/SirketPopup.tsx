@@ -71,7 +71,8 @@ const SirketPopup = () => {
     await dispatch(setKonsolidemi(selectedKonsolidemi));
     await setYear(parseInt(selectedYear));
     await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
-
+localStorage.setItem("fas_denetlenenId", selectedId.toString());
+localStorage.setItem("fas_yil", selectedYear.toString());
     try {
       const rolVerileri = await getRol(
         user.token || "",

@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getBaglantiBilgileri = async (
   token: string,
@@ -8,8 +9,8 @@ export const getBaglantiBilgileri = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
+    const response = await apiFetch(
+      `/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
       {
         method: "GET",
         headers: {
@@ -37,8 +38,8 @@ export const getBaglantiBilgileriByTip = async (
   tip: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/BaglantiBilgileriByTip?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}`,
+    const response =await apiFetch(
+      `/BaglantiBilgileri/BaglantiBilgileriByTip?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}`,
       {
         method: "GET",
         headers: {
@@ -66,8 +67,8 @@ export const getBaglantiBilgileriByLink = async (
   link: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/BaglantiBilgileriByLink?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&link=${link}`,
+    const response =await apiFetch(
+      `/BaglantiBilgileri/BaglantiBilgileriByLink?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&link=${link}`,
       {
         method: "GET",
         headers: {
@@ -95,8 +96,8 @@ export const createBaglantiBilgileri = async (
   tip: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}`,
+    const response =await apiFetch(
+      `/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}`,
       {
         method: "POST",
         headers: {
@@ -125,8 +126,8 @@ export const deleteBaglantiBilgileri = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
+    const response =await apiFetch(
+      `/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
       {
         method: "DELETE",
         headers: {
@@ -156,8 +157,8 @@ export const deleteBaglantiBilgileriById = async (
   id: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/BaglantiBilgileriById?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&id=${id}`,
+    const response =await apiFetch(
+      `/BaglantiBilgileri/BaglantiBilgileriById?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&id=${id}`,
       {
         method: "DELETE",
         headers: {
@@ -180,8 +181,8 @@ export const deleteBaglantiBilgileriById = async (
 
 export const getBildirimler = async (token: string, denetciId: number) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/Bildirimler?denetciId=${denetciId}`,
+    const response =await apiFetch(
+      `/BaglantiBilgileri/Bildirimler?denetciId=${denetciId}`,
       {
         method: "GET",
         headers: {
@@ -205,8 +206,8 @@ export const updateBildirimlerOkundumu = async (
   ids: number[]
 ) => {
   try {
-    const response = await fetch(
-      `${url}/BaglantiBilgileri/BildirimlerOkundumu`,
+    const response =await apiFetch(
+      `/BaglantiBilgileri/BildirimlerOkundumu`,
       {
         method: "PUT",
         headers: {

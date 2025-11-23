@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getMizanVerileri = async (
   token: string,
@@ -8,8 +9,8 @@ export const getMizanVerileri = async (
   type: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/Mizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+    const response =await apiFetch(
+      `/Mizan/Mizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
         method: "GET",
         headers: {
@@ -37,8 +38,8 @@ export const getMizanVerileriByHesapNo = async (
   hesapNo: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/MizanByHesapNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}&hesapNo=${hesapNo}`,
+    const response =await apiFetch(
+      `/Mizan/MizanByHesapNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}&hesapNo=${hesapNo}`,
       {
         method: "GET",
         headers: {
@@ -65,8 +66,8 @@ export const getKurumlarVergisiBeyannamesiKarsilastirma = async (
   type: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/KurumlarBeyannamesiKarsilastirma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+    const response =await apiFetch(
+      `/Mizan/KurumlarBeyannamesiKarsilastirma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
         method: "GET",
         headers: {
@@ -93,8 +94,8 @@ export const getKurumlarVergisiBeyannamesiKarsilastirmaHaric = async (
   type: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/KurumlarBeyannamesiKarsilastirmaHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+    const response =await apiFetch(
+      `/Mizan/KurumlarBeyannamesiKarsilastirmaHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
         method: "GET",
         headers: {
@@ -121,8 +122,8 @@ export const getProgramVukMizan = async (
   type: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/ProgramVukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+    const response =await apiFetch(
+      `/Mizan/ProgramVukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
         method: "GET",
         headers: {
@@ -143,7 +144,7 @@ export const getProgramVukMizan = async (
 
 export const getGenelHesapPlani = async (token: string, tip: string) => {
   try {
-    const response = await fetch(`${url}/Mizan/GenelHesapPlani?tip=${tip}`, {
+    const response =await apiFetch(`/Mizan/GenelHesapPlani?tip=${tip}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -167,8 +168,8 @@ export const getProgramVukMizanWithoutType = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/ProgramVukMizanWithoutType?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Mizan/ProgramVukMizanWithoutType?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -195,8 +196,8 @@ export const getProgramVukMizanControl = async (
   type: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/ProgramVukMizanKontrol?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+    const response =await apiFetch(
+      `/Mizan/ProgramVukMizanKontrol?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
         method: "GET",
         headers: {
@@ -224,8 +225,8 @@ export const createAnaHesapMizan = async (
   mizanBitisTarihi: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/AnaHesapMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+    const response =await apiFetch(
+      `/Mizan/AnaHesapMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
       {
         method: "POST",
         headers: {
@@ -253,8 +254,8 @@ export const createAnaHesapMizanHaric = async (
   mizanBitisTarihi: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/AnaHesapMizanOlusturHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+    const response =await apiFetch(
+      `/Mizan/AnaHesapMizanOlusturHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
       {
         method: "POST",
         headers: {
@@ -282,8 +283,8 @@ export const createDetayHesapMizan = async (
   mizanBitisTarihi: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/DetayHesapMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+    const response =await apiFetch(
+      `/Mizan/DetayHesapMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
       {
         method: "POST",
         headers: {
@@ -311,8 +312,8 @@ export const createDetayHesapMizanHaric = async (
   mizanBitisTarihi: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/DetayHesapMizanOlusturHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+    const response =await apiFetch(
+      `/Mizan/DetayHesapMizanOlusturHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
       {
         method: "POST",
         headers: {
@@ -340,8 +341,8 @@ export const createVukMizan = async (
   mizanBitisTarihi: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/VukMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
+    const response =await apiFetch(
+      `/Mizan/VukMizanOlustur?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&baslangicTarihi=${mizanbaslangicTarihi}&bitisTarihi=${mizanBitisTarihi}`,
       {
         method: "POST",
         headers: {
@@ -368,8 +369,8 @@ export const createProgramVukMizan = async (
   type: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/ProgramVukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+    const response =await apiFetch(
+      `/Mizan/ProgramVukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
         method: "POST",
         headers: {
@@ -396,8 +397,8 @@ export const getMizanBilgileri = async (
   type: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Mizan/MizanIslemLoglari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
+    const response =await apiFetch(
+      `/Mizan/MizanIslemLoglari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
         method: "GET",
         headers: {
@@ -421,7 +422,7 @@ export const deleteMizanBilgisiMultiple = async (
   selected: any
 ) => {
   try {
-    const response = await fetch(`${url}/Mizan/MizanIslemLoglari`, {
+    const response =await apiFetch(`/Mizan/MizanIslemLoglari`, {
       method: "DELETE",
       headers: {
         accept: "application/json",

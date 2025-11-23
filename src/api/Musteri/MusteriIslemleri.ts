@@ -1,8 +1,9 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const createDenetlenen = async (token: string, createdMusteri: any) => {
   try {
-    const response = await fetch(`${url}/Denetlenen`, {
+    const response =await apiFetch(`/Denetlenen`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -33,7 +34,7 @@ export const createDenetlenen = async (token: string, createdMusteri: any) => {
 
 export const getDenetlenenById = async (token: string, id: any) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/${id}`, {
+    const response =await apiFetch(`/Denetlenen/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -55,7 +56,7 @@ export const getDenetlenenByDenetciId = async (
   denetciId: number
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Denetci/${denetciId}`, {
+    const response =await apiFetch(`/Denetlenen/Denetci/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -77,8 +78,8 @@ export const getDenetlenenKonsolideAnaSirketByDenetciId = async (
   denetciId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/KonsolideAnaSirket/Denetci/${denetciId}`,
+    const response =await apiFetch(
+      `/Denetlenen/KonsolideAnaSirket/Denetci/${denetciId}`,
       {
         method: "GET",
         headers: {
@@ -103,8 +104,8 @@ export const getDenetlenenByRol = async (
   kullaniciId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/Rol/${denetciId}/${kullaniciId}`,
+    const response =await apiFetch(
+      `/Denetlenen/Rol/${denetciId}/${kullaniciId}`,
       {
         method: "GET",
         headers: {
@@ -129,7 +130,7 @@ export const updateDenetlenen = async (
   updatedDenetlenen: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/${id}`, {
+    const response =await apiFetch(`/Denetlenen/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -156,8 +157,8 @@ export const updateDenetlenenDenetimTuru = async (
   enflasyon: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/${id}/${denetimTuru}/${enflasyon}`,
+    const response =await apiFetch(
+      `/Denetlenen/${id}/${denetimTuru}/${enflasyon}`,
       {
         method: "PUT",
         headers: {
@@ -189,7 +190,7 @@ export const updateDenetlenenDenetimTuru = async (
 
 export const deleteDenetlenenById = async (token: string, id: number) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/${id}`, {
+    const response =await apiFetch(`/Denetlenen/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
@@ -209,7 +210,7 @@ export const deleteDenetlenenById = async (token: string, id: number) => {
 
 export const getSektorKodlari = async (token: string) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/SektorKodlari`, {
+    const response =await apiFetch(`/Denetlenen/SektorKodlari`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -231,7 +232,7 @@ export const createSirketYonetimKadrosu = async (
   createdSirketYonetimKadrosu: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/SirketYonetimKadrosu`, {
+    const response =await apiFetch(`/Denetlenen/SirketYonetimKadrosu`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -253,8 +254,8 @@ export const createSirketYonetimKadrosu = async (
 
 export const getSirketYonetimKadrosuById = async (token: string, id: any) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/SirketYonetimKadrosu/${id}`,
+    const response =await apiFetch(
+      `/Denetlenen/SirketYonetimKadrosu/${id}`,
       {
         method: "GET",
         headers: {
@@ -278,8 +279,8 @@ export const getSirketYonetimKadrosuByDenetlenenId = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/SirketYonetimKadrosu/Denetlenen/${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/SirketYonetimKadrosu/Denetlenen/${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -304,8 +305,8 @@ export const updateSirketYonetimKadrosu = async (
   updatedSirketYonetimKadrosu: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/SirketYonetimKadrosu/${id}`,
+    const response =await apiFetch(
+      `/Denetlenen/SirketYonetimKadrosu/${id}`,
       {
         method: "PUT",
         headers: {
@@ -332,8 +333,8 @@ export const deleteSirketYonetimKadrosuById = async (
   id: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/SirketYonetimKadrosu/${id}`,
+    const response =await apiFetch(
+      `/Denetlenen/SirketYonetimKadrosu/${id}`,
       {
         method: "DELETE",
         headers: {
@@ -355,7 +356,7 @@ export const deleteSirketYonetimKadrosuById = async (
 
 export const createSubeler = async (token: string, createdSubeler: any) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Subeler`, {
+    const response =await apiFetch(`/Denetlenen/Subeler`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -377,7 +378,7 @@ export const createSubeler = async (token: string, createdSubeler: any) => {
 
 export const getSubelerById = async (token: string, id: any) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Subeler/${id}`, {
+    const response =await apiFetch(`/Denetlenen/Subeler/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -399,8 +400,8 @@ export const getSubelerByDenetlenenId = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/Subeler/Denetlenen/${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/Subeler/Denetlenen/${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -425,7 +426,7 @@ export const updateSubeler = async (
   updatedSubeler: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Subeler/${id}`, {
+    const response =await apiFetch(`/Denetlenen/Subeler/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -447,7 +448,7 @@ export const updateSubeler = async (
 
 export const deleteSubelerById = async (token: string, id: number) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Subeler/${id}`, {
+    const response =await apiFetch(`/Denetlenen/Subeler/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
@@ -470,7 +471,7 @@ export const createHissedarlar = async (
   createdHissedarlar: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Hissedarlar`, {
+    const response =await apiFetch(`/Denetlenen/Hissedarlar`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -492,7 +493,7 @@ export const createHissedarlar = async (
 
 export const getHissedarlarById = async (token: string, id: any) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Hissedarlar/${id}`, {
+    const response =await apiFetch(`/Denetlenen/Hissedarlar/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -515,8 +516,8 @@ export const getHissedarlarByDenetlenenIdYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/Hissedarlar/DenetlenenYil/${denetlenenId}/${yil}`,
+    const response =await apiFetch(
+      `/Denetlenen/Hissedarlar/DenetlenenYil/${denetlenenId}/${yil}`,
       {
         method: "GET",
         headers: {
@@ -541,8 +542,8 @@ export const getMizandanHissedarlarByDenetlenenIdYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/MizandanHissedarlar/DenetlenenYil/${denetlenenId}/${yil}`,
+    const response =await apiFetch(
+      `/Denetlenen/MizandanHissedarlar/DenetlenenYil/${denetlenenId}/${yil}`,
       {
         method: "GET",
         headers: {
@@ -567,7 +568,7 @@ export const updateHissedarlar = async (
   updatedHissedarlar: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Hissedarlar/${id}`, {
+    const response =await apiFetch(`/Denetlenen/Hissedarlar/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -589,7 +590,7 @@ export const updateHissedarlar = async (
 
 export const deleteHissedarlarById = async (token: string, id: number) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/Hissedarlar/${id}`, {
+    const response =await apiFetch(`/Denetlenen/Hissedarlar/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
@@ -612,7 +613,7 @@ export const createIliskiliTaraflar = async (
   createdIliskiliTaraflar: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/IliskiliTaraflar`, {
+    const response =await apiFetch(`/Denetlenen/IliskiliTaraflar`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -634,7 +635,7 @@ export const createIliskiliTaraflar = async (
 
 export const getIliskiliTaraflarById = async (token: string, id: any) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/IliskiliTaraflar/${id}`, {
+    const response =await apiFetch(`/Denetlenen/IliskiliTaraflar/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -656,8 +657,8 @@ export const getIliskiliTaraflarByDenetlenenId = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/IliskiliTaraflar/Denetlenen/${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/IliskiliTaraflar/Denetlenen/${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -682,7 +683,7 @@ export const updateIliskiliTaraflar = async (
   updatedIliskiliTaraflar: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/IliskiliTaraflar/${id}`, {
+    const response =await apiFetch(`/Denetlenen/IliskiliTaraflar/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -704,7 +705,7 @@ export const updateIliskiliTaraflar = async (
 
 export const deleteIliskiliTaraflarById = async (token: string, id: number) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/IliskiliTaraflar/${id}`, {
+    const response =await apiFetch(`/Denetlenen/IliskiliTaraflar/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
@@ -730,8 +731,8 @@ export const createIliskiliTaraflarListe = async (
   iliskiliTaraflarListe: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/IliskiliTaraflarListe?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/IliskiliTaraflarListe?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "POST",
         headers: {
@@ -759,8 +760,8 @@ export const getMusteriTanimaSayisalBilgiler = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/MusteriTanimaSayisalBilgiler?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/MusteriTanimaSayisalBilgiler?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -784,8 +785,8 @@ export const updateMusteriTanimaSayisalBilgiler = async (
   updatedMusteriTanimaSayisalBilgiler: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/MusteriTanimaSayisalBilgiler`,
+    const response =await apiFetch(
+      `/Denetlenen/MusteriTanimaSayisalBilgiler`,
       {
         method: "PUT",
         headers: {
@@ -814,8 +815,8 @@ export const getMusteriTanimaStatikBilgiler = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/MusteriTanimaStatikBilgiler?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/MusteriTanimaStatikBilgiler?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -839,8 +840,8 @@ export const updateMusteriTanimaStatikBilgiler = async (
   updatedMusteriTanimaStatikBilgiler: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/MusteriTanimaStatikBilgiler`,
+    const response =await apiFetch(
+      `/Denetlenen/MusteriTanimaStatikBilgiler`,
       {
         method: "PUT",
         headers: {
@@ -869,8 +870,8 @@ export const getTeklifHesaplama = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/TeklifHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/TeklifHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -894,7 +895,7 @@ export const updateTeklifHesaplama = async (
   updatedTeklifHesaplama: any
 ) => {
   try {
-    const response = await fetch(`${url}/Denetlenen/TeklifHesaplama`, {
+    const response =await apiFetch(`/Denetlenen/TeklifHesaplama`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -921,8 +922,8 @@ export const TeklifHesapla = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/TeklifHesapla?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/TeklifHesapla?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",
         headers: {
@@ -950,8 +951,8 @@ export const deleteTeklifHesaplama = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Denetlenen/TeklifHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Denetlenen/TeklifHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {

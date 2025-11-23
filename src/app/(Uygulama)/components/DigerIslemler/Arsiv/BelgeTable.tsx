@@ -26,7 +26,8 @@ import { AppState } from "@/store/store";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 import { IconDotsVertical, IconDownload } from "@tabler/icons-react";
 import axios from "axios";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 import { deleteAllArsiv, deleteArsiv } from "@/api/Arsiv/Arsiv";
 import { enqueueSnackbar } from "notistack";
 
@@ -272,7 +273,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
   const downloadSelected = async (veri: Veri) => {
     try {
       const response = await axios({
-        url: `${url}/ArsivIslemleri/Indir?path=${veri.url}`,
+        url: `/ArsivIslemleri/Indir?path=${veri.url}`,
         method: "GET",
         responseType: "blob",
         headers: {
@@ -299,7 +300,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
         .filter((p): p is string => !!p);
 
       const response = await axios.post(
-        `${url}/ArsivIslemleri/IndirToplu`,
+        `/ArsivIslemleri/IndirToplu`,
         paths,
         {
           responseType: "blob",

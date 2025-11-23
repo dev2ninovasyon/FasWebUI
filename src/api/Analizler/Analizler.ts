@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const createKarsilastirmaliAnaliz = async (
   token: string,
@@ -7,8 +8,8 @@ export const createKarsilastirmaliAnaliz = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/KarsilastirmaliAnalizOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/KarsilastirmaliAnalizOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
@@ -36,8 +37,8 @@ export const getKarsilastirmaliAnaliz = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/KarsilastirmaliAnalizTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/KarsilastirmaliAnalizTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
@@ -63,8 +64,8 @@ export const createDikeyAnaliz = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/DikeyAnalizOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/DikeyAnalizOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
@@ -92,8 +93,8 @@ export const getDikeyAnaliz = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/FinansalTablolar/DikeyAnalizTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/FinansalTablolar/DikeyAnalizTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {

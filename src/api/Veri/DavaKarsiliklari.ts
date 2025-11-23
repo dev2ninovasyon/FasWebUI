@@ -1,4 +1,4 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
 
 export const getDavaKarsiliklariVerileriByDenetciDenetlenenYil = async (
   token: string,
@@ -7,8 +7,8 @@ export const getDavaKarsiliklariVerileriByDenetciDenetlenenYil = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/DavaKarsiliklari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/DavaKarsiliklari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -32,7 +32,7 @@ export const createDavaKarsiliklariVerisi = async (
   jsonData: any
 ) => {
   try {
-    const response = await fetch(`${url}/Veri/DavaKarsiliklari`, {
+    const response =await apiFetch(`/Veri/DavaKarsiliklari`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -59,8 +59,8 @@ export const deleteDavaKarsiliklariVerisi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/DavaKarsiliklari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Veri/DavaKarsiliklari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {

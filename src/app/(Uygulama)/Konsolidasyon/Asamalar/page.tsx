@@ -30,7 +30,7 @@ const Page: React.FC = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} lg={12}>
             <iframe
-              //src={`${url}/Konsolidasyon/Asamalar`}
+              //src={`/Konsolidasyon/Asamalar`}
               src={`/templates/KonsolidasyonAsamalar.html`}
               style={{
                 background: theme.palette.common.white,

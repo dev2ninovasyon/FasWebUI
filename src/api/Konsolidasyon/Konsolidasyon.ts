@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getTanimlamalar = async (
   token: string,
@@ -7,8 +8,8 @@ export const getTanimlamalar = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Konsolidasyon/Tanimlamalar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/Konsolidasyon/Tanimlamalar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
@@ -29,7 +30,7 @@ export const getTanimlamalar = async (
 
 export const getTanimlamalarById = async (token: string, id: any) => {
   try {
-    const response = await fetch(`${url}/Konsolidasyon/Tanimlamalar/${id}`, {
+    const response =await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -52,7 +53,7 @@ export const updateTanimlamalar = async (
   updatedTanimlamalar: any
 ) => {
   try {
-    const response = await fetch(`${url}/Konsolidasyon/Tanimlamalar/${id}`, {
+    const response =await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -79,8 +80,8 @@ export const createBirlestirilmisMizan = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Konsolidasyon/MizanBirlestir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/Konsolidasyon/MizanBirlestir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "POST",
         headers: {

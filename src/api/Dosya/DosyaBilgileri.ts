@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getDosyaBilgileri = async (
   token: string,
@@ -8,8 +9,8 @@ export const getDosyaBilgileri = async (
   tip: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Veri/DosyaBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`,
+    const response =await apiFetch(
+      `/Veri/DosyaBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`,
       {
         method: "GET",
         headers: {
@@ -30,7 +31,7 @@ export const getDosyaBilgileri = async (
 
 export const deleteDosyaBilgisiById = async (token: string, id: number) => {
   try {
-    const response = await fetch(`${url}/Veri/DosyaBilgisi/${id}`, {
+    const response =await apiFetch(`/Veri/DosyaBilgisi/${id}`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
@@ -53,7 +54,7 @@ export const deleteDosyaBilgisiMultiple = async (
   selected: any
 ) => {
   try {
-    const response = await fetch(`${url}/Veri/DosyaBilgisiMultiple`, {
+    const response =await apiFetch(`/Veri/DosyaBilgisiMultiple`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
@@ -75,7 +76,7 @@ export const deleteDosyaBilgisiMultiple = async (
 
 export const getDefterYuklemeLoglari = async (token: string, id: number) => {
   try {
-    const response = await fetch(`${url}/Veri/EDefterYuklemeLoglari?id=${id}`, {
+    const response =await apiFetch(`/Veri/EDefterYuklemeLoglari?id=${id}`, {
       method: "GET",
       headers: {
         accept: "application/json",

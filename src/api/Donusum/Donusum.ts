@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 import { DonusumMizanKarsilastirmaItem } from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/VukMizanDonusumMizanKarsilastirma";
 
 export const DonusumIslemiYap = async (
@@ -9,8 +10,8 @@ export const DonusumIslemiYap = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Donusum/DonusumIslemiYap?denetlenenId=${denetlenenId}&yil=${yil}&denetimTuru=${denetimTuru}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/Donusum/DonusumIslemiYap?denetlenenId=${denetlenenId}&yil=${yil}&denetimTuru=${denetimTuru}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "Post",
         headers: {
@@ -36,8 +37,8 @@ export const getDonusumMizan = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Donusum/DonusumMizan?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/Donusum/DonusumMizan?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -62,8 +63,8 @@ export const getOzetDonusumMizan = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Donusum/DonusumOzetMizan?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/Donusum/DonusumOzetMizan?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -83,7 +84,7 @@ export const getOzetDonusumMizan = async (
 };
 
 export const getDonusumMizanKarsilastirma = async () => {
-  const res = await fetch(
+  const res =await apiFetch(
     "https://betaapi.fasmart.app/api/Mizan/VukMizanDonusumMizanKarsilastirma?denetciId=2&yil=2023&denetlenenId=1&tip=E-Defter",
     { cache: "no-store" }
   );
@@ -111,8 +112,8 @@ export const getTersBakiyeVerenProgramVukMizanHesaplari = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Donusum/TersBakiyeVerenProgramVukMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/Donusum/TersBakiyeVerenProgramVukMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -138,8 +139,8 @@ export const getTersBakiyeVerenDonusumMizanHesaplari = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response = await fetch(
-      `${url}/Donusum/TersBakiyeVerenDonusumMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
+    const response =await apiFetch(
+      `/Donusum/TersBakiyeVerenDonusumMizanHesaplari?denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {

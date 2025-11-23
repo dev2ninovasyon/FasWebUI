@@ -1,4 +1,5 @@
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 
 export const getFisIslemSayilari = async (
   token: string,
@@ -7,8 +8,8 @@ export const getFisIslemSayilari = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/FisIslemSayilari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/FisIslemSayilari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -37,8 +38,8 @@ export const createOrneklem = async (
   listelemeTuru: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}&listelemeTuru=${listelemeTuru}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}&listelemeTuru=${listelemeTuru}`,
       {
         method: "POST",
         headers: {
@@ -66,8 +67,8 @@ export const getOrneklem = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/Orneklem?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/Orneklem?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -94,8 +95,8 @@ export const getOrneklemByDipnot = async (
   dipnot: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OrneklemByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OrneklemByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
@@ -122,8 +123,8 @@ export const getOrneklemByDipnotTers = async (
   dipnot: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OrneklemByDipnotTers?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OrneklemByDipnotTers?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
@@ -144,7 +145,7 @@ export const getOrneklemByDipnotTers = async (
 
 export const updateOrneklem = async (token: string, json: any) => {
   try {
-    const response = await fetch(`${url}/DenetimKanitlari/Orneklem`, {
+    const response =await apiFetch(`/DenetimKanitlari/Orneklem`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -172,8 +173,8 @@ export const getOrneklemFisleri = async (
   kebirKodu: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OrneklemFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kebirKodu=${kebirKodu}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OrneklemFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kebirKodu=${kebirKodu}`,
       {
         method: "GET",
         headers: {
@@ -200,8 +201,8 @@ export const getOrneklemFisleriByList = async (
   kebirKodu: number[]
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OrneklemFisleriByList?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OrneklemFisleriByList?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",
         headers: {
@@ -230,8 +231,8 @@ export const getOrneklemFisleriDetay = async (
   fisNo: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OrneklemFisleriDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OrneklemFisleriDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
       {
         method: "GET",
         headers: {
@@ -257,8 +258,8 @@ export const getOnemlilikSeviyesi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OnemlilikSeviyesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OnemlilikSeviyesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -284,8 +285,8 @@ export const createOnemlilik = async (
   denetlenenId: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
@@ -313,8 +314,8 @@ export const getOnemlilik = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -341,8 +342,8 @@ export const getOnemlilikByDipnot = async (
   dipnot: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OnemlilikByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OnemlilikByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
@@ -370,8 +371,8 @@ export const updateOnemlilik = async (
   updatedOnemlilik: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
       {
         method: "PUT",
         headers: {
@@ -401,8 +402,8 @@ export const createOnemlilikHesaplamaBazi = async (
   json: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OnemlilikHesaplamaBazi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OnemlilikHesaplamaBazi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
@@ -431,8 +432,8 @@ export const getOnemlilikHesaplamaBazi = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OnemlilikHesaplamaBazi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OnemlilikHesaplamaBazi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
@@ -456,8 +457,8 @@ export const updateOnemlilikHesaplamaBazi = async (
   json: any
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/OnemlilikHesaplamaBazi`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/OnemlilikHesaplamaBazi`,
       {
         method: "PUT",
         headers: {
@@ -488,8 +489,8 @@ export const getMutabakat = async (
   hesapAdi: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&grupKodu=${grupKodu}&hesapAdi=${hesapAdi}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&grupKodu=${grupKodu}&hesapAdi=${hesapAdi}`,
       {
         method: "GET",
         headers: {
@@ -516,8 +517,8 @@ export const getMutabakatByDipnot = async (
   dipnot: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/MutabakatByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/MutabakatByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
@@ -538,7 +539,7 @@ export const getMutabakatByDipnot = async (
 
 export const updateMutabakat = async (token: string, json: any) => {
   try {
-    const response = await fetch(`${url}/DenetimKanitlari/Mutabakat`, {
+    const response =await apiFetch(`/DenetimKanitlari/Mutabakat`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -565,8 +566,8 @@ export const deleteMutabakat = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
@@ -595,8 +596,8 @@ export const getMutabakatDogrulamaMektubu = async (
   detayKodu: string
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/MutabakatDogrulamaMektubu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&detayKodu=${detayKodu}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/MutabakatDogrulamaMektubu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&detayKodu=${detayKodu}`,
       {
         method: "GET",
         headers: {
@@ -622,8 +623,8 @@ export const getIliskiliTarafIncelemeHesaplari = async (
   yil: number
 ) => {
   try {
-    const response = await fetch(
-      `${url}/DenetimKanitlari/IliskiliTarafIncelemeHesaplari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    const response =await apiFetch(
+      `/DenetimKanitlari/IliskiliTarafIncelemeHesaplari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {

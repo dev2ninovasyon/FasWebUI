@@ -18,7 +18,8 @@ import {
   setBddkmi,
   setDenetciFirmaAdi,
 } from "@/store/user/UserSlice";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
+
 import { enqueueSnackbar } from "notistack";
 import { AppState } from "@/store/store";
 import { getDenetciOdemeBilgileri } from "@/api/Denetci/Denetci";
@@ -43,7 +44,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${url}/Auth/login`, {
+      const response =await apiFetch(`/Auth/login`, {
         method: "POST",
         headers: {
           accept: "*/*",

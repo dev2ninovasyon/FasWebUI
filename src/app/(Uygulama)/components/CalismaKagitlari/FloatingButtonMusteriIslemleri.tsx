@@ -119,7 +119,7 @@ Erişim Hatası Durumu: Eğer sağlanan URL'ye erişilemedi veya içerik okunama
   }
 }
 # HEDEF URL
-${url}`;
+`;
 
 const stripFences = (s: string) =>
   s.replace(/```json\s*([\s\S]*?)```/gi, "$1")

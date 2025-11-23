@@ -1,12 +1,26 @@
+// src/app/(Uygulama)/dashboard/page.tsx
 "use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
-import Box from "@mui/material/Box";
+import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import { Box } from "@mui/material";
+import { SonIslemlerKartlari } from "@/app/(Uygulama)/components/AnaSayfa/SonIslemlerKartlari";
 
-export default function Page() {
+const BCrumb = [
+  {
+    to: "/",
+    title: "Ana Sayfa",
+  },
+];
+
+export default function DashboardPage() {
   return (
-    <PageContainer title="Anasayfa" description="this is Anasayfa">
-      <Box mt={3}></Box>
+    <PageContainer title="Dashboard" description="Genel Bakış">
+      <Breadcrumb title="Ana Sayfa" items={BCrumb} />
+      <Box mt={2}>
+        {/* Diğer dashboard bileşenlerinin üstüne/altına koyabilirsin */}
+        <SonIslemlerKartlari />
+      </Box>
     </PageContainer>
   );
 }
