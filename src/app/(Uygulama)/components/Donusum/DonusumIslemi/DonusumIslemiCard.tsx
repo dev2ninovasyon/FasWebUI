@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { AppState } from "@/store/store";
@@ -80,6 +81,7 @@ const DonusumIslemiCard: React.FC<Props> = ({
 
   useEffect(() => {
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

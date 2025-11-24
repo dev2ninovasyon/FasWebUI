@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // src/app/(Uygulama)/components/Dashboard/SonIslemlerKartlari.tsx
 "use client";
 
