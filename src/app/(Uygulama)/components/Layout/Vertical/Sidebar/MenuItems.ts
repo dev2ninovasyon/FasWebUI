@@ -885,6 +885,7 @@ export function createMenuItems(
                 },
               ],
             },
+            
             {
               id: uniqueId(),
               title: "Finansal Tablolar",
@@ -925,6 +926,32 @@ export function createMenuItems(
                   icon: IconPoint,
                   href: "/DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu",
                 },
+                     {
+                  id: uniqueId(),
+                  title: "Cari Dönem Dönüşüm Düzeltme Belgesi",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
+                  icon: IconPoint,
+                  href: "/DenetimKanitlari/FinansalTablolar/CariDonemDonusumDuzeltmeBelgesi",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Önceki Dönem Dönüşüm Düzeltme Belgesi",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
+                  icon: IconPoint,
+                  href: "/DenetimKanitlari/FinansalTablolar/OncekiDonemDonusumDuzeltmeBelgesi",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Geçmiş Dönem Dönüşüm Düzeltme Belgesi",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/finansal-tablolar.svg",
+                  icon: IconPoint,
+                  href: "/DenetimKanitlari/FinansalTablolar/GecmisDonemDonusumDuzeltmeBelgesi",
+                },
+                
+           
               ],
             },
             {
