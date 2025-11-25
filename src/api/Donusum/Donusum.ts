@@ -83,27 +83,34 @@ export const getOzetDonusumMizan = async (
   }
 };
 
-export const getDonusumMizanKarsilastirma = async () => {
-  const res =await apiFetch(
-    "https://betaapi.fasmart.app/api/Mizan/VukMizanDonusumMizanKarsilastirma?denetciId=2&yil=2023&denetlenenId=1&tip=E-Defter",
-    { cache: "no-store" }
-  );
-  if (!res.ok) {
-    throw new Error("Veri alınamadı");
+export const getDonusumMizanKarsilastirma =  async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  tip: String,
+) => {
+  try {
+    const response =await apiFetch(
+      `/Mizan/VukMizanDonusumMizanKarsilastirma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Donusum Mizan verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
   }
-
-  const data: DonusumMizanKarsilastirmaItem[] = await res.json();
-
-  const finansalDurum = data
-    .filter((item) => item.tabloAdi === "finansaldurum")
-    .sort((a, b) => Number(a.sira ?? 0) - Number(b.sira ?? 0));
-
-  const karZarar = data
-    .filter((item) => item.tabloAdi === "karzarar")
-    .sort((a, b) => Number(a.sira ?? 0) - Number(b.sira ?? 0));
-
-  return [...finansalDurum, ...karZarar];
 };
+  
 
 export const getTersBakiyeVerenProgramVukMizanHesaplari = async (
   token: string,

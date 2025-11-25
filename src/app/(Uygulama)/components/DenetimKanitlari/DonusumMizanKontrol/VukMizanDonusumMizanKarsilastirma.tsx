@@ -12,12 +12,16 @@ import {
   Collapse,
   IconButton,
   Button,
+  CardHeader,
+  Grid,
 } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import theme from "@/utils/theme";
 import { getDonusumMizanKarsilastirma } from "@/api/Donusum/Donusum";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import BelgeKontrolCard from "../../CalismaKagitlari/Cards/BelgeKontrolCard";
+import { useSelector } from "react-redux";
+import { AppState } from "@/store/store";
 
 export interface DonusumMizanKarsilastirmaItem {
   [x: string]: unknown;
@@ -147,19 +151,31 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchVeriler = async () => {
-      try {
-        const res = await getDonusumMizanKarsilastirma();
-        setVeriler(res);
-      } catch {
-        setError("Veri alınırken hata oluştu.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchVeriler();
-  }, []);
+const user = useSelector((state: AppState) => state.userReducer);
+
+const controller = "VukMizanDonusumMizanKarsilastirma";
+
+ const fetchVeriler = async () => {
+  try {
+    const res = await getDonusumMizanKarsilastirma(user.token!, user.denetciId!,  user.yil!, user.denetlenenId!, "E-Defter");
+    setVeriler(res);
+    setError(null);
+  } catch (err) {
+    console.error("getDonusumMizanKarsilastirma hatası:", err);
+    setError("Veri alınırken hata oluştu.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+// BelgeKontrolCard'a verilecek refresh fonksiyonu
+const fetchData = async () => {
+  await fetchVeriler();
+};
+
+useEffect(() => {
+  fetchVeriler();
+}, []);
 
   const exportToExcel = () => {
     if (!veriler || veriler.length === 0) return;
@@ -202,6 +218,12 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
     acc[item.tabloAdi].push(item);
     return acc;
   }, {});
+
+   const roluVarMi =
+    user?.rol?.includes("KaliteKontrolSorumluDenetci") ||
+    user?.rol?.includes("SorumluDenetci") ||
+    user?.rol?.includes("Denetci") ||
+    user?.rol?.includes("DenetciYardimcisi");
 
   return (
     <div style={{ padding: "1rem" }}>
@@ -269,6 +291,50 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
           </div>
         );
       })}
+      {roluVarMi && (
+        <Grid
+          container
+          sx={{
+            width: "95%",
+            margin: "0 auto",
+            justifyContent: "space-between",
+          }}
+        >
+          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <CardHeader
+              title={<Typography variant="h5">Hazırlayan:</Typography>}
+              sx={{ p: 0, mb: 1 }}
+            />
+            <BelgeKontrolCard
+              controller={controller}
+              fetch={fetchData}
+              hazirlayan="Denetçi - Yardımcı Denetçi"
+            />
+          </Grid>
+          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <CardHeader
+              title={<Typography variant="h5">Onaylayan:</Typography>}
+              sx={{ p: 0, mb: 1 }}
+            />
+            <BelgeKontrolCard
+              controller={controller}
+              fetch={fetchData}
+              onaylayan="Sorumlu Denetçi"
+            />
+          </Grid>
+          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <CardHeader
+              title={<Typography variant="h5">Belge Kontrol:</Typography>}
+              sx={{ p: 0, mb: 1 }}
+            />
+            <BelgeKontrolCard
+              controller={controller}
+              fetch={fetchData}
+              kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+            />
+          </Grid>
+        </Grid>
+      )}
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Button
           variant="contained"
