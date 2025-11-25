@@ -27,7 +27,7 @@ import {
   useTheme,Card
 } from "@mui/material";
 
-
+import { url } from "@/api/apiBase";
 import Script from "next/script";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import CustomSwitch from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSwitch";
@@ -971,7 +971,7 @@ formData.append("modelAdi", "BagimsizDenetciRaporu");
 formData.append("save", "true");
 
 
-    await axios.post(`/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
+    await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
       headers: {
         Authorization: `Bearer ${user.token || ""}`,
       },

@@ -1,6 +1,6 @@
 import axios, { AxiosProgressEvent } from "axios";
 
-import { apiFetch } from "@/api/apiBase";
+import { apiFetch,url } from "@/api/apiBase";
 
 export type Taraf = {
   id: string;
@@ -83,7 +83,7 @@ export async function fetchPagedFaturalarFull(
   filters: Record<string, string[]> = {}
 ): Promise<PagedResult<Fatura>> {
   const apiurl =
-    `/Invoices/FilteredPagedFull` +
+    `${url}/Invoices/FilteredPagedFull` +
     `?denetciId=${denetciId}&yil=${yil}` +
     `&denetlenenId=${denetlenenId}&page=${page}&pageSize=${pageSize}` +
     `&tip=${encodeURIComponent(tip)}`;
@@ -107,7 +107,7 @@ export const uploadFaturaDosyalari = async (
     tip
   )}&islemAdi=${encodeURIComponent(islemAdi)}`;
 
-  return axios.post(`/Invoices/Upload?${qs}`, form, {
+  return axios.post(`${url}/Invoices/Upload?${qs}`, form, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${user.token}`,
@@ -126,7 +126,7 @@ export const getYuklemeIslemleri = async (user:any) => {
 };
 
 export const previewFaturaHtmlNewTab = async (user: any, dosyaId: string) => {
-  const res = await axios.get(`/Invoices/PreviewHtml/${dosyaId}`, {
+  const res = await axios.get(`${url}/Invoices/PreviewHtml/${dosyaId}`, {
     responseType: "text",
     headers: { Authorization: `Bearer ${user.token}` },
   });

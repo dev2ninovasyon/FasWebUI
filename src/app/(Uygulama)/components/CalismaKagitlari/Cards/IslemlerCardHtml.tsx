@@ -8,7 +8,7 @@ import { IconFileTypeDocx, IconFileTypePdf, IconArchive } from "@tabler/icons-re
 import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
-import { apiFetch } from "@/api/apiBase";
+import { apiFetch,url } from "@/api/apiBase";
 
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { enqueueSnackbar } from "notistack";

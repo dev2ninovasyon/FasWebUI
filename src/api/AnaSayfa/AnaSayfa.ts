@@ -1,10 +1,10 @@
 // src/api/AuditLogs.ts
 import { url,apiFetch } from "@/api/apiBase";
 
-// src/api/AuditLogs.ts
+
 export interface UserActionDto {
   id: number;
-  userId?: string;
+  userId: number;
   userName?: string;
   httpMethod?: string;
   path?: string;
@@ -14,12 +14,18 @@ export interface UserActionDto {
   isError: boolean;
   queryString?: string;
   createdAt: string;
+  clientUrl?: string;
+
   title?: string;
   subtitle?: string;
   friendlyTitle?: string;
   friendlyMessage?: string;
-  clientUrl?: string;   // 🔹 yeni alan
+
+  // 🔹 Backend'de eklediğimiz alanlar:
+  denetlenenId?: number | null;
+  denetlenenUnvani?: string | null;
 }
+
 
 export async function getUserRecentActions(
   token: string,
@@ -44,4 +50,43 @@ export async function getUserRecentActions(
   }
 
   return response.json();
+}
+// src/api/AnaSayfa/Dashboard.ts
+export interface SirketArsivOzetItemDto {
+  denetlenenId: number;
+  sirketUnvani: string;
+  yil: number;
+  dosyaSayisi: number;
+  toplamBoyutByte: number;
+  toplamBoyutMb: number;
+}
+
+export interface SirketArsivOzetDto {
+  kullaniciId: number;
+  toplamSirketSayisi: number;
+  toplamBoyutByte: number;
+  toplamBoyutMb: number;
+  sirketler: SirketArsivOzetItemDto[];
+}
+
+export async function getSirketArsivOzet(
+  token: string,
+  kullaniciId: number,
+   denetciId: number
+): Promise<SirketArsivOzetDto> {
+  const res = await apiFetch(
+    `/Audit/sirket-arsiv-ozet?denetciId=${denetciId}&kullaniciId=${kullaniciId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      next: { revalidate: 0 },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Şirket arşiv özeti alınamadı.");
+  }
+
+  return res.json();
 }

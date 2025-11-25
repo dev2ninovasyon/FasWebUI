@@ -5,7 +5,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box } from "@mui/material";
 import { SonIslemlerKartlari } from "@/app/(Uygulama)/components/AnaSayfa/SonIslemlerKartlari";
-
+import { SirketArsivOzetKartlari } from "@/app/(Uygulama)/components/AnaSayfa/SirketArsivOzetKartlari";
 const BCrumb = [
   {
     to: "/",
@@ -20,6 +20,7 @@ export default function DashboardPage() {
       <Box mt={2}>
         {/* Diğer dashboard bileşenlerinin üstüne/altına koyabilirsin */}
         <SonIslemlerKartlari />
+        <SirketArsivOzetKartlari />
       </Box>
     </PageContainer>
   );
