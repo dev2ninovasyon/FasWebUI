@@ -374,7 +374,7 @@ const OncekiDonemDonusumDuzeltmeBelgesi = () => {
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0,
+        (user.yil ?? 0) - 1,
         false
       );
 
