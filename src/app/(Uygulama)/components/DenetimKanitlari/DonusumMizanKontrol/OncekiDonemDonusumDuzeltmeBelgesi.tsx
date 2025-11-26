@@ -534,26 +534,7 @@ const OncekiDonemDonusumDuzeltmeBelgesi = () => {
           afterGetColHeader={afterGetColHeader}
           afterGetRowHeader={afterGetRowHeader}
           afterRenderer={afterRenderer}
-          contextMenu={{
-            items: {
-              fise_git: {
-                name: "Fişe Git",
-                callback: async (key, selection) => {
-                  const row = await handleGetRowData(selection[0].start.row);
-                  if (!row) return;
-                  router.push(`/Donusum/FisListesi/FisDetaylari/${row[1]}`);
-                },
-              },
-              fise_durumu_değiştir: {
-                name: "Fiş Durumu Değiştir",
-                callback: async (key, selection) => {
-                  const row = await handleGetRowData(selection[0].start.row);
-                  if (!row) return;
-                  handleUpdateFisDurumu(row[1]);
-                },
-              },
-            },
-          }}
+          
           copyPaste={false}
         />
       </Grid>
@@ -569,24 +550,15 @@ const OncekiDonemDonusumDuzeltmeBelgesi = () => {
           }}
         >
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <CardHeader
-              title={<Typography variant="h5">Hazırlayan:</Typography>}
-              sx={{ p: 0, mb: 1 }}
-            />
+            
             <BelgeKontrolCard controller={controller} fetch={fetchData} hazirlayan="Denetçi - Yardımcı Denetçi"/>
           </Grid>
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <CardHeader
-              title={<Typography variant="h5">Onaylayan:</Typography>}
-              sx={{ p: 0, mb: 1 }}
-            />
+            
             <BelgeKontrolCard controller={controller} fetch={fetchData} onaylayan="Sorumlu Denetçi"/>
           </Grid>
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <CardHeader
-              title={<Typography variant="h5">Belge Kontrol:</Typography>}
-              sx={{ p: 0, mb: 1 }}
-            />
+            
             <BelgeKontrolCard controller={controller} fetch={fetchData} kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"/>
           </Grid>
         </Grid>
