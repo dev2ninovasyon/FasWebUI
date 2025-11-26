@@ -1,5 +1,5 @@
 // src/api/apiBase.ts
-export const url = "https://localhost:5001/api";
+export const url = "https://beta.fasweb.com.tr/api";
 
 export async function apiFetch(
   path: string,
