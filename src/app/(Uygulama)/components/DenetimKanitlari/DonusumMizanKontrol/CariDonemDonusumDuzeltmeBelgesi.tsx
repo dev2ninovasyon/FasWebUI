@@ -227,6 +227,8 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
   };
 
+  
+
   const afterRenderer = (
     TD: any,
     row: any,
@@ -243,7 +245,6 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     TD.style.whiteSpace = "nowrap";
     TD.style.overflow = "hidden";
 
-    // color
     TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
 
     if (row % 2 === 0) {
@@ -259,25 +260,6 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
       TD.style.borderRightColor =
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
-  };
-
-  const afterRenderer2 = (
-    TD: any,
-    row: any,
-    col: any,
-    prop: any,
-    value: any,
-    cellProperties: any
-  ) => {
-    // typography body1
-    TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontWeight = 500;
-    TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
-    TD.style.whiteSpace = "nowrap";
-    TD.style.overflow = "hidden";
-
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
 
     if (col === 1) {
       if (parseInt(value) % 2 !== 0) {
@@ -364,7 +346,7 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     if (!hotInstance) return;
 
     hotInstance.updateSettings({
-      afterRenderer: afterRenderer2,
+      afterRenderer: afterRenderer,
     });
 
     hotInstance.render();
@@ -412,7 +394,7 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
         const blob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, "FisListesi.xlsx");
+        saveAs(blob, "CariDonemDonusumDuzeltmeBelgesi.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
