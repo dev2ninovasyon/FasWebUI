@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Divider,
@@ -49,243 +49,243 @@ const HileUsulsuzlukToplantidaGorusulenHususlarBelge: React.FC<
   setTamamlanan,
   setToplam,
 }) => {
-  const user = useSelector((state: AppState) => state.userReducer);
-  const customizer = useSelector((state: AppState) => state.customizer);
+    const user = useSelector((state: AppState) => state.userReducer);
+    const customizer = useSelector((state: AppState) => state.customizer);
 
-  const [selectedId, setSelectedId] = useState(0);
-  const [selectedIslem, setSelectedIslem] = useState("");
-  const [selectedTespit, setSelectedTespit] = useState("");
-  const [selectedStandartMi, setSelectedStandartMi] = useState(true);
+    const [selectedId, setSelectedId] = useState(0);
+    const [selectedIslem, setSelectedIslem] = useState("");
+    const [selectedTespit, setSelectedTespit] = useState("");
+    const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
-  const [veriler, setVeriler] = useState<Veri[]>([]);
+    const [veriler, setVeriler] = useState<Veri[]>([]);
 
-  const [isNew, setIsNew] = useState(false);
+    const [isNew, setIsNew] = useState(false);
 
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+    const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
-  const handleCreate = async (islem: string, tespit: string) => {
-    const createdCalismaKagidiVerisi = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      islem: islem,
-      tespit: tespit,
-    };
-    try {
-      const result = await createCalismaKagidiVerisi(
-        controller || "",
-        user.token || "",
-        createdCalismaKagidiVerisi
-      );
-      if (result) {
-        fetchData();
-        handleClosePopUp();
-        setIsNew(false);
-      } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleUpdate = async (islem: string, tespit: string) => {
-    const updatedCalismaKagidiVerisi = veriler.find(
-      (veri) => veri.id === selectedId
-    );
-    if (updatedCalismaKagidiVerisi) {
-      updatedCalismaKagidiVerisi.islem = islem;
-      updatedCalismaKagidiVerisi.tespit = tespit;
-
+    const handleCreate = async (islem: string, tespit: string) => {
+      const createdCalismaKagidiVerisi = {
+        denetlenenId: user.denetlenenId,
+        denetciId: user.denetciId,
+        yil: user.yil,
+        islem: islem,
+        tespit: tespit,
+      };
       try {
-        const result = await updateCalismaKagidiVerisi(
+        const result = await createCalismaKagidiVerisi(
           controller || "",
           user.token || "",
-          selectedId,
-          updatedCalismaKagidiVerisi
+          createdCalismaKagidiVerisi
+        );
+        if (result) {
+          fetchData();
+          handleClosePopUp();
+          setIsNew(false);
+        } else {
+          console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        }
+      } catch (error) {
+        console.error("Bir hata oluştu:", error);
+      }
+    };
+
+    const handleUpdate = async (islem: string, tespit: string) => {
+      const updatedCalismaKagidiVerisi = veriler.find(
+        (veri) => veri.id === selectedId
+      );
+      if (updatedCalismaKagidiVerisi) {
+        updatedCalismaKagidiVerisi.islem = islem;
+        updatedCalismaKagidiVerisi.tespit = tespit;
+
+        try {
+          const result = await updateCalismaKagidiVerisi(
+            controller || "",
+            user.token || "",
+            selectedId,
+            updatedCalismaKagidiVerisi
+          );
+          if (result) {
+            fetchData();
+            handleClosePopUp();
+          } else {
+            console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          }
+        } catch (error) {
+          console.error("Bir hata oluştu:", error);
+        }
+      }
+    };
+
+    const handleDelete = async () => {
+      try {
+        const result = await deleteCalismaKagidiVerisiById(
+          controller || "",
+          user.token || "",
+          selectedId
         );
         if (result) {
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.error("Çalışma Kağıdı Verisi silme başarısız");
         }
       } catch (error) {
         console.error("Bir hata oluştu:", error);
       }
-    }
-  };
+    };
 
-  const handleDelete = async () => {
-    try {
-      const result = await deleteCalismaKagidiVerisiById(
-        controller || "",
-        user.token || "",
-        selectedId
-      );
-      if (result) {
-        fetchData();
-        handleClosePopUp();
-      } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
+    const fetchData = useCallback(async () => {
+      try {
+        const calismaKagidiVerileri =
+          await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+            controller || "",
+            user.token || "",
+            user.denetciId || 0,
+            user.denetlenenId || 0,
+            user.yil || 0
+          );
+
+        const rowsAll: any = [];
+
+        const tamamlanan: any[] = [];
+        const toplam: any[] = [];
+
+        calismaKagidiVerileri.forEach((veri: any) => {
+          const newRow: Veri = {
+            id: veri.id,
+            islem: veri.islem,
+            tespit: veri.tespit,
+            standartMi: veri.standartmi,
+          };
+          rowsAll.push(newRow);
+
+          if (newRow.standartMi) {
+            toplam.push(newRow);
+          } else {
+            tamamlanan.push(newRow);
+            toplam.push(newRow);
+          }
+        });
+        setVeriler(rowsAll);
+
+        setToplam(toplam.length);
+        setTamamlanan(tamamlanan.length);
+      } catch (error) {
+        console.error("Bir hata oluştu:", error);
       }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
+    }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, setToplam, setTamamlanan]);
 
-  const handleDeleteAll = async () => {
-    try {
-      const result = await deleteAllCalismaKagidiVerileri(
-        controller || "",
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
-      if (result) {
-        fetchData();
-      } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const fetchData = async () => {
-    try {
-      const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+    const handleDeleteAll = useCallback(async () => {
+      try {
+        const result = await deleteAllCalismaKagidiVerileri(
           controller || "",
           user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
-
-      const rowsAll: any = [];
-
-      const tamamlanan: any[] = [];
-      const toplam: any[] = [];
-
-      calismaKagidiVerileri.forEach((veri: any) => {
-        const newRow: Veri = {
-          id: veri.id,
-          islem: veri.islem,
-          tespit: veri.tespit,
-          standartMi: veri.standartmi,
-        };
-        rowsAll.push(newRow);
-
-        if (newRow.standartMi) {
-          toplam.push(newRow);
+        if (result) {
+          fetchData();
         } else {
-          tamamlanan.push(newRow);
-          toplam.push(newRow);
+          console.error("Çalışma Kağıdı Verileri silme başarısız");
         }
-      });
-      setVeriler(rowsAll);
+      } catch (error) {
+        console.error("Bir hata oluştu:", error);
+      }
+    }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
-      setToplam(toplam.length);
-      setTamamlanan(tamamlanan.length);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
+    const handleCardClick = (veri: any) => {
+      setSelectedId(veri.id);
+      setSelectedIslem(veri.islem);
+      setSelectedTespit(veri.tespit);
+      setSelectedStandartMi(veri.standartMi);
+      setIsPopUpOpen(true);
+    };
 
-  const handleCardClick = (veri: any) => {
-    setSelectedId(veri.id);
-    setSelectedIslem(veri.islem);
-    setSelectedTespit(veri.tespit);
-    setSelectedStandartMi(veri.standartMi);
-    setIsPopUpOpen(true);
-  };
+    const handleNew = () => {
+      setIsNew(true);
+      setSelectedIslem("");
+      setSelectedTespit("");
+      setIsPopUpOpen(true);
+    };
 
-  const handleNew = () => {
-    setIsNew(true);
-    setSelectedIslem("");
-    setSelectedTespit("");
-    setIsPopUpOpen(true);
-  };
+    const handleClosePopUp = () => {
+      setIsNew(false);
+      setIsPopUpOpen(false);
+    };
 
-  const handleClosePopUp = () => {
-    setIsNew(false);
-    setIsPopUpOpen(false);
-  };
+    const handleSetSelectedIslem = async (islem: any) => {
+      setSelectedIslem(islem);
+    };
 
-  const handleSetSelectedIslem = async (islem: any) => {
-    setSelectedIslem(islem);
-  };
+    const handleSetSelectedTespit = async (tespit: any) => {
+      setSelectedTespit(tespit);
+    };
 
-  const handleSetSelectedTespit = async (tespit: any) => {
-    setSelectedTespit(tespit);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (isClickedVarsayilanaDon) {
-      handleDeleteAll();
-      setIsClickedVarsayilanaDon(false);
-    }
-  }, [isClickedVarsayilanaDon]);
-
-  useEffect(() => {
-    if (refresh) {
+    useEffect(() => {
       fetchData();
-    }
-  }, [refresh]);
+    }, [fetchData]);
 
-  return (
-    <>
-      <Grid container>
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "center",
-          }}
-        >
-          {veriler.map((veri, index) => (
-            <Grid
-              key={index}
-              item
-              xs={12}
-              lg={12}
-              mt="20px"
-              onClick={() => handleCardClick(veri)}
-            >
-              <CalismaKagidiCard
-                title={`${index + 1}. ${veri.islem}`}
-                content={`${veri.tespit}`}
-                standartMi={veri.standartMi}
-              />
-            </Grid>
-          ))}
+    useEffect(() => {
+      if (isClickedVarsayilanaDon) {
+        handleDeleteAll();
+        setIsClickedVarsayilanaDon(false);
+      }
+    }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
+
+    useEffect(() => {
+      if (refresh) {
+        fetchData();
+      }
+    }, [refresh]);
+
+    return (
+      <>
+        <Grid container>
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "center",
+            }}
+          >
+            {veriler.map((veri, index) => (
+              <Grid
+                key={index}
+                item
+                xs={12}
+                lg={12}
+                mt="20px"
+                onClick={() => handleCardClick(veri)}
+              >
+                <CalismaKagidiCard
+                  title={`${index + 1}. ${veri.islem}`}
+                  content={`${veri.tespit}`}
+                  standartMi={veri.standartMi}
+                />
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
-      </Grid>
-      {isPopUpOpen && (
-        <PopUpComponent
-          islem={selectedIslem}
-          tespit={selectedTespit}
-          standartMi={selectedStandartMi}
-          handleClose={handleClosePopUp}
-          handleSetSelectedIslem={handleSetSelectedIslem}
-          handleSetSelectedTespit={handleSetSelectedTespit}
-          handleCreate={handleCreate}
-          handleDelete={handleDelete}
-          handleUpdate={handleUpdate}
-          isPopUpOpen={isPopUpOpen}
-          isNew={isNew}
-        />
-      )}
-    </>
-  );
-};
+        {isPopUpOpen && (
+          <PopUpComponent
+            islem={selectedIslem}
+            tespit={selectedTespit}
+            standartMi={selectedStandartMi}
+            handleClose={handleClosePopUp}
+            handleSetSelectedIslem={handleSetSelectedIslem}
+            handleSetSelectedTespit={handleSetSelectedTespit}
+            handleCreate={handleCreate}
+            handleDelete={handleDelete}
+            handleUpdate={handleUpdate}
+            isPopUpOpen={isPopUpOpen}
+            isNew={isNew}
+          />
+        )}
+      </>
+    );
+  };
 
 export default HileUsulsuzlukToplantidaGorusulenHususlarBelge;
 

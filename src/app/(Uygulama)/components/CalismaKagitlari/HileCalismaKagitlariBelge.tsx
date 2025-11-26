@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Divider,
@@ -131,27 +131,7 @@ const HileCalismaKagitlariBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleDeleteAll = async () => {
-    try {
-      const result = await deleteAllCalismaKagidiVerileriByUrl(
-        controller || "",
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        url
-      );
-      if (result) {
-        fetchData();
-      } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const calismaKagidiVerileri =
         await getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl(
@@ -189,7 +169,27 @@ const HileCalismaKagitlariBelge: React.FC<CalismaKagidiProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, url, setToplam, setTamamlanan]);
+
+  const handleDeleteAll = useCallback(async () => {
+    try {
+      const result = await deleteAllCalismaKagidiVerileriByUrl(
+        controller || "",
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        url
+      );
+      if (result) {
+        fetchData();
+      } else {
+        console.error("Çalışma Kağıdı Verileri silme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, url, fetchData]);
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
@@ -215,18 +215,14 @@ const HileCalismaKagitlariBelge: React.FC<CalismaKagidiProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [url]);
+  }, [fetchData]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
       handleDeleteAll();
       setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayilanaDon]);
+  }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
 
   useEffect(() => {
     if (refresh) {

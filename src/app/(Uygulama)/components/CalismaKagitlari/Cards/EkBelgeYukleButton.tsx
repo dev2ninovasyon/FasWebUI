@@ -44,6 +44,7 @@ import {
   downloadEkBelge,
   EkBelgeDto,
   deleteEkBelge,
+  deleteEkBelgelerSecilenler,
 } from "@/api/CalismaKagitlari/CalismaKagitlariEkBelge";
 
 // en üst kısma ekle
@@ -90,11 +91,11 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
   const borderColor = theme.palette.divider;
-const isPdfBelge = (belge: EkBelgeDto) => {
-  const contentType = belge.contentType?.toLowerCase() || "";
-  const name = (belge.orijinalDosyaAdi || "").toLowerCase();
-  return contentType.includes("pdf") || name.endsWith(".pdf");
-};
+  const isPdfBelge = (belge: EkBelgeDto) => {
+    const contentType = belge.contentType?.toLowerCase() || "";
+    const name = (belge.orijinalDosyaAdi || "").toLowerCase();
+    return contentType.includes("pdf") || name.endsWith(".pdf");
+  };
   const canLoad =
     !!user.token && !!user.denetciId && !!user.denetlenenId && !!user.yil;
 
@@ -102,13 +103,13 @@ const isPdfBelge = (belge: EkBelgeDto) => {
     ekBelgeler.length > 0 && selectedIds.length === ekBelgeler.length;
 
   // Filtrelenmiş liste (arama)
-const filteredBelgeler = useMemo(() => {
-  const term = searchTerm.trim().toLowerCase();
-  if (!term) return ekBelgeler;
-  return ekBelgeler.filter((b) =>
-    (b.orijinalDosyaAdi || "").toLowerCase().includes(term)
-  );
-}, [ekBelgeler, searchTerm]);
+  const filteredBelgeler = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return ekBelgeler;
+    return ekBelgeler.filter((b) =>
+      (b.orijinalDosyaAdi || "").toLowerCase().includes(term)
+    );
+  }, [ekBelgeler, searchTerm]);
 
   // Sayfalı liste
   const pagedBelgeler = useMemo(() => {
@@ -332,7 +333,7 @@ const filteredBelgeler = useMemo(() => {
         enqueueSnackbar(
           (typeof result === "object" &&
             (result.message || (result as any).error)) ||
-            "Ek belgeler yüklenirken bir hata oluştu.",
+          "Ek belgeler yüklenirken bir hata oluştu.",
           {
             variant: "error",
             autoHideDuration: 5000,
@@ -452,22 +453,22 @@ const filteredBelgeler = useMemo(() => {
       setSelectedIds(ekBelgeler.map((b) => b.id));
     }
   };
-const openDeleteConfirm = (ids: number[]) => {
-  if (!ids || ids.length === 0) {
-    enqueueSnackbar("Lütfen silmek için en az bir belge seçin.", {
-      variant: "info",
-      autoHideDuration: 4000,
-    });
-    return;
-  }
-  setSelectedIds(ids);
-  setDeleteConfirmOpen(true);
-};
+  const openDeleteConfirm = (ids: number[]) => {
+    if (!ids || ids.length === 0) {
+      enqueueSnackbar("Lütfen silmek için en az bir belge seçin.", {
+        variant: "info",
+        autoHideDuration: 4000,
+      });
+      return;
+    }
+    setSelectedIds(ids);
+    setDeleteConfirmOpen(true);
+  };
 
   // Silme butonuna basılınca
   const handleDeleteSelectedClick = () => {
-  openDeleteConfirm(selectedIds);
-};
+    openDeleteConfirm(selectedIds);
+  };
 
 
   const handleConfirmDeleteSelected = async () => {
@@ -480,71 +481,31 @@ const openDeleteConfirm = (ids: number[]) => {
     try {
       setIsDeletingSelected(true);
 
-      const promises = selectedIds.map((id) =>
-        deleteEkBelge(user.token || "", id)
+      const result = await deleteEkBelgelerSecilenler(
+        user.token!,
+        user.denetciId!,
+        user.denetlenenId!,
+        user.yil!,
+        selectedIds
       );
-      const results = await Promise.all(promises);
 
-      const successIds = selectedIds.filter((_, idx) => results[idx]);
-      const failedCount = selectedIds.length - successIds.length;
+      setEkBelgeler((prev) => prev.filter((b) => !selectedIds.includes(b.id)));
+      setSelectedIds([]);
 
-      if (successIds.length > 0) {
-        setEkBelgeler((prev) => prev.filter((b) => !successIds.includes(b.id)));
-        setSelectedIds([]);
-
-        enqueueSnackbar(
-          failedCount > 0
-            ? `${successIds.length} belge silindi, ${failedCount} belge silinirken hata oluştu.`
-            : "Seçilen ek belgeler başarıyla silindi.",
-          {
-            variant: failedCount > 0 ? "warning" : "success",
-            autoHideDuration: 5000,
-            style: {
-              backgroundColor:
-                customizer.activeMode === "dark"
-                  ? failedCount > 0
-                    ? theme.palette.warning.dark
-                    : theme.palette.success.light
-                  : failedCount > 0
-                  ? theme.palette.warning.main
-                  : theme.palette.success.main,
-            },
-          }
-        );
-
-        if (onUploaded) onUploaded();
-      } else {
-        enqueueSnackbar("Ek belgeler silinirken bir hata oluştu.", {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.dark
-                : theme.palette.error.main,
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Seçilen ek belgeler silinirken hata oluştu:", error);
       enqueueSnackbar(
-        "Seçilen ek belgeler silinirken beklenmeyen bir hata oluştu.",
-        {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.dark
-                : theme.palette.error.main,
-          },
-        }
+        `${result.deleted} adet ek belge başarıyla silindi.`,
+        { variant: "success" }
       );
+
+      if (onUploaded) onUploaded();
+    } catch (error) {
+      // ...
     } finally {
       setIsDeletingSelected(false);
       setDeleteConfirmOpen(false);
     }
   };
+
 
   const handleClosePreview = () => {
     setPreviewOpen(false);
@@ -712,8 +673,8 @@ const openDeleteConfirm = (ids: number[]) => {
                       ? "rgba(96,165,250,0.1)"
                       : "#E0F2FE"
                     : theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.02)"
-                    : "background.paper",
+                      ? "rgba(255,255,255,0.02)"
+                      : "background.paper",
                   "&:hover": {
                     borderColor: theme.palette.primary.main,
                     bgcolor:
@@ -767,177 +728,177 @@ const openDeleteConfirm = (ids: number[]) => {
             </Grid>
 
             {/* Sağ: Yüklenmiş Dosya Bilgileri */}
-          <Grid item xs={12} md={7}>
-  <Paper
-    elevation={0}
-    sx={{
-      borderRadius: 2,
-      border: `1px solid ${borderColor}`,
-      bgcolor:
-        theme.palette.mode === "dark"
-          ? "background.default"
-          : "background.paper",
-      display: "flex",
-      flexDirection: "column",
-      height: "100%",
-      minHeight: 285,
-      maxHeight: 420,          // 🔹 üst sınır, fazlası için scroll
-    }}
-  >
-    {/* Başlık + arama */}
-    <Box
-      sx={{
-        px: 2.5,
-        py: 2,
-        borderBottom: `1px solid ${borderColor}`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <Typography variant="h6">
-        Yüklenmiş Dosya Bilgileri
-      </Typography>
-      <TextField
-        size="small"
-        placeholder="Arama"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ width: 260 }}
-      />
-    </Box>
-
-    {/* Tablo */}
-    <TableContainer
-      sx={{
-        flex: 1,
-        overflowY: "auto",     // 🔹 dikey scroll
-        overflowX: "auto",     // 🔹 sadece gerekirse yatay scroll
-      }}
-    >
-      <Table size="small" stickyHeader>
-        <TableHead>
-          <TableRow>
-            <TableCell padding="checkbox">
-              <Checkbox
-                indeterminate={
-                  selectedIds.length > 0 &&
-                  selectedIds.length < filteredBelgeler.length
-                }
-                checked={
-                  filteredBelgeler.length > 0 &&
-                  selectedIds.length === filteredBelgeler.length
-                }
-                onChange={handleToggleSelectAll}
-              />
-            </TableCell>
-            <TableCell>Dosya Adı</TableCell>
-            <TableCell width={100}>Tarih</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {isLoadingList ? (
-            <TableRow>
-              <TableCell colSpan={4} align="center">
-                <Typography variant="body2">
-                  Yüklenmiş dosyalar yükleniyor...
-                </Typography>
-              </TableCell>
-            </TableRow>
-          ) : filteredBelgeler.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={4} align="center">
-                <Typography variant="body2" color="text.secondary">
-                  Henüz yüklenmiş dosya bulunmuyor.
-                </Typography>
-              </TableCell>
-            </TableRow>
-          ) : (
-            filteredBelgeler.map((belge) => (
-              <TableRow key={belge.id} hover>
-                <TableCell padding="checkbox" >
-                  <Checkbox
-                    checked={selectedIds.includes(belge.id)}
-                    onChange={() => toggleSelect(belge.id)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Stack direction="row" spacing={1} alignItems="flex-start">
-                    <InsertDriveFileIcon fontSize="small" />
-                    <Typography
-                      variant="body2"
-                      title={belge.orijinalDosyaAdi}
-                      sx={{
-                        wordBreak: "break-word",   // 🔹 isim alt satıra insin
-                        whiteSpace: "normal",
-                      }}
-                    >
-                      {belge.orijinalDosyaAdi}
-                    </Typography>
-                  </Stack>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">
-                    {belge.yuklemeTarihi
-                      ? new Date(belge.yuklemeTarihi).toLocaleString("tr-TR")
-                      : "-"}
+            <Grid item xs={12} md={7}>
+              <Paper
+                elevation={0}
+                sx={{
+                  borderRadius: 2,
+                  border: `1px solid ${borderColor}`,
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "background.default"
+                      : "background.paper",
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  minHeight: 285,
+                  maxHeight: 420,          // 🔹 üst sınır, fazlası için scroll
+                }}
+              >
+                {/* Başlık + arama */}
+                <Box
+                  sx={{
+                    px: 2.5,
+                    py: 2,
+                    borderBottom: `1px solid ${borderColor}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography variant="h6">
+                    Yüklenmiş Dosya Bilgileri
                   </Typography>
-                </TableCell>
-            <TableCell>
-  <Stack direction="row" spacing={1} alignItems="center">
-    {/* Göster sadece PDF ise */}
-    {isPdfBelge(belge) && (
-      <IconButton
-        size="small"
-        onClick={() => handleView(belge)}
-      >
-        <VisibilityIcon fontSize="small" />
-      </IconButton>
-    )}
+                  <TextField
+                    size="small"
+                    placeholder="Arama"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    sx={{ width: 260 }}
+                  />
+                </Box>
 
-    {/* İndir her zaman olsun */}
-    <IconButton
-      size="small"
-      onClick={() => handleDownload(belge)}
-    >
-      <DownloadIcon fontSize="small" />
-    </IconButton>
+                {/* Tablo */}
+                <TableContainer
+                  sx={{
+                    flex: 1,
+                    overflowY: "auto",     // 🔹 dikey scroll
+                    overflowX: "auto",     // 🔹 sadece gerekirse yatay scroll
+                  }}
+                >
+                  <Table size="small" stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            indeterminate={
+                              selectedIds.length > 0 &&
+                              selectedIds.length < filteredBelgeler.length
+                            }
+                            checked={
+                              filteredBelgeler.length > 0 &&
+                              selectedIds.length === filteredBelgeler.length
+                            }
+                            onChange={handleToggleSelectAll}
+                          />
+                        </TableCell>
+                        <TableCell>Dosya Adı</TableCell>
+                        <TableCell width={100}>Tarih</TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {isLoadingList ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center">
+                            <Typography variant="body2">
+                              Yüklenmiş dosyalar yükleniyor...
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : filteredBelgeler.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center">
+                            <Typography variant="body2" color="text.secondary">
+                              Henüz yüklenmiş dosya bulunmuyor.
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredBelgeler.map((belge) => (
+                          <TableRow key={belge.id} hover>
+                            <TableCell padding="checkbox" >
+                              <Checkbox
+                                checked={selectedIds.includes(belge.id)}
+                                onChange={() => toggleSelect(belge.id)}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Stack direction="row" spacing={1} alignItems="flex-start">
+                                <InsertDriveFileIcon fontSize="small" />
+                                <Typography
+                                  variant="body2"
+                                  title={belge.orijinalDosyaAdi}
+                                  sx={{
+                                    wordBreak: "break-word",   // 🔹 isim alt satıra insin
+                                    whiteSpace: "normal",
+                                  }}
+                                >
+                                  {belge.orijinalDosyaAdi}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2">
+                                {belge.yuklemeTarihi
+                                  ? new Date(belge.yuklemeTarihi).toLocaleString("tr-TR")
+                                  : "-"}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Stack direction="row" spacing={1} alignItems="center">
+                                {/* Göster sadece PDF ise */}
+                                {isPdfBelge(belge) && (
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleView(belge)}
+                                  >
+                                    <VisibilityIcon fontSize="small" />
+                                  </IconButton>
+                                )}
 
-    
-  </Stack>
-</TableCell>
+                                {/* İndir her zaman olsun */}
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleDownload(belge)}
+                                >
+                                  <DownloadIcon fontSize="small" />
+                                </IconButton>
 
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
 
-    {/* Alt bar: sadece seçilenleri sil butonu */}
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        px: 1.5,
-        py: 0.75,
-        borderTop: `1px solid ${borderColor}`,
-      }}
-    >
-      <Button
-        size="small"
-        color="error"
-        startIcon={<DeleteIcon />}
-        onClick={handleDeleteSelectedClick}
-        disabled={selectedIds.length === 0 || isDeletingSelected}
-      >
-        Seçilenleri Sil
-      </Button>
-    </Box>
-  </Paper>
-</Grid>
+                              </Stack>
+                            </TableCell>
+
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                {/* Alt bar: sadece seçilenleri sil butonu */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    px: 1.5,
+                    py: 0.75,
+                    borderTop: `1px solid ${borderColor}`,
+                  }}
+                >
+                  <Button
+                    size="small"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                    onClick={handleDeleteSelectedClick}
+                    disabled={selectedIds.length === 0 || isDeletingSelected}
+                  >
+                    Seçilenleri Sil
+                  </Button>
+                </Box>
+              </Paper>
+            </Grid>
 
           </Grid>
         </DialogContent>

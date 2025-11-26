@@ -731,7 +731,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
 
   const [belgeler, setBelgeler] = useState<Belgeler[]>([]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const data = await getDenetimDosyaByFormKodu(
         user.token || "",
@@ -742,11 +742,11 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     } catch (error) {
       console.error("An error occurred:", error);
     }
-  };
+  }, [user.token, user.denetimTuru, ilgiliFormKodlari]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>

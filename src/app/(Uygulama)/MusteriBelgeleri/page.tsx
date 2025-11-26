@@ -39,12 +39,12 @@ import {
   EkBelgeDto,
   getMusteriBelgeleriFetch,
   uploadMusteriBelgeFetch,
-
 } from "@/api/MusteriBelgeleri/MusteriBelgeleri";
 import {
   downloadEkBelge,
   deleteEkBelge,
 } from "@/api/CalismaKagitlari/CalismaKagitlariEkBelge";
+
 const BCrumb = [
   {
     to: "/MusteriBelgeleri",
@@ -86,160 +86,158 @@ const Page = () => {
     { fileName: string; percentage: number }[]
   >([]);
 
-  // Yeni state'ler (yapı değişikliği için)
+  // --- Çoklu silme için state'ler ---
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeletingSelected, setIsDeletingSelected] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: any) => {
     setFileType(event.target.value);
   };
 
-  const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange2 = (event: any) => {
     setFileType2(event.target.value);
   };
 
   // Seçilen belge adından (name) gerçek formKodu'nu bul
   const getSelectedFormKodu = useCallback(() => {
-      if (fileType === "ToplantıTutanakları") {
+    if (fileType === "ToplantıTutanakları") {
       return "genelkurultoplantibelgeleri";
     }
     if (!fileType2 || fileType2 === "-" || !fetchedData) return null;
 
     const match = fetchedData.find((item) => item.name === fileType2);
-
     // Eğer code yoksa fallback: fileType3 ya da null
     return match?.code || fileType3;
-  }, [fileType2, fetchedData, fileType3]);
+  }, [fileType, fileType2, fetchedData, fileType3]);
 
   // Ek belgeleri listeleme
-  const loadEkBelgeler = useCallback(
-    async () => {
-      try {
-        const formKodu = getSelectedFormKodu();
-        
-        console.log("Seçilen formKodu:", formKodu);
-
-        if (!formKodu) {
-          setRows([]);
-          return;
-        }
-
-        if (!user.token || !user.denetciId || !user.denetlenenId || !user.yil) {
-          return;
-        }
-
-        setIsLoadingList(true);
-
-        const list: EkBelgeDto[] = await getMusteriBelgeleriFetch(
-          user.token,
-          user.denetciId,
-          user.denetlenenId,
-          user.yil,
-          formKodu
-        );
-
-        console.log("Müşteri belgeleri list:", list);
-
-        // Artık mapping yok, gelen DTO'yu direkt kullanıyoruz
-        setRows(list);
-        setSelectedIds([]);
-      } catch (error) {
-        console.error("Müşteri belgeleri listesi alınırken hata:", error);
-        enqueueSnackbar("Yüklenmiş belgeler alınırken hata oluştu.", {
-          variant: "error",
-        });
-      } finally {
-        setIsLoadingList(false);
-      }
-    },
-    [
-      getSelectedFormKodu,
-      user.token,
-      user.denetciId,
-      user.denetlenenId,
-      user.yil,
-    ]
-  );
-
-  // Yükleme
-const onDrop = useCallback(
-  async (acceptedFiles: File[]) => {
-    console.log(fileType);
-
-    // ToplantıTutanakları HARİÇ durumlarda fileType2 zorunlu olsun
-    if (
-      fileType !== "ToplantıTutanakları" &&
-      (!fileType2 || fileType2 === "-")
-    ) {
-      enqueueSnackbar(
-        "Lütfen önce yüklemek istediğiniz dosya türünü seçin.",
-        {
-          variant: "warning",
-        }
-      );
-      return;
-    }
-
-    if (!user.token || !user.denetciId || !user.denetlenenId || !user.yil) {
-      enqueueSnackbar("Oturum bilgisi eksik. Lütfen tekrar giriş yapın.", {
-        variant: "error",
-      });
-      return;
-    }
-
-    if (acceptedFiles.length === 0) return;
-
-    setUploading(true);
-    setDosyaYuklendiMi(false);
-
-    setProgressInfos(
-      acceptedFiles.map((f) => ({
-        fileName: f.name,
-        percentage: 30,
-      }))
-    );
-
+  const loadEkBelgeler = useCallback(async () => {
     try {
       const formKodu = getSelectedFormKodu();
 
-      await uploadMusteriBelgeFetch(user.token, {
-        denetciId: user.denetciId,
-        denetlenenId: user.denetlenenId,
-        yil: user.yil,
-        formKodu: formKodu || "FormKodu",
-        files: acceptedFiles,
-      });
+      console.log("Seçilen formKodu:", formKodu);
 
-      setProgressInfos((prev) =>
-        prev.map((p) => ({ ...p, percentage: 100 }))
+      if (!formKodu) {
+        setRows([]);
+        setSelectedIds([]);
+        return;
+      }
+
+      if (!user.token || !user.denetciId || !user.denetlenenId || !user.yil) {
+        return;
+      }
+
+      setIsLoadingList(true);
+
+      const list: EkBelgeDto[] = await getMusteriBelgeleriFetch(
+        user.token,
+        user.denetciId,
+        user.denetlenenId,
+        user.yil,
+        formKodu
       );
 
-      setDosyaYuklendiMi(true);
-      enqueueSnackbar("Dosyalar başarıyla yüklendi.", { variant: "success" });
+      console.log("Müşteri belgeleri list:", list);
 
-      await loadEkBelgeler();
+      setRows(list);
+      setSelectedIds([]);
     } catch (error) {
-      console.error("Dosya yüklenirken hata oluştu:", error);
-      enqueueSnackbar("Dosya yüklenirken bir hata oluştu.", {
+      console.error("Müşteri belgeleri listesi alınırken hata:", error);
+      enqueueSnackbar("Yüklenmiş belgeler alınırken hata oluştu.", {
         variant: "error",
       });
     } finally {
-      setUploading(false);
+      setIsLoadingList(false);
     }
-  },
-  [
-    fileType,        // <-- bunu da dependency list'e ekle
-    fileType2,
+  }, [
+    getSelectedFormKodu,
     user.token,
     user.denetciId,
     user.denetlenenId,
     user.yil,
-    loadEkBelgeler,
-    getSelectedFormKodu,
-  ]
-);
+  ]);
+
+  // Yükleme
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      console.log(fileType);
+
+      // ToplantıTutanakları HARİÇ durumlarda fileType2 zorunlu olsun
+      if (
+        fileType !== "ToplantıTutanakları" &&
+        (!fileType2 || fileType2 === "-")
+      ) {
+        enqueueSnackbar(
+          "Lütfen önce yüklemek istediğiniz dosya türünü seçin.",
+          {
+            variant: "warning",
+          }
+        );
+        return;
+      }
+
+      if (!user.token || !user.denetciId || !user.denetlenenId || !user.yil) {
+        enqueueSnackbar("Oturum bilgisi eksik. Lütfen tekrar giriş yapın.", {
+          variant: "error",
+        });
+        return;
+      }
+
+      if (acceptedFiles.length === 0) return;
+
+      setUploading(true);
+      setDosyaYuklendiMi(false);
+
+      setProgressInfos(
+        acceptedFiles.map((f) => ({
+          fileName: f.name,
+          percentage: 30,
+        }))
+      );
+
+      try {
+        const formKodu = getSelectedFormKodu();
+
+        await uploadMusteriBelgeFetch(user.token, {
+          denetciId: user.denetciId,
+          denetlenenId: user.denetlenenId,
+          yil: user.yil,
+          formKodu: formKodu || "FormKodu",
+          files: acceptedFiles,
+        });
+
+        setProgressInfos((prev) =>
+          prev.map((p) => ({ ...p, percentage: 100 }))
+        );
+
+        setDosyaYuklendiMi(true);
+        enqueueSnackbar("Dosyalar başarıyla yüklendi.", {
+          variant: "success",
+        });
+
+        await loadEkBelgeler();
+      } catch (error) {
+        console.error("Dosya yüklenirken hata oluştu:", error);
+        enqueueSnackbar("Dosya yüklenirken bir hata oluştu.", {
+          variant: "error",
+        });
+      } finally {
+        setUploading(false);
+      }
+    },
+    [
+      fileType,
+      fileType2,
+      user.token,
+      user.denetciId,
+      user.denetlenenId,
+      user.yil,
+      loadEkBelgeler,
+      getSelectedFormKodu,
+    ]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -300,11 +298,7 @@ const onDrop = useCallback(
     const term = searchTerm.trim().toLowerCase();
     if (!term) return rows;
     return rows.filter((b) =>
-      (
-        (b as any).orijinalDosyaAdi ||
-        (b as any).adi ||
-        ""
-      )
+      ((b as any).orijinalDosyaAdi || (b as any).adi || "")
         .toString()
         .toLowerCase()
         .includes(term)
@@ -333,10 +327,7 @@ const onDrop = useCallback(
     if (!user.token) return;
 
     try {
-      const { blob, fileName } = await downloadEkBelge(
-        user.token,
-        belge.id
-      );
+      const { blob, fileName } = await downloadEkBelge(user.token, belge.id);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -358,7 +349,6 @@ const onDrop = useCallback(
   };
 
   const handleView = async (belge: EkBelgeDto) => {
-    // Şimdilik PDF ise yeni sekmede açalım
     if (!user.token) return;
 
     try {
@@ -368,7 +358,6 @@ const onDrop = useCallback(
       if (isPdfBelge(belge)) {
         window.open(url, "_blank");
       } else {
-        // PDF değilse direkt indirme
         const a = document.createElement("a");
         a.href = url;
         a.download =
@@ -389,6 +378,7 @@ const onDrop = useCallback(
     }
   };
 
+  // --- ÇOKLU SİLME BUTONU ---
   const handleDeleteSelectedClick = async () => {
     if (!user.token) return;
     if (selectedIds.length === 0) {
@@ -406,6 +396,7 @@ const onDrop = useCallback(
     try {
       setIsDeletingSelected(true);
 
+      // Tek tek sil (API'nin toplu endpoint'i yoksa en güvenlisi bu)
       const promises = selectedIds.map((id) =>
         deleteEkBelge(user.token!, id)
       );
@@ -744,11 +735,11 @@ const onDrop = useCallback(
                           <TableCell>
                             <Typography variant="body2">
                               {(belge as any).yuklemeTarihi ||
-                              (belge as any).olusturulmaTarihi
+                                (belge as any).olusturulmaTarihi
                                 ? new Date(
-                                    (belge as any).yuklemeTarihi ||
-                                      (belge as any).olusturulmaTarihi
-                                  ).toLocaleString("tr-TR")
+                                  (belge as any).yuklemeTarihi ||
+                                  (belge as any).olusturulmaTarihi
+                                ).toLocaleString("tr-TR")
                                 : "-"}
                             </Typography>
                           </TableCell>

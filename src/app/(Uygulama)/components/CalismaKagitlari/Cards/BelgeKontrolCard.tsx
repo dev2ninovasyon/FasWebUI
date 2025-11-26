@@ -313,7 +313,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       setOnaylayanTarih(undefined);
       setKontrolEdenTarih(undefined);
     }
-  }, [isClickedUpdate]);
+  }, [isClickedUpdate, fetchData]);
 
   useEffect(() => {
     if (user.formHazirlayanOnaylayan) {
