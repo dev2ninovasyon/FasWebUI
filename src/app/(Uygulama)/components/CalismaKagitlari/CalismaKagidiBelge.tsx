@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Card,
@@ -73,7 +73,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
- 
+
   const [selectedGroupId, setSelectedGroupId] = useState(0);
   const [selectedGroupIslem, setSelectedGroupIslem] = useState("");
 
@@ -94,6 +94,127 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
   const [isGroupPopUpOpen, setIsGroupPopUpOpen] = useState(false);
 
   const [openedGroupIndex, setOpenGroupIndex] = useState(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      if (kullaniciId) {
+        const calismaKagidiVerileri =
+          await getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil(
+            controller || "",
+            user.token || "",
+            user.denetciId || 0,
+            user.denetlenenId || 0,
+            kullaniciId || 0,
+            user.yil || 0
+          );
+
+        const rowsAll: any = [];
+        const rowsWithBaslikId: Veri[] = [];
+        const rowsWithoutBaslikId: Veri[] = [];
+
+        const tamamlanan: any[] = [];
+        const toplam: any[] = [];
+
+        calismaKagidiVerileri.forEach((veri: any) => {
+          const newRow: Veri = {
+            id: veri.id,
+            islem: veri.islem,
+            tespit: veri.tespit,
+            baslikId: veri.baslikId,
+            kullaniciId: veri.kullaniciId,
+            standartMi: veri.standartmi,
+          };
+          rowsAll.push(newRow);
+
+          if (grupluMu) {
+            if (veri.baslikId) {
+              rowsWithBaslikId.push(newRow);
+              if (newRow.standartMi) {
+                toplam.push(newRow);
+              } else {
+                tamamlanan.push(newRow);
+                toplam.push(newRow);
+              }
+            } else {
+              rowsWithoutBaslikId.push(newRow);
+              rowsAll.push(newRow);
+            }
+          } else {
+            if (newRow.standartMi) {
+              toplam.push(newRow);
+            } else {
+              tamamlanan.push(newRow);
+              toplam.push(newRow);
+            }
+          }
+        });
+        setVeriler(rowsAll);
+        setVerilerWithBaslikId(rowsWithBaslikId);
+        setVerilerWithoutBaslikId(rowsWithoutBaslikId);
+
+        setToplam(toplam.length);
+        setTamamlanan(tamamlanan.length);
+      } else {
+        const calismaKagidiVerileri =
+          await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+            controller || "",
+            user.token || "",
+            user.denetciId || 0,
+            user.denetlenenId || 0,
+            user.yil || 0
+          );
+
+        const rowsAll: any = [];
+        const rowsWithBaslikId: Veri[] = [];
+        const rowsWithoutBaslikId: Veri[] = [];
+
+        const tamamlanan: any[] = [];
+        const toplam: any[] = [];
+
+        calismaKagidiVerileri.forEach((veri: any) => {
+          const newRow: Veri = {
+            id: veri.id,
+            islem: veri.islem,
+            tespit: veri.tespit,
+            baslikId: veri.baslikId,
+            kullaniciId: veri.kullaniciId,
+            standartMi: veri.standartmi,
+          };
+          rowsAll.push(newRow);
+
+          if (grupluMu) {
+            if (veri.baslikId) {
+              rowsWithBaslikId.push(newRow);
+              if (newRow.standartMi) {
+                toplam.push(newRow);
+              } else {
+                tamamlanan.push(newRow);
+                toplam.push(newRow);
+              }
+            } else {
+              rowsWithoutBaslikId.push(newRow);
+              rowsAll.push(newRow);
+            }
+          } else {
+            if (newRow.standartMi) {
+              toplam.push(newRow);
+            } else {
+              tamamlanan.push(newRow);
+              toplam.push(newRow);
+            }
+          }
+        });
+        setVeriler(rowsAll);
+        setVerilerWithBaslikId(rowsWithBaslikId);
+        setVerilerWithoutBaslikId(rowsWithoutBaslikId);
+
+        setToplam(toplam.length);
+        setTamamlanan(tamamlanan.length);
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  }, [kullaniciId, controller, user.token, user.denetciId, user.denetlenenId, user.yil, grupluMu, setTamamlanan, setToplam]);
 
   const handleOpenGroup = (index: any) => {
     setOpenGroupIndex(openedGroupIndex === index ? null : index);
@@ -229,7 +350,7 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleDeleteAll = async () => {
+  const handleDeleteAll = useCallback(async () => {
     try {
       if (kullaniciId) {
         const result = await deleteAllCalismaKagidiVerileriByKullanci(
@@ -242,14 +363,14 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         );
         if (result) {
           fetchData();
-             enqueueSnackbar("Kayıtlar varsayılana başarıyla döndürüldü.", {
-        variant: "success",
-      });
+          enqueueSnackbar("Kayıtlar varsayılana başarıyla döndürüldü.", {
+            variant: "success",
+          });
         } else {
-           enqueueSnackbar(
-        "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
-        { variant: "error" }
-      );
+          enqueueSnackbar(
+            "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
+            { variant: "error" }
+          );
         }
       } else {
         const result = await deleteAllCalismaKagidiVerileri(
@@ -261,144 +382,25 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         );
         if (result) {
           fetchData();
-             enqueueSnackbar("Kayıtlar varsayılana başarıyla döndürüldü.", {
-        variant: "success",
-      });
+          enqueueSnackbar("Kayıtlar varsayılana başarıyla döndürüldü.", {
+            variant: "success",
+          });
         } else {
           enqueueSnackbar(
-        "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
-        { variant: "error" }
-      );
+            "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
+            { variant: "error" }
+          );
         }
       }
     } catch (error) {
-       enqueueSnackbar(
+      enqueueSnackbar(
         "Kayıtlar varsayılana döndürülürken bir hata oluştu.",
         { variant: "error" }
       );
     }
-  };
+  }, [kullaniciId, controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
-  const fetchData = async () => {
-    try {
-      if (kullaniciId) {
-        const calismaKagidiVerileri =
-          await getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil(
-            controller || "",
-            user.token || "",
-            user.denetciId || 0,
-            user.denetlenenId || 0,
-            kullaniciId || 0,
-            user.yil || 0
-          );
 
-        const rowsAll: any = [];
-        const rowsWithBaslikId: Veri[] = [];
-        const rowsWithoutBaslikId: Veri[] = [];
-
-        const tamamlanan: any[] = [];
-        const toplam: any[] = [];
-
-        calismaKagidiVerileri.forEach((veri: any) => {
-          const newRow: Veri = {
-            id: veri.id,
-            islem: veri.islem,
-            tespit: veri.tespit,
-            baslikId: veri.baslikId,
-            kullaniciId: veri.kullaniciId,
-            standartMi: veri.standartmi,
-          };
-          rowsAll.push(newRow);
-
-          if (grupluMu) {
-            if (veri.baslikId) {
-              rowsWithBaslikId.push(newRow);
-              if (newRow.standartMi) {
-                toplam.push(newRow);
-              } else {
-                tamamlanan.push(newRow);
-                toplam.push(newRow);
-              }
-            } else {
-              rowsWithoutBaslikId.push(newRow);
-              rowsAll.push(newRow);
-            }
-          } else {
-            if (newRow.standartMi) {
-              toplam.push(newRow);
-            } else {
-              tamamlanan.push(newRow);
-              toplam.push(newRow);
-            }
-          }
-        });
-        setVeriler(rowsAll);
-        setVerilerWithBaslikId(rowsWithBaslikId);
-        setVerilerWithoutBaslikId(rowsWithoutBaslikId);
-
-        setToplam(toplam.length);
-        setTamamlanan(tamamlanan.length);
-      } else {
-        const calismaKagidiVerileri =
-          await getCalismaKagidiVerileriByDenetciDenetlenenYil(
-            controller || "",
-            user.token || "",
-            user.denetciId || 0,
-            user.denetlenenId || 0,
-            user.yil || 0
-          );
-
-        const rowsAll: any = [];
-        const rowsWithBaslikId: Veri[] = [];
-        const rowsWithoutBaslikId: Veri[] = [];
-
-        const tamamlanan: any[] = [];
-        const toplam: any[] = [];
-
-        calismaKagidiVerileri.forEach((veri: any) => {
-          const newRow: Veri = {
-            id: veri.id,
-            islem: veri.islem,
-            tespit: veri.tespit,
-            baslikId: veri.baslikId,
-            kullaniciId: veri.kullaniciId,
-            standartMi: veri.standartmi,
-          };
-          rowsAll.push(newRow);
-
-          if (grupluMu) {
-            if (veri.baslikId) {
-              rowsWithBaslikId.push(newRow);
-              if (newRow.standartMi) {
-                toplam.push(newRow);
-              } else {
-                tamamlanan.push(newRow);
-                toplam.push(newRow);
-              }
-            } else {
-              rowsWithoutBaslikId.push(newRow);
-              rowsAll.push(newRow);
-            }
-          } else {
-            if (newRow.standartMi) {
-              toplam.push(newRow);
-            } else {
-              tamamlanan.push(newRow);
-              toplam.push(newRow);
-            }
-          }
-        });
-        setVeriler(rowsAll);
-        setVerilerWithBaslikId(rowsWithBaslikId);
-        setVerilerWithoutBaslikId(rowsWithoutBaslikId);
-
-        setToplam(toplam.length);
-        setTamamlanan(tamamlanan.length);
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
@@ -443,31 +445,29 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
-useEffect(() => {
-  fetchData();
-  console.log("kullaniciId")
-}, [kullaniciId]);          // 1) kullaniciId değişince çalışır (mount dahil)
+  useEffect(() => {
+    fetchData();
+    console.log("kullaniciId")
+  }, [kullaniciId, fetchData]);          // 1) kullaniciId değişince çalışır (mount dahil)
 
-useEffect(() => {
-  if (!isClickedYeniGrupEkle) {
-    console.log("isClickedYeniGrupEkle")
-    fetchData();            // 2) component ilk mount olduğunda 
-                            // isClickedYeniGrupEkle muhtemelen false => tekrar çalışır
-  }
-}, [isClickedYeniGrupEkle]);
+  useEffect(() => {
+    if (!isClickedYeniGrupEkle) {
+      console.log("isClickedYeniGrupEkle")
+      fetchData();
+    }
+  }, [isClickedYeniGrupEkle, fetchData]);
 
-useEffect(() => {
-  if (isClickedVarsayilanaDon) {
-    console.log("isClickedVarsayilanaDon");
-    (async () => {
-      await handleDeleteAll(); // snackbar + fetchData burada
-      // işlem bittiğinde butonu tekrar aktif et
-      setIsClickedVarsayilanaDon(false);
-    })();
-  }
-}, [isClickedVarsayilanaDon]);
+  useEffect(() => {
+    if (isClickedVarsayilanaDon) {
+      console.log("isClickedVarsayilanaDon");
+      (async () => {
+        await handleDeleteAll();
+        setIsClickedVarsayilanaDon(false);
+      })();
+    }
+  }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
 
 
   return (
@@ -550,9 +550,8 @@ useEffect(() => {
                                   }}
                                 >
                                   <CalismaKagidiCard
-                                    title={`${index + 1}. ${
-                                      veriWithBaslikId.islem
-                                    }`}
+                                    title={`${index + 1}. ${veriWithBaslikId.islem
+                                      }`}
                                     content={veriWithBaslikId.tespit}
                                     standartMi={veriWithBaslikId.standartMi}
                                   />
@@ -702,55 +701,55 @@ useEffect(() => {
             </Grid>
           </>
         )}
-      {controller !== "FaaliyetRaporu" && (
-  <>
-    {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-      user.rol?.includes("SorumluDenetci") ||
-      user.rol?.includes("Denetci") ||
-      user.rol?.includes("DenetciYardimcisi")) && (
-      <Grid
-        container
-        sx={{ width: "95%", margin: "0 auto", justifyContent: "space-between" }}
-      >
-        <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-          <BelgeKontrolCard
-            fetch={fetchData}
-            hazirlayan="Denetçi - Yardımcı Denetçi"
-            controller={controller}
-          />
-        </Grid>
-        <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-          <BelgeKontrolCard
-            fetch={fetchData}
-            onaylayan="Sorumlu Denetçi"
-            controller={controller}
-          />
-        </Grid>
-        <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-          <BelgeKontrolCard
-            fetch={fetchData}
-            kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-            controller={controller}
-          />
-        </Grid>
-      </Grid>
-    )}
+        {controller !== "FaaliyetRaporu" && (
+          <>
+            {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+              user.rol?.includes("SorumluDenetci") ||
+              user.rol?.includes("Denetci") ||
+              user.rol?.includes("DenetciYardimcisi")) && (
+                <Grid
+                  container
+                  sx={{ width: "95%", margin: "0 auto", justifyContent: "space-between" }}
+                >
+                  <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                    <BelgeKontrolCard
+                      fetch={fetchData}
+                      hazirlayan="Denetçi - Yardımcı Denetçi"
+                      controller={controller}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                    <BelgeKontrolCard
+                      fetch={fetchData}
+                      onaylayan="Sorumlu Denetçi"
+                      controller={controller}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                    <BelgeKontrolCard
+                      fetch={fetchData}
+                      kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                      controller={controller}
+                    />
+                  </Grid>
+                </Grid>
+              )}
 
-    <Grid
-      container
-      sx={{
-        width: "95%",
-        margin: "0 auto",
-        justifyContent: "space-between",
-        gap: 1,
-      }}
-    >
-      <Grid item xs={12} lg={12} mt={5}>
-        <IslemlerCard controller={controller} />
-      </Grid>
-    </Grid>
-  </>
-)}
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
+            >
+              <Grid item xs={12} lg={12} mt={5}>
+                <IslemlerCard controller={controller} />
+              </Grid>
+            </Grid>
+          </>
+        )}
 
       </Grid>
       {isPopUpOpen && (

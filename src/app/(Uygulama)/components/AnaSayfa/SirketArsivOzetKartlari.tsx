@@ -20,7 +20,8 @@ import Image from "next/image";
 import { useTheme } from "@mui/material/styles";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import Chart from "react-apexcharts";
+import dynamic from "next/dynamic";
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 import {
   getSirketArsivOzet,
   SirketArsivOzetDto,
@@ -42,7 +43,7 @@ export function SirketArsivOzetKartlari() {
 
     const fetchData = async () => {
       try {
-        const result = await getSirketArsivOzet(user.token!, user.denetciId!,user.id!);
+        const result = await getSirketArsivOzet(user.token!, user.denetciId!, user.id!);
         setData(result);
       } catch (err: any) {
         setError(err.message || "Veriler alınırken hata oluştu.");
@@ -52,28 +53,28 @@ export function SirketArsivOzetKartlari() {
     };
 
     fetchData();
-  }, [user.token, user.id]);
-const sirketBazliToplamlar = useMemo(() => {
-  if (!data || !data.sirketler) return [];  // 🔹 data yoksa boş dizi dön
+  }, [user.token, user.id, user.denetciId]);
+  const sirketBazliToplamlar = useMemo(() => {
+    if (!data || !data.sirketler) return [];  // 🔹 data yoksa boş dizi dön
 
-  const map = new Map<
-    number,
-    { ad: string; toplamMb: number; dosyaSayisi: number }
-  >();
+    const map = new Map<
+      number,
+      { ad: string; toplamMb: number; dosyaSayisi: number }
+    >();
 
-  data.sirketler.forEach((s) => {
-    const current = map.get(s.denetlenenId) || {
-      ad: s.sirketUnvani || `Şirket ${s.denetlenenId}`,
-      toplamMb: 0,
-      dosyaSayisi: 0,
-    };
-    current.toplamMb += s.toplamBoyutMb;
-    current.dosyaSayisi += s.dosyaSayisi;
-    map.set(s.denetlenenId, current);
-  });
+    data.sirketler.forEach((s) => {
+      const current = map.get(s.denetlenenId) || {
+        ad: s.sirketUnvani || `Şirket ${s.denetlenenId}`,
+        toplamMb: 0,
+        dosyaSayisi: 0,
+      };
+      current.toplamMb += s.toplamBoyutMb;
+      current.dosyaSayisi += s.dosyaSayisi;
+      map.set(s.denetlenenId, current);
+    });
 
-  return Array.from(map.values());
-}, [data]); // 🔹 data.sirketler yerine direkt data'yı ekle
+    return Array.from(map.values());
+  }, [data]); // 🔹 data.sirketler yerine direkt data'yı ekle
 
   if (!user.token) return null;
 
@@ -132,9 +133,9 @@ const sirketBazliToplamlar = useMemo(() => {
       data: donutSeries,
     },
   ];
- const total = Array.isArray(donutSeries)
-  ? donutSeries.reduce((sum, val) => sum + val, 0)
-  : donutSeries;
+  const total = Array.isArray(donutSeries)
+    ? donutSeries.reduce((sum, val) => sum + val, 0)
+    : donutSeries;
   return (
     <Box mt={4}>
       <Typography variant="h6" gutterBottom>
@@ -145,8 +146,8 @@ const sirketBazliToplamlar = useMemo(() => {
         kapladığı alanlar.
       </Typography>
 
-           <Grid container spacing={3}>
-    
+      <Grid container spacing={3}>
+
         <Grid item xs={12} sm={4} lg={2}>
           <Box bgcolor={"primary.light"} textAlign="center">
             <CardContent>
@@ -169,59 +170,59 @@ const sirketBazliToplamlar = useMemo(() => {
             </CardContent>
           </Box>
         </Grid>
- 
-    </Grid>
+
+      </Grid>
 
 
-        {/* Bar chart */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent>
-              <Typography variant="subtitle1" gutterBottom>
-                Şirket Bazında Arşiv Alanı (MB)
-              </Typography>
-              <Chart
-                type="bar"
-                options={barOptions}
-                series={barSeries}
-                height={300}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* Bar chart */}
+      <Grid item xs={12} md={6}>
+        <Card sx={{ height: "100%" }}>
+          <CardContent>
+            <Typography variant="subtitle1" gutterBottom>
+              Şirket Bazında Arşiv Alanı (MB)
+            </Typography>
+            <Chart
+              type="bar"
+              options={barOptions}
+              series={barSeries}
+              height={300}
+            />
+          </CardContent>
+        </Card>
+      </Grid>
 
-        {/* Detay tablo */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="subtitle1" gutterBottom>
-                Detaylı Liste
-              </Typography>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Şirket</TableCell>
-                    <TableCell align="right">Yıl</TableCell>
-                    <TableCell align="right">Dosya Sayısı</TableCell>
-                    <TableCell align="right">Toplam Boyut (MB)</TableCell>
+      {/* Detay tablo */}
+      <Grid item xs={12}>
+        <Card>
+          <CardContent>
+            <Typography variant="subtitle1" gutterBottom>
+              Detaylı Liste
+            </Typography>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Şirket</TableCell>
+                  <TableCell align="right">Yıl</TableCell>
+                  <TableCell align="right">Dosya Sayısı</TableCell>
+                  <TableCell align="right">Toplam Boyut (MB)</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.sirketler.map((s) => (
+                  <TableRow key={`${s.denetlenenId}-${s.yil}`}>
+                    <TableCell>{s.sirketUnvani}</TableCell>
+                    <TableCell align="right">{s.yil}</TableCell>
+                    <TableCell align="right">{s.dosyaSayisi}</TableCell>
+                    <TableCell align="right">
+                      {s.toplamBoyutMb.toFixed(2)}
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data.sirketler.map((s) => (
-                    <TableRow key={`${s.denetlenenId}-${s.yil}`}>
-                      <TableCell>{s.sirketUnvani}</TableCell>
-                      <TableCell align="right">{s.yil}</TableCell>
-                      <TableCell align="right">{s.dosyaSayisi}</TableCell>
-                      <TableCell align="right">
-                        {s.toplamBoyutMb.toFixed(2)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </Grid>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </Grid>
     </Box>
   );
 }

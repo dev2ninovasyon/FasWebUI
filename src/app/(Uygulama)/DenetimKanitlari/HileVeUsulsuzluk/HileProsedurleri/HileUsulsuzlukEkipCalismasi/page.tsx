@@ -11,6 +11,7 @@ import HileUsulsuzlukToplantiBilgileriBelge from "@/app/(Uygulama)/components/Ca
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 import HileUsulsuzlukToplantidaGorusulenHususlarBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukToplantidaGorusulenHususlarBelge";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const BCrumb = [
   {
@@ -78,10 +79,10 @@ const Page = () => {
               }}
             >
               <EkBelgeYukleButton
-        formKodu={controller}
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
+                formKodu={controller}
+                fullWidth={false}           // sağda küçük buton
+                text="Ek Belge Yükle"
+              />
             </Grid>
             <Grid
               item
@@ -94,7 +95,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -227,9 +228,9 @@ const Page = () => {
           }}
         ></Grid>
         {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-        user.rol?.includes("SorumluDenetci") ||
-        user.rol?.includes("Denetci") ||
-        user.rol?.includes("DenetciYardimcisi") ? (
+          user.rol?.includes("SorumluDenetci") ||
+          user.rol?.includes("Denetci") ||
+          user.rol?.includes("DenetciYardimcisi") ? (
           <Grid
             container
             sx={{

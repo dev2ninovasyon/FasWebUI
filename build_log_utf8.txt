@@ -1,0 +1,3013 @@
+﻿
+> financial-audit-software@1.0.0 build
+> next build
+
+   Ôû▓ Next.js 14.0.3
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+npm : (node:28396) [DEP_WEBPACK_MODULE_UPDATE_HASH] DeprecationWar
+ning: Module.updateHash: Use new ChunkGraph API
+At line:1 char:1
++ npm run build > build_log.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:28396) [D..    
+. ChunkGraph API:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-deprecation ...` to show where the warning was 
+created)
+ Ô£ô Compiled successfully
+   Linting and checking validity of types ...
+
+Failed to compile.
+
+./src/app/(Uygulama)/components/AnaSayfa/SirketArsivOzetKartlari.t
+sx
+55:6  Warning: React Hook useEffect has a missing dependency: 'use
+r.denetciId'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelg
+e.tsx
+446:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+451:4  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+459:4  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+470:4  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontro
+lCard.tsx
+302:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+316:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+323:6  Warning: React Hook useEffect has missing dependencies: 'di
+spatch' and 'fetchData'. Either include them or remove the depende
+ncy array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/DenetimProgramiBe
+lge.tsx
+388:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchData2'. Either include them or remove the depen
+dency array.  react-hooks/exhaustive-deps
+395:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+404:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData', 'fetchData2', and 'handleUpdateOtomatik'. Either include
+ them or remove the dependency array.  react-hooks/exhaustive-deps
+747:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/DenetimRiskBelirl
+emeBelge.tsx
+238:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+245:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/DogalRiskBelge.ts
+x
+355:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+361:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+374:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/DogrulamaMektupla
+rinaAlinanYanitlarBelge.tsx
+259:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+266:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/FaaliyetRiskBelir
+lemeBelge.tsx
+355:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+361:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/FinansalTablolarD
+enetimRiskiBelirlemeBelge.tsx
+469:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+476:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/FloatingButtonCal
+ismaKagitlari.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'tex
+t?.length'. Either include it or remove the dependency array. If '
+setMessage' needs the current value of 'text.length', you can also
+ switch to useReducer instead of useState and read 'text.length' i
+n the reducer.  react-hooks/exhaustive-deps
+90:6  Warning: React Hook useEffect has a missing dependency: 'con
+trol2'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/GenelKurulToplant
+iBilgileriBelge.tsx
+279:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+286:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+292:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/GenelKurulToplant
+idaGorusulenHususlarBelge.tsx
+255:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+262:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+268:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HesaplaraIliskinI
+cKontrolTespitBelge.tsx
+270:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+274:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+281:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HileCalismaKagitl
+ariBelge.tsx
+218:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+222:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+229:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+235:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukBel
+irlemeBelge.tsx
+259:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+266:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukTop
+lantiBilgileriBelge.tsx
+257:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+264:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+270:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukTop
+lantidaGorusulenHususlarBelge.tsx
+227:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+234:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+240:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlem
+eAnketBelge.tsx
+296:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+303:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+309:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlem
+eTeknikBelge.tsx
+282:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+289:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+295:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlem
+eUnsurBelge.tsx
+285:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+292:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+298:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IliskiliTarafInce
+lemeBelge.tsx
+227:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+234:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+240:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IsletmeyeIliskinI
+cKontrolTespitBelge.tsx
+261:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+268:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/KontrolRiskiBelge
+.tsx
+378:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+384:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+391:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+397:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Ma
+ddiDogrulamaListe.tsx
+102:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Ri
+skTespiti.tsx
+304:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Uy
+gulananDenetimProsedurleri.tsx
+269:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+276:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Uy
+gulananDenetimTeknikleri.tsx
+232:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+239:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulukGore
+vAtamalariBelge.tsx
+351:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+358:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+641:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SatinAlmaOdemeKon
+trolCalismaKagidi.tsx
+388:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'loadReceivedMatches'. Either include them or remove 
+the dependency array.  react-hooks/exhaustive-deps
+394:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+401:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SatisCalismaKagid
+iBelge.tsx
+352:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+359:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SayimVeTespitDege
+rlendirmeBelge.tsx
+246:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+253:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SecimliCalismaKag
+idiBelge.tsx
+355:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+361:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TarihliCalismaKag
+idiBelge.tsx
+408:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+414:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+421:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TekliCalismaKagid
+iBelge.tsx
+334:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+340:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+347:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TekTarihliCalisma
+KagidiBelge.tsx
+355:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+361:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TespitEdilenRiskl
+erBelge.tsx
+309:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+316:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/UcluCalismaKagidi
+Belge.tsx
+363:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+369:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+376:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Cards/MuhasebeHatalariVeHileTopCar
+d.tsx
+61:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Analizler/Benford
+Analiz.tsx
+81:37  Warning: React Hook useEffect has a missing dependency: 'lo
+adKebir'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+82:95  Warning: React Hook useEffect has a missing dependency: 'lo
+adData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Analizler/DikeyAn
+aliz.tsx
+138:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Analizler/Karsila
+stirmaliAnaliz.tsx
+138:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontr
+ol/CariDonemDonusumDuzeltmeBelgesi.tsx
+405:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'af
+terRenderer2'. Either include it or remove the dependency array.  
+react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontr
+ol/DonusumMizanKontrol.tsx
+76:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+421:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+430:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+497:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontr
+ol/DonusumMizanKontrolCardTable.tsx
+127:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchDonusumMizanHesaplari' and 'fetchProgramVukMizanHesaplari'. Eit
+her include them or remove the dependency array.  react-hooks/exha
+ustive-deps
+137:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchDonusumMizanHesaplari' and 'fetchProgramVukMizanHesaplari'. Eit
+her include them or remove the dependency array.  react-hooks/exha
+ustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontr
+ol/GecmisDonemDonusumDuzeltmeBelgesi.tsx
+405:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'af
+terRenderer2'. Either include it or remove the dependency array.  
+react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontr
+ol/OncekiDonemDonusumDuzeltmeBelgesi.tsx
+405:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'af
+terRenderer2'. Either include it or remove the dependency array.  
+react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontr
+ol/OzetDonusumMizanKontrol.tsx
+77:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+422:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+431:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+498:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontr
+ol/VukMizanDonusumMizanKarsilastirma.tsx
+178:4  Warning: React Hook useEffect has a missing dependency: 'fe
+tchVeriler'. Either include it or remove the dependency array.  re
+act-hooks/exhaustive-deps
+353:16  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;
+`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+AktifPasifCardTable.tsx
+136:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchAktifPasifCardTablosu'. Either include it or remove the depende
+ncy array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+FinansalDurumTablosu.tsx
+151:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+FinansalDurumTablosuCardTable.tsx
+258:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchFinansalDurumTablosu'. Either include it or remove the dependen
+cy array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+KarZararTablosu.tsx
+147:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+KarZararTablosuCardTable.tsx
+128:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchKarZararCardTablosu'. Either include it or remove the dependenc
+y array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+NakitAkisTablosu.tsx
+147:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+NakitAkisTablosuCardTable.tsx
+133:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchNakitAkisCardTablosu'. Either include it or remove the dependen
+cy array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/
+OzkaynakDegisimTablosu.tsx
+127:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Onemlilik/FisIsle
+mSayilari.tsx
+63:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+313:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+380:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/DenetciFirmaBilgiler
+i/DenetciDuzenleForm.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/DenetciFirmaBilgiler
+i/LogoDuzenleForm.tsx
+102:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/UyelikBilgileri/Odem
+eBilgileriTable.tsx
+338:6  Warning: React Hook React.useEffect has a missing dependenc
+y: 'fetchData'. Either include it or remove the dependency array. 
+ react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/VeriAktarma/DenetimD
+osyaTransferTable.tsx
+206:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/FisGirisi.tsx
+105:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+208:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+707:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchFisNo'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+714:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchFisNo' and 'setHazirFislerTiklandimi'. Either include them or r
+emove the dependency array. If 'setHazirFislerTiklandimi' changes 
+too often, find the parent component that defines it and wrap that
+ definition in useCallback.  react-hooks/exhaustive-deps
+742:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/FisGirisiKontrol
+.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chedData'. Either include it or remove the dependency array. You c
+an also replace multiple useState variables with useReducer if 'se
+tFilteredData' needs the current value of 'fetchedData'.  react-ho
+oks/exhaustive-deps
+85:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+278:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+295:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/GenelHesapPlani.
+tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+288:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/SonGirilenFisler
+.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+365:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchFisNo'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+372:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchFisNo' and 'setHazirFislerTiklandimi'. Either include them or r
+emove the dependency array. If 'setHazirFislerTiklandimi' changes 
+too often, find the parent component that defines it and wrap that
+ definition in useCallback.  react-hooks/exhaustive-deps
+376:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+386:6  Warning: React Hook useEffect has a missing dependency: 'af
+terRenderer2'. Either include it or remove the dependency array.  
+react-hooks/exhaustive-deps
+403:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Editor/CustomEditor.tsx
+208:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+217:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+230:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleUpdate'. Either include it or remove the dependency array.  re
+act-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Editor/CustomEditorWVeri.tsx
+132:6  Warning: React Hook useEffect has a missing dependency: 'so
+zlesmeTarihi'. Either include it or remove the dependency array. I
+f 'setEditorData' needs the current value of 'sozlesmeTarihi', you
+ can also switch to useReducer instead of useState and read 'sozle
+smeTarihi' in the reducer.  react-hooks/exhaustive-deps
+142:6  Warning: React Hook useEffect has a missing dependency: 'ed
+itorData'. Either include it or remove the dependency array. You c
+an also do a functional update 'setEditorData(e => ...)' if you on
+ly need 'editorData' in the 'setEditorData' call.  react-hooks/exh
+austive-deps
+155:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleUpdate'. Either include it or remove the dependency array.  re
+act-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Editor/MaddiDogrulamaAciklamaEdito
+r.tsx
+111:6  Warning: React Hook useEffect has missing dependencies: 'co
+ntrol1', 'control2', and 'handleSetSelectedAciklama'. Either inclu
+de them or remove the dependency array. If 'handleSetSelectedAcikl
+ama' changes too often, find the parent component that defines it 
+and wrap that definition in useCallback.  react-hooks/exhaustive-d
+eps
+
+./src/app/(Uygulama)/components/Editor/MaddiDogrulamaKonuEditor.ts
+x
+114:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleSetSelectedKonu'. Either include it or remove the dependency a
+rray. If 'handleSetSelectedKonu' changes too often, find the paren
+t component that defines it and wrap that definition in useCallbac
+k.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/GenelKurul/FaaliyetRaporu/Faaliyet
+RaporuStepper.tsx
+486:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchFaaliyetRaporu' and 'fetchFinansalTablolar'. Either include the
+m or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/GenelKurul/FaaliyetRaporu/Rapor.ts
+x
+458:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchDataDikeyAnaliz' and 'fetchDataKarsilastirmaliAnaliz'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+473:11  Warning: Using `<img>` could result in slower LCP and high
+er bandwidth. Consider using `<Image />` from `next/image` to auto
+matically optimize images. This may incur additional usage or cost
+ from your provider. See: https://nextjs.org/docs/messages/no-img-
+element  @next/next/no-img-element
+495:11  Warning: Using `<img>` could result in slower LCP and high
+er bandwidth. Consider using `<Image />` from `next/image` to auto
+matically optimize images. This may incur additional usage or cost
+ from your provider. See: https://nextjs.org/docs/messages/no-img-
+element  @next/next/no-img-element
+
+./src/app/(Uygulama)/components/Hesaplamalar/DavaKarsiliklari/Dava
+KarsiliklariCard.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+71:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Hesaplamalar/ErtelenmisVergiHesabi
+/ErtelenemisVergiHesabiCard.tsx
+61:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+74:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Konsolidasyon/TanimlamaDuzenleForm
+.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Konsolidasyon/TanimlamalarTable.ts
+x
+71:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciIslemleri/Kulla
+niciDetay.tsx
+42:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciIslemleri/Kulla
+niciDuzenleForm.tsx
+83:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciIslemleri/Kulla
+niciTable.tsx
+104:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciSozlesmeSaatler
+i/KullaniciSozlesmeSaatleriTable.tsx
+50:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+54:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/S
+urekliEgitimBilgileriDetay.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/S
+urekliEgitimBilgileriDuzenleForm.tsx
+83:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/S
+urekliEgitimBilgileriTable.tsx
+121:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/CompanyBoxA
+utoComplete.tsx
+88:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/Language.ts
+x
+41:6  Warning: React Hook useEffect has missing dependencies: 'cus
+tomizer.activeMode', 'theme.palette.primary.dark', and 'theme.pale
+tte.primary.main'. Either include them or remove the dependency ar
+ray.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/Notificatio
+n.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+98:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+106:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'handleUpdateOkundumu'. Either include them or remove
+ the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBox
+AutoComplete.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+79:6  Warning: React Hook useEffect has missing dependencies: 'onS
+electAdi' and 'onSelectId'. Either include them or remove the depe
+ndency array. If 'onSelectId' changes too often, find the parent c
+omponent that defines it and wrap that definition in useCallback. 
+ react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/YearBoxAuto
+Complete.tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Hissedarlar/HissedarDuzenl
+eForm.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Hissedarlar/HissedarlarTab
+le.tsx
+106:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+113:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setIsClickedMizandanHissedarEkle'. Either include th
+em or remove the dependency array. If 'setIsClickedMizandanHisseda
+rEkle' changes too often, find the parent component that defines i
+t and wrap that definition in useCallback.  react-hooks/exhaustive
+-deps
+
+./src/app/(Uygulama)/components/Musteri/IliskiliTaraflar/IliskiliT
+arafDuzenleForm.tsx
+59:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/IliskiliTaraflar/IliskiliT
+araflarMizanTable.tsx
+172:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setVerileriGetirTiklandimi'. Either include them or 
+remove the dependency array. If 'setVerileriGetirTiklandimi' chang
+es too often, find the parent component that defines it and wrap t
+hat definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/IliskiliTaraflar/IliskiliT
+araflarTable.tsx
+87:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriDe
+tay.tsx
+110:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchData2'. Either include them or remove the depen
+dency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriDu
+zenleForm.tsx
+196:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData', 'fetchData2', and 'fetchData3'. Either include them or r
+emove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEk
+leForm.tsx
+203:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchData2'. Either include them or remove the depen
+dency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriTa
+ble.tsx
+123:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/SirketYonetimKadrosu/Sirke
+tYonetimKadrosuDuzenleForm.tsx
+62:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/SirketYonetimKadrosu/Sirke
+tYonetimKadrosuTable.tsx
+93:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Subeler/SubeDuzenleForm.ts
+x
+55:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Subeler/SubelerTable.tsx
+86:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp.tsx
+227:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/PopUp/VeriPaylasimBaglantisiPopUp.
+tsx
+181:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/Bagims
+izDenetciRaporuStepper.tsx
+686:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchDipnot' and 'fetchFinansalTablolar'. Either include them or rem
+ove the dependency array.  react-hooks/exhaustive-deps
+690:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+694:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+698:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+702:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/Rapor.
+tsx
+906:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchDataDipnot15Amortisman', 'fetchDataDipnot15Maliyet', 'fetchData
+Dipnot16Amortisman', 'fetchDataDipnot16Maliyet', 'fetchDataDipnot2
+5', 'fetchDataDipnot34', 'fetchDataDipnot381', 'fetchDataDipnot383
+', 'fetchDataDipnot384', 'fetchDataDipnotHesaplar', 'fetchDataHiss
+edarlar', 'fetchDataHissedarlarOnceki', 'fetchDataSubeler', 'fetch
+DataVergiVarlik', 'fetchDataVergiVarlikOnceki', 'fetchDataVergiYuk
+umluluk', and 'fetchDataVergiYukumlulukOnceki'. Either include the
+m or remove the dependency array.  react-hooks/exhaustive-deps
+921:11  Warning: Using `<img>` could result in slower LCP and high
+er bandwidth. Consider using `<Image />` from `next/image` to auto
+matically optimize images. This may incur additional usage or cost
+ from your provider. See: https://nextjs.org/docs/messages/no-img-
+element  @next/next/no-img-element
+943:11  Warning: Using `<img>` could result in slower LCP and high
+er bandwidth. Consider using `<Image />` from `next/image` to auto
+matically optimize images. This may incur additional usage or cost
+ from your provider. See: https://nextjs.org/docs/messages/no-img-
+element  @next/next/no-img-element
+
+./src/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/RaporT
+frs.tsx
+694:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchDataDipnot14Amortisman', 'fetchDataDipnot14Maliyet', 'fetchData
+Dipnot17Amortisman', 'fetchDataDipnot17Maliyet', 'fetchDataDipnot3
+9', 'fetchDataDipnot451', 'fetchDataDipnot452', 'fetchDataDipnot45
+3', 'fetchDataDipnotHesaplar', 'fetchDataHissedarlar', and 'fetchD
+ataSubeler'. Either include them or remove the dependency array.  
+react-hooks/exhaustive-deps
+709:11  Warning: Using `<img>` could result in slower LCP and high
+er bandwidth. Consider using `<Image />` from `next/image` to auto
+matically optimize images. This may incur additional usage or cost
+ from your provider. See: https://nextjs.org/docs/messages/no-img-
+element  @next/next/no-img-element
+731:11  Warning: Using `<img>` could result in slower LCP and high
+er bandwidth. Consider using `<Image />` from `next/image` to auto
+matically optimize images. This may incur additional usage or cost
+ from your provider. See: https://nextjs.org/docs/messages/no-img-
+element  @next/next/no-img-element
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/AmortismanCari.t
+sx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+433:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveAmortismanVerisi' and 'setKaydetTiklandimi'. Either includ
+e them or remove the dependency array. If 'setKaydetTiklandimi' ch
+anges too often, find the parent component that defines it and wra
+p that definition in useCallback.  react-hooks/exhaustive-deps
+507:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/DovizKuruRiskiCa
+ri.tsx
+76:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+396:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+403:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveDoviKuruRiskiVerisi' and 'setKaydetTiklandimi'. Either inc
+lude them or remove the dependency array. If 'setKaydetTiklandimi'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+470:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/DovizKuruRiskiOn
+ceki.tsx
+76:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+396:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+403:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveDoviKuruRiskiVerisi' and 'setKaydetTiklandimi'. Either inc
+lude them or remove the dependency array. If 'setKaydetTiklandimi'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+470:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/KrediRiskiCari.t
+sx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+426:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+433:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveKrediRiskiVerisi' and 'setKaydetTiklandimi'. Either includ
+e them or remove the dependency array. If 'setKaydetTiklandimi' ch
+anges too often, find the parent component that defines it and wra
+p that definition in useCallback.  react-hooks/exhaustive-deps
+500:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/KrediRiskiOnceki
+.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+426:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveKrediRiskiVerisi' and 'setKaydetTiklandimi'. Either includ
+e them or remove the dependency array. If 'setKaydetTiklandimi' ch
+anges too often, find the parent component that defines it and wra
+p that definition in useCallback.  react-hooks/exhaustive-deps
+493:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/MaliyetCari.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+439:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+446:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveMaliyetVerisi' and 'setKaydetTiklandimi'. Either include t
+hem or remove the dependency array. If 'setKaydetTiklandimi' chang
+es too often, find the parent component that defines it and wrap t
+hat definition in useCallback.  react-hooks/exhaustive-deps
+513:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/MaliyetOnceki.ts
+x
+78:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+436:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+443:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveMaliyetVerisi' and 'setKaydetTiklandimi'. Either include t
+hem or remove the dependency array. If 'setKaydetTiklandimi' chang
+es too often, find the parent component that defines it and wrap t
+hat definition in useCallback.  react-hooks/exhaustive-deps
+510:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/RaporDipnot.tsx
+173:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+177:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+181:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+188:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include th
+em or remove the dependency array. If 'setIsClickedVarsayilanaDon'
+ changes too often, find the parent component that defines it and 
+wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/RaporDipnotEdito
+r.tsx
+113:6  Warning: React Hook useEffect has missing dependencies: 'di
+pnotKoduVeriler', 'id', and 'setDipnotKoduVeriler'. Either include
+ them or remove the dependency array. If 'setDipnotKoduVeriler' ch
+anges too often, find the parent component that defines it and wra
+p that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporGorus/RaporGorusEditor.
+tsx
+112:6  Warning: React Hook useEffect has missing dependencies: 'go
+rusVeriler', 'id', and 'setGorusVeriler'. Either include them or r
+emove the dependency array. If 'setGorusVeriler' changes too often
+, find the parent component that defines it and wrap that definiti
+on in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoC
+ompleteBox/AktifPasifYedekBoxAutoComplete.tsx
+27:6  Warning: React Hook useEffect has a missing dependency: 'row
+s'. Either include it or remove the dependency array.  react-hooks
+/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoC
+ompleteBox/AsilYedekBoxAutoComplete.tsx
+27:6  Warning: React Hook useEffect has a missing dependency: 'row
+s'. Either include it or remove the dependency array.  react-hooks
+/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoC
+ompleteBox/KullaniciBoxAutoComplete.tsx
+49:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoC
+ompleteBox/UnvanBoxAutoComplete.tsx
+47:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+55:6  Warning: React Hook useEffect has a missing dependency: 'row
+s'. Either include it or remove the dependency array.  react-hooks
+/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/Denet
+imKadrosuDuzenleForm.tsx
+106:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/Denet
+imKadrosuTable.tsx
+101:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Tables/MenuTable.tsx
+97:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/DosyaTable.tsx
+362:6  Warning: React Hook useEffect has missing dependencies: 'fi
+leType' and 'handleAlertPopUp'. Either include them or remove the 
+dependency array.  react-hooks/exhaustive-deps
+366:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+370:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+382:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/EDefterMizan/EDefterMizanEnfl
+asyonDahilStepper.tsx
+212:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchMizanControl'. Either include them or remove th
+e dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/EDefterMizan/EDefterMizanEnfl
+asyonHaricStepper.tsx
+276:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchControl', 'fetchData', and 'fetchMizanControl'. Either include 
+them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/EDefterMizan/EDefterMizanStep
+per.tsx
+279:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchControl', 'fetchData', and 'fetchMizanControl'. Either include 
+them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListe
+siEnflasyonHaricTable.tsx
+195:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setFisleriGosterTiklandimi'. Either include them or 
+remove the dependency array. If 'setFisleriGosterTiklandimi' chang
+es too often, find the parent component that defines it and wrap t
+hat definition in useCallback.  react-hooks/exhaustive-deps
+203:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setStandartFisleriGosterTiklandimi'. Either include 
+them or remove the dependency array. If 'setStandartFisleriGosterT
+iklandimi' changes too often, find the parent component that defin
+es it and wrap that definition in useCallback.  react-hooks/exhaus
+tive-deps
+
+./src/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListe
+siTable.tsx
+192:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setFisleriGosterTiklandimi'. Either include them or 
+remove the dependency array. If 'setFisleriGosterTiklandimi' chang
+es too often, find the parent component that defines it and wrap t
+hat definition in useCallback.  react-hooks/exhaustive-deps
+200:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setStandartFisleriGosterTiklandimi'. Either include 
+them or remove the dependency array. If 'setStandartFisleriGosterT
+iklandimi' changes too often, find the parent component that defin
+es it and wrap that definition in useCallback.  react-hooks/exhaus
+tive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/KurumlarVergisiBeyannam
+esiKarsilastirma.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+291:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+358:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/KurumlarVergisiBeyannam
+esiKarsilastirmaEnflasyonHaric.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+307:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+374:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/Mizan.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+318:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+328:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setMizanOlusturTiklandimi'. Either include them or r
+emove the dependency array. If 'setMizanOlusturTiklandimi' changes
+ too often, find the parent component that defines it and wrap tha
+t definition in useCallback.  react-hooks/exhaustive-deps
+395:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/MizanCard.tsx
+55:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+64:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/MizanTable.tsx
+136:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/OlusturulmusMizanlar.ts
+x
+67:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+323:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+327:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+394:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/OlusturulmusProgramVukM
+izanlar.tsx
+64:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+294:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+298:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+365:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/ProgramFormatiCard.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+99:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/ProgramVukMizan.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+300:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+310:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setProgramFormatinaDonusturTiklandimi'. Either inclu
+de them or remove the dependency array. If 'setProgramFormatinaDon
+usturTiklandimi' changes too often, find the parent component that
+ defines it and wrap that definition in useCallback.  react-hooks/
+exhaustive-deps
+377:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/components/Veri/VukMizan/VukMizanStepper.tsx
+213:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchControl' and 'fetchMizanControl'. Either include them or remove
+ the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimDosya/BagimsizDenetimMetodolojisi/Bagi
+msizDenetimMetodolojisiTable.tsx
+105:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimDosya/DenetimDosyaOnay/BelgeKontrolCar
+dTopluOnay.tsx
+44:5  Warning: React Hook useMemo has an unnecessary dependency: '
+kaliteKontrol'. Either exclude it or remove the dependency array. 
+ react-hooks/exhaustive-deps
+83:6  Warning: React Hook useEffect has missing dependencies: 'dis
+patch' and 'fetchData'. Either include them or remove the dependen
+cy array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/DigerKanitlar/IliskiliTarafI
+nceleme/IliskiliTarafInceleme.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+230:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+247:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/HileProsedu
+rleri/HileUsulsuzlukBelirleme/page.tsx
+156:16  Error: 'EkBelgeYukleButton' is not defined.  react/jsx-no-
+undef
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/HileProsedu
+rleri/HileUsulsuzlukEkipCalismasi/page.tsx
+80:16  Error: 'EkBelgeYukleButton' is not defined.  react/jsx-no-u
+ndef
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHat
+alariVeHile/[formUrl]/Orneklem.tsx
+80:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+457:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+461:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+478:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHat
+alariVeHile/[formUrl]/OrneklemFisleri.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+303:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+370:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHat
+alariVeHile/[formUrl]/page.tsx
+120:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/Mutabakatlar(VUK)/Mutabakat.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+336:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+340:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+357:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/Mutabakatlar(VUK)/page.tsx
+125:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+131:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData2'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/OnemlilikCalismasi/Onemlilik.tsx
+63:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+309:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+313:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+330:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/OnemlilikCalismasi/page.tsx
+125:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+131:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData2'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/OrneklemCalismasi/Orneklem.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+405:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+409:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+426:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/OrneklemCalismasi/page.tsx
+125:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+131:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData2'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/UygulananDenetimProsedurleri/page.tsx
+123:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+129:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData2'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[
+parentName]/UygulananDenetimTeknikleri/page.tsx
+123:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+129:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData2'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Mutabakat/DogrulamaMektuplar
+inaAlinanYanitlar/page.tsx
+149:16  Error: 'EkBelgeYukleButton' is not defined.  react/jsx-no-
+undef
+
+./src/app/(Uygulama)/DenetimKanitlari/Mutabakat/MutabakatSecimiVeK
+ontrol/Mutabakat.tsx
+157:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+636:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'handleOzet'. Either include them or remove the depen
+dency array.  react-hooks/exhaustive-deps
+701:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleUpdate'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+707:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchedData.length'. Either include them or remove t
+he dependency array.  react-hooks/exhaustive-deps
+774:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Mutabakat/MutabakatSecimiVeK
+ontrol/MutabakatDogrulamaMektubu/[detayKodu]/page.tsx
+80:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Mutabakat/MutabakatSecimiVeK
+ontrol/page.tsx
+97:6  Warning: React Hook useEffect has a missing dependency: 'han
+dleDeleteMutabakat'. Either include it or remove the dependency ar
+ray.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiB
+elirlemeKilavuzu/OnemlilikHesaplamaBazi.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+366:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+372:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+389:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiB
+elirlemeKilavuzu/OnemlilikSeviyesi.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+338:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+355:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiB
+elirlemeKilavuzu/page.tsx
+77:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiB
+elirlemeVeDegerlendirme/Onemlilik.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+371:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+380:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+447:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiB
+elirlemeVeDegerlendirme/OnemlilikHesaplamaBazi.tsx
+58:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+276:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+293:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/Orneklem/Orneklem.
+tsx
+91:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+530:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+539:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+606:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/Orneklem/OrneklemF
+isleri/[kebirKodu]/FisDetaylari/[id]/FisDetaylari.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+458:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'handleUpdateEDefterIncelemeListeVerisi'. Either incl
+ude them or remove the dependency array.  react-hooks/exhaustive-d
+eps
+533:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/Orneklem/OrneklemF
+isleri/[kebirKodu]/OrneklemFisleri.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+458:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'handleUpdateEDefterIncelemeListeVerisi'. Either incl
+ude them or remove the dependency array.  react-hooks/exhaustive-d
+eps
+533:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/YonetimTavsiyeMektubu/page.t
+sx
+151:16  Error: 'EkBelgeYukleButton' is not defined.  react/jsx-no-
+undef
+
+./src/app/(Uygulama)/DigerIslemler/Arsiv/page.tsx
+250:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+260:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/FisGirisi/page.tsx
+110:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/FisListesi/FisDetaylari/[id]/FisDetay
+lari.tsx
+100:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+498:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+580:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Donusum/FisListesi/FisDetaylari/[id]/page.tsx
+67:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/FisListesi/FisListesi.tsx
+71:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+404:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+414:6  Warning: React Hook useEffect has a missing dependency: 'af
+terRenderer2'. Either include it or remove the dependency array.  
+react-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Donusum/HazirFisler/HazirFisListesi.tsx
+74:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+343:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+353:6  Warning: React Hook useEffect has a missing dependency: 'af
+terRenderer2'. Either include it or remove the dependency array.  
+react-hooks/exhaustive-deps
+420:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Donusum/[denetimTuru]/BelirlemeBelgesi/page.t
+sx
+154:16  Error: 'EkBelgeYukleButton' is not defined.  react/jsx-no-
+undef
+
+./src/app/(Uygulama)/Hesaplamalar/Amortisman/AmortismanHesaplama.t
+sx
+69:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+388:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+397:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+464:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Amortisman/AmortismanVeriYukleme
+.tsx
+98:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+240:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+816:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+820:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+827:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateAmortismanVerisi' and 'setKaydetTiklandimi'. Either incl
+ude them or remove the dependency array. If 'setKaydetTiklandimi' 
+changes too often, find the parent component that defines it and w
+rap that definition in useCallback.  react-hooks/exhaustive-deps
+894:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Amortisman/page.tsx
+167:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+174:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/BeklenenKrediZarari/BeklenenKred
+iZarari.tsx
+66:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+325:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+334:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+401:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/BeklenenKrediZarari/page.tsx
+119:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchIskontoOrani'. Either include it or remove the dependency array
+.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskon
+tDuzeltmeFarklari.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+295:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+304:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+371:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskon
+tHesaplama.tsx
+64:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+309:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+318:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+385:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskon
+tHesaplamadaKullanilanDegerler.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+330:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+339:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+406:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskon
+tVeriYukleme.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+197:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+702:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+706:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+713:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateCekSenetReeskontVerisi' and 'setKaydetTiklandimi'. Eithe
+r include them or remove the dependency array. If 'setKaydetTiklan
+dimi' changes too often, find the parent component that defines it
+ and wrap that definition in useCallback.  react-hooks/exhaustive-
+deps
+780:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/page.tsx
+304:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchDataBaglanti'. Either include them or remove th
+e dependency array.  react-hooks/exhaustive-deps
+311:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchDataBaglanti'. Either include it or remove the dependency array
+.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/DavaKarsiliklari/DavaKarsiliklar
+iHesaplama.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+341:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+350:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+417:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/DavaKarsiliklari/DavaKarsiliklar
+iVeriYukleme.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+184:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+692:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+696:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+703:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateDavaKarsiliklariVerisi' and 'setKaydetTiklandimi'. Eithe
+r include them or remove the dependency array. If 'setKaydetTiklan
+dimi' changes too often, find the parent component that defines it
+ and wrap that definition in useCallback.  react-hooks/exhaustive-
+deps
+770:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/DavaKarsiliklari/page.tsx
+166:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+173:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+200:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchIskontoOrani'. Either include it or remove the dependency array
+.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/Ertelenmis
+VergiHesabiOrnekFisler.tsx
+171:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+475:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+548:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/VergiVarli
+k.tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+238:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+247:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+314:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/VergiYukum
+luluk.tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+238:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+247:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+314:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/GecmisYillarKarZararKontrolleri/
+GecmisYillarKarZararKontrolleri.tsx
+58:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+244:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+311:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/GecmisYillarKarZararKontrolleri/
+GecmisYillarKarZararKontrolleriOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+464:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+470:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+537:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Hareketsiz/Hareketsiz.tsx
+108:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+520:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+529:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+596:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Hareketsiz/HareketsizOrnekFisler
+.tsx
+175:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+502:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+511:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+517:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+584:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Hareketsiz/HareketsizOzet.tsx
+64:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+303:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+312:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+329:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/IliskiliTarafSiniflama/IliskiliT
+arafSiniflama.tsx
+91:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+442:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleJson'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+446:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+513:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/IliskiliTarafSiniflama/IliskiliT
+arafSiniflamaOrnekFisler.tsx
+172:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+472:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+478:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+545:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/IliskiliTarafSiniflama/page.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/KidemTazminat
+iBobiHesaplama.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+212:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/KidemTazminat
+iBobiOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+507:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/KidemTazminat
+iBobiVeriYukleme.tsx
+99:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+229:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+832:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+836:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+843:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateKidemTazminatiBobiVerisi' and 'setKaydetTiklandimi'. Eit
+her include them or remove the dependency array. If 'setKaydetTikl
+andimi' changes too often, find the parent component that defines 
+it and wrap that definition in useCallback.  react-hooks/exhaustiv
+e-deps
+910:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/page.tsx
+447:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData', 'fetchData2', and 'fetchData3'. Either include them or r
+emove the dependency array.  react-hooks/exhaustive-deps
+454:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData3'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminat
+iTfrsHesaplama.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+212:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminat
+iTfrsHesaplanmis.tsx
+67:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+378:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminat
+iTfrsOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+507:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminat
+iTfrsVeriYukleme.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+200:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+719:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+723:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+730:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateKidemTazminatiTfrsVerisi' and 'setKaydetTiklandimi'. Eit
+her include them or remove the dependency array. If 'setKaydetTikl
+andimi' changes too often, find the parent component that defines 
+it and wrap that definition in useCallback.  react-hooks/exhaustiv
+e-deps
+797:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/page.tsx
+520:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData', 'fetchData2', and 'fetchData3'. Either include them or r
+emove the dependency array.  react-hooks/exhaustive-deps
+527:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData3'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediDetaylari/[krediNo]/K
+rediDetayVeriYukleme.tsx
+100:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+197:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+729:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchDataKredi'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+734:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchRowCount'. Either include them or remove the de
+pendency array.  react-hooks/exhaustive-deps
+741:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateKrediHesaplamaDetayVerisi' and 'setKaydetTiklandimi'. Ei
+ther include them or remove the dependency array. If 'setKaydetTik
+landimi' changes too often, find the parent component that defines
+ it and wrap that definition in useCallback.  react-hooks/exhausti
+ve-deps
+808:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediDetaylari/[krediNo]/p
+age.tsx
+116:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchDataBaglantibilgileri'. Either include them or 
+remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediHesaplama.tsx
+75:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+454:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+463:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+530:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediHesaplamaDetay.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+233:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+242:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+259:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediHesaplamaOrnekFisler.
+tsx
+148:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+475:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+548:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediVeriYukleme.tsx
+96:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+204:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+696:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+700:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+707:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateKrediHesaplamaVerisi' and 'setKaydetTiklandimi'. Either 
+include them or remove the dependency array. If 'setKaydetTiklandi
+mi' changes too often, find the parent component that defines it a
+nd wrap that definition in useCallback.  react-hooks/exhaustive-de
+ps
+774:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/page.tsx
+170:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+177:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarki/Doviz
+KurlariOtuzBirAralik.tsx
+58:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+241:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+308:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarki/KurFa
+rki.tsx
+62:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+301:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarki/KurFa
+rkiOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+463:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+519:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+536:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontro
+lleri/FisDetaylari/[id]/FisDetaylari.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+296:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+363:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontro
+lleri/KurFarkiKontrolleriFis.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+354:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontro
+lleri/KurFarkiKontrolleriOzet.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+229:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontro
+lleri/page.tsx
+202:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleVerileriGetir'. Either include it or remove the dependency arr
+ay.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaM
+evduatiFaizTahakkuk/VadeliBankaMevduatiFaizTahakkuk.tsx
+79:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+602:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+613:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+680:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaM
+evduatiManuelSiniflama/VadeliBankaMevduatiManuelSiniflama.tsx
+87:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+438:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleJson'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+442:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+509:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaM
+evduatiManuelSiniflama/VadeliBankaMevduatiManuelSiniflamaOrnekFisl
+er.tsx
+170:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+471:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+477:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+544:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaM
+evduatiOtomatikSiniflama/VadeliBankaMevduatiOtomatikSiniflama.tsx
+106:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+449:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+516:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaM
+evduatiOtomatikSiniflama/VadeliBankaMevduatiOtomatikSiniflamaOrnek
+Fisler.tsx
+170:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+468:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+477:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+483:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchedData' and 'handleKaydet'. Either include them or remove the d
+ependency array.  react-hooks/exhaustive-deps
+550:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Yaslandirma/Yaslandirma.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+313:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+322:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+389:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Konsolidasyon/EliminasyonFisIslemleri/page.ts
+x
+111:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Konsolidasyon/FisListesi/FisDetaylari/[id]/Fi
+sDetaylari.tsx
+100:6  Warning: React Hook useEffect has a missing dependency: 'di
+spatch'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+498:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+580:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Konsolidasyon/FisListesi/FisDetaylari/[id]/pa
+ge.tsx
+67:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Konsolidasyon/FisListesi/FisListesi.tsx
+71:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+404:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+414:6  Warning: React Hook useEffect has a missing dependency: 'af
+terRenderer2'. Either include it or remove the dependency array.  
+react-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/layout.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'rou
+ter'. Either include it or remove the dependency array.  react-hoo
+ks/exhaustive-deps
+
+./src/app/(Uygulama)/Musteri/MusteriKabulIslemi/page.tsx
+179:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchData2'. Either include them or remove the depen
+dency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Musteri/MusteriTanima/MusteriTanima.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+512:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+519:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleSaveMusteriTanimaSayisalBilgilerVerisi' and 'setKaydetTiklandi
+mi'. Either include them or remove the dependency array. If 'setKa
+ydetTiklandimi' changes too often, find the parent component that 
+defines it and wrap that definition in useCallback.  react-hooks/e
+xhaustive-deps
+586:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Musteri/MusteriTanima/page.tsx
+192:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Musteri/TeklifHesaplama/page.tsx
+252:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+258:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+265:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleDeleteTeklifHesaplama'. Either include it or remove the depend
+ency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/MusteriBelgeleri/page.tsx
+114:6  Warning: React Hook useCallback has a missing dependency: '
+fileType'. Either include it or remove the dependency array.  reac
+t-hooks/exhaustive-deps
+279:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/BilgiIslemMuhasebe/page.tsx
+145:16  Error: 'EkBelgeYukleButton' is not defined.  react/jsx-no-
+undef
+
+./src/app/(Uygulama)/PlanVeProgram/BulguRiskiBelirleme/BulguRiskiB
+elirleme.tsx
+61:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+257:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+266:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+333:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/PlanVeProgram/BulguRiskiBelirleme/BulguRiskiB
+elirlemeBelge.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+250:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/PlanVeProgram/BulguRiskiBelirleme/page.tsx
+204:16  Error: 'EkBelgeYukleButton' is not defined.  react/jsx-no-
+undef
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/Finans
+alTabloKalemlerindeDegisim/FinansalTabloKalemlerindeDegisim.tsx
+75:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+391:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+400:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+467:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/FisBuy
+ukluguAnalizi/page.tsx
+58:29  Warning: The ref value 'timersRef.current' will likely have
+ changed by the time this effect cleanup function runs. If this re
+f points to a node rendered by React, copy 'timersRef.current' to 
+a variable inside the effect, and use that variable in the cleanup
+ function.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/Onemli
+likVeOrneklem/OnemlilikVeOrneklem.tsx
+77:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+439:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+448:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+515:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/Onemli
+likVeOrneklem/OnemlilikVeOrneklemHesaplamaBazi.tsx
+72:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+369:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+375:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+392:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/Onemli
+likVeOrneklem/OnemlilikVeOrneklemSeviyesi.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+338:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+355:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Sozlesme/BagimsizDenetimSozlesmesi/page.tsx
+145:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'fetchData2'. Either include them or remove the depen
+dency array.  react-hooks/exhaustive-deps
+152:6  Warning: React Hook useEffect has a missing dependency: 'ha
+ndleDeleteAll'. Either include it or remove the dependency array. 
+ react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DefterKVBeyannamesiYukleme/page.tsx
+210:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+217:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DonusturulmusMizanVeriYukleme/Donusturul
+musMizan.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+187:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+736:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+740:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+747:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateDonusturulmusMizanVerisi' and 'setKaydetTiklandimi'. Eit
+her include them or remove the dependency array. If 'setKaydetTikl
+andimi' changes too often, find the parent component that defines 
+it and wrap that definition in useCallback.  react-hooks/exhaustiv
+e-deps
+814:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Veri/DonusturulmusMizanVeriYukleme/page.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DonusumFisleriVeriYukleme/DonusumFisleri
+.tsx
+91:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+172:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+626:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+630:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+637:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateDonusumFisleriVerisi' and 'setKaydetTiklandimi'. Either 
+include them or remove the dependency array. If 'setKaydetTiklandi
+mi' changes too often, find the parent component that defines it a
+nd wrap that definition in useCallback.  react-hooks/exhaustive-de
+ps
+704:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Veri/DonusumFisleriVeriYukleme/page.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/EDefterInceleme/EDefterInceleme.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+408:6  Warning: React Hook useEffect has missing dependencies: 'fe
+tchData' and 'setVerileriGetirTiklandimi'. Either include them or 
+remove the dependency array. If 'setVerileriGetirTiklandimi' chang
+es too often, find the parent component that defines it and wrap t
+hat definition in useCallback.  react-hooks/exhaustive-deps
+475:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Veri/EDefterInceleme/FisDetaylari/[id]/FisDet
+aylari.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+371:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+438:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/(Uygulama)/Veri/Fatura/page.tsx
+179:6  Warning: React Hook useCallback has a missing dependency: '
+openProcessingSnack'. Either include it or remove the dependency a
+rray.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/VukMizanVeriYukleme/page.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'fet
+chData'. Either include it or remove the dependency array.  react-
+hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/VukMizanVeriYukleme/VukMizan.tsx
+90:6  Warning: React Hook useEffect has a missing dependency: 'dis
+patch'. Either include it or remove the dependency array.  react-h
+ooks/exhaustive-deps
+171:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.p
+alette.warning.dark', and 'theme.palette.warning.main'. Either inc
+lude them or remove the dependency array.  react-hooks/exhaustive-
+deps
+649:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchData'. Either include it or remove the dependency array.  react
+-hooks/exhaustive-deps
+653:6  Warning: React Hook useEffect has a missing dependency: 'fe
+tchRowCount'. Either include it or remove the dependency array.  r
+eact-hooks/exhaustive-deps
+660:6  Warning: React Hook useEffect has missing dependencies: 'ha
+ndleCreateVukMizanVerisi' and 'setKaydetTiklandimi'. Either includ
+e them or remove the dependency array. If 'setKaydetTiklandimi' ch
+anges too often, find the parent component that defines it and wra
+p that definition in useCallback.  react-hooks/exhaustive-deps
+727:6  Warning: React Hook useEffect has missing dependencies: 'cu
+stomizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either i
+nclude them or remove the dependency array.  react-hooks/exhaustiv
+e-deps
+
+./src/app/layout.tsx
+82:6  Warning: React Hook useEffect has missing dependencies: 'NOT
+_PROTECTED_ROUTES', 'customizer.activeMode', 'router', 'theme.pale
+tte.warning.dark', and 'theme.palette.warning.main'. Either includ
+e them or remove the dependency array.  react-hooks/exhaustive-dep
+s
+
+info  - Need to disable some ESLint rules? Learn more here: https:
+//nextjs.org/docs/basic-features/eslint#disabling-rules

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Card,
@@ -84,6 +84,68 @@ const FaaliyetRiskBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
   const [isGroupPopUpOpen, setIsGroupPopUpOpen] = useState(false);
 
   const [openedGroupIndex, setOpenGroupIndex] = useState(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const calismaKagidiVerileri =
+        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0
+        );
+
+      const rowsAll: any = [];
+      const rowsWithBaslikId: Veri[] = [];
+      const rowsWithoutBaslikId: Veri[] = [];
+
+      const tamamlanan: any[] = [];
+      const toplam: any[] = [];
+
+      calismaKagidiVerileri.forEach((veri: any) => {
+        const newRow: Veri = {
+          id: veri.id,
+          konu: veri.konu,
+          islem: veri.islem,
+          tespit: veri.tespit,
+          baslikId: veri.baslikId,
+          standartMi: veri.standartmi,
+        };
+        rowsAll.push(newRow);
+
+        if (grupluMu) {
+          if (veri.baslikId) {
+            rowsWithBaslikId.push(newRow);
+            if (newRow.standartMi) {
+              toplam.push(newRow);
+            } else {
+              tamamlanan.push(newRow);
+              toplam.push(newRow);
+            }
+          } else {
+            rowsWithoutBaslikId.push(newRow);
+            rowsAll.push(newRow);
+          }
+        } else {
+          if (newRow.standartMi) {
+            toplam.push(newRow);
+          } else {
+            tamamlanan.push(newRow);
+            toplam.push(newRow);
+          }
+        }
+      });
+      setVeriler(rowsAll);
+      setVerilerWithBaslikId(rowsWithBaslikId);
+      setVerilerWithoutBaslikId(rowsWithoutBaslikId);
+
+      setToplam(toplam.length);
+      setTamamlanan(tamamlanan.length);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, grupluMu, setToplam, setTamamlanan]);
 
   const handleOpenGroup = (index: any) => {
     setOpenGroupIndex(openedGroupIndex === index ? null : index);
@@ -221,7 +283,7 @@ const FaaliyetRiskBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleDeleteAll = async () => {
+  const handleDeleteAll = useCallback(async () => {
     try {
       const result = await deleteAllCalismaKagidiVerileri(
         controller || "",
@@ -238,69 +300,9 @@ const FaaliyetRiskBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
-  const fetchData = async () => {
-    try {
-      const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
-          controller || "",
-          user.token || "",
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0
-        );
 
-      const rowsAll: any = [];
-      const rowsWithBaslikId: Veri[] = [];
-      const rowsWithoutBaslikId: Veri[] = [];
-
-      const tamamlanan: any[] = [];
-      const toplam: any[] = [];
-
-      calismaKagidiVerileri.forEach((veri: any) => {
-        const newRow: Veri = {
-          id: veri.id,
-          konu: veri.konu,
-          islem: veri.islem,
-          tespit: veri.tespit,
-          baslikId: veri.baslikId,
-          standartMi: veri.standartmi,
-        };
-        rowsAll.push(newRow);
-
-        if (grupluMu) {
-          if (veri.baslikId) {
-            rowsWithBaslikId.push(newRow);
-            if (newRow.standartMi) {
-              toplam.push(newRow);
-            } else {
-              tamamlanan.push(newRow);
-              toplam.push(newRow);
-            }
-          } else {
-            rowsWithoutBaslikId.push(newRow);
-            rowsAll.push(newRow);
-          }
-        } else {
-          if (newRow.standartMi) {
-            toplam.push(newRow);
-          } else {
-            tamamlanan.push(newRow);
-            toplam.push(newRow);
-          }
-        }
-      });
-      setVeriler(rowsAll);
-      setVerilerWithBaslikId(rowsWithBaslikId);
-      setVerilerWithoutBaslikId(rowsWithoutBaslikId);
-
-      setToplam(toplam.length);
-      setTamamlanan(tamamlanan.length);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
@@ -352,20 +354,20 @@ const FaaliyetRiskBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     if (!isClickedYeniGrupEkle) {
       fetchData();
     }
-  }, [isClickedYeniGrupEkle]);
+  }, [isClickedYeniGrupEkle, fetchData]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
       handleDeleteAll();
       setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayilanaDon]);
+  }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
 
   return (
     <>
@@ -447,9 +449,8 @@ const FaaliyetRiskBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
                                   }}
                                 >
                                   <CalismaKagidiCard
-                                    title={`${index + 1}. ${
-                                      veriWithBaslikId.konu
-                                    }`}
+                                    title={`${index + 1}. ${veriWithBaslikId.konu
+                                      }`}
                                     content={veriWithBaslikId.islem}
                                     standartMi={veriWithBaslikId.standartMi}
                                   />
@@ -603,37 +604,37 @@ const FaaliyetRiskBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
+          )}
         <Grid
           container
           sx={{

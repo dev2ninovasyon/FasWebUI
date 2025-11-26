@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -224,7 +224,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const formHazirlayanOnaylayanVerileri =
         await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
@@ -241,7 +241,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
         setHazirlayanId(formHazirlayanOnaylayanVerileri.hazirlayanId);
         setHazirlayanTarih(
           formHazirlayanOnaylayanVerileri?.hazirlanmaTarihi?.split("T")[0] ||
-            undefined
+          undefined
         );
       } else {
         if (hazirlayan) {
@@ -262,7 +262,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
         setOnaylayanId(formHazirlayanOnaylayanVerileri.onaylayanId);
         setOnaylayanTarih(
           formHazirlayanOnaylayanVerileri?.onaylanmaTarihi?.split("T")[0] ||
-            undefined
+          undefined
         );
       } else {
         if (onaylayan) {
@@ -279,7 +279,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
         setKontrolEdenId(formHazirlayanOnaylayanVerileri.kontrolEdenId);
         setKontrolEdenTarih(
           formHazirlayanOnaylayanVerileri?.kontrolTarihi?.split("T")[0] ||
-            undefined
+          undefined
         );
       } else {
         if (kaliteKontrol) {
@@ -295,11 +295,11 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [user.token, user.denetciId, user.denetlenenId, user.yil, controller, hazirlayan, onaylayan, kaliteKontrol, user.rol, user.id]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     if (!isClickedUpdate) {
@@ -320,7 +320,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       fetchData();
       dispatch(setFormHazirlayanOnaylayan(false));
     }
-  }, [user.formHazirlayanOnaylayan]);
+  }, [user.formHazirlayanOnaylayan, fetchData, dispatch]);
 
   return (
     <Grid container>
@@ -361,31 +361,31 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                     : user.rol &&
                       (user.rol.at(-1) == "Denetci" ||
                         user.rol.at(-1) == "DenetciYardimcisi")
-                    ? user.kullaniciAdi
-                    : undefined
+                      ? user.kullaniciAdi
+                      : undefined
                   : onaylayan
-                  ? onaylayanId
                     ? onaylayanId
-                    : user.rol && user.rol.at(-1) == "SorumluDenetci"
-                    ? user.kullaniciAdi
-                    : undefined
-                  : kaliteKontrol
-                  ? kontrolEdenId
-                    ? kontrolEdenId
-                    : user.rol &&
-                      user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
-                    ? user.kullaniciAdi
-                    : undefined
-                  : undefined
+                      ? onaylayanId
+                      : user.rol && user.rol.at(-1) == "SorumluDenetci"
+                        ? user.kullaniciAdi
+                        : undefined
+                    : kaliteKontrol
+                      ? kontrolEdenId
+                        ? kontrolEdenId
+                        : user.rol &&
+                          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                          ? user.kullaniciAdi
+                          : undefined
+                      : undefined
               }
               tip={
                 hazirlayan
                   ? "Hazırlayan"
                   : onaylayan
-                  ? "Onaylayan"
-                  : kaliteKontrol
-                  ? "Kalite Kontrol"
-                  : ""
+                    ? "Onaylayan"
+                    : kaliteKontrol
+                      ? "Kalite Kontrol"
+                      : ""
               }
               disabled={
                 (hazirlayan
@@ -396,26 +396,26 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                     : user.rol &&
                       (user.rol.at(-1) == "Denetci" ||
                         user.rol.at(-1) == "DenetciYardimcisi")
-                    ? false
-                    : true
+                      ? false
+                      : true
                   : onaylayan
-                  ? onaylayanId
-                    ? onaylayanId == user.id
-                      ? false
-                      : true
-                    : user.rol && user.rol.at(-1) == "SorumluDenetci"
-                    ? false
-                    : true
-                  : kaliteKontrol
-                  ? kontrolEdenId
-                    ? kontrolEdenId == user.id
-                      ? false
-                      : true
-                    : user.rol &&
-                      user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
-                    ? false
-                    : true
-                  : true) ||
+                    ? onaylayanId
+                      ? onaylayanId == user.id
+                        ? false
+                        : true
+                      : user.rol && user.rol.at(-1) == "SorumluDenetci"
+                        ? false
+                        : true
+                    : kaliteKontrol
+                      ? kontrolEdenId
+                        ? kontrolEdenId == user.id
+                          ? false
+                          : true
+                        : user.rol &&
+                          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                          ? false
+                          : true
+                      : true) ||
                 (hazirlayan && hazirlayanId ? true : false) ||
                 (onaylayan && onaylayanId ? true : false) ||
                 (kaliteKontrol && kontrolEdenId ? true : false)
@@ -433,10 +433,10 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                 hazirlayan
                   ? hazirlayanTarih ?? ""
                   : onaylayan
-                  ? onaylayanTarih ?? ""
-                  : kaliteKontrol
-                  ? kontrolEdenTarih ?? ""
-                  : ""
+                    ? onaylayanTarih ?? ""
+                    : kaliteKontrol
+                      ? kontrolEdenTarih ?? ""
+                      : ""
               }
               onChange={(e: any) => {
                 const newValue = e.target.value;
@@ -459,26 +459,26 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                     : user.rol &&
                       (user.rol.at(-1) == "Denetci" ||
                         user.rol.at(-1) == "DenetciYardimcisi")
-                    ? false
-                    : true
+                      ? false
+                      : true
                   : onaylayan
-                  ? onaylayanId
-                    ? onaylayanId == user.id
-                      ? false
-                      : true
-                    : user.rol && user.rol.at(-1) == "SorumluDenetci"
-                    ? false
-                    : true
-                  : kaliteKontrol
-                  ? kontrolEdenId
-                    ? kontrolEdenId == user.id
-                      ? false
-                      : true
-                    : user.rol &&
-                      user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
-                    ? false
-                    : true
-                  : true) ||
+                    ? onaylayanId
+                      ? onaylayanId == user.id
+                        ? false
+                        : true
+                      : user.rol && user.rol.at(-1) == "SorumluDenetci"
+                        ? false
+                        : true
+                    : kaliteKontrol
+                      ? kontrolEdenId
+                        ? kontrolEdenId == user.id
+                          ? false
+                          : true
+                        : user.rol &&
+                          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                          ? false
+                          : true
+                      : true) ||
                 (hazirlayan && hazirlayanId ? true : false) ||
                 (onaylayan && onaylayanId ? true : false) ||
                 (kaliteKontrol && kontrolEdenId ? true : false)
@@ -490,8 +490,8 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
             />
 
             {(hazirlayan && hazirlayanId ? true : false) ||
-            (onaylayan && onaylayanId ? true : false) ||
-            (kaliteKontrol && kontrolEdenId ? true : false) ? (
+              (onaylayan && onaylayanId ? true : false) ||
+              (kaliteKontrol && kontrolEdenId ? true : false) ? (
               <Button
                 size="medium"
                 variant="outlined"
@@ -505,26 +505,26 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                       : user.rol &&
                         (user.rol.at(-1) == "Denetci" ||
                           user.rol.at(-1) == "DenetciYardimcisi")
-                      ? false
-                      : true
+                        ? false
+                        : true
                     : onaylayan
-                    ? onaylayanId
-                      ? onaylayanId == user.id
-                        ? false
+                      ? onaylayanId
+                        ? onaylayanId == user.id
+                          ? false
+                          : true
+                        : user.rol && user.rol.at(-1) == "SorumluDenetci"
+                          ? false
+                          : true
+                      : kaliteKontrol
+                        ? kontrolEdenId
+                          ? kontrolEdenId == user.id
+                            ? false
+                            : true
+                          : user.rol &&
+                            user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                            ? false
+                            : true
                         : true
-                      : user.rol && user.rol.at(-1) == "SorumluDenetci"
-                      ? false
-                      : true
-                    : kaliteKontrol
-                    ? kontrolEdenId
-                      ? kontrolEdenId == user.id
-                        ? false
-                        : true
-                      : user.rol &&
-                        user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
-                      ? false
-                      : true
-                    : true
                 }
                 onClick={() => {
                   handleOnayiKaldir();
@@ -547,26 +547,26 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                       : user.rol &&
                         (user.rol.at(-1) == "Denetci" ||
                           user.rol.at(-1) == "DenetciYardimcisi")
-                      ? false
-                      : true
+                        ? false
+                        : true
                     : onaylayan
-                    ? onaylayanId
-                      ? onaylayanId == user.id
-                        ? false
+                      ? onaylayanId
+                        ? onaylayanId == user.id
+                          ? false
+                          : true
+                        : user.rol && user.rol.at(-1) == "SorumluDenetci"
+                          ? false
+                          : true
+                      : kaliteKontrol
+                        ? kontrolEdenId
+                          ? kontrolEdenId == user.id
+                            ? false
+                            : true
+                          : user.rol &&
+                            user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                            ? false
+                            : true
                         : true
-                      : user.rol && user.rol.at(-1) == "SorumluDenetci"
-                      ? false
-                      : true
-                    : kaliteKontrol
-                    ? kontrolEdenId
-                      ? kontrolEdenId == user.id
-                        ? false
-                        : true
-                      : user.rol &&
-                        user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
-                      ? false
-                      : true
-                    : true
                 }
                 onClick={() => {
                   handleOnayla();

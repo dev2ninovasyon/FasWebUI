@@ -11,6 +11,7 @@ import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/C
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const CustomEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditor"),
@@ -149,10 +150,10 @@ const Page = () => {
               }}
             >
               <EkBelgeYukleButton
-        formKodu={controller}
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
+                formKodu={controller}
+                fullWidth={false}           // sağda küçük buton
+                text="Ek Belge Yükle"
+              />
             </Grid>
             <Grid
               item
@@ -165,7 +166,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -210,37 +211,37 @@ const Page = () => {
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
+          )}
         <Grid
           container
           sx={{
