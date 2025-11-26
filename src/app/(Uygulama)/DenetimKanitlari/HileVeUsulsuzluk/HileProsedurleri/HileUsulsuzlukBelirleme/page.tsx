@@ -9,6 +9,7 @@ import { useState } from "react";
 import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
 import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import HileUsulsuzlukBelirlemeBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukBelirlemeBelge";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const BCrumb = [
   {
@@ -154,10 +155,10 @@ const Page = () => {
               }}
             >
               <EkBelgeYukleButton
-        formKodu={controller}
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
+                formKodu={controller}
+                fullWidth={false}           // sağda küçük buton
+                text="Ek Belge Yükle"
+              />
             </Grid>
             <Grid
               item
@@ -170,7 +171,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"

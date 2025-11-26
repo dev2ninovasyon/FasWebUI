@@ -6,7 +6,7 @@ import { IconFileTypeDocx, IconFileTypePdf } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
-import { apiFetch } from "@/api/apiBase";
+import { apiFetch,url } from "@/api/apiBase";
 
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
@@ -23,8 +23,8 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
 
   const handleDownload = async () => {
     try {
-      const response = await axios({
-        url: `/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
+      const response =  await axios({
+        url: `${url}/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
         method: "GET",
         responseType: "blob",
         headers: {
@@ -48,7 +48,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
   const handlePreview = async () => {
     try {
       const response = await axios({
-        url: `/ArsivIslemleri/PdfDosyasiGoster?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
+        url: `${url}/ArsivIslemleri/PdfDosyasiGoster?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
         method: "GET",
         responseType: "blob",
         headers: {

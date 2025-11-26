@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Divider,
@@ -152,26 +152,7 @@ const HileUsulsuzlukBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleDeleteAll = async () => {
-    try {
-      const result = await deleteAllCalismaKagidiVerileri(
-        controller || "",
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
-      if (result) {
-        fetchData();
-      } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const calismaKagidiVerileri =
         await getCalismaKagidiVerileriByDenetciDenetlenenYil(
@@ -212,7 +193,26 @@ const HileUsulsuzlukBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, setToplam, setTamamlanan]);
+
+  const handleDeleteAll = useCallback(async () => {
+    try {
+      const result = await deleteAllCalismaKagidiVerileri(
+        controller || "",
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0
+      );
+      if (result) {
+        fetchData();
+      } else {
+        console.error("Çalışma Kağıdı Verileri silme başarısız");
+      }
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
@@ -256,14 +256,14 @@ const HileUsulsuzlukBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
       handleDeleteAll();
       setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayilanaDon]);
+  }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
 
   return (
     <>
@@ -337,37 +337,37 @@ const HileUsulsuzlukBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
+          )}
         <Grid
           container
           sx={{

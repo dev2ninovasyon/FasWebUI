@@ -22,7 +22,7 @@ import { useDropzone } from "react-dropzone";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import VeriPaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/VeriPaylasimBaglantisiPopUp";
-import { apiFetch } from "@/api/apiBase";
+import { url } from "@/api/apiBase";
 
 import axios from "axios";
 
@@ -116,7 +116,7 @@ const Page: React.FC = () => {
 
         setDosyaYuklendiMi(false);
         const response = await axios.post(
-          `/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
+          `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
           formData,
           {
             headers: {

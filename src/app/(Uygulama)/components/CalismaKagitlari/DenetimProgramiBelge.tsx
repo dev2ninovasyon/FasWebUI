@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Divider,
@@ -104,6 +104,78 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
   const [floatingButtonTiklandimi, setFloatingButtonTiklandimi] =
     useState(false);
 
+  const fetchData = useCallback(async () => {
+    try {
+      const calismaKagidiVerileri =
+        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0
+        );
+
+      const rowsAll: any = [];
+
+      const tamamlanan: any[] = [];
+      const toplam: any[] = [];
+
+      calismaKagidiVerileri.forEach((veri: any) => {
+        const newRow: Veri = {
+          id: veri.id,
+          denetimProgram: veri.denetimProgram,
+          gorevliId: veri.gorevliId,
+          calismaSuresi: veri.calismaSuresi,
+          calismaTakvimi: veri.calismaTakvimi,
+          ilgiliFormKodlari: veri.ilgiliFormKodlari,
+          standartMi: veri.standartmi,
+        };
+        rowsAll.push(newRow);
+
+        if (newRow.standartMi) {
+          toplam.push(newRow);
+        } else {
+          tamamlanan.push(newRow);
+          toplam.push(newRow);
+        }
+      });
+      setVeriler(rowsAll);
+
+      setToplam(toplam.length);
+      setTamamlanan(tamamlanan.length);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, setToplam, setTamamlanan]);
+
+  const fetchData2 = useCallback(async () => {
+    try {
+      const denetimKadrosuVerileri = await getGorevAtamalariByDenetlenenIdYil(
+        user.token || "",
+        user.denetlenenId || 0,
+        user.yil || 0
+      );
+      const newRows = denetimKadrosuVerileri.map((veri: any) => ({
+        id: veri.id,
+        denetciId: veri.denetciId,
+        denetlenenId: veri.denetlenenId,
+        yil: veri.yil,
+        kullaniciId: veri.kullaniciId,
+        unvanId: veri.unvanId,
+        kullaniciAdi: veri.kullaniciAdi,
+        unvanAdi: veri.unvanAdi,
+        asilYedek: veri.asilYedek,
+        calismaSaati: veri.calismaSaati,
+        saatBasiUcreti: veri.saatBasiUcreti,
+        denetimUcreti: veri.denetimUcreti,
+        aktifPasif: veri.aktifPasif,
+      }));
+      setRows(newRows);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  }, [user.token, user.denetlenenId, user.yil]);
+
   const handleUpdate = async (
     denetimProgram: string,
     gorevliId: number,
@@ -177,7 +249,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleUpdateOtomatik = async () => {
+  const handleUpdateOtomatik = useCallback(async () => {
     try {
       const result = await updateOtomatikCalismaKagidiVerisi(
         controller || "",
@@ -195,7 +267,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil]);
 
   const handleDelete = async () => {
     try {
@@ -215,7 +287,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleDeleteAll = async () => {
+  const handleDeleteAll = useCallback(async () => {
     try {
       const result = await deleteAllCalismaKagidiVerileri(
         controller || "",
@@ -232,79 +304,9 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
-  const fetchData = async () => {
-    try {
-      const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
-          controller || "",
-          user.token || "",
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0
-        );
 
-      const rowsAll: any = [];
-
-      const tamamlanan: any[] = [];
-      const toplam: any[] = [];
-
-      calismaKagidiVerileri.forEach((veri: any) => {
-        const newRow: Veri = {
-          id: veri.id,
-          denetimProgram: veri.denetimProgram,
-          gorevliId: veri.gorevliId,
-          calismaSuresi: veri.calismaSuresi,
-          calismaTakvimi: veri.calismaTakvimi,
-          ilgiliFormKodlari: veri.ilgiliFormKodlari,
-          standartMi: veri.standartmi,
-        };
-        rowsAll.push(newRow);
-
-        if (newRow.standartMi) {
-          toplam.push(newRow);
-        } else {
-          tamamlanan.push(newRow);
-          toplam.push(newRow);
-        }
-      });
-      setVeriler(rowsAll);
-
-      setToplam(toplam.length);
-      setTamamlanan(tamamlanan.length);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const fetchData2 = async () => {
-    try {
-      const denetimKadrosuVerileri = await getGorevAtamalariByDenetlenenIdYil(
-        user.token || "",
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
-      const newRows = denetimKadrosuVerileri.map((veri: any) => ({
-        id: veri.id,
-        denetciId: veri.denetciId,
-        denetlenenId: veri.denetlenenId,
-        yil: veri.yil,
-        kullaniciId: veri.kullaniciId,
-        unvanId: veri.unvanId,
-        kullaniciAdi: veri.kullaniciAdi,
-        unvanAdi: veri.unvanAdi,
-        asilYedek: veri.asilYedek,
-        calismaSaati: veri.calismaSaati,
-        saatBasiUcreti: veri.saatBasiUcreti,
-        denetimUcreti: veri.denetimUcreti,
-        aktifPasif: veri.aktifPasif,
-      }));
-      setRows(newRows);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
 
   const handleDagitilanSaat = (kullaniciId: number) => {
     let toplamDakika = 0;
@@ -385,14 +387,14 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
   useEffect(() => {
     fetchData();
     fetchData2();
-  }, []);
+  }, [fetchData, fetchData2]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
       handleDeleteAll();
       setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayilanaDon]);
+  }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
 
   useEffect(() => {
     if (floatingButtonTiklandimi) {
@@ -401,7 +403,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
       fetchData();
       fetchData2();
     }
-  }, [floatingButtonTiklandimi]);
+  }, [floatingButtonTiklandimi, handleUpdateOtomatik, fetchData, fetchData2]);
 
   return (
     <>
@@ -499,7 +501,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
                               border: "none",
                               backgroundColor:
                                 row.calismaSaati.toString() <
-                                handleDagitilanSaat(row.kullaniciId)
+                                  handleDagitilanSaat(row.kullaniciId)
                                   ? customizer.activeMode == "dark"
                                     ? theme.palette.error.light
                                     : theme.palette.error.main
@@ -514,7 +516,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
                               border: "none",
                               backgroundColor:
                                 row.calismaSaati.toString() <
-                                handleDagitilanSaat(row.kullaniciId)
+                                  handleDagitilanSaat(row.kullaniciId)
                                   ? customizer.activeMode == "dark"
                                     ? theme.palette.error.light
                                     : theme.palette.error.main
@@ -575,37 +577,37 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={fetchData}
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
+          )}
         <Grid
           container
           sx={{
@@ -729,7 +731,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
 
   const [belgeler, setBelgeler] = useState<Belgeler[]>([]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const data = await getDenetimDosyaByFormKodu(
         user.token || "",
@@ -740,11 +742,11 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     } catch (error) {
       console.error("An error occurred:", error);
     }
-  };
+  }, [user.token, user.denetimTuru, ilgiliFormKodlari]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>

@@ -14,7 +14,7 @@ export async function uploadEkBelge(
   formData: FormData
 ): Promise<boolean | { success: boolean; message?: string }> {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/ArsivIslemleri/upload-ek-belge`,
       {
         method: "POST",
@@ -58,7 +58,7 @@ export async function getEkBelgeler(
     formKodu: formKodu,
   });
 
-  const response =await apiFetch(
+  const response = await apiFetch(
     `/ArsivIslemleri/ek-belge-listesi?${params.toString()}`,
     {
       headers: {
@@ -80,7 +80,7 @@ export async function downloadEkBelge(
   token: string,
   id: number
 ): Promise<{ blob: Blob; fileName: string | null }> {
-  const response =await apiFetch(`/ArsivIslemleri/ek-belge-indir/${id}`, {
+  const response = await apiFetch(`/ArsivIslemleri/ek-belge-indir/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -116,7 +116,7 @@ export async function deleteEkBelge(
   id: number
 ): Promise<boolean> {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/ArsivIslemleri/ek-belge-sil/${id}`,
       {
         method: "DELETE",
@@ -131,4 +131,29 @@ export async function deleteEkBelge(
     console.error("deleteEkBelge hata:", error);
     return false;
   }
+}
+export async function deleteEkBelgelerSecilenler(
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  ids: number[]
+): Promise<{ success: boolean; deleted: number }> {
+  const res = await apiFetch(
+    `/ArsivIslemleri/ek-belge-sil-secilenler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ ids }),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Seçili ek belgeler silinemedi.");
+  }
+
+  return await res.json();
 }

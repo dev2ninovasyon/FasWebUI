@@ -2,7 +2,8 @@ import "print-friendly";
 import "print-friendly/index.css";
 import "./print-friendly.css";
 import "./rapor.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import {
@@ -124,7 +125,7 @@ const Rapor: React.FC<RaporProps> = ({
   const [kalemDataKA2, setKalemDataKA2] = React.useState<VeriKA[]>([]);
   const [hesapDataKA2, setHesapDataKA2] = React.useState<VeriKA[]>([]);
 
-  const fetchDataKarsilastirmaliAnaliz = async () => {
+  const fetchDataKarsilastirmaliAnaliz = useCallback(async () => {
     try {
       const karsilastirmaliAnalizTablosu = await getKarsilastirmaliAnaliz(
         user.token || "",
@@ -187,7 +188,9 @@ const Rapor: React.FC<RaporProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [user.token, user.denetciId, user.yil, user.denetlenenId, setKalemDataKA, setHesapDataKA, setKalemDataKA2, setHesapDataKA2, setTitleKA, setTitleKA2]);
+
+
 
   // ---- Karşılaştırmalı Analiz yardımcıları ----
   const renderKArows = (
@@ -281,7 +284,7 @@ const Rapor: React.FC<RaporProps> = ({
   const [kalemDataDA2, setKalemDataDA2] = React.useState<VeriDA[]>([]);
   const [hesapDataDA2, setHesapDataDA2] = React.useState<VeriDA[]>([]);
 
-  const fetchDataDikeyAnaliz = async () => {
+  const fetchDataDikeyAnaliz = useCallback(async () => {
     try {
       const karsilastirmaliAnalizTablosu = await getDikeyAnaliz(
         user.token || "",
@@ -345,7 +348,7 @@ const Rapor: React.FC<RaporProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [user.token, user.denetciId, user.yil, user.denetlenenId, setKalemDataDA, setHesapDataDA, setKalemDataDA2, setHesapDataDA2, setTitleDA, setTitleDA2]);
 
   // ---- Dikey Analiz yardımcıları ----
   const renderDArows = (
@@ -455,7 +458,7 @@ const Rapor: React.FC<RaporProps> = ({
   useEffect(() => {
     fetchDataKarsilastirmaliAnaliz();
     fetchDataDikeyAnaliz();
-  }, []);
+  }, [fetchDataKarsilastirmaliAnaliz, fetchDataDikeyAnaliz]);
 
   return (
     <div id="report" className="page-container">
@@ -470,10 +473,13 @@ const Rapor: React.FC<RaporProps> = ({
         }}
       >
         {firmaLogoImage && (
-          <img
+          <Image
             id="logoImg"
             src={firmaLogoImage}
             alt="Logo"
+            width={0}
+            height={0}
+            sizes="100vw"
             style={{
               position: "absolute",
               top: dikeyKonum == "Ust" ? 0 : undefined,
@@ -492,10 +498,13 @@ const Rapor: React.FC<RaporProps> = ({
           />
         )}
         {kapakImage && (
-          <img
+          <Image
             id="kapakImg"
             src={kapakImage}
             alt="Kapak"
+            width={0}
+            height={0}
+            sizes="100vw"
             style={{
               width: "100%",
               height: "27cm",
@@ -594,15 +603,15 @@ const Rapor: React.FC<RaporProps> = ({
                     {row.tutarYil1 > 0
                       ? formatNumber(row.tutarYil1)
                       : row.tutarYil1 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
                   </td>
                   <td className="text-right">
                     {row.tutarYil2 > 0
                       ? formatNumber(row.tutarYil2)
                       : row.tutarYil2 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
                   </td>
                 </tr>
               ))}
@@ -633,15 +642,15 @@ const Rapor: React.FC<RaporProps> = ({
                     {row.tutarYil1 > 0
                       ? formatNumber(row.tutarYil1)
                       : row.tutarYil1 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
                   </td>
                   <td className="text-right">
                     {row.tutarYil2 > 0
                       ? formatNumber(row.tutarYil2)
                       : row.tutarYil2 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
                   </td>
                 </tr>
               ))}
@@ -672,15 +681,15 @@ const Rapor: React.FC<RaporProps> = ({
                     {row.tutarYil1 > 0
                       ? formatNumber(row.tutarYil1)
                       : row.tutarYil1 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
                   </td>
                   <td className="text-right">
                     {row.tutarYil2 > 0
                       ? formatNumber(row.tutarYil2)
                       : row.tutarYil2 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
                   </td>
                 </tr>
               ))}
@@ -722,8 +731,8 @@ const Rapor: React.FC<RaporProps> = ({
                           ? ilgiliVeri.tutar > 0
                             ? formatNumber(ilgiliVeri.tutar)
                             : ilgiliVeri.tutar == 0
-                            ? "-"
-                            : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
+                              ? "-"
+                              : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
                           : "-"}
                       </td>
                     );
@@ -764,8 +773,8 @@ const Rapor: React.FC<RaporProps> = ({
                           ? ilgiliVeri.tutar > 0
                             ? formatNumber(ilgiliVeri.tutar)
                             : ilgiliVeri.tutar == 0
-                            ? "-"
-                            : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
+                              ? "-"
+                              : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
                           : "-"}
                       </td>
                     );

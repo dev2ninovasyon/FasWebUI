@@ -1,15 +1,15 @@
 // src/app/(Uygulama)/components/CalismaKagitlari/EkBelgeYukleButton.tsx
 
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import {
   Button,
   Typography,
   useTheme,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
   Box,
   Dialog,
   DialogTitle,
@@ -18,8 +18,15 @@ import {
   Stack,
   Grid,
   Paper,
-  Divider,
+  IconButton,
   Checkbox,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -37,7 +44,9 @@ import {
   downloadEkBelge,
   EkBelgeDto,
   deleteEkBelge,
+  deleteEkBelgelerSecilenler,
 } from "@/api/CalismaKagitlari/CalismaKagitlariEkBelge";
+
 // en üst kısma ekle
 import { jsPDF } from "jspdf";
 
@@ -73,22 +82,41 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
   // Drag & drop highlight
   const [isDragging, setIsDragging] = useState(false);
 
+  // Arama + sayfalama
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
-
+  const borderColor = theme.palette.divider;
+  const isPdfBelge = (belge: EkBelgeDto) => {
+    const contentType = belge.contentType?.toLowerCase() || "";
+    const name = (belge.orijinalDosyaAdi || "").toLowerCase();
+    return contentType.includes("pdf") || name.endsWith(".pdf");
+  };
   const canLoad =
     !!user.token && !!user.denetciId && !!user.denetlenenId && !!user.yil;
 
   const isAllSelected =
     ekBelgeler.length > 0 && selectedIds.length === ekBelgeler.length;
 
-  // Sadece PDF olan belgeleri tespit etmek için helper
-  const isPdfBelge = (belge: EkBelgeDto) => {
-    const fileName = (belge.orijinalDosyaAdi || "").toLowerCase();
-    const contentType = belge.contentType?.toLowerCase() || "";
-    return contentType.includes("pdf") || fileName.endsWith(".pdf");
-  };
+  // Filtrelenmiş liste (arama)
+  const filteredBelgeler = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return ekBelgeler;
+    return ekBelgeler.filter((b) =>
+      (b.orijinalDosyaAdi || "").toLowerCase().includes(term)
+    );
+  }, [ekBelgeler, searchTerm]);
+
+  // Sayfalı liste
+  const pagedBelgeler = useMemo(() => {
+    const start = page * rowsPerPage;
+    const end = start + rowsPerPage;
+    return filteredBelgeler.slice(start, end);
+  }, [filteredBelgeler, page, rowsPerPage]);
 
   const loadEkBelgeler = async () => {
     if (!canLoad) return;
@@ -103,7 +131,8 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
         formKodu
       );
       setEkBelgeler(list);
-      setSelectedIds([]); // liste yenilenince seçimleri temizle
+      setSelectedIds([]);
+      setPage(0);
     } catch (error) {
       console.error("Ek belgeler alınırken hata oluştu:", error);
     } finally {
@@ -126,179 +155,137 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
       inputRef.current.click();
     }
   };
-// PNG dosyasını tek sayfalık PDF'e çevirir
-const convertPngToPdf = async (file: File): Promise<File> => {
-  return new Promise<File>(async (resolve, reject) => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const blobUrl = URL.createObjectURL(new Blob([arrayBuffer]));
-      const img = new Image();
-      img.src = blobUrl;
-      img.onload = () => {
-        try {
-          const pdf = new jsPDF({
-            orientation: img.width > img.height ? "l" : "p",
-            unit: "pt",
-            format: [img.width, img.height],
-          });
 
-          pdf.addImage(img, "PNG", 0, 0, img.width, img.height);
-          const pdfBlob = pdf.output("blob");
+  // PNG dosyasını tek sayfalık PDF'e çevirir
+  const convertPngToPdf = async (file: File): Promise<File> => {
+    return new Promise<File>(async (resolve, reject) => {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const blobUrl = URL.createObjectURL(new Blob([arrayBuffer]));
+        const img = new Image();
+        img.src = blobUrl;
+        img.onload = () => {
+          try {
+            const pdf = new jsPDF({
+              orientation: img.width > img.height ? "l" : "p",
+              unit: "pt",
+              format: [img.width, img.height],
+            });
+
+            pdf.addImage(img, "PNG", 0, 0, img.width, img.height);
+            const pdfBlob = pdf.output("blob");
+            URL.revokeObjectURL(blobUrl);
+
+            const pdfFile = new File(
+              [pdfBlob],
+              file.name.replace(/\.png$/i, ".pdf"),
+              { type: "application/pdf" }
+            );
+
+            resolve(pdfFile);
+          } catch (err) {
+            URL.revokeObjectURL(blobUrl);
+            reject(err);
+          }
+        };
+        img.onerror = (e) => {
           URL.revokeObjectURL(blobUrl);
-
-          const pdfFile = new File(
-            [pdfBlob],
-            file.name.replace(/\.png$/i, ".pdf"),
-            { type: "application/pdf" }
-          );
-
-          resolve(pdfFile);
-        } catch (err) {
-          URL.revokeObjectURL(blobUrl);
-          reject(err);
-        }
-      };
-      img.onerror = (e) => {
-        URL.revokeObjectURL(blobUrl);
-        reject(e);
-      };
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
+          reject(e);
+        };
+      } catch (err) {
+        reject(err);
+      }
+    });
+  };
 
   // Ortak dosya işleme fonksiyonu (input + drag&drop)
-// Ortak dosya işleme fonksiyonu (input + drag&drop)
-const handleFiles = async (files: FileList | File[] | null) => {
-  if (!files || (files as FileList).length === 0) return;
+  const handleFiles = async (files: FileList | File[] | null) => {
+    if (!files || (files as FileList).length === 0) return;
 
-  if (!canLoad) {
-    enqueueSnackbar(
-      "Kullanıcı veya denetim bilgileri eksik. Lütfen sayfayı yenileyin.",
-      {
-        variant: "warning",
-        autoHideDuration: 5000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.warning.dark
-              : theme.palette.warning.main,
-        },
-      }
-    );
-    return;
-  }
-
-  const allFiles = Array.from(files as FileList);
-
-  // İzin verilen uzantılar
-  const allowedExtensions = ["pdf", "doc", "docx", "xls", "xlsx", "xlsm", "png"];
-
-  const invalidFiles: string[] = [];
-  const candidateFiles: File[] = [];
-
-  for (const file of allFiles) {
-    const ext = file.name.split(".").pop()?.toLowerCase() || "";
-    if (!allowedExtensions.includes(ext)) {
-      invalidFiles.push(file.name);
-    } else {
-      candidateFiles.push(file);
-    }
-  }
-
-  // Geçersiz dosya varsa, hiçbirini yükleme; hata ver
-  if (invalidFiles.length > 0) {
-    enqueueSnackbar(
-      `Sadece PDF, Word (doc/docx), Excel (xls/xlsx/xlsm) ve PNG dosyaları yüklenebilir. Geçersiz dosyalar: ${invalidFiles.join(
-        ", "
-      )}`,
-      {
-        variant: "error",
-        autoHideDuration: 7000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.error.dark
-              : theme.palette.error.main,
-        },
-      }
-    );
-    return;
-  }
-
-  if (candidateFiles.length === 0) {
-    enqueueSnackbar("Yüklenecek uygun dosya bulunamadı.", {
-      variant: "info",
-      autoHideDuration: 4000,
-    });
-    return;
-  }
-
-  // PNG'leri PDF'e çevir
-  const processedFiles: File[] = [];
-  try {
-    for (const file of candidateFiles) {
-      const ext = file.name.split(".").pop()?.toLowerCase() || "";
-      if (ext === "png") {
-        const pdfFile = await convertPngToPdf(file);
-        processedFiles.push(pdfFile);
-      } else {
-        processedFiles.push(file);
-      }
-    }
-  } catch (err) {
-    console.error("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
-    enqueueSnackbar(
-      "PNG dosyası PDF'e dönüştürülürken bir hata oluştu. Lütfen tekrar deneyin.",
-      {
-        variant: "error",
-        autoHideDuration: 5000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.error.dark
-              : theme.palette.error.main,
-        },
-      }
-    );
-    return;
-  }
-
-  const formData = new FormData();
-  processedFiles.forEach((file) => {
-    formData.append("files", file);
-  });
-
-  formData.append("FormKodu", formKodu);
-  formData.append("DenetciId", String(user.denetciId));
-  formData.append("DenetlenenId", String(user.denetlenenId));
-  formData.append("Yil", String(user.yil));
-
-  try {
-    setIsUploading(true);
-
-    const result = await uploadEkBelge(user.token || "", formData);
-
-    if (result === true || (typeof result === "object" && result?.success)) {
-      enqueueSnackbar("Ek belge(ler) başarıyla yüklendi.", {
-        variant: "success",
-        autoHideDuration: 5000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.success.light
-              : theme.palette.success.main,
-        },
-      });
-
-      await loadEkBelgeler();
-      if (onUploaded) onUploaded();
-    } else {
+    if (!canLoad) {
       enqueueSnackbar(
-        (typeof result === "object" &&
-          (result.message || (result as any).error)) ||
-          "Ek belgeler yüklenirken bir hata oluştu.",
+        "Kullanıcı veya denetim bilgileri eksik. Lütfen sayfayı yenileyin.",
+        {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.warning.dark
+                : theme.palette.warning.main,
+          },
+        }
+      );
+      return;
+    }
+
+    const allFiles = Array.from(files as FileList);
+
+    const allowedExtensions = [
+      "pdf",
+      "doc",
+      "docx",
+      "xls",
+      "xlsx",
+      "xlsm",
+      "png",
+    ];
+
+    const invalidFiles: string[] = [];
+    const candidateFiles: File[] = [];
+
+    for (const file of allFiles) {
+      const ext = file.name.split(".").pop()?.toLowerCase() || "";
+      if (!allowedExtensions.includes(ext)) {
+        invalidFiles.push(file.name);
+      } else {
+        candidateFiles.push(file);
+      }
+    }
+
+    if (invalidFiles.length > 0) {
+      enqueueSnackbar(
+        `Sadece PDF, Word (doc/docx), Excel (xls/xlsx/xlsm) ve PNG dosyaları yüklenebilir. Geçersiz dosyalar: ${invalidFiles.join(
+          ", "
+        )}`,
+        {
+          variant: "error",
+          autoHideDuration: 7000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.dark
+                : theme.palette.error.main,
+          },
+        }
+      );
+      return;
+    }
+
+    if (candidateFiles.length === 0) {
+      enqueueSnackbar("Yüklenecek uygun dosya bulunamadı.", {
+        variant: "info",
+        autoHideDuration: 4000,
+      });
+      return;
+    }
+
+    // PNG'leri PDF'e çevir
+    const processedFiles: File[] = [];
+    try {
+      for (const file of candidateFiles) {
+        const ext = file.name.split(".").pop()?.toLowerCase() || "";
+        if (ext === "png") {
+          const pdfFile = await convertPngToPdf(file);
+          processedFiles.push(pdfFile);
+        } else {
+          processedFiles.push(file);
+        }
+      }
+    } catch (err) {
+      console.error("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
+      enqueueSnackbar(
+        "PNG dosyası PDF'e dönüştürülürken bir hata oluştu. Lütfen tekrar deneyin.",
         {
           variant: "error",
           autoHideDuration: 5000,
@@ -310,23 +297,71 @@ const handleFiles = async (files: FileList | File[] | null) => {
           },
         }
       );
+      return;
     }
-  } catch (error) {
-    console.error("Ek belge yüklenirken hata oluştu:", error);
-    enqueueSnackbar("Ek belgeler yüklenirken beklenmeyen bir hata oluştu.", {
-      variant: "error",
-      autoHideDuration: 5000,
-      style: {
-        backgroundColor:
-          customizer.activeMode === "dark"
-            ? theme.palette.error.dark
-            : theme.palette.error.main,
-      },
+
+    const formData = new FormData();
+    processedFiles.forEach((file) => {
+      formData.append("files", file);
     });
-  } finally {
-    setIsUploading(false);
-  }
-};
+
+    formData.append("FormKodu", formKodu);
+    formData.append("DenetciId", String(user.denetciId));
+    formData.append("DenetlenenId", String(user.denetlenenId));
+    formData.append("Yil", String(user.yil));
+
+    try {
+      setIsUploading(true);
+
+      const result = await uploadEkBelge(user.token || "", formData);
+
+      if (result === true || (typeof result === "object" && result?.success)) {
+        enqueueSnackbar("Ek belge(ler) başarıyla yüklendi.", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+          },
+        });
+
+        await loadEkBelgeler();
+        if (onUploaded) onUploaded();
+      } else {
+        enqueueSnackbar(
+          (typeof result === "object" &&
+            (result.message || (result as any).error)) ||
+          "Ek belgeler yüklenirken bir hata oluştu.",
+          {
+            variant: "error",
+            autoHideDuration: 5000,
+            style: {
+              backgroundColor:
+                customizer.activeMode === "dark"
+                  ? theme.palette.error.dark
+                  : theme.palette.error.main,
+            },
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Ek belge yüklenirken hata oluştu:", error);
+      enqueueSnackbar("Ek belgeler yüklenirken beklenmeyen bir hata oluştu.", {
+        variant: "error",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.error.dark
+              : theme.palette.error.main,
+        },
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -341,7 +376,6 @@ const handleFiles = async (files: FileList | File[] | null) => {
         user.token || "",
         belge.id
       );
-      console.log(fileName);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -371,9 +405,8 @@ const handleFiles = async (files: FileList | File[] | null) => {
     try {
       const { blob } = await downloadEkBelge(user.token || "", belge.id);
 
-      const isPdf =
-        belge.contentType?.toLowerCase().includes("pdf") ||
-        belge.orijinalDosyaAdi.toLowerCase().endsWith(".pdf");
+      const isPdf = isPdfBelge(belge);
+
 
       const url = window.URL.createObjectURL(blob);
 
@@ -420,20 +453,24 @@ const handleFiles = async (files: FileList | File[] | null) => {
       setSelectedIds(ekBelgeler.map((b) => b.id));
     }
   };
-
-  // Silme butonuna basılınca sadece onay dialogunu aç
-  const handleDeleteSelectedClick = () => {
-    if (selectedIds.length === 0) {
+  const openDeleteConfirm = (ids: number[]) => {
+    if (!ids || ids.length === 0) {
       enqueueSnackbar("Lütfen silmek için en az bir belge seçin.", {
         variant: "info",
         autoHideDuration: 4000,
       });
       return;
     }
+    setSelectedIds(ids);
     setDeleteConfirmOpen(true);
   };
 
-  // Onay popup'ından gerçekten sil
+  // Silme butonuna basılınca
+  const handleDeleteSelectedClick = () => {
+    openDeleteConfirm(selectedIds);
+  };
+
+
   const handleConfirmDeleteSelected = async () => {
     if (!user.token) return;
     if (selectedIds.length === 0) {
@@ -444,71 +481,31 @@ const handleFiles = async (files: FileList | File[] | null) => {
     try {
       setIsDeletingSelected(true);
 
-      const promises = selectedIds.map((id) =>
-        deleteEkBelge(user.token || "", id)
+      const result = await deleteEkBelgelerSecilenler(
+        user.token!,
+        user.denetciId!,
+        user.denetlenenId!,
+        user.yil!,
+        selectedIds
       );
-      const results = await Promise.all(promises);
 
-      const successIds = selectedIds.filter((_, idx) => results[idx]);
-      const failedCount = selectedIds.length - successIds.length;
+      setEkBelgeler((prev) => prev.filter((b) => !selectedIds.includes(b.id)));
+      setSelectedIds([]);
 
-      if (successIds.length > 0) {
-        setEkBelgeler((prev) => prev.filter((b) => !successIds.includes(b.id)));
-        setSelectedIds([]);
-
-        enqueueSnackbar(
-          failedCount > 0
-            ? `${successIds.length} belge silindi, ${failedCount} belge silinirken hata oluştu.`
-            : "Seçilen ek belgeler başarıyla silindi.",
-          {
-            variant: failedCount > 0 ? "warning" : "success",
-            autoHideDuration: 5000,
-            style: {
-              backgroundColor:
-                customizer.activeMode === "dark"
-                  ? failedCount > 0
-                    ? theme.palette.warning.dark
-                    : theme.palette.success.light
-                  : failedCount > 0
-                  ? theme.palette.warning.main
-                  : theme.palette.success.main,
-            },
-          }
-        );
-
-        if (onUploaded) onUploaded();
-      } else {
-        enqueueSnackbar("Ek belgeler silinirken bir hata oluştu.", {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.dark
-                : theme.palette.error.main,
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Seçilen ek belgeler silinirken hata oluştu:", error);
       enqueueSnackbar(
-        "Seçilen ek belgeler silinirken beklenmeyen bir hata oluştu.",
-        {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.dark
-                : theme.palette.error.main,
-          },
-        }
+        `${result.deleted} adet ek belge başarıyla silindi.`,
+        { variant: "success" }
       );
+
+      if (onUploaded) onUploaded();
+    } catch (error) {
+      // ...
     } finally {
       setIsDeletingSelected(false);
       setDeleteConfirmOpen(false);
     }
   };
+
 
   const handleClosePreview = () => {
     setPreviewOpen(false);
@@ -552,6 +549,20 @@ const handleFiles = async (files: FileList | File[] | null) => {
     }
   }, [previewOpen, previewUrl]);
 
+  const handleChangePage = (
+    _event: unknown,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <>
       {/* Ana buton */}
@@ -578,7 +589,7 @@ const handleFiles = async (files: FileList | File[] | null) => {
             size="medium"
             variant="outlined"
             color="primary"
-            sx={{ width: "100%" }}
+            sx={{ width: fullWidth ? "100%" : "auto" }}
           >
             <Typography variant="body1">{text}</Typography>
           </Button>
@@ -591,7 +602,7 @@ const handleFiles = async (files: FileList | File[] | null) => {
         type="file"
         multiple
         style={{ display: "none" }}
-          accept=".pdf,.doc,.docx,.xls,.xlsx,.xlsm,.png"
+        accept=".pdf,.doc,.docx,.xls,.xlsx,.xlsm,.png"
         onChange={handleFileChange}
       />
 
@@ -637,27 +648,33 @@ const handleFiles = async (files: FileList | File[] | null) => {
           }}
         >
           <Grid container spacing={3}>
-            {/* Yükleme alanı */}
+            {/* Sol: yükleme alanı */}
             <Grid item xs={12} md={5}>
-              <Paper
-                elevation={0}
+              <Box
+                onClick={handleClickUploadButton}
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
                 sx={{
-                  borderRadius: 3,
-                  borderStyle: "dashed",
-                  borderWidth: 1,
-                  borderColor: isDragging
-                    ? theme.palette.primary.main
-                    : "divider",
-                  p: 3,
+                  border: `2px dashed ${borderColor}`,
+                  borderRadius: 2,
+                  padding: "20px",
+                  marginTop: 1,
                   textAlign: "center",
                   cursor: "pointer",
+                  height: "100%",
+                  minHeight: 285,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   bgcolor: isDragging
                     ? theme.palette.mode === "dark"
                       ? "rgba(96,165,250,0.1)"
                       : "#E0F2FE"
                     : theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.02)"
-                    : "background.paper",
+                      ? "rgba(255,255,255,0.02)"
+                      : "background.paper",
                   "&:hover": {
                     borderColor: theme.palette.primary.main,
                     bgcolor:
@@ -665,211 +682,224 @@ const handleFiles = async (files: FileList | File[] | null) => {
                         ? "rgba(255,255,255,0.04)"
                         : "#F1F5F9",
                   },
+                  transition: "all 0.15s ease-in-out",
                 }}
-                onClick={handleClickUploadButton}
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
               >
-                <Stack spacing={1.5} alignItems="center">
-                  <CloudUploadIcon
-                    fontSize="large"
-                    color="primary"
-                    sx={{ mb: 0.5 }}
-                  />
-                  <Typography variant="subtitle1" fontWeight={600}>
-                    Dosya bırakın ya da seçin
+                {isUploading ? (
+                  <Typography variant="body2">
+                    Dosyalar yükleniyor...
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                   Sadece PDF, Word, Excel ve PNG formatları desteklenir. Diğer formatlar yüklenemez.
-                  </Typography>
-
-                  <Button
-                    variant="contained"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleClickUploadButton();
-                    }}
-                    disabled={isUploading}
-                    sx={{ mt: 1.5 }}
+                ) : (
+                  <Grid
+                    container
+                    style={{ height: "100%" }}
+                    alignItems="center"
+                    justifyContent="center"
                   >
-                    {isUploading ? "Yükleniyor..." : "Dosya Seç"}
-                  </Button>
-
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mt: 0.5 }}
-                  >
-                    Birden fazla dosya seçebilir veya buraya sürükleyip
-                    bırakabilirsiniz.
-                  </Typography>
-                </Stack>
-              </Paper>
+                    <Grid item xs={12} style={{ textAlign: "center" }}>
+                      <Stack spacing={1.5} alignItems="center">
+                        <CloudUploadIcon
+                          fontSize="large"
+                          color="primary"
+                          sx={{ mb: 0.5 }}
+                        />
+                        <Typography variant="h6" mb={1}>
+                          Dosyayı buraya sürükleyin veya tıklayıp seçin.
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                        >
+                          Sadece PDF, Word, Excel ve PNG formatları
+                          desteklenir.
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                        >
+                          Tek seferde maksimum 200 adet dosya
+                          yükleyebilirsiniz.
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                )}
+              </Box>
             </Grid>
 
-            {/* Liste alanı */}
+            {/* Sağ: Yüklenmiş Dosya Bilgileri */}
             <Grid item xs={12} md={7}>
               <Paper
                 elevation={0}
                 sx={{
-                  borderRadius: 3,
-                  border: "1px solid",
-                  borderColor: "divider",
-                  p: 2.5,
-                  height: "100%",
+                  borderRadius: 2,
+                  border: `1px solid ${borderColor}`,
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "background.default"
+                      : "background.paper",
                   display: "flex",
                   flexDirection: "column",
+                  height: "100%",
+                  minHeight: 285,
+                  maxHeight: 420,          // 🔹 üst sınır, fazlası için scroll
                 }}
               >
+                {/* Başlık + arama */}
                 <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  mb={1}
+                  sx={{
+                    px: 2.5,
+                    py: 2,
+                    borderBottom: `1px solid ${borderColor}`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <Typography variant="subtitle1" fontWeight={600}>
-                    Daha Önce Yüklenen Belgeler
+                  <Typography variant="h6">
+                    Yüklenmiş Dosya Bilgileri
                   </Typography>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    alignItems="center"
-                    sx={{ ml: 1 }}
-                  >
-                    <Typography variant="caption" color="text.secondary">
-                      {ekBelgeler.length} belge
-                    </Typography>
-                    {ekBelgeler.length > 0 && (
-                      <>
-                        <Button
-                          size="small"
-                          variant="text"
-                          onClick={handleToggleSelectAll}
-                        >
-                          {isAllSelected ? "Tümünü Kaldır" : "Tümünü Seç"}
-                        </Button>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color="error"
-                          startIcon={<DeleteIcon />}
-                          onClick={handleDeleteSelectedClick}
-                          disabled={
-                            selectedIds.length === 0 || isDeletingSelected
-                          }
-                        >
-                          {`Seçilenleri Sil (${selectedIds.length || 0})`}
-                        </Button>
-                      </>
-                    )}
-                  </Stack>
+                  <TextField
+                    size="small"
+                    placeholder="Arama"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    sx={{ width: 260 }}
+                  />
                 </Box>
 
-                <Divider sx={{ mb: 1.5 }} />
-
-                {isLoadingList ? (
-                  <Typography variant="body2">Yükleniyor...</Typography>
-                ) : ekBelgeler.length === 0 ? (
-                  <Box
-                    flex={1}
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    py={4}
-                  >
-                    <InsertDriveFileIcon
-                      fontSize="large"
-                      color="disabled"
-                      sx={{ mb: 1 }}
-                    />
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      align="center"
-                    >
-                      Henüz ek belge yüklenmemiş.
-                    </Typography>
-                  </Box>
-                ) : (
-                  <List
-                    dense
-                    sx={{
-                      maxHeight: 320,
-                      overflowY: "auto",
-                    }}
-                  >
-                    {ekBelgeler.map((belge) => {
-                      const checked = selectedIds.includes(belge.id);
-                      return (
-                        <ListItem
-                          key={belge.id}
-                          sx={{
-                            borderRadius: 2,
-                            mb: 0.5,
-                            "&:hover": {
-                              bgcolor:
-                                theme.palette.mode === "dark"
-                                  ? "rgba(255,255,255,0.04)"
-                                  : "#F1F5F9",
-                            },
-                          }}
-                        >
+                {/* Tablo */}
+                <TableContainer
+                  sx={{
+                    flex: 1,
+                    overflowY: "auto",     // 🔹 dikey scroll
+                    overflowX: "auto",     // 🔹 sadece gerekirse yatay scroll
+                  }}
+                >
+                  <Table size="small" stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell padding="checkbox">
                           <Checkbox
-                            edge="start"
-                            checked={checked}
-                            onChange={() => toggleSelect(belge.id)}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ mr: 1 }}
+                            indeterminate={
+                              selectedIds.length > 0 &&
+                              selectedIds.length < filteredBelgeler.length
+                            }
+                            checked={
+                              filteredBelgeler.length > 0 &&
+                              selectedIds.length === filteredBelgeler.length
+                            }
+                            onChange={handleToggleSelectAll}
                           />
-                          <InsertDriveFileIcon
-                            fontSize="small"
-                            style={{ marginRight: 8 }}
-                            color="action"
-                          />
-                          <ListItemText
-                            primary={
-                              <Typography variant="body2" noWrap>
-                                {belge.orijinalDosyaAdi}
+                        </TableCell>
+                        <TableCell>Dosya Adı</TableCell>
+                        <TableCell width={100}>Tarih</TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {isLoadingList ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center">
+                            <Typography variant="body2">
+                              Yüklenmiş dosyalar yükleniyor...
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : filteredBelgeler.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={4} align="center">
+                            <Typography variant="body2" color="text.secondary">
+                              Henüz yüklenmiş dosya bulunmuyor.
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredBelgeler.map((belge) => (
+                          <TableRow key={belge.id} hover>
+                            <TableCell padding="checkbox" >
+                              <Checkbox
+                                checked={selectedIds.includes(belge.id)}
+                                onChange={() => toggleSelect(belge.id)}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Stack direction="row" spacing={1} alignItems="flex-start">
+                                <InsertDriveFileIcon fontSize="small" />
+                                <Typography
+                                  variant="body2"
+                                  title={belge.orijinalDosyaAdi}
+                                  sx={{
+                                    wordBreak: "break-word",   // 🔹 isim alt satıra insin
+                                    whiteSpace: "normal",
+                                  }}
+                                >
+                                  {belge.orijinalDosyaAdi}
+                                </Typography>
+                              </Stack>
+                            </TableCell>
+                            <TableCell>
+                              <Typography variant="body2">
+                                {belge.yuklemeTarihi
+                                  ? new Date(belge.yuklemeTarihi).toLocaleString("tr-TR")
+                                  : "-"}
                               </Typography>
-                            }
-                            secondary={
-                              belge.yuklemeTarihi
-                                ? new Date(
-                                    belge.yuklemeTarihi
-                                  ).toLocaleString("tr-TR")
-                                : undefined
-                            }
-                          />
-                          <ListItemSecondaryAction>
-                            {isPdfBelge(belge) && (
-                              <IconButton
-                                edge="end"
-                                aria-label="görüntüle"
-                                onClick={() => handleView(belge)}
-                                sx={{ mr: 0.5 }}
-                              >
-                                <VisibilityIcon fontSize="small" />
-                              </IconButton>
-                            )}
-                            <IconButton
-                              edge="end"
-                              aria-label="indir"
-                              onClick={() => handleDownload(belge)}
-                            >
-                              <DownloadIcon fontSize="small" />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                )}
+                            </TableCell>
+                            <TableCell>
+                              <Stack direction="row" spacing={1} alignItems="center">
+                                {/* Göster sadece PDF ise */}
+                                {isPdfBelge(belge) && (
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => handleView(belge)}
+                                  >
+                                    <VisibilityIcon fontSize="small" />
+                                  </IconButton>
+                                )}
+
+                                {/* İndir her zaman olsun */}
+                                <IconButton
+                                  size="small"
+                                  onClick={() => handleDownload(belge)}
+                                >
+                                  <DownloadIcon fontSize="small" />
+                                </IconButton>
+
+
+                              </Stack>
+                            </TableCell>
+
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                {/* Alt bar: sadece seçilenleri sil butonu */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    px: 1.5,
+                    py: 0.75,
+                    borderTop: `1px solid ${borderColor}`,
+                  }}
+                >
+                  <Button
+                    size="small"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                    onClick={handleDeleteSelectedClick}
+                    disabled={selectedIds.length === 0 || isDeletingSelected}
+                  >
+                    Seçilenleri Sil
+                  </Button>
+                </Box>
               </Paper>
             </Grid>
+
           </Grid>
         </DialogContent>
 
@@ -931,7 +961,8 @@ const handleFiles = async (files: FileList | File[] | null) => {
         >
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Typography variant="h6" noWrap>
-              PDF Önizleme{previewFileName ? ` - ${previewFileName}` : ""}
+              PDF Önizleme
+              {previewFileName ? ` - ${previewFileName}` : ""}
             </Typography>
             <IconButton onClick={handleClosePreview} size="small">
               <CloseIcon />

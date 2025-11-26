@@ -18,6 +18,7 @@ import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitla
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 import DogalRiskBelge from "@/app/(Uygulama)/components/CalismaKagitlari/DogalRiskBelge";
 import KontrolRiskiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/KontrolRiskiBelge";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
@@ -202,10 +203,10 @@ const Page = () => {
               }}
             >
               <EkBelgeYukleButton
-        formKodu={controller}
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
+                formKodu={controller}
+                fullWidth={false}           // sağda küçük buton
+                text="Ek Belge Yükle"
+              />
             </Grid>
             <Grid
               item
@@ -218,7 +219,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -477,9 +478,9 @@ const Page = () => {
           )}
         </Grid>
         {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-        user.rol?.includes("SorumluDenetci") ||
-        user.rol?.includes("Denetci") ||
-        user.rol?.includes("DenetciYardimcisi") ? (
+          user.rol?.includes("SorumluDenetci") ||
+          user.rol?.includes("Denetci") ||
+          user.rol?.includes("DenetciYardimcisi") ? (
           <Grid
             container
             sx={{

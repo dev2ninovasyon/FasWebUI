@@ -81,13 +81,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
       setAiText("");
       setMessage((text?.length || 0) > 10 ? messages.welcome : messages.empty);
     }
-  }, [control2]);
-
-  useEffect(() => {
-    if (!control2) {
-      setMessage((text?.length || 0) > 10 ? messages.welcome : messages.empty);
-    }
-  }, [text]);
+  }, [control2, text]);
 
   return (
     <Box
@@ -102,7 +96,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={control ? () => {} : () => handleClick()}
+      onClick={control ? () => { } : () => handleClick()}
     >
       <Box
         sx={{
@@ -174,8 +168,8 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
             ? control2
               ? 500
               : (text?.length || 0) > 10
-              ? 204
-              : 72
+                ? 204
+                : 72
             : 72,
           borderRadius: "28px",
           transition: "all 0.3s ease-in-out",

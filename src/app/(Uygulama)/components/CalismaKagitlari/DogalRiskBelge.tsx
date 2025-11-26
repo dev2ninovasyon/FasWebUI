@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Card,
@@ -86,6 +86,68 @@ const DogalRiskBelge: React.FC<CalismaKagidiProps> = ({
   const [isGroupPopUpOpen, setIsGroupPopUpOpen] = useState(false);
 
   const [openedGroupIndex, setOpenGroupIndex] = useState(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const calismaKagidiVerileri =
+        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+          controller || "",
+          user.token || "",
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0
+        );
+
+      const rowsAll: any = [];
+      const rowsWithBaslikId: Veri[] = [];
+      const rowsWithoutBaslikId: Veri[] = [];
+
+      const tamamlanan: any[] = [];
+      const toplam: any[] = [];
+
+      calismaKagidiVerileri.forEach((veri: any) => {
+        const newRow: Veri = {
+          id: veri.id,
+          islem: veri.islem,
+          tespit: veri.tespit,
+          durum: veri.durum ? veri.durum : "Risksiz",
+          baslikId: veri.baslikId,
+          standartMi: veri.standartmi,
+        };
+        rowsAll.push(newRow);
+
+        if (grupluMu) {
+          if (veri.baslikId) {
+            rowsWithBaslikId.push(newRow);
+            if (newRow.standartMi) {
+              toplam.push(newRow);
+            } else {
+              tamamlanan.push(newRow);
+              toplam.push(newRow);
+            }
+          } else {
+            rowsWithoutBaslikId.push(newRow);
+            rowsAll.push(newRow);
+          }
+        } else {
+          if (newRow.standartMi) {
+            toplam.push(newRow);
+          } else {
+            tamamlanan.push(newRow);
+            toplam.push(newRow);
+          }
+        }
+      });
+      setVeriler(rowsAll);
+      setVerilerWithBaslikId(rowsWithBaslikId);
+      setVerilerWithoutBaslikId(rowsWithoutBaslikId);
+
+      setToplam(toplam.length);
+      setTamamlanan(tamamlanan.length);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+    }
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, grupluMu, setToplam, setTamamlanan]);
 
   const handleOpenGroup = (index: any) => {
     setOpenGroupIndex(openedGroupIndex === index ? null : index);
@@ -222,7 +284,7 @@ const DogalRiskBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  const handleDeleteAll = async () => {
+  const handleDeleteAll = useCallback(async () => {
     try {
       const result = await deleteAllCalismaKagidiVerileri(
         controller || "",
@@ -239,69 +301,9 @@ const DogalRiskBelge: React.FC<CalismaKagidiProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
-  const fetchData = async () => {
-    try {
-      const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
-          controller || "",
-          user.token || "",
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0
-        );
 
-      const rowsAll: any = [];
-      const rowsWithBaslikId: Veri[] = [];
-      const rowsWithoutBaslikId: Veri[] = [];
-
-      const tamamlanan: any[] = [];
-      const toplam: any[] = [];
-
-      calismaKagidiVerileri.forEach((veri: any) => {
-        const newRow: Veri = {
-          id: veri.id,
-          islem: veri.islem,
-          tespit: veri.tespit,
-          durum: veri.durum ? veri.durum : "Risksiz",
-          baslikId: veri.baslikId,
-          standartMi: veri.standartmi,
-        };
-        rowsAll.push(newRow);
-
-        if (grupluMu) {
-          if (veri.baslikId) {
-            rowsWithBaslikId.push(newRow);
-            if (newRow.standartMi) {
-              toplam.push(newRow);
-            } else {
-              tamamlanan.push(newRow);
-              toplam.push(newRow);
-            }
-          } else {
-            rowsWithoutBaslikId.push(newRow);
-            rowsAll.push(newRow);
-          }
-        } else {
-          if (newRow.standartMi) {
-            toplam.push(newRow);
-          } else {
-            tamamlanan.push(newRow);
-            toplam.push(newRow);
-          }
-        }
-      });
-      setVeriler(rowsAll);
-      setVerilerWithBaslikId(rowsWithBaslikId);
-      setVerilerWithoutBaslikId(rowsWithoutBaslikId);
-
-      setToplam(toplam.length);
-      setTamamlanan(tamamlanan.length);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
 
   const handleCardClick = (veri: any) => {
     setSelectedId(veri.id);
@@ -352,26 +354,26 @@ const DogalRiskBelge: React.FC<CalismaKagidiProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     if (!isClickedYeniGrupEkle) {
       fetchData();
     }
-  }, [isClickedYeniGrupEkle]);
+  }, [isClickedYeniGrupEkle, fetchData]);
 
   useEffect(() => {
     if (isClickedVarsayilanaDon) {
       handleDeleteAll();
       setIsClickedVarsayilanaDon(false);
     }
-  }, [isClickedVarsayilanaDon]);
+  }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
 
   useEffect(() => {
     if (refresh) {
       fetchData();
     }
-  }, [refresh]);
+  }, [refresh, fetchData]);
 
   return (
     <>
@@ -453,9 +455,8 @@ const DogalRiskBelge: React.FC<CalismaKagidiProps> = ({
                                   }}
                                 >
                                   <CalismaKagidiCard
-                                    title={`${index + 1}. ${
-                                      veriWithBaslikId.islem
-                                    }`}
+                                    title={`${index + 1}. ${veriWithBaslikId.islem
+                                      }`}
                                     content={veriWithBaslikId.tespit}
                                     standartMi={veriWithBaslikId.standartMi}
                                   />

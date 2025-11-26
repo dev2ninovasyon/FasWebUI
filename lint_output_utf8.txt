@@ -1,0 +1,1056 @@
+﻿
+> financial-audit-software@1.0.0 lint
+> next lint
+
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HileCalismaKagitlariBelge.tsx
+231:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukToplantiBilgileriBelge.tsx
+270:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukToplantidaGorusulenHususlarBelge.tsx
+240:8  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeAnketBelge.tsx
+296:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+303:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+309:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeTeknikBelge.tsx
+282:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+289:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+295:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeUnsurBelge.tsx
+285:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+292:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+298:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/IliskiliTarafIncelemeBelge.tsx
+227:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+234:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+240:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaListe.tsx
+102:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/RiskTespiti.tsx
+304:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/UygulananDenetimProsedurleri.tsx
+269:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+276:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/UygulananDenetimTeknikleri.tsx
+232:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+239:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulukGorevAtamalariBelge.tsx
+641:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SatinAlmaOdemeKontrolCalismaKagidi.tsx
+388:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'loadReceivedMatches'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+394:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+401:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SatisCalismaKagidiBelge.tsx
+352:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+359:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SayimVeTespitDegerlendirmeBelge.tsx
+246:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+253:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/SecimliCalismaKagidiBelge.tsx
+355:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+361:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TarihliCalismaKagidiBelge.tsx
+408:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+414:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+421:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TekliCalismaKagidiBelge.tsx
+334:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+340:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+347:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TekTarihliCalismaKagidiBelge.tsx
+355:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+361:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/TespitEdilenRisklerBelge.tsx
+309:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+316:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/CalismaKagitlari/UcluCalismaKagidiBelge.tsx
+363:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+369:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+376:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Cards/MuhasebeHatalariVeHileTopCard.tsx
+61:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Analizler/BenfordAnaliz.tsx
+81:37  Warning: React Hook useEffect has a missing dependency: 'loadKebir'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+82:95  Warning: React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Analizler/DikeyAnaliz.tsx
+138:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Analizler/KarsilastirmaliAnaliz.tsx
+138:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/CariDonemDonusumDuzeltmeBelgesi.tsx
+405:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrol.tsx
+76:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+421:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+430:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+497:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/DonusumMizanKontrolCardTable.tsx
+127:6  Warning: React Hook useEffect has missing dependencies: 'fetchDonusumMizanHesaplari' and 'fetchProgramVukMizanHesaplari'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+137:6  Warning: React Hook useEffect has missing dependencies: 'fetchDonusumMizanHesaplari' and 'fetchProgramVukMizanHesaplari'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/GecmisDonemDonusumDuzeltmeBelgesi.tsx
+405:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/OncekiDonemDonusumDuzeltmeBelgesi.tsx
+405:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/OzetDonusumMizanKontrol.tsx
+77:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+422:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+431:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+498:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/AktifPasifCardTable.tsx
+136:6  Warning: React Hook useEffect has a missing dependency: 'fetchAktifPasifCardTablosu'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/FinansalDurumTablosu.tsx
+151:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/FinansalDurumTablosuCardTable.tsx
+258:6  Warning: React Hook useEffect has a missing dependency: 'fetchFinansalDurumTablosu'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/KarZararTablosu.tsx
+147:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/KarZararTablosuCardTable.tsx
+128:6  Warning: React Hook useEffect has a missing dependency: 'fetchKarZararCardTablosu'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/NakitAkisTablosu.tsx
+147:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/NakitAkisTablosuCardTable.tsx
+133:6  Warning: React Hook useEffect has a missing dependency: 'fetchNakitAkisCardTablosu'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu.tsx
+127:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DenetimKanitlari/Onemlilik/FisIslemSayilari.tsx
+63:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+313:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+380:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/DenetciFirmaBilgileri/DenetciDuzenleForm.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/DenetciFirmaBilgileri/LogoDuzenleForm.tsx
+102:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/UyelikBilgileri/OdemeBilgileriTable.tsx
+338:6  Warning: React Hook React.useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/DigerIslemler/VeriAktarma/DenetimDosyaTransferTable.tsx
+206:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/FisGirisi.tsx
+105:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+208:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+707:6  Warning: React Hook useEffect has a missing dependency: 'fetchFisNo'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+714:6  Warning: React Hook useEffect has missing dependencies: 'fetchFisNo' and 'setHazirFislerTiklandimi'. Either include them or remove the dependency array. If 'setHazirFislerTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+742:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/FisGirisiKontrol.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'fetchedData'. Either include it or remove the dependency array. You can also replace multiple useState variables with useReducer if 'setFilteredData' needs the current value of 'fetchedData'.  react-hooks/exhaustive-deps
+85:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+278:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+295:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/GenelHesapPlani.tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+288:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Donusum/FisGirisi/SonGirilenFisler.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+365:6  Warning: React Hook useEffect has a missing dependency: 'fetchFisNo'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+372:6  Warning: React Hook useEffect has missing dependencies: 'fetchFisNo' and 'setHazirFislerTiklandimi'. Either include them or remove the dependency array. If 'setHazirFislerTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+376:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+386:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+403:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Editor/CustomEditor.tsx
+208:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+217:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+230:6  Warning: React Hook useEffect has a missing dependency: 'handleUpdate'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Editor/CustomEditorWVeri.tsx
+132:6  Warning: React Hook useEffect has a missing dependency: 'sozlesmeTarihi'. Either include it or remove the dependency array. If 'setEditorData' needs the current value of 'sozlesmeTarihi', you can also switch to useReducer instead of useState and read 'sozlesmeTarihi' in the reducer.  react-hooks/exhaustive-deps
+142:6  Warning: React Hook useEffect has a missing dependency: 'editorData'. Either include it or remove the dependency array. You can also do a functional update 'setEditorData(e => ...)' if you only need 'editorData' in the 'setEditorData' call.  react-hooks/exhaustive-deps
+155:6  Warning: React Hook useEffect has a missing dependency: 'handleUpdate'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Editor/MaddiDogrulamaAciklamaEditor.tsx
+111:6  Warning: React Hook useEffect has missing dependencies: 'control1', 'control2', and 'handleSetSelectedAciklama'. Either include them or remove the dependency array. If 'handleSetSelectedAciklama' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Hesaplamalar/DavaKarsiliklari/DavaKarsiliklariCard.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+71:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Hesaplamalar/ErtelenmisVergiHesabi/ErtelenemisVergiHesabiCard.tsx
+61:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+74:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Konsolidasyon/TanimlamaDuzenleForm.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Konsolidasyon/TanimlamalarTable.tsx
+71:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciIslemleri/KullaniciDetay.tsx
+42:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciIslemleri/KullaniciDuzenleForm.tsx
+83:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciIslemleri/KullaniciTable.tsx
+104:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/KullaniciSozlesmeSaatleri/KullaniciSozlesmeSaatleriTable.tsx
+50:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+54:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/SurekliEgitimBilgileriDetay.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/SurekliEgitimBilgileriDuzenleForm.tsx
+83:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/SurekliEgitimBilgileriTable.tsx
+121:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/CompanyBoxAutoComplete.tsx
+88:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/Language.tsx
+41:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'theme.palette.primary.dark', and 'theme.palette.primary.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/Notification.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+98:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+106:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'handleUpdateOkundumu'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+79:6  Warning: React Hook useEffect has missing dependencies: 'onSelectAdi' and 'onSelectId'. Either include them or remove the dependency array. If 'onSelectId' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Layout/Vertical/Header/YearBoxAutoComplete.tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Hissedarlar/HissedarDuzenleForm.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Hissedarlar/HissedarlarTable.tsx
+106:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+113:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setIsClickedMizandanHissedarEkle'. Either include them or remove the dependency array. If 'setIsClickedMizandanHissedarEkle' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/IliskiliTaraflar/IliskiliTarafDuzenleForm.tsx
+59:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/IliskiliTaraflar/IliskiliTaraflarMizanTable.tsx
+172:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setVerileriGetirTiklandimi'. Either include them or remove the dependency array. If 'setVerileriGetirTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/IliskiliTaraflar/IliskiliTaraflarTable.tsx
+87:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriDetay.tsx
+110:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchData2'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriDuzenleForm.tsx
+196:6  Warning: React Hook useEffect has missing dependencies: 'fetchData', 'fetchData2', and 'fetchData3'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEkleForm.tsx
+203:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchData2'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriTable.tsx
+123:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/SirketYonetimKadrosu/SirketYonetimKadrosuDuzenleForm.tsx
+62:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/SirketYonetimKadrosu/SirketYonetimKadrosuTable.tsx
+93:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Subeler/SubeDuzenleForm.tsx
+55:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Musteri/Subeler/SubelerTable.tsx
+86:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp.tsx
+227:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/PopUp/VeriPaylasimBaglantisiPopUp.tsx
+181:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/BagimsizDenetciRaporuStepper.tsx
+686:6  Warning: React Hook useEffect has missing dependencies: 'fetchDipnot' and 'fetchFinansalTablolar'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+690:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+694:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+698:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+702:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/Rapor.tsx
+906:6  Warning: React Hook useEffect has missing dependencies: 'fetchDataDipnot15Amortisman', 'fetchDataDipnot15Maliyet', 'fetchDataDipnot16Amortisman', 'fetchDataDipnot16Maliyet', 'fetchDataDipnot25', 'fetchDataDipnot34', 'fetchDataDipnot381', 'fetchDataDipnot383', 'fetchDataDipnot384', 'fetchDataDipnotHesaplar', 'fetchDataHissedarlar', 'fetchDataHissedarlarOnceki', 'fetchDataSubeler', 'fetchDataVergiVarlik', 'fetchDataVergiVarlikOnceki', 'fetchDataVergiYukumluluk', and 'fetchDataVergiYukumlulukOnceki'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+921:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+943:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/RaporTfrs.tsx
+694:6  Warning: React Hook useEffect has missing dependencies: 'fetchDataDipnot14Amortisman', 'fetchDataDipnot14Maliyet', 'fetchDataDipnot17Amortisman', 'fetchDataDipnot17Maliyet', 'fetchDataDipnot39', 'fetchDataDipnot451', 'fetchDataDipnot452', 'fetchDataDipnot453', 'fetchDataDipnotHesaplar', 'fetchDataHissedarlar', and 'fetchDataSubeler'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+709:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+731:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/AmortismanCari.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+433:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveAmortismanVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+507:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/DovizKuruRiskiCari.tsx
+76:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+396:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+403:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveDoviKuruRiskiVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+470:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/DovizKuruRiskiOnceki.tsx
+76:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+396:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+403:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveDoviKuruRiskiVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+470:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/KrediRiskiCari.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+426:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+433:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveKrediRiskiVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+500:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/KrediRiskiOnceki.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+419:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+426:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveKrediRiskiVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+493:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/MaliyetCari.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+439:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+446:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveMaliyetVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+513:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/MaliyetOnceki.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+436:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+443:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveMaliyetVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+510:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/RaporDipnot.tsx
+173:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+177:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+181:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+188:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporDipnot/RaporDipnotEditor.tsx
+113:6  Warning: React Hook useEffect has missing dependencies: 'dipnotKoduVeriler', 'id', and 'setDipnotKoduVeriler'. Either include them or remove the dependency array. If 'setDipnotKoduVeriler' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Rapor/RaporGorus/RaporGorusEditor.tsx
+112:6  Warning: React Hook useEffect has missing dependencies: 'gorusVeriler', 'id', and 'setGorusVeriler'. Either include them or remove the dependency array. If 'setGorusVeriler' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/AktifPasifYedekBoxAutoComplete.tsx
+27:6  Warning: React Hook useEffect has a missing dependency: 'rows'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/AsilYedekBoxAutoComplete.tsx
+27:6  Warning: React Hook useEffect has a missing dependency: 'rows'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/KullaniciBoxAutoComplete.tsx
+49:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/UnvanBoxAutoComplete.tsx
+47:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+55:6  Warning: React Hook useEffect has a missing dependency: 'rows'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/DenetimKadrosuDuzenleForm.tsx
+106:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/DenetimKadrosuTable.tsx
+101:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Tables/MenuTable.tsx
+97:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/DosyaTable.tsx
+362:6  Warning: React Hook useEffect has missing dependencies: 'fileType' and 'handleAlertPopUp'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+366:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+370:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+382:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/EDefterMizan/EDefterMizanEnflasyonDahilStepper.tsx
+212:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchMizanControl'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/EDefterMizan/EDefterMizanEnflasyonHaricStepper.tsx
+276:6  Warning: React Hook useEffect has missing dependencies: 'fetchControl', 'fetchData', and 'fetchMizanControl'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/EDefterMizan/EDefterMizanStepper.tsx
+279:6  Warning: React Hook useEffect has missing dependencies: 'fetchControl', 'fetchData', and 'fetchMizanControl'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListesiEnflasyonHaricTable.tsx
+195:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setFisleriGosterTiklandimi'. Either include them or remove the dependency array. If 'setFisleriGosterTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+203:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setStandartFisleriGosterTiklandimi'. Either include them or remove the dependency array. If 'setStandartFisleriGosterTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListesiTable.tsx
+192:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setFisleriGosterTiklandimi'. Either include them or remove the dependency array. If 'setFisleriGosterTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+200:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setStandartFisleriGosterTiklandimi'. Either include them or remove the dependency array. If 'setStandartFisleriGosterTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/KurumlarVergisiBeyannamesiKarsilastirma.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+291:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+358:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/KurumlarVergisiBeyannamesiKarsilastirmaEnflasyonHaric.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+307:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+374:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/Mizan.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+318:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+328:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setMizanOlusturTiklandimi'. Either include them or remove the dependency array. If 'setMizanOlusturTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+395:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/MizanCard.tsx
+55:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+64:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/MizanTable.tsx
+136:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/OlusturulmusMizanlar.tsx
+67:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+323:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+327:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+394:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/OlusturulmusProgramVukMizanlar.tsx
+64:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+294:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+298:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+365:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/ProgramFormatiCard.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+99:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/Mizan/ProgramVukMizan.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+300:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+310:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setProgramFormatinaDonusturTiklandimi'. Either include them or remove the dependency array. If 'setProgramFormatinaDonusturTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+377:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/components/Veri/VukMizan/VukMizanStepper.tsx
+213:6  Warning: React Hook useEffect has missing dependencies: 'fetchControl' and 'fetchMizanControl'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimDosya/BagimsizDenetimMetodolojisi/BagimsizDenetimMetodolojisiTable.tsx
+105:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimDosya/DenetimDosyaOnay/BelgeKontrolCardTopluOnay.tsx
+44:5  Warning: React Hook useMemo has an unnecessary dependency: 'kaliteKontrol'. Either exclude it or remove the dependency array.  react-hooks/exhaustive-deps
+83:6  Warning: React Hook useEffect has missing dependencies: 'dispatch' and 'fetchData'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/DigerKanitlar/IliskiliTarafInceleme/IliskiliTarafInceleme.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+230:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+247:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile/[formUrl]/Orneklem.tsx
+80:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+457:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+461:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+478:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile/[formUrl]/OrneklemFisleri.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+303:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+370:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile/[formUrl]/page.tsx
+120:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/Mutabakatlar(VUK)/Mutabakat.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+336:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+340:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+357:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/Mutabakatlar(VUK)/page.tsx
+125:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+131:6  Warning: React Hook useEffect has a missing dependency: 'fetchData2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/OnemlilikCalismasi/Onemlilik.tsx
+63:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+309:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+313:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+330:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/OnemlilikCalismasi/page.tsx
+125:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+131:6  Warning: React Hook useEffect has a missing dependency: 'fetchData2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/OrneklemCalismasi/Orneklem.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+405:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+409:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+426:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/OrneklemCalismasi/page.tsx
+125:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+131:6  Warning: React Hook useEffect has a missing dependency: 'fetchData2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/UygulananDenetimProsedurleri/page.tsx
+123:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+129:6  Warning: React Hook useEffect has a missing dependency: 'fetchData2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/MaddiDogrulamaProsedurleri/[parentName]/UygulananDenetimTeknikleri/page.tsx
+123:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+129:6  Warning: React Hook useEffect has a missing dependency: 'fetchData2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol/Mutabakat.tsx
+157:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+636:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'handleOzet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+701:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleUpdate'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+707:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchedData.length'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+774:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol/MutabakatDogrulamaMektubu/[detayKodu]/page.tsx
+80:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol/page.tsx
+97:6  Warning: React Hook useEffect has a missing dependency: 'handleDeleteMutabakat'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu/OnemlilikHesaplamaBazi.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+366:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+372:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+389:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu/OnemlilikSeviyesi.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+338:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+355:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu/page.tsx
+77:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme/Onemlilik.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+371:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+380:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+447:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme/OnemlilikHesaplamaBazi.tsx
+58:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+276:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+293:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/Orneklem/Orneklem.tsx
+91:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+530:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+539:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+606:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/Orneklem/OrneklemFisleri/[kebirKodu]/FisDetaylari/[id]/FisDetaylari.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+458:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'handleUpdateEDefterIncelemeListeVerisi'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+533:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DenetimKanitlari/Onemlilik/Orneklem/OrneklemFisleri/[kebirKodu]/OrneklemFisleri.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+458:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'handleUpdateEDefterIncelemeListeVerisi'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+533:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/DigerIslemler/Arsiv/page.tsx
+250:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+260:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/FisGirisi/page.tsx
+110:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/FisListesi/FisDetaylari/[id]/FisDetaylari.tsx
+100:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+498:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+580:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/FisListesi/FisDetaylari/[id]/page.tsx
+67:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/FisListesi/FisListesi.tsx
+71:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+404:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+414:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Donusum/HazirFisler/HazirFisListesi.tsx
+74:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+343:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+353:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+420:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Amortisman/AmortismanHesaplama.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+388:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+397:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+464:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Amortisman/AmortismanVeriYukleme.tsx
+98:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+240:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+816:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+820:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+827:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateAmortismanVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+894:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Amortisman/page.tsx
+167:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+174:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/BeklenenKrediZarari/BeklenenKrediZarari.tsx
+66:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+325:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+334:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+401:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/BeklenenKrediZarari/page.tsx
+119:6  Warning: React Hook useEffect has a missing dependency: 'fetchIskontoOrani'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskontDuzeltmeFarklari.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+295:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+304:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+371:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskontHesaplama.tsx
+64:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+309:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+318:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+385:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskontHesaplamadaKullanilanDegerler.tsx
+68:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+330:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+339:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+406:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/CekSenetReeskontVeriYukleme.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+197:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+702:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+706:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+713:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateCekSenetReeskontVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+780:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/CekSenetReeskont/page.tsx
+304:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchDataBaglanti'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+311:6  Warning: React Hook useEffect has a missing dependency: 'fetchDataBaglanti'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/DavaKarsiliklari/DavaKarsiliklariHesaplama.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+341:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+350:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+417:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/DavaKarsiliklari/DavaKarsiliklariVeriYukleme.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+184:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+692:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+696:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+703:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateDavaKarsiliklariVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+770:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/DavaKarsiliklari/page.tsx
+166:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+173:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+200:6  Warning: React Hook useEffect has a missing dependency: 'fetchIskontoOrani'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/ErtelenmisVergiHesabiOrnekFisler.tsx
+171:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+475:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+548:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/VergiVarlik.tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+238:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+247:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+314:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/VergiYukumluluk.tsx
+60:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+238:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+247:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+314:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/GecmisYillarKarZararKontrolleri/GecmisYillarKarZararKontrolleri.tsx
+58:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+244:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+311:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/GecmisYillarKarZararKontrolleri/GecmisYillarKarZararKontrolleriOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+464:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+470:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+537:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Hareketsiz/Hareketsiz.tsx
+108:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+520:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+529:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+596:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Hareketsiz/HareketsizOrnekFisler.tsx
+175:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+502:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+511:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+517:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+584:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Hareketsiz/HareketsizOzet.tsx
+64:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+303:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+312:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+329:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/IliskiliTarafSiniflama/IliskiliTarafSiniflama.tsx
+91:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+442:6  Warning: React Hook useEffect has a missing dependency: 'handleJson'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+446:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+513:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/IliskiliTarafSiniflama/IliskiliTarafSiniflamaOrnekFisler.tsx
+172:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+472:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+478:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+545:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/IliskiliTarafSiniflama/page.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/KidemTazminatiBobiHesaplama.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+212:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/KidemTazminatiBobiOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+507:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/KidemTazminatiBobiVeriYukleme.tsx
+99:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+229:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+832:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+836:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+843:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateKidemTazminatiBobiVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+910:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/page.tsx
+447:6  Warning: React Hook useEffect has missing dependencies: 'fetchData', 'fetchData2', and 'fetchData3'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+454:6  Warning: React Hook useEffect has a missing dependency: 'fetchData3'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminatiTfrsHesaplama.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+212:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminatiTfrsHesaplanmis.tsx
+67:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+378:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminatiTfrsOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+507:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/KidemTazminatiTfrsVeriYukleme.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+200:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+719:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+723:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+730:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateKidemTazminatiTfrsVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+797:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KidemTazminatiTfrs/page.tsx
+520:6  Warning: React Hook useEffect has missing dependencies: 'fetchData', 'fetchData2', and 'fetchData3'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+527:6  Warning: React Hook useEffect has a missing dependency: 'fetchData3'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediDetaylari/[krediNo]/KrediDetayVeriYukleme.tsx
+100:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+197:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+729:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchDataKredi'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+734:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchRowCount'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+741:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateKrediHesaplamaDetayVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+808:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediDetaylari/[krediNo]/page.tsx
+116:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchDataBaglantibilgileri'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediHesaplama.tsx
+75:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+454:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+463:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+530:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediHesaplamaDetay.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+233:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+242:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+259:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediHesaplamaOrnekFisler.tsx
+148:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+466:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+475:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+548:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/KrediVeriYukleme.tsx
+96:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+204:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+696:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+700:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+707:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateKrediHesaplamaVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+774:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Kredi/page.tsx
+170:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+177:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarki/DovizKurlariOtuzBirAralik.tsx
+58:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+241:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+308:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarki/KurFarki.tsx
+62:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+301:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+368:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarki/KurFarkiOrnekFisler.tsx
+169:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+463:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+519:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+536:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri/FisDetaylari/[id]/FisDetaylari.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+296:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+363:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri/KurFarkiKontrolleriFis.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+354:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri/KurFarkiKontrolleriOzet.tsx
+57:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+229:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri/page.tsx
+202:6  Warning: React Hook useEffect has a missing dependency: 'handleVerileriGetir'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiFaizTahakkuk/VadeliBankaMevduatiFaizTahakkuk.tsx
+79:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+602:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+613:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+680:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama/VadeliBankaMevduatiManuelSiniflama.tsx
+87:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+438:6  Warning: React Hook useEffect has a missing dependency: 'handleJson'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+442:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+509:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama/VadeliBankaMevduatiManuelSiniflamaOrnekFisler.tsx
+170:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+471:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+477:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+544:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiOtomatikSiniflama/VadeliBankaMevduatiOtomatikSiniflama.tsx
+106:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+440:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+449:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+516:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiOtomatikSiniflama/VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler.tsx
+170:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+468:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+477:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+483:6  Warning: React Hook useEffect has missing dependencies: 'fetchedData' and 'handleKaydet'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+550:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Hesaplamalar/Yaslandirma/Yaslandirma.tsx
+65:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+313:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+322:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+389:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Konsolidasyon/EliminasyonFisIslemleri/page.tsx
+111:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Konsolidasyon/FisListesi/FisDetaylari/[id]/FisDetaylari.tsx
+100:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+498:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+580:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Konsolidasyon/FisListesi/FisDetaylari/[id]/page.tsx
+67:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Konsolidasyon/FisListesi/FisListesi.tsx
+71:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+404:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+414:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+481:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/layout.tsx
+54:6  Warning: React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Musteri/MusteriKabulIslemi/page.tsx
+179:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchData2'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Musteri/MusteriTanima/MusteriTanima.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+512:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+519:6  Warning: React Hook useEffect has missing dependencies: 'handleSaveMusteriTanimaSayisalBilgilerVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+586:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Musteri/MusteriTanima/page.tsx
+192:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Musteri/TeklifHesaplama/page.tsx
+252:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+258:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+265:6  Warning: React Hook useEffect has a missing dependency: 'handleDeleteTeklifHesaplama'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/MusteriBelgeleri/page.tsx
+114:6  Warning: React Hook useCallback has a missing dependency: 'fileType'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+279:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/BulguRiskiBelirleme/BulguRiskiBelirleme.tsx
+61:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+257:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+266:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+333:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/BulguRiskiBelirleme/BulguRiskiBelirlemeBelge.tsx
+84:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+250:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim/FinansalTabloKalemlerindeDegisim.tsx
+75:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+391:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+400:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+467:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/FisBuyukluguAnalizi/page.tsx
+58:29  Warning: The ref value 'timersRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'timersRef.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem/OnemlilikVeOrneklem.tsx
+77:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+439:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+448:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+515:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem/OnemlilikVeOrneklemHesaplamaBazi.tsx
+72:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+369:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+375:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+392:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem/OnemlilikVeOrneklemSeviyesi.tsx
+70:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+338:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+355:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Sozlesme/BagimsizDenetimSozlesmesi/page.tsx
+145:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchData2'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+152:6  Warning: React Hook useEffect has a missing dependency: 'handleDeleteAll'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DefterKVBeyannamesiYukleme/page.tsx
+210:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+217:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DonusturulmusMizanVeriYukleme/DonusturulmusMizan.tsx
+94:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+187:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+736:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+740:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+747:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateDonusturulmusMizanVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+814:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DonusturulmusMizanVeriYukleme/page.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DonusumFisleriVeriYukleme/DonusumFisleri.tsx
+91:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+172:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+626:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+630:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+637:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateDonusumFisleriVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+704:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/DonusumFisleriVeriYukleme/page.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/EDefterInceleme/EDefterInceleme.tsx
+85:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+408:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'setVerileriGetirTiklandimi'. Either include them or remove the dependency array. If 'setVerileriGetirTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+475:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/EDefterInceleme/FisDetaylari/[id]/FisDetaylari.tsx
+73:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+371:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+438:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/Fatura/page.tsx
+179:6  Warning: React Hook useCallback has a missing dependency: 'openProcessingSnack'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/VukMizanVeriYukleme/page.tsx
+69:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/Veri/VukMizanVeriYukleme/VukMizan.tsx
+90:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+171:6  Warning: React Hook useEffect has missing dependencies: 'customizer.activeMode', 'fetchedData', 'findDuplicateRows', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+649:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+653:6  Warning: React Hook useEffect has a missing dependency: 'fetchRowCount'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+660:6  Warning: React Hook useEffect has missing dependencies: 'handleCreateVukMizanVerisi' and 'setKaydetTiklandimi'. Either include them or remove the dependency array. If 'setKaydetTiklandimi' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+727:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/layout.tsx
+82:6  Warning: React Hook useEffect has missing dependencies: 'NOT_PROTECTED_ROUTES', 'customizer.activeMode', 'router', 'theme.palette.warning.dark', and 'theme.palette.warning.main'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

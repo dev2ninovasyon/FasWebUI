@@ -111,7 +111,7 @@ const MaddiDogrulamaKonuEditor: React.FC<MaddiDogrulamaKonuEditorProps> = ({
     if (editorData) {
       handleSetSelectedKonu(editorData);
     }
-  }, [editorData]); // This will trigger when the content changes
+  }, [editorData, handleSetSelectedKonu]); // This will trigger when the content changes
 
   const editorConfig = {
     toolbar: {
@@ -243,11 +243,11 @@ const MaddiDogrulamaKonuEditor: React.FC<MaddiDogrulamaKonuEditorProps> = ({
       sx={
         lgDown
           ? {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-            }
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+          }
           : {}
       }
     >

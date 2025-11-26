@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Checkbox,
@@ -68,590 +68,592 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<
   setTamamlanan,
   setToplam,
 }) => {
-  const user = useSelector((state: AppState) => state.userReducer);
-  const customizer = useSelector((state: AppState) => state.customizer);
+    const user = useSelector((state: AppState) => state.userReducer);
+    const customizer = useSelector((state: AppState) => state.customizer);
 
-  const [selectedId, setSelectedId] = useState(0);
-  const [selectedDipnotNo, setSelectedDipnotNo] = useState("0");
-  const [selectedFinansalTabloHesaplar, setSelectedFinansalTabloHesaplar] =
-    useState("");
-  const [selectedCari, setSelectedCari] = useState(false);
-  const [selectedOnceki, setSelectedOnceki] = useState(false);
-  const [selectedGecmis, setSelectedGecmis] = useState(false);
-  const [selectedTamOlma, setSelectedTamOlma] = useState("0");
-  const [selectedDogruluk, setSelectedDogruluk] = useState("0");
-  const [selectedVarOlma, setSelectedVarOlma] = useState("0");
-  const [selectedDegerleme, setSelectedDegerleme] = useState("0");
-  const [selectedDonemsellik, setSelectedDonemsellik] = useState("0");
-  const [selectedGecerlilik, setSelectedGecerlilik] = useState("0");
-  const [selectedSunumVeAciklama, setSelectedSunumVeAciklama] = useState("0");
-  const [selectedOnemsizRisk, setSelectedOnemsizRisk] = useState(false);
-  const [selectedCiddiRisk, setSelectedCiddiRisk] = useState(false);
-  const [selectedReferans, setSelectedReferans] = useState(false);
-  const [
-    selectedKontrollerinEtkinligininTestEdilmesi,
-    setSelectedKontrollerinEtkinligininTestEdilmesi,
-  ] = useState(false);
-  const [selectedAnalitikProsedurler, setSelectedAnalitikProsedurler] =
-    useState(false);
-  const [selectedDetayTestler, setSelectedDetayTestler] = useState(false);
-  const [selectedGenelDenetimYaklasimi, setSelectedGenelDenetimYaklasimi] =
-    useState(false);
-  const [selectedStandartMi, setSelectedStandartMi] = useState(true);
+    const [selectedId, setSelectedId] = useState(0);
+    const [selectedDipnotNo, setSelectedDipnotNo] = useState("0");
+    const [selectedFinansalTabloHesaplar, setSelectedFinansalTabloHesaplar] =
+      useState("");
+    const [selectedCari, setSelectedCari] = useState(false);
+    const [selectedOnceki, setSelectedOnceki] = useState(false);
+    const [selectedGecmis, setSelectedGecmis] = useState(false);
+    const [selectedTamOlma, setSelectedTamOlma] = useState("0");
+    const [selectedDogruluk, setSelectedDogruluk] = useState("0");
+    const [selectedVarOlma, setSelectedVarOlma] = useState("0");
+    const [selectedDegerleme, setSelectedDegerleme] = useState("0");
+    const [selectedDonemsellik, setSelectedDonemsellik] = useState("0");
+    const [selectedGecerlilik, setSelectedGecerlilik] = useState("0");
+    const [selectedSunumVeAciklama, setSelectedSunumVeAciklama] = useState("0");
+    const [selectedOnemsizRisk, setSelectedOnemsizRisk] = useState(false);
+    const [selectedCiddiRisk, setSelectedCiddiRisk] = useState(false);
+    const [selectedReferans, setSelectedReferans] = useState(false);
+    const [
+      selectedKontrollerinEtkinligininTestEdilmesi,
+      setSelectedKontrollerinEtkinligininTestEdilmesi,
+    ] = useState(false);
+    const [selectedAnalitikProsedurler, setSelectedAnalitikProsedurler] =
+      useState(false);
+    const [selectedDetayTestler, setSelectedDetayTestler] = useState(false);
+    const [selectedGenelDenetimYaklasimi, setSelectedGenelDenetimYaklasimi] =
+      useState(false);
+    const [selectedStandartMi, setSelectedStandartMi] = useState(true);
 
-  const [veriler, setVeriler] = useState<Veri[]>([]);
+    const [veriler, setVeriler] = useState<Veri[]>([]);
 
-  const [isNew, setIsNew] = useState(false);
+    const [isNew, setIsNew] = useState(false);
 
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+    const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
-  const handleCreate = async (
-    dipnotNo: string,
-    finansalTabloHesaplar: string,
-    cari: boolean,
-    onceki: boolean,
-    gecmis: boolean,
-    tamOlma: string,
-    dogruluk: string,
-    varOlma: string,
-    degerleme: string,
-    donemsellik: string,
-    gecerlilik: string,
-    sunumVeAciklama: string,
-    onemsizRisk: boolean,
-    ciddiRisk: boolean,
-    referans: boolean,
-    kontrollerinEtkinligininTestEdilmesi: boolean,
-    analitikProsedurler: boolean,
-    detayTestler: boolean,
-    genelDenetimYaklasimi: boolean
-  ) => {
-    const createdCalismaKagidiVerisi = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      dipnotNo: dipnotNo,
-      finansalTabloHesaplar: finansalTabloHesaplar,
-      cari: cari,
-      onceki: onceki,
-      gecmis: gecmis,
-      tamOlma: tamOlma,
-      dogruluk: dogruluk,
-      varOlma: varOlma,
-      degerleme: degerleme,
-      donemsellik: donemsellik,
-      gecerlilik: gecerlilik,
-      sunumVeAciklama: sunumVeAciklama,
-      onemsizRisk: onemsizRisk,
-      ciddiRisk: ciddiRisk,
-      referans: referans,
-      kontrollerinEtkinligininTestEdilmesi:
-        kontrollerinEtkinligininTestEdilmesi,
-      analitikProsedurler: analitikProsedurler,
-      detayTestler: detayTestler,
-      genelDenetimYaklasimi: genelDenetimYaklasimi,
-    };
-    try {
-      const result = await createCalismaKagidiVerisi(
-        controller || "",
-        user.token || "",
-        createdCalismaKagidiVerisi
-      );
-      if (result) {
-        fetchData();
-        handleClosePopUp();
-        setIsNew(false);
-      } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleUpdate = async (
-    dipnotNo: string,
-    finansalTabloHesaplar: string,
-    cari: boolean,
-    onceki: boolean,
-    gecmis: boolean,
-    tamOlma: string,
-    dogruluk: string,
-    varOlma: string,
-    degerleme: string,
-    donemsellik: string,
-    gecerlilik: string,
-    sunumVeAciklama: string,
-    onemsizRisk: boolean,
-    ciddiRisk: boolean,
-    referans: boolean,
-    kontrollerinEtkinligininTestEdilmesi: boolean,
-    analitikProsedurler: boolean,
-    detayTestler: boolean,
-    genelDenetimYaklasimi: boolean
-  ) => {
-    const updatedCalismaKagidiVerisi = veriler.find(
-      (veri) => veri.id === selectedId
-    );
-    if (updatedCalismaKagidiVerisi) {
-      updatedCalismaKagidiVerisi.dipnotNo = dipnotNo;
-      updatedCalismaKagidiVerisi.finansalTabloHesaplar = finansalTabloHesaplar;
-      updatedCalismaKagidiVerisi.cari = cari;
-      updatedCalismaKagidiVerisi.onceki = onceki;
-      updatedCalismaKagidiVerisi.gecmis = gecmis;
-      updatedCalismaKagidiVerisi.tamOlma = tamOlma;
-      updatedCalismaKagidiVerisi.dogruluk = dogruluk;
-      updatedCalismaKagidiVerisi.varOlma = varOlma;
-      updatedCalismaKagidiVerisi.degerleme = degerleme;
-      updatedCalismaKagidiVerisi.donemsellik = donemsellik;
-      updatedCalismaKagidiVerisi.gecerlilik = gecerlilik;
-      updatedCalismaKagidiVerisi.sunumVeAciklama = sunumVeAciklama;
-      updatedCalismaKagidiVerisi.onemsizRisk = onemsizRisk;
-      updatedCalismaKagidiVerisi.ciddiRisk = ciddiRisk;
-      updatedCalismaKagidiVerisi.referans = referans;
-      updatedCalismaKagidiVerisi.kontrollerinEtkinligininTestEdilmesi =
-        kontrollerinEtkinligininTestEdilmesi;
-      updatedCalismaKagidiVerisi.analitikProsedurler = analitikProsedurler;
-      updatedCalismaKagidiVerisi.detayTestler = detayTestler;
-      updatedCalismaKagidiVerisi.genelDenetimYaklasimi = genelDenetimYaklasimi;
-
+    const fetchData = useCallback(async () => {
       try {
-        const result = await updateCalismaKagidiVerisi(
+        const calismaKagidiVerileri =
+          await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+            controller || "",
+            user.token || "",
+            user.denetciId || 0,
+            user.denetlenenId || 0,
+            user.yil || 0
+          );
+
+        const rowsAll: any = [];
+
+        const tamamlanan: any[] = [];
+        const toplam: any[] = [];
+
+        calismaKagidiVerileri.forEach((veri: any) => {
+          const newRow: Veri = {
+            id: veri.id,
+            dipnotNo: veri.dipnotNo,
+            finansalTabloHesaplar: veri.finansalTabloHesaplar,
+            cari: veri.cari,
+            onceki: veri.onceki,
+            gecmis: veri.gecmis,
+            tamOlma: veri.tamOlma,
+            dogruluk: veri.dogruluk,
+            varOlma: veri.varOlma,
+            degerleme: veri.degerleme,
+            donemsellik: veri.donemsellik,
+            gecerlilik: veri.gecerlilik,
+            sunumVeAciklama: veri.sunumVeAciklama,
+            onemsizRisk: veri.onemsizRisk,
+            ciddiRisk: veri.ciddiRisk,
+            referans: veri.referans,
+            kontrollerinEtkinligininTestEdilmesi:
+              veri.kontrollerinEtkinligininTestEdilmesi,
+            analitikProsedurler: veri.analitikProsedurler,
+            detayTestler: veri.detayTestler,
+            genelDenetimYaklasimi: veri.genelDenetimYaklasimi,
+            standartMi: veri.standartmi,
+          };
+          rowsAll.push(newRow);
+
+          if (newRow.standartMi) {
+            toplam.push(newRow);
+          } else {
+            tamamlanan.push(newRow);
+            toplam.push(newRow);
+          }
+        });
+        setVeriler(rowsAll);
+
+        setToplam(toplam.length);
+        setTamamlanan(tamamlanan.length);
+      } catch (error) {
+        console.error("Bir hata oluştu:", error);
+      }
+    }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, setToplam, setTamamlanan]);
+
+    const handleCreate = async (
+      dipnotNo: string,
+      finansalTabloHesaplar: string,
+      cari: boolean,
+      onceki: boolean,
+      gecmis: boolean,
+      tamOlma: string,
+      dogruluk: string,
+      varOlma: string,
+      degerleme: string,
+      donemsellik: string,
+      gecerlilik: string,
+      sunumVeAciklama: string,
+      onemsizRisk: boolean,
+      ciddiRisk: boolean,
+      referans: boolean,
+      kontrollerinEtkinligininTestEdilmesi: boolean,
+      analitikProsedurler: boolean,
+      detayTestler: boolean,
+      genelDenetimYaklasimi: boolean
+    ) => {
+      const createdCalismaKagidiVerisi = {
+        denetlenenId: user.denetlenenId,
+        denetciId: user.denetciId,
+        yil: user.yil,
+        dipnotNo: dipnotNo,
+        finansalTabloHesaplar: finansalTabloHesaplar,
+        cari: cari,
+        onceki: onceki,
+        gecmis: gecmis,
+        tamOlma: tamOlma,
+        dogruluk: dogruluk,
+        varOlma: varOlma,
+        degerleme: degerleme,
+        donemsellik: donemsellik,
+        gecerlilik: gecerlilik,
+        sunumVeAciklama: sunumVeAciklama,
+        onemsizRisk: onemsizRisk,
+        ciddiRisk: ciddiRisk,
+        referans: referans,
+        kontrollerinEtkinligininTestEdilmesi:
+          kontrollerinEtkinligininTestEdilmesi,
+        analitikProsedurler: analitikProsedurler,
+        detayTestler: detayTestler,
+        genelDenetimYaklasimi: genelDenetimYaklasimi,
+      };
+      try {
+        const result = await createCalismaKagidiVerisi(
           controller || "",
           user.token || "",
-          selectedId,
-          updatedCalismaKagidiVerisi
+          createdCalismaKagidiVerisi
+        );
+        if (result) {
+          fetchData();
+          handleClosePopUp();
+          setIsNew(false);
+        } else {
+          console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        }
+      } catch (error) {
+        console.error("Bir hata oluştu:", error);
+      }
+    };
+
+    const handleUpdate = async (
+      dipnotNo: string,
+      finansalTabloHesaplar: string,
+      cari: boolean,
+      onceki: boolean,
+      gecmis: boolean,
+      tamOlma: string,
+      dogruluk: string,
+      varOlma: string,
+      degerleme: string,
+      donemsellik: string,
+      gecerlilik: string,
+      sunumVeAciklama: string,
+      onemsizRisk: boolean,
+      ciddiRisk: boolean,
+      referans: boolean,
+      kontrollerinEtkinligininTestEdilmesi: boolean,
+      analitikProsedurler: boolean,
+      detayTestler: boolean,
+      genelDenetimYaklasimi: boolean
+    ) => {
+      const updatedCalismaKagidiVerisi = veriler.find(
+        (veri) => veri.id === selectedId
+      );
+      if (updatedCalismaKagidiVerisi) {
+        updatedCalismaKagidiVerisi.dipnotNo = dipnotNo;
+        updatedCalismaKagidiVerisi.finansalTabloHesaplar = finansalTabloHesaplar;
+        updatedCalismaKagidiVerisi.cari = cari;
+        updatedCalismaKagidiVerisi.onceki = onceki;
+        updatedCalismaKagidiVerisi.gecmis = gecmis;
+        updatedCalismaKagidiVerisi.tamOlma = tamOlma;
+        updatedCalismaKagidiVerisi.dogruluk = dogruluk;
+        updatedCalismaKagidiVerisi.varOlma = varOlma;
+        updatedCalismaKagidiVerisi.degerleme = degerleme;
+        updatedCalismaKagidiVerisi.donemsellik = donemsellik;
+        updatedCalismaKagidiVerisi.gecerlilik = gecerlilik;
+        updatedCalismaKagidiVerisi.sunumVeAciklama = sunumVeAciklama;
+        updatedCalismaKagidiVerisi.onemsizRisk = onemsizRisk;
+        updatedCalismaKagidiVerisi.ciddiRisk = ciddiRisk;
+        updatedCalismaKagidiVerisi.referans = referans;
+        updatedCalismaKagidiVerisi.kontrollerinEtkinligininTestEdilmesi =
+          kontrollerinEtkinligininTestEdilmesi;
+        updatedCalismaKagidiVerisi.analitikProsedurler = analitikProsedurler;
+        updatedCalismaKagidiVerisi.detayTestler = detayTestler;
+        updatedCalismaKagidiVerisi.genelDenetimYaklasimi = genelDenetimYaklasimi;
+
+        try {
+          const result = await updateCalismaKagidiVerisi(
+            controller || "",
+            user.token || "",
+            selectedId,
+            updatedCalismaKagidiVerisi
+          );
+          if (result) {
+            fetchData();
+            handleClosePopUp();
+          } else {
+            console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          }
+        } catch (error) {
+          console.error("Bir hata oluştu:", error);
+        }
+      }
+    };
+
+    const handleDelete = async () => {
+      try {
+        const result = await deleteCalismaKagidiVerisiById(
+          controller || "",
+          user.token || "",
+          selectedId
         );
         if (result) {
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.error("Çalışma Kağıdı Verisi silme başarısız");
         }
       } catch (error) {
         console.error("Bir hata oluştu:", error);
       }
-    }
-  };
+    };
 
-  const handleDelete = async () => {
-    try {
-      const result = await deleteCalismaKagidiVerisiById(
-        controller || "",
-        user.token || "",
-        selectedId
-      );
-      if (result) {
-        fetchData();
-        handleClosePopUp();
-      } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const handleDeleteAll = async () => {
-    try {
-      const result = await deleteAllCalismaKagidiVerileri(
-        controller || "",
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
-      if (result) {
-        fetchData();
-      } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  const fetchData = async () => {
-    try {
-      const calismaKagidiVerileri =
-        await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+    const handleDeleteAll = useCallback(async () => {
+      try {
+        const result = await deleteAllCalismaKagidiVerileri(
           controller || "",
           user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
-
-      const rowsAll: any = [];
-
-      const tamamlanan: any[] = [];
-      const toplam: any[] = [];
-
-      calismaKagidiVerileri.forEach((veri: any) => {
-        const newRow: Veri = {
-          id: veri.id,
-          dipnotNo: veri.dipnotNo,
-          finansalTabloHesaplar: veri.finansalTabloHesaplar,
-          cari: veri.cari,
-          onceki: veri.onceki,
-          gecmis: veri.gecmis,
-          tamOlma: veri.tamOlma,
-          dogruluk: veri.dogruluk,
-          varOlma: veri.varOlma,
-          degerleme: veri.degerleme,
-          donemsellik: veri.donemsellik,
-          gecerlilik: veri.gecerlilik,
-          sunumVeAciklama: veri.sunumVeAciklama,
-          onemsizRisk: veri.onemsizRisk,
-          ciddiRisk: veri.ciddiRisk,
-          referans: veri.referans,
-          kontrollerinEtkinligininTestEdilmesi:
-            veri.kontrollerinEtkinligininTestEdilmesi,
-          analitikProsedurler: veri.analitikProsedurler,
-          detayTestler: veri.detayTestler,
-          genelDenetimYaklasimi: veri.genelDenetimYaklasimi,
-          standartMi: veri.standartmi,
-        };
-        rowsAll.push(newRow);
-
-        if (newRow.standartMi) {
-          toplam.push(newRow);
+        if (result) {
+          fetchData();
         } else {
-          tamamlanan.push(newRow);
-          toplam.push(newRow);
+          console.error("Çalışma Kağıdı Verileri silme başarısız");
         }
-      });
-      setVeriler(rowsAll);
+      } catch (error) {
+        console.error("Bir hata oluştu:", error);
+      }
+    }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
-      setToplam(toplam.length);
-      setTamamlanan(tamamlanan.length);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
 
-  const handleCardClick = (veri: any) => {
-    setSelectedId(veri.id);
-    setSelectedDipnotNo(veri.dipnotNo);
-    setSelectedFinansalTabloHesaplar(veri.finansalTabloHesaplar);
-    setSelectedCari(veri.cari);
-    setSelectedOnceki(veri.onceki);
-    setSelectedGecmis(veri.gecmis);
-    setSelectedTamOlma(veri.tamOlma);
-    setSelectedDogruluk(veri.dogruluk);
-    setSelectedVarOlma(veri.varOlma);
-    setSelectedDegerleme(veri.degerleme);
-    setSelectedDonemsellik(veri.donemsellik);
-    setSelectedGecerlilik(veri.gecerlilik);
-    setSelectedSunumVeAciklama(veri.sunumVeAciklama);
-    setSelectedOnemsizRisk(veri.onemsizRisk);
-    setSelectedCiddiRisk(veri.ciddiRisk);
-    setSelectedReferans(veri.referans);
-    setSelectedKontrollerinEtkinligininTestEdilmesi(
-      veri.kontrollerinEtkinligininTestEdilmesi
-    );
-    setSelectedAnalitikProsedurler(veri.analitikProsedurler);
-    setSelectedDetayTestler(veri.detayTestler);
-    setSelectedGenelDenetimYaklasimi(veri.genelDenetimYaklasimi);
-    setSelectedStandartMi(veri.standartMi);
-    setIsPopUpOpen(true);
-  };
 
-  const handleNew = () => {
-    setIsNew(true);
-    setSelectedDipnotNo("");
-    setSelectedFinansalTabloHesaplar("");
-    setSelectedCari(false);
-    setSelectedOnceki(false);
-    setSelectedGecmis(false);
-    setSelectedTamOlma("0");
-    setSelectedDogruluk("0");
-    setSelectedVarOlma("0");
-    setSelectedDegerleme("0");
-    setSelectedDonemsellik("0");
-    setSelectedGecerlilik("0");
-    setSelectedSunumVeAciklama("0");
-    setSelectedOnemsizRisk(false);
-    setSelectedCiddiRisk(false);
-    setSelectedReferans(false);
-    setSelectedKontrollerinEtkinligininTestEdilmesi(false);
-    setSelectedAnalitikProsedurler(false);
-    setSelectedDetayTestler(false);
-    setSelectedGenelDenetimYaklasimi(false);
-    setIsPopUpOpen(true);
-  };
+    const handleCardClick = (veri: any) => {
+      setSelectedId(veri.id);
+      setSelectedDipnotNo(veri.dipnotNo);
+      setSelectedFinansalTabloHesaplar(veri.finansalTabloHesaplar);
+      setSelectedCari(veri.cari);
+      setSelectedOnceki(veri.onceki);
+      setSelectedGecmis(veri.gecmis);
+      setSelectedTamOlma(veri.tamOlma);
+      setSelectedDogruluk(veri.dogruluk);
+      setSelectedVarOlma(veri.varOlma);
+      setSelectedDegerleme(veri.degerleme);
+      setSelectedDonemsellik(veri.donemsellik);
+      setSelectedGecerlilik(veri.gecerlilik);
+      setSelectedSunumVeAciklama(veri.sunumVeAciklama);
+      setSelectedOnemsizRisk(veri.onemsizRisk);
+      setSelectedCiddiRisk(veri.ciddiRisk);
+      setSelectedReferans(veri.referans);
+      setSelectedKontrollerinEtkinligininTestEdilmesi(
+        veri.kontrollerinEtkinligininTestEdilmesi
+      );
+      setSelectedAnalitikProsedurler(veri.analitikProsedurler);
+      setSelectedDetayTestler(veri.detayTestler);
+      setSelectedGenelDenetimYaklasimi(veri.genelDenetimYaklasimi);
+      setSelectedStandartMi(veri.standartMi);
+      setIsPopUpOpen(true);
+    };
 
-  const handleClosePopUp = () => {
-    setIsNew(false);
-    setIsPopUpOpen(false);
-  };
+    const handleNew = () => {
+      setIsNew(true);
+      setSelectedDipnotNo("");
+      setSelectedFinansalTabloHesaplar("");
+      setSelectedCari(false);
+      setSelectedOnceki(false);
+      setSelectedGecmis(false);
+      setSelectedTamOlma("0");
+      setSelectedDogruluk("0");
+      setSelectedVarOlma("0");
+      setSelectedDegerleme("0");
+      setSelectedDonemsellik("0");
+      setSelectedGecerlilik("0");
+      setSelectedSunumVeAciklama("0");
+      setSelectedOnemsizRisk(false);
+      setSelectedCiddiRisk(false);
+      setSelectedReferans(false);
+      setSelectedKontrollerinEtkinligininTestEdilmesi(false);
+      setSelectedAnalitikProsedurler(false);
+      setSelectedDetayTestler(false);
+      setSelectedGenelDenetimYaklasimi(false);
+      setIsPopUpOpen(true);
+    };
 
-  const handleSetSelectedDipnotNo = async (value: string) => {
-    setSelectedDipnotNo(value);
-  };
+    const handleClosePopUp = () => {
+      setIsNew(false);
+      setIsPopUpOpen(false);
+    };
 
-  const handleSetSelectedFinansalTabloHesaplar = async (value: string) => {
-    setSelectedFinansalTabloHesaplar(value);
-  };
+    const handleSetSelectedDipnotNo = async (value: string) => {
+      setSelectedDipnotNo(value);
+    };
 
-  const handleSetSelectedCari = async (value: boolean) => {
-    setSelectedCari(value);
-  };
+    const handleSetSelectedFinansalTabloHesaplar = async (value: string) => {
+      setSelectedFinansalTabloHesaplar(value);
+    };
 
-  const handleSetSelectedOnceki = async (value: boolean) => {
-    setSelectedOnceki(value);
-  };
+    const handleSetSelectedCari = async (value: boolean) => {
+      setSelectedCari(value);
+    };
 
-  const handleSetSelectedGecmis = async (value: boolean) => {
-    setSelectedGecmis(value);
-  };
+    const handleSetSelectedOnceki = async (value: boolean) => {
+      setSelectedOnceki(value);
+    };
 
-  const handleSetSelectedTamOlma = async (value: string) => {
-    setSelectedTamOlma(value);
-  };
+    const handleSetSelectedGecmis = async (value: boolean) => {
+      setSelectedGecmis(value);
+    };
 
-  const handleSetSelectedDogruluk = async (value: string) => {
-    setSelectedDogruluk(value);
-  };
+    const handleSetSelectedTamOlma = async (value: string) => {
+      setSelectedTamOlma(value);
+    };
 
-  const handleSetSelectedVarOlma = async (value: string) => {
-    setSelectedVarOlma(value);
-  };
+    const handleSetSelectedDogruluk = async (value: string) => {
+      setSelectedDogruluk(value);
+    };
 
-  const handleSetSelectedDegerleme = async (value: string) => {
-    setSelectedDegerleme(value);
-  };
+    const handleSetSelectedVarOlma = async (value: string) => {
+      setSelectedVarOlma(value);
+    };
 
-  const handleSetSelectedDonemsellik = async (value: string) => {
-    setSelectedDonemsellik(value);
-  };
+    const handleSetSelectedDegerleme = async (value: string) => {
+      setSelectedDegerleme(value);
+    };
 
-  const handleSetSelectedGecerlilik = async (value: string) => {
-    setSelectedGecerlilik(value);
-  };
+    const handleSetSelectedDonemsellik = async (value: string) => {
+      setSelectedDonemsellik(value);
+    };
 
-  const handleSetSelectedSunumVeAciklama = async (value: string) => {
-    setSelectedSunumVeAciklama(value);
-  };
+    const handleSetSelectedGecerlilik = async (value: string) => {
+      setSelectedGecerlilik(value);
+    };
 
-  const handleSetSelectedOnemsizRisk = async (value: boolean) => {
-    setSelectedOnemsizRisk(value);
-  };
+    const handleSetSelectedSunumVeAciklama = async (value: string) => {
+      setSelectedSunumVeAciklama(value);
+    };
 
-  const handleSetSelectedCiddiRisk = async (value: boolean) => {
-    setSelectedCiddiRisk(value);
-  };
+    const handleSetSelectedOnemsizRisk = async (value: boolean) => {
+      setSelectedOnemsizRisk(value);
+    };
 
-  const handleSetSelectedReferans = async (value: boolean) => {
-    setSelectedReferans(value);
-  };
+    const handleSetSelectedCiddiRisk = async (value: boolean) => {
+      setSelectedCiddiRisk(value);
+    };
 
-  const handleSetSelectedKontrollerinEtkinligininTestEdilmesi = async (
-    value: boolean
-  ) => {
-    setSelectedKontrollerinEtkinligininTestEdilmesi(value);
-  };
+    const handleSetSelectedReferans = async (value: boolean) => {
+      setSelectedReferans(value);
+    };
 
-  const handleSetSelectedAnalitikProsedurler = async (value: boolean) => {
-    setSelectedAnalitikProsedurler(value);
-  };
+    const handleSetSelectedKontrollerinEtkinligininTestEdilmesi = async (
+      value: boolean
+    ) => {
+      setSelectedKontrollerinEtkinligininTestEdilmesi(value);
+    };
 
-  const handleSetSelectedDetayTestler = async (value: boolean) => {
-    setSelectedDetayTestler(value);
-  };
+    const handleSetSelectedAnalitikProsedurler = async (value: boolean) => {
+      setSelectedAnalitikProsedurler(value);
+    };
 
-  const handleSetSelectedGenelDenetimYaklasimi = async (value: boolean) => {
-    setSelectedGenelDenetimYaklasimi(value);
-  };
+    const handleSetSelectedDetayTestler = async (value: boolean) => {
+      setSelectedDetayTestler(value);
+    };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    const handleSetSelectedGenelDenetimYaklasimi = async (value: boolean) => {
+      setSelectedGenelDenetimYaklasimi(value);
+    };
 
-  useEffect(() => {
-    if (isClickedVarsayilanaDon) {
-      handleDeleteAll();
-      setIsClickedVarsayilanaDon(false);
-    }
-  }, [isClickedVarsayilanaDon]);
+    useEffect(() => {
+      fetchData();
+    }, [fetchData]);
 
-  return (
-    <>
-      <Grid container>
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "center",
-          }}
-        >
-          {veriler.map((veri, index) => (
-            <Grid
-              key={index}
-              item
-              xs={12}
-              lg={12}
-              mt="20px"
-              onClick={() => handleCardClick(veri)}
-            >
-              <CalismaKagidiCard
-                title={`${index + 1}. ${veri.finansalTabloHesaplar}`}
-                standartMi={veri.standartMi}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "end",
-          }}
-        >
+    useEffect(() => {
+      if (isClickedVarsayilanaDon) {
+        handleDeleteAll();
+        setIsClickedVarsayilanaDon(false);
+      }
+    }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
+
+    return (
+      <>
+        <Grid container>
           <Grid
-            item
-            xs={12}
-            lg={1.5}
-            my={2}
+            container
             sx={{
-              display: "flex",
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "center",
+            }}
+          >
+            {veriler.map((veri, index) => (
+              <Grid
+                key={index}
+                item
+                xs={12}
+                lg={12}
+                mt="20px"
+                onClick={() => handleCardClick(veri)}
+              >
+                <CalismaKagidiCard
+                  title={`${index + 1}. ${veri.finansalTabloHesaplar}`}
+                  standartMi={veri.standartMi}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              margin: "0 auto",
               justifyContent: "end",
             }}
           >
-            <Button
-              size="medium"
-              variant="outlined"
-              color="primary"
-              onClick={() => handleNew()}
+            <Grid
+              item
+              xs={12}
+              lg={1.5}
+              my={2}
               sx={{
-                width: "100%",
+                display: "flex",
+                justifyContent: "end",
               }}
             >
-              <Typography
-                variant="body1"
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                onClick={() => handleNew()}
                 sx={{
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
+                  width: "100%",
                 }}
               >
-                Yeni İşlem Ekle
-              </Typography>
-            </Button>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  Yeni İşlem Ekle
+                </Typography>
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-        {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi")) && (
+          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+            user.rol?.includes("SorumluDenetci") ||
+            user.rol?.includes("Denetci") ||
+            user.rol?.includes("DenetciYardimcisi")) && (
+              <Grid
+                container
+                sx={{
+                  width: "95%",
+                  margin: "0 auto",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                  <BelgeKontrolCard
+                    fetch={fetchData}
+                    hazirlayan="Denetçi - Yardımcı Denetçi"
+                    controller={controller}
+                  ></BelgeKontrolCard>
+                </Grid>
+                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                  <BelgeKontrolCard
+                    fetch={fetchData}
+                    onaylayan="Sorumlu Denetçi"
+                    controller={controller}
+                  ></BelgeKontrolCard>
+                </Grid>
+                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                  <BelgeKontrolCard
+                    fetch={fetchData}
+                    kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                    controller={controller}
+                  ></BelgeKontrolCard>
+                </Grid>
+              </Grid>
+            )}
           <Grid
             container
             sx={{
               width: "95%",
               margin: "0 auto",
               justifyContent: "space-between",
+              gap: 1,
             }}
           >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid item xs={12} lg={12} mt={5}>
+              <IslemlerCard controller={controller} />
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
-        <Grid
-          container
-          sx={{
-            width: "95%",
-            margin: "0 auto",
-            justifyContent: "space-between",
-            gap: 1,
-          }}
-        >
-          <Grid item xs={12} lg={12} mt={5}>
-            <IslemlerCard controller={controller} />
           </Grid>
         </Grid>
-      </Grid>
-      {isPopUpOpen && (
-        <PopUpComponent
-          dipnotNo={selectedDipnotNo}
-          finansalTabloHesaplar={selectedFinansalTabloHesaplar}
-          cari={selectedCari}
-          onceki={selectedOnceki}
-          gecmis={selectedGecmis}
-          tamOlma={selectedTamOlma}
-          dogruluk={selectedDogruluk}
-          varOlma={selectedVarOlma}
-          degerleme={selectedDegerleme}
-          donemsellik={selectedDonemsellik}
-          gecerlilik={selectedGecerlilik}
-          sunumVeAciklama={selectedSunumVeAciklama}
-          onemsizRisk={selectedOnemsizRisk}
-          ciddiRisk={selectedCiddiRisk}
-          referans={selectedReferans}
-          kontrollerinEtkinligininTestEdilmesi={
-            selectedKontrollerinEtkinligininTestEdilmesi
-          }
-          analitikProsedurler={selectedAnalitikProsedurler}
-          detayTestler={selectedDetayTestler}
-          genelDenetimYaklasimi={selectedGenelDenetimYaklasimi}
-          standartMi={selectedStandartMi}
-          handleClose={handleClosePopUp}
-          handleSetSelectedDipnotNo={handleSetSelectedDipnotNo}
-          handleSetSelectedFinansalTabloHesaplar={
-            handleSetSelectedFinansalTabloHesaplar
-          }
-          handleSetSelectedCari={handleSetSelectedCari}
-          handleSetSelectedOnceki={handleSetSelectedOnceki}
-          handleSetSelectedGecmis={handleSetSelectedGecmis}
-          handleSetSelectedTamOlma={handleSetSelectedTamOlma}
-          handleSetSelectedDogruluk={handleSetSelectedDogruluk}
-          handleSetSelectedVarOlma={handleSetSelectedVarOlma}
-          handleSetSelectedDegerleme={handleSetSelectedDegerleme}
-          handleSetSelectedDonemsellik={handleSetSelectedDonemsellik}
-          handleSetSelectedGecerlilik={handleSetSelectedGecerlilik}
-          handleSetSelectedSunumVeAciklama={handleSetSelectedSunumVeAciklama}
-          handleSetSelectedOnemsizRisk={handleSetSelectedOnemsizRisk}
-          handleSetSelectedCiddiRisk={handleSetSelectedCiddiRisk}
-          handleSetSelectedReferans={handleSetSelectedReferans}
-          handleSetSelectedKontrollerinEtkinligininTestEdilmesi={
-            handleSetSelectedKontrollerinEtkinligininTestEdilmesi
-          }
-          handleSetSelectedAnalitikProsedurler={
-            handleSetSelectedAnalitikProsedurler
-          }
-          handleSetSelectedDetayTestler={handleSetSelectedDetayTestler}
-          handleSetSelectedGenelDenetimYaklasimi={
-            handleSetSelectedGenelDenetimYaklasimi
-          }
-          handleCreate={handleCreate}
-          handleDelete={handleDelete}
-          handleUpdate={handleUpdate}
-          isPopUpOpen={isPopUpOpen}
-          isNew={isNew}
-        />
-      )}
-    </>
-  );
-};
+        {isPopUpOpen && (
+          <PopUpComponent
+            dipnotNo={selectedDipnotNo}
+            finansalTabloHesaplar={selectedFinansalTabloHesaplar}
+            cari={selectedCari}
+            onceki={selectedOnceki}
+            gecmis={selectedGecmis}
+            tamOlma={selectedTamOlma}
+            dogruluk={selectedDogruluk}
+            varOlma={selectedVarOlma}
+            degerleme={selectedDegerleme}
+            donemsellik={selectedDonemsellik}
+            gecerlilik={selectedGecerlilik}
+            sunumVeAciklama={selectedSunumVeAciklama}
+            onemsizRisk={selectedOnemsizRisk}
+            ciddiRisk={selectedCiddiRisk}
+            referans={selectedReferans}
+            kontrollerinEtkinligininTestEdilmesi={
+              selectedKontrollerinEtkinligininTestEdilmesi
+            }
+            analitikProsedurler={selectedAnalitikProsedurler}
+            detayTestler={selectedDetayTestler}
+            genelDenetimYaklasimi={selectedGenelDenetimYaklasimi}
+            standartMi={selectedStandartMi}
+            handleClose={handleClosePopUp}
+            handleSetSelectedDipnotNo={handleSetSelectedDipnotNo}
+            handleSetSelectedFinansalTabloHesaplar={
+              handleSetSelectedFinansalTabloHesaplar
+            }
+            handleSetSelectedCari={handleSetSelectedCari}
+            handleSetSelectedOnceki={handleSetSelectedOnceki}
+            handleSetSelectedGecmis={handleSetSelectedGecmis}
+            handleSetSelectedTamOlma={handleSetSelectedTamOlma}
+            handleSetSelectedDogruluk={handleSetSelectedDogruluk}
+            handleSetSelectedVarOlma={handleSetSelectedVarOlma}
+            handleSetSelectedDegerleme={handleSetSelectedDegerleme}
+            handleSetSelectedDonemsellik={handleSetSelectedDonemsellik}
+            handleSetSelectedGecerlilik={handleSetSelectedGecerlilik}
+            handleSetSelectedSunumVeAciklama={handleSetSelectedSunumVeAciklama}
+            handleSetSelectedOnemsizRisk={handleSetSelectedOnemsizRisk}
+            handleSetSelectedCiddiRisk={handleSetSelectedCiddiRisk}
+            handleSetSelectedReferans={handleSetSelectedReferans}
+            handleSetSelectedKontrollerinEtkinligininTestEdilmesi={
+              handleSetSelectedKontrollerinEtkinligininTestEdilmesi
+            }
+            handleSetSelectedAnalitikProsedurler={
+              handleSetSelectedAnalitikProsedurler
+            }
+            handleSetSelectedDetayTestler={handleSetSelectedDetayTestler}
+            handleSetSelectedGenelDenetimYaklasimi={
+              handleSetSelectedGenelDenetimYaklasimi
+            }
+            handleCreate={handleCreate}
+            handleDelete={handleDelete}
+            handleUpdate={handleUpdate}
+            isPopUpOpen={isPopUpOpen}
+            isNew={isNew}
+          />
+        )}
+      </>
+    );
+  };
 
 export default FinansalTablolarDenetimRiskiBelirlemeBelge;
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -170,7 +170,7 @@ const FaaliyetRaporuStepper = () => {
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
-  const fetchFinansalTablolar = async () => {
+  const fetchFinansalTablolar = useCallback(async () => {
     try {
       const finansalDurumTablosu = await getFinansalDurumTablosu(
         user.token || "",
@@ -417,9 +417,11 @@ const FaaliyetRaporuStepper = () => {
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [user.token, user.denetciId, user.yil, user.denetlenenId, setFdtData, setKztData, setNatData, setOzkDikeyDataCari, setOzkYatayDataCari, setOzkDataCari, setOzkDikeyDataOnceki, setOzkYatayDataOnceki, setOzkDataOnceki]);
 
-  const fetchFaaliyetRaporu = async () => {
+
+
+  const fetchFaaliyetRaporu = useCallback(async () => {
     try {
       const calismaKagidiVerileri =
         await getCalismaKagidiVerileriByDenetciDenetlenenYil(
@@ -478,12 +480,12 @@ const FaaliyetRaporuStepper = () => {
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  };
+  }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, grupluMu, setVeriler, setVerilerWithBaslikId, setVerilerWithoutBaslikId, setToplam, setTamamlanan]);
 
   useEffect(() => {
     fetchFinansalTablolar();
     fetchFaaliyetRaporu();
-  }, []);
+  }, [fetchFinansalTablolar, fetchFaaliyetRaporu]);
 
   const isStepOptional = (step: number) => {
     return step == -1;

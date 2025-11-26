@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -128,8 +128,8 @@ const Row: React.FC<{
                         item={child}
                         childrenItems={
                           child.childrenItems as
-                            | DonusumMizanKarsilastirmaItem[]
-                            | undefined
+                          | DonusumMizanKarsilastirmaItem[]
+                          | undefined
                         }
                         level={level + 1}
                       />
@@ -151,31 +151,31 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-const user = useSelector((state: AppState) => state.userReducer);
+  const user = useSelector((state: AppState) => state.userReducer);
 
-const controller = "VukMizanDonusumMizanKarsilastirma";
+  const controller = "VukMizanDonusumMizanKarsilastirma";
 
- const fetchVeriler = async () => {
-  try {
-    const res = await getDonusumMizanKarsilastirma(user.token!, user.denetciId!,  user.yil!, user.denetlenenId!, "E-Defter");
-    setVeriler(res);
-    setError(null);
-  } catch (err) {
-    console.error("getDonusumMizanKarsilastirma hatası:", err);
-    setError("Veri alınırken hata oluştu.");
-  } finally {
-    setLoading(false);
-  }
-};
+  const fetchVeriler = useCallback(async () => {
+    try {
+      const res = await getDonusumMizanKarsilastirma(user.token!, user.denetciId!, user.yil!, user.denetlenenId!, "E-Defter");
+      setVeriler(res);
+      setError(null);
+    } catch (err) {
+      console.error("getDonusumMizanKarsilastirma hatası:", err);
+      setError("Veri alınırken hata oluştu.");
+    } finally {
+      setLoading(false);
+    }
+  }, [user.token, user.denetciId, user.yil, user.denetlenenId]);
 
-// BelgeKontrolCard'a verilecek refresh fonksiyonu
-const fetchData = async () => {
-  await fetchVeriler();
-};
+  // BelgeKontrolCard'a verilecek refresh fonksiyonu
+  const fetchData = async () => {
+    await fetchVeriler();
+  };
 
-useEffect(() => {
-  fetchVeriler();
-}, []);
+  useEffect(() => {
+    fetchVeriler();
+  }, [fetchVeriler]);
 
   const exportToExcel = () => {
     if (!veriler || veriler.length === 0) return;
@@ -219,7 +219,7 @@ useEffect(() => {
     return acc;
   }, {});
 
-   const roluVarMi =
+  const roluVarMi =
     user?.rol?.includes("KaliteKontrolSorumluDenetci") ||
     user?.rol?.includes("SorumluDenetci") ||
     user?.rol?.includes("Denetci") ||
@@ -274,10 +274,10 @@ useEffect(() => {
                         {index === 0
                           ? ""
                           : index === 1
-                          ? "VUK Mizan Bakiye"
-                          : index === 2
-                          ? "Dönüşüm Mizan Bakiye"
-                          : "Fark"}
+                            ? "VUK Mizan Bakiye"
+                            : index === 2
+                              ? "Dönüşüm Mizan Bakiye"
+                              : "Fark"}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -350,7 +350,7 @@ useEffect(() => {
           }}
           onClick={exportToExcel}
         >
-          Excel'e Aktar
+          Excel&apos;e Aktar
         </Button>
       </Box>
     </div>

@@ -5,7 +5,7 @@ export const enhanceText = async (text: string, instruction: string) => {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     const prompt = `${instruction}\n\nMetin: ${text}`;
-    const response =await apiFetch(endpoint, {
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export const enhanceText = async (text: string, instruction: string) => {
 export const enhanceTextSettingWith = async (text: string, instruction: string) => {
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY2!;
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-console.log("veri"+instruction)
+  console.log("veri" + instruction)
 
   const body = {
     contents: [{ parts: [{ text: instruction }] }],
@@ -48,7 +48,7 @@ console.log("veri"+instruction)
     },
   };
 
-  const res =await apiFetch(endpoint, {
+  const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -96,62 +96,62 @@ async function runTaskWithGeminiSafe({
       : taskText.trim();
 
   // SDK’de önerilen yerleşim: tools + generationConfig en üstte
-const tools = [{ urlContext: {} }];
+  const tools = [{ urlContext: {} }];
 
-const generationConfig = {
-  temperature: 0.2,
-  topK: 40,
-  topP: 0.95,
-  candidateCount: 1,
-  stopSequences: [] as string[],
-};
+  const generationConfig = {
+    temperature: 0.2,
+    topK: 40,
+    topP: 0.95,
+    candidateCount: 1,
+    stopSequences: [] as string[],
+  };
 
 
   // Safety çok agresifse bazen boş döner; eğer erişiminiz varsa eşiği yumuşatın:
- const safetySettings = [
-  { category: HarmCategory.HARM_CATEGORY_HARASSMENT,       threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,      threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-];
+  const safetySettings = [
+    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+  ];
 
   const contents = [{ role: "user" as const, parts: [{ text: prompt }] }];
 
   // Küçük bir retry: boş/safety/unknown finishReason durumlarında 1 kez daha dene
   const attempt = async (): Promise<string> => {
-  const stream = await ai.models.generateContentStream({
-  model: "gemini-2.5-flash",
-  contents,
-  config: {
-    // generationConfig yerine "config" kullanın
-    temperature: 0.35,
-    tools: [{ urlContext: {} }],  // <— URL Context aracı
-  },
-  // 🔽 top-level üretim ayarları
-});
+    const stream = await ai.models.generateContentStream({
+      model: "gemini-2.5-flash",
+      contents,
+      config: {
+        // generationConfig yerine "config" kullanın
+        temperature: 0.35,
+        tools: [{ urlContext: {} }],  // <— URL Context aracı
+      },
+      // 🔽 top-level üretim ayarları
+    });
     let out = "";
-let lastChunk: GenerateContentResponse | undefined;
+    let lastChunk: GenerateContentResponse | undefined;
 
-for await (const chunk of stream) {
-  lastChunk = chunk;
-  // Bazı SDK sürümlerinde chunk.text yoktur → guard’lı topla
-  const t = (chunk as any)?.text;
-  if (typeof t === "string" && t.length) out += t;
-}
-
-// Stream’den hiç .text gelmediyse SON yanıtı candidates/parts’dan derle
-if (!out.trim() && lastChunk?.candidates?.length) {
-  let finalText = "";
-  for (const c of lastChunk.candidates) {
-    const parts = c?.content?.parts ?? [];
-    for (const p of parts) {
-      if (typeof (p as any)?.text === "string") finalText += (p as any).text;
+    for await (const chunk of stream) {
+      lastChunk = chunk;
+      // Bazı SDK sürümlerinde chunk.text yoktur → guard’lı topla
+      const t = (chunk as any)?.text;
+      if (typeof t === "string" && t.length) out += t;
     }
-  }
-  out = finalText.trim();
-}
 
-if (!out) throw new Error("Model görünür metin üretmedi.");
-return out;
+    // Stream’den hiç .text gelmediyse SON yanıtı candidates/parts’dan derle
+    if (!out.trim() && lastChunk?.candidates?.length) {
+      let finalText = "";
+      for (const c of lastChunk.candidates) {
+        const parts = c?.content?.parts ?? [];
+        for (const p of parts) {
+          if (typeof (p as any)?.text === "string") finalText += (p as any).text;
+        }
+      }
+      out = finalText.trim();
+    }
+
+    if (!out) throw new Error("Model görünür metin üretmedi.");
+    return out;
   };
 
   // 1. deneme
@@ -163,6 +163,3 @@ return out;
     return await attempt();
   }
 }
-
-
-
