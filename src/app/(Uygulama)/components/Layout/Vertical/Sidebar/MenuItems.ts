@@ -1251,6 +1251,7 @@ export function createMenuItems(
                   icon: IconPoint,
                   href: "/DenetimKanitlari/DigerKanitlar/YonetimKuruluFaaliyetRaporuDegerlendirme",
                 },
+                
                 /*{
               id: uniqueId(),
               title: "Denetim Çalışmalarının Sınırlandırılmasını Değerlendirme",
@@ -1433,6 +1434,15 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/Rapor/BagimsizDenetciRaporu",
             },
+            {
+                  id: uniqueId(),
+                  title: "Faaliyet Raporu İlişkin Bağımsız Denetçi Raporu",
+                  formKodu: "FaaliyetRaporunaIliskinBagimsizDenetciRaporu",
+                  customIcon:
+                    "public/images/svgs/denetim-kanitlari/diger-kanitlar.svg",
+                  icon: IconPoint,
+                  href: "/Rapor/FaaliyetRaporunaIliskinBagimsizDenetciRaporu",
+                },
           ],
         },
         {
