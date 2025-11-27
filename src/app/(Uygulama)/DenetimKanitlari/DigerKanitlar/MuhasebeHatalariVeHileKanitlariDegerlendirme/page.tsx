@@ -2,7 +2,8 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { IconDotsVertical } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { useState } from "react";
@@ -26,6 +27,11 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(anchorEl);
+
   const [islem, setIslem] = useState("");
   const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
 
@@ -40,10 +46,20 @@ const Page = () => {
   const grupluMu = false;
   const alanAdi1 = "İşlem";
   const alanAdi2 = "Tespit";
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+
 
   const handleOpen = () => {
     setIsCreatePopUpOpen(true);
     setIsClickedYeniGrupEkle(true);
+    handleMenuClose();
   };
 
   const handleCreateGroup = async (islem: string) => {

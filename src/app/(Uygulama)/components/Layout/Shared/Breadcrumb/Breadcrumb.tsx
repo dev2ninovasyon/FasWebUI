@@ -36,15 +36,15 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const itemsTitle =
     items && items.length > 0
       ? items.map((item) =>
-          item.title
-            .toUpperCase()
-            .replace(/I/g, "İ")
-            .replace(/C/g, "Ç")
-            .replace(/G/g, "Ğ")
-            .replace(/S/g, "Ş")
-            .replace(/O/g, "Ö")
-            .replace(/U/g, "Ü")
-        )[0]
+        item.title
+          .toUpperCase()
+          .replace(/I/g, "İ")
+          .replace(/C/g, "Ç")
+          .replace(/G/g, "Ğ")
+          .replace(/S/g, "Ş")
+          .replace(/O/g, "Ö")
+          .replace(/U/g, "Ü")
+      )[0]
       : "";
 
   const MenuItem: any =
@@ -71,11 +71,12 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
       sx={{
         backgroundColor: "primary.light",
         borderRadius: (theme: Theme) => theme.shape.borderRadius / 4,
-        p: "30px 25px 20px",
+        p: "15px 25px",
         marginBottom: "20px",
         position: "relative",
-        overflow: "hidden",
-        height: children ? (smDown ? "235px" : "") : "",
+        overflow: { xs: "visible", sm: "hidden" },
+        height: children ? (smDown ? "auto" : "") : "",
+        minHeight: children ? "80px" : "auto",
       }}
     >
       <Grid
@@ -83,8 +84,11 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         xs={12}
         sm={6}
         lg={8}
-        mb={1}
+        mb={0}
         pl={children ? (mdDown ? "2%" : "10%") : ""}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
       >
         <Typography variant="h4">{title}</Typography>
 
@@ -95,41 +99,19 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         >
           {items
             ? items
-                .filter((item) => item.title !== title)
-                .map((item) => (
-                  <div key={item.title}>
-                    {item.to ? (
-                      <NextLink
-                        href={item.to}
-                        passHref
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography
-                          color={
-                            item.title === subtitle ? "white" : "textSecondary"
-                          }
-                          sx={{
-                            backgroundColor:
-                              item.title === subtitle
-                                ? "primary.main"
-                                : "textSecondary",
-                            px: item.title === subtitle ? 1 : 0,
-                            borderRadius: (theme: Theme) =>
-                              theme.shape.borderRadius / 4,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <IconChevronLeft style={{ marginRight: 4 }} />
-                          {item.title}
-                        </Typography>
-                      </NextLink>
-                    ) : (
+              .filter((item) => item.title !== title)
+              .map((item) => (
+                <div key={item.title}>
+                  {item.to ? (
+                    <NextLink
+                      href={item.to}
+                      passHref
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
                       <Typography
                         color={
                           item.title === subtitle ? "white" : "textSecondary"
@@ -142,13 +124,35 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                           px: item.title === subtitle ? 1 : 0,
                           borderRadius: (theme: Theme) =>
                             theme.shape.borderRadius / 4,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
+                        <IconChevronLeft style={{ marginRight: 4 }} />
                         {item.title}
                       </Typography>
-                    )}
-                  </div>
-                ))
+                    </NextLink>
+                  ) : (
+                    <Typography
+                      color={
+                        item.title === subtitle ? "white" : "textSecondary"
+                      }
+                      sx={{
+                        backgroundColor:
+                          item.title === subtitle
+                            ? "primary.main"
+                            : "textSecondary",
+                        px: item.title === subtitle ? 1 : 0,
+                        borderRadius: (theme: Theme) =>
+                          theme.shape.borderRadius / 4,
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
+                  )}
+                </div>
+              ))
             : ""}
         </Breadcrumbs>
       </Grid>
@@ -197,7 +201,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                   bottom: "0",
                   right: "2%",
                   position: "absolute",
-                  height: smDown ? "50%" : "100%",
+                  height: smDown ? "0%" : "100%",
                   width: smDown ? "96%" : "auto",
                 }}
               >
@@ -234,21 +238,6 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                 </>
               ) : (
                 ""
-                /*<Box
-                  sx={{
-                    bottom: "0",
-                    right: "2%",
-                    position: "absolute",
-                    height: "100%",
-                  }}
-                >
-                  <Image
-                    src={breadcrumbImg}
-                    alt={"breadcrumbImg"}
-                    style={{ width: "165px", height: "165px" }}
-                    priority
-                  />
-                </Box>*/
               )}
             </>
           )}

@@ -1,97 +1,15 @@
-"use client";
+#!/usr/bin/env python3
+"""
+Complete responsive breadcrumb migration script
+This replaces the entire Breadcrumb children section with the responsive version
+"""
 
-import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
-import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Box, Button, Grid, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
-import { IconDotsVertical } from "@tabler/icons-react";
-import { AppState } from "@/store/store";
-import { useSelector } from "@/store/hooks";
-import { useState } from "react";
-import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
-import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton"
-const BCrumb = [
-  {
-    to: "/PlanVeProgram",
-    title: "Plan ve Program",
-  },
-  {
-    to: "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
-    title: "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
-  },
-];
+import os
+import re
 
-const Page = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(anchorEl);
-
-  const [islem, setIslem] = useState("");
-  const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
-
-  const [isClickedYeniGrupEkle, setIsClickedYeniGrupEkle] = useState(false);
-  const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
-
-  const [tamamlanan, setTamamlanan] = useState(0);
-  const [toplam, setToplam] = useState(0);
-
-  const user = useSelector((state: AppState) => state.userReducer);
-  const controller = "IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme";
-  const grupluMu = false;
-  const alanAdi1 = "İşlem";
-  const alanAdi2 = "Tespit";
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-
-
-  const handleOpen = () => {
-    setIsCreatePopUpOpen(true);
-    setIsClickedYeniGrupEkle(true);
-    handleMenuClose();
-  };
-
-  const handleCreateGroup = async (islem: string) => {
-    const createdCalismaKagidiGrubu = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      islem: islem,
-      tespit: "",
-    };
-
-    try {
-      const result = await createCalismaKagidiVerisi(
-        controller || "",
-        user.token || "",
-        createdCalismaKagidiGrubu
-      );
-      if (result) {
-        setIsCreatePopUpOpen(false);
-        setIsClickedYeniGrupEkle(false);
-      } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
-  return (
-    <>
-      <Breadcrumb
-        title="İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme"
-        items={BCrumb}
-      >
-        <>
-{isMobile ? (
+# Template for the responsive breadcrumb children (mobile + desktop layouts)
+RESPONSIVE_BREADCRUMB_TEMPLATE = """        <>
+          {isMobile ? (
             // Mobile layout - compact with dropdown menu
             <Grid
               container
@@ -143,7 +61,7 @@ const Page = () => {
                   <MenuItem onClick={handleMenuClose}>
                     Ek Belge Yükle
                   </MenuItem>
-                  <MenuItem
+                  <MenuItem 
                     onClick={() => { setIsClickedVarsayilanaDon(true); handleMenuClose(); }}
                     disabled={isClickedVarsayilanaDon}
                   >
@@ -218,7 +136,7 @@ const Page = () => {
               )}
               <Grid
                 item
-                xs={5.8}
+                xs={__XS_SIZE__}
                 md={grupluMu ? 2.8 : 3.8}
                 lg={grupluMu ? 2.8 : 3.8}
                 sx={{
@@ -235,7 +153,7 @@ const Page = () => {
               </Grid>
               <Grid
                 item
-                xs={5.8}
+                xs={__XS_SIZE__}
                 md={grupluMu ? 2.8 : 3.8}
                 lg={grupluMu ? 2.8 : 3.8}
                 sx={{
@@ -271,28 +189,69 @@ const Page = () => {
               handleCreateGroup={handleCreateGroup}
             />
           )}
-        </>
-      </Breadcrumb>
-      <PageContainer
-        title="	İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme"
-        description="this is İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme"
-      >
-        <Box>
-          <CalismaKagidiBelge
-            controller={controller}
-            grupluMu={grupluMu}
-            alanAdi1={alanAdi1}
-            alanAdi2={alanAdi2}
-            isClickedYeniGrupEkle={isClickedYeniGrupEkle}
-            isClickedVarsayilanaDon={isClickedVarsayilanaDon}
-            setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
-            setTamamlanan={setTamamlanan}
-            setToplam={setToplam}
-          />
-        </Box>
-      </PageContainer>
-    </>
-  );
-};
+        </>"""
 
-export default Page;
+def replace_breadcrumb_children(file_path):
+    """Replace the Breadcrumb children section with responsive version"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Find the Breadcrumb children section
+    # Pattern: <Breadcrumb ... >\s*<>\s*<Grid container ... until just before </Breadcrumb>
+    pattern = r'(<Breadcrumb[^>]*>\s*<>\s*)<Grid\s+container\s+sx={{[^}]+}}[^>]*>.*?(?=</Breadcrumb>)'
+    
+    # Check if already has isMobile (already converted)
+    if '{isMobile ?' in content:
+        return False, "Already converted"
+    
+    # Determine xs size (3.8 or 5.8 depending on grupluMu)
+    xs_size = "5.8"  # default for grupluMu = false
+    if 'grupluMu = true' in content or 'grupluMu: true' in content:
+        xs_size = "3.8"
+    
+    responsive_content = RESPONSIVE_BREADCRUMB_TEMPLATE.replace('__XS_SIZE__', xs_size)
+    
+    # Replace the section
+    new_content = re.sub(pattern, r'\1' + responsive_content, content, flags=re.DOTALL)
+    
+    if new_content != content:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        return True, "Updated"
+    else:
+        return False, "No match found"
+
+# List of all files to update
+files_to_update = [
+    r'src\app\(Uygulama)\PlanVeProgram\DenetimProgrami\page.tsx',
+    r'src\app\(Uygulama)\PlanVeProgram\DenetimPlani\page.tsx',
+    # Add more files here...
+]
+
+if __name__ == '__main__':
+    base_dir = r'c:\Users\lenov\FasWebUI'
+    
+    print("Starting Breadcrumb children replacement...")
+    success_count = 0
+    skip_count = 0
+    error_count = 0
+    
+    for rel_path in files_to_update:
+        file_path = os.path.join(base_dir, rel_path)
+        if os.path.exists(file_path):
+            try:
+                updated, message = replace_breadcrumb_children(file_path)
+                if updated:
+                    print(f"✓ {rel_path}: {message}")
+                    success_count += 1
+                else:
+                    print(f"- {rel_path}: {message}")
+                    skip_count += 1
+            except Exception as e:
+                print(f"✗ {rel_path}: Error - {e}")
+                error_count += 1
+        else:
+            print(f"✗ {rel_path}: File not found")
+            error_count += 1
+    
+    print(f"\nComplete! Updated: {success_count}, Skipped: {skip_count}, Errors: {error_count}")

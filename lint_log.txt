@@ -1,48 +1,16 @@
-﻿
+
 > financial-audit-software@1.0.0 lint
 > next lint
 
 
-./src/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard.tsx
-316:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-
-./src/app/(Uygulama)/components/CalismaKagitlari/DenetimProgramiBelge.tsx
-749:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-
-./src/app/(Uygulama)/components/CalismaKagitlari/GenelKurulToplantiBilgileriBelge.tsx
-279:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-286:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
-292:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-
-./src/app/(Uygulama)/components/CalismaKagitlari/GenelKurulToplantidaGorusulenHususlarBelge.tsx
-255:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-262:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
-268:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-
-./src/app/(Uygulama)/components/CalismaKagitlari/HesaplaraIliskinIcKontrolTespitBelge.tsx
-270:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-274:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-281:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
-
 ./src/app/(Uygulama)/components/CalismaKagitlari/HileCalismaKagitlariBelge.tsx
-218:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-222:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-229:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
-235:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-
-./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukBelirlemeBelge.tsx
-259:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-266:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+231:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
 ./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukToplantiBilgileriBelge.tsx
-257:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-264:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
 270:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
 ./src/app/(Uygulama)/components/CalismaKagitlari/HileUsulsuzlukToplantidaGorusulenHususlarBelge.tsx
-227:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-234:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
-240:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+240:8  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
 ./src/app/(Uygulama)/components/CalismaKagitlari/IcKontrolDegerlemeAnketBelge.tsx
 296:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
@@ -64,16 +32,6 @@
 234:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
 240:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
-./src/app/(Uygulama)/components/CalismaKagitlari/IsletmeyeIliskinIcKontrolTespitBelge.tsx
-261:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-268:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
-
-./src/app/(Uygulama)/components/CalismaKagitlari/KontrolRiskiBelge.tsx
-378:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-384:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-391:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
-397:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-
 ./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaListe.tsx
 102:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
@@ -89,8 +47,6 @@
 239:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
 
 ./src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulukGorevAtamalariBelge.tsx
-351:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-358:6  Warning: React Hook useEffect has missing dependencies: 'handleDeleteAll' and 'setIsClickedVarsayilanaDon'. Either include them or remove the dependency array. If 'setIsClickedVarsayilanaDon' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
 641:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
 ./src/app/(Uygulama)/components/CalismaKagitlari/SatinAlmaOdemeKontrolCalismaKagidi.tsx
@@ -980,6 +936,86 @@
 414:6  Warning: React Hook useEffect has a missing dependency: 'afterRenderer2'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 481:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
 
+./src/app/(Uygulama)/Kys/1/BilgiVeIletisim/page.tsx
+103:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+111:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+113:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+123:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+127:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+130:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/DenetiminYurutulmesi/page.tsx
+103:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+111:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+113:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+123:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+127:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+130:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/EtikHukumler/page.tsx
+103:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+111:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+113:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+123:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+127:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+130:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/IzlemeVeDuzeltme/page.tsx
+103:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+111:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+113:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+123:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+127:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+130:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/Kaynaklar/HizmetSaglayicilar/page.tsx
+110:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+118:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+120:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+130:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+134:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+137:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/Kaynaklar/InsanKaynaklari/page.tsx
+107:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+115:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+117:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+127:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+131:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+134:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/MusteriIliskileriVeSozlesmeKabulu/page.tsx
+108:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+116:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+118:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+128:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+132:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+135:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/RiskDegerlendirmeSureci/RiskBelirleme/page.tsx
+108:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+116:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+118:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+128:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+132:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+135:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/RiskDegerlendirmeSureci/RiskeKarsilikVerme/page.tsx
+107:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+115:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+117:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+127:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+131:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+134:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
+./src/app/(Uygulama)/Kys/1/UstYonetimVeLiderlikYapisi/page.tsx
+103:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+111:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+113:18  Error: 'Menu' is not defined.  react/jsx-no-undef
+123:22  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+127:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+130:20  Error: 'MenuItem' is not defined.  react/jsx-no-undef
+
 ./src/app/(Uygulama)/layout.tsx
 54:6  Warning: React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
@@ -1001,8 +1037,7 @@
 265:6  Warning: React Hook useEffect has a missing dependency: 'handleDeleteTeklifHesaplama'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
 ./src/app/(Uygulama)/MusteriBelgeleri/page.tsx
-114:6  Warning: React Hook useCallback has a missing dependency: 'fileType'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-279:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+283:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
 ./src/app/(Uygulama)/PlanVeProgram/BulguRiskiBelirleme/BulguRiskiBelirleme.tsx
 61:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
@@ -1039,6 +1074,11 @@
 70:6  Warning: React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 338:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 355:6  Warning: React Hook useEffect has missing dependencies: 'customizer.MiniSidebarWidth' and 'customizer.SidebarWidth'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(Uygulama)/PlanVeProgram/HesaplaraIliskinIcKontrolTespit/page.tsx
+115:18  Error: 'IconButton' is not defined.  react/jsx-no-undef
+123:20  Error: 'IconDotsVertical' is not defined.  react/jsx-no-undef
+125:18  Error: 'Menu' is not defined.  react/jsx-no-undef
 
 ./src/app/(Uygulama)/Sozlesme/BagimsizDenetimSozlesmesi/page.tsx
 145:6  Warning: React Hook useEffect has missing dependencies: 'fetchData' and 'fetchData2'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps

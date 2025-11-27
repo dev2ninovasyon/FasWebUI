@@ -24,6 +24,11 @@ import {
   TableHead,
   TableRow,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -86,11 +91,12 @@ const Page = () => {
     { fileName: string; percentage: number }[]
   >([]);
 
-  // --- Çoklu silme için state'ler ---
+  // --- Çoklu silme & liste state'leri ---
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeletingSelected, setIsDeletingSelected] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false); // popup için
 
   const handleChange = (event: any) => {
     setFileType(event.target.value);
@@ -378,25 +384,35 @@ const Page = () => {
     }
   };
 
-  // --- ÇOKLU SİLME BUTONU ---
-  const handleDeleteSelectedClick = async () => {
-    if (!user.token) return;
+  // --- ÇOKLU SİLME: buton & popup mantığı ---
+
+  // Butona basınca sadece popup'ı aç
+  const handleDeleteSelectedClick = () => {
     if (selectedIds.length === 0) {
       enqueueSnackbar("Lütfen silmek için en az bir belge seçin.", {
         variant: "info",
       });
       return;
     }
+    setConfirmOpen(true);
+  };
 
-    const onay = window.confirm(
-      `${selectedIds.length} adet belgeyi silmek istediğinize emin misiniz?`
-    );
-    if (!onay) return;
+  const handleCloseConfirm = () => {
+    if (isDeletingSelected) return;
+    setConfirmOpen(false);
+  };
+
+  // Popup içinden "Evet" ile gerçekten silme
+  const handleConfirmDelete = async () => {
+    if (!user.token) return;
+    if (selectedIds.length === 0) {
+      setConfirmOpen(false);
+      return;
+    }
 
     try {
       setIsDeletingSelected(true);
 
-      // Tek tek sil (API'nin toplu endpoint'i yoksa en güvenlisi bu)
       const promises = selectedIds.map((id) =>
         deleteEkBelge(user.token!, id)
       );
@@ -424,11 +440,15 @@ const Page = () => {
       }
     } catch (error) {
       console.error("Seçilen belgeler silinirken hata:", error);
-      enqueueSnackbar("Seçilen belgeler silinirken beklenmeyen bir hata oluştu.", {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        "Seçilen belgeler silinirken beklenmeyen bir hata oluştu.",
+        {
+          variant: "error",
+        }
+      );
     } finally {
       setIsDeletingSelected(false);
+      setConfirmOpen(false);
     }
   };
 
@@ -607,7 +627,7 @@ const Page = () => {
           </Box>
         </Grid>
 
-        {/* SAĞ: Yüklenmiş dosya listesi (Yeni yapı) */}
+        {/* SAĞ: Yüklenmiş dosya listesi */}
         <Grid item xs={12} lg={7}>
           <Box
             sx={{
@@ -801,6 +821,30 @@ const Page = () => {
           </Box>
         </Grid>
       </Grid>
+
+      {/* Silme onayı popup'ı */}
+      <Dialog open={confirmOpen} onClose={handleCloseConfirm}>
+        <DialogTitle>Silme Onayı</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {selectedIds.length} adet belgeyi silmek istediğinize emin misiniz?
+            Bu işlem geri alınamaz.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirm} disabled={isDeletingSelected}>
+            Vazgeç
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+            disabled={isDeletingSelected}
+          >
+            {isDeletingSelected ? "Siliniyor..." : "Evet, Sil"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PageContainer>
   );
 };

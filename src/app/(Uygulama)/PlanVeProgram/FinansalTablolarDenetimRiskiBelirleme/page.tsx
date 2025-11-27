@@ -2,7 +2,8 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
+import { IconDotsVertical } from "@tabler/icons-react";
 import { useState } from "react";
 import FinansalTablolarDenetimRiskiBelirlemeBelge from "@/app/(Uygulama)/components/CalismaKagitlari/FinansalTablolarDenetimRiskiBelirlemeBelge";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton"
@@ -18,6 +19,11 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(anchorEl);
+
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tamamlanan, setTamamlanan] = useState(0);
