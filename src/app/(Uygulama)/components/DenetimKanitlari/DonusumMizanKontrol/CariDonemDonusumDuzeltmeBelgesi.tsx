@@ -227,6 +227,8 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
   };
 
+  
+
   const afterRenderer = (
     TD: any,
     row: any,
@@ -243,7 +245,6 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     TD.style.whiteSpace = "nowrap";
     TD.style.overflow = "hidden";
 
-    // color
     TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
 
     if (row % 2 === 0) {
@@ -259,25 +260,6 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
       TD.style.borderRightColor =
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
-  };
-
-  const afterRenderer2 = (
-    TD: any,
-    row: any,
-    col: any,
-    prop: any,
-    value: any,
-    cellProperties: any
-  ) => {
-    // typography body1
-    TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontWeight = 500;
-    TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
-    TD.style.whiteSpace = "nowrap";
-    TD.style.overflow = "hidden";
-
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
 
     if (col === 1) {
       if (parseInt(value) % 2 !== 0) {
@@ -318,56 +300,8 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     }
   };
 
-  const handleGetRowData = async (row: number) => {
-    if (hotTableComponent.current) {
-      const hotInstance = hotTableComponent.current.hotInstance;
-      const cellMeta = hotInstance.getDataAtRow(row);
-      console.log("Satır Verileri:", cellMeta);
-      return cellMeta;
-    }
-  };
 
-  const handleUpdateFisDurumu = async (fisNo: number) => {
-    try {
-      const result = await updateFisDurumu(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        fisNo,
-        false
-      );
-      if (result) {
-        await fetchData();
-        enqueueSnackbar("Fiş Durumu Değiştirildi", {
-          variant: "success",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.success.light
-                : theme.palette.success.main,
-            maxWidth: "720px",
-          },
-        });
-      } else {
-        enqueueSnackbar("Fiş Durumu Değiştirilemedi", {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.light
-                : theme.palette.error.main,
-            maxWidth: "720px",
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
+  
   const fetchData = async () => {
     try {
       const fisListesiVerileri = await getFisListesiVerileri(
@@ -412,7 +346,7 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     if (!hotInstance) return;
 
     hotInstance.updateSettings({
-      afterRenderer: afterRenderer2,
+      afterRenderer: afterRenderer,
     });
 
     hotInstance.render();
@@ -460,7 +394,7 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
         const blob = new Blob([buffer], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, "FisListesi.xlsx");
+        saveAs(blob, "CariDonemDonusumDuzeltmeBelgesi.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
@@ -534,26 +468,8 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
           afterGetColHeader={afterGetColHeader}
           afterGetRowHeader={afterGetRowHeader}
           afterRenderer={afterRenderer}
-          contextMenu={{
-            items: {
-              fise_git: {
-                name: "Fişe Git",
-                callback: async (key, selection) => {
-                  const row = await handleGetRowData(selection[0].start.row);
-                  if (!row) return;
-                  router.push(`/Donusum/FisListesi/FisDetaylari/${row[1]}`);
-                },
-              },
-              fise_durumu_değiştir: {
-                name: "Fiş Durumu Değiştir",
-                callback: async (key, selection) => {
-                  const row = await handleGetRowData(selection[0].start.row);
-                  if (!row) return;
-                  handleUpdateFisDurumu(row[1]);
-                },
-              },
-            },
-          }}
+          
+          
           copyPaste={false}
         />
       </Grid>
@@ -569,24 +485,15 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
           }}
         >
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <CardHeader
-              title={<Typography variant="h5">Hazırlayan:</Typography>}
-              sx={{ p: 0, mb: 1 }}
-            />
+            
             <BelgeKontrolCard controller={controller} fetch={fetchData} hazirlayan="Denetçi - Yardımcı Denetçi"/>
           </Grid>
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <CardHeader
-              title={<Typography variant="h5">Onaylayan:</Typography>}
-              sx={{ p: 0, mb: 1 }}
-            />
+            
             <BelgeKontrolCard controller={controller} fetch={fetchData} onaylayan="Sorumlu Denetçi"/>
           </Grid>
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-            <CardHeader
-              title={<Typography variant="h5">Belge Kontrol:</Typography>}
-              sx={{ p: 0, mb: 1 }}
-            />
+            
             <BelgeKontrolCard controller={controller} fetch={fetchData} kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"/>
           </Grid>
         </Grid>
