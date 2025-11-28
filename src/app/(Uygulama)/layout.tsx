@@ -1,6 +1,7 @@
 "use client";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import CircularProgress from "@mui/material/CircularProgress";
 import { styled, useTheme } from "@mui/material/styles";
 import React, { useState } from "react";
 import { useSelector } from "@/store/hooks";
@@ -54,7 +55,7 @@ export default function RootLayout({
   }, [user.token]);
   return (
     <>
-      {control && (
+      {control ? (
         <MainWrapper>
           {/* ------------------------------------------- */}
           {/* Sidebar */}
@@ -101,6 +102,18 @@ export default function RootLayout({
             </Container>
           </PageWrapper>
         </MainWrapper>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100vw",
+          }}
+        >
+          <CircularProgress />
+        </Box>
       )}
     </>
   );

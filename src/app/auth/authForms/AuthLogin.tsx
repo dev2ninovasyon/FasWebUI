@@ -1,11 +1,12 @@
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
-import { Box, Typography, Button, Stack, useTheme } from "@mui/material";
-import { useState } from "react";
+import { Box, Typography, Button, Stack, useTheme, InputAdornment } from "@mui/material";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@mui/lab";
-import { IconTrash } from "@tabler/icons-react";
+import { IconTrash, IconMail, IconLock } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "@/store/hooks";
+import ReCAPTCHA from "react-google-recaptcha";
 import {
   setDenetciId,
   setId,
@@ -39,18 +40,29 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handleLogin = async () => {
+    if (!captchaToken) {
+      enqueueSnackbar("Lütfen robot olmadığınızı doğrulayın.", {
+        variant: "warning",
+        autoHideDuration: 3000,
+      });
+      setIsLoggedIn(false);
+      return;
+    }
+
     try {
-      const response =await apiFetch(`/Auth/login`, {
+      const response = await apiFetch(`/Auth/login`, {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, captchaToken }),
       });
       if (response.ok) {
         const data = await response.json();
@@ -98,30 +110,43 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
             maxWidth: "720px",
           },
         });
+        recaptchaRef.current?.reset();
+        setCaptchaToken(null);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
+      setIsLoggedIn(false);
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     }
   };
 
   return (
     <>
       {title ? (
-        <Typography fontWeight="700" variant="h3" mb={1}>
+        <Typography fontWeight="700" variant="h3" mb={1} color="primary.main">
           {title}
         </Typography>
       ) : null}
 
       {subtext}
 
-      <Stack mb={3}>
+      <Stack mb={3} spacing={2}>
         <Box>
           <CustomFormLabel htmlFor="username">Email</CustomFormLabel>
           <CustomTextField
             id="username"
             variant="outlined"
             fullWidth
+            placeholder="Email adresiniz"
             onChange={(e: any) => setEmail(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconMail size={20} />
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
         <Box>
@@ -131,9 +156,26 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
             type="password"
             variant="outlined"
             fullWidth
+            placeholder="Şifreniz"
             onChange={(e: any) => setPassword(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconLock size={20} />
+                </InputAdornment>
+              ),
+            }}
           />
         </Box>
+
+        <Box display="flex" justifyContent="center">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey="6LffORosAAAAAN_irA4StsjwxXN1jgCJ9QN6UWrS"
+            onChange={(token) => setCaptchaToken(token)}
+          />
+        </Box>
+
       </Stack>
       <Box>
         {!isLoggedIn && (
@@ -146,8 +188,18 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
               setIsLoggedIn(true);
               handleLogin();
             }}
+            sx={{
+              background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+              boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
+              color: "white",
+              height: 48,
+              padding: "0 30px",
+              fontSize: "1.1rem",
+              textTransform: "none",
+              borderRadius: "10px"
+            }}
           >
-            Giriş
+            Giriş Yap
           </Button>
         )}
         {isLoggedIn && (
@@ -158,6 +210,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
             size="large"
             fullWidth
             endIcon={<IconTrash width={18} />}
+            sx={{ height: 48, borderRadius: "10px" }}
           ></LoadingButton>
         )}
       </Box>

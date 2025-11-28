@@ -22,7 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
-useAutoLogout(30*60 * 1000,20*60 * 1000); // 45 dakika idle süresi, 40 dakika refresh süresi
+  useAutoLogout(30 * 60 * 1000, 20 * 60 * 1000); // 45 dakika idle süresi, 40 dakika refresh süresi
 
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -110,10 +110,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [loading, setLoading] = React.useState(false);
-  React.useEffect(() => {
-    setTimeout(() => setLoading(true), 3000);
-  }, []);
   return (
     <html suppressHydrationWarning>
       <body>
@@ -123,25 +119,10 @@ export default function RootLayout({
         />
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            {loading ? (
-              // eslint-disable-next-line react/no-children-prop
-              <MyApp children={children} />
-            ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "100vh",
-                }}
-              >
-                <CircularProgress />
-              </Box>
-            )}
+            <MyApp children={children} />
           </PersistGate>
         </Provider>
-        
+
       </body>
     </html>
   );

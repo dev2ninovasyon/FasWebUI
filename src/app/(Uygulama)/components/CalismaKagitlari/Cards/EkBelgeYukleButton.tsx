@@ -5,6 +5,8 @@ import React, {
   useRef,
   useState,
   useMemo,
+  forwardRef,
+  useImperativeHandle,
 } from "react";
 import {
   Button,
@@ -21,48 +23,53 @@ import {
   IconButton,
   Checkbox,
   TextField,
-  Table,
-  TableBody,
-  TableCell,
   TableContainer,
+  Table,
   TableHead,
   TableRow,
+  TableCell,
+  TableBody,
+  MenuItem,
 } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DownloadIcon from "@mui/icons-material/Download";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { enqueueSnackbar } from "notistack";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { enqueueSnackbar } from "notistack";
 import {
-  uploadEkBelge,
-  getEkBelgeler,
-  downloadEkBelge,
   EkBelgeDto,
-  deleteEkBelge,
+  getEkBelgeler,
+  uploadEkBelge,
   deleteEkBelgelerSecilenler,
+  downloadEkBelge,
 } from "@/api/CalismaKagitlari/CalismaKagitlariEkBelge";
-
-// en üst kısma ekle
-import { jsPDF } from "jspdf";
+import jsPDF from "jspdf";
 
 interface EkBelgeYukleButtonProps {
   formKodu: string;
   text?: string;
   fullWidth?: boolean;
   onUploaded?: () => void;
+  hideButton?: boolean;
+  variant?: 'button' | 'menuitem';
 }
 
-const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
+export interface EkBelgeYukleButtonRef {
+  handleOpen: () => void;
+}
+
+const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonProps>(({
   formKodu,
   text = "Ek Belge Yükle",
   fullWidth = true,
   onUploaded,
-}) => {
+  hideButton = false,
+  variant = 'button',
+}, ref) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
@@ -91,11 +98,13 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
   const borderColor = theme.palette.divider;
+
   const isPdfBelge = (belge: EkBelgeDto) => {
     const contentType = belge.contentType?.toLowerCase() || "";
     const name = (belge.orijinalDosyaAdi || "").toLowerCase();
     return contentType.includes("pdf") || name.endsWith(".pdf");
   };
+
   const canLoad =
     !!user.token && !!user.denetciId && !!user.denetlenenId && !!user.yil;
 
@@ -130,11 +139,12 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
         user.yil || 0,
         formKodu
       );
-      setEkBelgeler(list);
+      setEkBelgeler(list || []);
       setSelectedIds([]);
       setPage(0);
     } catch (error) {
       console.error("Ek belgeler alınırken hata oluştu:", error);
+      setEkBelgeler([]);
     } finally {
       setIsLoadingList(false);
     }
@@ -148,6 +158,10 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
   const handleClose = () => {
     setOpen(false);
   };
+
+  useImperativeHandle(ref, () => ({
+    handleOpen
+  }));
 
   const handleClickUploadButton = () => {
     if (inputRef.current) {
@@ -453,6 +467,7 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
       setSelectedIds(ekBelgeler.map((b) => b.id));
     }
   };
+
   const openDeleteConfirm = (ids: number[]) => {
     if (!ids || ids.length === 0) {
       enqueueSnackbar("Lütfen silmek için en az bir belge seçin.", {
@@ -566,35 +581,43 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
   return (
     <>
       {/* Ana buton */}
-      <Grid
-        container
-        sx={{
-          width: "100%",
-          height: "100%",
-          margin: "0 auto",
-          justifyContent: "space-between",
-        }}
-      >
-        <Grid
-          onClick={handleOpen}
-          item
-          xs={10}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Button
-            size="medium"
-            variant="outlined"
-            color="primary"
-            sx={{ width: fullWidth ? "100%" : "auto" }}
+      {!hideButton && (
+        variant === 'menuitem' ? (
+          <MenuItem onClick={handleOpen}>
+            <Typography textAlign="center">{text}</Typography>
+          </MenuItem>
+        ) : (
+          <Grid
+            container
+            sx={{
+              width: "100%",
+              height: "100%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+            }}
           >
-            <Typography variant="body1">{text}</Typography>
-          </Button>
-        </Grid>
-      </Grid>
+            <Grid
+              onClick={handleOpen}
+              item
+              xs={10}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                size="medium"
+                variant="outlined"
+                color="primary"
+                sx={{ width: fullWidth ? "100%" : "auto" }}
+              >
+                <Typography variant="body1">{text}</Typography>
+              </Button>
+            </Grid>
+          </Grid>
+        )
+      )}
 
       {/* gizli input */}
       <input
@@ -912,7 +935,7 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
         >
           <Button onClick={handleClose}>Kapat</Button>
         </DialogActions>
-      </Dialog>
+      </Dialog >
 
       {/* Seçilenleri silme onay popup'ı */}
       <Dialog
@@ -1017,6 +1040,8 @@ const EkBelgeYukleButton: React.FC<EkBelgeYukleButtonProps> = ({
       </Dialog>
     </>
   );
-};
+});
+
+EkBelgeYukleButton.displayName = "EkBelgeYukleButton";
 
 export default EkBelgeYukleButton;

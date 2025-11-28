@@ -1,5 +1,5 @@
 // src/api/apiBase.ts
-export const url = "https://betaapi.fasmart.app/api";
+export const url = "https://localhost:5001/api";
 
 export async function apiFetch(
   path: string,
@@ -20,7 +20,7 @@ export async function apiFetch(
       denetlenenIdFromStorage = window.localStorage.getItem("fas_denetlenenId");
       yilFromStorage = window.localStorage.getItem("fas_yil");
     } catch (e) {
-      console.warn("fas_denetlenenId / fas_yil localStorage'dan okunamadı:", e);
+      console.warn("fas_denetlen2enId / fas_yil localStorage'dan okunamadı:", e);
     }
   }
 
