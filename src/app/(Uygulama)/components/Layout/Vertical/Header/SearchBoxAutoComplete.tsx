@@ -62,13 +62,14 @@ function handleButtonClick(link: string) {
 const SearchBoxAutocomplete = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
-  const Menuitems: MenuitemsType[] = createMenuItems(
+  // useMemo ile menü cache'leniyor - performans iyileştirmesi
+  const Menuitems: MenuitemsType[] = React.useMemo(() => createMenuItems(
     user.rol || undefined,
     user.denetimTuru || undefined,
     user.enflasyonmu || undefined,
     user.konsolidemi || undefined,
     user.bddkmi || undefined
-  );
+  ), [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi]);
 
   extractMenuItems(Menuitems);
 

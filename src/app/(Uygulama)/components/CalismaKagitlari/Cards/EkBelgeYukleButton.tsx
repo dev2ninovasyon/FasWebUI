@@ -612,7 +612,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                 color="primary"
                 sx={{ width: fullWidth ? "100%" : "auto" }}
               >
-                <Typography variant="body1">{text}</Typography>
+                <Typography variant="body2">{text}</Typography>
               </Button>
             </Grid>
           </Grid>

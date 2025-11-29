@@ -21,6 +21,7 @@ import SearchBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/H
 import MobileSirketPopup from "./MobileSirketPopup";
 import Archive from "./Archive";
 import React from "react";
+import { enqueueSnackbar } from "notistack";
 
 interface Props {
   isSidebarHover: boolean;
@@ -31,6 +32,7 @@ const Header: React.FC<Props> = ({ isSidebarHover }) => {
 
   // drawer
   const customizer = useSelector((state: AppState) => state.customizer);
+  const user = useSelector((state: AppState) => state.userReducer);
   const dispatch = useDispatch();
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
@@ -55,11 +57,16 @@ const Header: React.FC<Props> = ({ isSidebarHover }) => {
           <IconButton
             color="inherit"
             aria-label="menu"
-            onClick={
-              lgUp
-                ? () => dispatch(toggleSidebar())
-                : () => dispatch(toggleMobileSidebar())
-            }
+            onClick={() => {
+              if (!user.denetlenenId) {
+                enqueueSnackbar("Şirket seçilmedi", { variant: "warning" });
+              }
+              if (lgUp) {
+                dispatch(toggleSidebar());
+              } else {
+                dispatch(toggleMobileSidebar());
+              }
+            }}
           >
             <IconMenu2 size="20" />
           </IconButton>

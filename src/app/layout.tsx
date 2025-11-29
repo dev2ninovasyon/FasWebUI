@@ -20,6 +20,7 @@ import { enqueueSnackbar, SnackbarProvider } from "notistack";
 import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
 import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
+import { LoadingProvider } from "@/contexts/LoadingContext";
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
   useAutoLogout(30 * 60 * 1000, 20 * 60 * 1000); // 45 dakika idle süresi, 40 dakika refresh süresi
@@ -87,18 +88,20 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
         options={{ key: "financial-audit-software" }}
       >
         <ThemeProvider theme={theme}>
-          <RTL direction={customizer.activeDir}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-            <CssBaseline />
-            <SnackbarProvider
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-            >
-              {children}
-            </SnackbarProvider>
-          </RTL>
+          <LoadingProvider>
+            <RTL direction={customizer.activeDir}>
+              {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+              <CssBaseline />
+              <SnackbarProvider
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+              >
+                {children}
+              </SnackbarProvider>
+            </RTL>
+          </LoadingProvider>
         </ThemeProvider>
       </NextAppDirEmotionCacheProvider>
     </>
@@ -119,7 +122,7 @@ export default function RootLayout({
         />
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <MyApp children={children} />
+            <MyApp>{children}</MyApp>
           </PersistGate>
         </Provider>
 

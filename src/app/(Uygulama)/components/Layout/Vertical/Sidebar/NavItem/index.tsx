@@ -14,6 +14,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import { useSelector } from "@/store/hooks";
 import { useTranslation } from "react-i18next";
 import { AppState } from "@/store/store";
+import { useLoading } from "@/contexts/LoadingContext";
 
 type NavGroup = {
   [x: string]: any;
@@ -52,6 +53,8 @@ export default function NavItem({
   const Icon = item?.icon;
   const theme = useTheme();
   const { t } = useTranslation();
+  const { setLoading } = useLoading();
+
   const itemIcon =
     level > 1 ? (
       <Icon stroke={1.5} size="1rem" />
@@ -104,6 +107,17 @@ export default function NavItem({
     target: item?.external ? "_blank" : "",
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    // Eğer farklı bir sayfaya gidiyorsak loading göster
+    if (pathDirect !== item?.href && item?.href) {
+      setLoading(true);
+    }
+    // Mobile'da sidebar'ı kapat
+    if (lgDown && onClick) {
+      onClick(e);
+    }
+  };
+
   return (
     <List component="li" disablePadding key={item?.id && item.title}>
       <Link href={item.href}>
@@ -111,7 +125,7 @@ export default function NavItem({
           // {...listItemProps}
           disabled={item?.disabled}
           selected={pathDirect === item?.href}
-          onClick={lgDown ? onClick : undefined}
+          onClick={handleClick}
         >
           <ListItemIcon
             sx={{

@@ -10,6 +10,7 @@ import Sidebar from "./components/Layout/Vertical/Sidebar/Sidebar";
 import Header from "./components/Layout/Vertical/Header/Header";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import PageLoadingOverlay from "@/components/shared/PageLoadingOverlay";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -54,67 +55,71 @@ export default function RootLayout({
     }
   }, [user.token]);
   return (
-    <>
-      {control ? (
-        <MainWrapper>
+    control ? (
+      <MainWrapper>
+        {/* ------------------------------------------- */}
+        {/* Sidebar */}
+        {/* ------------------------------------------- */}
+        <Sidebar
+          isSidebarHover={isSidebarHover}
+          setIsSidebarHover={setIsSidebarHover}
+        />
+        {/* ------------------------------------------- */}
+        {/* Main Wrapper */}
+        {/* ------------------------------------------- */}
+        <PageWrapper
+          className="page-wrapper"
+          sx={{
+            ...(customizer.isCollapse && {
+              [theme.breakpoints.up("lg")]: {
+                ml: `${customizer.MiniSidebarWidth}px`,
+              },
+            }),
+          }}
+        >
           {/* ------------------------------------------- */}
-          {/* Sidebar */}
+          {/* Header */}
           {/* ------------------------------------------- */}
-          <Sidebar
-            isSidebarHover={isSidebarHover}
-            setIsSidebarHover={setIsSidebarHover}
-          />
-          {/* ------------------------------------------- */}
-          {/* Main Wrapper */}
-          {/* ------------------------------------------- */}
-          <PageWrapper
-            className="page-wrapper"
+          <Header isSidebarHover={isSidebarHover} />
+          {/* PageContent */}
+          <Container
             sx={{
-              ...(customizer.isCollapse && {
-                [theme.breakpoints.up("lg")]: {
-                  ml: `${customizer.MiniSidebarWidth}px`,
-                },
-              }),
+              maxWidth:
+                customizer.isLayout === "boxed" ? "lg" : "100% !important",
+              position: "relative",
             }}
           >
             {/* ------------------------------------------- */}
-            {/* Header */}
+            {/* Page Loading Overlay - Only in content area */}
             {/* ------------------------------------------- */}
-            <Header isSidebarHover={isSidebarHover} />
+            <PageLoadingOverlay />
+
+            {/* ------------------------------------------- */}
             {/* PageContent */}
-            <Container
-              sx={{
-                maxWidth:
-                  customizer.isLayout === "boxed" ? "lg" : "100% !important",
-              }}
-            >
-              {/* ------------------------------------------- */}
-              {/* PageContent */}
-              {/* ------------------------------------------- */}
-              <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
-                {/* <Outlet /> */}
-                {children}
-                {/* <Index /> */}
-              </Box>
-              {/* ------------------------------------------- */}
-              {/* End Page */}
-              {/* ------------------------------------------- */}
-            </Container>
-          </PageWrapper>
-        </MainWrapper>
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            width: "100vw",
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
-    </>
+            {/* ------------------------------------------- */}
+            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
+              {/* <Outlet /> */}
+              {children}
+              {/* <Index /> */}
+            </Box>
+            {/* ------------------------------------------- */}
+            {/* End Page */}
+            {/* ------------------------------------------- */}
+          </Container>
+        </PageWrapper>
+      </MainWrapper>
+    ) : (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100vw",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
   );
 }

@@ -15,6 +15,8 @@ import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sideb
 import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { useLoading } from "@/contexts/LoadingContext";
+import { usePathname } from "next/navigation";
 
 interface BreadCrumbType {
   subtitle?: string;
@@ -25,14 +27,17 @@ interface BreadCrumbType {
 
 const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const { setLoading } = useLoading();
+  const pathname = usePathname();
 
-  const Menuitems: MenuitemsType[] = createMenuItems(
+  // useMemo ile menü cache'leniyor - performans iyileştirmesi
+  const Menuitems: MenuitemsType[] = React.useMemo(() => createMenuItems(
     user.rol || undefined,
     user.denetimTuru || undefined,
     user.enflasyonmu || undefined,
     user.konsolidemi || undefined,
     user.bddkmi || undefined
-  );
+  ), [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi]);
   const itemsTitle =
     items && items.length > 0
       ? items.map((item) =>
@@ -62,6 +67,13 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
 
   const Icon = MenuItem && MenuItem?.icon;
   const itemIcon = MenuItem && <Icon stroke={0.8} size="100%" />;
+
+  const handleBreadcrumbClick = (to: string) => {
+    // Farklı bir sayfaya gidiyorsa loading göster
+    if (pathname !== to) {
+      setLoading(true);
+    }
+  };
 
   const mdDown = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
@@ -106,6 +118,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                     <NextLink
                       href={item.to}
                       passHref
+                      onClick={() => handleBreadcrumbClick(item.to)}
                       style={{
                         display: "flex",
                         alignItems: "center",

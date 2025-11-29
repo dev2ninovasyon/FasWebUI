@@ -5,6 +5,7 @@ import icon3 from "public/images/svgs/icon-briefcase.svg";
 import icon4 from "public/images/svgs/icon-mailbox.svg";
 import icon5 from "public/images/svgs/icon-favorites.svg";
 import Link from "next/link";
+import { useLoading } from "@/contexts/LoadingContext";
 
 const KullaniciTopCards = [
   {
@@ -34,11 +35,12 @@ const KullaniciTopCards = [
 ];
 
 const KullaniciTopCard = () => {
+  const { setLoading } = useLoading();
   return (
     <Grid container spacing={3} mt={1}>
       {KullaniciTopCards.map((topcard, i) => (
         <Grid item xs={12} sm={4} lg={3} key={i}>
-          <Link href={topcard.href}>
+          <Link href={topcard.href} onClick={() => setLoading(true)}>
             <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
               <CardContent style={{ height: "180px" }}>
                 <Image

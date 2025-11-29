@@ -1,5 +1,6 @@
 "use client";
 import { Grid, Box } from "@mui/material";
+import Image from "next/image";
 
 // components
 import AuthLogin from "./authForms/AuthLogin";
@@ -14,7 +15,7 @@ export default function LoginPageClient({ imagePath }: LoginPageClientProps) {
     return (
         <PageContainer title="Giriş" description="Giriş Yap">
             <Grid container sx={{ height: "100vh", overflow: "hidden" }}>
-                {/* Left Side - 80% with Random Image */}
+                {/* Left Side - 70% with Random Image */}
                 <Grid
                     item
                     xs={12}
@@ -23,14 +24,38 @@ export default function LoginPageClient({ imagePath }: LoginPageClientProps) {
                         flexBasis: { lg: "70% !important" },
                         maxWidth: { lg: "70% !important" },
                         display: { xs: "none", lg: "block" },
-                        backgroundImage: imagePath ? `url(${imagePath})` : "none",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        transition: "background-image 0.5s ease-in-out",
+                        position: "relative",
+                        overflow: "hidden",
                     }}
-                />
+                >
+                    {imagePath && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                overflow: "hidden",
+                            }}
+                        >
+                            <Image
+                                src={imagePath}
+                                alt="Login background"
+                                fill
+                                priority
+                                quality={95}
+                                sizes="70vw"
+                                style={{
+                                    objectFit: "cover",
+                                    objectPosition: "center",
+                                }}
+                            />
+                        </Box>
+                    )}
+                </Grid>
 
-                {/* Right Side - 20% Login Form */}
+                {/* Right Side - 30% Login Form */}
                 <Grid
                     item
                     xs={12}

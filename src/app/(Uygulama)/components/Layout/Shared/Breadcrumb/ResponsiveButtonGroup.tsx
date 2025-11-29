@@ -64,7 +64,16 @@ const ResponsiveButtonGroup: React.FC<ResponsiveButtonGroupProps> = ({ children 
     }
 
     return (
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end', width: '100%' }}>
+        <Box
+            sx={{
+                display: 'flex',
+                gap: 1,
+                flexWrap: 'nowrap',  // Butonlar taşmasın
+                justifyContent: 'flex-end',
+                width: '100%',
+                overflow: 'hidden',  // Taşan butonlar gizlensin
+            }}
+        >
             {children}
         </Box>
     );

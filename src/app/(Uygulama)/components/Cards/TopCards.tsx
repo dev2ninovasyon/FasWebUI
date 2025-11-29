@@ -18,6 +18,7 @@ import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sideb
 import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { useLoading } from "@/contexts/LoadingContext";
 
 function randomIcon() {
   var icons = [icon1, icon2, icon3, icon4, icon5, icon6];
@@ -47,6 +48,7 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+  const { setLoading } = useLoading();
 
   const Menuitems: MenuitemsType[] = createMenuItems(
     user.rol || undefined,
@@ -124,7 +126,7 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
                 },
               }}
             >
-              <Link href={topcard.href} passHref>
+              <Link href={topcard.href} passHref onClick={() => setLoading(true)}>
                 <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
                   <CardContent style={{ height: "180px" }}>
                     <Image
@@ -147,7 +149,7 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
               </Link>
             </Tooltip>
           ) : (
-            <Link href={topcard.href} passHref>
+            <Link href={topcard.href} passHref onClick={() => setLoading(true)}>
               <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
                 <CardContent style={{ height: "180px" }}>
                   <Image

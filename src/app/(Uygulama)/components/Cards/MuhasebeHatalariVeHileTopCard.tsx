@@ -5,6 +5,7 @@ import { getHile } from "@/api/DenetimDosya/DenetimDosya";
 import { useSelector } from "react-redux";
 import { AppState } from "@/store/store";
 import { useEffect, useState } from "react";
+import { useLoading } from "@/contexts/LoadingContext";
 
 interface Veri {
   icon: any;
@@ -15,6 +16,7 @@ interface Veri {
 
 const MuhasebeHatalariVeHileTopCard = () => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const { setLoading } = useLoading();
 
   function randomIcon() {
     var icons = ["/images/svgs/denetim-kanitlari/hile-ve-usulsuzluk.svg"];
@@ -38,32 +40,31 @@ const MuhasebeHatalariVeHileTopCard = () => {
   const [muhasebeHatlariVeHileTopCards, setMuhasebeHatalariVeHileTopCars] =
     useState<Veri[]>([]);
 
-  const fetchData = async () => {
-    try {
-      const data = await getHile(user.token || "", user.denetimTuru || "");
-
-      // Her karta icon, bgcolor ekle
-      const enriched = data.map((item: any, index: number) => ({
-        icon: randomIcon(),
-        title: item.name,
-        bgcolor: randomColor(),
-        href: `${item.url.replace(/\s/g, "")}`,
-      }));
-
-      setMuhasebeHatalariVeHileTopCars(enriched);
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getHile(user.token || "", user.denetimTuru || "");
+
+        // Her karta icon, bgcolor ekle
+        const enriched = data.map((item: any, index: number) => ({
+          icon: randomIcon(),
+          title: item.name,
+          bgcolor: randomColor(),
+          href: `${item.url.replace(/\s/g, "")}`,
+        }));
+
+        setMuhasebeHatalariVeHileTopCars(enriched);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
     fetchData();
-  }, []);
+  }, [user.token, user.denetimTuru]);
   return (
     <Grid container spacing={3} mt={1}>
       {muhasebeHatlariVeHileTopCards.map((topcard, i) => (
         <Grid item xs={12} sm={4} lg={3} key={i}>
-          <Link href={topcard.href}>
+          <Link href={topcard.href} onClick={() => setLoading(true)}>
             <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
               <CardContent style={{ height: "180px" }}>
                 <Image

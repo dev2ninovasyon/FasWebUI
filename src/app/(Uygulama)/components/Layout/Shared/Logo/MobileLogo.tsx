@@ -4,9 +4,11 @@ import Link from "next/link";
 import { styled } from "@mui/material/styles";
 import { AppState } from "@/store/store";
 import Image from "next/image";
+import { useLoading } from "@/contexts/LoadingContext";
 
 const MobileLogo = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
+  const { setLoading } = useLoading();
   const LinkStyled = styled(Link)(() => ({
     height: customizer.TopbarHeight,
     overflow: "hidden",
@@ -15,7 +17,7 @@ const MobileLogo = () => {
 
   if (customizer.activeDir === "ltr") {
     return (
-      <LinkStyled href="/Anasayfa">
+      <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
         {customizer.activeMode === "dark" ? (
           <Image
             src="/images/logos/fas-logo-yazili-beyaz.png"
@@ -40,7 +42,7 @@ const MobileLogo = () => {
   }
 
   return (
-    <LinkStyled href="/Anasayfa">
+    <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
       {customizer.activeMode === "dark" ? (
         <Image
           src="/images/logos/fas-logo-yazili-beyaz.png"

@@ -13,6 +13,7 @@ import { AppState } from "@/store/store";
 import { previewFaturaHtmlNewTab, deleteYuklemeIslemleri } from "@/api/Fatura/FaturaApi";
 import { enqueueSnackbar } from "notistack";
 import Link from "next/link";
+import { useLoading } from "@/contexts/LoadingContext";
 
 type FaturaDosyaRow = { id: string; dosyaAdi: string; durum: string; yuklemeTarihi: string; };
 type YuklemeRow = {
@@ -68,6 +69,7 @@ const DosyaTable: React.FC<{
   onRefresh?: () => void;
 }> = ({ rows, initialLoading = false, onRefresh }) => {
   const user = useSelector((s: AppState) => s.userReducer);
+  const { setLoading } = useLoading();
 
   const [search, setSearch] = React.useState("");
   const [page, setPage] = React.useState(0);
@@ -132,6 +134,7 @@ const DosyaTable: React.FC<{
             variant="outlined"
             size="small"
             sx={{ whiteSpace: "nowrap" }}
+            onClick={() => setLoading(true)}
           >
             Faturalara Git
           </Button>
@@ -245,7 +248,7 @@ const DosyaTable: React.FC<{
                                     <TableCell align="right">
                                       <Button
                                         size="small"
-                                        startIcon={previewLoading ? <CircularProgress size={14}/> : <IconEye size={16} />}
+                                        startIcon={previewLoading ? <CircularProgress size={14} /> : <IconEye size={16} />}
                                         disabled={previewLoading}
                                         onClick={async (e) => {
                                           e.stopPropagation();
@@ -284,7 +287,7 @@ const DosyaTable: React.FC<{
             </TableBody>
           )}
 
- {/* === Footer: solda Sil butonu, sağda Pagination (E-Defter stil) === */}
+          {/* === Footer: solda Sil butonu, sağda Pagination (E-Defter stil) === */}
           <TableFooter>
             <TableRow>
               <TableCell colSpan={6} sx={{ p: 0 }}>

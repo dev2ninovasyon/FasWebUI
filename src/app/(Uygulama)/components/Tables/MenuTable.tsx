@@ -22,6 +22,7 @@ import Link from "next/link";
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
 import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { useRouter } from "next/navigation";
+import { useLoading } from "@/contexts/LoadingContext";
 
 
 interface NestedMenuItemProps {
@@ -44,6 +45,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
   const theme = useTheme();
   const customizer = useSelector((state: AppState) => state.customizer);
   const router = useRouter();
+  const { setLoading } = useLoading();
 
   const hasChildren = item.children && item.children.length > 0;
 
@@ -64,37 +66,36 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
   const [onaylayan, setOnaylayan] = React.useState<boolean>(false);
   const [kontrolEden, setKontrolEden] = React.useState<boolean>(false);
 
-  const fetchData = async () => {
-    if (!item.formKodu) {
-      return;
-    }
-    try {
-      const formHazirlayanOnaylayanVerileri =
-        await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
-          user.token || "",
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0,
-          item.formKodu
-        );
-
-      if (formHazirlayanOnaylayanVerileri.hazirlayanId) {
-        setHazirlayan(true);
-      }
-      if (formHazirlayanOnaylayanVerileri.onaylayanId) {
-        setOnaylayan(true);
-      }
-      if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
-        setKontrolEden(true);
-      }
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      if (!item.formKodu) {
+        return;
+      }
+      try {
+        const formHazirlayanOnaylayanVerileri =
+          await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
+            user.token || "",
+            user.denetciId || 0,
+            user.denetlenenId || 0,
+            user.yil || 0,
+            item.formKodu
+          );
+
+        if (formHazirlayanOnaylayanVerileri.hazirlayanId) {
+          setHazirlayan(true);
+        }
+        if (formHazirlayanOnaylayanVerileri.onaylayanId) {
+          setOnaylayan(true);
+        }
+        if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
+          setKontrolEden(true);
+        }
+      } catch (error) {
+        console.error("Bir hata oluştu:", error);
+      }
+    };
     fetchData();
-  }, []);
+  }, [item.formKodu, user.token, user.denetciId, user.denetlenenId, user.yil]);
   return (
     <>
       <TableRow
@@ -119,6 +120,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
           if (hasChildren) {
             setOpen(!open);
           } else if (item.href) {
+            setLoading(true);
             router.push(item.href);
           }
         }}      >
@@ -144,7 +146,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
         {/* Expand/Collapse or Arrow Icon */}
         <TableCell sx={{ textAlign: "center", width: "15%" }}>
           {!hasChildren ? (
-            <Link href={item.href || ""}>
+            <Link href={item.href || ""} onClick={() => setLoading(true)}>
               <ArrowCircleRightIcon sx={{ color: "#1976d2" }} />
             </Link>
           ) : (

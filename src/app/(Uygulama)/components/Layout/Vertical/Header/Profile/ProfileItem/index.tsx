@@ -13,6 +13,7 @@ import { useSelector } from "@/store/hooks";
 import { useTranslation } from "react-i18next";
 import { AppState } from "@/store/store";
 import { Avatar, Box } from "@mui/material";
+import { useLoading } from "@/contexts/LoadingContext";
 
 type ProfileGroup = {
   [x: string]: any;
@@ -47,6 +48,7 @@ export default function ProfileItem({
   const Icon = item?.icon;
   const theme = useTheme();
   const { t } = useTranslation();
+  const { setLoading } = useLoading();
   const itemIcon =
     level > 1 ? (
       <Icon stroke={1.5} size="1rem" />
@@ -74,72 +76,72 @@ export default function ProfileItem({
     <List component="li" disablePadding key={item?.id && item.title}>
       {(item.title !== "Kullanıcı" ||
         (item.title === "Kullanıcı" && yetki === "DenetciAdmin")) && (
-        <Link href={item.href}>
-          <ListItemStyled
-            disabled={item?.disabled}
-            selected={pathDirect === item?.href}
-            onClick={lgDown ? onClick : undefined}
-          >
-            <Box
-              width="45px"
-              height="45px"
-              bgcolor="primary.light"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              flexShrink="0"
+          <Link href={item.href} onClick={() => setLoading(true)}>
+            <ListItemStyled
+              disabled={item?.disabled}
+              selected={pathDirect === item?.href}
+              onClick={lgDown ? onClick : undefined}
             >
-              <Avatar
-                src={item.icon}
+              <Box
+                width="45px"
+                height="45px"
+                bgcolor="primary.light"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flexShrink="0"
+              >
+                <Avatar
+                  src={item.icon}
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 0,
+                  }}
+                >
+                  { }
+                </Avatar>
+              </Box>
+
+              <ListItemText
+                className="hover-text-primary"
                 sx={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: 0,
+                  paddingLeft: "5%",
                 }}
               >
-                {}
-              </Avatar>
-            </Box>
-
-            <ListItemText
-              className="hover-text-primary"
-              sx={{
-                paddingLeft: "5%",
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                fontWeight={level > 1 ? 400 : 600}
-                color="textPrimary"
-                className="text-hover"
-                noWrap
-                sx={{
-                  width: "240px",
-                }}
-              >
-                {" "}
-                {<>{t(`${item?.title}`)}</>}
-              </Typography>
-
-              {item?.subtitle ? (
                 <Typography
-                  color="textSecondary"
                   variant="subtitle2"
-                  className="hover-text-primary"
+                  fontWeight={level > 1 ? 400 : 600}
+                  color="textPrimary"
+                  className="text-hover"
+                  noWrap
                   sx={{
                     width: "240px",
                   }}
-                  noWrap
                 >
-                  {item?.subtitle}
+                  {" "}
+                  {<>{t(`${item?.title}`)}</>}
                 </Typography>
-              ) : (
-                ""
-              )}
-            </ListItemText>
-          </ListItemStyled>
-        </Link>
-      )}
+
+                {item?.subtitle ? (
+                  <Typography
+                    color="textSecondary"
+                    variant="subtitle2"
+                    className="hover-text-primary"
+                    sx={{
+                      width: "240px",
+                    }}
+                    noWrap
+                  >
+                    {item?.subtitle}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+              </ListItemText>
+            </ListItemStyled>
+          </Link>
+        )}
     </List>
   );
 }
