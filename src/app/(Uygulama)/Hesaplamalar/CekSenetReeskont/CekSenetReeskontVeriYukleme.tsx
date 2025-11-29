@@ -175,8 +175,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
         const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
 
         enqueueSnackbar(
-          `${duplicatesMessage}Numaralı Satır${
-            duplicateRowNumbers.length > 1 ? "lar" : ""
+          `${duplicatesMessage}Numaralı Satır${duplicateRowNumbers.length > 1 ? "lar" : ""
           } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
           {
             variant: "warning",
@@ -654,22 +653,22 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
           veri.detayHesapKodu,
           veri.hesapAdi,
           veri.cekSenetKayitTarihi !== null &&
-          veri.cekSenetKayitTarihi !== undefined
+            veri.cekSenetKayitTarihi !== undefined
             ? veri.cekSenetKayitTarihi
-                .split("T")[0]
-                .split("-")
-                .reverse()
-                .join(".")
+              .split("T")[0]
+              .split("-")
+              .reverse()
+              .join(".")
             : null,
           veri.muhatapFirma,
           veri.cekSenetNo,
           veri.cekSenetVadeTarihi !== null &&
-          veri.cekSenetVadeTarihi !== undefined
+            veri.cekSenetVadeTarihi !== undefined
             ? veri.cekSenetVadeTarihi
-                .split("T")[0]
-                .split("-")
-                .reverse()
-                .join(".")
+              .split("T")[0]
+              .split("-")
+              .reverse()
+              .join(".")
             : null,
           veri.kayitTutariNominalDeger,
           veri.paraBirimi,
@@ -767,17 +766,21 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [
+    customizer.isCollapse,
+    customizer.SidebarWidth,
+    customizer.MiniSidebarWidth,
+  ]);
 
   return (
     <>

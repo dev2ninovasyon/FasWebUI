@@ -149,8 +149,7 @@ const VukMizan: React.FC<Props> = ({
         const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
 
         enqueueSnackbar(
-          `${duplicatesMessage}Numaralı Satır${
-            duplicateRowNumbers.length > 1 ? "lar" : ""
+          `${duplicatesMessage}Numaralı Satır${duplicateRowNumbers.length > 1 ? "lar" : ""
           } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
           {
             variant: "warning",
@@ -425,7 +424,7 @@ const VukMizan: React.FC<Props> = ({
         if (
           matched?.adi &&
           matched.adi !==
-            hotTableComponent.current?.hotInstance.getDataAtCell(row, 2)
+          hotTableComponent.current?.hotInstance.getDataAtCell(row, 2)
         ) {
           currentRowData.adi = matched.adi;
         }
@@ -714,17 +713,21 @@ const VukMizan: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [
+    customizer.isCollapse,
+    customizer.SidebarWidth,
+    customizer.MiniSidebarWidth,
+  ]);
 
   return (
     <>

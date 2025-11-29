@@ -165,8 +165,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
         const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
 
         enqueueSnackbar(
-          `${duplicatesMessage}Numaralı Satır${
-            duplicateRowNumbers.length > 1 ? "lar" : ""
+          `${duplicatesMessage}Numaralı Satır${duplicateRowNumbers.length > 1 ? "lar" : ""
           } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
           {
             variant: "warning",
@@ -496,7 +495,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
         if (
           matched?.adi &&
           matched.adi !==
-            hotTableComponent.current?.hotInstance.getDataAtCell(row, 2)
+          hotTableComponent.current?.hotInstance.getDataAtCell(row, 2)
         ) {
           currentRowData.adi = matched.adi;
         }
@@ -801,17 +800,21 @@ const DonusturulmusMizan: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [
+    customizer.isCollapse,
+    customizer.SidebarWidth,
+    customizer.MiniSidebarWidth,
+  ]);
 
   return (
     <>
@@ -839,11 +842,12 @@ const DonusturulmusMizan: React.FC<Props> = ({
         minCols={11}
         filters={true}
         columnSorting={true}
-        dropdownMenu={[
-          "filter_by_condition",
-          "filter_by_value",
-          "filter_action_bar",
-        ]}
+        dropdownMenu={
+          [
+            "filter_by_condition",
+            "filter_by_value",
+            "filter_action_bar",
+          ]}
         licenseKey="non-commercial-and-evaluation" // for non-commercial use only
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
@@ -853,13 +857,14 @@ const DonusturulmusMizan: React.FC<Props> = ({
         beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
-        contextMenu={[
-          "row_above",
-          "row_below",
-          "remove_row",
-          "alignment",
-          "copy",
-        ]}
+        contextMenu={
+          [
+            "row_above",
+            "row_below",
+            "remove_row",
+            "alignment",
+            "copy",
+          ]}
       />
       <Grid container marginTop={2}>
         <Grid item xs={12} lg={10}></Grid>

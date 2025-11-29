@@ -485,17 +485,21 @@ const OzetDonusumMizanKontrol: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [
+    customizer.isCollapse,
+    customizer.SidebarWidth,
+    customizer.MiniSidebarWidth,
+  ]);
 
   return (
     <>
@@ -548,18 +552,18 @@ const OzetDonusumMizanKontrol: React.FC<Props> = ({
             handleDownload={handleDownload}
           ></ExceleAktarButton>
 
-          
+
         </Grid>
       </Grid>
-        <FormOnayBolumu
-      controller="OzetDonusumMizan" // backend’de kullandığın form kodu / controller string ne ise onu ver
-      showHazirlayan
-      showOnaylayan
-      showKaliteKontrol
-      onHazirlayanChange={fetchData}      // istersen tabloyu yenile
-      onOnaylayanChange={fetchData}
-      onKaliteKontrolChange={fetchData}
-    />
+      <FormOnayBolumu
+        controller="OzetDonusumMizan" // backend’de kullandığın form kodu / controller string ne ise onu ver
+        showHazirlayan
+        showOnaylayan
+        showKaliteKontrol
+        onHazirlayanChange={fetchData}      // istersen tabloyu yenile
+        onOnaylayanChange={fetchData}
+        onKaliteKontrolChange={fetchData}
+      />
     </>
   );
 };

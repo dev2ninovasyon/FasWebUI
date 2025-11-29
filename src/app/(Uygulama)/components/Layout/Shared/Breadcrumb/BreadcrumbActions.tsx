@@ -60,7 +60,7 @@ const BreadcrumbActions: React.FC<BreadcrumbActionsProps> = ({
                     }}
                 >
                     <Typography
-                        variant="body1"
+                        variant="body2"
                         sx={{
                             overflowWrap: "break-word",
                             wordWrap: "break-word",
@@ -132,14 +132,28 @@ const BreadcrumbActions: React.FC<BreadcrumbActionsProps> = ({
                                 color="primary"
                                 disabled={action.disabled}
                                 onClick={action.onClick}
-                                sx={{ width: "auto" }}
+                                sx={{
+                                    width: "auto",
+                                    minWidth: "fit-content",
+                                    maxWidth: "200px",  // Maksimum genişlik
+                                    flexShrink: 0,  // Butonlar küçülmesin
+                                    whiteSpace: "nowrap",
+                                }}
                             >
                                 <Typography
-                                    variant="body1"
-                                    sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                                    variant="body2"
+                                    sx={{
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
                                 >
-                                    {action.icon && <span style={{ marginRight: 8 }}>{action.icon}</span>}
-                                    {action.label}
+                                    {action.icon && <span style={{ marginRight: 8, flexShrink: 0 }}>{action.icon}</span>}
+                                    <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                                        {action.label}
+                                    </span>
                                 </Typography>
                             </Button>
                         );
