@@ -112,3 +112,55 @@ export const getDikeyAnaliz = async (
     console.error("Bir hata oluştu:", error);
   }
 };
+export const getDikeyAnalizFinansalDurum = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response =await apiFetch(
+      `/FinansalTablolar/DikeyAnalizTablosuFinansalDurum?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Finansal Durum verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};
+export const getDikeyAnalizTablosuKarZarar = async (
+  token: string,
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response =await apiFetch(
+      `/FinansalTablolar/DikeyAnalizTablosuKarZarar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Kar-Zarar verileri getirilemedi");
+    }
+  } catch (error) {
+    console.error("Bir hata oluştu:", error);
+  }
+};

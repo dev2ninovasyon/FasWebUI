@@ -990,6 +990,30 @@ export function createMenuItems(
               },
               {
                 id: uniqueId(),
+                title: "Bilanço Değerlendirme Belgesi",
+                customIcon:
+                  "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
+                icon: IconPoint,
+                href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/BilancoDegerlendirmeBelgesi",
+              },
+              {
+                id: uniqueId(),
+                title: "Gelir Değerlendirme Belgesi",
+                customIcon:
+                  "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
+                icon: IconPoint,
+                href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/GelirDegerlendirmeBelgesi",
+              },
+              {
+                id: uniqueId(),
+                title: "Oran Analizi Tespit Belgesi",
+                customIcon:
+                  "public/images/svgs/denetim-kanitlari/isletmenin-surekliligi.svg",
+                icon: IconPoint,
+                href: "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OranAnaliziTespitBelgesi",
+              },
+              {
+                id: uniqueId(),
                 title: "Kullanılan Analitik Tekniklere İlişkin Belgeler",
                 formKodu: "KullanilanAnalitikTekniklereIliskinBelgeler",
                 customIcon:
