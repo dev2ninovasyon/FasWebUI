@@ -18,6 +18,14 @@ import {
   setRol,
   setBddkmi,
   setDenetciFirmaAdi,
+  setDenetlenenId,
+  setDenetlenenFirmaAdi,
+  setYil,
+  setDenetimTuru,
+  setBobimi,
+  setTfrsmi,
+  setEnflasyonmu,
+  setKonsolidemi,
 } from "@/store/user/UserSlice";
 import { apiFetch } from "@/api/apiBase";
 
@@ -95,6 +103,18 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
 
           dispatch(setBddkmi(bddkmi));
         }
+
+        // Şirket seçimi bilgilerini temizle - her login'de fresh başlasın
+        dispatch(setDenetlenenId(undefined));
+        dispatch(setDenetlenenFirmaAdi(undefined));
+        dispatch(setYil(undefined));
+        dispatch(setDenetimTuru(undefined));
+        dispatch(setBobimi(undefined));
+        dispatch(setTfrsmi(undefined));
+        dispatch(setEnflasyonmu(undefined));
+        dispatch(setKonsolidemi(undefined));
+        localStorage.removeItem("fas_denetlenenId");
+        localStorage.removeItem("fas_yil");
 
         router.push("/Anasayfa");
       } else {

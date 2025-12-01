@@ -35,11 +35,13 @@ interface Veri {
 interface Props {
   showGraph: boolean;
   hesaplaTiklandimi: boolean;
+  onDataReady?: (data: any) => void;
 }
 
 const KarsilastirmaliAnaliz: React.FC<Props> = ({
   showGraph,
   hesaplaTiklandimi,
+  onDataReady,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const theme = useTheme();
@@ -119,6 +121,18 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
       setHesapData(hesapList);
       setKalemData2(kalemList2);
       setHesapData2(hesapList2);
+
+      // Notify parent component that data is ready for export
+      if (onDataReady) {
+        onDataReady({
+          kalemData: kalemList,
+          hesapData: hesapList,
+          kalemData2: kalemList2,
+          hesapData2: hesapList2,
+          title: karsilastirmaliAnalizTablosu[0]?.adi || "",
+          title2: kalemList2[0]?.adi || "",
+        });
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
