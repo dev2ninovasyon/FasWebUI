@@ -93,8 +93,6 @@ const MobileSirketPopup = () => {
     }
 
     handleDrawerClose2();
-
-    window.location.reload();
   };
 
   return (

@@ -23,7 +23,7 @@ import useAutoLogout from "@/utils/useAutoLogOut";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
-  useAutoLogout(15 * 60 * 1000, 10 * 60 * 1000); // 45 dakika idle süresi, 40 dakika refresh süresi
+  useAutoLogout(15 * 60 * 1000, 10 * 60 * 1000); // 15 dakika idle süresi, 10 dakika refresh süresi
 
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -121,22 +121,7 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
         <Provider store={store}>
-          <PersistGate
-            loading={
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100vh",
-                  width: "100vw",
-                }}
-              >
-                <CircularProgress />
-              </Box>
-            }
-            persistor={persistor}
-          >
+          <PersistGate loading={null} persistor={persistor}>
             <MyApp>{children}</MyApp>
           </PersistGate>
         </Provider>

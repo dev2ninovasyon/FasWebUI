@@ -98,8 +98,6 @@ const SirketPopup = () => {
     }
 
     handleDrawerClose2();
-
-    window.location.reload();
   };
 
   return (
