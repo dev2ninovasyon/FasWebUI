@@ -1,0 +1,32 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ana renkler -->
+  <!-- Fill: #2196F3 / #1E88E5, Stroke: #0D47A1 -->
+
+  <!-- Zemin çizgisi -->
+  <line x1="6" y1="54" x2="58" y2="54" stroke="#0D47A1" stroke-width="3"></line>
+
+  <!-- Sol blok -->
+  <rect x="8" y="26" width="12" height="24" fill="#1E88E5" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="12" y="32" width="4" height="6" fill="#1E88E5" stroke="#0D47A1" stroke-width="3"></rect>
+
+  <!-- Orta bina -->
+  <rect x="20" y="14" width="20" height="36" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+  <!-- Pencereler -->
+  <rect x="24" y="18" width="6" height="6" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="30" y="18" width="6" height="6" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="24" y="26" width="6" height="6" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="30" y="26" width="6" height="6" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="24" y="34" width="6" height="6" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="30" y="34" width="6" height="6" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+
+  <!-- Kapı -->
+  <rect x="26" y="40" width="8" height="10" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+
+  <!-- Sağ blok -->
+  <rect x="40" y="22" width="14" height="28" fill="#1E88E5" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="44" y="28" width="5" height="7" fill="#1E88E5" stroke="#0D47A1" stroke-width="3"></rect>
+  <rect x="44" y="37" width="5" height="7" fill="#1E88E5" stroke="#0D47A1" stroke-width="3"></rect>
+
+  <!-- Çatı plakası -->
+  <rect x="26" y="8" width="12" height="6" fill="#2196F3" stroke="#0D47A1" stroke-width="3"></rect>
+</svg>
