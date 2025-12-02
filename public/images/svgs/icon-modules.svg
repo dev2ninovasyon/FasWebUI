@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fill: #FB8C00, Stroke: #E65100 -->
+
+  <!-- Puzzle taban karesi -->
+  <rect x="10" y="10" width="44" height="44" fill="#FB8C00" stroke="#E65100" stroke-width="3"></rect>
+
+  <!-- İç çizgiler -->
+  <line x1="32" y1="10" x2="32" y2="54" stroke="#E65100" stroke-width="3"></line>
+  <line x1="10" y1="32" x2="54" y2="32" stroke="#E65100" stroke-width="3"></line>
+
+  <!-- Üst solda puzzle dişi -->
+  <circle cx="22" cy="10" r="5" fill="#FB8C00" stroke="#E65100" stroke-width="3"></circle>
+
+  <!-- Sağ üst boşluk -->
+  <circle cx="54" cy="22" r="5" fill="none" stroke="#E65100" stroke-width="3"></circle>
+
+  <!-- Alt sol boşluk -->
+  <circle cx="10" cy="42" r="5" fill="none" stroke="#E65100" stroke-width="3"></circle>
+
+  <!-- Alt sağ diş -->
+  <circle cx="42" cy="54" r="5" fill="#FB8C00" stroke="#E65100" stroke-width="3"></circle>
+</svg>
