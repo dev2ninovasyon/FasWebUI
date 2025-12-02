@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   IconButton,
   Dialog,
@@ -56,6 +56,16 @@ const SirketPopup = () => {
 
   const dispatch = useDispatch();
 
+  // Redux state değiştiğinde local state'i güncelle
+  useEffect(() => {
+    if (user.yil) {
+      setYear(user.yil);
+    }
+    if (user.denetlenenFirmaAdi) {
+      setCompany(user.denetlenenFirmaAdi.split(" ").slice(0, 2).join(" "));
+    }
+  }, [user.yil, user.denetlenenFirmaAdi]);
+
   const handleDrawerClose2 = () => {
     setShowDrawer2(false);
   };
@@ -71,8 +81,8 @@ const SirketPopup = () => {
     await dispatch(setKonsolidemi(selectedKonsolidemi));
     await setYear(parseInt(selectedYear));
     await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
-localStorage.setItem("fas_denetlenenId", selectedId.toString());
-localStorage.setItem("fas_yil", selectedYear.toString());
+    localStorage.setItem("fas_denetlenenId", selectedId.toString());
+    localStorage.setItem("fas_yil", selectedYear.toString());
     try {
       const rolVerileri = await getRol(
         user.token || "",
@@ -88,8 +98,6 @@ localStorage.setItem("fas_yil", selectedYear.toString());
     }
 
     handleDrawerClose2();
-
-    window.location.reload();
   };
 
   return (

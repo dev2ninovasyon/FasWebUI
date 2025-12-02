@@ -26,6 +26,9 @@ export default function useAutoLogout(
   const logout = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(TIMEOUT_KEY);
+    // Şirket seçimi bilgilerini de temizle
+    localStorage.removeItem("fas_denetlenenId");
+    localStorage.removeItem("fas_yil");
     dispatch(resetToNull(""));
 
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
@@ -56,14 +59,14 @@ export default function useAutoLogout(
     countdownTimerRef.current = setInterval(() => {
       const remaining = expiry - Date.now();
       if (remaining <= 0) {
-      //console.log("Kalan süre: 0 sn");
+        //console.log("Kalan süre: 0 sn");
         clearInterval(countdownTimerRef.current!);
         countdownTimerRef.current = null;
         return;
       }
 
       const remainingSeconds = Math.ceil(remaining / 1000);
-     //console.log("Kalan süre:", remainingSeconds, "sn");
+      //console.log("Kalan süre:", remainingSeconds, "sn");
     }, 1000);
   }, [idleTimeout, logout]);
 

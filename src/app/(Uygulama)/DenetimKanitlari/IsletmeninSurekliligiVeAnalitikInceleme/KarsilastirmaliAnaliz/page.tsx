@@ -5,12 +5,13 @@ import { Button, Grid, useTheme } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import KarsilastirmaliAnaliz from "@/app/(Uygulama)/components/DenetimKanitlari/Analizler/KarsilastirmaliAnaliz";
-import { IconChartBar, IconTable } from "@tabler/icons-react";
+import { IconChartBar, IconTable, IconFileTypography } from "@tabler/icons-react";
 import { enqueueSnackbar } from "notistack";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { createKarsilastirmaliAnaliz } from "@/api/Analizler/Analizler";
+import { downloadPowerBIExport } from "@/utils/exportToPowerBI";
 
 const BCrumb = [
   {
@@ -38,8 +39,57 @@ const Page = () => {
 
   const [showGraph, setShowGraph] = useState(false);
 
+  const [exportData, setExportData] = useState<any>(null);
+
   const handleToggle = () => {
     setShowGraph((prev) => !prev);
+  };
+
+  const handlePowerBIExport = async () => {
+    if (!exportData) {
+      enqueueSnackbar("Önce hesaplama yapmanız gerekiyor", {
+        variant: "warning",
+        autoHideDuration: 3000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.warning.light
+              : theme.palette.warning.main,
+        },
+      });
+      return;
+    }
+
+    try {
+      await downloadPowerBIExport({
+        ...exportData,
+        year: user.yil || 0,
+        companyName: "", // Company name from state if available
+      });
+
+      enqueueSnackbar("PowerBI paketi başarıyla indirildi", {
+        variant: "success",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.success.light
+              : theme.palette.success.main,
+        },
+      });
+    } catch (error) {
+      console.error("PowerBI export error:", error);
+      enqueueSnackbar("PowerBI paketi oluşturulurken hata oluştu", {
+        variant: "error",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.error.light
+              : theme.palette.error.main,
+        },
+      });
+    }
   };
 
   const handleHesapla = async () => {
@@ -115,6 +165,18 @@ const Page = () => {
           >
             Hesapla
           </Button>
+          <Button
+            type="button"
+            size="medium"
+            variant="contained"
+            color="secondary"
+            disabled={!exportData}
+            sx={{ mr: 2 }}
+            startIcon={<IconFileTypography size={20} />}
+            onClick={handlePowerBIExport}
+          >
+            PowerBI Export
+          </Button>
           <Button onClick={handleToggle}>
             {showGraph ? <IconTable size={24} /> : <IconChartBar size={24} />}
           </Button>
@@ -123,6 +185,7 @@ const Page = () => {
           <KarsilastirmaliAnaliz
             showGraph={showGraph}
             hesaplaTiklandimi={hesaplaTiklandimi}
+            onDataReady={setExportData}
           />
         </Grid>
         {openCartAlert && (
