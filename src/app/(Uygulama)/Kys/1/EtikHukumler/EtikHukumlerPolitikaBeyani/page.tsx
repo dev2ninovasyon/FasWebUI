@@ -9,21 +9,21 @@ const BCrumb = [
     { to: "/Kys", title: "KYS" },
     { to: "/Kys/1", title: "KYS-1" },
     { to: "/Kys/1/EtikHukumler", title: "Etik Hükümler" },
-    { to: "/Kys/1/EtikHukumler/BagimsizlikSorunlariCozumu", title: "4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu" },
+    { to: "/Kys/1/EtikHukumler/EtikHukumlerPolitikaBeyani", title: "4.1 Etik Hükümler Politikası Beyanı" },
 ];
 
 const Page: React.FC = () => {
     return (
         <PageContainer
-            title="4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu"
-            description="Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu Belgesi"
+            title="4.1 Etik Hükümler Politikası Beyanı"
+            description="Etik Hükümler Politikası Beyanı Belgesi"
         >
-            <Breadcrumb title="4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu" items={BCrumb} />
+            <Breadcrumb title="4.1 Etik Hükümler Politikası Beyanı" items={BCrumb} />
 
             <Box sx={{ mt: 3 }}>
 
 
-                <KysCalismaKagidi formKodu="KysBagimsizlikSorunlariCozumu" alanAdi="4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu" />
+                <KysCalismaKagidi formKodu="EtikHukumlerPolitikaBeyani" alanAdi="4.1 Etik Hükümler Politikası Beyanı" />
             </Box>
         </PageContainer>
     );
