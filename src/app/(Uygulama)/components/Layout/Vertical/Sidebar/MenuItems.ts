@@ -368,217 +368,6 @@ export function createMenuItems(
       },
       {
         id: uniqueId(),
-        title: "HESAPLAMALAR",
-        icon: IconCalculator,
-        href: "/Hesaplamalar",
-        children: [
-          {
-            id: uniqueId(),
-            title: "Yaşlandırma",
-            customIcon: "public/images/svgs/hesaplamalar/yaslandirma.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/Yaslandirma",
-          },
-          {
-            id: uniqueId(),
-            title: "Beklenen Kredi Zararı",
-            customIcon:
-              "public/images/svgs/hesaplamalar/beklenen-kredi-zarari.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/BeklenenKrediZarari",
-          },
-          {
-            id: uniqueId(),
-            title: "Kıdem Tazminatı (Bobi)",
-            customIcon: "public/images/svgs/hesaplamalar/kidem-bobi.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/KidemTazminatiBobi",
-          },
-          {
-            id: uniqueId(),
-            title: "Kıdem Tazminatı (Tfrs)",
-            customIcon: "public/images/svgs/hesaplamalar/kidem-tfrs.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/KidemTazminatiTfrs",
-          },
-          {
-            id: uniqueId(),
-            title: "Amortisman",
-            customIcon: "public/images/svgs/hesaplamalar/amortisman.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/Amortisman",
-            aciklama:
-              "Veri Yükleme sekmesi altında, amortisman verilerini sisteme girebilirsiniz. Hesaplama sekmesi altında ise, Veri Yükleme sekmesi altında girmiş olduğunuz amortismanları standartlarına uygun olarak aylık veya günlük bazda hesaplama işlemini gerçekleştirebilirsiniz.",
-          },
-          {
-            id: uniqueId(),
-            title: "Kredi",
-            customIcon: "public/images/svgs/hesaplamalar/kredi.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/Kredi",
-          },
-          {
-            id: uniqueId(),
-            title: "Çek / Senet Reeskont",
-            customIcon:
-              "public/images/svgs/hesaplamalar/cek-senet-reeskont.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/CekSenetReeskont",
-          },
-          {
-            id: uniqueId(),
-            title: "Dava Karşılıkları",
-            customIcon:
-              "public/images/svgs/hesaplamalar/dava-karsiliklari.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/DavaKarsiliklari",
-          },
-          {
-            id: uniqueId(),
-            title: "Ertelenmiş Vergi Hesabı",
-            customIcon:
-              "public/images/svgs/hesaplamalar/ertelenmis-vergi-hesabi.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/ErtelenmisVergiHesabi",
-          },
-          {
-            id: uniqueId(),
-            title: "İlişkili Taraf Sınıflama",
-            customIcon:
-              "public/images/svgs/hesaplamalar/iliskili-taraf-siniflama.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/IliskiliTarafSiniflama",
-          },
-          {
-            id: uniqueId(),
-            title: "Vadeli Banka Mevduatı",
-            customIcon:
-              "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/VadeliBankaMevduati",
-            children: [
-              {
-                id: uniqueId(),
-                title: "Vadeli Banka Mevduatı Otomatik Sınıflama",
-                customIcon:
-                  "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
-                icon: IconPoint,
-                href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiOtomatikSiniflama",
-              },
-              {
-                id: uniqueId(),
-                title: "Vadeli Banka Mevduatı Manuel Sınıflama",
-                customIcon:
-                  "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
-                icon: IconPoint,
-                href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama",
-              },
-              {
-                id: uniqueId(),
-                title: "Vadeli Banka Mevduatı Faiz Tahakkuk",
-                customIcon:
-                  "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
-                icon: IconPoint,
-                href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiFaizTahakkuk",
-              },
-            ],
-          },
-          {
-            id: uniqueId(),
-            title: "Hareketsiz",
-            customIcon: "public/images/svgs/hesaplamalar/hareketsiz.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/Hareketsiz",
-          },
-          {
-            id: uniqueId(),
-            title: "Geçmiş Yıllar Kar Zarar Kontrolleri",
-            customIcon:
-              "public/images/svgs/hesaplamalar/gecmis-yillar-kar-zarar.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/GecmisYillarKarZararKontrolleri",
-          },
-          {
-            id: uniqueId(),
-            title: "Kur Farkı Kayıtları",
-            customIcon:
-              "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
-            icon: IconPoint,
-            href: "/Hesaplamalar/KurFarkiKayitlari",
-            children: [
-              {
-                id: uniqueId(),
-                title: "Kur Farkı",
-                customIcon:
-                  "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
-                icon: IconPoint,
-                href: "/Hesaplamalar/KurFarkiKayitlari/KurFarki",
-              },
-              {
-                id: uniqueId(),
-                title: "Kur Farkı Kontrolleri",
-                customIcon:
-                  "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
-                icon: IconPoint,
-                href: "/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: uniqueId(),
-        title: "DÖNÜŞÜM",
-        icon: IconRepeat,
-        href: "/Donusum",
-        children: [
-          {
-            id: uniqueId(),
-            title: "Fiş Girişi",
-            customIcon: "public/images/svgs/donusum/fis-girisi.svg",
-            icon: IconPoint,
-            href: "/Donusum/FisGirisi",
-          },
-          {
-            id: uniqueId(),
-            title: "Fiş Listesi",
-            customIcon: "public/images/svgs/donusum/fis-listesi.svg",
-            icon: IconPoint,
-            href: "/Donusum/FisListesi",
-          },
-          {
-            id: uniqueId(),
-            title: "Hazır Fişler",
-            customIcon: "public/images/svgs/donusum/hazir-fisler.svg",
-            icon: IconPoint,
-            href: "/Donusum/HazirFisler",
-          },
-          {
-            id: uniqueId(),
-            title: "Dönüşüm İşlemi",
-            customIcon: "public/images/svgs/donusum/donusum-islemi.svg",
-            icon: IconPoint,
-            href: "/Donusum/DonusumIslemi",
-          },
-          {
-            id: uniqueId(),
-            title:
-              denetimTuru && denetimTuru == "Bobi"
-                ? "Bobi Frs Belirleme Belgesi"
-                : "Tms Tfrs Belirleme Belgesi",
-            formKodu: "DenetimTuruBelirlemeBelgesi",
-            customIcon: "public/images/svgs/donusum/belirleme-belgesi.svg",
-            icon: IconPoint,
-            href:
-              denetimTuru && denetimTuru == "Bobi"
-                ? "/Donusum/BobiFrs/BelirlemeBelgesi"
-                : "/Donusum/TmsTfrs/BelirlemeBelgesi",
-          },
-        ],
-      },
-      { id: uniqueId(), navlabel: true, subheader: "DENETİM" },
-      {
-        id: uniqueId(),
         title: "PLAN VE PROGRAM",
         icon: IconTimeline,
         href: "/PlanVeProgram",
@@ -816,6 +605,218 @@ export function createMenuItems(
           },
         ],
       },
+      {
+        id: uniqueId(),
+        title: "HESAPLAMALAR",
+        icon: IconCalculator,
+        href: "/Hesaplamalar",
+        children: [
+          {
+            id: uniqueId(),
+            title: "Yaşlandırma",
+            customIcon: "public/images/svgs/hesaplamalar/yaslandirma.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/Yaslandirma",
+          },
+          {
+            id: uniqueId(),
+            title: "Beklenen Kredi Zararı",
+            customIcon:
+              "public/images/svgs/hesaplamalar/beklenen-kredi-zarari.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/BeklenenKrediZarari",
+          },
+          {
+            id: uniqueId(),
+            title: "Kıdem Tazminatı (Bobi)",
+            customIcon: "public/images/svgs/hesaplamalar/kidem-bobi.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/KidemTazminatiBobi",
+          },
+          {
+            id: uniqueId(),
+            title: "Kıdem Tazminatı (Tfrs)",
+            customIcon: "public/images/svgs/hesaplamalar/kidem-tfrs.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/KidemTazminatiTfrs",
+          },
+          {
+            id: uniqueId(),
+            title: "Amortisman",
+            customIcon: "public/images/svgs/hesaplamalar/amortisman.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/Amortisman",
+            aciklama:
+              "Veri Yükleme sekmesi altında, amortisman verilerini sisteme girebilirsiniz. Hesaplama sekmesi altında ise, Veri Yükleme sekmesi altında girmiş olduğunuz amortismanları standartlarına uygun olarak aylık veya günlük bazda hesaplama işlemini gerçekleştirebilirsiniz.",
+          },
+          {
+            id: uniqueId(),
+            title: "Kredi",
+            customIcon: "public/images/svgs/hesaplamalar/kredi.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/Kredi",
+          },
+          {
+            id: uniqueId(),
+            title: "Çek / Senet Reeskont",
+            customIcon:
+              "public/images/svgs/hesaplamalar/cek-senet-reeskont.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/CekSenetReeskont",
+          },
+          {
+            id: uniqueId(),
+            title: "Dava Karşılıkları",
+            customIcon:
+              "public/images/svgs/hesaplamalar/dava-karsiliklari.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/DavaKarsiliklari",
+          },
+          {
+            id: uniqueId(),
+            title: "Ertelenmiş Vergi Hesabı",
+            customIcon:
+              "public/images/svgs/hesaplamalar/ertelenmis-vergi-hesabi.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/ErtelenmisVergiHesabi",
+          },
+          {
+            id: uniqueId(),
+            title: "İlişkili Taraf Sınıflama",
+            customIcon:
+              "public/images/svgs/hesaplamalar/iliskili-taraf-siniflama.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/IliskiliTarafSiniflama",
+          },
+          {
+            id: uniqueId(),
+            title: "Vadeli Banka Mevduatı",
+            customIcon:
+              "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/VadeliBankaMevduati",
+            children: [
+              {
+                id: uniqueId(),
+                title: "Vadeli Banka Mevduatı Otomatik Sınıflama",
+                customIcon:
+                  "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
+                icon: IconPoint,
+                href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiOtomatikSiniflama",
+              },
+              {
+                id: uniqueId(),
+                title: "Vadeli Banka Mevduatı Manuel Sınıflama",
+                customIcon:
+                  "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
+                icon: IconPoint,
+                href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama",
+              },
+              {
+                id: uniqueId(),
+                title: "Vadeli Banka Mevduatı Faiz Tahakkuk",
+                customIcon:
+                  "public/images/svgs/hesaplamalar/vadeli-banka-mevduati.svg",
+                icon: IconPoint,
+                href: "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiFaizTahakkuk",
+              },
+            ],
+          },
+          {
+            id: uniqueId(),
+            title: "Hareketsiz",
+            customIcon: "public/images/svgs/hesaplamalar/hareketsiz.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/Hareketsiz",
+          },
+          {
+            id: uniqueId(),
+            title: "Geçmiş Yıllar Kar Zarar Kontrolleri",
+            customIcon:
+              "public/images/svgs/hesaplamalar/gecmis-yillar-kar-zarar.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/GecmisYillarKarZararKontrolleri",
+          },
+          {
+            id: uniqueId(),
+            title: "Kur Farkı Kayıtları",
+            customIcon:
+              "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
+            icon: IconPoint,
+            href: "/Hesaplamalar/KurFarkiKayitlari",
+            children: [
+              {
+                id: uniqueId(),
+                title: "Kur Farkı",
+                customIcon:
+                  "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
+                icon: IconPoint,
+                href: "/Hesaplamalar/KurFarkiKayitlari/KurFarki",
+              },
+              {
+                id: uniqueId(),
+                title: "Kur Farkı Kontrolleri",
+                customIcon:
+                  "public/images/svgs/hesaplamalar/kur-farki-kayitlari.svg",
+                icon: IconPoint,
+                href: "/Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: "DÖNÜŞÜM",
+        icon: IconRepeat,
+        href: "/Donusum",
+        children: [
+          {
+            id: uniqueId(),
+            title: "Fiş Girişi",
+            customIcon: "public/images/svgs/donusum/fis-girisi.svg",
+            icon: IconPoint,
+            href: "/Donusum/FisGirisi",
+          },
+          {
+            id: uniqueId(),
+            title: "Fiş Listesi",
+            customIcon: "public/images/svgs/donusum/fis-listesi.svg",
+            icon: IconPoint,
+            href: "/Donusum/FisListesi",
+          },
+          {
+            id: uniqueId(),
+            title: "Hazır Fişler",
+            customIcon: "public/images/svgs/donusum/hazir-fisler.svg",
+            icon: IconPoint,
+            href: "/Donusum/HazirFisler",
+          },
+          {
+            id: uniqueId(),
+            title: "Dönüşüm İşlemi",
+            customIcon: "public/images/svgs/donusum/donusum-islemi.svg",
+            icon: IconPoint,
+            href: "/Donusum/DonusumIslemi",
+          },
+          {
+            id: uniqueId(),
+            title:
+              denetimTuru && denetimTuru == "Bobi"
+                ? "Bobi Frs Belirleme Belgesi"
+                : "Tms Tfrs Belirleme Belgesi",
+            formKodu: "DenetimTuruBelirlemeBelgesi",
+            customIcon: "public/images/svgs/donusum/belirleme-belgesi.svg",
+            icon: IconPoint,
+            href:
+              denetimTuru && denetimTuru == "Bobi"
+                ? "/Donusum/BobiFrs/BelirlemeBelgesi"
+                : "/Donusum/TmsTfrs/BelirlemeBelgesi",
+          },
+        ],
+      },
+      { id: uniqueId(), navlabel: true, subheader: "DENETİM" },
+
       {
         id: uniqueId(),
         title: "DENETİM KANITLARI",
@@ -1469,128 +1470,8 @@ export function createMenuItems(
           },
         ],
       },
-      {
-        id: uniqueId(),
-        title: "DENETİM DOSYA",
-        icon: IconFolderUp,
-        href: "/DenetimDosya",
 
-        children: [
-          {
-            id: uniqueId(),
-            title: "Bağımsız Denetim Metodolojisi",
-            icon: IconPoint,
-            href: "/DenetimDosya/BagimsizDenetimMetodolojisi",
-          },
-          {
-            id: uniqueId(),
-            title: "Denetim Dosya Yazdır",
-            icon: IconPoint,
-            href: "/DenetimDosya/DenetimDosyaYazdir",
-          },
-        ],
-      },
-      {
-        id: uniqueId(),
-        title: "KYS",
-        icon: IconFileCheck,
-        href: "/Kys",
-        children: [
-          {
-            id: uniqueId(),
-            title: "KYS-1",
-            icon: IconPoint,
-            href: "/Kys/1",
-            children: [
-              {
-                id: uniqueId(),
-                title: "Risk Değerlendirme Süreci",
-                icon: IconPoint,
-                href: "/Kys/1/RiskDegerlendirmeSureci",
-                children: [
-                  {
-                    id: uniqueId(),
-                    title: "Risk Belirleme",
-                    icon: IconPoint,
-                    href: "/Kys/1/RiskDegerlendirmeSureci/RiskBelirleme",
-                  },
-                  {
-                    id: uniqueId(),
-                    title: "Riske Karşılık Verme",
-                    icon: IconPoint,
-                    href: "/Kys/1/RiskDegerlendirmeSureci/RiskeKarsilikVerme",
-                  },
-                ],
-              },
 
-              {
-                id: uniqueId(),
-                title: "Üst Yönetim ve Liderlik Yapısı",
-                icon: IconPoint,
-                href: "/Kys/1/UstYonetimVeLiderlikYapisi",
-              },
-              {
-                id: uniqueId(),
-                title: "Etik Hükümler",
-                icon: IconPoint,
-                href: "/Kys/1/EtikHukumler",
-              },
-              {
-                id: uniqueId(),
-                title:
-                  "Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Ettirilmesi",
-                icon: IconPoint,
-                href: "/Kys/1/MusteriIliskileriVeSozlesmeKabulu",
-              },
-              {
-                id: uniqueId(),
-                title: "Denetimin Yürütülmesi",
-                icon: IconPoint,
-                href: "/Kys/1/DenetiminYurutulmesi",
-              },
-              {
-                id: uniqueId(),
-                title: "Kaynaklar",
-                icon: IconPoint,
-                href: "/Kys/1/Kaynaklar",
-                children: [
-                  {
-                    id: uniqueId(),
-                    title: "İnsan Kaynakları",
-                    icon: IconPoint,
-                    href: "/Kys/1/Kaynaklar/InsanKaynaklari",
-                  },
-                  {
-                    id: uniqueId(),
-                    title:
-                      "Teknolojik, Entelektüel Kaynaklar ve Hizmet Sağlayacılar",
-                    icon: IconPoint,
-                    href: "/Kys/1/Kaynaklar/HizmetSaglayicilar",
-                  },
-                ],
-              },
-              {
-                id: uniqueId(),
-                title: "Bilgi ve İletişim",
-                icon: IconPoint,
-                href: "/Kys/1/BilgiVeIletisim",
-              },
-              {
-                id: uniqueId(),
-                title: "İzleme ve Düzeltme",
-                icon: IconPoint,
-                href: "/Kys/1/IzlemeVeDuzeltme",
-              },
-            ],
-          },
-          {
-            id: uniqueId(),
-            title: "KYS-2",
-            icon: IconPoint,
-            href: "/Kys/2",
-          },
-        ],
-      },
       {
         id: uniqueId(),
         title: "SÜRDÜRÜLEBİLİRLİK",
@@ -1999,6 +1880,410 @@ export function createMenuItems(
     ],
   },
   */
+      {
+        id: uniqueId(),
+        title: "KYS",
+        icon: IconFileCheck,
+        href: "/Kys",
+        children: [
+          {
+            id: uniqueId(),
+            title: "KYS-1",
+            icon: IconPoint,
+            href: "/Kys/1",
+            children: [
+              {
+                id: uniqueId(),
+                title: "1. Belgelendirme",
+                icon: IconPoint,
+                href: "/Kys/1/Belgelendirme",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "1.1 Belgelendirme Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/Belgelendirme/BelgelendirmePolitikasi",
+                    formKodu: "KysBelgelendirmePolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "1.2 Kalite Yönetim Sistemi 'Esas' Belgesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/Belgelendirme/KaliteYonetimSistemiEsasBelgesi",
+                    formKodu: "KysKaliteYonetimSistemiEsasBelgesi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "1.3 Denetim Şirketinin Yapısı",
+                    icon: IconPoint,
+                    href: "/Kys/1/Belgelendirme/DenetimSirketininYapisi",
+                    formKodu: "KysDenetimSirketininYapisi",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "2. Risk Değerlendirme Süreci",
+                icon: IconPoint,
+                href: "/Kys/1/RiskDegerlendirmeSureci",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "2.1 Risk Değerlendirme Süreci Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/RiskDegerlendirmeSureci/PolitikaBeyani",
+                    formKodu: "KysRiskDegerlendirmePolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "2.2 Risk Değerlendirme Matrisi",
+                    icon: IconPoint,
+                    href: "/Kys/1/RiskMatrisi",
+                    formKodu: "KysRiskMatrisi",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "3. Üst Yönetim ve Liderlik Yapısı",
+                icon: IconPoint,
+                href: "/Kys/1/UstYonetimVeLiderlik",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "3.1 Üst Yönetim ve Liderlik Yapısı Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/UstYonetimVeLiderlik/PolitikaBeyani",
+                    formKodu: "KysUstYonetimPolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "3.2 Sorumlulukların Verilmesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/UstYonetimVeLiderlik/SorumluluklarinVerilmesi",
+                    formKodu: "KysSorumluluklarinVerilmesi",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "4. Etik Hükümler",
+                icon: IconPoint,
+                href: "/Kys/1/EtikHukumler",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "4.1 Etik Hükümler Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/EtikHukumler/PolitikaBeyani",
+                    formKodu: "KysEtikHukumlerPolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "4.2 Yıllık Bağımsızlık Taahhüdü",
+                    icon: IconPoint,
+                    href: "/Kys/1/EtikHukumler/YillikBagimsizlikTaahhudu",
+                    formKodu: "KysYillikBagimsizlikTaahhudu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/EtikHukumler/BagimsizlikSorunlariCozumu",
+                    formKodu: "KysBagimsizlikSorunlariCozumu",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "5. Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Ettirilmesi",
+                icon: IconPoint,
+                href: "/Kys/1/MusteriIliskisi",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "5.1 Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Ettirilmesi Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/PolitikaBeyani",
+                    formKodu: "KysMusteriIliskisiPolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "5.2 Müşteri Araştırma Soruları",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/MusteriArastirmaSorulari",
+                    formKodu: "KysMusteriArastirmaSorulari",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "5.3 Yeni Müşteri Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/YeniMusteriFormu",
+                    formKodu: "KysYeniMusteriFormu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "5.4 Etik Mektubu",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/EtikMektubu",
+                    formKodu: "KysEtikMektubu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "5.5 Yeni Müşteri Kabulü İçin Kontrol Listesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/YeniMusteriKabulKontrolListesi",
+                    formKodu: "KysYeniMusteriKabulKontrolListesi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "5.6 Devam Eden Müşteri İçin Kontrol Listesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/DevamEdenMusteriKontrolListesi",
+                    formKodu: "KysDevamEdenMusteriKontrolListesi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "5.7 Müşteri Bırakma Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/MusteriBirakmaFormu",
+                    formKodu: "KysMusteriBirakmaFormu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "5.8 Müşteri Bırakma Mektubu",
+                    icon: IconPoint,
+                    href: "/Kys/1/MusteriIliskisi/MusteriBirakmaMektubu",
+                    formKodu: "KysMusteriBirakmaMektubu",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "6. Denetimin Yürütülmesi",
+                icon: IconPoint,
+                href: "/Kys/1/DenetiminYurutulmesi",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "6.1 Denetimin Yürütülmesi Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/DenetiminYurutulmesi/PolitikaBeyani",
+                    formKodu: "KysDenetiminYurutulmesiPolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "6.2 Çalışma Kontrol Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/DenetiminYurutulmesi/CalismaKontrolFormu",
+                    formKodu: "KysCalismaKontrolFormu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "6.3 Uzman Çalışmalarının Kullanılması",
+                    icon: IconPoint,
+                    href: "/Kys/1/DenetiminYurutulmesi/UzmanCalismalarininKullanilmasi",
+                    formKodu: "KysUzmanCalismalarininKullanilmasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/DenetiminYurutulmesi/DisUzmanKontrolListesi",
+                    formKodu: "KysDisUzmanKontrolListesi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "6.5 Görüş Farklılıklarının Çözüme Kavuşturulması",
+                    icon: IconPoint,
+                    href: "/Kys/1/DenetiminYurutulmesi/GorusFarkliliklarininCozumu",
+                    formKodu: "KysGorusFarkliliklarininCozumu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "6.6 Denetimin Kalitesinin Gözden Geçirilmesi Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/DenetiminYurutulmesi/DenetimKaliteGozdenGecirme",
+                    formKodu: "KysDenetimKaliteGozdenGecirme",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "7. Kaynaklar",
+                icon: IconPoint,
+                href: "/Kys/1/Kaynaklar",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "7.1 Kaynaklar Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/PolitikaBeyani",
+                    formKodu: "KysKaynaklarPolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.2 İş Tanımları",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/IsTanimlari",
+                    formKodu: "KysIsTanimlari",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.3 Aday Görüşme ve Değerlendirme Kontrol Listesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/AdayGorusmeKontrolListesi",
+                    formKodu: "KysAdayGorusmeKontrolListesi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.4 Yeni Çalışan Oryantasyon Kontrol Listesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/YeniCalisanOryantasyonKontrolListesi",
+                    formKodu: "KysYeniCalisanOryantasyonKontrolListesi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.5 Profesyonel Çalışanların Performansının Gözden Geçirilmesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/ProfesyonelCalisanPerformansi",
+                    formKodu: "KysProfesyonelCalisanPerformansi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.6 İdari Çalışanların Performansının Gözden Geçirilmesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/IdariCalisanPerformansi",
+                    formKodu: "KysIdariCalisanPerformansi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.7 Eğitim ve Gelişim Kayıtları",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/EgitimVeGelisimKayitlari",
+                    formKodu: "KysEgitimVeGelisimKayitlari",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.8 Teknoloji Satın Alma Talep Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/TeknolojiSatinAlmaTalepFormu",
+                    formKodu: "KysTeknolojiSatinAlmaTalepFormu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "7.9 Yeni Hizmet Sağlayıcı Talep Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/Kaynaklar/YeniHizmetSaglayiciTalepFormu",
+                    formKodu: "KysYeniHizmetSaglayiciTalepFormu",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "8. Bilgi ve İletişim",
+                icon: IconPoint,
+                href: "/Kys/1/BilgiVeIletisim",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "8.1 Bilgi ve İletişim Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/BilgiVeIletisim/PolitikaBeyani",
+                    formKodu: "KysBilgiVeIletisimPolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "8.2 Kültür Değerlendirmesi – Kalite",
+                    icon: IconPoint,
+                    href: "/Kys/1/BilgiVeIletisim/KulturDegerlendirmesi",
+                    formKodu: "KysKulturDegerlendirmesi",
+                  },
+                ],
+              },
+              {
+                id: uniqueId(),
+                title: "9. İzleme ve Düzeltme Süreci",
+                icon: IconPoint,
+                href: "/Kys/1/IzlemeVeDuzeltme",
+                children: [
+                  {
+                    id: uniqueId(),
+                    title: "9.1 İzleme ve Düzeltme Süreci Rehberi",
+                    icon: IconPoint,
+                    href: "/Kys/1/IzlemeVeDuzeltme/SureciRehberi",
+                    formKodu: "KysIzlemeVeDuzeltmeSureciRehberi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "9.2 İzleme ve Düzeltme Süreci Politikası Beyanı",
+                    icon: IconPoint,
+                    href: "/Kys/1/IzlemeVeDuzeltme/PolitikaBeyani",
+                    formKodu: "KysIzlemeVeDuzeltmePolitikasi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "9.3 Denetimin Gözden Geçirilmesi Formu",
+                    icon: IconPoint,
+                    href: "/Kys/1/IzlemeVeDuzeltme/DenetiminGozdenGecirilmesi",
+                    formKodu: "KysDenetiminGozdenGecirilmesiFormu",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "9.4 Sistem Değerlendirmesi",
+                    icon: IconPoint,
+                    href: "/Kys/1/IzlemeVeDuzeltme/SistemDegerlendirmesi",
+                    formKodu: "KysSistemDegerlendirmesi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "9.5 Müşteri Şikâyet Kaydı",
+                    icon: IconPoint,
+                    href: "/Kys/1/IzlemeVeDuzeltme/MusteriSikayetKaydi",
+                    formKodu: "KysMusteriSikayetKaydi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "9.6 Bulgular Kaydı",
+                    icon: IconPoint,
+                    href: "/Kys/1/IzlemeVeDuzeltme/BulgularKaydi",
+                    formKodu: "KysBulgularKaydi",
+                  },
+                  {
+                    id: uniqueId(),
+                    title: "9.7 Eksiklik Değerlendirme Çalışma Sayfası",
+                    icon: IconPoint,
+                    href: "/Kys/1/IzlemeVeDuzeltme/EksiklikDegerlendirme",
+                    formKodu: "KysEksiklikDegerlendirme",
+                  },
+                ],
+              },
+
+            ],
+          },
+        ],
+      },
+      {
+        id: uniqueId(),
+        title: "DENETİM DOSYA",
+        icon: IconFolderUp,
+        href: "/DenetimDosya",
+
+        children: [
+          {
+            id: uniqueId(),
+            title: "Bağımsız Denetim Metodolojisi",
+            icon: IconPoint,
+            href: "/DenetimDosya/BagimsizDenetimMetodolojisi",
+          },
+          {
+            id: uniqueId(),
+            title: "Denetim Dosya Yazdır",
+            icon: IconPoint,
+            href: "/DenetimDosya/DenetimDosyaYazdir",
+          },
+        ],
+      },
       {
         id: uniqueId(),
         title: "DİĞER İŞLEMLER",
