@@ -63,6 +63,7 @@ import CompanyBoxAutocomplete from '../Layout/Vertical/Header/CompanyBoxAutoComp
 import YearBoxAutocomplete from '../Layout/Vertical/Header/YearBoxAutoComplete';
 import { useLoading } from '@/contexts/LoadingContext';
 
+
 // Kategori İkonları - 6 kategori
 const CATEGORY_ICONS = {
     'Veri Girişi': IconUpload,
@@ -93,6 +94,7 @@ interface DialogData {
 
 // Custom Node Component
 const CustomGuideNode = ({ data }: NodeProps) => {
+    const isDisabled = data.isDisabled;
     const theme = useTheme();
     const Icon = data.icon;
     const isRoot = data.isRoot;
@@ -147,7 +149,8 @@ const CustomGuideNode = ({ data }: NodeProps) => {
                     border: `2px solid ${colors.border}`,
                     minWidth: isRoot ? 300 : isCategory ? 240 : 240,
                     maxWidth: 320,
-                    cursor: 'pointer',
+                    cursor: isDisabled ? 'not-allowed' : 'pointer',
+                    opacity: isDisabled ? 0.5 : 1,
                     transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
                     display: 'flex',
                     alignItems: 'center',
@@ -355,8 +358,10 @@ const GuideFlow = () => {
         }
     }, [onNodesChange, setNodes, saveNodePositions]);
 
-    const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-        if (node.data.isSelectCompany) {
+    const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {      
+   // if (node.data?.isSelectCompany && node.data?.isDisabled) {   
+
+        if(node.data.isSelectCompany){
             setDialogData({
                 title: node.data.label,
                 description: node.data.description || 'Bir şirket seçin',
@@ -372,7 +377,7 @@ const GuideFlow = () => {
             router.push(node.data.href);
             return;
         }
-
+    //}
         setDialogData({
             title: node.data.label,
             description: node.data.description || 'Bu modül hakkında detaylı bilgi bulunmamaktadır.',
@@ -381,6 +386,7 @@ const GuideFlow = () => {
         });
         setDialogOpen(true);
     }, [router, setLoading]);
+           
 
     const handleDialogClose = () => {
         setDialogOpen(false);
@@ -502,7 +508,8 @@ const GuideFlow = () => {
                         shortDesc: 'Kayıtlı şirketlerden birini seç',
                         isParent: false,
                         isSelectCompany: true,
-                        colorScheme: { main: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
+                        colorScheme: { main: '#f59e0b', light: '#fbbf24', dark: '#d97706' },
+                        
                     },
                     position: { x: 0, y: 0 }
                 }
