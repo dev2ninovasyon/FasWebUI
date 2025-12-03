@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import {
+  CardHeader,
   Grid,
   Table,
   TableBody,
@@ -16,6 +17,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getDikeyAnaliz } from "@/api/Analizler/Analizler";
 import DikeyAnalizChart from "./DikeyAnalizChart";
+import BelgeKontrolCard from "../../CalismaKagitlari/Cards/BelgeKontrolCard";
 
 interface Veri {
   id: number;
@@ -389,6 +391,12 @@ const OranAnaliziTespitBelgesi: React.FC<Props> = ({
       });
   };
 
+    const roluVarMi =
+    user?.rol?.includes("KaliteKontrolSorumluDenetci") ||
+    user?.rol?.includes("SorumluDenetci") ||
+    user?.rol?.includes("Denetci") ||
+    user?.rol?.includes("DenetciYardimcisi");
+    
   return (
     <Grid container>
       {showGraph ? (
@@ -461,6 +469,52 @@ const OranAnaliziTespitBelgesi: React.FC<Props> = ({
           </TableContainer>
         </Grid>
       )}
+       {!showGraph && roluVarMi && (
+        <Grid item xs={12} mt={4}>
+          <Grid
+            container
+            sx={{
+              width: "95%",
+              margin: "0 auto",
+              justifyContent: "space-between",
+            }}
+          >
+            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <CardHeader
+                title={<Typography variant="h5">Hazırlayan:</Typography>}
+                sx={{ p: 0, mb: 1 }}
+              />
+              <BelgeKontrolCard
+                controller={controller}
+                fetch={fetchData}
+                hazirlayan="Denetçi - Yardımcı Denetçi"
+              />
+            </Grid>
+            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <CardHeader
+                title={<Typography variant="h5">Onaylayan:</Typography>}
+                sx={{ p: 0, mb: 1 }}
+              />
+              <BelgeKontrolCard
+                controller={controller}
+                fetch={fetchData}
+                onaylayan="Sorumlu Denetçi"
+              />
+            </Grid>
+            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <CardHeader
+                title={<Typography variant="h5">Belge Kontrol:</Typography>}
+                sx={{ p: 0, mb: 1 }}
+              />
+              <BelgeKontrolCard
+                controller={controller}
+                fetch={fetchData}
+                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        )}
     </Grid>
   );
 };
