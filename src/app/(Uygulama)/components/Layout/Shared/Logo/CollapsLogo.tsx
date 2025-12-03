@@ -22,7 +22,7 @@ const CollapseLogo = () => {
       <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
         {customizer.activeMode === "dark" ? (
           <Image
-            src="/images/logos/fas-logo.png"
+            src="/images/logos/fas-logov1.png"
             alt="logo"
             height={45}
             width={40}
@@ -31,7 +31,7 @@ const CollapseLogo = () => {
           />
         ) : (
           <Image
-            src={"/images/logos/fas-logo.png"}
+            src={"/images/logos/fas-logov1.png"}
             alt="logo"
             height={45}
             width={40}
@@ -47,7 +47,7 @@ const CollapseLogo = () => {
     <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
       {customizer.activeMode === "dark" ? (
         <Image
-          src="/images/logos/fas-logo.png"
+          src="/images/logos/fas-logov1.png"
           alt="logo"
           height={45}
           width={40}
@@ -56,7 +56,7 @@ const CollapseLogo = () => {
         />
       ) : (
         <Image
-          src="/images/logos/fas-logo.png"
+          src="/images/logos/fas-logov1.png"
           alt="logo"
           height={45}
           width={40}
