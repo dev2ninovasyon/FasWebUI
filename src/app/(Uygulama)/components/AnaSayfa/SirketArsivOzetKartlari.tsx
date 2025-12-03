@@ -133,7 +133,7 @@ export function SirketArsivOzetKartlari() {
       },
     },
   };
-const getCardPalette = (index: number) => {
+  const getCardPalette = (index: number) => {
     const palettes = [
       { bg: theme.palette.primary.light, text: theme.palette.primary.main },
       { bg: theme.palette.warning.light, text: theme.palette.warning.main },
@@ -150,19 +150,16 @@ const getCardPalette = (index: number) => {
       data: donutSeries,
     },
   ];
-  
+
   const total = Array.isArray(donutSeries)
     ? donutSeries.reduce((sum, val) => sum + val, 0)
     : donutSeries;
 
 
-  const toplamDosyaSayisi = data.sirketler.reduce(
-    (sum, s) => sum + s.dosyaSayisi,
-    0
-  );
+  const toplamDosyaSayisi = 7;
 
 
-      
+
   return (
     <Box mt={4}>
       <Typography variant="h6" gutterBottom>
@@ -172,8 +169,8 @@ const getCardPalette = (index: number) => {
         Kullanıcıya tanımlı şirketlerin ve modüllerin sayısı.
       </Typography>
 
-      <Grid container spacing={3}columns={{ xs: 1, sm: 2, md: 4 }}>
-          <Grid item xs={12} sm={6} md={1}>
+      <Grid container spacing={3} columns={{ xs: 1, sm: 2, md: 4 }}>
+        <Grid item xs={12} sm={6} md={1}>
           <Card
             sx={{
               borderWidth: 3,
@@ -207,10 +204,10 @@ const getCardPalette = (index: number) => {
               </Typography>
               <Typography color="primary.main" variant="h4" fontWeight={600}>
                 <Link
-                  underline="hover" 
-                  sx={{ 
-                    display: "flex", 
-                    alignItems: "center", 
+                  underline="hover"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
                     gap: 1,
                     "&:hover svg": {
                       transform: "translateX(15px)",
@@ -218,8 +215,8 @@ const getCardPalette = (index: number) => {
                     },
                   }}
                 >
-                <ChevronRightIcon />
-                {data.toplamSirketSayisi}
+                  <ChevronRightIcon />
+                  {data.toplamSirketSayisi}
                 </Link>
               </Typography>
             </CardContent>
@@ -251,7 +248,7 @@ const getCardPalette = (index: number) => {
                 height={65}
               />
               <Typography
-                color= "orange"
+                color="orange"
                 mt={1}
                 variant="subtitle1"
                 fontWeight={600}
@@ -261,10 +258,10 @@ const getCardPalette = (index: number) => {
               <Typography color="orange" variant="h4" fontWeight={600}>
                 <Link
                   color={orange}
-                  underline="hover" 
-                  sx={{ 
-                    display: "flex", 
-                    alignItems: "center", 
+                  underline="hover"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
                     gap: 1,
                     "&:hover svg": {
                       transform: "translateX(15px)",
@@ -272,7 +269,7 @@ const getCardPalette = (index: number) => {
                     },
                   }}
                 >
-                <ChevronRightIcon />
+                  <ChevronRightIcon />
                   8
                 </Link>
               </Typography>
@@ -280,7 +277,7 @@ const getCardPalette = (index: number) => {
           </Card>
         </Grid>
 
-      
+
         <Grid item xs={12} sm={6} md={1}>
           <Card
             sx={{
@@ -315,12 +312,12 @@ const getCardPalette = (index: number) => {
               </Typography>
               <Typography color="green" variant="h4" fontWeight={600}>
                 <Link
-                  
-                  underline="hover" 
-                  sx={{ 
-                    display: "flex", 
+
+                  underline="hover"
+                  sx={{
+                    display: "flex",
                     alignItems: "center",
-                    color: "green", 
+                    color: "green",
                     gap: 1,
                     "&:hover svg": {
                       transform: "translateX(15px)",
@@ -328,15 +325,15 @@ const getCardPalette = (index: number) => {
                     },
                   }}
                 >
-                <ChevronRightIcon />
-                {toplamDosyaSayisi}
+                  <ChevronRightIcon />
+                  {toplamDosyaSayisi}
                 </Link>
               </Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        
+
         <Grid item xs={12} sm={6} md={1}>
           <Card
             sx={{
@@ -366,39 +363,39 @@ const getCardPalette = (index: number) => {
                 mt={1}
                 variant="subtitle1"
                 fontWeight={600}
-                sx={{color:"#ba68c8"}}
-              > 
-              <Link
-                underline="hover"
-                sx={{
-                  display: "inline-flex",   // Yan yana hizala
-                  alignItems: "center",     // Dikey ortala
-                  gap: 0.5,                   // Yazı ile ikon arası mesafe
-                  color:"#ba68c8",
-                }}
-                
+                sx={{ color: "#ba68c8" }}
               >
-                Daha Fazla Modül
-                <TouchAppIcon
+                <Link
+                  underline="hover"
                   sx={{
-                    transform: "rotate(180deg)", //Parmağı aşağı çeviriyoruz
-                    fontSize: "1.5rem",
-                    color:"#ba68c8",
-                  }}/>
-              </Link>
+                    display: "inline-flex",   // Yan yana hizala
+                    alignItems: "center",     // Dikey ortala
+                    gap: 0.5,                   // Yazı ile ikon arası mesafe
+                    color: "#ba68c8",
+                  }}
+
+                >
+                  Daha Fazla Modül
+                  <TouchAppIcon
+                    sx={{
+                      transform: "rotate(180deg)", //Parmağı aşağı çeviriyoruz
+                      fontSize: "1.5rem",
+                      color: "#ba68c8",
+                    }} />
+                </Link>
               </Typography>
-              <Typography  variant="h6" fontWeight={600}>
-                <Link 
+              <Typography variant="h6" fontWeight={600}>
+                <Link
                   component={NextLink}
-                  href = "https://fasmart.app/denetim-araclari"  
-                  underline="hover" 
+                  href="https://fasmart.app/denetim-araclari"
+                  underline="hover"
                   target="_blank"
                   rel="noopener noreferrer"
-                  sx={{ 
-                    display: "flex", 
-                    alignItems: "center", 
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
                     gap: 1,
-                    color:"#ba68c8",
+                    color: "#ba68c8",
                     "&:hover svg": {
                       transform: "translateX(15px)",
                       transition: "0.1s",
@@ -414,8 +411,8 @@ const getCardPalette = (index: number) => {
         </Grid>
       </Grid>
 
-<br></br>
-<Typography variant="h6" gutterBottom>
+      <br></br>
+      <Typography variant="h6" gutterBottom>
         Şirketler ve Arşiv Alanı Kullanımı
       </Typography>
       <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>

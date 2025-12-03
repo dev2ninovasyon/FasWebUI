@@ -58,6 +58,10 @@ import {
     setTfrsmi,
     setYil,
 } from '@/store/user/UserSlice';
+import {
+    getDenetlenenByDenetciId,
+    getDenetlenenByRol,
+} from "@/api/Musteri/MusteriIslemleri";
 import { getRol } from '@/api/Sozlesme/DenetimKadrosuAtama';
 import CompanyBoxAutocomplete from '../Layout/Vertical/Header/CompanyBoxAutoComplete';
 import YearBoxAutocomplete from '../Layout/Vertical/Header/YearBoxAutoComplete';
@@ -307,6 +311,28 @@ const GuideFlow = () => {
     const [selectedKonsolidemi, setSelectedKonsolidemi] = useState(false);
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedYearNumber, setSelectedYearNumber] = useState(0);
+    const [hasCompanies, setHasCompanies] = useState(false);
+
+    useEffect(() => {
+        const checkCompanies = async () => {
+            if (!user.token) return;
+
+            try {
+                let companies = [];
+                if (user.yetki == "DenetciAdmin") {
+                    companies = await getDenetlenenByDenetciId(user.token || "", user.denetciId || 0);
+                } else {
+                    companies = await getDenetlenenByRol(user.token || "", user.denetciId || 0, user.id || 0);
+                }
+                setHasCompanies(companies && companies.length > 0);
+            } catch (error) {
+                console.error("Error checking companies:", error);
+                setHasCompanies(false);
+            }
+        };
+
+        checkCompanies();
+    }, [user.token, user.denetciId, user.id, user.yetki]);
 
     const dispatch = useDispatch();
 
@@ -468,7 +494,7 @@ const GuideFlow = () => {
                     id: 'node-add-company',
                     type: 'custom',
                     data: {
-                        label: 'Yeni Şirket Ekle',
+                        label: 'Yeni Müşteri Ekle',
                         icon: IconUserPlus,
                         description: 'Yeni bir müşteri şirketi oluşturun ve denetim sürecine başlayın. Şirket bilgilerini, yetkililerini, sözleşme detaylarını girebileceğiniz kapsamlı bir form sayfasına yönlendirileceksiniz. Tüm şirket verileri güvenli bir şekilde saklanacaktır.',
                         shortDesc: 'Yeni müşteri şirketi oluştur',
@@ -491,8 +517,11 @@ const GuideFlow = () => {
                         colorScheme: { main: '#3b82f6', light: '#60a5fa', dark: '#2563eb' }
                     },
                     position: { x: 0, y: 0 }
-                },
-                {
+                }
+            ];
+
+            if (hasCompanies) {
+                newNodes.push({
                     id: 'node-select-company',
                     type: 'custom',
                     data: {
@@ -505,8 +534,9 @@ const GuideFlow = () => {
                         colorScheme: { main: '#f59e0b', light: '#fbbf24', dark: '#d97706' }
                     },
                     position: { x: 0, y: 0 }
-                }
-            ];
+                });
+            }
+
             newEdges = [
                 {
                     id: 'e-root-add',
@@ -525,8 +555,11 @@ const GuideFlow = () => {
                     type: 'smoothstep',
                     style: { stroke: '#3b82f6', strokeWidth: 3 },
                     markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6', width: 25, height: 25 }
-                },
-                {
+                }
+            ];
+
+            if (hasCompanies) {
+                newEdges.push({
                     id: 'e-root-select',
                     source: rootId,
                     target: 'node-select-company',
@@ -534,8 +567,8 @@ const GuideFlow = () => {
                     type: 'smoothstep',
                     style: { stroke: '#f59e0b', strokeWidth: 3 },
                     markerEnd: { type: MarkerType.ArrowClosed, color: '#f59e0b', width: 25, height: 25 }
-                }
-            ];
+                });
+            }
         } else {
             // 6 Kategori Göster
             const rootId = 'root-company';
@@ -622,6 +655,20 @@ const GuideFlow = () => {
             'TB'
         );
 
+        // Özel Durum: Eğer şirket yoksa ve sadece 2 seçenek varsa (Yeni Şirket Ekle & Kullanıcı İşlemleri)
+        // Tasarımı simetrik üçgen yap (Kullanıcı isteği)
+        if (!user.denetlenenId && !hasCompanies) {
+            layoutedNodes.forEach(node => {
+                if (node.id === 'root-welcome') {
+                    node.position = { x: 200, y: 0 };
+                } else if (node.id === 'node-add-company') {
+                    node.position = { x: 0, y: 250 };
+                } else if (node.id === 'node-user-operations') {
+                    node.position = { x: 400, y: 250 };
+                }
+            });
+        }
+
         // localStorage'dan kayıtlı pozisyonları uygula
         const nodesWithSavedPositions = layoutedNodes.map(node => {
             const savedPosition = loadNodePositions(node.id);
@@ -634,7 +681,7 @@ const GuideFlow = () => {
         setNodes(nodesWithSavedPositions);
         setEdges(layoutedEdges);
 
-    }, [user, theme, setNodes, setEdges, loadNodePositions]);
+    }, [user, theme, setNodes, setEdges, loadNodePositions, hasCompanies]);
 
     const DialogIcon = dialogData?.icon;
 
@@ -666,7 +713,7 @@ const GuideFlow = () => {
                         Denetim Yol Haritası
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                        {user.denetlenenFirmaAdi ? 'Kategoriler üzerinden denetim sürecine erişin' : 'Başlamak için bir şirket seçin'}
+                        {user.denetlenenFirmaAdi ? 'Kategoriler üzerinden denetim sürecine erişin' : (hasCompanies ? 'Başlamak için bir şirket seçin' : 'Başlamak için bir şirket ekle')}
                     </Typography>
                 </Box>
                 <Chip
