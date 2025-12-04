@@ -1,6 +1,4 @@
-import React from "react";
 import Link from "next/link";
-
 // mui imports
 import Chip from "@mui/material/Chip";
 import List from "@mui/material/List";
@@ -15,6 +13,7 @@ import { useSelector } from "@/store/hooks";
 import { useTranslation } from "react-i18next";
 import { AppState } from "@/store/store";
 import { useLoading } from "@/contexts/LoadingContext";
+import React from "react";
 
 type NavGroup = {
   [x: string]: any;
@@ -95,18 +94,6 @@ export default function NavItem({
     },
   }));
 
-  const listItemProps: {
-    component: any;
-    href?: string;
-    target?: any;
-    to?: any;
-  } = {
-    component: item?.external ? "a" : Link,
-    to: item?.href,
-    href: item?.external ? item?.href : "",
-    target: item?.external ? "_blank" : "",
-  };
-
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     // Eğer farklı bir sayfaya gidiyorsak loading göster
     if (pathDirect !== item?.href && item?.href) {
@@ -122,10 +109,10 @@ export default function NavItem({
     <List component="li" disablePadding key={item?.id && item.title}>
       <Link href={item.href}>
         <ListItemStyled
-          // {...listItemProps}
           disabled={item?.disabled}
           selected={pathDirect === item?.href}
           onClick={handleClick}
+          data-tour-id={item?.href} // 👈 Driver.js için hedef
         >
           <ListItemIcon
             sx={{
