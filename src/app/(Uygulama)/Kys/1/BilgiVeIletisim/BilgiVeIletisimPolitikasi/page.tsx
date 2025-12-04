@@ -8,22 +8,22 @@ import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
     { to: "/Kys/1", title: "KYS-1" },
-    { to: "/Kys/1/MusteriIliskisi", title: "Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Ettirilmesi" },
-    { to: "/Kys/1/MusteriIliskisi/MusteriArastirmaSorulari", title: "5.2 Müşteri Araştırma Soruları" },
+    { to: "/Kys/1/BilgiVeIletisim", title: "Bilgi ve İletişim" },
+    { to: "/Kys/1/BilgiVeIletisim/BilgiVeIletisimPolitikasi", title: "8.1 Bilgi ve İletişim Politikası Beyanı" },
 ];
 
 const Page: React.FC = () => {
     return (
         <PageContainer
-            title="5.2 Müşteri Araştırma Soruları"
-            description="Müşteri Araştırma Soruları Belgesi"
+            title="8.1 Bilgi ve İletişim Politikası Beyanı"
+            description="Bilgi ve İletişim Politikası Beyanı Belgesi"
         >
-            <Breadcrumb title="5.2 Müşteri Araştırma Soruları" items={BCrumb} />
+            <Breadcrumb title="8.1 Bilgi ve İletişim Politikası Beyanı" items={BCrumb} />
 
             <Box sx={{ mt: 3 }}>
 
 
-                <KysCalismaKagidi formKodu="KysMusteriArastirmaSorulari" alanAdi="5.2 Müşteri Araştırma Soruları" />
+                <KysCalismaKagidi formKodu="KysBilgiVeIletisimPolitikasi" alanAdi="8.1 Bilgi ve İletişim Politikası Beyanı" />
             </Box>
         </PageContainer>
     );

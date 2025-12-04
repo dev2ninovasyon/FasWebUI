@@ -9,21 +9,21 @@ const BCrumb = [
     { to: "/Kys", title: "KYS" },
     { to: "/Kys/1", title: "KYS-1" },
     { to: "/Kys/1/MusteriIliskisi", title: "Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Ettirilmesi" },
-    { to: "/Kys/1/MusteriIliskisi/MusteriArastirmaSorulari", title: "5.2 Müşteri Araştırma Soruları" },
+    { to: "/Kys/1/MusteriIliskisi/MusteriIliskisiPolitikasi", title: "5.1 Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Etmesi Politikası" },
 ];
 
 const Page: React.FC = () => {
     return (
         <PageContainer
-            title="5.2 Müşteri Araştırma Soruları"
-            description="Müşteri Araştırma Soruları Belgesi"
+            title="5.1 Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Etmesi Politikası"
+            description="Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Etmesi Politikası Belgesi"
         >
-            <Breadcrumb title="5.2 Müşteri Araştırma Soruları" items={BCrumb} />
+            <Breadcrumb title="5.1 Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Etmesi Politikası" items={BCrumb} />
 
             <Box sx={{ mt: 3 }}>
 
 
-                <KysCalismaKagidi formKodu="KysMusteriArastirmaSorulari" alanAdi="5.2 Müşteri Araştırma Soruları" />
+                <KysCalismaKagidi formKodu="KysMusteriIliskisiPolitikasi" alanAdi="5.1 Müşteri İlişkisinin ve Belirli Bir Sözleşmenin Kabulü ve Devam Etmesi Politikası" />
             </Box>
         </PageContainer>
     );
