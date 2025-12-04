@@ -396,7 +396,6 @@ const OranAnaliziTespitBelgesi: React.FC<Props> = ({
     user?.rol?.includes("SorumluDenetci") ||
     user?.rol?.includes("Denetci") ||
     user?.rol?.includes("DenetciYardimcisi");
-    
   return (
     <Grid container>
       {showGraph ? (
