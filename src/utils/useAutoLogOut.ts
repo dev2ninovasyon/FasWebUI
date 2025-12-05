@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "@/store/hooks";
-import { resetToNull, setToken } from "@/store/user/UserSlice";
+import { resetToNull, setToken, setRefreshToken } from "@/store/user/UserSlice";  // ✅ setRefreshToken import
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useCallback } from "react";
 import { AppState } from "@/store/store";
@@ -21,6 +21,8 @@ export default function useAutoLogout(
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
+  // console.log("Debug User:", user); // Debug için
+
 
   // *** ÇIKIŞ ***
   const logout = useCallback(() => {
@@ -59,31 +61,36 @@ export default function useAutoLogout(
     countdownTimerRef.current = setInterval(() => {
       const remaining = expiry - Date.now();
       if (remaining <= 0) {
-        //console.log("Kalan süre: 0 sn");
+        // console.log("⏰ Kalan süre: 0 sn - LOGOUT!");
         clearInterval(countdownTimerRef.current!);
         countdownTimerRef.current = null;
         return;
       }
 
       const remainingSeconds = Math.ceil(remaining / 1000);
-      //console.log("Kalan süre:", remainingSeconds, "sn");
+      // console.log(`⏰ Idle timeout'a kalan süre: ${remainingSeconds} saniye`);
     }, 1000);
   }, [idleTimeout, logout]);
 
   // refresh token
   const refreshToken = useCallback(async () => {
-    if (!user?.token) return;
-    console.log("Token Yenilendi.");
+    if (!user?.refreshToken) {  // ✅ refreshToken kontrolü
+      console.warn("Refresh token bulunamadı, logout yapılıyor");
+      logout();
+      return;
+    }
+    console.log("Token yenileniyor...");
 
     try {
       const response = await apiFetch(`/Auth/refresh`, {
         method: "POST",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${user.token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token: user.token || "" }),
+        body: JSON.stringify({
+          refreshToken: user.refreshToken  // ✅ Güvenli: refreshToken gönderiliyor
+        }),
       });
 
       if (!response.ok) {
@@ -93,8 +100,11 @@ export default function useAutoLogout(
       }
 
       const data = await response.json();
-      dispatch(setToken(data.token));
-      //console.log("Refresh token yenilendi");
+      dispatch(setToken(data.token));  // Yeni access token
+      if (data.refreshToken) {  // ✅ Yeni refresh token varsa kaydet
+        dispatch(setRefreshToken(data.refreshToken));
+      }
+      // console.log("✅ Token başarıyla yenilendi!");
     } catch (err) {
       console.error("Refresh token yenilenemedi (catch):", err);
       logout();

@@ -9,12 +9,14 @@ import KullaniciBoxAutocomplete from "@/app/(Uygulama)/components/Sozlesme/Denet
 import { useState } from "react";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import NoUsersAlert from "@/app/(Uygulama)/components/Alerts/NoUsersAlert";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const [personelId, setPersonelId] = useState(user.id);
   const [personelAdi, setPersonelAdi] = useState(user.kullaniciAdi);
+  const [showNoUsersAlert, setShowNoUsersAlert] = useState(false);
 
   return (
     <KullaniciSozlesmeSaatleriLayout>
@@ -32,6 +34,7 @@ const Page = () => {
               onSelectId={(selectedPersonelId) =>
                 setPersonelId(selectedPersonelId)
               }
+              onEmptyUsers={() => setShowNoUsersAlert(true)}
             />
           </Grid>
         </Grid>
@@ -43,6 +46,10 @@ const Page = () => {
           </Grid>
         </ParentCard>
       </PageContainer>
+      <NoUsersAlert
+        open={showNoUsersAlert}
+        onClose={() => setShowNoUsersAlert(false)}
+      />
     </KullaniciSozlesmeSaatleriLayout>
   );
 };

@@ -23,7 +23,10 @@ import useAutoLogout from "@/utils/useAutoLogOut";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
-  useAutoLogout(15 * 60 * 1000, 10 * 60 * 1000); // 15 dakika idle süresi, 10 dakika refresh süresi
+  useAutoLogout(
+    30 * 60 * 1000, // 30 dakika idle süresi
+    25 * 60 * 1000  // 25 dakika refresh süresi
+  );
 
   const user = useSelector((state: AppState) => state.userReducer);
 

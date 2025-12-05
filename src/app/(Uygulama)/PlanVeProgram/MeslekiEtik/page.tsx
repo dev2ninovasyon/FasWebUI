@@ -12,6 +12,7 @@ import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitla
 import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete";
+import NoUsersAlert from "@/app/(Uygulama)/components/Alerts/NoUsersAlert";
 
 const BCrumb = [
   {
@@ -47,6 +48,7 @@ const Page = () => {
 
   const [personelId, setPersonelId] = useState(user.id);
   const [personelAdi, setPersonelAdi] = useState(user.kullaniciAdi);
+  const [showNoUsersAlert, setShowNoUsersAlert] = useState(false);
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -93,7 +95,7 @@ const Page = () => {
     <>
       <Breadcrumb title="Mesleki Etik" items={BCrumb}>
         <>
-{isMobile ? (
+          {isMobile ? (
             // Mobile layout - compact with dropdown menu
             <Grid
               container
@@ -287,6 +289,7 @@ const Page = () => {
               onSelectId={(selectedPersonelId) =>
                 setPersonelId(selectedPersonelId)
               }
+              onEmptyUsers={() => setShowNoUsersAlert(true)}
             />
           </Grid>
         </Grid>
@@ -305,6 +308,10 @@ const Page = () => {
           />
         </Box>
       </PageContainer>
+      <NoUsersAlert
+        open={showNoUsersAlert}
+        onClose={() => setShowNoUsersAlert(false)}
+      />
     </>
   );
 };

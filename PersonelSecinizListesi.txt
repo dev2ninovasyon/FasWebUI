@@ -1,0 +1,25 @@
+"Personel Seçiniz" İbaresinin Geçtiği Dosyalar Listesi
+
+1. Bileşen Tanımları (Kaynak):
+   - src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/KullaniciBoxAutoComplete.tsx
+   - src/app/(Uygulama)/components/Layout/Vertical/Header/PersonelBoxAutoComplete.tsx
+
+2. KullaniciBoxAutoComplete Kullanan Sayfalar ve Formlar:
+   - src/app/(Uygulama)/Kullanici/KullaniciSozlesmeSaatleri/page.tsx
+   - src/app/(Uygulama)/Kullanici/DenetciYillikTaahutname/page.tsx
+   - src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/DenetimKadrosuDuzenleForm.tsx
+   - src/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/DenetimKadrosuEkleForm.tsx
+   - src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/SurekliEgitimBilgileriDuzenleForm.tsx
+   - src/app/(Uygulama)/components/Kullanici/SurekliEgitimBilgileri/SurekliEgitimBilgileriEkleForm.tsx
+
+3. PersonelBoxAutoComplete Kullanan Sayfalar ve Bileşenler:
+   - src/app/(Uygulama)/PlanVeProgram/GorevTebligi/page.tsx
+   - src/app/(Uygulama)/PlanVeProgram/SorumlulukBildirimi/page.tsx
+   - src/app/(Uygulama)/PlanVeProgram/MeslekiEtik/page.tsx
+   - src/app/(Uygulama)/PlanVeProgram/EtikGerekliliklereIliskinBildirim/page.tsx
+   - src/app/(Uygulama)/PlanVeProgram/BagimsizlikSorumlulukBeyani/page.tsx
+   - src/app/(Uygulama)/DenetimDosya/DenetimDosyaOnay/BelgeKontrolCardTopluOnay.tsx
+   - src/app/(Uygulama)/components/CalismaKagitlari/DenetimProgramiBelge.tsx
+   - src/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard.tsx
+   - src/app/(Uygulama)/components/CalismaKagitlari/GenelKurulToplantiBilgileriBelge.tsx
+   - src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulukGorevAtamalariBelge.tsx

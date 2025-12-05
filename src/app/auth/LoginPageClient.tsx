@@ -1,188 +1,268 @@
 "use client";
-import { Grid, Box, useTheme } from "@mui/material";
+import { Box, Typography, TextField, Button, Checkbox, FormControlLabel, useTheme } from "@mui/material";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 // components
 import AuthLogin from "./authForms/AuthLogin";
 import PageContainer from "../(Uygulama)/components/Container/PageContainer";
 import Logo from "../(Uygulama)/components/Layout/Shared/Logo/Logo";
-import { useEffect, useRef, useState } from "react";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
-interface LoginPageClientProps {
-    imagePath: string;
-}
+const slides = [
+    {
+        image: "/login-assets/login-bg-2.png",
+        title: "Kapsamlı Denetim Yönetimi",
+        description: "Tüm finansal denetim süreçlerinizi tek bir platformda yönetin. Kalite standartlarına uygun, izlenebilir denetim raporları oluşturun."
+    },
+    {
+        image: "/login-assets/login-bg-3.png",
+        title: "Gelişmiş Veri Analizi",
+        description: "Güçlü analitik araçlar ile finansal verilerinizi derinlemesine inceleyin. Akıllı raporlama sistemi ile anlamlı içgörüler elde edin."
+    },
+    {
+        image: "/login-assets/login-bg-4.png",
+        title: "Ekip İşbirliği ve Görev Yönetimi",
+        description: "Denetim ekibinizle gerçek zamanlı işbirliği yapın. Görev atama, ilerleme takibi ve dokümantasyon yönetimi tek bir arayüzde."
+    },
+    {
+        image: "/login-assets/login-bg-5.png",
+        title: "Kalite Yönetim Sistemi (KYS)",
+        description: "ISO standartlarına uygun kalite yönetim süreçlerinizi dijitalleştirin. Belge yönetimi, risk analizi ve sürekli iyileştirme."
+    },
+    {
+        image: "/login-assets/login-bg-no-person-1.png",
+        title: "Sürdürülebilirlik Raporlaması",
+        description: "Çevresel, sosyal ve kurumsal yönetim (ESG) metriklerinizi izleyin. Sürdürülebilirlik hedeflerinizi raporlayın ve değerlendirin."
+    }
+];
 
-export default function LoginPageClient({ imagePath }: LoginPageClientProps) {
+export default function LoginPageClient() {
     const theme = useTheme();
     const isDark = theme.palette.mode === "dark";
+    // Random start slide
+    const [currentSlide, setCurrentSlide] = useState(() => Math.floor(Math.random() * slides.length));
 
-    const cardBgColor = isDark
-        ? "rgba(0, 0, 0, 0.70)"
-        : "rgba(255, 255, 255, 0.90)";
-    const cardTextColor = isDark ? "#ffffff" : "#111111";
-    const panelBgColor = isDark
-        ? "transparent"
-        : theme.palette.background.paper;
-    
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % slides.length);
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const goToSlide = (index: number) => {
+        setCurrentSlide(index);
+    };
+
+    const panelBgColor = isDark ? "rgba(17, 24, 39, 0.95)" : "#ffffff";
+    const cardBgColor = isDark ? "rgba(0, 0, 0, 0.70)" : "rgba(255, 255, 255, 0.90)";
+
     return (
-        <PageContainer title="Giriş" description="Giriş Yap">
-            <Box sx={{position: "relative", height:"100vh", overflow: "hidden"}}>
-                {imagePath && (
-                    <Box
-                        sx={{
-                            display:{xs: "block", lg:"none"},
-                            position:"absolute",
-                            inset:0,
-                            zIndex:0,
-                        }}
-                    >
-                    <Image
-                        src={imagePath}
-                        alt="Login Background"
-                        fill
-                        priority
-                        quality={95}
-                        sizes="100vw"
-                        style={{
-                                objectFit: "cover",
-                                objectPosition: "center",
-                                opacity: 0.80, 
-                                filter: "blur(1px)",
-                            }}
-                    />
-                    </Box>
-                )}
-            
-            <Grid container sx={{ 
-                height: "100vh", position: "relative", zIndex: 1, }}>
-                {/* Left Side - 70% with Random Image */}
-                <Grid
-                    item
-                    xs={12}
-                    lg={9.6} // 80% of 12 columns is 9.6
+        <GoogleReCaptchaProvider
+            reCaptchaKey="6Ld2CyEsAAAAALNU5rSOM_Q2RAWkQ2RADbsS5NQW"
+            scriptProps={{
+                async: false,
+                defer: false,
+                appendTo: "head",
+                nonce: undefined,
+            }}
+        >
+            <style jsx global>{`
+                .grecaptcha-badge {
+                    left: 24px !important;
+                    right: auto !important;
+                }
+            `}</style>
+            <PageContainer title="Giriş" description="Giriş Yap">
+                <Box
                     sx={{
-                        flexBasis: { lg: "70% !important" },
-                        maxWidth: { lg: "70% !important" },
-                        display: { xs: "none", lg: "block" },
-                        position: "relative",
-                        overflow: "hidden",
-                        borderRadius:0,
-                    }}
-                >
-                    {imagePath && (
-                        <Box
-                            sx={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                overflow: "hidden",
-                                borderRadius:0,
-                            }}
-                        >
-                            <Image
-                                src={imagePath}
-                                alt="Login background"
-                                fill
-                                priority
-                                quality={95}
-                                sizes="70vw"
-                                style={{
-                                    objectFit: "cover",
-                                    objectPosition: "center",
-                                }}
-                            />
-                        </Box>
-                    )}
-                </Grid>
-
-                {/* Right Side - 30% Login Form */}
-                <Grid
-                    item
-                    xs={12}
-                    lg={2.4} // 20% of 12 columns is 2.4
-                    sx={{
-                        flexBasis: { lg: "30% !important" },
-                        maxWidth: { lg: "30% !important" },
                         display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        p: 4,
-                        // Büyük ekranda beyaz panel, küçük ekranda transparan
-                        backgroundColor: {xs:"transparent", lg: panelBgColor},
-                        boxShadow: "0px 7px 30px 0px rgba(90, 114, 123, 0.11)",
-                        position: "relative",
+                        height: "100vh",
                         overflow: "hidden",
-                        transition: "transform 0.25s ease, box-shadow 0.25s ease",
-                        "&:hover": {
-                            boxShadow: {
-                                xs: "none",
-                                lg: "0px 16px 40px rgba(90, 114, 123, 0.25)",
-                            },
-                            transform: { lg: "translateY(-4px)" },         
-                        },
+                        flexDirection: { xs: "column-reverse", lg: "row" }
                     }}
                 >
-                    {imagePath && (
+                    {/* Left Side - Login Form (30%) */}
+                    <Box
+                        sx={{
+                            flex: { xs: 2, lg: 3 },
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            p: { xs: 3, sm: 4, lg: 6 },
+                            backgroundColor: panelBgColor,
+                            position: "relative",
+                            zIndex: 10,
+                            minHeight: { xs: "auto", lg: "100vh" }
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                width: "100%",
+                                maxWidth: "420px",
+                            }}
+                        >
+                            {/* Logo & Brand */}
+                            <Box display="flex" alignItems="center" justifyContent="center" mb={5}>
+                                <Logo />
+                            </Box>
+
+                            {/* Welcome Header */}
+                            <Box mb={4}>
+                                <Typography
+                                    variant="h3"
+                                    sx={{
+                                        fontWeight: 700,
+                                        color: isDark ? "#fff" : "#0f172a",
+                                        mb: 1
+                                    }}
+                                >
+                                    Hoş Geldiniz
+                                </Typography>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        color: isDark ? "rgba(255,255,255,0.7)" : "#64748b",
+                                        fontSize: "16px"
+                                    }}
+                                >
+                                    Devam etmek için lütfen giriş yapın.
+                                </Typography>
+                            </Box>
+
+                            {/* Login Form */}
+                            <AuthLogin />
+                        </Box>
+                    </Box>
+
+                    {/* Right Side - Image Slider (70%) */}
+                    <Box
+                        sx={{
+                            flex: { xs: 1, lg: 7 },
+                            position: "relative",
+                            overflow: "hidden",
+                            minHeight: { xs: "300px", lg: "100vh" },
+                            backgroundColor: "#0f172a"
+                        }}
+                    >
+                        {/* Slides */}
+                        {slides.map((slide, index) => (
+                            <Box
+                                key={index}
+                                sx={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    opacity: currentSlide === index ? 1 : 0,
+                                    transition: "opacity 1s ease-in-out",
+                                    "&::after": {
+                                        content: '""',
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        background: "linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2))",
+                                        zIndex: 1
+                                    }
+                                }}
+                            >
+                                <Image
+                                    src={slide.image}
+                                    alt={slide.title}
+                                    fill
+                                    priority={index === 0}
+                                    quality={95}
+                                    sizes="70vw"
+                                    style={{
+                                        objectFit: "cover",
+                                        objectPosition: "center"
+                                    }}
+                                />
+
+                                {/* Slide Content */}
+                                <Box
+                                    sx={{
+                                        position: "absolute",
+                                        bottom: { xs: 30, sm: 40, lg: 60 },
+                                        left: { xs: 20, sm: 40, lg: 60 },
+                                        right: { xs: 20, sm: 40 },
+                                        color: "white",
+                                        zIndex: 2,
+                                        maxWidth: "600px",
+                                        opacity: currentSlide === index ? 1 : 0,
+                                        transform: currentSlide === index ? "translateY(0)" : "translateY(20px)",
+                                        transition: "all 0.8s ease 0.3s"
+                                    }}
+                                >
+                                    <Typography
+                                        variant="h2"
+                                        sx={{
+                                            fontSize: { xs: "28px", sm: "36px", lg: "48px" },
+                                            fontWeight: 800,
+                                            mb: 2,
+                                            lineHeight: 1.1,
+                                            textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)"
+                                        }}
+                                    >
+                                        {slide.title}
+                                    </Typography>
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
+                                            fontSize: { xs: "14px", sm: "16px", lg: "18px" },
+                                            lineHeight: 1.6,
+                                            textShadow: "0 1px 5px rgba(0, 0, 0, 0.3)",
+                                            opacity: 0.9
+                                        }}
+                                    >
+                                        {slide.description}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        ))}
+
+                        {/* Indicators */}
                         <Box
                             sx={{
                                 position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                overflow: "hidden",
-                                borderRadius:0,
+                                bottom: { xs: 20, lg: 40 },
+                                right: { xs: 20, lg: 40 },
+                                display: "flex",
+                                gap: 1.25,
+                                zIndex: 20
                             }}
                         >
-                            <Image
-                            src={imagePath}
-                            alt="Login background Faint"
-                            fill
-                            priority
-                            quality={95}
-                            sizes="30vw"
-                            style={{
-                                objectFit: "cover",
-                                objectPosition: "center",
-                                opacity: 0.80, 
-                                filter: "blur(25px)",
-                            }}
-                            
-                        />
+                            {slides.map((_, index) => (
+                                <Box
+                                    key={index}
+                                    onClick={() => goToSlide(index)}
+                                    sx={{
+                                        width: 12,
+                                        height: 12,
+                                        borderRadius: "50%",
+                                        backgroundColor: currentSlide === index
+                                            ? "white"
+                                            : "rgba(255, 255, 255, 0.3)",
+                                        cursor: "pointer",
+                                        transition: "all 0.3s ease",
+                                        transform: currentSlide === index ? "scale(1.2)" : "scale(1)",
+                                        "&:hover": {
+                                            backgroundColor: currentSlide === index
+                                                ? "white"
+                                                : "rgba(255, 255, 255, 0.5)"
+                                        }
+                                    }}
+                                />
+                            ))}
                         </Box>
-                    )}
-                
-                    <Box
-                        width="100%"
-                        maxWidth="400px"
-                        sx={{
-                            p: 4,
-                            borderRadius: "20px",
-                            backgroundColor: cardBgColor, // Fallback/Base
-                            backdropFilter: "blur(10px)", // Glass effect if supported
-                            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.07)",
-                            //mobil-küçük ekran arka planı
-                            position:"relative",
-                            zIndex: 1,
-                            transition: "transform 0.25s ease, box-shadow 0.25s ease",
-                            "&:hover": {
-                                boxShadow: "0 14px 40px rgba(0, 0, 0, 0.25)",
-                                transform: "translateY(-3px)",
-                        },
-                        
-                        }}
-                    >
-                        <Box display="flex" alignItems="center" justifyContent="center" mb={4}>
-                            <Logo />
-                        </Box>
-                        <AuthLogin />
                     </Box>
-                </Grid>
-            </Grid>
-            </Box>
-        </PageContainer>
+                </Box>
+            </PageContainer>
+        </GoogleReCaptchaProvider>
     );
 }

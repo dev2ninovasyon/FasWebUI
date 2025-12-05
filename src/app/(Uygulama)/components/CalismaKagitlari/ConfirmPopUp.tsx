@@ -6,17 +6,20 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 interface ConfirmPopUpProps {
   isConfirmPopUp: boolean;
   handleClose: () => void;
   handleDelete: () => void;
+  isLoading?: boolean;
 }
 
 export const ConfirmPopUpComponent: React.FC<ConfirmPopUpProps> = ({
   isConfirmPopUp,
   handleClose,
   handleDelete,
+  isLoading = false,
 }) => {
   return (
     <Dialog maxWidth={"lg"} open={isConfirmPopUp} onClose={handleClose}>
@@ -36,17 +39,17 @@ export const ConfirmPopUpComponent: React.FC<ConfirmPopUpProps> = ({
           </DialogContent>
           <DialogContent>
             <Box py={1}>
-              <Button
+              <LoadingButton
                 variant="outlined"
                 color="error"
+                loading={isLoading}
                 onClick={() => {
                   handleDelete();
-                  handleClose();
                 }}
                 sx={{ width: "100%", mb: 1 }}
               >
                 Evet, Sil
-              </Button>
+              </LoadingButton>
               <Button
                 variant="outlined"
                 color="success"

@@ -10,6 +10,7 @@ import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical
 import SorumlulukBildirimiLayout from "./SorumlulukBildirimiLayout";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
+import NoUsersAlert from "@/app/(Uygulama)/components/Alerts/NoUsersAlert";
 
 const CustomEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditor"),
@@ -23,6 +24,7 @@ const Page = () => {
 
   const [personelId, setPersonelId] = useState(user.id);
   const [personelAdi, setPersonelAdi] = useState(user.kullaniciAdi);
+  const [showNoUsersAlert, setShowNoUsersAlert] = useState(false);
 
   return (
     <SorumlulukBildirimiLayout>
@@ -41,6 +43,7 @@ const Page = () => {
               onSelectId={(selectedPersonelId) =>
                 setPersonelId(selectedPersonelId)
               }
+              onEmptyUsers={() => setShowNoUsersAlert(true)}
             />
           </Grid>
         </Grid>
@@ -53,37 +56,37 @@ const Page = () => {
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
+          )}
         <Grid
           container
           sx={{
@@ -98,6 +101,10 @@ const Page = () => {
           </Grid>
         </Grid>
       </Box>
+      <NoUsersAlert
+        open={showNoUsersAlert}
+        onClose={() => setShowNoUsersAlert(false)}
+      />
     </SorumlulukBildirimiLayout>
   );
 };

@@ -3,7 +3,7 @@ import { apiFetch } from "@/api/apiBase";
 
 export const getKullanicilar = async (token: string) => {
   try {
-    const response =await apiFetch(`/Kullanici/Hepsi`, {
+    const response = await apiFetch(`/Kullanici/Hepsi`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -22,7 +22,7 @@ export const getKullanicilar = async (token: string) => {
 
 export const getKullaniciById = async (token: string, id: any) => {
   try {
-    const response =await apiFetch(`/Kullanici/${id}`, {
+    const response = await apiFetch(`/Kullanici/${id}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -44,7 +44,7 @@ export const getKullaniciByDenetciId = async (
   denetciId: any
 ) => {
   try {
-    const response =await apiFetch(`/Kullanici/Hepsi/${denetciId}`, {
+    const response = await apiFetch(`/Kullanici/Hepsi/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -68,7 +68,7 @@ export const getKullaniciByDenetlenenYilRol = async (
   tip: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Kullanici/DenetlenenYilRol?denetlenenId=${denetlenenId}&yil=${yil}&tip=${tip}`,
       {
         method: "GET",
@@ -90,7 +90,7 @@ export const getKullaniciByDenetlenenYilRol = async (
 
 export const createKullanici = async (token: string, createdKullanici: any) => {
   try {
-    const response =await apiFetch(`/Kullanici`, {
+    const response = await apiFetch(`/Kullanici`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -107,6 +107,7 @@ export const createKullanici = async (token: string, createdKullanici: any) => {
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
+    return false;
   }
 };
 
@@ -116,7 +117,7 @@ export const updateKullanici = async (
   updatedKullanici: any
 ) => {
   try {
-    const response =await apiFetch(`/Kullanici/${id}`, {
+    const response = await apiFetch(`/Kullanici/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -133,6 +134,7 @@ export const updateKullanici = async (
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
+    return false;
   }
 };
 
@@ -142,7 +144,7 @@ export const updatekullaniciSifre = async (
   updatedPassdord: any
 ) => {
   try {
-    const response =await apiFetch(`/Kullanici/Sifre/${id}`, {
+    const response = await apiFetch(`/Kullanici/Sifre/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -159,12 +161,13 @@ export const updatekullaniciSifre = async (
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
+    return false;
   }
 };
 
 export const deleteKullaniciById = async (token: string, id: number) => {
   try {
-    const response =await apiFetch(`/Kullanici/${id}`, {
+    const response = await apiFetch(`/Kullanici/${id}`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
@@ -179,5 +182,6 @@ export const deleteKullaniciById = async (token: string, id: number) => {
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
+    return false;
   }
 };

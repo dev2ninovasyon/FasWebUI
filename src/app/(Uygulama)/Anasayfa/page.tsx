@@ -6,7 +6,6 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { Box } from "@mui/material";
 import { SonIslemlerKartlari } from "@/app/(Uygulama)/components/AnaSayfa/SonIslemlerKartlari";
 import { SirketArsivOzetKartlari } from "@/app/(Uygulama)/components/AnaSayfa/SirketArsivOzetKartlari";
-import GuideFlow from "@/app/(Uygulama)/components/Dashboards/GuideFlow";
 const BCrumb = [
   {
     to: "/",
@@ -20,7 +19,6 @@ export default function DashboardPage() {
       <Breadcrumb title="Ana Sayfa" items={BCrumb} />
       <Box mt={2}>
         {/* Diğer dashboard bileşenlerinin üstüne/altına koyabilirsin */}
-        <GuideFlow />
         <SonIslemlerKartlari />
         <SirketArsivOzetKartlari />
       </Box>

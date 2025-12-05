@@ -11,6 +11,7 @@ interface PerosnelBoxProps {
   disabled?: boolean;
   onSelectId: (selectedPerosnelId: number) => void;
   onSelectAdi: (selectedPersonelAdi: string) => void;
+  onEmptyUsers?: () => void;
 }
 
 interface Perosnel {
@@ -25,6 +26,7 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
   disabled,
   onSelectId,
   onSelectAdi,
+  onEmptyUsers,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -44,6 +46,11 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
         label: musteri.personelAdi,
       }));
       setRows(newRows);
+
+      // Trigger callback if no users found
+      if (newRows.length === 0 && onEmptyUsers) {
+        onEmptyUsers();
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }

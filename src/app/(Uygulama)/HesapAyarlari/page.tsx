@@ -23,6 +23,8 @@ import ChildCard from "@/app/(Uygulama)/components/Layout/Shared/ChildCard/Child
 import { enqueueSnackbar } from "notistack";
 import { updatekullaniciSifre } from "@/api/Kullanici/KullaniciIslemleri";
 import { IconLock, IconLockOpen } from "@tabler/icons-react";
+import SetupWizardModal, { WizardData } from "@/app/(Uygulama)/components/SetupWizard/SetupWizardModal";
+import { useRouter } from "next/navigation";
 interface avatars {
   id: number;
   src: string;
@@ -71,6 +73,9 @@ const Page = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showSetupWizard, setShowSetupWizard] = useState(false);
+
+  const router = useRouter();
 
   const handleButtonClick = async () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -167,11 +172,10 @@ const Page = () => {
                           : theme.palette.primary.main
                         : "rgba(145, 158, 171, 0.12)",
                       boxShadow: isSelected
-                        ? `0 0 8px ${
-                            customizer.activeMode == "dark"
-                              ? theme.palette.primary.dark
-                              : theme.palette.primary.main
-                          }`
+                        ? `0 0 8px ${customizer.activeMode == "dark"
+                          ? theme.palette.primary.dark
+                          : theme.palette.primary.main
+                        }`
                         : "none",
                     }}
                   >
@@ -311,7 +315,40 @@ const Page = () => {
             </Grid>
           </ChildCard>
         </Box>
+
+        {/* Setup Wizard Section */}
+        <Box p={3}>
+          <Typography variant="h5" gutterBottom>
+            Kurulum Sihirbazı
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+            İlk kurulum adımlarını tekrar gözden geçirmek veya yeni bir kurulum başlatmak için kurulum sihirbazını kullanabilirsiniz.
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setShowSetupWizard(true)}
+            sx={{ textTransform: "none" }}
+          >
+            Kurulum Ekranına Gir
+          </Button>
+        </Box>
       </PageContainer>
+
+      {/* Setup Wizard Modal */}
+      {showSetupWizard && (
+        <SetupWizardModal
+          open={showSetupWizard}
+          onClose={() => setShowSetupWizard(false)}
+          onComplete={(data: WizardData) => {
+            console.log("Setup completed with data:", data);
+            setShowSetupWizard(false);
+            // TODO: Save wizard data via API
+            // TODO: Set selected company in Redux
+            router.push("/Anasayfa");
+          }}
+        />
+      )}
     </HesapAyarlariLayout>
   );
 };

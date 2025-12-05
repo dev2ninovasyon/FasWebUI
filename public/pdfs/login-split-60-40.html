@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAS Login - 60/40 Split</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left Side - Login Form (40%) */
+        .login-section {
+            flex: 4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            background: #ffffff;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Right Side - Visuals (60%) */
+        .visual-section {
+            flex: 6;
+            position: relative;
+            overflow: hidden;
+            background: #0f172a;
+        }
+
+        .slider {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1));
+        }
+
+        /* CSS Fallback Slides */
+        .slide-css-1 {
+            background: linear-gradient(135deg, #4338ca 0%, #3b82f6 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-css-2 {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-content {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            color: white;
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .slide-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease 0.3s;
+        }
+
+        .slide.active .slide-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-desc {
+            font-size: 18px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease 0.5s;
+            line-height: 1.6;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide.active .slide-desc {
+            opacity: 0.9;
+            transform: translateY(0);
+        }
+
+        .indicators {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        /* Login Form Styles */
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .welcome-header {
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .forgot-pass {
+            color: #4f46e5;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1e293b;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #0f172a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+        }
+
+        .divider {
+            margin: 30px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .social-btn {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            color: #475569;
+            gap: 10px;
+        }
+
+        .social-btn:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column-reverse;
+            }
+
+            .visual-section {
+                flex: 1;
+                min-height: 300px;
+            }
+
+            .login-section {
+                flex: 2;
+                padding: 40px 20px;
+            }
+
+            .slide-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-section">
+            <div class="login-wrapper">
+                <div class="brand">
+                    <div class="brand-logo">F</div>
+                    <div class="brand-name">FAS Fintech</div>
+                </div>
+
+                <div class="welcome-header">
+                    <h1 class="welcome-title">Hoş Geldiniz</h1>
+                    <p class="welcome-subtitle">Devam etmek için lütfen giriş yapın.</p>
+                </div>
+
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">E-posta Adresi</label>
+                        <input type="email" class="form-input" placeholder="ornek@sirket.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Şifre</label>
+                        <input type="password" class="form-input" placeholder="••••••••">
+                    </div>
+
+                    <div class="form-footer">
+                        <label class="remember-me">
+                            <input type="checkbox"> Beni Hatırla
+                        </label>
+                        <a href="#" class="forgot-pass">Şifremi Unuttum</a>
+                    </div>
+
+                    <button type="button" class="submit-btn">Giriş Yap</button>
+
+                    <div class="divider">
+                        <span>veya şununla devam et</span>
+                    </div>
+
+                    <div class="social-login">
+                        <button type="button" class="social-btn">Google</button>
+                        <button type="button" class="social-btn">Microsoft</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="visual-section">
+            <div class="slider">
+                <!-- Slide 1: Generated Image -->
+                <div class="slide active" style="background-image: url('assets/slide1.png')">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Global Finans Ağı</h2>
+                        <p class="slide-desc">Dünya çapında kesintisiz ve güvenli finansal işlemler için modern altyapı.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Generated Image -->
+                <div class="slide" style="background-image: url('assets/slide2.png')">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Yapay Zeka Analizi</h2>
+                        <p class="slide-desc">Verilerinizi anlamlandıran ve geleceği öngören gelişmiş AI algoritmaları.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Generated Image -->
+                <div class="slide" style="background-image: url('assets/slide3.png')">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Mobil Cüzdan</h2>
+                        <p class="slide-desc">Tüm varlıklarınız tek bir güvenli cüzdanda, her an elinizin altında.</p>
+                    </div>
+                </div>
+
+                <!-- Slide 4: CSS Fallback -->
+                <div class="slide slide-css-1">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Kripto Varlıklar</h2>
+                        <p class="slide-desc">Blockchain teknolojisi ile güvenli ve şeffaf dijital varlık yönetimi.</p>
+                    </div>
+                </div>
+
+                <!-- Slide 5: CSS Fallback -->
+                <div class="slide slide-css-2">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Sürdürülebilir Finans</h2>
+                        <p class="slide-desc">Gelecek nesiller için yeşil ve sürdürülebilir finansal çözümler.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="indicators">
+                <div class="indicator active" onclick="goToSlide(0)"></div>
+                <div class="indicator" onclick="goToSlide(1)"></div>
+                <div class="indicator" onclick="goToSlide(2)"></div>
+                <div class="indicator" onclick="goToSlide(3)"></div>
+                <div class="indicator" onclick="goToSlide(4)"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.indicator');
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(ind => ind.classList.remove('active'));
+
+            slides[index].classList.add('active');
+            indicators[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            let next = (currentSlide + 1) % totalSlides;
+            showSlide(next);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+            // Reset timer
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        let slideInterval = setInterval(nextSlide, 5000);
+    </script>
+</body>
+
+</html>

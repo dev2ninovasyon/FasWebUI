@@ -19,6 +19,7 @@ interface StateType {
   kullaniciAdi?: string;
   mail?: string;
   token?: string;
+  refreshToken?: string;  // ✅ Güvenli token yenileme için
   formHazirlayanOnaylayan?: boolean;
 }
 
@@ -41,6 +42,7 @@ const initialState: StateType = {
   kullaniciAdi: "",
   mail: "",
   token: "",
+  refreshToken: "",  // ✅ Başlangıç değeri
   formHazirlayanOnaylayan: false,
 };
 
@@ -102,6 +104,9 @@ export const UserSlice = createSlice({
     setToken: (state: StateType, action) => {
       state.token = action.payload;
     },
+    setRefreshToken: (state: StateType, action) => {  // ✅ Yeni action
+      state.refreshToken = action.payload;
+    },
     setFormHazirlayanOnaylayan: (state: StateType, action) => {
       state.formHazirlayanOnaylayan = action.payload;
     },
@@ -125,6 +130,7 @@ export const UserSlice = createSlice({
         state.kullaniciAdi = undefined;
         state.mail = undefined;
         state.token = undefined;
+        state.refreshToken = undefined;  // ✅ Reset'e eklendi
         state.formHazirlayanOnaylayan = undefined;
       }
     },
@@ -150,6 +156,7 @@ export const {
   setKullaniciAdi,
   setMail,
   setToken,
+  setRefreshToken,  // ✅ Export'a eklendi
   resetToNull,
   setFormHazirlayanOnaylayan,
 } = UserSlice.actions;

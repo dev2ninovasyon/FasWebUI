@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import { LoadingButton } from "@mui/lab";
 import { IconTrash, IconMail, IconLock } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "@/store/hooks";
-import ReCAPTCHA from "react-google-recaptcha";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import {
   setDenetciId,
   setId,
   setKullaniciAdi,
   setToken,
+  setRefreshToken,  // ✅ Yeni import
   setYetki,
   setMail,
   setUnvan,
@@ -48,14 +49,27 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [isVerifyingCaptcha, setIsVerifyingCaptcha] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleLogin = async () => {
-    if (!captchaToken) {
-      enqueueSnackbar("Lütfen robot olmadığınızı doğrulayın.", {
+    if (!executeRecaptcha) {
+      enqueueSnackbar("Recaptcha yüklenemedi, lütfen sayfayı yenileyin.", {
+        variant: "warning",
+        autoHideDuration: 3000,
+      });
+      setIsLoggedIn(false);
+      return;
+    }
+
+    setIsVerifyingCaptcha(true);
+    const token = await executeRecaptcha("login");
+    setIsVerifyingCaptcha(false);
+
+    if (!token) {
+      enqueueSnackbar("Recaptcha doğrulaması başarısız.", {
         variant: "warning",
         autoHideDuration: 3000,
       });
@@ -70,11 +84,12 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           accept: "*/*",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, captchaToken }),
+        body: JSON.stringify({ email, password, captchaToken: token }),
       });
       if (response.ok) {
         const data = await response.json();
         const userToken = data.token;
+        const userRefreshToken = data.refreshToken;  // ✅ Backend'den al
         const userId = data.kullaniciId;
         const userDenetciId = data.denetciId;
         const userDenetciFirmaAdi = data.denetciFirmaAdi;
@@ -84,6 +99,9 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         const unvan = data.unvan;
 
         dispatch(setToken(userToken));
+        if (userRefreshToken) {  // ✅ Varsa kaydet
+          dispatch(setRefreshToken(userRefreshToken));
+        }
         dispatch(setId(userId));
         dispatch(setDenetciId(userDenetciId));
         dispatch(setDenetciFirmaAdi(userDenetciFirmaAdi));
@@ -130,14 +148,10 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
             maxWidth: "720px",
           },
         });
-        recaptchaRef.current?.reset();
-        setCaptchaToken(null);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
       setIsLoggedIn(false);
-      recaptchaRef.current?.reset();
-      setCaptchaToken(null);
     }
   };
 
@@ -189,50 +203,34 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         </Box>
 
         <Box display="flex" justifyContent="center">
-          <ReCAPTCHA
-            ref={recaptchaRef}
-            sitekey="6LffORosAAAAAN_irA4StsjwxXN1jgCJ9QN6UWrS"
-            onChange={(token) => setCaptchaToken(token)}
-          />
+          {/* ReCAPTCHA v3 is invisible */}
         </Box>
 
       </Stack>
       <Box>
-        {!isLoggedIn && (
-          <Button
-            color="primary"
-            variant="contained"
-            size="large"
-            fullWidth
-            onClick={() => {
-              setIsLoggedIn(true);
-              handleLogin();
-            }}
-            sx={{
-              background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
-              boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
-              color: "white",
-              height: 48,
-              padding: "0 30px",
-              fontSize: "1.1rem",
-              textTransform: "none",
-              borderRadius: "10px"
-            }}
-          >
-            Giriş Yap
-          </Button>
-        )}
-        {isLoggedIn && (
-          <LoadingButton
-            loading
-            color="secondary"
-            variant="contained"
-            size="large"
-            fullWidth
-            endIcon={<IconTrash width={18} />}
-            sx={{ height: 48, borderRadius: "10px" }}
-          ></LoadingButton>
-        )}
+        <LoadingButton
+          color="primary"
+          variant="contained"
+          size="large"
+          fullWidth
+          loading={isVerifyingCaptcha || isLoggedIn}
+          onClick={() => {
+            setIsLoggedIn(true);
+            handleLogin();
+          }}
+          sx={{
+            background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+            boxShadow: "0 3px 5px 2px rgba(33, 203, 243, .3)",
+            color: "white",
+            height: 48,
+            padding: "0 30px",
+            fontSize: "1.1rem",
+            textTransform: "none",
+            borderRadius: "10px"
+          }}
+        >
+          {isVerifyingCaptcha ? "Güvenlik Doğrulaması..." : isLoggedIn ? "Giriş Yapılıyor..." : "Giriş Yap"}
+        </LoadingButton>
       </Box>
       {subtitle}
     </>

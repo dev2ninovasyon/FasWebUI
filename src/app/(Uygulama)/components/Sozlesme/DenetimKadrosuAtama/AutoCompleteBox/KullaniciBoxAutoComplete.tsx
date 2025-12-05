@@ -10,6 +10,7 @@ interface KullaniciBoxProps {
 
   onSelectId: (selectedKullaniciId: number) => void;
   onSelectAdi: (selectedKullanici: string) => void;
+  onEmptyUsers?: () => void;
 }
 
 interface Kullanici {
@@ -22,6 +23,7 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
   initialValue,
   onSelectId,
   onSelectAdi,
+  onEmptyUsers,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -39,6 +41,11 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
         label: veri.personelAdi,
       }));
       setRows(newRows);
+
+      // Trigger callback if no users found
+      if (newRows.length === 0 && onEmptyUsers) {
+        onEmptyUsers();
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }

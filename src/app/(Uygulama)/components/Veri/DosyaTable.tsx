@@ -23,8 +23,10 @@ import {
   MenuItem,
   ListItemIcon,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
 import { Stack } from "@mui/system";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+// import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import {
   deleteDosyaBilgisiMultiple,
   getDefterYuklemeLoglari,
@@ -82,8 +84,8 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
@@ -103,6 +105,10 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const [message, setMessage] = useState<string>("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoadingPreview, setIsLoadingPreview] = useState<number | null>(null);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -302,10 +308,18 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   };
 
   const handlePreview2 = async () => {
+    if (isLoadingPreview !== null) return; // Prevent double-click
+
+    setIsLoadingPreview(selectedId);
+    enqueueSnackbar("Dosya yükleniyor, lütfen bekleyin...", {
+      variant: "info",
+      autoHideDuration: 2000,
+    });
+
     try {
       var controller =
         fileType === "E-DefterKebir" ? "DosyaGoster" : "PdfDosyasiGoster";
-      const response =  await axios({
+      const response = await axios({
         url: `${url}/Veri/${controller}/${selectedId}`,
         method: "GET",
         responseType: "blob",
@@ -322,8 +336,15 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       const xmlBlobUrl = window.URL.createObjectURL(xmlBlob);
       setXmlBlobUrl(xmlBlobUrl);
       setIsOpen2(true);
+      handleClose();
     } catch (error) {
-      console.error("Error fetching XML:", error);
+      console.error("Error fetching file:", error);
+      enqueueSnackbar("Dosya yüklenirken bir hata oluştu.", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+    } finally {
+      setIsLoadingPreview(null);
     }
   };
 
@@ -381,17 +402,17 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     }
   }, [dosyaYuklendiMi]);
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  // const emptyRows =
+  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (event: any, newPage: any) => {
+  //   setPage(newPage);
+  // };
 
-  const handleChangeRowsPerPage = (event: any) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (event: any) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
   const filteredRows = rows.filter((row) =>
     normalizeString(row.adi).includes(normalizeString(searchTerm))
@@ -429,19 +450,34 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   };
 
   const deleteSelected = async () => {
+    setIsDeleting(true);
     try {
       const result = await deleteDosyaBilgisiMultiple(
         user.token || "",
         selected || 0
       );
       if (result) {
-        selected.length = 0;
+        enqueueSnackbar(`${selected.length} kayıt başarıyla silindi.`, {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+        setSelected([]);
         fetchData();
+        handleCloseConfirmPopUp();
       } else {
-        console.error("Dosya Bilgileri silinemedi");
+        enqueueSnackbar("Dosya bilgileri silinemedi.", {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
+      enqueueSnackbar("Silme işlemi sırasında bir hata oluştu.", {
+        variant: "error",
+        autoHideDuration: 5000,
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -467,7 +503,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           minHeight: "425px",
         }}
       >
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="sticky table" size="small">
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
@@ -500,13 +536,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {(rowsPerPage > 0
-              ? filteredRows.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
-              : filteredRows
-            ).map((row, index) => {
+            {filteredRows.map((row, index) => {
               const isItemSelected = isSelected(row.id);
               const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -524,20 +554,21 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                     <Checkbox
                       checked={isItemSelected}
                       inputProps={{ "aria-labelledby": labelId }}
+                      size="small"
                     />
                   </TableCell>
                   <TableCell scope="row">
                     <Typography variant="body1" color="textSecondary">
                       {fileType == "E-DefterKebir" ||
-                      fileType == "E-DefterYevmiye"
+                        fileType == "E-DefterYevmiye"
                         ? row.adi.split("-").slice(1).join("-")
                         : row.adi}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ padding: "2px 16px" }}>
                     <Typography
                       textAlign={"center"}
-                      variant="body1"
+                      variant="body2"
                       color="textSecondary"
                     >
                       {row.olusturulmaTarihi}
@@ -557,25 +588,26 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                             row.durum === "Tamamlandı"
                               ? (theme) => theme.palette.success.light
                               : row.durum === "İşleniyor"
-                              ? (theme) => theme.palette.info.light
-                              : row.durum === "Sıraya Alındı."
-                              ? (theme) => theme.palette.warning.light
-                              : (theme) => theme.palette.error.light,
+                                ? (theme) => theme.palette.info.light
+                                : row.durum === "Sıraya Alındı."
+                                  ? (theme) => theme.palette.warning.light
+                                  : (theme) => theme.palette.error.light,
                           color:
                             row.durum === "Tamamlandı"
                               ? (theme) => theme.palette.success.main
                               : row.durum === "İşleniyor"
-                              ? (theme) => theme.palette.info.main
-                              : row.durum === "Sıraya Alındı."
-                              ? (theme) => theme.palette.warning.main
-                              : (theme) => theme.palette.error.main,
+                                ? (theme) => theme.palette.info.main
+                                : row.durum === "Sıraya Alındı."
+                                  ? (theme) => theme.palette.warning.main
+                                  : (theme) => theme.palette.error.main,
                         }}
                       />
                     </IconButton>
                   </TableCell>
                   {mdUp && (
-                    <TableCell>
+                    <TableCell sx={{ padding: "2px 16px" }}>
                       <IconButton
+                        size="small"
                         id="basic-button"
                         aria-controls={open ? "basic-menu" : undefined}
                         aria-haspopup="true"
@@ -594,11 +626,11 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                           "aria-labelledby": "basic-button",
                         }}
                       >
-                        <MenuItem onClick={() => handlePreview2()}>
+                        <MenuItem onClick={() => handlePreview2()} disabled={isLoadingPreview === selectedId}>
                           <ListItemIcon>
                             <IconEye width={18} />
                           </ListItemIcon>
-                          Göster
+                          {isLoadingPreview === selectedId ? "Yükleniyor..." : "Göster"}
                         </MenuItem>
                       </Menu>
                     </TableCell>
@@ -606,11 +638,11 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                 </TableRow>
               );
             })}
-            {emptyRows > 0 && (
+            {/* {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
                 <TableCell colSpan={6} />
               </TableRow>
-            )}
+            )} */}
           </TableBody>
         </Table>
         {fileType == "E-DefterKebir" && (
@@ -664,11 +696,12 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         </Dialog>
       </TableContainer>
       {selected.length !== 0 && (
-        <Button
+        <LoadingButton
           variant="outlined"
           color="error"
           size="small"
           disabled={fetchedData != null}
+          loading={isDeleting}
           onClick={() => {
             handleIsConfirm();
           }}
@@ -680,9 +713,9 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           }}
         >
           {selected.length} Kayıt Sil
-        </Button>
+        </LoadingButton>
       )}
-      <Table>
+      {/* <Table>
         <TableFooter
           sx={{
             display: "flex",
@@ -713,21 +746,24 @@ const DosyaTable: React.FC<MyComponentProps> = ({
             />
           </TableRow>
         </TableFooter>
-      </Table>
+      </Table> */}
       {isConfirmPopUpOpen && (
         <ConfirmPopUpComponent
           isConfirmPopUp={isConfirmPopUpOpen}
           handleClose={handleCloseConfirmPopUp}
           handleDelete={deleteSelected}
+          isLoading={isDeleting}
         />
       )}
-      {isAlertOpen && fileType === "E-DefterKebir" && (
-        <WarnAlertCart
-          openCartAlert={openCartAlert}
-          setOpenCartAlert={setOpenCartAlert}
-          message={message}
-        ></WarnAlertCart>
-      )}
+      {
+        isAlertOpen && fileType === "E-DefterKebir" && (
+          <WarnAlertCart
+            openCartAlert={openCartAlert}
+            setOpenCartAlert={setOpenCartAlert}
+            message={message}
+          ></WarnAlertCart>
+        )
+      }
     </>
   );
 };
