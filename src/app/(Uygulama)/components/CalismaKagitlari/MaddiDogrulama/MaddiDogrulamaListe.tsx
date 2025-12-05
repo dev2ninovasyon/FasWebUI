@@ -29,7 +29,7 @@ import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useRouter } from "next/navigation";
 
-interface CalismaKagidiProps {}
+interface CalismaKagidiProps { }
 
 interface DenetimDosyaBelgeleriDto {
   id: number;
@@ -192,6 +192,12 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = () => {
                           customizer.activeMode == "dark"
                             ? theme.palette.secondary.dark
                             : theme.palette.secondary.main,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(
+                          `/DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu?parentName=${parent.name}`
+                        );
                       }}
                     >
                       Çalışma Kağıdı Oluştur
