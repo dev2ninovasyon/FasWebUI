@@ -1,5 +1,5 @@
 // src/api/AuditLogs.ts
-import { url,apiFetch } from "@/api/apiBase";
+import { url, apiFetch } from "@/api/apiBase";
 
 
 export interface UserActionDto {
@@ -29,16 +29,17 @@ export interface UserActionDto {
 
 export async function getUserRecentActions(
   token: string,
-  userId:number,
+  userId: number,
   denetlenenId: number,
   yil: number,
   count: number
 ): Promise<UserActionDto[]> {
+
   const response = await apiFetch(
     `/Audit/UserRecentActions?userId=${userId}&count=${count}&denetlenenId=${denetlenenId}&yil=${yil}`,
     {
       method: "GET",
-        headers: {
+      headers: {
         Authorization: `Bearer ${token}`,
       },
       cache: "no-store",
@@ -72,7 +73,7 @@ export interface SirketArsivOzetDto {
 export async function getSirketArsivOzet(
   token: string,
   kullaniciId: number,
-   denetciId: number
+  denetciId: number
 ): Promise<SirketArsivOzetDto> {
   const res = await apiFetch(
     `/Audit/sirket-arsiv-ozet?denetciId=${denetciId}&kullaniciId=${kullaniciId}`,

@@ -3,17 +3,17 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { Box } from "@mui/material";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
-import Kys1Layout from "./Kys1Layout";
+import KysLayout from "./KysLayout";
 
 const Page = () => {
   return (
-    <Kys1Layout>
-      <PageContainer title="KYS-1" description="this is KYS-1">
+    <KysLayout>
+      <PageContainer title="KYS" description="this is KYS">
         <Box>
-          <TopCards title="KYS-1" />
+          <TopCards title="KYS" />
         </Box>
       </PageContainer>
-    </Kys1Layout>
+    </KysLayout>
   );
 };
 

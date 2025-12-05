@@ -46,14 +46,17 @@ export default function RootLayout({
   useEffect(() => {
     // Sadece client-side'da çalışmasını sağla
     if (typeof window !== "undefined") {
-      // Eğer token yoksa kullanıcıyı login sayfasına yönlendir
-      if (!user.token) {
-        router.push("/");
-      } else {
+      // İlk render'da token varsa control'u true yap
+      if (user.token) {
         setControl(true);
       }
+      // Eğer daha önce control true idi ve şimdi token yoksa (explicit logout), login'e yönlendir
+      else if (control) {
+        router.push("/");
+        setControl(false);
+      }
     }
-  }, [user.token]);
+  }, [user.token, router, control]);
   return (
     control ? (
       <MainWrapper>

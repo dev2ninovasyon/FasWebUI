@@ -2,6 +2,9 @@
 import { Box, Typography, TextField, Button, Checkbox, FormControlLabel, useTheme } from "@mui/material";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 // components
 import AuthLogin from "./authForms/AuthLogin";
@@ -40,8 +43,18 @@ const slides = [
 export default function LoginPageClient() {
     const theme = useTheme();
     const isDark = theme.palette.mode === "dark";
+    const router = useRouter();
+    const user = useSelector((state: AppState) => state.userReducer);
+
     // Random start slide
     const [currentSlide, setCurrentSlide] = useState(() => Math.floor(Math.random() * slides.length));
+
+    // Eğer kullanıcı zaten giriş yapmışsa (token varsa), ana sayfaya yönlendir
+    useEffect(() => {
+        if (user?.token) {
+            router.push("/Anasayfa");
+        }
+    }, [user?.token, router]);
 
     useEffect(() => {
         const interval = setInterval(() => {

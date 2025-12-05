@@ -19,6 +19,7 @@ export default function useAutoLogout(
 
   // ⬇⬇⬇ YENİ: geri sayım log’u için interval
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const refreshCountdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
   // console.log("Debug User:", user); // Debug için
@@ -35,7 +36,8 @@ export default function useAutoLogout(
 
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current); // YENİ
+    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+    if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
 
     router.replace("/Login");
   }, [dispatch, router]);
@@ -57,7 +59,7 @@ export default function useAutoLogout(
       logout();
     }, idleTimeout);
 
-    // ⬇⬇⬇ YENİ: kalan süreyi sürekli konsola yazan interval
+    // ⬇⬇⬇ Kalan süreyi sürekli konsola yazan interval (test için yorum satırı)
     countdownTimerRef.current = setInterval(() => {
       const remaining = expiry - Date.now();
       if (remaining <= 0) {
@@ -68,7 +70,9 @@ export default function useAutoLogout(
       }
 
       const remainingSeconds = Math.ceil(remaining / 1000);
-      // console.log(`⏰ Idle timeout'a kalan süre: ${remainingSeconds} saniye`);
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+      // console.log(`⏰ Idle timeout'a kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
     }, 1000);
   }, [idleTimeout, logout]);
 
@@ -89,12 +93,23 @@ export default function useAutoLogout(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          refreshToken: user.refreshToken  // ✅ Güvenli: refreshToken gönderiliyor
+          RefreshToken: user.refreshToken  // ✅ Backend PascalCase bekliyor
         }),
       });
 
       if (!response.ok) {
         console.error("Refresh token yenilenemedi, response.ok=false");
+        console.error("HTTP Status:", response.status);
+        console.error("Status Text:", response.statusText);
+
+        // Backend'den gelen hata mesajını göster
+        try {
+          const errorData = await response.json();
+          console.error("Backend Error:", errorData);
+        } catch (e) {
+          console.error("Response body okunamadı");
+        }
+
         logout();
         return;
       }
@@ -109,7 +124,7 @@ export default function useAutoLogout(
       console.error("Refresh token yenilenemedi (catch):", err);
       logout();
     }
-  }, [user?.token, dispatch, logout]);
+  }, [user?.token, user?.refreshToken, dispatch, logout]);
 
   useEffect(() => {
     if (!user?.token) return;
@@ -124,10 +139,42 @@ export default function useAutoLogout(
     events.forEach((event) => window.addEventListener(event, resetIdleTimer));
     resetIdleTimer();
 
+    // Token yenileme zamanlayıcısı
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
+    if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
+
+    const refreshExpiry = Date.now() + refreshInterval;
+
     refreshTimerRef.current = setInterval(() => {
       refreshToken();
+      // Yeni çevrim başlatılıyor, geri sayımı sıfırla
+      const newRefreshExpiry = Date.now() + refreshInterval;
+      if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
+      refreshCountdownTimerRef.current = setInterval(() => {
+        const remaining = newRefreshExpiry - Date.now();
+        if (remaining <= 0) {
+          clearInterval(refreshCountdownTimerRef.current!);
+          return;
+        }
+        const remainingSeconds = Math.ceil(remaining / 1000);
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        // console.log(`🔄 Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
+      }, 1000);
     }, refreshInterval);
+
+    // İlk geri sayımı başlat (test için yorum satırı)
+    refreshCountdownTimerRef.current = setInterval(() => {
+      const remaining = refreshExpiry - Date.now();
+      if (remaining <= 0) {
+        clearInterval(refreshCountdownTimerRef.current!);
+        return;
+      }
+      const remainingSeconds = Math.ceil(remaining / 1000);
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+      // console.log(`🔄 Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
+    }, 1000);
 
     return () => {
       events.forEach((event) =>
@@ -135,7 +182,8 @@ export default function useAutoLogout(
       );
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
-      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current); // YENİ
+      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+      if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
     };
   }, [user?.token, resetIdleTimer, refreshToken, refreshInterval]);
 
