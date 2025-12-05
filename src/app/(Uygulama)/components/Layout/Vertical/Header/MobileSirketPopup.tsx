@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   IconButton,
   Dialog,
@@ -30,6 +31,7 @@ import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 const MobileSirketPopup = () => {
   // drawer top
   const user = useSelector((state: AppState) => state.userReducer);
+  const router = useRouter();
 
   const [showDrawer2, setShowDrawer2] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
@@ -93,6 +95,9 @@ const MobileSirketPopup = () => {
     }
 
     handleDrawerClose2();
+
+    // Sayfayı tamamen yenile - tüm veriler güncellenecek
+    window.location.reload();
   };
 
   return (

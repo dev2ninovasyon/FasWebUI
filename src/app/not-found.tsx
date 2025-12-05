@@ -1,8 +1,29 @@
+"use client";
+
 import { Box, Button, Container, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 export default function NotFound() {
+  const router = useRouter();
+  const user = useSelector((state: AppState) => state.userReducer);
+
+  useEffect(() => {
+    // If user is not authenticated, redirect to login
+    if (!user.token) {
+      router.push("/");
+    }
+  }, [user.token, router]);
+
+  // Don't render 404 if not authenticated (will redirect)
+  if (!user.token) {
+    return null;
+  }
+
   return (
     <Box
       display="flex"

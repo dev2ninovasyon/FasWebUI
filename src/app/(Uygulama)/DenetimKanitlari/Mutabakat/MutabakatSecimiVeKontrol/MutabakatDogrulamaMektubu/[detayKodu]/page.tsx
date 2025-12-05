@@ -27,7 +27,9 @@ import {
   downloadMutabakatMektup,
   deleteMutabakatMektup,
   generateMutabakatUploadLink,
+  getActiveMutabakatTokens,
   MutabakatMektupBelgeDto,
+  MutabakatUploadToken,
 } from "@/api/DenetimKanitlari/MutabakatMektup";
 import { usePathname } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -95,6 +97,7 @@ const Page = () => {
   const [hesapAdi, setHesapAdi] = useState("");
   const [aciklama, setAciklama] = useState("");
   const [gecerlilikGun, setGecerlilikGun] = useState(7);
+  const [activeTokens, setActiveTokens] = useState<MutabakatUploadToken[]>([]);
 
   // Drag & drop state
   const [isDragging, setIsDragging] = useState(false);
@@ -139,6 +142,21 @@ const Page = () => {
       setMektupBelge(belge);
     } catch (error) {
       console.error("Mektup bilgisi alınamadı:", error);
+    }
+  };
+
+  const fetchActiveTokens = async () => {
+    try {
+      const tokens = await getActiveMutabakatTokens(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        pathDetayKodu || ""
+      );
+      setActiveTokens(tokens);
+    } catch (error) {
+      console.error("Aktif tokenlar alınamadı:", error);
     }
   };
 
@@ -388,6 +406,9 @@ const Page = () => {
       setGeneratedLink(response.uploadUrl);
       setLinkExpiry(new Date(response.sonKullanmaTarihi).toLocaleString("tr-TR"));
 
+      // Refresh active tokens list
+      await fetchActiveTokens();
+
       enqueueSnackbar("Link oluşturuldu", {
         variant: "success",
         style: {
@@ -427,6 +448,7 @@ const Page = () => {
   useEffect(() => {
     fetchData();
     fetchMektupBelge();
+    fetchActiveTokens();
   }, []);
 
   return (
@@ -446,8 +468,8 @@ const Page = () => {
           <Grid
             item
             xs={12}
-            md={4}
-            lg={3}
+            md={10}
+            lg={8}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -480,6 +502,16 @@ const Page = () => {
                   const extractedName = extractAliciAdiFromMetin(veriler.metin);
                   setAliciAdi(extractedName);
                 }
+                // If there are existing active tokens, show the most recent one
+                if (activeTokens && activeTokens.length > 0) {
+                  const mostRecentToken = activeTokens[0];
+                  const baseUrl = window.location.origin.replace('localhost:3000', 'betaverigirisi.fasmart.app');
+                  setGeneratedLink(`${baseUrl}/mutabakat-upload/${mostRecentToken.token}`);
+                  setLinkExpiry(new Date(mostRecentToken.sonKullanmaTarihi).toLocaleString("tr-TR"));
+                  setAliciAdi(mostRecentToken.aliciAdi || "");
+                  setHesapAdi(mostRecentToken.hesapAdi || "");
+                  setAciklama(mostRecentToken.aciklama || "");
+                }
                 setLinkDialogOpen(true);
               }}
               color="primary"
@@ -493,7 +525,7 @@ const Page = () => {
                   wordWrap: "break-word",
                 }}
               >
-                Link Üret
+                {activeTokens && activeTokens.length > 0 ? "Link Görüntüle" : "Link Üret"}
               </Typography>{" "}
             </Button>
           </Grid>
@@ -520,8 +552,6 @@ const Page = () => {
               <Stack direction="row" spacing={2} alignItems="center" flex={1}>
                 <Chip
                   label={`Yüklü Mektup: ${mektupBelge.orijinalDosyaAdi}`}
-                  color="success"
-                  variant="outlined"
                   size="medium"
                 />
                 <Typography variant="caption" color="text.secondary">
@@ -724,8 +754,10 @@ const Page = () => {
                 </>
               ) : (
                 <>
-                  <Typography variant="body1" fontWeight="bold">
-                    Link başarıyla oluşturuldu!
+                  <Typography variant="body1" fontWeight="bold" color="success.main">
+                    {activeTokens && activeTokens.length > 0 && activeTokens[0].token === generatedLink.split('token=')[1]
+                      ? "Daha Önce Oluşturulmuş Link"
+                      : "Link başarıyla oluşturuldu!"}
                   </Typography>
                   <TextField
                     label="Yükleme Linki"
@@ -740,6 +772,38 @@ const Page = () => {
                       ),
                     }}
                   />
+                  {aliciAdi && (
+                    <TextField
+                      label="Alıcı Adı"
+                      fullWidth
+                      value={aliciAdi}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  )}
+                  {hesapAdi && (
+                    <TextField
+                      label="Hesap Adı"
+                      fullWidth
+                      value={hesapAdi}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  )}
+                  {aciklama && (
+                    <TextField
+                      label="Açıklama"
+                      fullWidth
+                      multiline
+                      rows={2}
+                      value={aciklama}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  )}
                   <Typography variant="body2" color="text.secondary">
                     Son kullanma tarihi: {linkExpiry}
                   </Typography>
@@ -752,6 +816,21 @@ const Page = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseLinkDialog}>Kapat</Button>
+            {generatedLink && activeTokens && activeTokens.length > 0 && (
+              <Button
+                onClick={() => {
+                  setGeneratedLink("");
+                  setAliciAdi(veriler?.metin ? extractAliciAdiFromMetin(veriler.metin) : "");
+                  setHesapAdi("");
+                  setAciklama("");
+                  setGecerlilikGun(7);
+                }}
+                variant="outlined"
+                color="secondary"
+              >
+                Yeni Link Oluştur
+              </Button>
+            )}
             {!generatedLink && (
               <Button onClick={handleGenerateLink} variant="contained">
                 Link Oluştur

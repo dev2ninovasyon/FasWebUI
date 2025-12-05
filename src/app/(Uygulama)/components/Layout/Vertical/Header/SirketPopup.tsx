@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   IconButton,
   Dialog,
@@ -36,6 +37,7 @@ const SirketPopup = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
 
   const theme = useTheme();
+  const router = useRouter();
 
   const [showDrawer2, setShowDrawer2] = useState(false);
   const [selectedId, setSelectedId] = useState(0);
@@ -98,6 +100,9 @@ const SirketPopup = () => {
     }
 
     handleDrawerClose2();
+
+    // Sayfayı tamamen yenile - tüm veriler güncellenecek
+    window.location.reload();
   };
 
   return (

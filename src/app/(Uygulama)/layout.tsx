@@ -43,20 +43,28 @@ export default function RootLayout({
   const user = useSelector((state: AppState) => state.userReducer);
   const [isSidebarHover, setIsSidebarHover] = useState(false);
   const [control, setControl] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+
+  // Initial authentication check
   useEffect(() => {
-    // Sadece client-side'da çalışmasını sağla
     if (typeof window !== "undefined") {
-      // İlk render'da token varsa control'u true yap
       if (user.token) {
         setControl(true);
-      }
-      // Eğer daha önce control true idi ve şimdi token yoksa (explicit logout), login'e yönlendir
-      else if (control) {
+        setIsChecking(false);
+      } else {
+        // Token yoksa login'e yönlendir
         router.push("/");
-        setControl(false);
       }
     }
-  }, [user.token, router, control]);
+  }, [user.token, router]);
+
+  // Handle logout scenario
+  useEffect(() => {
+    if (control && !user.token) {
+      router.push("/");
+      setControl(false);
+    }
+  }, [user.token, control, router]);
   return (
     control ? (
       <MainWrapper>
