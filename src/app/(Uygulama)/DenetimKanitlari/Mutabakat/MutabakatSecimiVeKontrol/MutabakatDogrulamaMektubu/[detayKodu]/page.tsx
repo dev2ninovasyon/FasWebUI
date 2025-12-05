@@ -506,7 +506,7 @@ const Page = () => {
                 if (activeTokens && activeTokens.length > 0) {
                   const mostRecentToken = activeTokens[0];
                   const baseUrl = window.location.origin.replace('localhost:3000', 'betaverigirisi.fasmart.app');
-                  setGeneratedLink(`${baseUrl}/mutabakat-upload/${mostRecentToken.token}`);
+                  setGeneratedLink(`https://betaverigirisi.fasmart.app/mutabakat-upload/${mostRecentToken.token}`);
                   setLinkExpiry(new Date(mostRecentToken.sonKullanmaTarihi).toLocaleString("tr-TR"));
                   setAliciAdi(mostRecentToken.aliciAdi || "");
                   setHesapAdi(mostRecentToken.hesapAdi || "");

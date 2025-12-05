@@ -9,7 +9,7 @@ export const createAmortismanHesaplanmis = async (
   hesaplamaYontemi: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/AmortismanHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesaplamaYontemi=${hesaplamaYontemi}`,
       {
         method: "POST",
@@ -38,7 +38,7 @@ export const getAmortismanHesaplanmis = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/AmortismanHesaplanmis?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -65,7 +65,7 @@ export const createKrediHesaplanmis = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KrediHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
@@ -94,7 +94,7 @@ export const getKrediHesaplanmis = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KrediHesaplanmis?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -121,7 +121,7 @@ export const getKrediHesaplanmisDetay = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KrediHesaplanmisDetay?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -148,7 +148,7 @@ export const getKrediHesaplanmisOrnekFisler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KrediHesaplanmisOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -176,7 +176,7 @@ export const createDavaKarsiliklariHesaplanmis = async (
   iskontoOrani: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/DavaKarsiliklariHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&iskontoOrani=${iskontoOrani}`,
       {
         method: "POST",
@@ -205,7 +205,7 @@ export const getDavaKarsiliklariHesaplanmis = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/DavaKarsiliklariHesaplanmis?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -232,7 +232,7 @@ export const createYaslandirmaHesaplanmis = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/YaslandirmaHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
@@ -261,7 +261,7 @@ export const getYaslandirmaHesaplanmis = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/Yaslandirma?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -288,7 +288,7 @@ export const createKidemTazminatiBobiHesapla = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KidemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -315,7 +315,7 @@ export const createKidemTazminatiTfrsHesapla = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KidemHesaplaAktueryal?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -340,7 +340,7 @@ export const createKidemTazminatiBobiEkBilgi = async (
   createdKidemTazminatiBobiEkBilgiVerisi: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KidemTazminatiBobiEkBilgi`,
       {
         method: "POST",
@@ -370,7 +370,7 @@ export const getKidemTazminatiBobiEkBilgi = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KidemTazminatiBobiEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -396,7 +396,7 @@ export const createKidemTazminatiTfrsEkBilgi = async (
   createdKidemTazminatiTfrsEkBilgiVerisi: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KidemTazminatiTfrsEkBilgi`,
       {
         method: "POST",
@@ -426,7 +426,7 @@ export const getKidemTazminatiTfrsEkBilgi = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KidemTazminatiTfrsEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -454,7 +454,7 @@ export const createCekSenetReeskontHesapla = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/CekSenetReeskontHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
@@ -479,7 +479,7 @@ export const createCekSenetReeskontEkBilgi = async (
   createdCekSenetReeskontEkBilgiVerisi: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/CekSenetReeskontEkBilgi`,
       {
         method: "POST",
@@ -509,7 +509,7 @@ export const getCekSenetReeskontEkBilgi = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/CekSenetReeskontEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -536,7 +536,7 @@ export const getCekSenetReeskontIskontoOranlari = async (
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/CekSenetReeskontIskontoOranlari?oranAdi=${oranAdi}&yil=${yil}`,
       {
         method: "GET",
@@ -565,7 +565,7 @@ export const getCekSenetReeskontHesaplama = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/CekSenetReeskontHesaplama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -593,7 +593,7 @@ export const getCekSenetReeskontDuzeltmeFarklari = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/CekSenetReeskontDuzeltmeFarklari?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -623,7 +623,7 @@ export const getCekSenetReeskontHesaplamadaKullanilanDegerler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/CekSenetReeskontHesaplamadaKullanilanDegerler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -655,7 +655,7 @@ export const createBeklenenKrediZarariHesaplanmis = async (
   beklenenBugunkiDegerOrani: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/BeklenenKrediZarariHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&oran=${oran}&beklenenBugunkiDegerOrani=${beklenenBugunkiDegerOrani}`,
       {
         method: "POST",
@@ -684,7 +684,7 @@ export const getBeklenenKrediZarariHesaplanmis = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/BeklenenKrediZarari?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -706,7 +706,7 @@ export const getBeklenenKrediZarariHesaplanmis = async (
 
 export const getEnflasyonOrani = async (token: string, yil: number) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/EnflasyonOrani?yil=${yil}`,
       {
         method: "GET",
@@ -728,7 +728,7 @@ export const getEnflasyonOrani = async (token: string, yil: number) => {
 
 export const getFaizOrani = async (token: string, yil: number) => {
   try {
-    const response =await apiFetch(`/Hesaplamalar/FaizOrani?yil=${yil}`, {
+    const response = await apiFetch(`/Hesaplamalar/FaizOrani?yil=${yil}`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -747,7 +747,7 @@ export const getFaizOrani = async (token: string, yil: number) => {
 
 export const getIskontoOrani = async (token: string, yil: number) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/IskontoOrani?yil=${yil}`,
       {
         method: "GET",
@@ -777,7 +777,7 @@ export const createVergiVarligiVeYukumlulugu = async (
   vergiAvantajVeBenzerleri: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VergiVarligiVeYukumluluguHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&vergiOrani=${vergiOrani}&maliZararVeBenzeriIndirimler=${maliZararVeBenzeriIndirimler}&vergiAvantajVeBenzerleri=${vergiAvantajVeBenzerleri}`,
       {
         method: "POST",
@@ -806,7 +806,7 @@ export const getVergiVarligiVeYukumluluguOzet = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VergiVarligiVeYukumluluguOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -835,7 +835,7 @@ export const getVergiVarligi = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VergiVarligi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -862,7 +862,7 @@ export const getVergiYukumlulugu = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VergiYukumlulugu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -889,7 +889,7 @@ export const getVergiVarligiVeYukumluluguOrnekFisler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VergiVarligiVeYukumluluguOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -916,7 +916,7 @@ export const getIliskiliTarafSiniflamaHesaplar = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/IliskiliTarafSiniflamaHesaplar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -944,7 +944,7 @@ export const getIliskiliTarafSiniflama = async (
   hesap: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/IliskiliTarafSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}`,
       {
         method: "GET",
@@ -973,7 +973,7 @@ export const getIliskiliTarafSiniflamaOrnekFisler = async (
   kebirKodu: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/IliskiliTarafSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&kebirKodu=${kebirKodu}`,
       {
         method: "POST",
@@ -1002,7 +1002,7 @@ export const createVadeliBankaMevduatiOtomatikSiniflama = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflamaHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
@@ -1029,7 +1029,7 @@ export const createVadeliBankaMevduatOtomatikSiniflama = async (
   createdVadeliBankaMevduat: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatOtomatikSiniflama`,
       {
         method: "POST",
@@ -1059,7 +1059,7 @@ export const getVadeliBankaMevduatiOtomatikSiniflama = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1086,7 +1086,7 @@ export const getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1111,7 +1111,7 @@ export const deleteVadeliBankaMevduatiOtomatikSiniflamaById = async (
   id: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflama?id=${id}`,
       {
         method: "DELETE",
@@ -1138,7 +1138,7 @@ export const getVadeliBankaMevduatiManuelSiniflama = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiManuelSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1166,7 +1166,7 @@ export const getVadeliBankaMevduatiManuelSiniflamaOrnekFisler = async (
   json: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiManuelSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
@@ -1196,7 +1196,7 @@ export const createVadeliBankaMevduatiFaizTahakkuk = async (
   json: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiFaizTahakkukHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
@@ -1225,7 +1225,7 @@ export const getVadeliBankaMevduatiFaizTahakkuk = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/VadeliBankaMevduatiFaizTahakkuk?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1255,7 +1255,7 @@ export const createHareketsizTicariAlacaklar = async (
   acilisFisNo: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizTicariAlacaklarHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&acilisFisNo=${acilisFisNo}`,
       {
         method: "POST",
@@ -1282,7 +1282,7 @@ export const createHareketsizTicariAlacak = async (
   createdHareketsizTicariAlacak: any
 ) => {
   try {
-    const response =await apiFetch(`/Hesaplamalar/HareketsizTicariAlacak`, {
+    const response = await apiFetch(`/Hesaplamalar/HareketsizTicariAlacak`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -1309,7 +1309,7 @@ export const getHareketsizTicariAlacaklar = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizTicariAlacaklar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1338,7 +1338,7 @@ export const getHareketsizTicariAlacaklarOzet = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizTicariAlacaklarOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1367,7 +1367,7 @@ export const getHareketsizTicariAlacaklarOrnekFisler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizTicariAlacaklarOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1392,7 +1392,7 @@ export const deleteHareketsizTicariAlacaklarById = async (
   id: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizTicariAlacaklar?id=${id}`,
       {
         method: "DELETE",
@@ -1420,7 +1420,7 @@ export const createHareketsizStoklar = async (
   acilisFisNo: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizStoklarHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&acilisFisNo=${acilisFisNo}`,
       {
         method: "POST",
@@ -1447,7 +1447,7 @@ export const createHareketsizStok = async (
   createdHareketsizStok: any
 ) => {
   try {
-    const response =await apiFetch(`/Hesaplamalar/HareketsizStok`, {
+    const response = await apiFetch(`/Hesaplamalar/HareketsizStok`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -1474,7 +1474,7 @@ export const getHareketsizStoklar = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizStoklar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1501,7 +1501,7 @@ export const getHareketsizStoklarOzet = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizStoklarOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1528,7 +1528,7 @@ export const getHareketsizStoklarOrnekFisler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizStoklarOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1553,7 +1553,7 @@ export const deleteHareketsizStoklarById = async (
   id: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/HareketsizStoklar?id=${id}`,
       {
         method: "DELETE",
@@ -1580,7 +1580,7 @@ export const getGecmisYilKarZararKontrol = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/GecmisYilKarZararKontrol?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1609,7 +1609,7 @@ export const getGecmisYilKarZararKontrolOrnekFisler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/GecmisYilKarZararKontrolOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1636,7 +1636,7 @@ export const getKurFarki = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KurFarki?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1667,7 +1667,7 @@ export const getKurFarkiKontrolleriOzet = async (
   bitisTarihi: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KurFarkiKontrolleriOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
       {
         method: "GET",
@@ -1698,7 +1698,7 @@ export const getKurFarkiKontrolleriFisler = async (
   bitisTarihi: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KurFarkiKontrolleriFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
       {
         method: "GET",
@@ -1725,7 +1725,7 @@ export const getKurFarkiOrnekFisler = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Hesaplamalar/KurFarkiOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -1747,7 +1747,7 @@ export const getKurFarkiOrnekFisler = async (
 
 export const getDovizKurlariOtuzBirAralik = async (token: string) => {
   try {
-    const response =await apiFetch(`/Evds/DovizKurlariOtuzBirAralik`, {
+    const response = await apiFetch(`/Evds/DovizKurlariOtuzBirAralik`, {
       method: "GET",
       headers: {
         accept: "application/json",
