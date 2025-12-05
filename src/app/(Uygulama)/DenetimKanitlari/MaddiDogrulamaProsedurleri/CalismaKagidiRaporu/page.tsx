@@ -63,7 +63,8 @@ const CalismaKagidiRaporu = () => {
 
     const fetchDetailData = async (
         item: DenetimDosyaBelgeleriDto,
-        pName: string
+        pName: string,
+        dipnotNo: string
     ): Promise<DetailData> => {
         let data: any[] = [];
         let type: DetailData["type"] = "Other";
@@ -83,21 +84,24 @@ const CalismaKagidiRaporu = () => {
                 );
             } else if (normalizedItemName.includes("onemlilik")) {
                 type = "Onemlilik";
+                // Uses dipnotNo if available, otherwise fallback to pName (though logic suggests dipnotNo is required)
+                const param = dipnotNo || pName;
                 data = await getOnemlilikByDipnot(
                     user.token || "",
                     user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
-                    pName
+                    param
                 );
             } else if (normalizedItemName.includes("orneklem")) {
                 type = "Orneklem";
+                const param = dipnotNo || pName;
                 data = await getOrneklemByDipnot(
                     user.token || "",
                     user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
-                    pName
+                    param
                 );
             } else if (normalizedItemName.includes("risktespiti") || normalizedItemName === "risk") {
                 type = "Risk";
@@ -128,24 +132,15 @@ const CalismaKagidiRaporu = () => {
             } else if (normalizedItemName.includes("uygulanandenetimteknikleri")) {
                 type = "Teknik";
                 try {
-                    const procs = await getUygulananDenetimProsedurleri(
-                        user.token || "",
-                        user.denetciId || 0,
-                        user.denetlenenId || 0,
-                        user.yil || 0,
-                        pName,
-                        user.tfrsmi || false
-                    );
-                    const relevantProc = procs.find((p: any) => normalizeString(p.dipnotAdi) === normalizeString(pName));
-
-                    if (relevantProc && relevantProc.dipnotNo) {
+                    // Requires dipnotNo
+                    if (dipnotNo) {
                         data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo(
                             "UygulananDenetimTeknikleri",
                             user.token || "",
                             user.denetciId || 0,
                             user.denetlenenId || 0,
                             user.yil || 0,
-                            relevantProc.dipnotNo
+                            dipnotNo
                         );
                     }
                 } catch (e) { console.log("Teknik fetch error", e) }
@@ -166,7 +161,7 @@ const CalismaKagidiRaporu = () => {
     const fetchData = async () => {
         try {
             if (!user.token) return;
-            const allData = await getMaddiDogrulama(
+            const allData: DenetimDosyaBelgeleriDto[] = await getMaddiDogrulama(
                 user.token,
                 user.denetimTuru || "",
                 user.denetlenenId || 0,
@@ -178,12 +173,34 @@ const CalismaKagidiRaporu = () => {
                     (item: DenetimDosyaBelgeleriDto) => item.name === parentName
                 );
 
+                // Need to find the exact dipnotNo from procedures first
+                let dipnotNo = "";
+                try {
+                    const allProcs = await getUygulananDenetimProsedurleri(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName, // Use parent name to search
+                        user.tfrsmi || false
+                    );
+
+                    // Logic from OnemlilikCalismasi/page.tsx to find dipnotNo
+                    const foundProc = allProcs.find((p: any) => normalizeString(p.dipnotAdi) === normalizeString(parentName));
+                    if (foundProc) {
+                        dipnotNo = foundProc.dipnotNo;
+                    }
+                } catch (e) {
+                    console.log("Failed to fetch dipnotNo", e);
+                }
+
+
                 let finalDetails: DetailData[] = [];
 
                 if (group && group.children) {
                     finalDetails = await Promise.all(
                         group.children.map((child) =>
-                            fetchDetailData(child, parentName)
+                            fetchDetailData(child, parentName, dipnotNo)
                         )
                     );
                 }
@@ -192,18 +209,18 @@ const CalismaKagidiRaporu = () => {
                 const hasOnemlilik = finalDetails.some(d => d.type === "Onemlilik");
                 const hasOrneklem = finalDetails.some(d => d.type === "Orneklem");
 
-                if (!hasOnemlilik) {
+                if (!hasOnemlilik && dipnotNo) {
                     try {
                         const onemlilikData = await getOnemlilikByDipnot(
                             user.token || "",
                             user.denetciId || 0,
                             user.denetlenenId || 0,
                             user.yil || 0,
-                            parentName
+                            dipnotNo
                         );
                         if (onemlilikData && onemlilikData.length > 0) {
                             finalDetails.push({
-                                documentId: 9991, // Dummy ID
+                                documentId: 9991,
                                 documentName: "Önemlilik Çalışması",
                                 data: onemlilikData,
                                 type: "Onemlilik"
@@ -212,18 +229,18 @@ const CalismaKagidiRaporu = () => {
                     } catch (e) { console.log("Force fetch onemlilik failed", e) }
                 }
 
-                if (!hasOrneklem) {
+                if (!hasOrneklem && dipnotNo) {
                     try {
                         const orneklemData = await getOrneklemByDipnot(
                             user.token || "",
                             user.denetciId || 0,
                             user.denetlenenId || 0,
                             user.yil || 0,
-                            parentName
+                            dipnotNo
                         );
                         if (orneklemData && orneklemData.length > 0) {
                             finalDetails.push({
-                                documentId: 9992, // Dummy ID
+                                documentId: 9992,
                                 documentName: "Örneklem Çalışması",
                                 data: orneklemData,
                                 type: "Orneklem"
