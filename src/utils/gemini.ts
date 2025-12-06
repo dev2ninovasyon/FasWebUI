@@ -114,7 +114,7 @@ export const enhanceTextMsuteriEkle = async (text: string, instruction: string) 
 
         generationConfig: {
           // 3. ÇOK ÖNEMLİ DÜZELTME: Uydurma riskini azaltmak için düşük sıcaklık.
-          temperature: 0.1,
+          temperature: 0.4,
         },
       }),
     });
