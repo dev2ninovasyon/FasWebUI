@@ -34,36 +34,170 @@ export const enhanceText = async (text: string, instruction: string) => {
 // utils/gemini.ts
 // utils/gemini.ts
 export const enhanceTextSettingWith = async (text: string, instruction: string) => {
+  // API Key'in sunucu tarafında güvenli bir şekilde yönetildiğini varsayıyoruz.
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY2!;
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-  console.log("veri" + instruction)
+
+  // Hem orijinal metni hem de talimatı birleştirerek tek bir prompt oluşturma.
+  const fullPrompt = `Aşağıdaki metni verilen talimatlara göre iyileştir, yeniden yaz veya düzenle. Sadece iyileştirilmiş metni döndür:\n\nMETİN:\n---${text}---\n\nTALİMAT:\n---${instruction}---`;
 
   const body = {
-    contents: [{ parts: [{ text: instruction }] }],
-    // URL Context aracı açık (URL içermezseniz devreye girmez)
-    tools: [{ url_context: {} }], // REST'te snake_case
+    // Modelin işleyeceği içerik.
+    contents: [{
+      parts: [{ text: fullPrompt }]
+    }],
+    // Metin iyileştirme için genellikle bir araç (tools) gerekli değildir.
+    // Eğer bir URL'nin içeriğini okumasını isteseydiniz, 'url_context' kullanılırdı.
+    // Bu görev için 'tools' alanını kaldırarak veya boş bırakarak sadeleştiriyoruz.
+    tools: [{ url_context: {} }], // İyileştirme görevi için kaldırıldı.
+
     generationConfig: {
-      temperature: 0.15,
-      thinkingConfig: { thinkingBudget: 0 }, // 2.5 Flash'ta 0 ile düşünme kapatılır
+      temperature: 0.2, // Düşük sıcaklık, daha tutarlı ve talimatlara uygun yanıtlar sağlar.
     },
   };
 
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`API 400: ${err}`);
+    if (!res.ok) {
+      const err = await res.text();
+      // API'den gelen 4xx/5xx hatalarını daha ayrıntılı bir şekilde fırlatma.
+      throw new Error(`Gemini API Error (${res.status}): ${err}`);
+    }
+
+    const data = await res.json();
+
+    // Başarılı bir yanıt döndüğünde, iyileştirilmiş metni döndürme.
+    const enhancedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    // Eğer modelden beklenen metin gelmezse, orijinal metni döndürme (fallback).
+    return enhancedText ?? text;
+
+  } catch (error) {
+    // Ağ hataları veya diğer beklenmedik hatalar.
+    console.error("enhanceTextSettingWith hatası:", error);
+    // Hata durumunda orijinal metni döndürme.
+    throw new Error(`Metin iyileştirme sırasında bir hata oluştu: ${error instanceof Error ? error.message : "Bilinmeyen Hata"}`);
   }
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? text;
 };
+export const enhanceTextMsuteriEkle = async (text: string, instruction: string) => {
+  // NOT: 'text' değişkeni artık bir URL olsa bile, modele düz metin olarak gönderilecektir.
 
+  // 1. API Anahtarı kontrolü
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY2;
+  if (!apiKey) {
+    console.error("Gemini API Key bulunamadı.");
+    return text || "API Anahtarı eksik.";
+  }
 
+  try {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
+    // 2. Prompt'u birleştirme (Talimat ve URL/Metin bir arada)
+    const fullPrompt = `Aşağıdaki web sitesi URL'sini veya metni analiz et ve verilen talimatlara göre istenen bilgiyi çıkar. Sadece çıkarılan bilgiyi döndür. Bilgi bulunamazsa 'Bilgi bulunamadı.' döndür.\n\nMETİN/URL:\n---${text}---\n\nTALİMAT:\n---${instruction}---`;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: fullPrompt }],
+          },
+        ],
+
+        generationConfig: {
+          // 3. ÇOK ÖNEMLİ DÜZELTME: Uydurma riskini azaltmak için düşük sıcaklık.
+          temperature: 0.1,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`API error: ${response.status} - ${errorBody}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+
+    // Fallback ile orijinal metni döndürme
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || text;
+
+  } catch (error) {
+    console.error("Gemini API error:", error);
+    return text || "Lütfen önce bir tespit metni girin.";
+  }
+};
+export const extractCompanyInfoFromUrl = async (url: string, instruction: string) => {
+  // Parametre adını 'text' yerine 'url' olarak değiştirdim,
+  // çünkü amacınız bir URL'den veri çekmek.
+
+  // 1. API Anahtarı kontrolü
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY2;
+  if (!apiKey) {
+    console.error("Gemini API Key bulunamadı.");
+    return "API Anahtarı eksik.";
+  }
+
+  try {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+    // 2. Veri Çıkarma Talimatı (Prompt)
+    // Modelden sadece istenen bilgiyi döndürmesini isteyen net bir talimat.
+    const extractionPrompt = instruction || `Bu web sitesi içeriğini oku ve şirketin tam ve açık adresini bul. SADECE adresi döndür. Adres bulunamazsa, SADECE 'Adres bulunamadı.' metnini döndür.`;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              // EN ÖNEMLİ DÜZELTME: URL'yi 'fileData' yapısı ile modele bağlam olarak gönderme
+              {
+                fileData: {
+                  mimeType: 'text/html', // Web siteleri için uygun MIME tipi
+                  fileUri: url,         // URL'nin kendisi
+                },
+              },
+              // Modelin URL içeriği üzerinde uygulayacağı talimat.
+              { text: extractionPrompt },
+            ],
+          },
+        ],
+        // 'tools' alanı artık gerekli değil.
+
+        generationConfig: {
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      // Hata mesajını API'den gelen detaylarla birlikte fırlatma
+      throw new Error(`API error: ${response.status} - ${errorBody}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+
+    // Fallback ile orijinal URL'yi döndürmek yerine hata mesajı döndürme
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "İçerik işlenemedi veya bilgi bulunamadı.";
+
+  } catch (error) {
+    console.error("Gemini API error:", error);
+    return `URL işleme sırasında bir hata oluştu: ${error instanceof Error ? error.message : "Bilinmeyen Hata"}`;
+  }
+};
 import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
 
 type GeminiOpts = {
