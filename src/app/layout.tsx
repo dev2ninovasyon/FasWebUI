@@ -3,8 +3,10 @@ import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeSettings } from "@/utils/theme/Theme";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { resetToNull } from "@/store/user/UserSlice";
+import { isTokenExpired } from "@/utils/tokenUtils";
 import { Provider } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -84,6 +86,16 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
       });
     }
   }, [user, pathname]);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user.token && isTokenExpired(user.token)) {
+      dispatch(resetToNull(""));
+      router.push("/");
+    }
+  }, [user.token]);
+
 
   return (
     <>
