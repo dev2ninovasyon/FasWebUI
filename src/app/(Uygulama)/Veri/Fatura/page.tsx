@@ -242,7 +242,7 @@ const Page: React.FC = () => {
               rows={rows}
               initialLoading={initialLoading}
               dosyaYuklendiMi={true}
-              setDosyaYuklendiMi={() => {}}
+              setDosyaYuklendiMi={() => { }}
               tip={tip}
               onRefresh={() => fetchRows({ tryCloseSnack: true })}
             />

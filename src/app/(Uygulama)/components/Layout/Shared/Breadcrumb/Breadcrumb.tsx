@@ -80,15 +80,17 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   return (
     <Grid
       container
+      alignItems="center"
       sx={{
         backgroundColor: "primary.light",
         borderRadius: (theme: Theme) => theme.shape.borderRadius / 4,
         p: "15px 25px",
-        marginBottom: "20px",
+        marginBottom: "15px",
         position: "relative",
         overflow: { xs: "visible", sm: "hidden" },
         height: children ? (smDown ? "auto" : "") : "",
-        minHeight: children ? "80px" : "auto",
+        minHeight: children ? "80" : "auto",
+
       }}
     >
       <Grid
@@ -101,30 +103,58 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         display="flex"
         flexDirection="column"
         justifyContent="center"
+        sx={{
+          height: "100%", display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
       >
         <Typography variant="h4">{title}</Typography>
 
-        <Breadcrumbs
-          separator={null}
-          sx={{ alignItems: "center", mt: items ? "10px" : "" }}
-          aria-label="breadcrumb"
-        >
-          {items
-            ? items
-              .filter((item) => item.title !== title)
-              .map((item) => (
-                <div key={item.title}>
-                  {item.to ? (
-                    <NextLink
-                      href={item.to}
-                      passHref
-                      onClick={() => handleBreadcrumbClick(item.to)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
+        {items && (
+          <Breadcrumbs
+            separator={null}
+            sx={{ alignItems: "center", mt: 0.5, }}
+            aria-label="breadcrumb"
+          >
+            {items
+              ? items
+                .filter((item) => item.title !== title)
+                .map((item) => (
+                  <div key={item.title}>
+                    {item.to ? (
+                      <NextLink
+                        href={item.to}
+                        passHref
+                        onClick={() => handleBreadcrumbClick(item.to)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography
+                          color={
+                            item.title === subtitle ? "white" : "textSecondary"
+                          }
+                          sx={{
+                            backgroundColor:
+                              item.title === subtitle
+                                ? "primary.main"
+                                : "textSecondary",
+                            px: item.title === subtitle ? 1 : 0,
+                            borderRadius: (theme: Theme) =>
+                              theme.shape.borderRadius / 4,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <IconChevronLeft style={{ marginRight: 4 }} />
+                          {item.title}
+                        </Typography>
+                      </NextLink>
+                    ) : (
                       <Typography
                         color={
                           item.title === subtitle ? "white" : "textSecondary"
@@ -137,37 +167,16 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                           px: item.title === subtitle ? 1 : 0,
                           borderRadius: (theme: Theme) =>
                             theme.shape.borderRadius / 4,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
                         }}
                       >
-                        <IconChevronLeft style={{ marginRight: 4 }} />
                         {item.title}
                       </Typography>
-                    </NextLink>
-                  ) : (
-                    <Typography
-                      color={
-                        item.title === subtitle ? "white" : "textSecondary"
-                      }
-                      sx={{
-                        backgroundColor:
-                          item.title === subtitle
-                            ? "primary.main"
-                            : "textSecondary",
-                        px: item.title === subtitle ? 1 : 0,
-                        borderRadius: (theme: Theme) =>
-                          theme.shape.borderRadius / 4,
-                      }}
-                    >
-                      {item.title}
-                    </Typography>
-                  )}
-                </div>
-              ))
-            : ""}
-        </Breadcrumbs>
+                    )}
+                  </div>
+                ))
+              : ""}
+          </Breadcrumbs>
+        )}
       </Grid>
       <Grid item xs={12} sm={6} lg={4} display="flex" alignItems="flex-end">
         <Box

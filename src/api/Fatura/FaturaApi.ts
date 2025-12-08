@@ -1,6 +1,6 @@
 import axios, { AxiosProgressEvent } from "axios";
 
-import { apiFetch,url } from "@/api/apiBase";
+import { apiFetch, url } from "@/api/apiBase";
 
 export type Taraf = {
   id: string;
@@ -116,42 +116,47 @@ export const uploadFaturaDosyalari = async (
   });
 };
 
-export const getYuklemeIslemleri = async (user:any) => {
-  const r =await apiFetch(
+export const getYuklemeIslemleri = async (user: any) => {
+  const r = await apiFetch(
     `/Invoices/GetYuklemeIslemleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
-    { headers:{ accept:"application/json", Authorization:`Bearer ${user.token}` } }
+    { headers: { accept: "application/json", Authorization: `Bearer ${user.token}` } }
   );
   if (!r.ok) throw new Error("Yükleme işlemleri alınamadı");
   return r.json();
 };
 
-export const previewFaturaHtmlNewTab = async (user: any, dosyaId: string) => {
+export const getYuklemeDosyalari = async (user: any, yuklemeId: string) => {
+  const r = await apiFetch(
+    `/Invoices/GetYuklemeDosyalari?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&yuklemeId=${yuklemeId}`,
+    { headers: { accept: "application/json", Authorization: `Bearer ${user.token}` } }
+  );
+  if (!r.ok) throw new Error("Dosyalar alınamadı");
+  return r.json();
+};
+
+export const previewFaturaHtmlNewTab = async (
+  user: any,
+  dosyaId: string
+): Promise<Blob> => {
   const res = await axios.get(`${url}/Invoices/PreviewHtml/${dosyaId}`, {
-    responseType: "text",
+    responseType: "blob", // ✅ Sunucudan gelen HTML'i Blob olarak alıyoruz
     headers: { Authorization: `Bearer ${user.token}` },
   });
 
-  if (!res.headers["content-type"]?.includes("text/html")) {
-    throw new Error("Sunucudan HTML dönmedi");
+  // İstersen içerik tipini yine de kontrol edebilirsin:
+  const contentType = res.headers["content-type"] || "";
+  if (!contentType.includes("text/html") && !contentType.includes("application/pdf")) {
+    throw new Error("Sunucudan beklenen içerik tipi dönmedi");
   }
 
-  const html = res.data as string;
-
-  // Blob oluştur
-  const blob = new Blob([html], { type: "text/html" });
-  const blobUrl = window.URL.createObjectURL(blob);
-
-  // Yeni sekmede aç
-  window.open(blobUrl, "_blank", "noopener,noreferrer");
-
-  // URL'i bir süre sonra serbest bırak
-  setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+  return res.data as Blob;
 };
 
-export const deleteYuklemeIslemleri = async (user:any, ids:string[]) => {
-  const r =await apiFetch(`/Invoices/DeleteYuklemeIslemleri`, {
-    method:"DELETE",
-    headers:{ "Content-Type":"application/json", Authorization:`Bearer ${user.token}` },
+
+export const deleteYuklemeIslemleri = async (user: any, ids: string[]) => {
+  const r = await apiFetch(`/Invoices/DeleteYuklemeIslemleri`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
     body: JSON.stringify(ids)
   });
   if (!r.ok) throw new Error("Silinemedi");
@@ -168,24 +173,24 @@ export type InvoiceYevmiyeRow = {
   yevmiyeDate?: string | null;
   yevmiyeNo?: number | null;
   matched: boolean;
-  tip?: string;             
+  tip?: string;
 };
 
-export async function findInvoiceYevmiyeRowsByVkn(user:any, tip:string, vkn:string): Promise<InvoiceYevmiyeRow[]> {
+export async function findInvoiceYevmiyeRowsByVkn(user: any, tip: string, vkn: string): Promise<InvoiceYevmiyeRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}&tip=${encodeURIComponent(tip)}&vkn=${encodeURIComponent(vkn)}`;
-  const r =await apiFetch(`/Invoices/FindInvoiceYevmiyeRowsByVkn?${qs}`, {
-    headers:{ accept:"application/json", Authorization:`Bearer ${user.token}` }
+  const r = await apiFetch(`/Invoices/FindInvoiceYevmiyeRowsByVkn?${qs}`, {
+    headers: { accept: "application/json", Authorization: `Bearer ${user.token}` }
   });
   if (!r.ok) throw new Error("Satırlar alınamadı");
   return r.json();
 }
 
 // opsiyonel: persist
-export async function saveInvoiceYevmiyeMatches(user:any, rows:InvoiceYevmiyeRow[]) {
+export async function saveInvoiceYevmiyeMatches(user: any, rows: InvoiceYevmiyeRow[]) {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
-  const r =await apiFetch(`/Invoices/SaveInvoiceYevmiyeMatches?${qs}`, {
+  const r = await apiFetch(`/Invoices/SaveInvoiceYevmiyeMatches?${qs}`, {
     method: "POST",
-    headers: { "Content-Type":"application/json", Authorization:`Bearer ${user.token}` },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
     body: JSON.stringify(rows)
   });
   if (!r.ok) throw new Error("Eşleştirmeler kaydedilemedi");
@@ -205,9 +210,9 @@ export type SentInvoiceMatchRow = {
   counterpartyName?: string | null;
 }
 
-export async function getSentInvoiceMatches(user:any): Promise<SentInvoiceMatchRow[]> {
+export async function getSentInvoiceMatches(user: any): Promise<SentInvoiceMatchRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
-  const r =await apiFetch(`/Invoices/GetSentInvoiceMatches?${qs}`, {
+  const r = await apiFetch(`/Invoices/GetSentInvoiceMatches?${qs}`, {
     headers: { accept: "application/json", Authorization: `Bearer ${user.token}` }
   });
   if (!r.ok) throw new Error("Eşleşmeler alınamadı");
@@ -225,9 +230,9 @@ export type ReceivedInvoiceMatchRow = {
   yevmiyeDate?: string | null;
 };
 
-export async function getReceivedInvoiceMatches(user:any): Promise<ReceivedInvoiceMatchRow[]> {
+export async function getReceivedInvoiceMatches(user: any): Promise<ReceivedInvoiceMatchRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
-  const r =await apiFetch(`/Invoices/GetReceivedInvoiceMatches?${qs}`, {
+  const r = await apiFetch(`/Invoices/GetReceivedInvoiceMatches?${qs}`, {
     headers: { accept: "application/json", Authorization: `Bearer ${user.token}` },
   });
   if (!r.ok) throw new Error("Alınan eşleşmeleri alınamadı");

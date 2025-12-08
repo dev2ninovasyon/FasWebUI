@@ -1,21 +1,60 @@
 import React from "react";
 import {
-  TableContainer, Table, TableRow, TableCell, TableBody, Typography, TableHead,
-  IconButton, TableFooter, TablePagination, TextField, Box,
-  Checkbox, Button, Menu, MenuItem, ListItemIcon, Collapse, Dialog, DialogContent,
-  CircularProgress, Skeleton, Stack, Chip, Tooltip
+  TableContainer,
+  Table,
+  TableRow,
+  TableCell,
+  TableBody,
+  Typography,
+  TableHead,
+  IconButton,
+  TableFooter,
+  TablePagination,
+  TextField,
+  Box,
+  Checkbox,
+  Button,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Collapse,
+  Dialog,
+  DialogContent,
+  CircularProgress,
+  Skeleton,
+  Stack,
+  Chip,
+  Tooltip,
+  useMediaQuery,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import {
-  IconDotsVertical, IconEye, IconChevronRight, IconChevronDown, IconTrash, IconRefresh
+  IconDotsVertical,
+  IconEye,
+  IconChevronRight,
+  IconChevronDown,
+  IconTrash,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { previewFaturaHtmlNewTab, deleteYuklemeIslemleri } from "@/api/Fatura/FaturaApi";
+import {
+  previewFaturaHtmlNewTab,
+  deleteYuklemeIslemleri,
+  getYuklemeDosyalari,
+} from "@/api/Fatura/FaturaApi";
 import { enqueueSnackbar } from "notistack";
 import Link from "next/link";
 import { useLoading } from "@/contexts/LoadingContext";
+import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 
-type FaturaDosyaRow = { id: string; dosyaAdi: string; durum: string; yuklemeTarihi: string; };
+type FaturaDosyaRow = {
+  id: string;
+  dosyaAdi: string;
+  durum: string;
+  yuklemeTarihi: string;
+};
+
 type YuklemeRow = {
   id: string;
   adi: string;
@@ -43,17 +82,37 @@ const SkeletonRows: React.FC<{ rows?: number }> = ({ rows = 8 }) => (
         <TableCell>
           <Stack direction="row" spacing={1} alignItems="center">
             <Skeleton variant="text" width="50%" height={22} />
-            <Skeleton variant="rectangular" width={84} height={22} sx={{ borderRadius: 999 }} />
+            <Skeleton
+              variant="rectangular"
+              width={84}
+              height={22}
+              sx={{ borderRadius: 999 }}
+            />
           </Stack>
         </TableCell>
         <TableCell align="center">
-          <Skeleton variant="text" width={96} height={22} sx={{ mx: "auto" }} />
+          <Skeleton
+            variant="text"
+            width={96}
+            height={22}
+            sx={{ mx: "auto" }}
+          />
         </TableCell>
         <TableCell align="center">
-          <Skeleton variant="text" width={56} height={22} sx={{ mx: "auto" }} />
+          <Skeleton
+            variant="text"
+            width={56}
+            height={22}
+            sx={{ mx: "auto" }}
+          />
         </TableCell>
         <TableCell align="right">
-          <Skeleton variant="circular" width={24} height={24} sx={{ ml: "auto" }} />
+          <Skeleton
+            variant="circular"
+            width={24}
+            height={24}
+            sx={{ ml: "auto" }}
+          />
         </TableCell>
       </TableRow>
     ))}
@@ -62,9 +121,9 @@ const SkeletonRows: React.FC<{ rows?: number }> = ({ rows = 8 }) => (
 
 const DosyaTable: React.FC<{
   rows: YuklemeRow[];
-  initialLoading?: boolean;          // sadece satırlar için skeleton
-  dosyaYuklendiMi: boolean;          // interface uyumu
-  setDosyaYuklendiMi: (b: boolean) => void; // interface uyumu
+  initialLoading?: boolean; // sadece satırlar için skeleton
+  dosyaYuklendiMi: boolean; // interface uyumu (şimdilik kullanılmıyor)
+  setDosyaYuklendiMi: (b: boolean) => void; // interface uyumu (şimdilik kullanılmıyor)
   tip: string;
   onRefresh?: () => void;
 }> = ({ rows, initialLoading = false, onRefresh }) => {
@@ -85,26 +144,100 @@ const DosyaTable: React.FC<{
   const [previewErr, setPreviewErr] = React.useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = React.useState(false);
 
-  const filtered = rows.filter(r => (r.adi || "").toLowerCase().includes(search.toLowerCase()));
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isConfirmPopUpOpen, setIsConfirmPopUpOpen] = React.useState(false);
 
-  const toast = (msg: string, variant: "success" | "error" | "warning" | "info" = "info") =>
-    enqueueSnackbar(msg, { variant, autoHideDuration: 3500, style: { maxWidth: 720 } });
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
-  const toggleExpand = (id: string) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
-  const checkAll = (checked: boolean) => setSelected(checked ? filtered.map(f => f.id) : []);
-  const openMenuFor = (e: React.MouseEvent<HTMLElement>) => { setMenuAnchor(e.currentTarget); setMenuOpen(true); };
-  const closeMenu = () => { setMenuAnchor(null); setMenuOpen(false); };
+  const filtered = rows.filter((r) =>
+    (r.adi || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  const toast = (
+    msg: string,
+    variant: "success" | "error" | "warning" | "info" = "info"
+  ) =>
+    enqueueSnackbar(msg, {
+      variant,
+      autoHideDuration: 3500,
+      style: { maxWidth: 720 },
+    });
+
+  const [fetchedFiles, setFetchedFiles] = React.useState<Record<string, FaturaDosyaRow[]>>({});
+  const [loadingFiles, setLoadingFiles] = React.useState<Record<string, boolean>>({});
+
+  const toggleExpand = async (id: string) => {
+    const isExpanding = !expanded[id];
+    setExpanded((prev) => ({ ...prev, [id]: isExpanding }));
+
+    if (isExpanding && !fetchedFiles[id]) {
+      // Eğer prop'tan gelen veri varsa onu kullan, yoksa fetch et
+      const row = rows.find(r => r.id === id);
+      if (row?.faturaDosyalari && row.faturaDosyalari.length > 0) {
+        setFetchedFiles(prev => ({ ...prev, [id]: row.faturaDosyalari! }));
+        return;
+      }
+
+      try {
+        setLoadingFiles(prev => ({ ...prev, [id]: true }));
+        // API'den çek
+        const data = await getYuklemeDosyalari(user, id);
+
+        // Mapping
+        const mapped: FaturaDosyaRow[] = (data || []).map((d: any) => ({
+          id: d.id ?? d.Id,
+          dosyaAdi: d.dosyaAdi ?? d.DosyaAdi ?? "",
+          durum: d.durum ?? d.Durum ?? "",
+          yuklemeTarihi: d.yuklemeTarihi
+            ? new Date(d.yuklemeTarihi).toLocaleString("tr-TR")
+            : (d.YuklemeTarihi ? new Date(d.YuklemeTarihi).toLocaleString("tr-TR") : "")
+        }));
+
+        setFetchedFiles(prev => ({ ...prev, [id]: mapped }));
+      } catch (error) {
+        console.error(error);
+        toast("Dosyalar yüklenemedi", "error");
+      } finally {
+        setLoadingFiles(prev => ({ ...prev, [id]: false }));
+      }
+    }
+  };
+
+  const checkAll = (checked: boolean) =>
+    setSelected(checked ? filtered.map((f) => f.id) : []);
+
+  const openMenuFor = (e: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchor(e.currentTarget);
+    setMenuOpen(true);
+  };
+  const closeMenu = () => {
+    setMenuAnchor(null);
+    setMenuOpen(false);
+  };
 
   const handleDeleteSelected = async () => {
     if (selected.length === 0) return;
     try {
+      setIsDeleting(true);
       await deleteYuklemeIslemleri(user, selected);
       toast(`${selected.length} kayıt silindi.`, "success");
       setSelected([]);
       onRefresh?.();
+      setIsConfirmPopUpOpen(false);
     } catch {
       toast("Silme sırasında hata oluştu.", "error");
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleIsConfirm = () => {
+    if (selected.length === 0) return;
+    setIsConfirmPopUpOpen(true);
+  };
+
+  const handleCloseConfirmPopUp = () => {
+    setIsConfirmPopUpOpen(false);
   };
 
   const handlePreviewClose = () => {
@@ -113,19 +246,31 @@ const DosyaTable: React.FC<{
     setPreviewErr(null);
     setPreviewOpen(false);
   };
-  React.useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl); }, [previewUrl]);
+  React.useEffect(
+    () => () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    },
+    [previewUrl]
+  );
 
   return (
     <>
       {/* Üst bar — HER ZAMAN gerçek kontroller */}
       <Box p={2} display="flex" gap={2} alignItems="center">
-        <Typography variant="h5" sx={{ flexShrink: 0 }}>Yükleme İşlemleri</Typography>
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="h5" sx={{ flexShrink: 0 }}>
+          Yükleme İşlemleri
+        </Typography>
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          sx={{ flex: 1, minWidth: 0 }}
+        >
           <TextField
             placeholder="Arama"
             size="small"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             sx={{ flex: 1, minWidth: 0 }}
           />
           <Button
@@ -144,17 +289,20 @@ const DosyaTable: React.FC<{
         </Stack>
       </Box>
 
-
-
-      <TableContainer sx={{ maxHeight: 460, minHeight: 460 }}>
+      <TableContainer sx={{ mt: 0.5, maxHeight: 425, minHeight: 425, overflow: "auto" }}>
         <Table stickyHeader>
-          {/* Başlık hep gerçek */}
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
                 <Checkbox
-                  checked={selected.length > 0 && selected.length === filtered.length && filtered.length > 0}
-                  indeterminate={selected.length > 0 && selected.length < filtered.length}
+                  checked={
+                    selected.length > 0 &&
+                    selected.length === filtered.length &&
+                    filtered.length > 0
+                  }
+                  indeterminate={
+                    selected.length > 0 && selected.length < filtered.length
+                  }
                   onChange={(e) => checkAll(e.target.checked)}
                 />
               </TableCell>
@@ -171,9 +319,13 @@ const DosyaTable: React.FC<{
             <SkeletonRows rows={8} />
           ) : (
             <TableBody>
-              {(rpp > 0 ? filtered.slice(page * rpp, page * rpp + rpp) : filtered).map((row) => {
+              {(rpp > 0
+                ? filtered.slice(page * rpp, page * rpp + rpp)
+                : filtered
+              ).map((row) => {
                 const progressText = `${row.processed}/${row.total}`;
-                const showChip = row.inProgress || (row.total > 0 && row.processed < row.total);
+                const showChip =
+                  row.inProgress || (row.total > 0 && row.processed < row.total);
                 const chipColor: "default" | "success" | "warning" | "error" =
                   showChip ? (row.failed > 0 ? "warning" : "default") : "success";
 
@@ -183,7 +335,11 @@ const DosyaTable: React.FC<{
                       hover
                       selected={selected.includes(row.id)}
                       onClick={() => {
-                        setSelected(s => s.includes(row.id) ? s.filter(x => x !== row.id) : [...s, row.id]);
+                        setSelected((s) =>
+                          s.includes(row.id)
+                            ? s.filter((x) => x !== row.id)
+                            : [...s, row.id]
+                        );
                       }}
                     >
                       <TableCell padding="checkbox">
@@ -191,31 +347,64 @@ const DosyaTable: React.FC<{
                       </TableCell>
 
                       <TableCell width={48}>
-                        <IconButton size="small" onClick={(e) => { e.stopPropagation(); toggleExpand(row.id); }}>
-                          {expanded[row.id] ? <IconChevronDown size={18} /> : <IconChevronRight size={18} />}
+                        <IconButton
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleExpand(row.id);
+                          }}
+                        >
+                          {expanded[row.id] ? (
+                            <IconChevronDown size={18} />
+                          ) : (
+                            <IconChevronRight size={18} />
+                          )}
                         </IconButton>
                       </TableCell>
 
                       <TableCell>
-                        <Stack direction="row" alignItems="center" spacing={1}>
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          spacing={1}
+                        >
                           <Typography>{row.adi}</Typography>
                           {showChip && (
-                            <Tooltip title={row.failed > 0 ? `Hatalı: ${row.failed}` : (row.inProgress ? "İşleniyor" : "Tamamlandı")}>
+                            <Tooltip
+                              title={
+                                row.failed > 0
+                                  ? `Hatalı: ${row.failed}`
+                                  : row.inProgress
+                                    ? "İşleniyor"
+                                    : "Tamamlandı"
+                              }
+                            >
                               <Chip
-                                label={row.inProgress ? "İşleniyor" : "Tamamlandı"}
+                                label={
+                                  row.inProgress ? "İşleniyor" : "Tamamlandı"
+                                }
                                 size="small"
                                 color={chipColor}
-                                variant={row.inProgress ? "filled" : "outlined"}
+                                variant={
+                                  row.inProgress ? "filled" : "outlined"
+                                }
                               />
                             </Tooltip>
                           )}
                         </Stack>
                       </TableCell>
 
-                      <TableCell align="center">{row.olusturulmaTarihi}</TableCell>
+                      <TableCell align="center">
+                        {row.olusturulmaTarihi}
+                      </TableCell>
                       <TableCell align="center">{progressText}</TableCell>
                       <TableCell align="right">
-                        <IconButton onClick={(e) => { e.stopPropagation(); openMenuFor(e); }}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openMenuFor(e);
+                          }}
+                        >
                           <IconDotsVertical width={18} />
                         </IconButton>
                       </TableCell>
@@ -224,11 +413,21 @@ const DosyaTable: React.FC<{
                     {/* Child (FaturaDosyaları) */}
                     <TableRow>
                       <TableCell colSpan={6} sx={{ p: 0, border: 0 }}>
-                        <Collapse in={!!expanded[row.id]} timeout="auto" unmountOnExit>
+                        <Collapse
+                          in={!!expanded[row.id]}
+                          timeout="auto"
+                          unmountOnExit
+                        >
                           <Box px={2} py={1}>
-                            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
-                              <Typography variant="subtitle1">Fatura Dosyaları</Typography>
-
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              justifyContent="space-between"
+                              sx={{ mb: 1 }}
+                            >
+                              <Typography variant="subtitle1">
+                                Fatura Dosyaları
+                              </Typography>
                             </Stack>
                             <Table size="small">
                               <TableHead>
@@ -236,11 +435,19 @@ const DosyaTable: React.FC<{
                                   <TableCell>Dosya Adı</TableCell>
                                   <TableCell>Durum</TableCell>
                                   <TableCell>Tarih</TableCell>
-                                  <TableCell align="right">Önizleme</TableCell>
+                                  <TableCell align="right">
+                                    Önizleme
+                                  </TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {(row.faturaDosyalari ?? []).map(d => (
+                                {loadingFiles[row.id] ? (
+                                  <TableRow>
+                                    <TableCell colSpan={4} align="center">
+                                      <CircularProgress size={20} />
+                                    </TableCell>
+                                  </TableRow>
+                                ) : (fetchedFiles[row.id] || row.faturaDosyalari || []).map((d) => (
                                   <TableRow key={d.id} hover>
                                     <TableCell>{d.dosyaAdi}</TableCell>
                                     <TableCell>{d.durum}</TableCell>
@@ -248,16 +455,23 @@ const DosyaTable: React.FC<{
                                     <TableCell align="right">
                                       <Button
                                         size="small"
-                                        startIcon={previewLoading ? <CircularProgress size={14} /> : <IconEye size={16} />}
+                                        startIcon={
+                                          previewLoading ? <CircularProgress size={14} /> : <IconEye size={16} />
+                                        }
                                         disabled={previewLoading}
                                         onClick={async (e) => {
                                           e.stopPropagation();
                                           try {
                                             setPreviewLoading(true);
-                                            await previewFaturaHtmlNewTab(user, d.id);
-                                            enqueueSnackbar("Önizleme yeni sekmede açıldı.", { variant: "info" });
-                                          } catch {
-                                            enqueueSnackbar("Önizleme açılamadı.", { variant: "error" });
+                                            setPreviewErr(null);
+                                            setPreviewOpen(true);
+                                            const blob = await previewFaturaHtmlNewTab(user, d.id); // <-- Blob bekliyoruz
+                                            const blobUrl = URL.createObjectURL(blob);
+                                            setPreviewUrl(blobUrl);
+                                            setPreviewOpen(true);
+                                          } catch (err) {
+                                            console.error(err);
+                                            setPreviewErr("Önizleme açılamadı.");
                                           } finally {
                                             setPreviewLoading(false);
                                           }
@@ -265,16 +479,20 @@ const DosyaTable: React.FC<{
                                       >
                                         Göster
                                       </Button>
+
                                     </TableCell>
                                   </TableRow>
                                 ))}
-                                {(!row.faturaDosyalari || row.faturaDosyalari.length === 0) && (
-                                  <TableRow>
-                                    <TableCell colSpan={4}>
-                                      <Typography color="text.secondary">Kayıt yok</Typography>
-                                    </TableCell>
-                                  </TableRow>
-                                )}
+                                {!loadingFiles[row.id] && (!fetchedFiles[row.id] && (!row.faturaDosyalari ||
+                                  row.faturaDosyalari.length === 0)) && (
+                                    <TableRow>
+                                      <TableCell colSpan={4}>
+                                        <Typography color="text.secondary">
+                                          Kayıt yok
+                                        </Typography>
+                                      </TableCell>
+                                    </TableRow>
+                                  )}
                               </TableBody>
                             </Table>
                           </Box>
@@ -287,44 +505,35 @@ const DosyaTable: React.FC<{
             </TableBody>
           )}
 
-          {/* === Footer: solda Sil butonu, sağda Pagination (E-Defter stil) === */}
+          {/* === Footer: sadece Pagination (sil butonu dışarı alındı) === */}
           <TableFooter>
             <TableRow>
               <TableCell colSpan={6} sx={{ p: 0 }}>
                 <Box
-                  px={2}
+                  px={1}
                   py={1}
                   display="flex"
                   alignItems="center"
-                  justifyContent="space-between"
-                  gap={2}
+                  justifyContent="flex-end"
                 >
-                  {/* Sol: seçililer sil */}
-                  <Box>
-                    {selected.length > 0 && (
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        size="small"
-                        startIcon={<IconTrash size={16} />}
-                        onClick={handleDeleteSelected}
-                      >
-                        {selected.length} Kayıt Sil
-                      </Button>
-                    )}
-                  </Box>
-
-                  {/* Sağ: pagination */}
-                  <TablePagination
+                  {/*<TablePagination
                     component="div"
                     count={filtered.length}
                     page={page}
                     rowsPerPage={rpp}
                     onPageChange={(_, p) => setPage(p)}
-                    onRowsPerPageChange={(e) => { setRpp(parseInt(e.target.value, 10)); setPage(0); }}
-                    rowsPerPageOptions={[10, 25, 50, { label: "Hepsi", value: -1 }]}
+                    onRowsPerPageChange={(e) => {
+                      setRpp(parseInt(e.target.value, 10));
+                      setPage(0);
+                    }}
+                    rowsPerPageOptions={[
+                      10,
+                      25,
+                      50,
+                      { label: "Hepsi", value: -1 },
+                    ]}
                     sx={{ ml: "auto" }}
-                  />
+                  />*/}
                 </Box>
               </TableCell>
             </TableRow>
@@ -332,21 +541,54 @@ const DosyaTable: React.FC<{
         </Table>
       </TableContainer>
 
+      {selected.length !== 0 && (
+        <Box mt={1} ml={1}>
+          <LoadingButton
+            variant="outlined"
+            color="error"
+            size="small"
+            startIcon={<IconTrash size={16} />}
+            loading={isDeleting}
+            onClick={handleIsConfirm}
+            sx={{
+              minWidth: 100,
+            }}
+          >
+            {selected.length} Kayıt Sil
+          </LoadingButton>
+        </Box>
+      )}
+
       {/* Menü (placeholder) */}
       <Menu anchorEl={menuAnchor} open={menuOpen} onClose={closeMenu}>
         <MenuItem disabled>
-          <ListItemIcon><IconDotsVertical width={18} /></ListItemIcon>
+          <ListItemIcon>
+            <IconDotsVertical width={18} />
+          </ListItemIcon>
           İşlemler
         </MenuItem>
       </Menu>
 
-      {/* İsteğe bağlı dialog */}
-      <Dialog open={previewOpen} onClose={handlePreviewClose} fullWidth maxWidth="xl">
+      {/* İfaturaları pop-up açmak için dialog */}
+      <Dialog
+        open={previewOpen}
+        onClose={handlePreviewClose}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogContent sx={{ p: 0 }}>
           {previewErr ? (
-            <Box p={3} sx={{ fontFamily: "system-ui" }}>{previewErr}</Box>
+            <Box p={3} sx={{ fontFamily: "system-ui" }}>
+              {previewErr}
+            </Box>
           ) : !!previewUrl ? (
-            <iframe title="Fatura PDF Önizleme" src={previewUrl} width="100%" height="800" style={{ border: "none" }} />
+            <iframe
+              title="Fatura PDF Önizleme"
+              src={previewUrl}
+              width="100%"
+              height="800"
+              style={{ border: "none" }}
+            />
           ) : (
             <Box p={3} display="flex" alignItems="center" gap={1}>
               <CircularProgress size={18} /> Yükleniyor…
@@ -354,6 +596,16 @@ const DosyaTable: React.FC<{
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Silme onayı pop-up (E-Defter ile aynı yapı) */}
+      {isConfirmPopUpOpen && (
+        <ConfirmPopUpComponent
+          isConfirmPopUp={isConfirmPopUpOpen}
+          handleClose={handleCloseConfirmPopUp}
+          handleDelete={handleDeleteSelected}
+          isLoading={isDeleting}
+        />
+      )}
     </>
   );
 };
