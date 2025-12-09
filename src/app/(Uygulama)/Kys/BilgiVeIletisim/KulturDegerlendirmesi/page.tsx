@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import KysBelgeEditor from "@/app/(Uygulama)/components/Kys/KysBelgeEditor";
+import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
@@ -16,7 +16,7 @@ const Page: React.FC = () => {
             description="Kültür Değerlendirmesi – Bilgi ve İletişim (3.6)"
         >
             <Breadcrumb title="Kültür Değerlendirmesi – Bilgi ve İletişim (3.6)" items={BCrumb} />
-            <KysBelgeEditor formKodu="BilgiVeIletisimKulturDegerlendirmesi" />
+            <KysCalismaKagidi formKodu="BilgiVeIletisimKulturDegerlendirmesi" alanAdi="8.2 Kültür Değerlendirmesi – Bilgi ve İletişim (3.6)" />
         </PageContainer>
     );
 };

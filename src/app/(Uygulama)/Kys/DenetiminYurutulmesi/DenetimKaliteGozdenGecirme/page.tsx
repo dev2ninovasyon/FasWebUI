@@ -16,9 +16,7 @@ const Page: React.FC = () => {
         <PageContainer title="6.6 Denetimin Kalitesinin Gözden Geçirilmesi Formu" description="Denetimin Kalitesinin Gözden Geçirilmesi Formu">
             <Breadcrumb title="6.6 Denetimin Kalitesinin Gözden Geçirilmesi Formu" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    6.6 DENETİMİN KALİTESİNİN GÖZDEN GEÇİRİLMESİ FORMU
-                </Typography>
+
                 <KysCalismaKagidi formKodu="KysDenetimKaliteGozdenGecirme" alanAdi="6.6 Denetimin Kalitesinin Gözden Geçirilmesi Formu" />
             </Box>
         </PageContainer>

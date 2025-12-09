@@ -15,9 +15,7 @@ const Page: React.FC = () => {
         <PageContainer title="6.5 Görüş Farklılıklarının Çözüme Kavuşturulması" description="Görüş Farklılıklarının Çözüme Kavuşturulması">
             <Breadcrumb title="6.5 Görüş Farklılıklarının Çözüme Kavuşturulması" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    6.5 GÖRÜŞ FARKLILIKLARININ ÇÖZÜME KAVUŞTURULMASI
-                </Typography>
+
                 <KysCalismaKagidi formKodu="KysGorusFarkliliklarininCozumu" alanAdi="6.5 Görüş Farklılıklarının Çözüme Kavuşturulması" />
             </Box>
         </PageContainer>

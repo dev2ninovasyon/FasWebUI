@@ -16,9 +16,7 @@ const Page: React.FC = () => {
         <PageContainer title="6.1 Denetimin Yürütülmesi Politikası Beyanı" description="Denetimin Yürütülmesi Politikası Beyanı">
             <Breadcrumb title="6.1 Denetimin Yürütülmesi Politikası Beyanı" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    6.1 DENETİMİN YÜRÜTÜLMESİ POLİTİKASI BEYANI
-                </Typography>
+
                 <KysCalismaKagidi formKodu="KysDenetiminYurutulmesiPolitikasi" alanAdi="6.1 Denetimin Yürütülmesi Politikası Beyanı" />
             </Box>
         </PageContainer>

@@ -9,7 +9,11 @@ const BCrumb = [
   },
 ];
 
-export default function KysLayout({ children }: { children: React.ReactNode }) {
+export default function KysLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <Breadcrumb title="Kalite Yönetim Sistemi" items={BCrumb} />

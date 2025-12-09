@@ -5,6 +5,7 @@ import { Typography, Box, Divider } from "@mui/material";
 import KysRiskMatrixEditor from "@/app/(Uygulama)/components/Kys/KysRiskMatrixEditor";
 import KysBelgeEditor from "@/app/(Uygulama)/components/Kys/KysBelgeEditor";
 
+
 const BCrumb = [
     {
         to: "/Kys",
@@ -57,9 +58,7 @@ const Page: React.FC = () => {
             <Breadcrumb title="Risk Matrisi" items={BCrumb} />
 
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    2 ETİK HÜKÜMLER - RİSK MATRİSİ
-                </Typography>
+
 
                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                     Örnek Risk Matrisi: Kalite Yönetimi
