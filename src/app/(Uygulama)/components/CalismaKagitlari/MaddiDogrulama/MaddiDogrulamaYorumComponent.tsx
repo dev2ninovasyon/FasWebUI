@@ -2,6 +2,8 @@ import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import dynamic from "next/dynamic";
 import React from "react";
+import { Box, Grid } from "@mui/material";
+
 const YorumEditor = dynamic(
     () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
     {
@@ -25,11 +27,13 @@ const MaddiDogrulamaYorumComponent: React.FC<
     const belgeAdi = `MaddiDogrulamaProsedurleri/${parentName}/${childName}`;
 
     return (
-        <YorumEditor
-            denetlenenId={user.denetlenenId || 0}
-            yil={user.yil || 0}
-            belgeAdi={belgeAdi}
-        />
+        <Box sx={{ width: "100%", marginY: 3 }}>
+            <YorumEditor
+                denetlenenId={user.denetlenenId || 0}
+                yil={user.yil || 0}
+                belgeAdi={belgeAdi}
+            />
+        </Box>
     );
 };
 

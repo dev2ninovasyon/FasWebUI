@@ -276,27 +276,38 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
         <Card
           sx={{
             width: "100%",
-            borderRadius: 2,
-            boxShadow: 3,
+            borderRadius: 3,
+            boxShadow: "none",
             backgroundColor:
-              customizer.activeMode === "dark" ? "#0e121a" : "#cccccc",
+              customizer.activeMode === "dark" ? "#1A2027" : "#FFFFFF",
             color:
               customizer.activeMode === "dark"
                 ? theme.palette.common.white
-                : theme.palette.common.black,
-            padding: 2,
+                : theme.palette.text.primary,
+            border:
+              customizer.activeMode === "dark"
+                ? "1px solid rgba(255, 255, 255, 0.12)"
+                : "1px solid rgba(0, 0, 0, 0.08)",
+            overflow: "visible", // Dropdownların görünmesi için kritik
+            padding: 0,
           }}
         >
           <CardHeader
-            title="Yorum"
+            title="Yorum & Notlar"
+            titleTypographyProps={{
+              variant: "h6",
+              fontWeight: 600,
+              fontSize: "1.1rem",
+            }}
             sx={{
-              fontWeight: "bold",
-              padding: "16px",
-              fontSize: "1.25rem",
+              padding: "16px 24px",
+              borderBottom:
+                customizer.activeMode === "dark"
+                  ? "1px solid rgba(255, 255, 255, 0.12)"
+                  : "1px solid rgba(0, 0, 0, 0.08)",
             }}
           />
-          <Divider></Divider>
-          <CardContent>
+          <CardContent sx={{ padding: "24px", overflow: "visible" }}>
             <Box
               sx={{
                 display: "flex",

@@ -11,6 +11,7 @@ import { AppState } from "@/store/store";
 import { Button, Grid, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
@@ -181,7 +182,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -209,6 +210,7 @@ const Page = () => {
         setToplam={setToplam}
         dipnotNo={dipnotNo}
       />
+      <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
     </PageContainer>
   );
 };
