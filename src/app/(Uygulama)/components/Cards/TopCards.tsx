@@ -7,12 +7,12 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import icon1 from "public/images/svgs/icon-connect.svg";
-import icon2 from "public/images/svgs/icon-user-male.svg";
-import icon3 from "public/images/svgs/icon-briefcase.svg";
-import icon4 from "public/images/svgs/icon-mailbox.svg";
-import icon5 from "public/images/svgs/icon-favorites.svg";
-import icon6 from "public/images/svgs/icon-speech-bubble.svg";
+const icon1 = "/images/svgs/icon-connect.svg";
+const icon2 = "/images/svgs/icon-user-male.svg";
+const icon3 = "/images/svgs/icon-briefcase.svg";
+const icon4 = "/images/svgs/icon-mailbox.svg";
+const icon5 = "/images/svgs/icon-favorites.svg";
+const icon6 = "/images/svgs/icon-speech-bubble.svg";
 import Link from "next/link";
 import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";

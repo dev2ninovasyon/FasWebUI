@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
+import { getYorum, saveYorum } from "@/api/Yorumlar/Yorumlar";
 import {
   ClassicEditor,
   AccessibilityHelp,
@@ -65,21 +66,17 @@ import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import "ckeditor5/ckeditor5.css";
 
-interface Veri {
-  id: number;
-  metin: string;
-}
-
 interface YorumEditorProps {
-  controller?: string;
+  denetlenenId: number;
+  yil: number;
+  belgeAdi: string;
 }
 
-const YorumEditor: React.FC<YorumEditorProps> = ({ controller }) => {
+const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
 
-  const [veriler, setVeriler] = useState<Veri[]>([]);
   const [editorData, setEditorData] = useState("");
   const [kayitMesaji, setKayitMesaji] = useState<string | null>(null);
 
@@ -94,22 +91,20 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ controller }) => {
     loadStyles();
   }, [customizer.activeMode]);
 
-  const handleUpdate = async () => {
-    /* const updatedData = { id: veriler[0].id, metin: editorData };
+  const handleUpdate = async (data: string) => {
     try {
-      const result = await updateCalismaKagidiVerisi(
-        controller,
-        user.token || "",
-        veriler[0]?.id,
-        updatedData
-      );
-
-      if (!result) {
-        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+      const result = await saveYorum(denetlenenId, yil, belgeAdi, data);
+      if (result) {
+        setKayitMesaji(
+          `Kaydedildi - Son kaydedilme: ${new Date().toLocaleTimeString()}`
+        );
+      } else {
+        setKayitMesaji("Kaydedilemedi!");
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
-    }*/
+      setKayitMesaji("Hata oluştu!");
+    }
   };
 
   const handleChange = useCallback((event: any, editor: any) => {
@@ -117,39 +112,28 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ controller }) => {
   }, []);
 
   const fetchData = async () => {
-    /* try {
-      const data = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
-        controller,
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0
-      );
-
-      if (data?.length > 0) {
-        setVeriler(data);
-        setEditorData(data[0].metin);
-      } else {
-        console.warn("No data found");
+    try {
+      const result = await getYorum(denetlenenId, yil, belgeAdi);
+      if (result && result.icerik) {
+        setEditorData(result.icerik);
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
-    }*/
+    }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [denetlenenId, yil, belgeAdi]);
 
   useEffect(() => {
-    if (!editorData) return;
-
+    // Initial mount'ta fetchData çalışıp editorData'yı set ettiğinde
+    // bu effect'in tetiklenmesini istemeyebiliriz ama veri geldikten sonra kullanıcı değiştikçe tetiklenmeli.
+    // Basit bir debounce yeterli.
     const timeout = setTimeout(() => {
-      handleUpdate();
-      setKayitMesaji(
-        `Kaydedildi - Son kaydedilme: ${new Date().toLocaleTimeString()}`
-      );
-    }, 3000);
+      if (editorData) // Boş değilse kaydet (veya boş kaydetmeye izin verilebilir ama genelde gereksiz request)
+        handleUpdate(editorData);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, [editorData]);

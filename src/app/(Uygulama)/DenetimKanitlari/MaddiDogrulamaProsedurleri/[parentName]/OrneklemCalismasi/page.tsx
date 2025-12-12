@@ -12,12 +12,7 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Orneklem from "./Orneklem";
-const YorumEditor = dynamic(
-  () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
-  {
-    ssr: false,
-  }
-);
+import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -142,7 +137,7 @@ const Page = () => {
       ></Breadcrumb>
       <Grid container>
         <Grid item xs={12} sm={12} lg={12} mb={3}>
-          <YorumEditor></YorumEditor>
+          <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
         </Grid>
         <Grid item xs={12} sm={12} lg={12}>
           {dipnotNo != "" ? <Orneklem dipnot={dipnotNo} /> : <></>}

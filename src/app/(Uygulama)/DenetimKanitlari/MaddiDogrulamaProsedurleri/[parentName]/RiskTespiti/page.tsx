@@ -4,6 +4,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 const Page = () => {
   const pathname = usePathname();
@@ -48,6 +49,7 @@ const Page = () => {
         dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz
         setDip={setDip}
       />
+      <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
     </PageContainer>
   );
 };

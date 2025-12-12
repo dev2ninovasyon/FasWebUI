@@ -30,12 +30,7 @@ const MaddiDogrulamaKonuEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/MaddiDogrulamaKonuEditor"),
   { ssr: false }
 );
-const YorumEditor = dynamic(
-  () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
-  {
-    ssr: false,
-  }
-);
+
 const MaddiDogrulamaAciklamaEditor = dynamic(
   () =>
     import("@/app/(Uygulama)/components/Editor/MaddiDogrulamaAciklamaEditor"),
@@ -345,7 +340,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
               </Button>
             </Grid>
           </Grid>
-          <YorumEditor></YorumEditor>
+
         </Grid>
         {/*
         (user.rol?.includes("KaliteKontrolSorumluDenetci") ||

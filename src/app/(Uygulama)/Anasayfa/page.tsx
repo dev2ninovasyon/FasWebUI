@@ -23,7 +23,7 @@ export default function DashboardPage() {
       <Breadcrumb title="Ana Sayfa" items={BCrumb} />
       <Box mt={2}>
         {/* Diğer dashboard bileşenlerinin üstüne/altına koyabilirsin */}
-        <GuideFlow />
+        <DriverTour run={runTour} onClose={() => setRunTour(false)} />
         <SonIslemlerKartlari />
         <SirketArsivOzetKartlari />
       </Box>

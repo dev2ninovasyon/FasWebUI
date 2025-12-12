@@ -23,12 +23,7 @@ import {
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 
-const YorumEditor = dynamic(
-  () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
-  {
-    ssr: false,
-  }
-);
+
 
 interface Veri {
   id: number;
@@ -305,7 +300,7 @@ const UygulananDenetimTeknikleri: React.FC<CalismaKagidiProps> = ({
               </Button>
             </Grid>
           </Grid>
-          <YorumEditor></YorumEditor>
+
         </Grid>
       </Grid>
       {isPopUpOpen && (
