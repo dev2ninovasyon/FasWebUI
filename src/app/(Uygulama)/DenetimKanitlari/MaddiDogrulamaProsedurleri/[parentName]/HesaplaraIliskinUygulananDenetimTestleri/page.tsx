@@ -3,8 +3,8 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import HesaplaraIliskinUygulananDenetimTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HesaplaraIliskinUygulananDenetimTestleri";
-
 const Page = () => {
   const pathname = usePathname();
   const segments = pathname.split("/");
@@ -32,22 +32,26 @@ const Page = () => {
       title: "Hesaplara İlişkin Uygulanan Denetim Testleri",
     },
   ];
-
+  console.log(segments)
   return (
     <PageContainer
       title={`${dip} | Hesaplara İlişkin Uygulanan Denetim Testleri`}
       description="this is Hesaplara İlişkin Uygulanan Denetim Testleri"
     >
       <Breadcrumb
-        title={"Uygulanan"}
+        title={"Hesaplara İlişkin Uygulanan Denetim Testleri"}
         subtitle={`${dip}`}
         items={BCrumb}
       ></Breadcrumb>
       <HesaplaraIliskinUygulananDenetimTestleri
-        controller="HesaplaraIliskinUygulananDenetimTestleriController"
+        controller="HesaplaraIliskinUygulananDenetimTestleri"
         dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz
+        dipnotNo={childName}
+        modelAdi={parentName}
         setDip={setDip}
+
       />
+      <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
     </PageContainer>
   );
 };

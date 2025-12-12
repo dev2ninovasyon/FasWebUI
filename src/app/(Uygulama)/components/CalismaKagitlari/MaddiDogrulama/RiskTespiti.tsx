@@ -20,6 +20,38 @@ import {
 import dynamic from "next/dynamic";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 
+const YorumEditor = dynamic(
+  () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
+  { ssr: false }
+);
+
+const YorumBolumu = ({
+  belgeAdi,
+  denetlenenId,
+  yil,
+}: {
+  belgeAdi: string;
+  denetlenenId: number;
+  yil: number;
+}) => (
+  <Box sx={{ mt: 2, mb: 3 }}>
+    <Divider sx={{ mb: 1 }} />
+    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+      Yorum
+    </Typography>
+    <Box
+      sx={{
+        border: "1px solid #e0e0e0",
+        borderRadius: 1,
+        p: 1,
+        backgroundColor: "#fafafa",
+      }}
+    >
+      <YorumEditor denetlenenId={denetlenenId} yil={yil} belgeAdi={belgeAdi} />
+    </Box>
+  </Box>
+);
+
 
 interface Veri {
   id: number;
@@ -325,6 +357,13 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
               </Grid>
             ))}
           </Grid>
+          <Box px={3}>
+            <YorumBolumu
+              belgeAdi={`${dipnotAdi} Risk Tespiti`}
+              denetlenenId={user.denetlenenId || 0}
+              yil={user.yil || 0}
+            />
+          </Box>
 
         </Grid>
       </Grid>
