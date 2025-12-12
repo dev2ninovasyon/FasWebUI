@@ -20,10 +20,8 @@ const Page: React.FC = () => {
             <Breadcrumb title="1.3 Denetim Şirketinin Yapısı" items={BCrumb} />
 
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    1.3 DENETİM ŞİRKETİNİN YAPISI
-                </Typography>
-                <KysCalismaKagidi formKodu="KysDenetimSirketininYapisi" alanAdi="1.1 Belgelendirme Politikası Beyanı" />
+
+                <KysCalismaKagidi formKodu="KysDenetimSirketininYapisi" alanAdi="1.3 Denetim Şirketinin Yapısı" />
             </Box>
         </PageContainer>
     );

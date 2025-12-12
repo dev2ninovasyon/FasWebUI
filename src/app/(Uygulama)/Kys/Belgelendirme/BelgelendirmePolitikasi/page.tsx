@@ -20,9 +20,7 @@ const Page: React.FC = () => {
             <Breadcrumb title="1.1 Belgelendirme Politikası Beyanı" items={BCrumb} />
 
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    1.1 BELGELENDİRME POLİTİKASI BEYANI
-                </Typography>
+
 
                 <KysCalismaKagidi formKodu="KysBelgelendirmePolitikasi" alanAdi="1.1 Belgelendirme Politikası Beyanı" />
             </Box>

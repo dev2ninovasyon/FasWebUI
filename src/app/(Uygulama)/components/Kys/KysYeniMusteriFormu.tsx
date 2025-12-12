@@ -184,20 +184,7 @@ const KysYeniMusteriFormu: React.FC = () => {
 
     return (
         <Paper elevation={0} sx={{ p: 4, border: "1px solid #e0e0e0" }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h4" fontWeight="600" color="#1976d2">
-                    5.3 YENİ MÜŞTERİ FORMU
-                </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<IconDeviceFloppy />}
-                    onClick={handleSave}
-                    disabled={saving}
-                >
-                    {saving ? "Kaydediliyor..." : "Kaydet"}
-                </Button>
-            </Box>
+
 
             <Divider sx={{ mb: 3 }} />
 
@@ -331,7 +318,18 @@ const KysYeniMusteriFormu: React.FC = () => {
                 (newData) => handleChange("grupSirketleri", newData),
                 { ad: "", iliski: "" }
             )}
+            <Box display="flex" justifyContent="flex-end" alignItems="center" mb={3}>
 
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<IconDeviceFloppy />}
+                    onClick={handleSave}
+                    disabled={saving}
+                >
+                    {saving ? "Kaydediliyor..." : "Kaydet"}
+                </Button>
+            </Box>
             <Box mt={4} p={2} bgcolor="#f9f9f9" borderRadius={1} border="1px solid #eee">
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>

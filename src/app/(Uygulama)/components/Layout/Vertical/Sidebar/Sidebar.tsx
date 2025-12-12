@@ -11,11 +11,13 @@ import Scrollbar from "@/app/(Uygulama)/components/CustomScroll/Scrollbar";
 import Logo from "@/app/(Uygulama)/components/Layout/Shared/Logo/Logo";
 import SidebarItems from "./SidebarItems";
 import MobileLogo from "@/app/(Uygulama)/components/Layout/Shared/Logo/MobileLogo";
+import TourFloatingButton from "@/app/(Uygulama)/components/Dashboards/TourFloatingButton";
 
 interface Props {
   isSidebarHover: boolean;
   setIsSidebarHover: (bool: boolean) => void;
 }
+
 const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -39,101 +41,93 @@ const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
 
   if (lgUp) {
     return (
-      <Box
-        sx={{
-          zIndex: 100,
-          width: toggleWidth,
-          flexShrink: 0,
-          ...(customizer.isCollapse && {
-            position: "absolute",
-          }),
-        }}
-      >
-        {/* ------------------------------------------- */}
-        {/* Sidebar for desktop */}
-        {/* ------------------------------------------- */}
-        <Drawer
-          anchor="left"
-          open
-          onMouseEnter={onHoverEnter}
-          onMouseLeave={onHoverLeave}
-          variant="permanent"
-          PaperProps={{
-            sx: {
-              transition: theme.transitions.create("width", {
-                duration: theme.transitions.duration.shortest,
-              }),
-              backgroundColor:
-                customizer.activeMode === "dark" ? "#0e121a" : "primary.light",
-              width: toggleWidth,
-              boxSizing: "border-box",
-            },
+      <>
+        <Box
+          sx={{
+            zIndex: 100,
+            width: toggleWidth,
+            flexShrink: 0,
+            ...(customizer.isCollapse && {
+              position: "absolute",
+            }),
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar Box */}
-          {/* ------------------------------------------- */}
-          <Box
-            sx={{
-              height: "100%",
+          {/* Sidebar for desktop */}
+          <Drawer
+            anchor="left"
+            open
+            onMouseEnter={onHoverEnter}
+            onMouseLeave={onHoverLeave}
+            variant="permanent"
+            PaperProps={{
+              sx: {
+                transition: theme.transitions.create("width", {
+                  duration: theme.transitions.duration.shortest,
+                }),
+                backgroundColor:
+                  customizer.activeMode === "dark"
+                    ? "#0e121a"
+                    : "primary.light",
+                width: toggleWidth,
+                boxSizing: "border-box",
+              },
             }}
           >
-            {/* ------------------------------------------- */}
-            {/* Logo */}
-            {/* ------------------------------------------- */}
             <Box
-              px={customizer.isCollapse ? "23px" : "24px"}
-              marginBottom={customizer.isCollapse ? 0 : 1.5}
+              sx={{
+                height: "100%",
+              }}
             >
-              {customizer.isCollapse ? <CollapseLogo /> : <Logo />}
+              {/* Logo */}
+              <Box
+                px={customizer.isCollapse ? "23px" : "24px"}
+                marginBottom={customizer.isCollapse ? 0 : 1.5}
+              >
+                {customizer.isCollapse ? <CollapseLogo /> : <Logo />}
+              </Box>
+
+              <Scrollbar sx={{ height: "calc(100% - 100px)" }}>
+                <SidebarItems isSidebarHover={isSidebarHover} />
+              </Scrollbar>
             </Box>
+          </Drawer>
+        </Box>
 
-            <Scrollbar sx={{ height: "calc(100% - 100px)" }}>
-              {/* ------------------------------------------- */}
-              {/* Sidebar Items */}
-              {/* ------------------------------------------- */}
-
-              <SidebarItems isSidebarHover={isSidebarHover} />
-            </Scrollbar>
-          </Box>
-        </Drawer>
-      </Box>
+        {/* 👉 Sağ alttaki rehber butonu (desktop) */}
+        <TourFloatingButton />
+      </>
     );
   }
 
   return (
-    <Drawer
-      anchor="left"
-      open={customizer.isMobileSidebar}
-      onClose={() => dispatch(toggleMobileSidebar())}
-      variant="temporary"
-      PaperProps={{
-        sx: {
-          width: customizer.SidebarWidth,
+    <>
+      <Drawer
+        anchor="left"
+        open={customizer.isMobileSidebar}
+        onClose={() => dispatch(toggleMobileSidebar())}
+        variant="temporary"
+        PaperProps={{
+          sx: {
+            width: customizer.SidebarWidth,
+            backgroundColor:
+              customizer.activeMode === "dark" ? "#0e121a" : "primary.light",
+            border: "0 !important",
+            boxShadow: (theme) => theme.shadows[8],
+          },
+        }}
+      >
+        {/* Logo */}
+        <Box px={3} marginBottom={2}>
+          <MobileLogo />
+        </Box>
 
-          backgroundColor:
-            customizer.activeMode === "dark" ? "#0e121a" : "primary.light",
-          // backgroundColor:
-          //   customizer.activeMode === 'dark'
-          //     ? customizer.darkBackground900
-          //     : customizer.activeSidebarBg,
-          // color: customizer.activeSidebarBg === '#ffffff' ? '' : 'white',
-          border: "0 !important",
-          boxShadow: (theme) => theme.shadows[8],
-        },
-      }}
-    >
-      {/* ------------------------------------------- */}
-      {/* Logo */}
-      {/* ------------------------------------------- */}
-      <Box px={3} marginBottom={2}>
-        {<MobileLogo />}
-      </Box>
-      {/* ------------------------------------------- */}
-      {/* Sidebar For Mobile */}
-      {/* ------------------------------------------- */}
-      <SidebarItems isSidebarHover={isSidebarHover} />
-    </Drawer>
+        {/* Sidebar For Mobile */}
+        <SidebarItems isSidebarHover={isSidebarHover} />
+      </Drawer>
+
+      {/* 👉 Sağ alttaki rehber butonu (mobile) */}
+      <TourFloatingButton />
+    </>
   );
 };
 

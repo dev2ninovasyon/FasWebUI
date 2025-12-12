@@ -1,16 +1,51 @@
-﻿"use client";
+﻿
+"use client";
 
+import React, { useState } from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import FilteredMenu from "@/app/(Uygulama)/components/Tables/MenuTable";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
+import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import KysLayout from "./KysLayout";
 
 const Page = () => {
+  const [showFilteredMenu, setShowFilteredMenu] = useState(true);
+
+  const handleToggle = () => {
+    setShowFilteredMenu((prev) => !prev);
+  };
+
   return (
     <KysLayout>
-      <PageContainer title="KYS" description="this is KYS">
+      <PageContainer
+        title="Kalite Yönetim Sistemi"
+        description="this is Kalite Yönetim Sistemi"
+      >
         <Box>
-          <TopCards title="KYS" />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              paddingBottom: showFilteredMenu ? "32px" : "0px",
+              paddingRight: "10px",
+            }}
+          >
+            <Button onClick={handleToggle}>
+              {showFilteredMenu ? (
+                <IconLayoutGrid size={24} />
+              ) : (
+                <IconList size={24} />
+              )}
+              {/* Toggle between icons */}
+            </Button>
+          </Box>
+
+          {showFilteredMenu ? (
+            <FilteredMenu title="KYS" />
+          ) : (
+            <TopCards title="KYS" />
+          )}
         </Box>
       </PageContainer>
     </KysLayout>

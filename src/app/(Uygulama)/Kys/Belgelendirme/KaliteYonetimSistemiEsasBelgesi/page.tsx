@@ -20,9 +20,7 @@ const Page: React.FC = () => {
             <Breadcrumb title="1.2 Kalite Yönetim Sistemi 'Esas' Belgesi" items={BCrumb} />
 
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    1.2 KALİTE YÖNETİM SİSTEMİ 'ESAS' BELGESİ
-                </Typography>
+
                 <KysCalismaKagidi formKodu="KysKaliteYonetimSistemiEsasBelgesi" alanAdi="1.1 Belgelendirme Politikası Beyanı" />
             </Box>
         </PageContainer>

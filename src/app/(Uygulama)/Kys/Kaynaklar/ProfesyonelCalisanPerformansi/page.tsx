@@ -3,7 +3,8 @@ import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Typography, Box } from "@mui/material";
-import KysBelgeEditor from "@/app/(Uygulama)/components/Kys/KysBelgeEditor";
+import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+
 
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
@@ -16,10 +17,8 @@ const Page: React.FC = () => {
         <PageContainer title="7.5 Profesyonel Çalışanların Performansının Gözden Geçirilmesi" description="Profesyonel Çalışanların Performansının Gözden Geçirilmesi">
             <Breadcrumb title="7.5 Profesyonel Çalışanların Performansının Gözden Geçirilmesi" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    7.5 PROFESYONEL ÇALIŞANLARIN PERFORMANSININ GÖZDEN GEÇİRİLMESİ
-                </Typography>
-                <KysBelgeEditor formKodu="KysProfesyonelCalisanPerformansi" />
+
+                <KysCalismaKagidi formKodu="KysProfesyonelCalisanPerformansi" alanAdi="7.5 Profesyonel Çalışanların Performansının Gözden Geçirilmesi" />
             </Box>
         </PageContainer>
     );

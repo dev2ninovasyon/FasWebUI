@@ -1,7 +1,8 @@
 ﻿import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import KysBelgeEditor from "@/app/(Uygulama)/components/Kys/KysBelgeEditor";
+import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+
 
 const BCrumb = [
     {
@@ -25,7 +26,7 @@ const Page: React.FC = () => {
             description="4.2 Yıllık Bağımsızlık Taahhüdü"
         >
             <Breadcrumb title="4.2 Yıllık Bağımsızlık Taahhüdü" items={BCrumb} />
-            <KysBelgeEditor formKodu="YillikBagimsizlikTaahhudu" />
+            <KysCalismaKagidi formKodu="YillikBagimsizlikTaahhudu" alanAdi="4.2 Yıllık Bağımsızlık Taahhüdü" />
         </PageContainer>
     );
 };

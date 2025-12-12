@@ -27,9 +27,7 @@ const Page: React.FC = () => {
         >
             <Breadcrumb title="6.3 Uzman Çalışmalarının Kullanılması" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    6.3 UZMAN ÇALIŞMALARININ KULLANILMASI
-                </Typography>
+
                 <KysCalismaKagidi formKodu="KysUzmanCalismalarininKullanilmasi" alanAdi="6.3 Uzman Çalışmalarının Kullanılması" />
             </Box>
         </PageContainer>

@@ -15,9 +15,7 @@ const Page: React.FC = () => {
         <PageContainer title="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" description="Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi">
             <Breadcrumb title="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <Typography variant="h4" sx={{ mb: 3, color: "#1976d2", fontWeight: 600 }}>
-                    6.4 DIŞ UZMANLARIN KULLANILMASINA İLİŞKİN KONTROL LİSTESİ
-                </Typography>
+
                 <KysCalismaKagidi formKodu="KysDisUzmanKontrolListesi" alanAdi="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" />
             </Box>
         </PageContainer>

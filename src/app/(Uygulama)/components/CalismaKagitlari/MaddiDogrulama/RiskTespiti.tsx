@@ -20,12 +20,6 @@ import {
 import dynamic from "next/dynamic";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 
-const YorumEditor = dynamic(
-  () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
-  {
-    ssr: false,
-  }
-);
 
 interface Veri {
   id: number;
@@ -331,7 +325,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
               </Grid>
             ))}
           </Grid>
-          <YorumEditor></YorumEditor>
+
         </Grid>
       </Grid>
       {isPopUpOpen && (
