@@ -45,11 +45,10 @@ const Page = () => {
       ></Breadcrumb>
       <HesaplaraIliskinUygulananDenetimTestleri
         controller="HesaplaraIliskinUygulananDenetimTestleri"
-        dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz
-        dipnotNo={childName}
-        modelAdi={parentName}
+        dipnotAdi={parentName}
+        dipnotNo={parentName}   // dipnotNo artık parentName (örn: "FinansalVarlikveYatirimlar")
+        modelAdi={parentName}   // modelAdi de parentName
         setDip={setDip}
-
       />
       <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
     </PageContainer>

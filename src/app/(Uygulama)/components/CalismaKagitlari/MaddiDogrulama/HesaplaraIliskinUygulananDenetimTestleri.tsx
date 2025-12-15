@@ -96,13 +96,24 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
             hesapAdi: x.hesapAdi ?? "",
         }));
 
-        const filtered = list.filter(
-            (r: any) => normalizeString(r.hesapAdi) === normalizeString(dipnotAdi)
-        );
+        // DEBUG: Backend'den gelen ham veriyi kontrol et
+        console.log("=== DEBUG: Backend Response ===");
+        console.log("rawList:", rawList);
+        console.log("list (mapped):", list);
+        console.log("dipnotAdi (prop):", dipnotAdi);
+        console.log("dipnotNo (prop):", dipnotNo);
 
-        if (filtered[0]?.hesapAdi) setDip(filtered[0].hesapAdi);
+        // Filtreleme KALDIRILDI - artık tüm verileri gösteriyoruz
+        // Eski kod: hesapAdi ile dipnotAdi karşılaştırması yapıyordu ama bunlar uyuşmuyordu
+        // const filtered = list.filter(
+        //     (r: any) => normalizeString(r.hesapAdi) === normalizeString(dipnotAdi)
+        // );
 
-        setVeriler(filtered);
+        console.log("Tüm veriler gösteriliyor (filtreleme kaldırıldı):", list.length, "kayıt");
+
+        if (list[0]?.hesapAdi) setDip(list[0].hesapAdi);
+
+        setVeriler(list);
 
     };
 

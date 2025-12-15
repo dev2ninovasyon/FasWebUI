@@ -36,24 +36,69 @@ export const getHesapTestleriByDenetlenen = async (
   modelAdi: string
 ) => {
   try {
-    console.log("Geldi" + controller + dipnotNo + modelAdi)
-    const response = await apiFetch(
-      `/${controller}/GetByDenetlenen?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${encodeURIComponent(
-        dipnotNo
-      )}&modelAdi=${encodeURIComponent(modelAdi)}`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const url = `/${controller}/GetByDenetlenen?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${encodeURIComponent(
+      dipnotNo
+    )}&modelAdi=${encodeURIComponent(modelAdi)}`;
+    console.log(token)
+    console.log("=== API CALL DEBUG ===");
+    console.log("URL:", url);
+    console.log("Params:", { denetciId, yil, denetlenenId, dipnotNo, modelAdi });
+
+    const response = await apiFetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Response Status:", response.status);
+    console.log("Response OK:", response.ok);
+
+    // 204 No Content durumunu handle et
+    if (response.status === 204) {
+      console.warn("Backend 204 No Content döndü - veri bulunamadı");
+      return [];
+    }
 
     if (response.ok) {
-      return response.json();
+      const text = await response.text();
+      console.log("Response Text:", text);
+
+      // Boş response kontrolü
+      if (!text || text.trim() === "") {
+        console.warn("Backend boş response döndü");
+        return [];
+      }
+
+      const data = JSON.parse(text);
+      console.log("Parsed Data:", data);
+
+      // Backend'den gelen verinin yapısını kontrol et (Array mi, { data: ... } mı?)
+      const rawList = Array.isArray(data) ? data : (data?.data || []);
+
+      // PascalCase -> camelCase mapping
+      const mappedList = rawList.map((item: any) => ({
+        id: item.id ?? item.Id,
+        dipnotNo: item.dipnotNo ?? item.DipnotNo,
+        baslik: item.baslik ?? item.Baslik,
+        hesapAdi: item.hesapAdi ?? item.HesapAdi,
+        kebirKodu: item.kebirKodu ?? item.KebirKodu,
+        detayKodu: item.detayKodu ?? item.DetayKodu,
+        oncekiDonemBakiye: item.oncekiDonemBakiye ?? item.OncekiDonemBakiye,
+        cariDonemBakiye: item.cariDonemBakiye ?? item.CariDonemBakiye,
+        degisimTl: item.degisimTl ?? item.DegisimTl,
+        degisimYuzde: item.degisimYuzde ?? item.DegisimYuzde,
+        onemlilik: item.onemlilik ?? item.Onemlilik,
+        dipnot: item.dipnot ?? item.Dipnot,
+        paraBirimi: item.paraBirimi ?? item.ParaBirimi,
+        modelAdi: item.modelAdi ?? item.ModelAdi,
+      }));
+
+      console.log("Mapped List:", mappedList);
+      return mappedList;
     } else {
-      console.error("Hesap testleri verileri getirilemedi");
+      console.error("Hesap testleri verileri getirilemedi, Status:", response.status);
       return null;
     }
   } catch (error) {
