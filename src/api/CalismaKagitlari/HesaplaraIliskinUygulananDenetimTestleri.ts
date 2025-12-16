@@ -1,8 +1,14 @@
 // src/api/CalismaKagitlari/HesaplaraIliskinUygulananDenetimTestleri.ts
 
 import { apiFetch } from "@/api/apiBase";
-export type HesapTestRow = {
+export interface Denetlenen {
   id: number;
+  unvan: string;
+  // Add other necessary fields
+}
+
+export type HesapTestRow = {
+  id: number; // Inherited from BaseEntityCalismaKagitlari
 
   dipnotNo?: string | null;
   baslik?: string | null;
@@ -16,9 +22,11 @@ export type HesapTestRow = {
   degisimTl?: number | null;
   degisimYuzde?: number | null;
 
-  onemlilik: string;
+  onemlilik?: string | null;
   dipnot: string;
   paraBirimi: string;
+
+  denetlenen?: Denetlenen | null;
 
   modelAdi?: string;
 };
@@ -51,6 +59,7 @@ export const getHesapTestleriByDenetlenen = async (
     );
 
     if (response.ok) {
+      console.log(response);
       return response.json();
     } else {
       console.error("Hesap testleri verileri getirilemedi");

@@ -93,7 +93,7 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
 
   const handleUpdate = async (data: string) => {
     try {
-      const result = await saveYorum(denetlenenId, yil, belgeAdi, data);
+      const result = await saveYorum(user.token || "", denetlenenId, yil, belgeAdi, data);
       if (result) {
         setKayitMesaji(
           `Kaydedildi - Son kaydedilme: ${new Date().toLocaleTimeString()}`
@@ -113,7 +113,7 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
 
   const fetchData = async () => {
     try {
-      const result = await getYorum(denetlenenId, yil, belgeAdi);
+      const result = await getYorum(user.token || "", denetlenenId, yil, belgeAdi);
       if (result && result.icerik) {
         setEditorData(result.icerik);
       }

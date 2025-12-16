@@ -11,28 +11,30 @@ const TourFloatingButton: React.FC = () => {
     const theme = useTheme();
 
     return (
-        <>
-            <Fab
-                variant="extended"          // yazılı fab
-                color="primary"
-                size="medium"
-                onClick={() => setShowTour(true)}
-                sx={{
-                    position: "fixed",
-                    right: 24,
-                    bottom: 24,
-                    zIndex: theme.zIndex.modal + 1,
-                    boxShadow: 4,
-                    gap: 1.2,                 // ikon ile yazı arası boşluk
-                    px: 2.5,                  // sağ/sol padding
-                }}
-            >
-                <IconInfoCircle size={20} style={{ marginRight: 4 }} />
-                Rehberi Başlat
-            </Fab>
-
-            <DriverTour run={showTour} onClose={() => setShowTour(false)} />
-        </>
+        /* <>
+             <Fab
+                 variant="extended"          // yazılı fab
+                 color="primary"
+                 size="medium"
+                 onClick={() => setShowTour(true)}
+                 sx={{
+                     position: "fixed",
+                     right: 24,
+                     bottom: 24,
+                     zIndex: theme.zIndex.modal + 1,
+                     boxShadow: 4,
+                     gap: 1.2,                 // ikon ile yazı arası boşluk
+                     px: 2.5,                  // sağ/sol padding
+                 }}
+             >
+                 <IconInfoCircle size={20} style={{ marginRight: 4 }} />
+                 Rehberi Başlat
+             </Fab>
+ 
+             <DriverTour run={showTour} onClose={() => setShowTour(false)} />
+         </>
+         */
+        <></>
     );
 };
 

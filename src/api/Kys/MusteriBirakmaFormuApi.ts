@@ -66,7 +66,7 @@ export const updateMusteriBirakmaFormu = async (
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await response.json();
+        return true;
     } catch (error) {
         console.error("MusteriBirakmaFormu güncelleme hatası:", error);
         throw error;
@@ -87,7 +87,7 @@ export const deleteMusteriBirakmaFormu = async (
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await response.json();
+        return true;
     } catch (error) {
         console.error("MusteriBirakmaFormu silme hatası:", error);
         throw error;

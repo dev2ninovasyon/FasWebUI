@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { Box, CardContent, Grid, Typography } from "@mui/material";
-import icon2 from "public/images/svgs/icon-user-male.svg";
-import icon3 from "public/images/svgs/icon-briefcase.svg";
-import icon4 from "public/images/svgs/icon-mailbox.svg";
-import icon5 from "public/images/svgs/icon-favorites.svg";
+const icon2 = "/images/svgs/icon-user-male.svg";
+const icon3 = "/images/svgs/icon-briefcase.svg";
+const icon4 = "/images/svgs/icon-mailbox.svg";
+const icon5 = "/images/svgs/icon-favorites.svg";
 import Link from "next/link";
 import { useLoading } from "@/contexts/LoadingContext";
 

@@ -14,7 +14,10 @@ import {
     MenuItem,
     IconButton,
     Button,
+    Snackbar,
+    Alert,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 
 import { AppState } from "@/store/store";
@@ -28,18 +31,19 @@ import {
 } from "@/api/CalismaKagitlari/HesaplaraIliskinUygulananDenetimTestleri";
 
 interface CalismaKagidiProps {
-    controller: string;  // "HesaplaraIliskinUygulananDenetimTestleri"
-    dipnotAdi: string;   // ekranda filtrelemek istediğin dipnot adı (ör: "Nakit ve Nakit Benzerleri")
-    dipnotNo: string;    // backend query param (ör: "1", "A.1", "10" vs)
-    modelAdi: string;    // backend query param (ör: "TFRS", "BOBI" veya senin mantığın)
+    controller: string;
+    dipnotAdi: string;
+    dipnotNo: string;
+    modelAdi: string;
     setDip: (str: string) => void;
 }
 
-const fmt = (n: any) => Number(n ?? 0).toLocaleString("tr-TR");
+const fmt = (n: any) =>
+    Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const HEADER_BLUE = "#3AA0F3";
-const HEADER_GRAY = "#C9CBD6";
-const ROW_ALT = "#F7F7FA";
+// Colors from reference image approx
+const HEADER_GRAY = "#F1F2F4"; // Light gray for column headers
+const ZEBRA_ROW = "#F9FAFB";
 
 function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -51,8 +55,6 @@ function normalizeString(str: string): string {
     return normalized.toLowerCase();
 }
 
-const kebirOrder = ["100", "102"];
-
 const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = ({
     controller,
     dipnotAdi,
@@ -60,11 +62,33 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
     modelAdi,
     setDip,
 }) => {
+    const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
 
     const [veriler, setVeriler] = useState<HesapTestRow[]>([]);
     const [savingRowId, setSavingRowId] = useState<number | null>(null);
     const [savingKebir, setSavingKebir] = useState<string | null>(null);
+
+    // Bulk selection state for each Kebir group
+    const [bulkOnemlilik, setBulkOnemlilik] = useState<Record<string, string>>({});
+
+    // Snackbar State
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+
+    const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
+
+    const showSnackbar = (message: string, severity: "success" | "error") => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity(severity);
+        setSnackbarOpen(true);
+    };
 
     const fetchData = async () => {
         const res = await getHesapTestleriByDenetlenen(
@@ -77,33 +101,44 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
             modelAdi
         );
 
-        // 1) null geldiyse
         if (!res) {
             setVeriler([]);
             return;
         }
 
-        // 2) API bazen direkt array, bazen { data: [...] } döndürür
         const rawList = Array.isArray(res) ? res : (res.data ?? []);
 
-        const list = rawList.map((x: any) => ({
-            ...x,
+        // Flatten mapping - The backend json is already flat
+        const list: HesapTestRow[] = rawList.map((x: any) => ({
+            id: x.id,
+            dipnotNo: x.dipnotNo,
+            baslik: x.baslik,
+            hesapAdi: x.hesapAdi ?? "",
             kebirKodu: String(x.kebirKodu ?? ""),
             detayKodu: String(x.detayKodu ?? ""),
+            oncekiDonemBakiye: x.oncekiDonemBakiye,
+            cariDonemBakiye: x.cariDonemBakiye,
+            degisimTl: x.degisimTl,
+            degisimYuzde: x.degisimYuzde,
             onemlilik: String(x.onemlilik ?? "0"),
-            paraBirimi: x.paraBirimi ?? "TL",
             dipnot: x.dipnot ?? "",
-            hesapAdi: x.hesapAdi ?? "",
+            paraBirimi: x.paraBirimi ?? "",
+            denetlenen: x.denetlenen,
+            modelAdi: x.modelAdi
         }));
 
-        const filtered = list.filter(
-            (r: any) => normalizeString(r.hesapAdi) === normalizeString(dipnotAdi)
-        );
+        // Filter by dipnotAdi if necessary, though backend should have done it or returns relevant set.
+        // User's previous code filtered by `hesapAdi` vs `dipnotAdi`.
+        // Let's trust the backend result but apply the normalize filter if needed.
+        // Backend `getHesapTestleriByDenetlenen` uses `dipnotNo`.
+        // If the result is just for that dipnot, we can use it all.
+        // But `hesapAdi` needs to be set for the Page Title via `setDip`.
+        // Let's find the first One that matches parentName/dipnotAdi just to be safe or update title.
+        const titleRow = list.find((r: any) => normalizeString(r.hesapAdi) === normalizeString(dipnotAdi));
+        if (titleRow?.hesapAdi) setDip(titleRow.hesapAdi);
 
-        if (filtered[0]?.hesapAdi) setDip(filtered[0].hesapAdi);
-
-        setVeriler(filtered);
-
+        // Use all data returned
+        setVeriler(list);
     };
 
     useEffect(() => {
@@ -111,194 +146,241 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const groupedByKebir = useMemo(() => {
-        const base = veriler.reduce((acc: Record<string, HesapTestRow[]>, v) => {
-            acc[v.kebirKodu] = acc[v.kebirKodu] || [];
-            acc[v.kebirKodu].push(v);
-            return acc;
-        }, {});
-
-        Object.keys(base).forEach((k) => {
-            base[k] = [...base[k]].sort((a, b) =>
-                String(a.detayKodu).localeCompare(String(b.detayKodu), "tr")
-            );
-        });
-
-        return base;
+    // Split Data
+    const anaHesaplar = useMemo(() => {
+        // Summary rows typically have kebirKodu == detayKodu
+        return veriler.filter(x => x.kebirKodu === x.detayKodu).sort((a, b) => a.kebirKodu.localeCompare(b.kebirKodu));
     }, [veriler]);
 
-    const kebirSummary = useMemo(() => {
-        const rows = kebirOrder
-            .filter((k) => groupedByKebir[k]?.length)
-            .map((k) => {
-                const list = groupedByKebir[k];
-                const onceki = list.reduce((s, x) => s + Number(x.oncekiDonemBakiye ?? 0), 0);
-                const cari = list.reduce((s, x) => s + Number(x.cariDonemBakiye ?? 0), 0);
-                const degisimTl = list.reduce((s, x) => s + Number(x.degisimTl ?? 0), 0);
-                const degisimYuzde = onceki !== 0 ? ((cari - onceki) / onceki) * 100 : 0;
+    const altHesaplar = useMemo(() => {
+        // Detail rows
+        return veriler.filter(x => x.kebirKodu !== x.detayKodu).sort((a, b) => a.detayKodu.localeCompare(b.detayKodu));
+    }, [veriler]);
 
-                const hesapAciklama = k === "100" ? "Kasa" : k === "102" ? "Bankalar" : (list?.[0]?.hesapAdi || "");
-                return { kebirKodu: k, hesapAciklama, onceki, cari, degisimTl, degisimYuzde };
-            });
+    const groupedAlt = useMemo(() => {
+        const groups: Record<string, HesapTestRow[]> = {};
+        altHesaplar.forEach(row => {
+            if (!groups[row.kebirKodu]) groups[row.kebirKodu] = [];
+            groups[row.kebirKodu].push(row);
+        });
+        return groups;
+    }, [altHesaplar]);
 
-        const totalOnceki = rows.reduce((s, r) => s + r.onceki, 0);
-        const totalCari = rows.reduce((s, r) => s + r.cari, 0);
-        const totalDegisim = rows.reduce((s, r) => s + r.degisimTl, 0);
-        const totalDegisimYuzde = totalOnceki !== 0 ? ((totalCari - totalOnceki) / totalOnceki) * 100 : 0;
+    // Handlers
+    const handleSetRowOnemlilik = async (id: number, val: string) => {
+        // Optimistic UI update
+        setVeriler((prev) => prev.map((x) => (x.id === id ? { ...x, onemlilik: val } : x)));
 
-        return { rows, totalOnceki, totalCari, totalDegisim, totalDegisimYuzde };
-    }, [groupedByKebir]);
-
-    const setRowOnemlilik = (id: number, onemlilik: string) => {
-        setVeriler((prev) => prev.map((x) => (x.id === id ? { ...x, onemlilik } : x)));
-    };
-
-    const setKebirOnemlilikAll = (kebirKodu: string, onemlilik: string) => {
-        setVeriler((prev) =>
-            prev.map((x) => (x.kebirKodu === kebirKodu ? { ...x, onemlilik } : x))
-        );
-    };
-
-    const saveRow = async (row: HesapTestRow) => {
+        setSavingRowId(id);
         try {
-            setSavingRowId(row.id);
-            await updateHesapTestRow(controller, user.token || "", row.id, row);
-            await fetchData();
+            const row = veriler.find((r) => r.id === id);
+            if (row) {
+                // Send update to backend
+                await updateHesapTestRow(controller, user.token || "", id, { ...row, onemlilik: val });
+                showSnackbar("Kayıt başarıyla güncellendi.", "success");
+            }
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Güncelleme sırasında bir hata oluştu.", "error");
         } finally {
             setSavingRowId(null);
         }
     };
 
-    const saveKebir = async (kebirKodu: string) => {
-        const rows = groupedByKebir[kebirKodu] || [];
-        if (!rows.length) return;
+    const handleSetBulkOnemlilik = async (kebirKodu: string, val: string) => {
+        setBulkOnemlilik((prev) => ({ ...prev, [kebirKodu]: val }));
 
+        // Optimistic UI update for all sub-rows
+        setVeriler((prev) =>
+            prev.map((r) =>
+                r.kebirKodu === kebirKodu && r.kebirKodu !== r.detayKodu
+                    ? { ...r, onemlilik: val }
+                    : r
+            )
+        );
+
+        const rowsToSave = groupedAlt[kebirKodu] || [];
+        if (rowsToSave.length === 0) return;
+
+        setSavingKebir(kebirKodu);
         try {
-            setSavingKebir(kebirKodu);
+            // Fetch fresh copy or use optimistic? Using optimistic is fine for "Onemlilik".
+            // Update all rows in backend
             await Promise.all(
-                rows.map((row) => updateHesapTestRow(controller, user.token || "", row.id, row))
+                rowsToSave.map((r) =>
+                    updateHesapTestRow(controller, user.token || "", r.id, { ...r, onemlilik: val })
+                )
             );
-            await fetchData();
+            showSnackbar("Tüm kayıtlar başarıyla güncellendi.", "success");
+        } catch (err) {
+            console.error(err);
+            showSnackbar("Toplu güncelleme sırasında bir hata oluştu.", "error");
         } finally {
             setSavingKebir(null);
         }
     };
 
-    const renderDetayTable = (kebirKodu: string, title: string) => {
-        const detaylar = groupedByKebir[kebirKodu] || [];
-        if (!detaylar.length) return null;
+    // Calculate totals for a group (including anaHesap row logic if needed)
+    // Actually, AnaHesap row usually holds the total from backend. 
+    // We should display the total row at bottom of detail table by summing children OR using anaHesap row?
+    // User image shows "Toplam" row at bottom of detail table.
+    // And Ana Hesaplar table at top.
 
-        const totalOnceki = detaylar.reduce((s, x) => s + Number(x.oncekiDonemBakiye ?? 0), 0);
-        const totalCari = detaylar.reduce((s, x) => s + Number(x.cariDonemBakiye ?? 0), 0);
-        const totalDegisim = detaylar.reduce((s, x) => s + Number(x.degisimTl ?? 0), 0);
-        const totalDegisimYuzde = totalOnceki !== 0 ? ((totalCari - totalOnceki) / totalOnceki) * 100 : 0;
+    // Helper to render total row
+    const renderTotalRow = (rows: HesapTestRow[], label: string = "Toplam") => {
+        const tOnceki = rows.reduce((s, x) => s + (x.oncekiDonemBakiye ?? 0), 0);
+        const tCari = rows.reduce((s, x) => s + (x.cariDonemBakiye ?? 0), 0);
+        const tDegisim = rows.reduce((s, x) => s + (x.degisimTl ?? 0), 0);
+        // % change
+        const tYuzde = tOnceki !== 0 ? ((tCari - tOnceki) / tOnceki) * 100 : 0;
 
         return (
-            <Box sx={{ mb: 3 }}>
-                <Box sx={{ backgroundColor: HEADER_BLUE, color: "white", px: 1.2, py: 0.8, fontWeight: 800 }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
-                        {title}
+            <TableRow sx={{ backgroundColor: "white" }}>
+                <TableCell colSpan={2} sx={{ fontWeight: 800 }}>{label}</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tOnceki)}</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tCari)}</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tDegisim)}</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 800 }}>% {tYuzde.toFixed(2)}</TableCell>
+                <TableCell colSpan={1} />
+            </TableRow>
+        );
+    };
+
+    const renderAnaHesaplar = () => {
+        // Calculate total of Ana Hesaplar
+        const tOnceki = anaHesaplar.reduce((s, x) => s + (x.oncekiDonemBakiye ?? 0), 0);
+        const tCari = anaHesaplar.reduce((s, x) => s + (x.cariDonemBakiye ?? 0), 0);
+        const tDegisim = anaHesaplar.reduce((s, x) => s + (x.degisimTl ?? 0), 0);
+        const tYuzde = tOnceki !== 0 ? ((tCari - tOnceki) / tOnceki) * 100 : 0;
+
+        return (
+            <Box mb={4}>
+                <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700} color="white">
+                        Ana Hesaplar
                     </Typography>
                 </Box>
-
-                <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
-                    <Table>
+                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
+                    <Table size="small">
                         <TableHead>
                             <TableRow sx={{ backgroundColor: HEADER_GRAY }}>
-                                <TableCell sx={{ fontWeight: 800 }}>Hesap No</TableCell>
-                                <TableCell sx={{ fontWeight: 800 }}>Hesap Açıklaması</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>Önceki Dönem Bakiye</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>Cari Dönem Bakiye</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>Değişim TL</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>Değişim %</TableCell>
-
-                                <TableCell sx={{ width: 320 }} />
-                                <TableCell sx={{ width: 76 }} />
+                                <TableCell sx={{ fontWeight: 700, width: "10%" }}>Hesap No</TableCell>
+                                <TableCell sx={{ fontWeight: 700, width: "35%" }}>Hesap Açıklaması</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Önceki Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Cari Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Değişim TL</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "7%" }}>Değişim %</TableCell>
+                                <TableCell sx={{ width: "15%" }} />
                             </TableRow>
                         </TableHead>
-
                         <TableBody>
-                            {detaylar.map((row, idx) => (
-                                <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? ROW_ALT : "white" }}>
-                                    <TableCell sx={{ fontWeight: 700 }}>{row.detayKodu}</TableCell>
-                                    <TableCell sx={{ fontWeight: 700 }}>{row.baslik || row.hesapAdi}</TableCell>
-
+                            {anaHesaplar.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={7} align="center">Kayıt bulunamadı.</TableCell>
+                                </TableRow>
+                            )}
+                            {anaHesaplar.map((row, idx) => (
+                                <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? "white" : ZEBRA_ROW }}>
+                                    <TableCell>{row.kebirKodu}</TableCell>
+                                    <TableCell>{row.hesapAdi}</TableCell>
                                     <TableCell align="right">{fmt(row.oncekiDonemBakiye)}</TableCell>
                                     <TableCell align="right">{fmt(row.cariDonemBakiye)}</TableCell>
                                     <TableCell align="right">{fmt(row.degisimTl)}</TableCell>
-                                    <TableCell align="right">% {Number(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
+                                    <TableCell align="right">% {(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
+                                    <TableCell />
+                                </TableRow>
+                            ))}
+                            {/* Grand Total Row */}
+                            <TableRow sx={{ backgroundColor: "white", borderTop: "2px solid #eee" }}>
+                                <TableCell colSpan={2} sx={{ fontWeight: 800 }}>Toplam</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tOnceki)}</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tCari)}</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tDegisim)}</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 800 }}>% {tYuzde.toFixed(2)}</TableCell>
+                                <TableCell />
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+        );
+    };
 
+    const renderDetailTable = (kebirKodu: string) => {
+        const rows = groupedAlt[kebirKodu] || [];
+        // Find Ana Hesap row to get the Title (e.g. "100 - Kasa")
+        const parentRow = anaHesaplar.find(x => x.kebirKodu === kebirKodu);
+        const title = parentRow
+            ? `${parentRow.kebirKodu} - ${parentRow.hesapAdi}`
+            : `${kebirKodu} - Detaylar`;
+
+        return (
+            <Box mb={4} key={kebirKodu}>
+                <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700} color="white">
+                        {title}
+                    </Typography>
+                </Box>
+                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow sx={{ backgroundColor: HEADER_GRAY }}>
+                                <TableCell sx={{ fontWeight: 700, width: "10%" }}>Hesap No</TableCell>
+                                <TableCell sx={{ fontWeight: 700, width: "35%" }}>Hesap Açıklaması</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Önceki Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Cari Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Değişim TL</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "7%" }}>Değişim %</TableCell>
+                                <TableCell sx={{ fontWeight: 700, width: "15%" }}>
+                                    <CustomSelect
+                                        value={bulkOnemlilik[kebirKodu] || ""}
+                                        onChange={(e: any) => handleSetBulkOnemlilik(kebirKodu, e.target.value)}
+                                        size="small"
+                                        fullWidth
+                                        disabled={savingKebir === kebirKodu}
+                                        sx={{
+                                            minWidth: 100, // Reduced from 140
+                                            bgcolor: "white",
+                                            "& .MuiOutlinedInput-notchedOutline": { borderColor: "transparent" }
+                                        }}
+                                        displayEmpty
+                                    >
+                                        <MenuItem value="" disabled>Tümü İçin Önemlilik</MenuItem>
+                                        <MenuItem value="0">Önemlilik Yok</MenuItem>
+                                        <MenuItem value="1">Önemsiz</MenuItem>
+                                        <MenuItem value="2">Orta</MenuItem>
+                                        <MenuItem value="3">Yüksek</MenuItem>
+                                    </CustomSelect>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row, idx) => (
+                                <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? "white" : ZEBRA_ROW }}>
+                                    <TableCell>{row.detayKodu}</TableCell>
+                                    <TableCell>{row.hesapAdi} {row.paraBirimi ? `(${row.paraBirimi})` : ""}</TableCell>
+                                    <TableCell align="right">{fmt(row.oncekiDonemBakiye)}</TableCell>
+                                    <TableCell align="right">{fmt(row.cariDonemBakiye)}</TableCell>
+                                    <TableCell align="right">{fmt(row.degisimTl)}</TableCell>
+                                    <TableCell align="right">% {(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
                                     <TableCell>
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            {idx === 0 && (
-                                                <CustomSelect
-                                                    size="small"
-                                                    value=""
-                                                    displayEmpty
-                                                    onChange={(e: any) => setKebirOnemlilikAll(kebirKodu, e.target.value)}
-                                                    sx={{ backgroundColor: "white", borderRadius: 1, minWidth: 170 }}
-                                                >
-                                                    <MenuItem value="" disabled>Tümü için Önemlilik</MenuItem>
-                                                    <MenuItem value="0">Yok</MenuItem>
-                                                    <MenuItem value="1">Önemsiz</MenuItem>
-                                                    <MenuItem value="2">Orta</MenuItem>
-                                                    <MenuItem value="3">Yüksek</MenuItem>
-                                                </CustomSelect>
-                                            )}
-
-                                            <CustomSelect
-                                                size="small"
-                                                value={row.onemlilik}
-                                                onChange={(e: any) => setRowOnemlilik(row.id, e.target.value)}
-                                                sx={{ backgroundColor: "white", borderRadius: 1, minWidth: 170 }}
-                                            >
-                                                <MenuItem value="0">Önemlilik Seçiniz</MenuItem>
-                                                <MenuItem value="1">Önemsiz</MenuItem>
-                                                <MenuItem value="2">Orta</MenuItem>
-                                                <MenuItem value="3">Yüksek</MenuItem>
-                                            </CustomSelect>
-
-                                            {idx === 0 && (
-                                                <Button
-                                                    variant="contained"
-                                                    color="success"
-                                                    disabled={savingKebir === kebirKodu}
-                                                    onClick={() => saveKebir(kebirKodu)}
-                                                    sx={{ fontWeight: 800, borderRadius: 1, px: 2 }}
-                                                >
-                                                    Hepsini Kaydet
-                                                </Button>
-                                            )}
-                                        </Stack>
-                                    </TableCell>
-
-                                    <TableCell align="center">
-                                        <IconButton
-                                            onClick={() => saveRow(row)}
+                                        <CustomSelect
+                                            value={row.onemlilik || "0"}
+                                            onChange={(e: any) => handleSetRowOnemlilik(row.id, e.target.value)}
+                                            size="small"
+                                            fullWidth
                                             disabled={savingRowId === row.id}
-                                            sx={{
-                                                backgroundColor: "#27AE60",
-                                                color: "white",
-                                                "&:hover": { backgroundColor: "#1E8449" },
-                                                width: 44,
-                                                height: 44,
-                                                borderRadius: "50%",
-                                            }}
+                                            sx={{ minWidth: 100, bgcolor: "white" }} // Reduced from 130
                                         >
-                                            <IconDeviceFloppy size={18} />
-                                        </IconButton>
+                                            <MenuItem value="0">Önemlilik Seçiniz</MenuItem>
+                                            <MenuItem value="1">Önemsiz</MenuItem>
+                                            <MenuItem value="2">Orta</MenuItem>
+                                            <MenuItem value="3">Yüksek</MenuItem>
+                                        </CustomSelect>
                                     </TableCell>
                                 </TableRow>
                             ))}
-
-                            <TableRow sx={{ backgroundColor: "white" }}>
-                                <TableCell colSpan={2} sx={{ fontWeight: 900 }}>Toplam</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 900 }}>{fmt(totalOnceki)}</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 900 }}>{fmt(totalCari)}</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 900 }}>{fmt(totalDegisim)}</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 900 }}>% {Number(totalDegisimYuzde).toFixed(2)}</TableCell>
-                                <TableCell colSpan={2} />
-                            </TableRow>
+                            {renderTotalRow(rows)}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -309,57 +391,31 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Box px={3} pt={3} sx={{ width: "95%", margin: "0 auto" }}>
-                    {/* ANA HESAPLAR */}
-                    <TableContainer component={Paper} sx={{ mb: 3, borderRadius: 0 }}>
-                        <Table>
-                            <TableHead>
-                                <TableRow sx={{ backgroundColor: HEADER_BLUE }}>
-                                    <TableCell colSpan={6} sx={{ color: "white", fontWeight: 900, py: 1 }}>
-                                        Ana Hesaplar
-                                    </TableCell>
-                                </TableRow>
-
-                                <TableRow sx={{ backgroundColor: HEADER_GRAY }}>
-                                    <TableCell sx={{ fontWeight: 800 }}>Hesap No</TableCell>
-                                    <TableCell sx={{ fontWeight: 800 }}>Hesap Açıklaması</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 800 }}>Önceki Dönem Bakiye</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 800 }}>Cari Dönem Bakiye</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 800 }}>Değişim TL</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 800 }}>Değişim %</TableCell>
-                                </TableRow>
-                            </TableHead>
-
-                            <TableBody>
-                                {kebirSummary.rows.map((r, i) => (
-                                    <TableRow key={r.kebirKodu} sx={{ backgroundColor: i % 2 === 0 ? ROW_ALT : "white" }}>
-                                        <TableCell sx={{ fontWeight: 700 }}>{r.kebirKodu}</TableCell>
-                                        <TableCell sx={{ fontWeight: 700 }}>{r.hesapAciklama}</TableCell>
-                                        <TableCell align="right">{fmt(r.onceki)}</TableCell>
-                                        <TableCell align="right">{fmt(r.cari)}</TableCell>
-                                        <TableCell align="right">{fmt(r.degisimTl)}</TableCell>
-                                        <TableCell align="right">% {Number(r.degisimYuzde).toFixed(2)}</TableCell>
-                                    </TableRow>
-                                ))}
-
-                                <TableRow>
-                                    <TableCell colSpan={2} sx={{ fontWeight: 900 }}>Toplam</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 900 }}>{fmt(kebirSummary.totalOnceki)}</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 900 }}>{fmt(kebirSummary.totalCari)}</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 900 }}>{fmt(kebirSummary.totalDegisim)}</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 900 }}>% {Number(kebirSummary.totalDegisimYuzde).toFixed(2)}</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-
-                    {/* 100 - Kasa */}
-                    {renderDetayTable("100", "100 - Kasa")}
-
-                    {/* 102 - Bankalar */}
-                    {renderDetayTable("102", "102 - Bankalar")}
+                <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
+                    {renderAnaHesaplar()}
+                    {/* Render each kebir group */}
+                    {anaHesaplar.map(main => (
+                        // only render if there are sub accounts? Or render empty if needed? 
+                        // Usually there are sub accounts if it's in the list.
+                        // But use groupedAlt keys for safety or iterate anaHesaplar and find children.
+                        groupedAlt[main.kebirKodu] && groupedAlt[main.kebirKodu].length > 0
+                            ? renderDetailTable(main.kebirKodu)
+                            : null
+                    ))}
+                    {/* Catch any orphan groups that didn't have a main account logic? (Unlikely per logic) */}
                 </Box>
             </Grid>
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} variant="filled" sx={{ width: "100%", color: "white" }} elevation={6}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Grid>
     );
 };
