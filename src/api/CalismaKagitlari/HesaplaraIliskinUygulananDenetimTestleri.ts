@@ -44,25 +44,36 @@ export const getHesapTestleriByDenetlenen = async (
   modelAdi: string
 ) => {
   try {
-    console.log("Geldi" + controller + dipnotNo + modelAdi)
-    const response = await apiFetch(
-      `/${controller}/GetByDenetlenen?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${encodeURIComponent(
-        dipnotNo
-      )}&modelAdi=${encodeURIComponent(modelAdi)}`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const url = `/${controller}/GetByDenetlenen?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${encodeURIComponent(
+      dipnotNo
+    )}&modelAdi=${encodeURIComponent(modelAdi)}`;
+    console.log(token)
+    console.log("=== API CALL DEBUG ===");
+    console.log("URL:", url);
+    console.log("Params:", { denetciId, yil, denetlenenId, dipnotNo, modelAdi });
+
+    const response = await apiFetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Response Status:", response.status);
+    console.log("Response OK:", response.ok);
+
+    // 204 No Content durumunu handle et
+    if (response.status === 204) {
+      console.warn("Backend 204 No Content döndü - veri bulunamadı");
+      return [];
+    }
 
     if (response.ok) {
       console.log(response);
       return response.json();
     } else {
-      console.error("Hesap testleri verileri getirilemedi");
+      console.error("Hesap testleri verileri getirilemedi, Status:", response.status);
       return null;
     }
   } catch (error) {
