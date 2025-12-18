@@ -41,10 +41,6 @@ interface CalismaKagidiProps {
 const fmt = (n: any) =>
     Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-// Colors from reference image approx
-// Colors from reference image approx
-// const HEADER_GRAY = "#F1F2F4"; // Light gray for column headers
-// const ZEBRA_ROW = "#F9FAFB";
 
 function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {

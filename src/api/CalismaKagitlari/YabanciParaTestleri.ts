@@ -5,7 +5,7 @@ export interface Denetlenen {
   unvan: string;
 }
 
-export type HesapTestRow = {
+export type YabanciParaTestleriRow = {
   id: number;
 
   dipnotNo?: string | null;
@@ -15,12 +15,15 @@ export type HesapTestRow = {
   kebirKodu: string;
   detayKodu: string;
 
-  oncekiDonemBakiye?: number | null;
-  cariDonemBakiye?: number | null;
-  degisimTl?: number | null;
-  degisimYuzde?: number | null;
+  mizanBakiye?: number | null;
+  hesaplananBakiye?: number | null;
+
+  degisimTl?: number | null; // Mizan Farkı
 
   onemlilik?: string | null;
+
+  dovizBakiye?: number | null;
+  kur?: number | null;
 
   dipnot?: string | null;
   paraBirimi?: string | null;
@@ -36,7 +39,7 @@ const withAuth = (token: string) => ({
 });
 
 
-export const getHesapTestleriByDenetlenen = async (
+export const getYabanciParaTestleriByDenetlenen = async (
   controller: string,
   token: string,
   denetciId: number,
@@ -69,11 +72,11 @@ export const getHesapTestleriByDenetlenen = async (
 };
 
 
-export const updateHesapTestRow = async (
+export const updateYabanciParaTestleriRow = async (
   controller: string,
   token: string,
   id: number,
-  payload: Partial<HesapTestRow>
+  payload: Partial<YabanciParaTestleriRow>
 ) => {
   // UI string geliyor; backend int/decimal bekliyorsa normalize et
   const normalizedPayload: any = {
