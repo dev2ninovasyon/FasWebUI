@@ -2,6 +2,8 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+import dynamic from "next/dynamic";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 import { Box, Typography } from "@mui/material";
 
 const BCrumb = [
@@ -10,12 +12,17 @@ const BCrumb = [
     { to: "/Kys/DenetiminYurutulmesi/CalismaKontrolFormu", title: "6.2 Çalışma Kontrol Formu" },
 ];
 
+
+
 const Page: React.FC = () => {
     return (
         <PageContainer title="6.2 Çalışma Kontrol Formu" description="Çalışma Kontrol Formu">
             <Breadcrumb title="6.2 Çalışma Kontrol Formu" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <KysCalismaKagidi formKodu="KysCalismaKontrolFormu" alanAdi="6.2 Çalışma Kontrol Formu" />
+                <KysEditor
+                    formKodu="KysCalismaKontrolFormu"
+                    alanAdi="6.2 Çalışma Kontrol Formu"
+                />
             </Box>
         </PageContainer>
     );

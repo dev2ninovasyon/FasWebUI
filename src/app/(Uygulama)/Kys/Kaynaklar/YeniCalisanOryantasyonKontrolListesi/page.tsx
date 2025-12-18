@@ -3,7 +3,7 @@ import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Typography, Box } from "@mui/material";
-import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+import KysEditor from "@/app/(Uygulama)/components/Kys/KysEditor";
 
 
 const BCrumb = [
@@ -18,7 +18,7 @@ const Page: React.FC = () => {
             <Breadcrumb title="7.4 Yeni Çalışan Oryantasyon Kontrol Listesi" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
 
-                <KysCalismaKagidi formKodu="KysYeniCalisanOryantasyonKontrolListesi" alanAdi="7.4 Yeni Çalışan Oryantasyon Kontrol Listesi" />
+                <KysEditor formKodu="KysYeniCalisanOryantasyonKontrolListesi" alanAdi="7.4 Yeni Çalışan Oryantasyon Kontrol Listesi" />
             </Box>
         </PageContainer>
     );

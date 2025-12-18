@@ -3,7 +3,7 @@ import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box } from "@mui/material";
-import KysYeniMusteriFormu from "@/app/(Uygulama)/components/Kys/KysYeniMusteriFormu";
+import KysEditor from "@/app/(Uygulama)/components/Kys/KysEditor";
 
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
@@ -16,7 +16,7 @@ const Page: React.FC = () => {
         <PageContainer title="5.3 Yeni Müşteri Formu" description="Yeni Müşteri Formu">
             <Breadcrumb title="5.3 Yeni Müşteri Formu" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-                <KysYeniMusteriFormu />
+                <KysEditor formKodu="KysYeniMusteriFormu" alanAdi="5.3 Yeni Müşteri Formu" />
             </Box>
         </PageContainer>
     );

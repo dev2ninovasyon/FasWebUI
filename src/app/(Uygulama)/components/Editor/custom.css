@@ -115,6 +115,22 @@
   background-color: hsl(0, 0%, 20%) !important;
 }
 
+/* Table overrides for Dark Mode */
+.ck-content .table {
+  background-color: transparent !important;
+}
+
+.ck-content .table table {
+  background-color: transparent !important;
+}
+
+.ck-content .table table td,
+.ck-content .table table th {
+  border-color: hsl(0, 0%, 40%) !important;
+  color: var(--ck-color-text) !important;
+  background-color: transparent !important;
+}
+
 .ck-accessibility-help-dialog__content > section > dl > dd > kbd {
   color: hsl(0, 0%, 20%) !important;
 }

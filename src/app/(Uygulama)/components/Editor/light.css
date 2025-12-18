@@ -55,9 +55,7 @@
 
   /* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 
-  --ck-color-split-button-hover-background: var(
-    --ck-color-button-default-hover-background
-  );
+  --ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);
   --ck-color-split-button-hover-border: var(--ck-custom-foreground);
 
   /* -- Overrides the default .ck-input class colors. ----------------------------------------- */
@@ -114,4 +112,15 @@
 
 .ck-content {
   background-color: hsl(0, 0%, 100%) !important;
+}
+
+/* Table overrides for Light Mode */
+.ck-content .table table td,
+.ck-content .table table th {
+  border-color: hsl(0, 0%, 80%) !important;
+}
+
+.ck-content .table table th {
+  background-color: #0d47a1 !important;
+  color: #ffffff !important;
 }

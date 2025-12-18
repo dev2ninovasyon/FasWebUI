@@ -1,7 +1,8 @@
 ﻿import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+import dynamic from "next/dynamic";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 import { Box, Typography } from "@mui/material";
 
 const BCrumb = [
@@ -15,8 +16,10 @@ const Page: React.FC = () => {
         <PageContainer title="6.5 Görüş Farklılıklarının Çözüme Kavuşturulması" description="Görüş Farklılıklarının Çözüme Kavuşturulması">
             <Breadcrumb title="6.5 Görüş Farklılıklarının Çözüme Kavuşturulması" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-
-                <KysCalismaKagidi formKodu="KysGorusFarkliliklarininCozumu" alanAdi="6.5 Görüş Farklılıklarının Çözüme Kavuşturulması" />
+                <KysEditor
+                    formKodu="KysGorusFarkliliklarininCozumu"
+                    alanAdi="6.5 Görüş Farklılıklarının Çözüme Kavuşturulması"
+                />
             </Box>
         </PageContainer>
     );

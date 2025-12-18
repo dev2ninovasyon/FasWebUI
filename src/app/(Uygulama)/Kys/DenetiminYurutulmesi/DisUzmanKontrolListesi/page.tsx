@@ -1,7 +1,8 @@
 ﻿import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+import dynamic from "next/dynamic";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 import { Box, Typography } from "@mui/material";
 
 const BCrumb = [
@@ -15,8 +16,10 @@ const Page: React.FC = () => {
         <PageContainer title="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" description="Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi">
             <Breadcrumb title="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-
-                <KysCalismaKagidi formKodu="KysDisUzmanKontrolListesi" alanAdi="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" />
+                <KysEditor
+                    formKodu="KysDisUzmanKontrolListesi"
+                    alanAdi="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi"
+                />
             </Box>
         </PageContainer>
     );

@@ -118,7 +118,7 @@ export default function LoginPageClient() {
                             }}
                         >
                             {/* Logo & Brand */}
-                            <Box display="flex" alignItems="center" justifyContent="center" mb={5}>
+                            <Box display="flex" alignItems="center" justifyContent="flex-start" mb={5}>
                                 <Logo />
                             </Box>
 
