@@ -17,7 +17,7 @@ const Page: React.FC = () => {
             description="Bilgi ve İletişim Politikası Beyanı (8.1)"
         >
             <Breadcrumb title="Bilgi ve İletişim Politikası Beyanı (8.1)" items={BCrumb} />
-            <KysCalismaKagidi formKodu="BilgiVeIletisimPolitikaBeyani" alanAdi="Bilgi ve İletişim Politikası Beyanı (8.1)" />
+            <KysCalismaKagidi formKodu="KysBilgiVeIletisimPolitikasi" alanAdi="Bilgi ve İletişim Politikası Beyanı (8.1)" />
         </PageContainer>
     );
 };

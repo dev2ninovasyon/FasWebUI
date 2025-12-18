@@ -3,7 +3,8 @@ import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Typography, Box } from "@mui/material";
-import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+import dynamic from "next/dynamic";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 
 const BCrumb = [
@@ -17,8 +18,10 @@ const Page: React.FC = () => {
         <PageContainer title="7.7 Eğitim ve Gelişim Kayıtları" description="Eğitim ve Gelişim Kayıtları">
             <Breadcrumb title="7.7 Eğitim ve Gelişim Kayıtları" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-
-                <KysCalismaKagidi formKodu="KysEgitimVeGelisimKayitlari" alanAdi="7.7 Eğitim ve Gelişim Kayıtları" />
+                <KysEditor
+                    formKodu="KysEgitimVeGelisimKayitlari"
+                    alanAdi="7.7 Eğitim ve Gelişim Kayıtları"
+                />
             </Box>
         </PageContainer>
     );

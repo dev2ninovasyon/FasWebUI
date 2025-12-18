@@ -56,6 +56,7 @@
   /* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 
   --ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);
+  --ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);
   --ck-color-split-button-hover-border: var(--ck-custom-foreground);
 
   /* -- Overrides the default .ck-input class colors. ----------------------------------------- */

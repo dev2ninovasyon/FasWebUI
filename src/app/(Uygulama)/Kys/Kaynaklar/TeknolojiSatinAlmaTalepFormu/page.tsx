@@ -3,7 +3,8 @@ import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Typography, Box } from "@mui/material";
-import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+import dynamic from "next/dynamic";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 
 const BCrumb = [
@@ -18,7 +19,7 @@ const Page: React.FC = () => {
             <Breadcrumb title="7.8 Teknoloji Satın Alma Talep Formu" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
 
-                <KysCalismaKagidi formKodu="KysTeknolojiSatinAlmaTalepFormu" alanAdi="7.8 Teknoloji Satın Alma Talep Formu" />
+                <KysEditor formKodu="KysTeknolojiSatinAlmaTalepFormu" alanAdi="7.8 Teknoloji Satın Alma Talep Formu" />
             </Box>
         </PageContainer>
     );

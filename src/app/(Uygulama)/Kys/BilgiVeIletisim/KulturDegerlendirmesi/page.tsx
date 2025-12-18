@@ -1,7 +1,8 @@
-﻿import React from "react";
+﻿import dynamic from "next/dynamic";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
+import { Box } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
@@ -12,11 +13,16 @@ const BCrumb = [
 const Page: React.FC = () => {
     return (
         <PageContainer
-            title="Kültür Değerlendirmesi – Bilgi ve İletişim (3.6)"
-            description="Kültür Değerlendirmesi – Bilgi ve İletişim (3.6)"
+            title="8.2 Kültür Değerlendirmesi – Kalite"
+            description="8.2 Kültür Değerlendirmesi – Kalite"
         >
-            <Breadcrumb title="Kültür Değerlendirmesi – Bilgi ve İletişim (3.6)" items={BCrumb} />
-            <KysCalismaKagidi formKodu="BilgiVeIletisimKulturDegerlendirmesi" alanAdi="8.2 Kültür Değerlendirmesi – Bilgi ve İletişim (3.6)" />
+            <Breadcrumb title="8.2 Kültür Değerlendirmesi – Kalite" items={BCrumb} />
+            <Box sx={{ mt: 3 }}>
+                <KysEditor
+                    formKodu="KysBilgiVeIletisimKulturDegerlendirmesi"
+                    alanAdi="8.2 Kültür Değerlendirmesi – Kalite"
+                />
+            </Box>
         </PageContainer>
     );
 };

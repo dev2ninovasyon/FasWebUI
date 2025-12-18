@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
+import KysCalismaKagidiUcSutunlu from "@/app/(Uygulama)/components/Kys/KysCalismaKagidiUcSutunlu";
 import { Box, Typography } from "@mui/material";
 
 const BCrumb = [
@@ -27,8 +27,13 @@ const Page: React.FC = () => {
         >
             <Breadcrumb title="6.3 Uzman Çalışmalarının Kullanılması" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
-
-                <KysCalismaKagidi formKodu="KysUzmanCalismalarininKullanilmasi" alanAdi="6.3 Uzman Çalışmalarının Kullanılması" />
+                <KysCalismaKagidiUcSutunlu
+                    formKodu="KysUzmanCalismalarininKullanilmasi"
+                    alanAdi="6.3 Uzman Çalışmalarının Kullanılması"
+                    baslikKonu="Konu"
+                    baslikYorum="Ad"
+                    baslikCozum="İletişim ayrıntıları"
+                />
             </Box>
         </PageContainer>
     );
