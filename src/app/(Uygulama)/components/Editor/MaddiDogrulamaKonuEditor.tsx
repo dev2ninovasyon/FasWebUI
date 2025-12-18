@@ -62,6 +62,8 @@ import translations from "ckeditor5/translations/tr.js";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import "ckeditor5/ckeditor5.css";
+import "./custom.css";
+import "./light.css";
 
 interface Veri {
   id: number;
@@ -86,16 +88,6 @@ const MaddiDogrulamaKonuEditor: React.FC<MaddiDogrulamaKonuEditorProps> = ({
   const [selectedId, setSelectedId] = useState(0);
   const [editorData, setEditorData] = useState(konu); // Track editor data
 
-  useEffect(() => {
-    const loadStyles = async () => {
-      if (customizer.activeMode === "dark") {
-        await import("./custom.css");
-      } else {
-        await import("./light.css");
-      }
-    };
-    loadStyles();
-  }, [customizer.activeMode]);
 
   const handleChange = (event: any, editor: any) => {
     const data = editor.getData();
@@ -251,7 +243,7 @@ const MaddiDogrulamaKonuEditor: React.FC<MaddiDogrulamaKonuEditorProps> = ({
           : {}
       }
     >
-      <Box sx={{ width: "100%", margin: "auto" }}>
+      <Box sx={{ width: "100%", margin: "auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
         <CKEditor
           editor={ClassicEditor}
           config={editorConfig}

@@ -1,4 +1,4 @@
-:root {
+.ck-editor-light {
   /* Overrides the border radius setting in the theme. */
   --ck-border-radius: 4px;
 
@@ -55,9 +55,7 @@
 
   /* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 
-  --ck-color-split-button-hover-background: var(
-    --ck-color-button-default-hover-background
-  );
+  --ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);
   --ck-color-split-button-hover-border: var(--ck-custom-foreground);
 
   /* -- Overrides the default .ck-input class colors. ----------------------------------------- */
@@ -112,6 +110,6 @@
   --ck-color-link-default: hsl(190, 100%, 45%);
 }
 
-.ck-content {
+.ck-editor-light .ck-content {
   background-color: hsl(0, 0%, 100%) !important;
 }
