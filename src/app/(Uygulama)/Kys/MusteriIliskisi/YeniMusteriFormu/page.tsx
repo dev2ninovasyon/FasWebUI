@@ -3,7 +3,8 @@ import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box } from "@mui/material";
-import KysEditor from "@/app/(Uygulama)/components/Kys/KysEditor";
+import dynamic from "next/dynamic";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
