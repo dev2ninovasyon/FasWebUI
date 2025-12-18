@@ -41,9 +41,6 @@ interface CalismaKagidiProps {
 const fmt = (n: any) =>
     Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-// Colors from reference image approx
-const HEADER_GRAY = "#F1F2F4"; // Light gray for column headers
-const ZEBRA_ROW = "#F9FAFB";
 
 function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -64,6 +61,11 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
+
+    // Dynamic colors based on theme mode
+    const HEADER_GRAY = theme.palette.mode === 'dark' ? theme.palette.grey[800] : "#F1F2F4";
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.action.hover : "#F9FAFB";
+    const BG_PAPER = theme.palette.background.paper;
 
     const [veriler, setVeriler] = useState<HesapTestRow[]>([]);
     const [savingRowId, setSavingRowId] = useState<number | null>(null);
@@ -235,7 +237,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
         const tYuzde = tOnceki !== 0 ? ((tCari - tOnceki) / tOnceki) * 100 : 0;
 
         return (
-            <TableRow sx={{ backgroundColor: "white" }}>
+            <TableRow sx={{ backgroundColor: BG_PAPER }}>
                 <TableCell colSpan={2} sx={{ fontWeight: 800 }}>{label}</TableCell>
                 <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tOnceki)}</TableCell>
                 <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tCari)}</TableCell>
@@ -280,7 +282,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                 </TableRow>
                             )}
                             {anaHesaplar.map((row, idx) => (
-                                <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? "white" : ZEBRA_ROW }}>
+                                <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
                                     <TableCell>{row.kebirKodu}</TableCell>
                                     <TableCell>{row.hesapAdi}</TableCell>
                                     <TableCell align="right">{fmt(row.oncekiDonemBakiye)}</TableCell>
@@ -291,7 +293,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                 </TableRow>
                             ))}
                             {/* Grand Total Row */}
-                            <TableRow sx={{ backgroundColor: "white", borderTop: "2px solid #eee" }}>
+                            <TableRow sx={{ backgroundColor: BG_PAPER, borderTop: `2px solid ${theme.palette.divider}` }}>
                                 <TableCell colSpan={2} sx={{ fontWeight: 800 }}>Toplam</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tOnceki)}</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tCari)}</TableCell>
@@ -340,7 +342,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                         disabled={savingKebir === kebirKodu}
                                         sx={{
                                             minWidth: 100, // Reduced from 140
-                                            bgcolor: "white",
+                                            bgcolor: BG_PAPER,
                                             "& .MuiOutlinedInput-notchedOutline": { borderColor: "transparent" }
                                         }}
                                         displayEmpty
@@ -356,7 +358,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                         </TableHead>
                         <TableBody>
                             {rows.map((row, idx) => (
-                                <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? "white" : ZEBRA_ROW }}>
+                                <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
                                     <TableCell>{row.detayKodu}</TableCell>
                                     <TableCell>{row.hesapAdi} {row.paraBirimi ? `(${row.paraBirimi})` : ""}</TableCell>
                                     <TableCell align="right">{fmt(row.oncekiDonemBakiye)}</TableCell>
@@ -370,7 +372,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                             size="small"
                                             fullWidth
                                             disabled={savingRowId === row.id}
-                                            sx={{ minWidth: 100, bgcolor: "white" }} // Reduced from 130
+                                            sx={{ minWidth: 100, bgcolor: BG_PAPER }} // Reduced from 130
                                         >
                                             <MenuItem value="0">Önemlilik Seçiniz</MenuItem>
                                             <MenuItem value="1">Önemsiz</MenuItem>
