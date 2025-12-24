@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
-import HareketsizTicariAlacaklar from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HareketsizTicariAlacaklar";
+import HareketsizStoklar from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HareketsizStoklar";
 
 const Page = () => {
     const user = useSelector((state: AppState) => state.userReducer);
@@ -40,7 +40,7 @@ const Page = () => {
         },
         {
             to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-            title: "Hareketsiz Ticari Alacaklar Çalışması",
+            title: "Hareketsiz Stoklar Çalışması",
         },
     ];
 
@@ -119,17 +119,17 @@ const Page = () => {
 
     return (
         <PageContainer
-            title={`${dip} | Hareketsiz Ticari Alacaklar Çalışması`}
-            description="Hareketsiz Ticari Alacaklar Çalışması"
+            title={`${dip} | Hareketsiz Stoklar Çalışması`}
+            description="Hareketsiz Stoklar Çalışması"
         >
             <Breadcrumb
-                title={"Hareketsiz Ticari Alacaklar Çalışması"}
+                title={"Hareketsiz Stoklar Çalışması"}
                 subtitle={`${dip}`}
                 items={BCrumb}
             ></Breadcrumb>
 
             {dipnotNo != "" ? (
-                <HareketsizTicariAlacaklar
+                <HareketsizStoklar
                     controller="DonusumKayitlariKontrol"
                     dipnotAdi={parentName}
                     dipnotNo={dipnotNo}

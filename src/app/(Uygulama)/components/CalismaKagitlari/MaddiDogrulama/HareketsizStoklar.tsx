@@ -23,10 +23,10 @@ import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 
 import {
-    getHareketsizTicariAlacaklarByDenetlenen,
-    updateHareketsizTicariAlacaklarRow,
-    type HareketsizTicariAlacaklarRow,
-} from "../../../../../api/CalismaKagitlari/HareketsizTicariAlacaklar";
+    getHareketsizStoklarByDenetlenen,
+    updateHareketsizStoklarRow,
+    type HareketsizStoklarRow,
+} from "../../../../../api/CalismaKagitlari/HareketsizStoklar";
 
 interface Props {
     controller: string;
@@ -39,7 +39,7 @@ interface Props {
 const fmt = (n: any) =>
     Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/\./g, " ").replace(/,/g, ".").replace(/ /g, ".");
 
-const HareketsizTicariAlacaklar: React.FC<Props> = ({
+const HareketsizStoklar: React.FC<Props> = ({
     controller,
     dipnotAdi,
     dipnotNo,
@@ -53,9 +53,9 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
     const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.action.hover : "#F9FAFB";
     const BG_PAPER = theme.palette.background.paper;
 
-    const [veriler, setVeriler] = useState<HareketsizTicariAlacaklarRow[]>([]);
+    const [veriler, setVeriler] = useState<HareketsizStoklarRow[]>([]);
     const [savingRowId, setSavingRowId] = useState<number | null>(null);
-    const [editValues, setEditValues] = useState<Record<number, Partial<HareketsizTicariAlacaklarRow>>>({});
+    const [editValues, setEditValues] = useState<Record<number, Partial<HareketsizStoklarRow>>>({});
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -74,7 +74,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
 
     const fetchData = async () => {
         try {
-            const res = await getHareketsizTicariAlacaklarByDenetlenen(
+            const res = await getHareketsizStoklarByDenetlenen(
                 controller,
                 user.token || "",
                 user.denetciId || 0,
@@ -98,7 +98,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleInputChange = (id: number, field: keyof HareketsizTicariAlacaklarRow, val: string) => {
+    const handleInputChange = (id: number, field: keyof HareketsizStoklarRow, val: string) => {
         setEditValues(prev => ({
             ...prev,
             [id]: {
@@ -108,7 +108,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
         }));
     };
 
-    const handleSaveRow = async (row: HareketsizTicariAlacaklarRow) => {
+    const handleSaveRow = async (row: HareketsizStoklarRow) => {
         const changes = editValues[row.id];
         if (!changes) return;
 
@@ -116,6 +116,11 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
         const parseAmount = (val: any) => {
             if (val === undefined || val === null || val === "") return 0;
             if (typeof val === "number") return val;
+            // Remove all dots and then treat the last part as decimal? 
+            // Or just remove all dots except the last one?
+            // Given the requirement 152.01.001 style, it seems they want dots everywhere.
+            // But for numbers, it's usually 1.234,56 -> 1.234.56
+            // Let's assume the last dot is the decimal separator.
             const parts = String(val).split(".");
             if (parts.length > 1) {
                 const decimal = parts.pop();
@@ -125,7 +130,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
             return parseFloat(String(val));
         };
 
-        const payload: Partial<HareketsizTicariAlacaklarRow> = { ...changes };
+        const payload: Partial<HareketsizStoklarRow> = { ...changes };
         if (changes.borcTutari !== undefined) payload.borcTutari = parseAmount(changes.borcTutari);
         if (changes.alacakTutari !== undefined) payload.alacakTutari = parseAmount(changes.alacakTutari);
         if (changes.netBakiye !== undefined) payload.netBakiye = parseAmount(changes.netBakiye);
@@ -135,7 +140,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
             const updatedRow = { ...row, ...payload };
             setVeriler(prev => prev.map(x => x.id === row.id ? updatedRow : x));
 
-            await updateHareketsizTicariAlacaklarRow(controller, user.token || "", row.id, payload);
+            await updateHareketsizStoklarRow(controller, user.token || "", row.id, payload);
             showSnackbar("Kayıt başarıyla güncellendi.", "success");
 
             setEditValues(prev => {
@@ -157,7 +162,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                 <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
                     <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1, mb: 2 }}>
                         <Typography variant="subtitle1" fontWeight={700} color="white">
-                            Hareketsiz Ticari Alacaklar
+                            Hareketsiz Stoklar
                         </Typography>
                     </Box>
                     <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
@@ -264,4 +269,4 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
     );
 };
 
-export default HareketsizTicariAlacaklar;
+export default HareketsizStoklar;

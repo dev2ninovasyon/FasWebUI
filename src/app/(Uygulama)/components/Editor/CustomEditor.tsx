@@ -62,6 +62,8 @@ import {
 } from "ckeditor5";
 import translations from "ckeditor5/translations/tr.js";
 import "ckeditor5/ckeditor5.css";
+import "./custom.css";
+import "./light.css";
 
 interface Veri {
   id: number;
@@ -89,16 +91,6 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
   const [editorData, setEditorData] = useState("");
   const [kayitMesaji, setKayitMesaji] = useState<string | null>(null); // State for save message
 
-  useEffect(() => {
-    const loadStyles = async () => {
-      if (customizer.activeMode === "dark") {
-        await import("./custom.css");
-      } else {
-        await import("./light.css");
-      }
-    };
-    loadStyles();
-  }, [customizer.activeMode]);
 
   const handleUpdate = async () => {
     const updatedData = { id: veriler[0].id, metin: editorData };
@@ -363,7 +355,7 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
           : {}
       }
     >
-      <Box sx={{ width: "95%", margin: "auto" }}>
+      <Box sx={{ width: "95%", margin: "auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
         <CKEditor
           editor={ClassicEditor}
           config={editorConfig}

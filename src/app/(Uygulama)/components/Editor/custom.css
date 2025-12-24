@@ -1,4 +1,4 @@
-:root {
+.ck-editor-dark {
   /* Overrides the border radius setting in the theme. */
   --ck-border-radius: 4px;
 
@@ -55,9 +55,7 @@
 
   /* -- Overrides the default .ck-splitbutton class colors. ----------------------------------- */
 
-  --ck-color-split-button-hover-background: var(
-    --ck-color-button-default-hover-background
-  );
+  --ck-color-split-button-hover-background: var(--ck-color-button-default-hover-background);
   --ck-color-split-button-hover-border: var(--ck-custom-foreground);
 
   /* -- Overrides the default .ck-input class colors. ----------------------------------------- */
@@ -111,26 +109,11 @@
 
   --ck-color-link-default: hsl(190, 100%, 75%);
 }
-.ck-content {
+
+.ck-editor-dark .ck-content {
   background-color: hsl(0, 0%, 20%) !important;
 }
 
-/* Table overrides for Dark Mode */
-.ck-content .table {
-  background-color: transparent !important;
-}
-
-.ck-content .table table {
-  background-color: transparent !important;
-}
-
-.ck-content .table table td,
-.ck-content .table table th {
-  border-color: hsl(0, 0%, 40%) !important;
-  color: var(--ck-color-text) !important;
-  background-color: transparent !important;
-}
-
-.ck-accessibility-help-dialog__content > section > dl > dd > kbd {
+.ck-editor-dark .ck-accessibility-help-dialog__content>section>dl>dd>kbd {
   color: hsl(0, 0%, 20%) !important;
 }

@@ -5,7 +5,7 @@ export interface Denetlenen {
     unvan: string;
 }
 
-export type HareketsizTicariAlacaklarRow = {
+export type HareketsizStoklarRow = {
     id: number;
     kebirKodu: string;
     detayKodu: string;
@@ -26,7 +26,7 @@ const withAuth = (token: string) => ({
     Authorization: `Bearer ${token}`,
 });
 
-export const getHareketsizTicariAlacaklarByDenetlenen = async (
+export const getHareketsizStoklarByDenetlenen = async (
     controller: string,
     token: string,
     denetciId: number,
@@ -34,7 +34,7 @@ export const getHareketsizTicariAlacaklarByDenetlenen = async (
     yil: number
 ) => {
     const url =
-        `/${controller}/HareketsizTicariAlacaklar` +
+        `/${controller}/HareketsizStoklar` +
         `?denetciId=${denetciId}` +
         `&yil=${yil}` +
         `&denetlenenId=${denetlenenId}`;
@@ -54,11 +54,11 @@ export const getHareketsizTicariAlacaklarByDenetlenen = async (
     return res.json();
 };
 
-export const updateHareketsizTicariAlacaklarRow = async (
+export const updateHareketsizStoklarRow = async (
     controller: string,
     token: string,
     id: number,
-    payload: Partial<HareketsizTicariAlacaklarRow>
+    payload: Partial<HareketsizStoklarRow>
 ) => {
     const res = await apiFetch(`/${controller}/Update?id=${id}`, {
         method: "PUT",

@@ -65,6 +65,8 @@ import translations from "ckeditor5/translations/tr.js";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import "ckeditor5/ckeditor5.css";
+import "./custom.css";
+import "./light.css";
 
 interface YorumEditorProps {
   denetlenenId: number;
@@ -80,16 +82,6 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
   const [editorData, setEditorData] = useState("");
   const [kayitMesaji, setKayitMesaji] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadStyles = async () => {
-      if (customizer.activeMode === "dark") {
-        await import("./custom.css");
-      } else {
-        await import("./light.css");
-      }
-    };
-    loadStyles();
-  }, [customizer.activeMode]);
 
   const handleUpdate = async (data: string) => {
     try {
@@ -320,7 +312,7 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
                 overflowWrap: "break-word",
               }}
             >
-              <Box sx={{ width: "100%", margin: "0 auto" }}>
+              <Box sx={{ width: "100%", margin: "0 auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
                 <CKEditor
                   editor={ClassicEditor}
                   config={editorConfig}
