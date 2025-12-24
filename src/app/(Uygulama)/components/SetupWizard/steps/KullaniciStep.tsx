@@ -168,8 +168,11 @@ export default function KullaniciStep({
             <Typography variant="h5" gutterBottom>
                 Kullanıcı Ekleme
             </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-                Sisteme giriş yapacak kullanıcıları ekleyin. En az bir kullanıcı eklemeniz gerekmektedir.
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                Sisteme giriş yapacak kullanıcıları ekleyin. En az bir kullanıcı eklemeniz gerekmektedir. Burada eklediğiniz kullanıcıları bir sonraki adımlarda denetim kadrosunda görevlendirebilirsiniz.
+            </Typography>
+            <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 3, fontStyle: "italic" }}>
+                * Bu kullanıcıları daha sonra 'Müşteri İşlemleri {">"} Kullanıcı İşlemleri' menüsünden düzenleyebilir veya silebilirsiniz.
             </Typography>
 
             {!showForm ? (
@@ -198,7 +201,7 @@ export default function KullaniciStep({
                                     Eklenen Kullanıcılar ({kullanicilar.length})
                                 </Typography>
                             </Box>
-                            <TableContainer sx={{ maxHeight: '20vh', overflowX: 'auto' }}>
+                            <TableContainer sx={{ maxHeight: '40vh', overflowX: 'auto' }}>
                                 <Table aria-label="simple table" size="small">
                                     <TableHead>
                                         <TableRow>
@@ -336,11 +339,11 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
     const [loading, setLoading] = useState(false);
 
     // Error states
-    const [personelAdiError, setPersonelAdiError] = useState(false);
-    const [emailError, setEmailError] = useState(false);
-    const [sifreError, setSifreError] = useState(false);
-    const [telError, setTelError] = useState(false);
-    const [gsmError, setGsmError] = useState(false);
+    const [personelAdiError, setPersonelAdiError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [sifreError, setSifreError] = useState("");
+    const [telError, setTelError] = useState("");
+    const [gsmError, setGsmError] = useState("");
 
     // Update form when initialData changes
     useEffect(() => {
@@ -362,37 +365,37 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
             setEmail("");
         }
         setSifre("");
-        setPersonelAdiError(false);
-        setEmailError(false);
-        setSifreError(false);
-        setTelError(false);
-        setGsmError(false);
+        setPersonelAdiError("");
+        setEmailError("");
+        setSifreError("");
+        setTelError("");
+        setGsmError("");
     }, [initialData]);
 
     const handleSave = async () => {
         // Reset errors
-        setPersonelAdiError(false);
-        setEmailError(false);
-        setSifreError(false);
-        setTelError(false);
-        setGsmError(false);
+        setPersonelAdiError("");
+        setEmailError("");
+        setSifreError("");
+        setTelError("");
+        setGsmError("");
 
         // Validate required fields
         const missingFields: string[] = [];
         let firstErrorField: string | null = null;
 
         if (!personelAdi) {
-            setPersonelAdiError(true);
+            setPersonelAdiError("Personel Adı zorunludur.");
             missingFields.push("Personel Adı");
             if (!firstErrorField) firstErrorField = "personelAdi";
         }
         if (!email) {
-            setEmailError(true);
+            setEmailError("Email zorunludur.");
             missingFields.push("Email");
             if (!firstErrorField) firstErrorField = "email";
         }
         if (!initialData && !sifre) {
-            setSifreError(true);
+            setSifreError("Şifre zorunludur.");
             missingFields.push("Şifre");
             if (!firstErrorField) firstErrorField = "sifre";
         }
@@ -409,7 +412,7 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (email && !emailRegex.test(email)) {
-            setEmailError(true);
+            setEmailError("Geçerli bir email girin.");
             onError("Lütfen geçerli bir email adresi girin");
             const element = document.getElementById("email");
             element?.focus();
@@ -419,7 +422,7 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
         // Validate tel format (11 digits, only digits count)
         const telDigits = tel.replace(/\D/g, "");
         if (tel && telDigits.length !== 11) {
-            setTelError(true);
+            setTelError("Tel 11 haneli olmalıdır.");
             onError("Telefon numarası 11 haneli olmalıdır");
             const element = document.getElementById("tel");
             element?.focus();
@@ -429,7 +432,7 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
         // Validate gsm format (11 digits, only digits count)
         const gsmDigits = gsm.replace(/\D/g, "");
         if (gsm && gsmDigits.length !== 11) {
-            setGsmError(true);
+            setGsmError("Gsm 11 haneli olmalıdır.");
             onError("GSM numarası 11 haneli olmalıdır");
             const element = document.getElementById("gsm");
             element?.focus();
@@ -482,12 +485,16 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                         id="personelAdi"
                         fullWidth
                         value={personelAdi}
+                        placeholder={personelAdiError || ""}
                         onChange={(e: any) => {
                             setPersonelAdi(e.target.value);
-                            if (e.target.value) setPersonelAdiError(false);
+                            if (e.target.value) setPersonelAdiError("");
+                        }}
+                        onFocus={() => {
+                            if (personelAdiError) setPersonelAdiError("");
                         }}
                         size="small"
-                        error={personelAdiError}
+                        error={!!personelAdiError}
                     />
                 </Grid>
 
@@ -510,12 +517,16 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                         id="email"
                         fullWidth
                         value={email}
+                        placeholder={emailError || ""}
                         onChange={(e: any) => {
                             setEmail(e.target.value);
-                            if (e.target.value) setEmailError(false);
+                            if (e.target.value) setEmailError("");
+                        }}
+                        onFocus={() => {
+                            if (emailError) setEmailError("");
                         }}
                         size="small"
-                        error={emailError}
+                        error={!!emailError}
                     />
                 </Grid>
 
@@ -527,12 +538,16 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                         id="tel"
                         fullWidth
                         value={tel}
+                        placeholder={telError || ""}
                         onChange={(e: any) => {
                             setTel(e.target.value);
-                            if (e.target.value) setTelError(false);
+                            if (e.target.value) setTelError("");
+                        }}
+                        onFocus={() => {
+                            if (telError) setTelError("");
                         }}
                         size="small"
-                        error={telError}
+                        error={!!telError}
                     />
                 </Grid>
 
@@ -544,12 +559,16 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                         id="gsm"
                         fullWidth
                         value={gsm}
+                        placeholder={gsmError || ""}
                         onChange={(e: any) => {
                             setGsm(e.target.value);
-                            if (e.target.value) setGsmError(false);
+                            if (e.target.value) setGsmError("");
+                        }}
+                        onFocus={() => {
+                            if (gsmError) setGsmError("");
                         }}
                         size="small"
-                        error={gsmError}
+                        error={!!gsmError}
                     />
                 </Grid>
 
@@ -564,12 +583,16 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                                 type={showPassword ? "text" : "password"}
                                 fullWidth
                                 value={sifre}
+                                placeholder={sifreError || ""}
                                 onChange={(e: any) => {
                                     setSifre(e.target.value);
-                                    if (e.target.value) setSifreError(false);
+                                    if (e.target.value) setSifreError("");
+                                }}
+                                onFocus={() => {
+                                    if (sifreError) setSifreError("");
                                 }}
                                 size="small"
-                                error={sifreError}
+                                error={!!sifreError}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">

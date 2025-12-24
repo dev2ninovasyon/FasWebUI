@@ -22,7 +22,9 @@ export const getBaglantiBilgileri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Bağlantı Bilgileri getirilemedi");
+      const errorData = await response.json().catch(() => null);
+      const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
+      console.error(errorMessage);
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
@@ -38,7 +40,7 @@ export const getBaglantiBilgileriByTip = async (
   tip: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/BaglantiBilgileri/BaglantiBilgileriByTip?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}`,
       {
         method: "GET",
@@ -51,7 +53,9 @@ export const getBaglantiBilgileriByTip = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Bağlantı Bilgileri getirilemedi");
+      const errorData = await response.json().catch(() => null);
+      const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
+      console.error(errorMessage);
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
@@ -67,7 +71,7 @@ export const getBaglantiBilgileriByLink = async (
   link: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/BaglantiBilgileri/BaglantiBilgileriByLink?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&link=${link}`,
       {
         method: "GET",
@@ -80,7 +84,9 @@ export const getBaglantiBilgileriByLink = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Bağlantı Bilgileri getirilemedi");
+      const errorData = await response.json().catch(() => null);
+      const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
+      console.error(errorMessage);
     }
   } catch (error) {
     console.error("Bir hata oluştu:", error);
@@ -96,7 +102,7 @@ export const createBaglantiBilgileri = async (
   tip: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}`,
       {
         method: "POST",
@@ -126,7 +132,7 @@ export const deleteBaglantiBilgileri = async (
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}`,
       {
         method: "DELETE",
@@ -157,7 +163,7 @@ export const deleteBaglantiBilgileriById = async (
   id: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/BaglantiBilgileri/BaglantiBilgileriById?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&id=${id}`,
       {
         method: "DELETE",
@@ -181,7 +187,7 @@ export const deleteBaglantiBilgileriById = async (
 
 export const getBildirimler = async (token: string, denetciId: number) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/BaglantiBilgileri/Bildirimler?denetciId=${denetciId}`,
       {
         method: "GET",
@@ -206,7 +212,7 @@ export const updateBildirimlerOkundumu = async (
   ids: number[]
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/BaglantiBilgileri/BildirimlerOkundumu`,
       {
         method: "PUT",

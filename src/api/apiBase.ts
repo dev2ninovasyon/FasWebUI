@@ -1,12 +1,11 @@
-// src/api/apiBase.ts
 //export const url = "https://betaapi.fasmart.app/api";
 export const url = "https://localhost:5001/api";
 
 export async function apiFetch(
   path: string,
-  options: RequestInit = {}
+  options: RequestInit & { timeout?: number } = {}
 ) {
-  const { headers, ...rest } = options;
+  const { headers, timeout = 30000, ...rest } = options;
 
   const clientUrl =
     typeof window !== "undefined"
@@ -35,8 +34,23 @@ export async function apiFetch(
   };
 
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return fetch(`${url}${normalizedPath}`, {
-    ...rest,
-    headers: mergedHeaders,
-  });
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout); // Custom timeout veya varsayılan 30 saniye
+
+  try {
+    const response = await fetch(`${url}${normalizedPath}`, {
+      ...rest,
+      headers: mergedHeaders,
+      signal: controller.signal,
+    });
+    return response;
+  } catch (error: any) {
+    if (error.name === 'AbortError') {
+      console.warn(`Request to ${path} was aborted (timeout or cancelled).`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }

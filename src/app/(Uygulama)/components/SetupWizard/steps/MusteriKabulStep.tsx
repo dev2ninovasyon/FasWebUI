@@ -1,10 +1,35 @@
 "use client";
 
-import { Box, Button, Grid, Typography, Paper, FormControl, RadioGroup, FormControlLabel, Radio, Rating, Divider } from "@mui/material";
-import { useState } from "react";
-import CustomFormLabel from "../../Forms/ThemeElements/CustomFormLabel";
-import CustomTextField from "../../Forms/ThemeElements/CustomTextField";
-import { IconArrowLeft, IconCheck } from "@tabler/icons-react";
+import {
+    Box,
+    Button,
+    Grid,
+    MenuItem,
+    Tooltip,
+    Fab,
+    useTheme,
+    useMediaQuery,
+    CircularProgress,
+    Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "@/store/hooks";
+import { AppState } from "@/store/store";
+import {
+    getDenetlenenById,
+    updateDenetlenenDenetimTuru,
+    TeklifHesapla,
+} from "@/api/Musteri/MusteriIslemleri";
+import { getDenetciOdemeBilgileri } from "@/api/Denetci/Denetci";
+import {
+    setBobimi,
+    setDenetimTuru,
+    setEnflasyonmu,
+    setTfrsmi,
+} from "@/store/user/UserSlice";
+import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
+import { enqueueSnackbar } from "notistack";
+import { IconExclamationMark, IconArrowLeft } from "@tabler/icons-react";
 
 interface MusteriKabulStepProps {
     data?: any;
@@ -21,169 +46,256 @@ export default function MusteriKabulStep({
     onComplete,
     onBack,
 }: MusteriKabulStepProps) {
-    const [riskDegerlendirmesi, setRiskDegerlendirmesi] = useState(data?.riskDegerlendirmesi || 3);
-    const [bagimsizlikDurumu, setBagimsizlikDurumu] = useState(data?.bagimsizlikDurumu || "evet");
-    const [kabulKarari, setKabulKarari] = useState(data?.kabulKarari || "kabul");
-    const [notlar, setNotlar] = useState(data?.notlar || "");
+    const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+    const user = useSelector((state: AppState) => state.userReducer);
+    const customizer = useSelector((state: AppState) => state.customizer);
+    const theme = useTheme();
+    const dispatch = useDispatch();
 
-    const handleComplete = () => {
-        if (!kabulKarari) {
-            alert("Lütfen kabul kararı verin");
+    const [tur, setTur] = useState(data?.tur || "Seçiniz");
+    const [enflasyon, setEnflasyon] = useState(data?.enflasyon || "Hayır");
+    const [yil, setYil] = useState<number>(data?.yil || new Date().getFullYear());
+
+    const [kabulEdildimi, setKabulEdildimi] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const [odemeBilgileriBobi, setOdemeBilgileriBobi] = useState(false);
+    const [odemeBilgileriTfrs, setOdemeBilgileriTfrs] = useState(false);
+    const [odemeBilgileriKumi, setOdemeBilgileriKumi] = useState(false);
+    const [odemeBilgileriEnflasyon, setOdemeBilgileriEnflasyon] = useState(false);
+
+    const currentYear = new Date().getFullYear();
+    const years = [currentYear - 1, currentYear, currentYear + 1];
+
+    const fetchData = async () => {
+        if (!sirket?.id) return;
+        try {
+            const denetlenenVerileri = await getDenetlenenById(
+                user.token || "",
+                sirket.id
+            );
+            if (denetlenenVerileri && denetlenenVerileri.denetimTuru) {
+                setKabulEdildimi(true);
+                setTur(denetlenenVerileri.denetimTuru);
+                setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
+            }
+        } catch (error) {
+            console.error("Veri çekme hatası:", error);
+        }
+    };
+
+    const fetchOdemeBilgileri = async () => {
+        try {
+            const response = await getDenetciOdemeBilgileri(
+                user.token || "",
+                user.denetciId || 0
+            );
+            if (response) {
+                setOdemeBilgileriBobi(response.bobiModulu);
+                setOdemeBilgileriTfrs(response.tfrsModulu);
+                setOdemeBilgileriKumi(response.kumiModulu);
+                setOdemeBilgileriEnflasyon(response.enflasyonModulu);
+            }
+        } catch (error) {
+            console.error("Ödeme bilgileri hatası:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+        fetchOdemeBilgileri();
+    }, [sirket?.id]);
+
+    const handleDenetimeKabulEt = async () => {
+        if (tur === "Seçiniz") {
+            enqueueSnackbar("Denetim Türü Seçiniz", { variant: "warning" });
             return;
         }
 
-        onDataChange({
-            riskDegerlendirmesi,
-            bagimsizlikDurumu,
-            kabulKarari,
-            notlar,
-        });
-        onComplete();
+        try {
+            setLoading(true);
+            const result = await updateDenetlenenDenetimTuru(
+                user.token || "",
+                sirket.id,
+                tur,
+                enflasyon
+            );
+
+            if (result === true) {
+                // Run specific logic from page.tsx
+                if (tur === "Bobi" || tur === "BobiBüyük") {
+                    await dispatch(setBobimi(true));
+                    await dispatch(setTfrsmi(false));
+                }
+                if (tur === "Tfrs" || tur === "TfrsDönemsel") {
+                    await dispatch(setBobimi(false));
+                    await dispatch(setTfrsmi(true));
+                }
+                await dispatch(setDenetimTuru(tur));
+                await dispatch(setEnflasyonmu(enflasyon === "Evet"));
+
+
+                enqueueSnackbar("Denetime Kabul Edildi", { variant: "success" });
+
+                onDataChange({ tur, enflasyon, yil });
+
+                setTimeout(() => {
+                    onComplete();
+                }, 500);
+            } else {
+                enqueueSnackbar((result as any)?.message || "Bir hata oluştu", { variant: "error" });
+            }
+        } catch (error) {
+            console.error("Kabul işlemi hatası:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2, md: 4 }, border: 1, borderColor: "divider" }}>
-            <Typography variant="h5" gutterBottom>
-                Müşteri Kabul Değerlendirmesi
+        <Box sx={{ width: "100%", p: 2 }}>
+            <Typography variant="h5" sx={{ mb: 1 }}>Müşteri Kabul</Typography>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                <strong>{sirket?.firmaAdi || "Şirket"}</strong> için denetim türü (BOBİ, TFRS vb.) ve denetim yılını belirleyin. Bu seçimler hazırlayacağınız raporların formatını belirleyecektir.
             </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 4 }}>
-                {sirket?.sirketAdi || "Şirket"} için müşteri kabul sürecini tamamlayın.
+            <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 3, fontStyle: "italic" }}>
+                * Denetim türü ve yıl tercihlerini daha sonra 'Müşteri İşlemleri {">"} Müşteri Detay' sayfasından değiştirebilirsiniz.
             </Typography>
 
-            <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
-                <Grid item xs={12}>
-                    <CustomFormLabel>
-                        Risk Değerlendirmesi *
-                    </CustomFormLabel>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        <Rating
-                            name="risk-rating"
-                            value={riskDegerlendirmesi}
-                            onChange={(event, newValue) => {
-                                setRiskDegerlendirmesi(newValue || 3);
+            <Grid container spacing={2}>
+                <Grid
+                    item
+                    xs={12}
+                    sx={{
+                        display: "flex",
+                        flexDirection: smDown ? "column" : "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 1.5,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            flexDirection: smDown ? "column" : "row",
+                            gap: 1.5,
+                            width: "100%",
+                        }}
+                    >
+                        {/* Denetim Türü */}
+                        <CustomSelect
+                            labelId="tur"
+                            id="tur"
+                            size="small"
+                            value={tur}
+                            onChange={(e: any) => setTur(e.target.value)}
+                            height={"36px"}
+                            sx={{ flexGrow: 1 }}
+                        >
+                            <MenuItem value={"Seçiniz"}>Denetim Türü: Seçiniz</MenuItem>
+                            {odemeBilgileriBobi && (
+                                <MenuItem value={"Bobi"}>Denetim Türü: Bobi</MenuItem>
+                            )}
+                            {odemeBilgileriBobi && (
+                                <MenuItem value={"BobiBüyük"}>
+                                    Denetim Türü: Bobi Büyük
+                                </MenuItem>
+                            )}
+                            {odemeBilgileriTfrs && (
+                                <MenuItem value={"Tfrs"}>Denetim Türü: Tfrs</MenuItem>
+                            )}
+                            {odemeBilgileriTfrs && (
+                                <MenuItem value={"TfrsDönemsel"}>
+                                    Denetim Türü: Tfrs Dönemsel
+                                </MenuItem>
+                            )}
+                            {odemeBilgileriKumi && (
+                                <MenuItem value={"Kumi"}>Denetim Türü: Kümi</MenuItem>
+                            )}
+                            <MenuItem value={"ÖzelDenetim"}>
+                                Denetim Türü: Özel Denetim
+                            </MenuItem>
+                        </CustomSelect>
+
+                        {/* Enflasyon Düzeltmesi */}
+                        {odemeBilgileriEnflasyon && (
+                            <CustomSelect
+                                labelId="enflasyon"
+                                id="enflasyon"
+                                size="small"
+                                value={enflasyon}
+                                onChange={(e: any) => setEnflasyon(e.target.value)}
+                                height={"36px"}
+                                sx={{ flexGrow: 1 }}
+                            >
+                                <MenuItem value={"Evet"}>
+                                    Enflasyon Düzeltmesi: Evet
+                                </MenuItem>
+                                <MenuItem value={"Hayır"}>
+                                    Enflasyon Düzeltmesi: Hayır
+                                </MenuItem>
+                            </CustomSelect>
+                        )}
+
+                        {/* Yıl Seçimi */}
+                        <CustomSelect
+                            labelId="yil"
+                            id="yil"
+                            size="small"
+                            value={yil}
+                            onChange={(e: any) => setYil(Number(e.target.value))}
+                            height={"36px"}
+                            sx={{ flexGrow: 1 }}
+                        >
+                            {years.map((y) => (
+                                <MenuItem key={y} value={y}>Denetim Yılı: {y}</MenuItem>
+                            ))}
+                        </CustomSelect>
+
+                        {/* Action Buttons */}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                                flexShrink: 0,
                             }}
-                            max={5}
-                            size="large"
-                        />
-                        <Typography variant="body2" color="textSecondary">
-                            {riskDegerlendirmesi === 1 && "Çok Düşük Risk"}
-                            {riskDegerlendirmesi === 2 && "Düşük Risk"}
-                            {riskDegerlendirmesi === 3 && "Orta Risk"}
-                            {riskDegerlendirmesi === 4 && "Yüksek Risk"}
-                            {riskDegerlendirmesi === 5 && "Çok Yüksek Risk"}
-                        </Typography>
-                    </Box>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <CustomFormLabel>
-                        Bağımsızlık Durumu *
-                    </CustomFormLabel>
-                    <FormControl fullWidth>
-                        <RadioGroup
-                            value={bagimsizlikDurumu}
-                            onChange={(e) => setBagimsizlikDurumu(e.target.value)}
                         >
-                            <FormControlLabel
-                                value="evet"
-                                control={<Radio />}
-                                label="Bağımsızlık koşulları sağlanıyor"
-                            />
-                            <FormControlLabel
-                                value="hayir"
-                                control={<Radio />}
-                                label="Bağımsızlık koşulları sağlanamıyor"
-                            />
-                            <FormControlLabel
-                                value="inceleme"
-                                control={<Radio />}
-                                label="Ek inceleme gerekiyor"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Divider />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <CustomFormLabel>
-                        Müşteri Kabul Kararı *
-                    </CustomFormLabel>
-                    <FormControl fullWidth>
-                        <RadioGroup
-                            value={kabulKarari}
-                            onChange={(e) => setKabulKarari(e.target.value)}
-                        >
-                            <FormControlLabel
-                                value="kabul"
-                                control={<Radio />}
-                                label="Kabul Et - Denetim sözleşmesi onaylandı"
-                            />
-                            <FormControlLabel
-                                value="sartliKabul"
-                                control={<Radio />}
-                                label="Şartlı Kabul - Ek koşullar ile kabul"
-                            />
-                            <FormControlLabel
-                                value="red"
-                                control={<Radio />}
-                                label="Reddet - Müşteri kabul edilemez"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                </Grid>
-
-                <Grid item xs={12}>
-                    <CustomFormLabel htmlFor="notlar">
-                        Değerlendirme Notları
-                    </CustomFormLabel>
-                    <CustomTextField
-                        id="notlar"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        value={notlar}
-                        onChange={(e: any) => setNotlar(e.target.value)}
-                        placeholder="Müşteri kabul süreci ile ilgili notlar, koşullar veya ek bilgiler..."
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Box sx={{ p: 2, bgcolor: "success.light", borderRadius: 1, mt: 2 }}>
-                        <Typography variant="body2" color="success.dark">
-                            <strong>Son Adım!</strong> Tüm kurulum adımlarını tamamladınız.
-                            "Tamamla" butonuna tıklayarak kurulumu bitirin ve programa başlayın.
-                        </Typography>
+                            {kabulEdildimi && (
+                                <Tooltip title="Bu Firma Zaten Denetime Kabul Edildi">
+                                    <Fab color="warning" size="small" sx={{ width: 36, height: 36, minHeight: 36 }}>
+                                        <IconExclamationMark width={18} height={18} />
+                                    </Fab>
+                                </Tooltip>
+                            )}
+                            <Button
+                                type="button"
+                                size="medium"
+                                disabled={loading}
+                                variant="outlined"
+                                color="primary"
+                                onClick={handleDenetimeKabulEt}
+                                sx={{ whiteSpace: "nowrap", height: "36px" }}
+                            >
+                                {loading ? <CircularProgress size={20} /> : "Denetime Kabul Et"}
+                            </Button>
+                        </Box>
                     </Box>
                 </Grid>
             </Grid>
 
-            <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: "space-between", mt: { xs: 2, sm: 3, md: 4 } }}>
+            <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-start" }}>
                 <Button
-                    variant="outlined"
+                    variant="text"
+                    color="inherit"
                     onClick={onBack}
                     startIcon={<IconArrowLeft />}
-                    sx={{ width: { xs: '100%', sm: 'auto' }, order: { xs: 2, sm: 1 } }}
+                    disabled={loading}
                 >
-                    Geri
-                </Button>
-                <Button
-                    variant="contained"
-                    color="success"
-                    onClick={handleComplete}
-                    endIcon={<IconCheck />}
-                    size="large"
-                    sx={{ width: { xs: '100%', sm: 'auto' }, order: { xs: 1, sm: 2 } }}
-                >
-                    Tamamla ve Başla
+                    Geri Dön
                 </Button>
             </Box>
-        </Paper>
+        </Box>
     );
 }

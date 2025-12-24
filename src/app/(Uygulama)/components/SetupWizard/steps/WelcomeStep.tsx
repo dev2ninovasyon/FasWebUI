@@ -52,8 +52,14 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
                         <Typography variant="h6" color="textSecondary" sx={{ mb: 3, lineHeight: 1.6, fontWeight: 400, textAlign: "left" }}>
                             Programa başlamadan önce yandaki kurulum adımlarını tamamlamanız gerekmektedir.
                         </Typography>
-                        <Typography variant="body1" color="textSecondary" sx={{ opacity: 0.8, textAlign: "left" }}>
+                        <Typography variant="body1" color="textSecondary" sx={{ opacity: 0.8, textAlign: "left", mb: 2 }}>
                             Bu adımlar, sistemi verimli bir şekilde kullanabilmeniz için gerekli temel yapılandırmaları içerir.
+                        </Typography>
+                        <Typography variant="body2" color="primary.main" sx={{ fontWeight: 500, textAlign: "left", fontStyle: "italic" }}>
+                            * Not: Kurulum sırasında yaptığınız tüm işlemleri daha sonra ilgili menülerden dilediğiniz zaman değiştirebilirsiniz.
+                        </Typography>
+                        <Typography variant="body2" color="error.main" sx={{ fontWeight: 500, textAlign: "left", mt: 1 }}>
+                            * Kurulum adımları tamamlanmadan programın diğer bölümlerine erişim sağlanamaz.
                         </Typography>
                     </Box>
                 </Grid>
@@ -69,7 +75,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
                         <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 3, color: "text.primary" }}>
                             Kurulum Adımları
                         </Typography>
-                        <List sx={{ py: 0, mb: 4 }}>
+                        <List sx={{ py: 0, mb: 2 }}>
                             {setupSteps.map((step, index) => (
                                 <ListItem
                                     key={index}
@@ -116,7 +122,6 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
                                 fontSize: "1.1rem",
                                 fontWeight: 600,
                                 borderRadius: 2,
-                                boxShadow: "0 4px 14px 0 rgba(0,0,0,0.1)",
                                 textTransform: "none"
                             }}
                         >

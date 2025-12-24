@@ -21,6 +21,19 @@ interface StateType {
   token?: string;
   refreshToken?: string;  // ✅ Güvenli token yenileme için
   formHazirlayanOnaylayan?: boolean;
+  kurulumTamamlandi?: boolean;
+  kurulumAdimi?: number;
+  setupWizardProgress?: string;
+  sonSecilenDenetlenenId?: number;
+  sonSecilenYil?: number;
+  sonSecilenDenetlenenFirmaAdi?: string;
+  sonSecilenDenetimTuru?: string;
+  sonSecilenBobimi?: boolean;
+  sonSecilenTfrsmi?: boolean;
+  sonSecilenEnflasyonmu?: boolean;
+  sonSecilenKonsolidemi?: boolean;
+  sonSecilenBddkmi?: boolean;
+  turTamamlandi?: boolean;
 }
 
 const initialState: StateType = {
@@ -44,6 +57,19 @@ const initialState: StateType = {
   token: "",
   refreshToken: "",  // ✅ Başlangıç değeri
   formHazirlayanOnaylayan: false,
+  kurulumTamamlandi: false,
+  kurulumAdimi: 0,
+  setupWizardProgress: "",
+  sonSecilenDenetlenenId: 0,
+  sonSecilenYil: 0,
+  sonSecilenDenetlenenFirmaAdi: "",
+  sonSecilenDenetimTuru: "",
+  sonSecilenBobimi: false,
+  sonSecilenTfrsmi: false,
+  sonSecilenEnflasyonmu: false,
+  sonSecilenKonsolidemi: false,
+  sonSecilenBddkmi: false,
+  turTamamlandi: false,
 };
 
 export const UserSlice = createSlice({
@@ -110,6 +136,45 @@ export const UserSlice = createSlice({
     setFormHazirlayanOnaylayan: (state: StateType, action) => {
       state.formHazirlayanOnaylayan = action.payload;
     },
+    setKurulumTamamlandi: (state: StateType, action) => {
+      state.kurulumTamamlandi = action.payload;
+    },
+    setKurulumAdimi: (state: StateType, action) => {
+      state.kurulumAdimi = action.payload;
+    },
+    setSetupWizardProgress: (state: StateType, action) => {
+      state.setupWizardProgress = action.payload;
+    },
+    setSonSecilenDenetlenenId: (state: StateType, action) => {
+      state.sonSecilenDenetlenenId = action.payload;
+    },
+    setSonSecilenYil: (state: StateType, action) => {
+      state.sonSecilenYil = action.payload;
+    },
+    setSonSecilenDenetlenenFirmaAdi: (state: StateType, action) => {
+      state.sonSecilenDenetlenenFirmaAdi = action.payload;
+    },
+    setSonSecilenDenetimTuru: (state: StateType, action) => {
+      state.sonSecilenDenetimTuru = action.payload;
+    },
+    setSonSecilenBobimi: (state: StateType, action) => {
+      state.sonSecilenBobimi = action.payload;
+    },
+    setSonSecilenTfrsmi: (state: StateType, action) => {
+      state.sonSecilenTfrsmi = action.payload;
+    },
+    setSonSecilenEnflasyonmu: (state: StateType, action) => {
+      state.sonSecilenEnflasyonmu = action.payload;
+    },
+    setSonSecilenKonsolidemi: (state: StateType, action) => {
+      state.sonSecilenKonsolidemi = action.payload;
+    },
+    setSonSecilenBddkmi: (state: StateType, action) => {
+      state.sonSecilenBddkmi = action.payload;
+    },
+    setTurTamamlandi: (state: StateType, action) => {
+      state.turTamamlandi = action.payload;
+    },
     resetToNull: (state: StateType, action) => {
       if (action.payload == "") {
         state.id = undefined;
@@ -132,6 +197,19 @@ export const UserSlice = createSlice({
         state.token = undefined;
         state.refreshToken = undefined;  // ✅ Reset'e eklendi
         state.formHazirlayanOnaylayan = undefined;
+        state.kurulumTamamlandi = undefined;
+        state.kurulumAdimi = undefined;
+        state.setupWizardProgress = undefined;
+        state.sonSecilenDenetlenenId = undefined;
+        state.sonSecilenYil = undefined;
+        state.sonSecilenDenetlenenFirmaAdi = undefined;
+        state.sonSecilenDenetimTuru = undefined;
+        state.sonSecilenBobimi = undefined;
+        state.sonSecilenTfrsmi = undefined;
+        state.sonSecilenEnflasyonmu = undefined;
+        state.sonSecilenKonsolidemi = undefined;
+        state.sonSecilenBddkmi = undefined;
+        state.turTamamlandi = undefined;
       }
     },
   },
@@ -159,6 +237,19 @@ export const {
   setRefreshToken,  // ✅ Export'a eklendi
   resetToNull,
   setFormHazirlayanOnaylayan,
+  setKurulumTamamlandi,
+  setKurulumAdimi,
+  setSetupWizardProgress,
+  setSonSecilenDenetlenenId,
+  setSonSecilenYil,
+  setSonSecilenDenetlenenFirmaAdi,
+  setSonSecilenDenetimTuru,
+  setSonSecilenBobimi,
+  setSonSecilenTfrsmi,
+  setSonSecilenEnflasyonmu,
+  setSonSecilenKonsolidemi,
+  setSonSecilenBddkmi,
+  setTurTamamlandi,
 } = UserSlice.actions;
 
 export default UserSlice.reducer;

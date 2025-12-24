@@ -28,13 +28,28 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
         }
     }, [isPending]);
 
+    // Güvenlik zaman aşımı: Hiçbir yükleme 15 saniyeden uzun sürmesin
+    useEffect(() => {
+        let timeoutId: NodeJS.Timeout;
+        if (isLoading) {
+            timeoutId = setTimeout(() => {
+                setIsLoading(false);
+            }, 15000); // 15 saniye fallback
+        }
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [isLoading]);
+
     const setLoading = (loading: boolean) => {
         setIsLoading(loading);
     };
 
     const startTransition = (callback: () => void) => {
         setIsLoading(true);
-        startReactTransition(callback);
+        startReactTransition(() => {
+            callback();
+        });
     };
 
     return (

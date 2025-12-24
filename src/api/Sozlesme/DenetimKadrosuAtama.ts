@@ -6,7 +6,7 @@ export const getGorevAtamalariByKullaniciId = async (
   kullaniciId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/GorevAtamalari/Kullanici?kullaniciId=${kullaniciId}`,
       {
         method: "GET",
@@ -32,7 +32,7 @@ export const getGorevAtamalariByDenetlenenIdYil = async (
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/GorevAtamalari/DenetlenenYil?denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -54,7 +54,7 @@ export const getGorevAtamalariByDenetlenenIdYil = async (
 
 export const getGorevAtamalariById = async (token: string, id: any) => {
   try {
-    const response =await apiFetch(`/GorevAtamalari/${id}`, {
+    const response = await apiFetch(`/GorevAtamalari/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -76,7 +76,7 @@ export const createGorevAtamalari = async (
   createdGorevAtamalari: any
 ) => {
   try {
-    const response =await apiFetch(`/GorevAtamalari`, {
+    const response = await apiFetch(`/GorevAtamalari`, {
       method: "POST",
       headers: {
         accept: "*/*",
@@ -111,7 +111,7 @@ export const updateGorevAtamalari = async (
   updatedGorevAtamalari: any
 ) => {
   try {
-    const response =await apiFetch(`/GorevAtamalari/${id}`, {
+    const response = await apiFetch(`/GorevAtamalari/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -142,7 +142,7 @@ export const updateGorevAtamalari = async (
 
 export const deleteGorevAtamalariById = async (token: string, id: number) => {
   try {
-    const response =await apiFetch(`/GorevAtamalari/${id}`, {
+    const response = await apiFetch(`/GorevAtamalari/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
@@ -162,7 +162,7 @@ export const deleteGorevAtamalariById = async (token: string, id: number) => {
 
 export const getAllUnvanlar = async (token: string) => {
   try {
-    const response =await apiFetch(`/GorevAtamalari/Unvanlar`, {
+    const response = await apiFetch(`/GorevAtamalari/Unvanlar`, {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -186,7 +186,7 @@ export const getRol = async (
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/GorevAtamalari/Roller?kullaniciId=${kullaniciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -212,7 +212,7 @@ export const getKullaniciRol = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/GorevAtamalari/KullaniciRol?kullaniciId=${kullaniciId}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",

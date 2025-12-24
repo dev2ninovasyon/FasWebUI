@@ -11,6 +11,12 @@ import {
   MenuItem,
   IconButton,
   ListItemIcon,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import {
   IconDotsVertical,
@@ -26,6 +32,7 @@ import {
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
+import { enqueueSnackbar } from "notistack";
 
 const MusteriTable = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -57,21 +64,51 @@ const MusteriTable = () => {
     router.push(`/Musteri/MusteriIslemleri/MusteriDetay/${selectedId}`);
   };
 
-  const handleDelete = async () => {
+  /* State for Delete Confirmation Dialog */
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = () => {
     handleClose();
+    setOpenDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsDeleting(true);
     try {
       const result = await deleteDenetlenenById(
         user.token || "",
         selectedId || 0
       );
       if (result) {
-        fetchData();
+        await fetchData();
+        setOpenDeleteDialog(false);
+        enqueueSnackbar("Şirket başarıyla silindi", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
       } else {
         console.error("Denetlenen silinemedi");
+        setOpenDeleteDialog(false);
+        enqueueSnackbar("Şirket silinemedi. Lütfen tekrar deneyin.", {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
+      setOpenDeleteDialog(false);
+      enqueueSnackbar("Bir hata oluştu. Lütfen tekrar deneyin.", {
+        variant: "error",
+        autoHideDuration: 5000,
+      });
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
   };
 
   const [rows, setRows] = useState([]);
@@ -229,6 +266,31 @@ const MusteriTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Şirketi Silmek İstediğinize Emin Misiniz?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Bu işlem geri alınamaz. Onayladığınız takdirde şirkete ait <b>tüm veriler ve dosyalar kalıcı olarak silinecek</b> ve asla geri getirilemeyecektir.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary" disabled={isDeleting}>
+            İptal
+          </Button>
+          <Button onClick={confirmDelete} color="error" autoFocus disabled={isDeleting}>
+            {isDeleting ? "İşlem Yapılıyor..." : "Evet, Sil"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </BlankCard>
   );
 };

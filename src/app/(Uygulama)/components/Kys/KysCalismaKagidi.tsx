@@ -39,11 +39,13 @@ interface Veri {
 interface KysCalismaKagidiProps {
     formKodu: string;
     alanAdi: string;
+    readOnly?: boolean;
 }
 
 const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
     formKodu,
     alanAdi,
+    readOnly = false,
 }) => {
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -163,45 +165,47 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
                         </Grid>
                     ))}
                 </Grid>
-                <Grid
-                    container
-                    sx={{
-                        width: "95%",
-                        margin: "0 auto",
-                        justifyContent: "end",
-                    }}
-                >
+                {!readOnly && (
                     <Grid
-                        item
-                        xs={12}
-                        lg={1.5}
-                        my={2}
+                        container
                         sx={{
-                            display: "flex",
+                            width: "95%",
+                            margin: "0 auto",
                             justifyContent: "end",
                         }}
                     >
-                        <Button
-                            size="medium"
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => handleNew()}
+                        <Grid
+                            item
+                            xs={12}
+                            lg={1.5}
+                            my={2}
                             sx={{
-                                width: "100%",
+                                display: "flex",
+                                justifyContent: "end",
                             }}
                         >
-                            <Typography
-                                variant="body1"
+                            <Button
+                                size="medium"
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => handleNew()}
                                 sx={{
-                                    overflowWrap: "break-word",
-                                    wordWrap: "break-word",
+                                    width: "100%",
                                 }}
                             >
-                                Yeni İşlem Ekle
-                            </Typography>
-                        </Button>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        overflowWrap: "break-word",
+                                        wordWrap: "break-word",
+                                    }}
+                                >
+                                    Yeni İşlem Ekle
+                                </Typography>
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
+                )}
             </Grid>
             {isPopUpOpen && (
                 <PopUpComponent
@@ -214,6 +218,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
                     handleUpdate={handleUpdate}
                     isPopUpOpen={isPopUpOpen}
                     isNew={isNew}
+                    readOnly={readOnly}
                 />
             )}
         </>
@@ -228,6 +233,7 @@ interface PopUpProps {
     alanAdi: string;
     isPopUpOpen: boolean;
     isNew: boolean;
+    readOnly?: boolean;
 
     handleClose: () => void;
     handleCreate: (islem: string, tespit: string) => void;
@@ -241,6 +247,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     alanAdi,
     isPopUpOpen,
     isNew,
+    readOnly = false,
     handleClose,
     handleCreate,
     handleDelete,
@@ -259,7 +266,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                     alignItems="center"
                 >
                     <Typography variant="h4" py={1} px={3}>
-                        {isNew ? "Yeni Ekle" : "Düzenle"}
+                        {isNew ? "Yeni Ekle" : readOnly ? "Görüntüle" : "Düzenle"}
                     </Typography>
                     <IconButton size="small" onClick={handleClose}>
                         <IconX size="18" />
@@ -283,6 +290,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                         fullWidth
                         value={localIslem}
                         onChange={(e: any) => setLocalIslem(e.target.value)}
+                        disabled={readOnly}
                     />
                     <Typography variant="subtitle1" p={1} mt={2}>
                         Tespit / Açıklama
@@ -295,33 +303,36 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                         fullWidth
                         value={localTespit}
                         onChange={(e: any) => setLocalTespit(e.target.value)}
+                        disabled={readOnly}
                     />
                 </Box>
             </DialogContent>
-            <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
-                <Button
-                    variant="outlined"
-                    color="success"
-                    onClick={() =>
-                        isNew
-                            ? handleCreate(localIslem, localTespit)
-                            : handleUpdate(localIslem, localTespit)
-                    }
-                    sx={{ width: "20%" }}
-                >
-                    Kaydet
-                </Button>{" "}
-                {!isNew && (
+            {!readOnly && (
+                <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
                     <Button
                         variant="outlined"
-                        color="error"
-                        onClick={handleDelete}
+                        color="success"
+                        onClick={() =>
+                            isNew
+                                ? handleCreate(localIslem, localTespit)
+                                : handleUpdate(localIslem, localTespit)
+                        }
                         sx={{ width: "20%" }}
                     >
-                        Sil
-                    </Button>
-                )}
-            </DialogActions>
+                        Kaydet
+                    </Button>{" "}
+                    {!isNew && (
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={handleDelete}
+                            sx={{ width: "20%" }}
+                        >
+                            Sil
+                        </Button>
+                    )}
+                </DialogActions>
+            )}
         </Dialog>
     );
 };

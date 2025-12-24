@@ -1,5 +1,5 @@
-import { Grid, Button, MenuItem, useTheme } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import { Grid, Button, MenuItem, useTheme, Box, CircularProgress, Typography } from "@mui/material";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -7,13 +7,14 @@ import {
   createDenetlenen,
   getDenetlenenKonsolideAnaSirketByDenetciId,
   getSektorKodlari,
+  uploadAndParseKurumlarBeyannamesi,
 } from "@/api/Musteri/MusteriIslemleri";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { enqueueSnackbar } from "notistack";
-import { FloatingButtonMusteriIslemleri } from "@/app/(Uygulama)/components/CalismaKagitlari/FloatingButtonMusteriIslemleri";
 import Autocomplete from "@mui/material/Autocomplete";
+import { useDropzone } from "react-dropzone";
 
 interface Veri {
   id: number;
@@ -26,29 +27,49 @@ interface Veri2 {
   parentId: number | null;
 }
 
-const MusteriEkleForm = () => {
-  const [firmaAdi, setFirmaAdi] = useState("");
-  const [yetkili, setYetkili] = useState("");
-  const [tel, setTel] = useState("");
-  const [adres, setAdres] = useState("");
-  const [email, setEmail] = useState("");
-  const [webAdresi, setWebAdresi] = useState("");
-  const [ticaretSicilNo, setTicaretSicilNo] = useState("");
-  const [vergiDairesi, setVergiDairesi] = useState("");
-  const [vergiNo, setVergiNo] = useState("");
-  const [konsolideMi, setKonsolideMi] = useState("Hayır");
-  const [konsolideTipi, setKonsolideTipi] = useState("Ana Şirket");
-  const [konsolideBagliSirketId, setKonsolideBagliSirketId] = useState(0);
-  const [sektor1Id, setSektor1Id] = useState(0);
-  const [sektor2Id, setSektor2Id] = useState(0);
-  const [sektor3Id, setSektor3Id] = useState(0);
+interface MusteriEkleFormProps {
+  onCustomerCreated?: (customerId: number, customerData: any) => void;
+  skipNavigation?: boolean;
+  initialData?: any;
+  showNavigationButtons?: boolean;
+  onBack?: () => void;
+  isWizardView?: boolean;
+}
+
+const MusteriEkleForm = ({
+  onCustomerCreated,
+  skipNavigation = false,
+  initialData,
+  showNavigationButtons = false,
+  onBack,
+  isWizardView = false
+}: MusteriEkleFormProps = {}) => {
+  const [firmaAdi, setFirmaAdi] = useState(initialData?.firmaAdi || initialData?.unvan || "");
+  const [yetkili, setYetkili] = useState(initialData?.yetkili || "");
+  const [tel, setTel] = useState(initialData?.tel || initialData?.telefon || "");
+  const [adres, setAdres] = useState(initialData?.adres || "");
+  const [email, setEmail] = useState(initialData?.email || "");
+  const [webAdresi, setWebAdresi] = useState(initialData?.webAdresi || "");
+  const [ticaretSicilNo, setTicaretSicilNo] = useState(initialData?.ticaretSicilNo || "");
+  const [vergiDairesi, setVergiDairesi] = useState(initialData?.vergiDairesi || "");
+  const [vergiNo, setVergiNo] = useState(initialData?.vergiNo || "");
+  const [konsolideMi, setKonsolideMi] = useState(initialData?.konsolideMi || "Hayır");
+  const [konsolideTipi, setKonsolideTipi] = useState(initialData?.konsolideTipi || "Ana Şirket");
+  const [konsolideBagliSirketId, setKonsolideBagliSirketId] = useState(initialData?.konsolideBagliSirketId || 0);
+  const [sektor1Id, setSektor1Id] = useState(initialData?.sektor1Id || 0);
+  const [sektor2Id, setSektor2Id] = useState(initialData?.sektor2Id || 0);
+  const [sektor3Id, setSektor3Id] = useState(initialData?.sektor3Id || 0);
 
   const [sektor1List, setSektor1List] = useState<Veri2[]>([]);
   const [sektor2List, setSektor2List] = useState<Veri2[]>([]);
   const [sektor3List, setSektor3List] = useState<Veri2[]>([]);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pdfYil, setPdfYil] = useState<number | null>(null);
 
   const [isHovered, setIsHovered] = useState(false);
   const [control, setControl] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const textFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -59,48 +80,57 @@ const MusteriEkleForm = () => {
 
   const denetciId = user.denetciId;
   const [rows, setRows] = useState<Veri[]>([]);
-const handleAiClear = () => {
-  setFirmaAdi("");
-  setYetkili("");
-  setTel("");
-  setAdres("");
-  setEmail("");
-  setTicaretSicilNo("");
-  setVergiDairesi("");
-};
-// TR duyarlı, geniş destekli "normalize + diakritik temizleme"
-const trFold = (s: string) =>
-  (s || "")
-    .toLocaleLowerCase("tr")     // İ/ı kuralları için TR lower
-    .normalize("NFD")            // harf + kombine işaretlerine ayır
-    .replace(/[\u0300-\u036f]/g, "") // kombine işaretlerini sil (geniş uyumlu)
-    .replace(/ı/g, "i");         // TR eşleştirme toleransı (I→ı→i)
 
-const filterOptions = (opts: Veri2[], params: any) => {
-  const q = trFold(params.inputValue);
-  return opts.filter((o) => trFold(o.adi).includes(q) || `${o.id}`.includes(q));
-};
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) return;
+    const file = acceptedFiles[0];
+    setLoading(true);
 
-  // ---- JSON -> Forma Dolum Yardımcıları ----
-  const preferExisting = (current?: string, incoming?: string | null) =>
-    (current && current.trim().length > 0) ? current : (incoming ?? "");
+    try {
+      const result = await uploadAndParseKurumlarBeyannamesi(
+        user.token || "",
+        file,
+        user.denetciId || 0,
+        user.yil || 0,
+        0 // denetlenenId is 0 for new company
+      );
 
-const handleAiJson = (data: any) => {
-  if (!data || data.hata) return;
+      if (result.success) {
+        const data = result.data;
+        setFirmaAdi(data.firmaAdi ?? "");
+        setTel(data.tel ?? "");
+        setEmail(data.email ?? "");
+        setTicaretSicilNo(data.ticaretSicilNo ?? "");
+        setVergiDairesi(data.vergiDairesi ?? "");
+        setVergiNo(data.vergiNo ?? "");
 
-  setFirmaAdi(data.sirketAdi ?? "");
-  setTel(data?.iletisim?.telefon ?? "");
-  setEmail(data?.iletisim?.eposta ?? "");
-  setAdres(data?.iletisim?.adres ?? "");
-// setWebAdresi(data?.analizEdilenUrl ?? "");
+        // Set extracted year if available
+        if (data.yil) {
+          setPdfYil(data.yil);
+        }
 
-  setVergiDairesi(data?.vergiDairesi ?? "");
-  setVergiNo(data?.vergiNo ?? "");
-  setTicaretSicilNo(data?.ticaretSicilNo ?? "");
+        setPdfFile(file); // Store the file for later upload
+        enqueueSnackbar("PDF verisi başarıyla çekildi.", { variant: "success" });
+      } else {
+        enqueueSnackbar(result.message || "PDF okunamadı.", { variant: "error" });
+      }
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar("Beklenmedik bir hata oluştu.", { variant: "error" });
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
 
-  enqueueSnackbar("Web sitesinden şirket bilgileri çekildi.", { /* ... */ });
-};
-  const handleControl = () => setControl(true);
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "application/pdf": [".pdf"],
+    },
+    multiple: false,
+  });
+
+
 
   const handleButtonClick = async () => {
     const createdMusteri = {
@@ -121,25 +151,61 @@ const handleAiJson = (data: any) => {
       sektor2Id,
       sektor3Id,
     };
+
+    // Validation
+    const newErrors: { [key: string]: string } = {};
+    if (!firmaAdi.trim()) newErrors.firmaAdi = "Firma Adı zorunludur.";
+    if (!vergiNo.trim()) newErrors.vergiNo = "Vergi Numarası zorunludur.";
+    if (!sektor3Id) newErrors.sektor3Id = "Sektör seçimi zorunludur.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      enqueueSnackbar("Lütfen zorunlu alanları doldurunuz.", { variant: "warning" });
+      return;
+    }
+
     try {
+      setLoading(true);
       const result = await createDenetlenen(user.token || "", createdMusteri);
-      if (result == true) {
-        router.push("/Musteri/MusteriIslemleri");
+      if (result && result.success) {
+        const newId = result.data;
+
+        // If a PDF was uploaded, save it with the new ID
+        if (pdfFile) {
+          try {
+            await uploadAndParseKurumlarBeyannamesi(
+              user.token || "",
+              pdfFile,
+              user.denetciId || 0,
+              pdfYil || user.yil || 0,
+              newId
+            );
+            enqueueSnackbar("PDF belgesi yeni şirkete başarıyla kaydedildi.", { variant: "success" });
+          } catch (uploadError) {
+            console.error("PDF kaydetme hatası:", uploadError);
+            enqueueSnackbar("Şirket eklendi ancak PDF kaydedilemedi.", { variant: "warning" });
+          }
+        }
+
+        enqueueSnackbar("Müşteri başarıyla eklendi.", { variant: "success" });
+
+        if (onCustomerCreated) {
+          onCustomerCreated(newId, { ...createdMusteri, id: newId });
+        }
+
+        if (!skipNavigation) {
+          router.push("/Musteri/MusteriIslemleri");
+        }
       } else {
         enqueueSnackbar((result as any)?.message || "Kayıt başarısız.", {
           variant: "warning",
           autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
         });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -209,183 +275,307 @@ const handleAiJson = (data: any) => {
 
   return (
     <div>
-      <Grid container spacing={3}>
-        {/* Web Adresi - controlled */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="webAdresi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Web Adresi
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField
-            id="webAdresi"
-            fullWidth
-            value={webAdresi}
-            onChange={(e: any) => setWebAdresi(e.target.value)}
-            inputRef={textFieldRef}
-          />
+      <Grid container spacing={isWizardView ? 2 : 3}>
+        <Grid item xs={12}>
+          <Box
+            {...getRootProps()}
+            sx={{
+              border: `2px dashed ${theme.palette.divider}`,
+              borderRadius: "8px",
+              padding: "20px",
+              textAlign: "center",
+              cursor: "pointer",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": {
+                borderColor: theme.palette.primary.main,
+              },
+            }}
+          >
+            <input {...getInputProps()} />
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Typography>
+                Şirket Bilgilerini PDF'den Yüklemek İçin Buraya Tıklayın veya Dosyayı Sürükleyin (Kurumlar Beyannamesi)
+              </Typography>
+            )}
+          </Box>
         </Grid>
 
-        {/* Firma Adı */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="firmaAdi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Firma Adı
-          </CustomFormLabel>
+        {/* Firma Adı - Always Full Width */}
+        <Grid item xs={12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 2 : 3}>
+              <CustomFormLabel htmlFor="firmaAdi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Firma Adı
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 10 : 9}>
+              <CustomTextField
+                id="firmaAdi"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={firmaAdi}
+                placeholder={errors.firmaAdi || ""}
+                onChange={(e: any) => {
+                  setFirmaAdi(e.target.value);
+                  if (errors.firmaAdi) setErrors((prev) => ({ ...prev, firmaAdi: "" }));
+                }}
+                onFocus={() => {
+                  if (errors.firmaAdi) setErrors((prev) => ({ ...prev, firmaAdi: "" }));
+                }}
+                error={!!errors.firmaAdi}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField
-            id="firmaAdi"
-            fullWidth
-            value={firmaAdi}
-            onChange={(e: any) => setFirmaAdi(e.target.value)}
-          />
+
+        {/* Web Adresi */}
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="webAdresi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Web Adresi
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <CustomTextField
+                id="webAdresi"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={webAdresi}
+                onChange={(e: any) => setWebAdresi(e.target.value)}
+                inputRef={textFieldRef}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
         {/* Yetkili */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="yetkili" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Yetkili
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField
-            id="yetkili"
-            fullWidth
-            value={yetkili}
-            onChange={(e: any) => setYetkili(e.target.value)}
-          />
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="yetkili" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Yetkili
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <CustomTextField
+                id="yetkili"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={yetkili}
+                onChange={(e: any) => setYetkili(e.target.value)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
         {/* Telefon */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="tel" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Telefon
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField id="tel" fullWidth value={tel} onChange={(e: any) => setTel(e.target.value)} />
-        </Grid>
-
-        {/* Adres */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="adres" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Adres
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField id="adres" fullWidth value={adres} onChange={(e: any) => setAdres(e.target.value)} />
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="tel" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Telefon
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <CustomTextField
+                id="tel"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={tel}
+                onChange={(e: any) => setTel(e.target.value)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
         {/* Email */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="email" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Email
-          </CustomFormLabel>
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="email" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Email
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <CustomTextField
+                id="email"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={email}
+                onChange={(e: any) => setEmail(e.target.value)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField id="email" fullWidth value={email} onChange={(e: any) => setEmail(e.target.value)} />
+
+        {/* Adres */}
+        <Grid item xs={12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 2 : 3}>
+              <CustomFormLabel htmlFor="adres" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Adres
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 10 : 9}>
+              <CustomTextField
+                id="adres"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={adres}
+                onChange={(e: any) => setAdres(e.target.value)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
         {/* Ticaret Sicil No */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="ticaretSicilNo" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Ticaret Sicil No
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField
-            id="ticaretSicilNo"
-            fullWidth
-            value={ticaretSicilNo}
-            onChange={(e: any) => setTicaretSicilNo(e.target.value)}
-          />
-        </Grid>
-
-        {/* Vergi Dairesi */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="vergiDairesi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Vergi Dairesi
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField
-            id="vergiDairesi"
-            fullWidth
-            value={vergiDairesi}
-            onChange={(e: any) => setVergiDairesi(e.target.value)}
-          />
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="ticaretSicilNo" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Ticaret Sicil No
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <CustomTextField
+                id="ticaretSicilNo"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={ticaretSicilNo}
+                onChange={(e: any) => setTicaretSicilNo(e.target.value)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
         {/* Vergi No */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="vergiNo" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Vergi No
-          </CustomFormLabel>
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="vergiNo" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Vergi No
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <CustomTextField
+                id="vergiNo"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={vergiNo}
+                placeholder={errors.vergiNo || ""}
+                onChange={(e: any) => {
+                  setVergiNo(e.target.value);
+                  if (errors.vergiNo) setErrors((prev) => ({ ...prev, vergiNo: "" }));
+                }}
+                onFocus={() => {
+                  if (errors.vergiNo) setErrors((prev) => ({ ...prev, vergiNo: "" }));
+                }}
+                error={!!errors.vergiNo}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomTextField id="vergiNo" fullWidth value={vergiNo} onChange={(e: any) => setVergiNo(e.target.value)} />
+
+        {/* Vergi Dairesi */}
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="vergiDairesi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Vergi Dairesi
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <CustomTextField
+                id="vergiDairesi"
+                fullWidth
+                size={isWizardView ? "small" : "medium"}
+                value={vergiDairesi}
+                onChange={(e: any) => setVergiDairesi(e.target.value)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
         {/* Konsolide Mi */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="konsolideMi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Konsolide Mi
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomSelect
-            labelId="konsolideMi"
-            id="konsolideMi"
-            size="small"
-            value={konsolideMi}
-            fullWidth
-            onChange={(e: any) => setKonsolideMi(e.target.value)}
-            sx={{
-              minWidth: 120,
-              "& .MuiSelect-select": { height: "28px", display: "flex", alignItems: "center" },
-            }}
-          >
-            <MenuItem value={"Evet"}>Evet</MenuItem>
-            <MenuItem value={"Hayır"}>Hayır</MenuItem>
-          </CustomSelect>
-        </Grid>
-
-        {/* Konsolide Tipi - Evet ise */}
-        {konsolideMi === "Evet" && (
-          <>
-            <Grid item xs={12} sm={3} display="flex" alignItems="center">
-              <CustomFormLabel htmlFor="konsolideTipi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-                Konsolide Tipi
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="konsolideMi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Konsolide Mi
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={9}>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
               <CustomSelect
-                labelId="konsolideTipi"
-                id="konsolideTipi"
+                labelId="konsolideMi"
+                id="konsolideMi"
                 size="small"
-                value={konsolideTipi}
+                value={konsolideMi}
                 fullWidth
-                onChange={(e: any) => setKonsolideTipi(e.target.value)}
-                sx={{ minWidth: 120, "& .MuiSelect-select": { height: "28px", display: "flex", alignItems: "center" } }}
+                onChange={(e: any) => setKonsolideMi(e.target.value)}
+                sx={{
+                  minWidth: 120,
+                  "& .MuiSelect-select": {
+                    height: isWizardView ? "14px" : "28px",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                }}
               >
-                <MenuItem value={"Ana Şirket"}>Ana Şirket</MenuItem>
-                <MenuItem value={"Alt Şirket"}>Alt Şirket</MenuItem>
-                <MenuItem value={"Yavru Şirket"}>Yavru Şirket</MenuItem>
+                <MenuItem value={"Evet"}>Evet</MenuItem>
+                <MenuItem value={"Hayır"}>Hayır</MenuItem>
               </CustomSelect>
             </Grid>
-          </>
-        )}
+          </Grid>
+        </Grid>
 
-        {/* Konsolide bağlı şirket - alt/yavru ise */}
-        {konsolideMi === "Evet" &&
-          (konsolideTipi == "Alt Şirket" || konsolideTipi == "Yavru Şirket") && (
-            <>
-              <Grid item xs={12} sm={3} display="flex" alignItems="center">
-                <CustomFormLabel htmlFor="konsolideBagliSirketId" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-                  Konsolide Bağlı Olduğu Şirket
+        {/* Konsolide Tipi */}
+        {konsolideMi === "Evet" && (
+          <Grid item xs={12} md={isWizardView ? 6 : 12}>
+            <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+              <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+                <CustomFormLabel htmlFor="konsolideTipi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                  Konsolide Tipi
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+                <CustomSelect
+                  labelId="konsolideTipi"
+                  id="konsolideTipi"
+                  size="small"
+                  value={konsolideTipi}
+                  fullWidth
+                  onChange={(e: any) => setKonsolideTipi(e.target.value)}
+                  sx={{
+                    minWidth: 120,
+                    "& .MuiSelect-select": {
+                      height: isWizardView ? "14px" : "28px",
+                      display: "flex",
+                      alignItems: "center",
+                    },
+                  }}
+                >
+                  <MenuItem value={"Ana Şirket"}>Ana Şirket</MenuItem>
+                  <MenuItem value={"Alt Şirket"}>Alt Şirket</MenuItem>
+                  <MenuItem value={"Yavru Şirket"}>Yavru Şirket</MenuItem>
+                </CustomSelect>
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
+
+        {/* Bağlı Şirket */}
+        {konsolideMi === "Evet" && (konsolideTipi === "Alt Şirket" || konsolideTipi === "Yavru Şirket") && (
+          <Grid item xs={12} md={isWizardView ? 6 : 12}>
+            <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+              <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+                <CustomFormLabel htmlFor="konsolideBagliSirketId" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                  Bağlı Şirket
+                </CustomFormLabel>
+              </Grid>
+              <Grid item xs={12} sm={isWizardView ? 8 : 9}>
                 <CustomSelect
                   labelId="konsolideBagliSirketId"
                   id="konsolideBagliSirketId"
@@ -393,106 +583,84 @@ const handleAiJson = (data: any) => {
                   value={konsolideBagliSirketId}
                   fullWidth
                   onChange={(e: any) => setKonsolideBagliSirketId(e.target.value)}
-                  sx={{ minWidth: 120, "& .MuiSelect-select": { height: "28px", display: "flex", alignItems: "center" } }}
+                  sx={{
+                    minWidth: 120,
+                    "& .MuiSelect-select": {
+                      height: isWizardView ? "14px" : "28px",
+                      display: "flex",
+                      alignItems: "center",
+                    },
+                  }}
                 >
-                  <MenuItem key={0} value={0}></MenuItem>
-                  {rows.map((row: Veri) => (
+                  <MenuItem value={0}></MenuItem>
+                  {rows.map((row) => (
                     <MenuItem key={row.id} value={row.id}>{row.firmaAdi}</MenuItem>
                   ))}
                 </CustomSelect>
               </Grid>
-            </>
-          )}
+            </Grid>
+          </Grid>
+        )}
 
-        {/* Sektörler */}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="sektor1Id" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Sektör 1
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomSelect
-            labelId="sektor1Id"
-            id="sektor1Id"
-            size="small"
-            value={sektor1Id}
-            fullWidth
-            disabled
-            onChange={(e: any) => setSektor1Id(e.target.value)}
-            sx={{ minWidth: 120, "& .MuiSelect-select": { height: "28px", display: "flex", alignItems: "center" } }}
-          >
-            <MenuItem value={0}></MenuItem>
-            {sektor1List.map((sektor: Veri2) => (
-              <MenuItem key={sektor.id} value={sektor.id}>{sektor.adi}</MenuItem>
-            ))}
-          </CustomSelect>
-        </Grid>
-
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="sektor2Id" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Sektör 2
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-          <CustomSelect
-            labelId="sektor2Id"
-            id="sektor2Id"
-            size="small"
-            value={sektor2Id}
-            fullWidth
-            disabled
-            onChange={(e: any) => setSektor2Id(e.target.value)}
-            sx={{ minWidth: 120, "& .MuiSelect-select": { height: "28px", display: "flex", alignItems: "center" } }}
-          >
-            <MenuItem value={0}></MenuItem>
-            {sektor2List.map((sektor: Veri2) => (
-              <MenuItem key={sektor.id} value={sektor.id}>{sektor.adi}</MenuItem>
-            ))}
-          </CustomSelect>
+        {/* Sektör */}
+        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
+            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <CustomFormLabel htmlFor="sektor3Id" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
+                Sektör Seç
+              </CustomFormLabel>
+            </Grid>
+            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <Autocomplete
+                options={sektor3List}
+                size="small"
+                value={sektor3List.find((x) => x.id === sektor3Id) || null}
+                onChange={(_, val) => {
+                  const id = val?.id ?? 0;
+                  if (id) handleSelectSektor(id);
+                  else {
+                    setSektor1Id(0);
+                    setSektor2Id(0);
+                    setSektor3Id(0);
+                  }
+                  if (errors.sektor3Id) setErrors((prev) => ({ ...prev, sektor3Id: "" }));
+                }}
+                getOptionLabel={(o) => o?.adi ?? ""}
+                renderInput={(params) => (
+                  <CustomTextField
+                    {...params}
+                    size="small"
+                    placeholder={errors.sektor3Id || "Sektör ara..."}
+                    fullWidth
+                    error={!!errors.sektor3Id}
+                    onFocus={() => {
+                      if (errors.sektor3Id) setErrors((prev) => ({ ...prev, sektor3Id: "" }));
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
         </Grid>
 
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
-          <CustomFormLabel htmlFor="sektor3Id" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-            Sektör 3
-          </CustomFormLabel>
-        </Grid>
-        <Grid item xs={12} sm={9}>
-        <Autocomplete<Veri2>
-  options={sektor3List}
-  value={sektor3List.find((x) => x.id === sektor3Id) || null}
-  onChange={(_, val) => {
-    const id = val?.id ?? 0;
-    if (id) handleSelectSektor(id);
-    else { setSektor1Id(0); setSektor2Id(0); setSektor3Id(0); }
-  }}
-  getOptionLabel={(o) => o?.adi ?? ""}
-  isOptionEqualToValue={(o, v) => o.id === v.id}
-  filterOptions={filterOptions}
-  noOptionsText="Sonuç yok"
-  renderInput={(params) => (
-    <CustomTextField {...params} label="Sektör  ara & seç" placeholder="Yazın…" fullWidth />
-  )}
-/>
+        {/* Buttons */}
+        <Grid item xs={12}>
+          <Box sx={{ display: "flex", justifyContent: isWizardView ? "flex-end" : "flex-start", mt: 2 }}>
+            {showNavigationButtons ? (
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <Button variant="outlined" onClick={onBack} disabled={loading}>Geri</Button>
+                <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={loading}>
+                  {loading ? <CircularProgress size={16} color="inherit" /> : (isWizardView ? "Kaydet ve İleri" : "Kaydet")}
+                </Button>
+              </Box>
+            ) : (
+              <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={loading}>
+                {loading ? <CircularProgress size={16} color="inherit" /> : "Müşteri Ekle"}
+              </Button>
+            )}
+          </Box>
         </Grid>
 
-        {/* Kaydet */}
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
-          <Button variant="contained" color="primary" onClick={handleButtonClick}>
-            Müşteri Ekle
-          </Button>
-        </Grid>
-
-        {/* AI Butonu */}
-        <FloatingButtonMusteriIslemleri
-          control={control}
-          text={webAdresi}
-          isHovered={isHovered}
-          setIsHovered={setIsHovered}
-          handleClick={() => setControl(true)}
-          onJson={handleAiJson}
-            onClear={handleAiClear}
-        />
       </Grid>
     </div>
   );

@@ -14,6 +14,7 @@ import {
     Box,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { enqueueSnackbar } from "notistack";
 
 export interface RiskMatrixRow {
     objective: {
@@ -71,6 +72,7 @@ const KysRiskMatrixTable: React.FC<KysRiskMatrixTableProps> = ({
     };
 
     const handleLinkClick = (link: string) => {
+        enqueueSnackbar("İlgili döküman açılıyor...", { variant: "info" });
         router.push(link);
     };
 

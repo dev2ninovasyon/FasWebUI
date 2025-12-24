@@ -385,10 +385,20 @@ const components: any = (theme: Theme) => {
       },
     },
     MuiDrawer: {
+      defaultProps: {
+        disableEnforceFocus: true,
+        disableRestoreFocus: true,
+      },
       styleOverrides: {
         paper: {
           borderColor: `${theme.palette.divider}`,
         },
+      },
+    },
+    MuiDialog: {
+      defaultProps: {
+        disableEnforceFocus: true,
+        disableRestoreFocus: true,
       },
     },
     MuiDialogTitle: {
