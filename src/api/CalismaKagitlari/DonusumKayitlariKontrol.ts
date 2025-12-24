@@ -26,7 +26,6 @@ export interface DonusumKayitlariResponse {
     dipnotAdi: string;
     kayitlar: DonusumKayitlariKontrolSatirDto[];
     donusumFisler: DonusumBobiFisDto[];
-    dipnotYorum?: string;
 }
 
 export async function getDonusumKayitlari(

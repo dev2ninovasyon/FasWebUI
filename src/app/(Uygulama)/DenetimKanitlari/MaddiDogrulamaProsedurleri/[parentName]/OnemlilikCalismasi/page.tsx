@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Onemlilik from "./Onemlilik";
+import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
@@ -142,6 +143,7 @@ const Page = () => {
           {dipnotNo != "" ? <Onemlilik dipnot={dipnotNo} /> : <></>}
         </Grid>
       </Grid>
+      <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
     </PageContainer>
   );
 };
