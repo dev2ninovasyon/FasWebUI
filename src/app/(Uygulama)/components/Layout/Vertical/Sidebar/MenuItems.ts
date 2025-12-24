@@ -1928,13 +1928,6 @@ export function createMenuItems(
                 href: "/Kys/RiskDegerlendirmeSureci/PolitikaBeyani",
                 formKodu: "KysRiskDegerlendirmePolitikasi",
               },
-              {
-                id: uniqueId(),
-                title: "2.2 Risk Değerlendirme Matrisi",
-                icon: IconPoint,
-                href: "/Kys/RiskMatrisi",
-                formKodu: "KysRiskMatrisi",
-              },
             ],
           },
           {
@@ -2191,7 +2184,7 @@ export function createMenuItems(
                 title: "8.2 Kültür Değerlendirmesi – Kalite",
                 icon: IconPoint,
                 href: "/Kys/BilgiVeIletisim/KulturDegerlendirmesi",
-                formKodu: "KysKulturDegerlendirmesi",
+                formKodu: "KysBilgiVeIletisimKulturDegerlendirmesi",
               },
             ],
           },
@@ -2251,6 +2244,13 @@ export function createMenuItems(
                 formKodu: "KysEksiklikDegerlendirme",
               },
             ],
+          },
+          {
+            id: uniqueId(),
+            title: "10. Risk Matrisi",
+            icon: IconPoint,
+            href: "/Kys/RiskMatrisi",
+            formKodu: "KysRiskMatrisi",
           },
 
         ],

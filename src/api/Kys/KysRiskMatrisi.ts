@@ -64,7 +64,9 @@ export const getKysRiskMatrisi = async (
 export const updateKysRiskMatrisi = async (
     token: string,
     id: number,
-    matrisData: RiskMatrixData
+    kategoriKodu: string,
+    matrisData: RiskMatrixData,
+    baslik: string
 ): Promise<KysRiskMatrisi | null> => {
     try {
         const response = await apiFetch(`/KysRiskMatrisi/${id}`, {
@@ -74,8 +76,10 @@ export const updateKysRiskMatrisi = async (
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                id,
+                id: id,
+                kategoriKodu: kategoriKodu,
                 matrisJson: JSON.stringify(matrisData),
+                baslik: baslik
             }),
         });
 
@@ -127,5 +131,36 @@ export const createKysRiskMatrisi = async (
     } catch (error) {
         console.error("Risk matrisi oluşturulamadı:", error);
         return null;
+    }
+};
+export const getAllKysRiskMatrisi = async (
+    token: string,
+    denetciId?: number,
+    denetlenenId?: number,
+    yil?: number
+): Promise<KysRiskMatrisi[]> => {
+    try {
+        const params = new URLSearchParams();
+        if (denetciId) params.append("denetciId", denetciId.toString());
+        if (denetlenenId) params.append("denetlenenId", denetlenenId.toString());
+        if (yil) params.append("yil", yil.toString());
+
+        const response = await apiFetch(`/KysRiskMatrisi?${params}`, {
+            method: "GET",
+            headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            console.error("Risk matrisleri getirilemedi:", response.statusText);
+            return [];
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Risk matrisleri getirilemedi:", error);
+        return [];
     }
 };

@@ -7,6 +7,7 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
   Grid,
   IconButton,
   InputAdornment,
@@ -25,6 +26,7 @@ import { updatekullaniciSifre } from "@/api/Kullanici/KullaniciIslemleri";
 import { IconLock, IconLockOpen } from "@tabler/icons-react";
 import SetupWizardModal, { WizardData } from "@/app/(Uygulama)/components/SetupWizard/SetupWizardModal";
 import { useRouter } from "next/navigation";
+import DriverTour from "@/app/(Uygulama)/components/Dashboards/DriverTour";
 interface avatars {
   id: number;
   src: string;
@@ -74,6 +76,7 @@ const Page = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSetupWizard, setShowSetupWizard] = useState(false);
+  const [showManualTour, setShowManualTour] = useState(false);
 
   const router = useRouter();
 
@@ -316,21 +319,41 @@ const Page = () => {
           </ChildCard>
         </Box>
 
-        {/* Setup Wizard Section */}
+        {/* Setup Wizard Section - Admin Only */}
+        {user.rol?.includes("DenetciAdmin") && (
+          <Box p={3}>
+            <Typography variant="h5" gutterBottom>
+              Sistem Kurulumu
+            </Typography>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+              İlk kurulum adımlarını tekrar gözden geçirmek veya yeni bir kurulum başlatmak için kurulum ekranını kullanabilirsiniz.
+            </Typography>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => setShowSetupWizard(true)}
+              sx={{ textTransform: "none" }}
+            >
+              Kurulum Ekranına Gir
+            </Button>
+          </Box>
+        )}
+
+        {/* Tour Guide Section - All Users */}
         <Box p={3}>
           <Typography variant="h5" gutterBottom>
-            Kurulum Sihirbazı
+            Uygulama Rehberi
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-            İlk kurulum adımlarını tekrar gözden geçirmek veya yeni bir kurulum başlatmak için kurulum sihirbazını kullanabilirsiniz.
+            Uygulama menülerini ve modüllerini tanıtan rehberi istediğiniz zaman başlatabilirsiniz.
           </Typography>
           <Button
             variant="outlined"
-            color="primary"
-            onClick={() => setShowSetupWizard(true)}
+            color="secondary"
+            onClick={() => setShowManualTour(true)}
             sx={{ textTransform: "none" }}
           >
-            Kurulum Ekranına Gir
+            Uygulama Rehberini Başlat
           </Button>
         </Box>
       </PageContainer>
@@ -343,12 +366,13 @@ const Page = () => {
           onComplete={(data: WizardData) => {
             console.log("Setup completed with data:", data);
             setShowSetupWizard(false);
-            // TODO: Save wizard data via API
-            // TODO: Set selected company in Redux
             router.push("/Anasayfa");
           }}
         />
       )}
+
+      {/* Manual Driver Tour */}
+      <DriverTour run={showManualTour} onClose={() => setShowManualTour(false)} />
     </HesapAyarlariLayout>
   );
 };

@@ -1,10 +1,43 @@
 "use client";
 
-import { Box, Button, Grid, Typography, Paper, FormControl, Select, MenuItem } from "@mui/material";
-import { useState } from "react";
-import CustomFormLabel from "../../Forms/ThemeElements/CustomFormLabel";
-import CustomTextField from "../../Forms/ThemeElements/CustomTextField";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import dynamic from "next/dynamic";
+import {
+    Button,
+    Fab,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tooltip,
+    Typography,
+    Box,
+    CircularProgress,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
+import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import { useEffect, useState } from "react";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+import {
+    getCalismaKagidiVerileriByDenetciDenetlenenYil,
+} from "@/api/CalismaKagitlari/CalismaKagitlari";
+import { IconExclamationMark, IconArrowLeft, IconCheck } from "@tabler/icons-react";
+import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadrosuAtama";
+
+const CustomEditorWVeri = dynamic(
+    () => import("@/app/(Uygulama)/components/Editor/CustomEditorWVeri"),
+    { ssr: false }
+);
+
+interface Veri {
+    id: number;
+    metin: string;
+}
 
 interface DenetimSozlesmesiStepProps {
     data?: any;
@@ -21,127 +54,209 @@ export default function DenetimSozlesmesiStep({
     onNext,
     onBack,
 }: DenetimSozlesmesiStepProps) {
-    const [sozlesmeTipi, setSozlesmeTipi] = useState(data?.sozlesmeTipi || "");
-    const [baslangicTarihi, setBaslangicTarihi] = useState(data?.baslangicTarihi || "");
-    const [bitisTarihi, setBitisTarihi] = useState(data?.bitisTarihi || "");
-    const [kapsam, setKapsam] = useState(data?.kapsam || "");
+    const user = useSelector((state: AppState) => state.userReducer);
+    const theme = useTheme();
 
-    const handleNext = () => {
-        if (!sozlesmeTipi || !baslangicTarihi) {
-            alert("Lütfen zorunlu alanları doldurun");
-            return;
+    const [sozlesmeTarihi, setSozlesmeTarihi] = useState<string>("");
+    const [tempSozlesmeTarihi, setTempSozlesmeTarihi] = useState("");
+    const [veriler, setVeriler] = useState<Veri[]>([]);
+    const [rows, setRows] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const controller = "DenetimSozlesmesi";
+
+    const fetchData = async () => {
+        if (!sirket?.id) return;
+        try {
+            setLoading(true);
+            const sozlesmeVerileri = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+                controller,
+                user.token || "",
+                user.denetciId || 0,
+                sirket.id,
+                user.yil || 0
+            );
+
+            if (sozlesmeVerileri?.length > 0) {
+                const date = sozlesmeVerileri[0].sozlesmeTarihi?.split("T")[0] || "";
+                setTempSozlesmeTarihi(date);
+                setSozlesmeTarihi(date);
+
+                const newVeri = sozlesmeVerileri.map((veri: any) => ({
+                    id: veri.id,
+                    metin: veri.metin,
+                }));
+                setVeriler(newVeri);
+            }
+        } catch (error) {
+            console.error("Sözleşme verileri çekilirken hata:", error);
+        } finally {
+            setLoading(false);
         }
+    };
 
+    const fetchTeamData = async () => {
+        if (!sirket?.id) return;
+        try {
+            const teamData = await getGorevAtamalariByDenetlenenIdYil(
+                user.token || "",
+                sirket.id,
+                user.yil || 0
+            );
+            setRows(teamData || []);
+        } catch (error) {
+            console.error("Ekip verileri çekilirken hata:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+        fetchTeamData();
+    }, [sirket?.id, user.yil]);
+
+    const handleComplete = () => {
         onDataChange({
-            sozlesmeTipi,
-            baslangicTarihi,
-            bitisTarihi,
-            kapsam,
+            sozlesmeTarihi,
+            veriler,
         });
         onNext();
     };
 
     return (
-        <Paper elevation={0} sx={{ p: { xs: 1.5, sm: 2, md: 4 }, border: 1, borderColor: "divider" }}>
-            <Typography variant="h5" gutterBottom>
-                Denetim Sözleşmesi
-            </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 4 }}>
-                {sirket?.sirketAdi || "Şirket"} için denetim sözleşmesi bilgilerini girin.
-            </Typography>
-
-            <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
-                <Grid item xs={12}>
-                    <CustomFormLabel htmlFor="sozlesmeTipi">
-                        Sözleşme Tipi *
-                    </CustomFormLabel>
-                    <FormControl fullWidth>
-                        <Select
-                            id="sozlesmeTipi"
-                            value={sozlesmeTipi}
-                            onChange={(e) => setSozlesmeTipi(e.target.value)}
-                            displayEmpty
-                        >
-                            <MenuItem value="" disabled>
-                                Sözleşme tipi seçin
-                            </MenuItem>
-                            <MenuItem value="Bağımsız Denetim">Bağımsız Denetim</MenuItem>
-                            <MenuItem value="İç Denetim">İç Denetim</MenuItem>
-                            <MenuItem value="Vergi Denetimi">Vergi Denetimi</MenuItem>
-                            <MenuItem value="Uygunluk Denetimi">Uygunluk Denetimi</MenuItem>
-                            <MenuItem value="Operasyonel Denetim">Operasyonel Denetim</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                    <CustomFormLabel htmlFor="baslangicTarihi">
-                        Başlangıç Tarihi *
-                    </CustomFormLabel>
-                    <CustomTextField
-                        id="baslangicTarihi"
-                        type="date"
-                        fullWidth
-                        value={baslangicTarihi}
-                        onChange={(e: any) => setBaslangicTarihi(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                    <CustomFormLabel htmlFor="bitisTarihi">
-                        Bitiş Tarihi
-                    </CustomFormLabel>
-                    <CustomTextField
-                        id="bitisTarihi"
-                        type="date"
-                        fullWidth
-                        value={bitisTarihi}
-                        onChange={(e: any) => setBitisTarihi(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <CustomFormLabel htmlFor="kapsam">
-                        Denetim Kapsamı
-                    </CustomFormLabel>
-                    <CustomTextField
-                        id="kapsam"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        value={kapsam}
-                        onChange={(e: any) => setKapsam(e.target.value)}
-                        placeholder="Denetim kapsamını detaylı olarak belirtin..."
-                    />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Typography variant="body2" color="textSecondary">
-                        <strong>Not:</strong> Detaylı sözleşme şartları ve ek dökümanlar kurulum sonrası eklenebilir.
+        <Box sx={{ width: "100%" }}>
+            <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Box>
+                    <Typography variant="h5">Bağımsız Denetim Sözleşmesi</Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                        <strong>{sirket?.firmaAdi || "Şirket"}</strong> için denetim sözleşmesini hazırlayın. Sözleşme tarihi ve içeriği otomatik şablon üzerinden oluşturulacaktır.
                     </Typography>
-                </Grid>
-            </Grid>
+                    <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 2, fontStyle: "italic" }}>
+                        * Sözleşme metnini ve tarihini daha sonra 'Denetim Sözleşmesi' menüsünden dilediğiniz zaman yeniden düzenleyebilirsiniz.
+                    </Typography>
+                </Box>
+            </Box>
 
-            <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: "space-between", mt: { xs: 2, sm: 3, md: 4 } }}>
-                <Button
-                    variant="outlined"
-                    onClick={onBack}
-                    startIcon={<IconArrowLeft />}
-                    sx={{ width: { xs: '100%', sm: 'auto' }, order: { xs: 2, sm: 1 } }}
-                >
-                    Geri
-                </Button>
+            <Paper elevation={0} sx={{ p: 2, border: 1, borderColor: "divider", mb: 2 }}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} display="flex" alignItems="center" justifyContent="center">
+                        <CustomFormLabel htmlFor="sozlesmeTarihi" sx={{ mt: 0, mb: 0, mr: 2 }}>
+                            Sözleşme Tarihi:
+                        </CustomFormLabel>
+                        <CustomTextField
+                            id="sozlesmeTarihi"
+                            type="date"
+                            value={tempSozlesmeTarihi}
+                            onChange={(e: any) => setTempSozlesmeTarihi(e.target.value)}
+                            onBlur={() => setSozlesmeTarihi(tempSozlesmeTarihi)}
+                            size="small"
+                        />
+                        <Tooltip title="Sözleşme Tarihi Girmeyi Unutmayınız">
+                            <Fab color="warning" size="small" sx={{ ml: 2, minHeight: 32, width: 32, height: 32 }}>
+                                <IconExclamationMark size={18} />
+                            </Fab>
+                        </Tooltip>
+                    </Grid>
+
+                    {loading ? (
+                        <Grid item xs={12} textAlign="center">
+                            <CircularProgress />
+                        </Grid>
+                    ) : (
+                        <>
+                            {sozlesmeTarihi && veriler.length > 0 && (
+                                <Grid item xs={12}>
+                                    <CustomEditorWVeri
+                                        controller={controller}
+                                        veri={veriler[0]}
+                                        sozlesmeTarihi={sozlesmeTarihi}
+                                    />
+                                </Grid>
+                            )}
+
+                            {/* Team Tables Replicated from page.tsx */}
+                            {rows.filter((row: any) => row.asilYedek === "Asil").length > 0 && (
+                                <Grid item xs={12}>
+                                    <Typography variant="h6" textAlign="center" mb={1}>Bağımsız Denetim Ekibi</Typography>
+                                    <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : "primary.light" }}>
+                                        <Table size="small">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Adı Soyadı</TableCell>
+                                                    <TableCell align="center">Ünvan</TableCell>
+                                                    <TableCell align="center">Saat / Ücret</TableCell>
+                                                    <TableCell align="center">Denetim Ücreti</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows.filter((row: any) => row.asilYedek === "Asil").map((row, idx) => (
+                                                    <TableRow key={idx}>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.kullaniciAdi}</TableCell>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.unvanAdi}</TableCell>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.calismaSaati} / {row.saatBasiUcreti}</TableCell>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.denetimUcreti}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                            )}
+
+                            {rows.filter((row: any) => row.asilYedek === "Yedek").length > 0 && (
+                                <Grid item xs={12}>
+                                    <Typography variant="h6" textAlign="center" mb={1}>Yedek Bağımsız Denetçiler</Typography>
+                                    <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : "primary.light" }}>
+                                        <Table size="small">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="center">Adı Soyadı</TableCell>
+                                                    <TableCell align="center">Ünvan</TableCell>
+                                                    <TableCell align="center">Saat / Ücret</TableCell>
+                                                    <TableCell align="center">Denetim Ücreti</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows.filter((row: any) => row.asilYedek === "Yedek").map((row, idx) => (
+                                                    <TableRow key={idx}>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.kullaniciAdi}</TableCell>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.unvanAdi}</TableCell>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.calismaSaati} / {row.saatBasiUcreti}</TableCell>
+                                                        <TableCell align="center" sx={{ border: "none" }}>{row.denetimUcreti}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                            )}
+
+                            {sozlesmeTarihi && veriler.length > 1 && (
+                                <Grid item xs={12}>
+                                    <CustomEditorWVeri
+                                        controller={controller}
+                                        veri={veriler[1]}
+                                        sozlesmeTarihi={sozlesmeTarihi}
+                                    />
+                                </Grid>
+                            )}
+                        </>
+                    )}
+                </Grid>
+            </Paper>
+
+
+            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
+                <Button variant="outlined" onClick={onBack} startIcon={<IconArrowLeft />}>Geri</Button>
                 <Button
                     variant="contained"
-                    onClick={handleNext}
-                    endIcon={<IconArrowRight />}
-                    sx={{ width: { xs: '100%', sm: 'auto' }, order: { xs: 1, sm: 2 } }}
+                    color="success"
+                    onClick={handleComplete}
+                    endIcon={<IconCheck />}
+                    disabled={loading || !sozlesmeTarihi}
                 >
-                    İleri
+                    Kurulumu Tamamla
                 </Button>
             </Box>
-        </Paper>
+        </Box>
     );
 }

@@ -30,6 +30,7 @@ import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadros
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
+import EkBelgeYukleButton from "../../components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const CustomEditorWVeri = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditorWVeri"),
@@ -175,7 +176,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -183,6 +184,11 @@ const Page = () => {
                 onClick={() => setIsClickedVarsayilanaDon(true)}
                 sx={{ width: "100%" }}
               >
+                <EkBelgeYukleButton
+                  formKodu={controller}
+                  fullWidth={false}           // sağda küçük buton
+                  text="Ek Belge Yükle"
+                />
                 <Typography
                   variant="body1"
                   sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
@@ -453,9 +459,9 @@ const Page = () => {
         </Grid>
       </PageContainer>
       {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-      user.rol?.includes("SorumluDenetci") ||
-      user.rol?.includes("Denetci") ||
-      user.rol?.includes("DenetciYardimcisi") ? (
+        user.rol?.includes("SorumluDenetci") ||
+        user.rol?.includes("Denetci") ||
+        user.rol?.includes("DenetciYardimcisi") ? (
         <Grid
           container
           sx={{
@@ -466,21 +472,21 @@ const Page = () => {
         >
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
             <BelgeKontrolCard
-              fetch={() => {}}
+              fetch={() => { }}
               hazirlayan="Denetçi - Yardımcı Denetçi"
               controller={controller}
             ></BelgeKontrolCard>
           </Grid>
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
             <BelgeKontrolCard
-              fetch={() => {}}
+              fetch={() => { }}
               onaylayan="Sorumlu Denetçi"
               controller={controller}
             ></BelgeKontrolCard>
           </Grid>
           <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
             <BelgeKontrolCard
-              fetch={() => {}}
+              fetch={() => { }}
               kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
               controller={controller}
             ></BelgeKontrolCard>

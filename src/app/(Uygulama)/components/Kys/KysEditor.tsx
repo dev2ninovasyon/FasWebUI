@@ -83,9 +83,10 @@ interface KysEditorProps {
     formKodu: string;
     alanAdi?: string;
     defaultContent?: string;
+    readOnly?: boolean;
 }
 
-const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent }) => {
+const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent, readOnly = false }) => {
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
     const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
@@ -343,31 +344,37 @@ const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent }) =>
 
             <CKEditor
                 editor={ClassicEditor}
-                config={editorConfig}
+                config={{
+                    ...editorConfig,
+                    ...(readOnly ? { toolbar: { items: [] } } : {})
+                }}
                 data={editorData}
                 onChange={handleChange}
+                disabled={readOnly}
             />
 
-            <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2 }}>
-                {sonGuncelleme && (
-                    <Typography variant="body2" color="text.secondary">
-                        Son Kaydedilme: {new Date(sonGuncelleme).toLocaleString("tr-TR")}
-                    </Typography>
-                )}
-                {kayitMesaji && (
-                    <Typography variant="body2" color={kayitMesaji.includes("Hata") ? "error" : "success.main"}>
-                        {kayitMesaji}
-                    </Typography>
-                )}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<IconDeviceFloppy />}
-                    onClick={handleSave}
-                >
-                    Kaydet
-                </Button>
-            </Stack>
+            {!readOnly && (
+                <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} sx={{ mt: 2 }}>
+                    {sonGuncelleme && (
+                        <Typography variant="body2" color="text.secondary">
+                            Son Kaydedilme: {new Date(sonGuncelleme).toLocaleString("tr-TR")}
+                        </Typography>
+                    )}
+                    {kayitMesaji && (
+                        <Typography variant="body2" color={kayitMesaji.includes("Hata") ? "error" : "success.main"}>
+                            {kayitMesaji}
+                        </Typography>
+                    )}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<IconDeviceFloppy />}
+                        onClick={handleSave}
+                    >
+                        Kaydet
+                    </Button>
+                </Stack>
+            )}
         </Box>
     );
 };

@@ -19,6 +19,7 @@ interface YearBoxProps {
   onSelect: (selectedYear: string) => void;
   onSelectYear: (selectedYear: number) => void;
   selectedDenetlenenId: number;
+  currentYear?: number;
 }
 
 interface Year {
@@ -30,6 +31,7 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
   onSelect,
   onSelectYear,
   selectedDenetlenenId,
+  currentYear,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -37,12 +39,14 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
 
   const fetchData = async () => {
     try {
+      if (!selectedDenetlenenId) return;
+
       const kullaniciRolVerileri = await getKullaniciRol(
         user.token || "",
         user.id || 0,
         selectedDenetlenenId
       );
-      if (kullaniciRolVerileri) {
+      if (Array.isArray(kullaniciRolVerileri)) {
         const newRows = kullaniciRolVerileri.map((kullaniciRol: any) => ({
           year: kullaniciRol.yil,
           label: kullaniciRol.yil.toString(),
@@ -51,18 +55,24 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
         setRows(newRows);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.error("YearBox fetchData hatası:", error);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [selectedDenetlenenId]);
+    if (user.token && selectedDenetlenenId) {
+      fetchData();
+    }
+  }, [selectedDenetlenenId, user.token, user.id]);
+
+  const options = user.yetki == "DenetciAdmin" ? years : rows;
+  const selectedValue = options.find(y => y.year === currentYear) || null;
 
   return (
     <Autocomplete
       id="year-box"
-      options={user.yetki == "DenetciAdmin" ? years : rows}
+      options={options}
+      value={selectedValue}
       noOptionsText="Bulunamadı"
       fullWidth
       onChange={(event, value) => {

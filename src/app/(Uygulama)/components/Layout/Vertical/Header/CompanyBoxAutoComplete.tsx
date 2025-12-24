@@ -16,6 +16,7 @@ interface CompanyBoxProps {
   onSelectTfrsmi: (selectedTfrsmi: boolean) => void;
   onSelectEnflasyonmu: (selectedEnflasyonmu: boolean) => void;
   onSelectKonsolidemi: (selectedKonsolidemi: boolean) => void;
+  currentId?: number;
 }
 
 interface Company {
@@ -37,6 +38,7 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
   onSelectTfrsmi,
   onSelectEnflasyonmu,
   onSelectKonsolidemi,
+  currentId,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -49,48 +51,57 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
           user.token || "",
           user.denetciId || 0
         );
-        const newRows = musteriVerileri.map((musteri: any) => ({
-          denetlenenId: musteri.id,
-          firmaAdi: musteri.firmaAdi,
-          denetimTuru: musteri.denetimTuru,
-          bobimi: musteri.bobi,
-          tfrsmi: musteri.tfrs,
-          enflasyonmu: musteri.enflasyonMu,
-          konsolidemi: musteri.konsolide,
-          label: musteri.firmaAdi,
-        }));
-        setRows(newRows);
+        if (Array.isArray(musteriVerileri)) {
+          const newRows = musteriVerileri.map((musteri: any) => ({
+            denetlenenId: musteri.id,
+            firmaAdi: musteri.firmaAdi,
+            denetimTuru: musteri.denetimTuru,
+            bobimi: musteri.bobi,
+            tfrsmi: musteri.tfrs,
+            enflasyonmu: musteri.enflasyonMu,
+            konsolidemi: musteri.konsolide,
+            label: musteri.firmaAdi,
+          }));
+          setRows(newRows);
+        }
       } else {
         const musteriVerileri = await getDenetlenenByRol(
           user.token || "",
           user.denetciId || 0,
           user.id || 0
         );
-        const newRows = musteriVerileri.map((musteri: any) => ({
-          denetlenenId: musteri.id,
-          firmaAdi: musteri.firmaAdi,
-          denetimTuru: musteri.denetimTuru,
-          bobimi: musteri.bobi,
-          tfrsmi: musteri.tfrs,
-          enflasyonmu: musteri.enflasyonMu,
-          konsolidemi: musteri.konsolide,
-          label: musteri.firmaAdi,
-        }));
-        setRows(newRows);
+        if (Array.isArray(musteriVerileri)) {
+          const newRows = musteriVerileri.map((musteri: any) => ({
+            denetlenenId: musteri.id,
+            firmaAdi: musteri.firmaAdi,
+            denetimTuru: musteri.denetimTuru,
+            bobimi: musteri.bobi,
+            tfrsmi: musteri.tfrs,
+            enflasyonmu: musteri.enflasyonMu,
+            konsolidemi: musteri.konsolide,
+            label: musteri.firmaAdi,
+          }));
+          setRows(newRows);
+        }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.error("CompanyBox fetchData hatası:", error);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (user.token) {
+      fetchData();
+    }
+  }, [user.token, user.yetki, user.denetciId]);
+
+  const selectedValue = rows.find(r => r.denetlenenId === currentId) || null;
 
   return (
     <Autocomplete
       id="company-box"
       options={rows}
+      value={selectedValue}
       noOptionsText="Bulunamadı"
       fullWidth
       onChange={(event, value) => {

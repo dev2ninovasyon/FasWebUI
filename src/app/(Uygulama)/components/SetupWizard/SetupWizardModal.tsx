@@ -22,6 +22,7 @@ import DenetimKadrosuStep from "./steps/DenetimKadrosuStep";
 import DenetimSozlesmesiStep from "./steps/DenetimSozlesmesiStep";
 import MusteriKabulStep from "./steps/MusteriKabulStep";
 import { getDenetciById, updateDenetci } from "@/api/Denetci/Denetci";
+import { getKullaniciAyarlar, updateKurulumAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 
@@ -63,24 +64,27 @@ export default function SetupWizardModal({
 
     // Load wizard progress when modal opens
     useEffect(() => {
-        if (open && user.token && user.denetciId) {
+        if (open && user.token && user.id) {
             loadWizardProgress();
         }
-    }, [open, user.token, user.denetciId]);
+    }, [open, user.token, user.id]);
 
     const loadWizardProgress = async () => {
         try {
             setIsLoadingProgress(true);
-            const denetciData = await getDenetciById(user.token!, user.denetciId!);
+            const ayarlar = await getKullaniciAyarlar(user.token!, user.id!);
 
-            if (denetciData?.setupWizardProgress) {
-                const progress = typeof denetciData.setupWizardProgress === 'string'
-                    ? JSON.parse(denetciData.setupWizardProgress)
-                    : denetciData.setupWizardProgress;
+            if (ayarlar) {
+                setActiveStep(ayarlar.kurulumAdimi || 0);
 
-                setActiveStep(progress.currentStep || 0);
-                setCompletedSteps(progress.completedSteps || []);
-                setWizardData(progress.data || {});
+                if (ayarlar.setupWizardProgress) {
+                    const progress = typeof ayarlar.setupWizardProgress === 'string'
+                        ? JSON.parse(ayarlar.setupWizardProgress)
+                        : ayarlar.setupWizardProgress;
+
+                    setCompletedSteps(progress.completedSteps || []);
+                    setWizardData(progress.data || {});
+                }
             }
         } catch (error) {
             console.error("Progress yüklenirken hata:", error);
@@ -89,19 +93,26 @@ export default function SetupWizardModal({
         }
     };
 
-    const saveWizardProgress = async (step: number, data: WizardData, completed: number[]) => {
-        if (!user.token || !user.denetciId) return;
+    const saveWizardProgress = async (step: number, data: WizardData, completed: number[], isComplete: boolean = false) => {
+        if (!user.token || !user.id) return;
 
         try {
             const progress = {
-                currentStep: step,
                 completedSteps: completed,
                 data: data
             };
 
-            await updateDenetci(user.token, user.denetciId, {
-                setupWizardProgress: JSON.stringify(progress)
-            });
+
+
+            await updateKurulumAyarlari(
+                user.token,
+                user.id,
+                isComplete,
+                step,
+                JSON.stringify(progress)
+            );
+
+
         } catch (error) {
             console.error("Progress kaydedilirken hata:", error);
         }
@@ -113,10 +124,8 @@ export default function SetupWizardModal({
         setCompletedSteps(newCompletedSteps);
 
         if (activeStep === steps.length - 1) {
-            // Completion - clear progress
-            await updateDenetci(user.token!, user.denetciId!, {
-                setupWizardProgress: null
-            });
+            // Completion - mark as complete
+            await saveWizardProgress(activeStep, wizardData, newCompletedSteps, true);
             onComplete(wizardData);
         } else {
             const nextStep = activeStep + 1;
@@ -179,9 +188,9 @@ export default function SetupWizardModal({
                 return (
                     <DenetimKadrosuStep
                         data={wizardData.denetimKadrosu}
-                        kullanicilar={wizardData.kullanici}
+                        sirket={wizardData.musteri}
                         onDataChange={(data) => updateWizardData("denetimKadrosu", data)}
-                        onNext={handleNext}
+                        onComplete={handleNext}
                         onBack={handleBack}
                     />
                 );
@@ -204,6 +213,12 @@ export default function SetupWizardModal({
         <Dialog
             open={open}
             fullScreen
+            disableEscapeKeyDown
+            onClose={(event, reason) => {
+                if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+                    onClose();
+                }
+            }}
             PaperProps={{
                 sx: {
                     bgcolor: "background.default",
@@ -223,39 +238,30 @@ export default function SetupWizardModal({
                 <Box
                     sx={{
                         width: "100%",
-                        maxWidth: { xs: "100%", sm: "900px", md: "1000px" },
+                        maxWidth: { xs: "100%", sm: "1000px", md: "1200px", lg: "1400px" },
                         bgcolor: "background.paper",
                         borderRadius: { xs: 0, sm: 2 },
-                        boxShadow: { xs: 0, sm: 24 },
+                        boxShadow: 0,
                         overflow: "hidden",
                         display: "flex",
                         flexDirection: "column",
-                        height: { xs: "100vh", sm: "90vh", md: "85vh" },
+                        height: { xs: "100vh", sm: "95vh", md: "90vh" },
                     }}
                 >
                     {/* Header with Stepper */}
                     <Box
                         sx={{
                             p: { xs: 1.5, sm: 2, md: 3 },
-                            borderBottom: 1,
-                            borderColor: "divider",
                             flexShrink: 0,
                         }}
                     >
                         {activeStep === 0 ? (
-                            <Typography variant="h4" align="center" sx={{ fontSize: { xs: "1.5rem", sm: "2rem", md: "2.125rem" } }}>
-                                FAS Program Kurulum Sihirbazı
-                            </Typography>
+                            <>
+
+                            </>
                         ) : (
                             <>
-                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: { xs: 1, sm: 2 } }}>
-                                    <Typography variant="h5" sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
-                                        Kurulum Sihirbazı
-                                    </Typography>
-                                    <IconButton onClick={onClose} size="small">
-                                        <IconX />
-                                    </IconButton>
-                                </Box>
+
                                 <Stepper
                                     activeStep={activeStep - 1}
                                     sx={{ mt: { xs: 1, sm: 2 } }}
@@ -292,7 +298,7 @@ export default function SetupWizardModal({
                     <Box
                         sx={{
                             flex: 1,
-                            p: { xs: 1, sm: 2, md: 3 },
+                            p: { xs: 1, sm: 1.5, md: 2 },
                             display: "flex",
                             flexDirection: "column",
                             minHeight: 0,

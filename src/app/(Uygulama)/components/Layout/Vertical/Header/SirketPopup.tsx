@@ -29,6 +29,7 @@ import {
 } from "@/store/user/UserSlice";
 import { AppState } from "@/store/store";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
+import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
 
 const SirketPopup = () => {
   // drawer top
@@ -40,15 +41,15 @@ const SirketPopup = () => {
   const router = useRouter();
 
   const [showDrawer2, setShowDrawer2] = useState(false);
-  const [selectedId, setSelectedId] = useState(0);
-  const [selectedAdi, setSelectedAdi] = useState("");
-  const [selectedDenetimTuru, setSelectedDenetimTuru] = useState("");
-  const [selectedBobimi, setSelectedBobimi] = useState(false);
-  const [selectedTfrsmi, setSelectedTfrsmi] = useState(false);
-  const [selectedEnflasyonmu, setSelectedEnflasyonmu] = useState(false);
-  const [selectedKonsolidemi, setSelectedKonsolidemi] = useState(false);
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedYearNumber, setSelectedYearNumber] = useState(0);
+  const [selectedId, setSelectedId] = useState(user.denetlenenId || 0);
+  const [selectedAdi, setSelectedAdi] = useState(user.denetlenenFirmaAdi || "");
+  const [selectedDenetimTuru, setSelectedDenetimTuru] = useState(user.denetimTuru || "");
+  const [selectedBobimi, setSelectedBobimi] = useState(user.bobimi || false);
+  const [selectedTfrsmi, setSelectedTfrsmi] = useState(user.tfrsmi || false);
+  const [selectedEnflasyonmu, setSelectedEnflasyonmu] = useState(user.enflasyonmu || false);
+  const [selectedKonsolidemi, setSelectedKonsolidemi] = useState(user.konsolidemi || false);
+  const [selectedYear, setSelectedYear] = useState(user.yil?.toString() || "");
+  const [selectedYearNumber, setSelectedYearNumber] = useState(user.yil || 0);
 
   const [year, setYear] = useState(user.yil);
 
@@ -94,6 +95,15 @@ const SirketPopup = () => {
       );
       if (rolVerileri) {
         dispatch(setRol(rolVerileri.rol));
+      }
+
+      // Persist to database
+      if (user.token && user.id && user.id !== 0) {
+        console.log(`SirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
+        await updateSonSecilenAyarlari(user.token, user.id, selectedId, selectedYearNumber);
+        console.log("SirketPopup - Persistence update successful.");
+      } else {
+        console.warn("SirketPopup - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });
       }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
@@ -184,6 +194,7 @@ const SirketPopup = () => {
               onSelectKonsolidemi={(selectedKonsolidemi) =>
                 setSelectedKonsolidemi(selectedKonsolidemi)
               }
+              currentId={selectedId}
             />
           </Box>
           <Box marginBottom={3}>
@@ -196,6 +207,7 @@ const SirketPopup = () => {
                 setSelectedYearNumber(selectedYear)
               }
               selectedDenetlenenId={selectedId}
+              currentYear={selectedYearNumber}
             />
           </Box>
           <Button

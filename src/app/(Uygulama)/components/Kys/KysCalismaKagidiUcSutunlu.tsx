@@ -43,6 +43,7 @@ interface KysCalismaKagidiTableProps {
     baslikKonu?: string;
     baslikYorum?: string;
     baslikCozum?: string;
+    readOnly?: boolean;
 }
 
 const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
@@ -51,6 +52,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
     baslikKonu = "Konu",
     baslikYorum = "Yorum / Nasıl yapıldı?",
     baslikCozum = "Çözüldü",
+    readOnly = false,
 }) => {
     const user = useSelector((state: AppState) => state.userReducer);
 
@@ -209,45 +211,47 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                         </Grid>
                     ))}
                 </Grid>
-                <Grid
-                    container
-                    sx={{
-                        width: "95%",
-                        margin: "0 auto",
-                        justifyContent: "end",
-                    }}
-                >
+                {!readOnly && (
                     <Grid
-                        item
-                        xs={12}
-                        lg={1.5}
-                        my={2}
+                        container
                         sx={{
-                            display: "flex",
+                            width: "95%",
+                            margin: "0 auto",
                             justifyContent: "end",
                         }}
                     >
-                        <Button
-                            size="medium"
-                            variant="outlined"
-                            color="primary"
-                            onClick={handleNew}
+                        <Grid
+                            item
+                            xs={12}
+                            lg={1.5}
+                            my={2}
                             sx={{
-                                width: "100%",
+                                display: "flex",
+                                justifyContent: "end",
                             }}
                         >
-                            <Typography
-                                variant="body1"
+                            <Button
+                                size="medium"
+                                variant="outlined"
+                                color="primary"
+                                onClick={handleNew}
                                 sx={{
-                                    overflowWrap: "break-word",
-                                    wordWrap: "break-word",
+                                    width: "100%",
                                 }}
                             >
-                                Yeni İşlem Ekle
-                            </Typography>
-                        </Button>
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        overflowWrap: "break-word",
+                                        wordWrap: "break-word",
+                                    }}
+                                >
+                                    Yeni İşlem Ekle
+                                </Typography>
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
+                )}
             </Grid>
 
             {isPopUpOpen && (
@@ -267,6 +271,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     baslikKonu={baslikKonu}
                     baslikYorum={baslikYorum}
                     baslikCozum={baslikCozum}
+                    readOnly={readOnly}
                 />
             )}
 
@@ -308,6 +313,7 @@ interface PopUpProps {
     baslikKonu: string;
     baslikYorum: string;
     baslikCozum: string;
+    readOnly?: boolean;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
@@ -326,6 +332,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     baslikKonu,
     baslikYorum,
     baslikCozum,
+    readOnly = false,
 }) => {
     const [localKonu, setLocalKonu] = useState(konu);
     const [localYorum, setLocalYorum] = useState(yorum);
@@ -343,7 +350,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                     alignItems="center"
                 >
                     <Typography variant="h4" py={1} px={3}>
-                        {isNew ? "Yeni Ekle" : "Düzenle"}
+                        {isNew ? "Yeni Ekle" : readOnly ? "Görüntüle" : "Düzenle"}
                     </Typography>
                     <IconButton size="small" onClick={handleClose} disabled={AnyLoading}>
                         <IconX size="18" />
@@ -362,7 +369,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                         fullWidth
                         value={localKonu}
                         onChange={(e: any) => setLocalKonu(e.target.value)}
-                        disabled={AnyLoading}
+                        disabled={AnyLoading || readOnly}
                     />
 
                     <Typography variant="subtitle1" p={1} mt={2}>
@@ -374,7 +381,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                         fullWidth
                         value={localYorum}
                         onChange={(e: any) => setLocalYorum(e.target.value)}
-                        disabled={AnyLoading}
+                        disabled={AnyLoading || readOnly}
                     />
 
                     <Typography variant="subtitle1" p={1} mt={2}>
@@ -386,41 +393,43 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                         fullWidth
                         value={localCozum}
                         onChange={(e: any) => setLocalCozum(e.target.value)}
-                        disabled={AnyLoading}
+                        disabled={AnyLoading || readOnly}
                     />
                 </Box>
             </DialogContent>
 
-            <DialogActions sx={{ justifyContent: "center", mb: "15px", px: 3, alignItems: "center" }}>
-                <Box display="flex" justifyContent="center" gap={2}>
-                    <Button
-                        variant="outlined"
-                        color="success"
-                        onClick={() =>
-                            isNew
-                                ? handleCreate(localKonu, localYorum, localCozum)
-                                : handleUpdate(localKonu, localYorum, localCozum)
-                        }
-                        sx={{ width: "120px" }}
-                        disabled={AnyLoading}
-                        startIcon={saving ? <CircularProgress size={20} color="inherit" /> : null}
-                    >
-                        {saving ? "Kaydediliyor..." : "Kaydet"}
-                    </Button>
-                    {!isNew && (
+            {!readOnly && (
+                <DialogActions sx={{ justifyContent: "center", mb: "15px", px: 3, alignItems: "center" }}>
+                    <Box display="flex" justifyContent="center" gap={2}>
                         <Button
                             variant="outlined"
-                            color="error"
-                            onClick={handleDelete}
+                            color="success"
+                            onClick={() =>
+                                isNew
+                                    ? handleCreate(localKonu, localYorum, localCozum)
+                                    : handleUpdate(localKonu, localYorum, localCozum)
+                            }
                             sx={{ width: "120px" }}
                             disabled={AnyLoading}
-                            startIcon={deleting ? <CircularProgress size={20} color="inherit" /> : null}
+                            startIcon={saving ? <CircularProgress size={20} color="inherit" /> : null}
                         >
-                            {deleting ? "Siliniyor..." : "Sil"}
+                            {saving ? "Kaydediliyor..." : "Kaydet"}
                         </Button>
-                    )}
-                </Box>
-            </DialogActions>
+                        {!isNew && (
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={handleDelete}
+                                sx={{ width: "120px" }}
+                                disabled={AnyLoading}
+                                startIcon={deleting ? <CircularProgress size={20} color="inherit" /> : null}
+                            >
+                                {deleting ? "Siliniyor..." : "Sil"}
+                            </Button>
+                        )}
+                    </Box>
+                </DialogActions>
+            )}
         </Dialog>
     );
 };

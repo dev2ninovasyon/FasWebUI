@@ -258,8 +258,8 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
                     "Kullanım Kılavuzu; uygulamayı kullanırken ihtiyaç duyacağınız açıklamalar, ekran anlatımları ve yardım dokümanlarına ulaşmanızı sağlar. Rehber burada sona eriyor.",
                 side: "right",
                 align: "center",
-                showButtons: ["previous", "close"],
-                doneBtnText: "Rehberi Bitir",
+                showButtons: ["previous", "next"],
+                doneBtnText: "Tamamla",
             } as any,
             disableActiveInteraction: true,
         });
@@ -271,6 +271,8 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         // Tur çalışmayacak durumlar
         if (!run) return;
         if (!steps || steps.length === 0) return;
+
+        let tourCompleted = false;
 
         // Her run=true olduğunda YENİ bir driver instance oluştur
         const config: DriverConfig = {
@@ -287,8 +289,21 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
             showProgress: true,
             nextBtnText: "İleri",
             prevBtnText: "Geri",
-            doneBtnText: "Bitir",
+            doneBtnText: "Tamamla",
+            onPopoverRender: (popover: any, { config, state }: any) => {
+                // Son adımdayız ve "Tamamla" butonuna basıldığında
+                const isLastStep = state.activeIndex === steps.length - 1;
+                if (isLastStep) {
+                    const doneBtn = popover.wrapper.querySelector('.driver-popover-close-btn');
+                    if (doneBtn) {
+                        doneBtn.addEventListener('click', () => {
+                            tourCompleted = true;
+                        });
+                    }
+                }
+            },
             onDestroyStarted: () => {
+                // Tur tamamlandıysa veya kapatıldıysa callback'i çağır
                 onClose();
             },
             onCloseClick: () => {
