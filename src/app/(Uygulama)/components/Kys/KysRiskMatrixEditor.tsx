@@ -36,11 +36,13 @@ import { enqueueSnackbar } from "notistack";
 interface KysRiskMatrixEditorProps {
     kategoriKodu: string;
     readOnly?: boolean;
+    onLinkClick?: (link: string) => void;
 }
 
 const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
     kategoriKodu,
     readOnly = false,
+    onLinkClick,
 }) => {
     const router = useRouter();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -189,8 +191,12 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
     };
 
     const handleLinkClick = (link: string) => {
-        enqueueSnackbar("İlgili döküman açılıyor...", { variant: "info" });
-        router.push(link);
+        if (onLinkClick) {
+            onLinkClick(link);
+        } else {
+            enqueueSnackbar("İlgili döküman açılıyor...", { variant: "info" });
+            router.push(link);
+        }
     };
 
     const renderEditableCell = (content: string, onBlur: (value: string) => void) => {

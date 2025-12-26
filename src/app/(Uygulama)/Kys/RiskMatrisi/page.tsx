@@ -12,6 +12,7 @@ const KysCalismaKagidiShow = dynamic(() => import("@/app/(Uygulama)/components/K
 const KysCalismaKagidiUcSutunluShow = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysCalismaKagidiUcSutunluShow"), { ssr: false });
 const KysEditorShow = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditorShow"), { ssr: false });
 const KysRiskMatrixExport = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysRiskMatrixExport"), { ssr: false });
+const KysRelatedDocumentsPopup = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysRelatedDocumentsPopup"), { ssr: false });
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -39,7 +40,7 @@ function CustomTabPanel(props: TabPanelProps) {
     );
 }
 
-import { documentMapping, riskMatrixSections as sections } from "@/api/Kys/KysRiskMatrixConstants";
+import { documentMapping, riskMatrixSections as sections, KYS_PATH_TO_FORM_KODU } from "@/api/Kys/KysRiskMatrixConstants";
 
 const BCrumb = [
     {
@@ -55,9 +56,28 @@ const BCrumb = [
 
 const Page: React.FC = () => {
     const [activeTab, setActiveTab] = React.useState(0);
+    const [selectedDoc, setSelectedDoc] = React.useState<string | null>(null);
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
+        setSelectedDoc(null);
+    };
+
+    const handleLinkClick = (link: string) => {
+        // First check if the path matches our KYS mapping
+        if (KYS_PATH_TO_FORM_KODU[link]) {
+            setSelectedDoc(KYS_PATH_TO_FORM_KODU[link]);
+            return;
+        }
+
+        // Fallback to extraction if not found in mapping
+        let target = link;
+        if (link.includes("/")) {
+            const parts = link.split("/");
+            target = parts[parts.length - 1];
+        }
+
+        setSelectedDoc(target);
     };
 
     return (
@@ -84,30 +104,19 @@ const Page: React.FC = () => {
                         </Typography>
 
                         {/* Editable Risk Matrix */}
-                        <KysRiskMatrixEditor kategoriKodu={section.kategoriKodu} />
+                        <KysRiskMatrixEditor
+                            kategoriKodu={section.kategoriKodu}
+                            onLinkClick={handleLinkClick}
+                        />
 
                         <Divider sx={{ my: 4 }} />
 
-                        {/* Related Documents - Read Only */}
-                        <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-                            İlgili Belgeler
-                        </Typography>
-
-                        {section.documents.map((docKey, docIndex) => {
-                            const doc = documentMapping[docKey];
-                            if (!doc) return null;
-                            return (
-                                <Box key={docIndex} sx={{ mb: 4 }} id={doc.formKodu}>
-                                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                                        {doc.title}
-                                    </Typography>
-                                    {doc.type === 1 && <KysCalismaKagidiShow formKodu={doc.formKodu} alanAdi={doc.title} />}
-                                    {doc.type === 2 && <KysEditorShow formKodu={doc.formKodu} alanAdi={doc.title} />}
-                                    {doc.type === 3 && <KysCalismaKagidiUcSutunluShow formKodu={doc.formKodu} alanAdi={doc.title} />}
-                                    {doc.type === 4 && <KysBelgeShow formKodu={doc.formKodu} />}
-                                </Box>
-                            );
-                        })}
+                        {/* Interactive Related Documents Popup */}
+                        <KysRelatedDocumentsPopup
+                            documentKeys={section.documents}
+                            selectedKey={selectedDoc}
+                            onClose={() => setSelectedDoc(null)}
+                        />
                     </CustomTabPanel>
                 ))}
 

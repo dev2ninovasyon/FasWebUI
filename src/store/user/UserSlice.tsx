@@ -175,6 +175,16 @@ export const UserSlice = createSlice({
     setTurTamamlandi: (state: StateType, action) => {
       state.turTamamlandi = action.payload;
     },
+    setDenetlenen: (state: StateType, action) => {
+      state.denetlenenId = action.payload.id;
+      state.denetlenenFirmaAdi = action.payload.adi;
+      state.yil = action.payload.year;
+      state.denetimTuru = action.payload.denetimTuru;
+      state.bobimi = action.payload.bobimi;
+      state.tfrsmi = action.payload.tfrsmi;
+      state.enflasyonmu = action.payload.enflasyonmu;
+      state.konsolidemi = action.payload.konsolidemi;
+    },
     resetToNull: (state: StateType, action) => {
       if (action.payload == "") {
         state.id = undefined;
@@ -250,6 +260,7 @@ export const {
   setSonSecilenKonsolidemi,
   setSonSecilenBddkmi,
   setTurTamamlandi,
+  setDenetlenen
 } = UserSlice.actions;
 
 export default UserSlice.reducer;

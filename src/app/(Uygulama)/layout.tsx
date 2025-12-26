@@ -12,7 +12,7 @@ import Header from "./components/Layout/Vertical/Header/Header";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import PageLoadingOverlay from "@/components/shared/PageLoadingOverlay";
-import { setKurulumTamamlandi, setDenetlenenId, setDenetlenenFirmaAdi, setYil, setDenetimTuru, setBobimi, setTfrsmi, setEnflasyonmu, setKonsolidemi, setRol as setStoreRol } from "@/store/user/UserSlice";
+import { setKurulumTamamlandi, setDenetlenenId, setDenetlenenFirmaAdi, setYil, setDenetimTuru, setBobimi, setTfrsmi, setEnflasyonmu, setKonsolidemi, setRol as setStoreRol, setDenetlenen } from "@/store/user/UserSlice";
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
 import MandatoryFlow from "./components/Layout/Mandatory/MandatoryFlow";
 import { useDispatch } from "@/store/hooks";
@@ -126,14 +126,9 @@ export default function RootLayout({
   }, [user.token, control, router]);
   // Handle selection from MandatoryFlow
   const handleSelection = async (data: any) => {
-    dispatch(setDenetlenenId(data.id));
-    dispatch(setDenetlenenFirmaAdi(data.adi));
-    dispatch(setYil(data.year));
-    dispatch(setDenetimTuru(data.denetimTuru));
-    dispatch(setBobimi(data.bobimi));
-    dispatch(setTfrsmi(data.tfrsmi));
-    dispatch(setEnflasyonmu(data.enflasyonmu));
-    dispatch(setKonsolidemi(data.konsolidemi));
+
+
+    dispatch(setDenetlenen(data));
 
     localStorage.setItem("fas_denetlenenId", data.id.toString());
     localStorage.setItem("fas_yil", data.year.toString());
@@ -145,18 +140,14 @@ export default function RootLayout({
       }
 
       if (user.token && user.id && user.id !== 0) {
-        console.log(`Layout - Persisting selection for user ${user.id}: Company=${data.id}, Year=${data.year}`);
         await updateSonSecilenAyarlari(user.token, user.id, data.id, data.year);
-        console.log("Layout - Persistence update successful.");
-      } else {
-        console.warn("Layout - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });
       }
     } catch (e) {
       console.error("Layout - Error during selection processing:", e);
     }
 
-    setIsSelectionModalOpen(false);
-    // Force reload to apply session
+    // Modal state update is not needed here as it's triggered by Redux and useEffect,
+    // and followed by a full page reload anyway.
     window.location.reload();
   };
 

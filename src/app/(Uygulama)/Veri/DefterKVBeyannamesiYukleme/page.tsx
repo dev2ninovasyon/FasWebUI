@@ -25,6 +25,7 @@ import VeriPaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/VeriP
 import { url } from "@/api/apiBase";
 
 import axios from "axios";
+import { enqueueSnackbar } from "notistack";
 
 const BCrumb = [
   {
@@ -139,9 +140,13 @@ const Page: React.FC = () => {
         );
         if (response.status >= 200 && response.status < 300) {
           setDosyaYuklendiMi(true);
+          enqueueSnackbar("Dosya başarıyla yüklendi.", { variant: "success" });
+          setControl(true);
         }
       } catch (error: any) {
         console.error("Dosya yüklenirken hata oluştu:", error);
+        const errorMessage = error.response?.data?.message || error.response?.data || "Dosya yüklenirken bir hata oluştu.";
+        enqueueSnackbar(errorMessage, { variant: "error" });
       } finally {
         setUploading(false);
       }
@@ -152,17 +157,15 @@ const Page: React.FC = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      [`application/${
-        fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
+      [`application/${fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
           ? "xml"
           : "pdf"
-      }`]: [
-        `.${
-          fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
+        }`]: [
+          `.${fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
             ? "xml"
             : "pdf"
-        }`,
-      ],
+          }`,
+        ],
     },
   });
 
@@ -382,7 +385,7 @@ const Page: React.FC = () => {
                         <Typography variant="body2">
                           Sadece{" "}
                           {fileType === "E-DefterKebir" ||
-                          fileType === "E-DefterYevmiye"
+                            fileType === "E-DefterYevmiye"
                             ? "XML "
                             : "PDF "}
                           dosyası yükleyebilirsiniz.
