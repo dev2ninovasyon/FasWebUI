@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 import HareketsizTicariAlacaklar from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HareketsizTicariAlacaklar";
+import { Box, Typography } from "@mui/material";
 
 const Page = () => {
     const user = useSelector((state: AppState) => state.userReducer);
@@ -39,7 +40,6 @@ const Page = () => {
             title: `${dip}`,
         },
         {
-            to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
             title: "Hareketsiz Ticari Alacaklar Çalışması",
         },
     ];
@@ -88,10 +88,9 @@ const Page = () => {
                 }
             });
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.error("Hata:", error);
         }
     };
-
     const fetchData2 = async () => {
         try {
             const dipnotNo = await getDipnotNoByDipnotAdi(
@@ -115,7 +114,7 @@ const Page = () => {
             fetchData();
             fetchData2();
         }
-    }, [parentName]);
+    }, [parentName, user.token]);
 
     return (
         <PageContainer
@@ -128,7 +127,7 @@ const Page = () => {
                 items={BCrumb}
             ></Breadcrumb>
 
-            {dipnotNo != "" ? (
+            {dipnotNo === "05-01" ? (
                 <HareketsizTicariAlacaklar
                     controller="DonusumKayitlariKontrol"
                     dipnotAdi={parentName}
@@ -136,9 +135,16 @@ const Page = () => {
                     modelAdi={parentName}
                     setDip={setDip}
                 />
-            ) : (
-                <></>
-            )}
+            ) : dipnotNo !== "" ? (
+                <Box sx={{ p: 3, textAlign: "center", border: "1px dashed #ccc", borderRadius: 2, my: 2 }}>
+                    <Typography variant="h6" color="error">
+                        Bu çalışma kağıdı sadece "Ticari Alacaklar (05-01)" için kullanılabilir.
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                        Mevcut Dipnot No: {dipnotNo}
+                    </Typography>
+                </Box>
+            ) : null}
 
             <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
         </PageContainer>

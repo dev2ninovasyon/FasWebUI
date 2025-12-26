@@ -1,23 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { usePathname } from "next/navigation";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import RiskTespiti from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/RiskTespiti";
 import ReeskontTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/ReeskontTestleri";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
+import { getDipnotNoByDipnotAdi } from "@/api/MaddiDogrulama/MaddiDogrulama";
 
-interface Props {
-    searchParams: {
-        dipnotNo: string;
-    };
-}
-
-const ReeskontTestleriPage = ({ searchParams }: Props) => {
+const ReeskontTestleriPage = () => {
+    const user = useSelector((state: AppState) => state.userReducer);
     const pathname = usePathname();
-    const { dipnotNo } = searchParams;
+    const [dipnotNo, setDipnotNo] = useState<string>("");
 
     // URL segmentlerinden hiyerarşiyi çözüyoruz
     const segments = pathname.split("/");
@@ -26,6 +24,62 @@ const ReeskontTestleriPage = ({ searchParams }: Props) => {
     const childName = segments[parentNameIndex + 1];
 
     const [dip, setDip] = useState("");
+
+    // Diğer sayfanızdaki normalizeString fonksiyonu
+    function normalizeString(str: string): string {
+        const turkishChars: { [key: string]: string } = {
+            ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u",
+            Ç: "C", Ğ: "G", İ: "I", Ö: "O", Ş: "S", Ü: "U",
+        };
+        let normalized = str.replace(/[çğıöşüÇĞÖŞÜıİ]/g, (match) => turkishChars[match] || match);
+        normalized = normalized.replace(/\s+/g, "");
+        return normalized.toLowerCase();
+    }
+
+    // Başlık bilgisini çeken fetchData fonksiyonu
+    const fetchData = async () => {
+        try {
+            const maddiDogrulama = await getMaddiDogrulama(
+                user.token || "",
+                user.denetimTuru || "",
+                user.denetlenenId || 0,
+                user.yil || 0
+            );
+
+            maddiDogrulama.forEach((veri: any) => {
+                if (normalizeString(veri.name) == normalizeString(parentName)) {
+                    setDip(veri.name);
+                }
+            });
+        } catch (error) {
+            console.error("An error occurred while fetching dipnot name:", error);
+        }
+    };
+
+    const fetchData2 = async () => {
+        try {
+            const dipnotNo = await getDipnotNoByDipnotAdi(
+                user.token || "",
+                user.denetciId || 0,
+                user.denetlenenId || 0,
+                user.yil || 0,
+                parentName,
+                user.denetimTuru === "Tfrs"
+            );
+
+            console.log("dipnotNo", dipnotNo);
+            setDipnotNo(dipnotNo);
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (parentName && parentName.length > 0) {
+            fetchData();
+            fetchData2();
+        }
+    }, [parentName, user.token]);
 
     const BCrumb = [
         {
@@ -38,7 +92,7 @@ const ReeskontTestleriPage = ({ searchParams }: Props) => {
         },
         {
             to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-            title: `${dip || "Yükleniyor..."}`,
+            title: `${dip}`,
         },
         {
             title: "Reeskont Testleri",
@@ -48,7 +102,7 @@ const ReeskontTestleriPage = ({ searchParams }: Props) => {
     return (
         <PageContainer
             title={`${dip} | Reeskont Testleri`}
-            description="Reeskont Testleri Çalışması"
+            description="Reeskont Testleri"
         >
             <Breadcrumb
                 title={"Reeskont Testleri"}
@@ -58,7 +112,7 @@ const ReeskontTestleriPage = ({ searchParams }: Props) => {
 
             <Box sx={{ mb: 3 }}>
                 <ReeskontTestleri
-                    dipnotNo={dipnotNo || "05-01"}
+                    dipnotNo={dipnotNo}
                     modelAdi={parentName}
                 />
             </Box>

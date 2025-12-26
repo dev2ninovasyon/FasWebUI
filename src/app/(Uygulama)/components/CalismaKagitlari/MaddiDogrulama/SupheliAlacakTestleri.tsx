@@ -1,23 +1,21 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import Handsontable from "handsontable";
 import "handsontable/dist/handsontable.full.min.css";
-
 import "@/utils/languages/handsontable.tr-TR";
 
 import { Box, Typography, Button, Snackbar, Alert, CircularProgress } from "@mui/material";
-import { IconDeviceFloppy, IconPlus, IconRefresh } from "@tabler/icons-react";
+import { IconDeviceFloppy } from "@tabler/icons-react";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
     getSupheliAlacakTestleri,
     updateSupheliAlacakTestleri,
     addSupheliAlacakTestleri,
-    deleteSupheliAlacakTestleri,
-    varsayilanaDonSupheliAlacakTestleri,
+    varsayilanaDon,
     SupheliAlacakTestleriData,
 } from "@/api/CalismaKagitlari/SupheliAlacakTestleri";
 
@@ -27,17 +25,23 @@ registerAllModules();
 interface Props {
     dipnotNo: string;
     modelAdi: string;
+    isClickedVarsayilanaDon: boolean;
+    setIsClickedVarsayilanaDon: (deger: boolean) => void;
 }
 
-const SupheliAlacakTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
+const SupheliAlacakTestleri: React.FC<Props> = ({
+    dipnotNo,
+    isClickedVarsayilanaDon,
+    setIsClickedVarsayilanaDon
+}) => {
     const hotRef = useRef<any>(null);
     const [veriler, setVeriler] = useState<SupheliAlacakTestleriData[]>([]);
     const [loading, setLoading] = useState(true);
     const user = useSelector((state: AppState) => state.userReducer);
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" as "success" | "error" });
 
-    const fetchData = async () => {
-        if (user.token && user.denetciId && user.yil && user.denetlenenId) {
+    const fetchData = useCallback(async () => {
+        if (user.token && user.denetciId && user.yil && user.denetlenenId && dipnotNo) {
             setLoading(true);
             try {
                 const result = await getSupheliAlacakTestleri(user.token, user.denetciId, user.yil, user.denetlenenId, dipnotNo);
@@ -48,51 +52,64 @@ const SupheliAlacakTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
                 setLoading(false);
             }
         }
-    };
+    }, [user.token, user.denetciId, user.yil, user.denetlenenId, dipnotNo]);
 
-    useEffect(() => { fetchData(); }, [user, dipnotNo]);
+    useEffect(() => {
+        const handleVarsayilanaDon = async () => {
+            if (isClickedVarsayilanaDon && user.token) {
+                try {
+                    setLoading(true);
+                    const success = await varsayilanaDon(
+                        user.token,
+                        user.denetciId || 0,
+                        user.yil || 0,
+                        user.denetlenenId || 0,
+                        dipnotNo
+                    );
+                    if (success) {
+                        showSnackbar("Veriler başarıyla sıfırlandı.", "success");
+                        await fetchData();
+                    }
+                } catch (error) {
+                    showSnackbar("Sıfırlama işlemi sırasında hata oluştu.", "error");
+                } finally {
+                    setIsClickedVarsayilanaDon(false);
+                    setLoading(false);
+                }
+            }
+        };
+
+        handleVarsayilanaDon();
+    }, [isClickedVarsayilanaDon, user, dipnotNo, fetchData, setIsClickedVarsayilanaDon]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const showSnackbar = (message: string, severity: "success" | "error") => {
         setSnackbar({ open: true, message, severity });
     };
 
-    // Handsontable Değişiklik Yönetimi
-    const handleAfterChange = async (changes: any, source: string) => {
-        if (source === 'loadData' || !changes) return;
-
-        const hotInstance = hotRef.current?.hotInstance;
-
-        for (const [row, prop, oldValue, newValue] of changes) {
-            if (oldValue === newValue) continue;
-
-            const rowData = hotInstance.getSourceDataAtRow(row);
-
-            // Otomatik Değişim TL Hesaplama (Client-side görsel destek)
-            if (prop === 'oncekiDonemBakiye' || prop === 'cariDonemBakiye') {
-                const onceki = prop === 'oncekiDonemBakiye' ? newValue : rowData.oncekiDonemBakiye;
-                const cari = prop === 'cariDonemBakiye' ? newValue : rowData.cariDonemBakiye;
-                const fark = Math.abs((Number(onceki) || 0) - (Number(cari) || 0));
-                hotInstance.setDataAtRowProp(row, 'degisimTl', fark, 'internal');
-            }
-        }
-    };
-
     const handleSaveRow = async () => {
         const hotInstance = hotRef.current?.hotInstance;
-        const selectedRange = hotInstance.getSelected();
+        const selected = hotInstance.getSelected();
 
-        if (!selectedRange) {
+        if (!selected) {
             showSnackbar("Lütfen kaydetmek istediğiniz satırı seçin.", "error");
             return;
         }
 
-        const rowIndex = selectedRange[0][0];
+        const rowIndex = selected[0][0];
         const rowData = hotInstance.getSourceDataAtRow(rowIndex);
 
         try {
             let success;
-            if (rowData.id === 0) {
-                success = await addSupheliAlacakTestleri(user.token!, { ...rowData, dipnotNo, baslik: veriler[0]?.baslik || "Şüpheli Alacak Testleri" });
+            if (!rowData.id || rowData.id === 0) {
+                success = await addSupheliAlacakTestleri(user.token!, {
+                    ...rowData,
+                    dipnotNo,
+                    baslik: veriler[0]?.baslik || "Şüpheli Alacak Testleri"
+                });
             } else {
                 success = await updateSupheliAlacakTestleri(user.token!, rowData.id, rowData);
             }
@@ -106,41 +123,44 @@ const SupheliAlacakTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
         }
     };
 
-    const handleAddRow = () => {
+    const handleAfterChange = (changes: any, source: string) => {
+        if (source === 'loadData' || !changes) return;
         const hotInstance = hotRef.current?.hotInstance;
-        hotInstance.alter('insert_row_below', hotInstance.countRows());
-        const lastRowIndex = hotInstance.countRows() - 1;
 
-        // Yeni satıra default değerleri ata
-        hotInstance.setSourceDataAtCell(lastRowIndex, 'id', 0);
-        hotInstance.setSourceDataAtCell(lastRowIndex, 'oncekiDonemBakiye', 0);
-        hotInstance.setSourceDataAtCell(lastRowIndex, 'cariDonemBakiye', 0);
-        hotInstance.setSourceDataAtCell(lastRowIndex, 'degisimTl', 0);
+        for (const [row, prop, oldValue, newValue] of changes) {
+            if (oldValue === newValue) continue;
+
+            const rowData = hotInstance.getSourceDataAtRow(row);
+
+            if (prop === 'oncekiDonemBakiye' || prop === 'cariDonemBakiye') {
+                const onceki = Number(prop === 'oncekiDonemBakiye' ? newValue : rowData.oncekiDonemBakiye) || 0;
+                const cari = Number(prop === 'cariDonemBakiye' ? newValue : rowData.cariDonemBakiye) || 0;
+                hotInstance.setDataAtRowProp(row, 'degisimTl', Math.abs(onceki - cari), 'internal');
+            }
+        }
     };
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+        <Box sx={{ bgcolor: "background.paper", p: 3, borderRadius: "12px", border: "1px solid #e0e0e0" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3, alignItems: "center" }}>
+                <Typography variant="h5" sx={{ fontWeight: "bold", color: "text.primary" }}>
                     {veriler[0]?.baslik || "Şüpheli Alacak Testleri"}
                 </Typography>
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button variant="contained" color="primary" startIcon={<IconPlus size={18} />} onClick={handleAddRow}>
-                        Yeni Satır
-                    </Button>
-                    <Button variant="contained" color="success" startIcon={<IconDeviceFloppy size={18} />} onClick={handleSaveRow}>
-                        Seçili Satırı Kaydet
-                    </Button>
-                    <Button variant="contained" color="warning" startIcon={<IconRefresh size={18} />} onClick={() => fetchData()}>
-                        Yenile
-                    </Button>
-                </Box>
+                <Button
+                    variant="contained"
+                    color="success"
+                    startIcon={<IconDeviceFloppy size={20} />}
+                    onClick={handleSaveRow}
+                    sx={{ textTransform: "none", px: 3, borderRadius: "8px" }}
+                >
+                    Seçili Satırı Kaydet
+                </Button>
             </Box>
 
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>
             ) : (
-                <Box sx={{ width: '100%', overflow: 'hidden', border: '1px solid #ddd' }}>
+                <Box sx={{ width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
                     <HotTable
                         ref={hotRef}
                         data={veriler}
@@ -167,15 +187,40 @@ const SupheliAlacakTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
                         autoWrapCol={true}
                         dropdownMenu={true}
                         filters={true}
-                        contextMenu={['remove_row', 'undo', 'redo']}
+                        contextMenu={{
+                            items: {
+                                "row_above": { name: "Üste Satır Ekle" },
+                                "row_below": { name: "Alta Satır Ekle" },
+                                "separator": Handsontable.plugins.ContextMenu.SEPARATOR,
+                                "remove_row": { name: "Seçili Satırı Sil" },
+                                "undo": { name: "Geri Al" },
+                                "redo": { name: "İleri Al" }
+                            }
+                        }}
+                        afterCreateRow={(index, amount) => {
+                            const hotInstance = hotRef.current?.hotInstance;
+                            for (let i = 0; i < amount; i++) {
+                                hotInstance.setDataAtRowProp(index + i, 'id', 0);
+                                hotInstance.setDataAtRowProp(index + i, 'oncekiDonemBakiye', 0);
+                                hotInstance.setDataAtRowProp(index + i, 'cariDonemBakiye', 0);
+                                hotInstance.setDataAtRowProp(index + i, 'degisimTl', 0);
+                            }
+                        }}
                         afterChange={handleAfterChange}
-                        licenseKey="non-commercial-and-evaluation" // Geliştirme için
+                        licenseKey="non-commercial-and-evaluation"
                     />
                 </Box>
             )}
 
-            <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-                <Alert severity={snackbar.severity} variant="filled">{snackbar.message}</Alert>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={4000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert severity={snackbar.severity} variant="filled" sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
             </Snackbar>
         </Box>
     );
