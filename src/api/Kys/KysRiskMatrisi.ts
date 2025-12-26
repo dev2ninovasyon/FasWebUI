@@ -1,13 +1,25 @@
 import { apiFetch } from "@/api/apiBase";
 
+export interface RiskAction {
+    id: string; // Unique ID for mapping
+    text: string;
+    link?: string;
+}
+
+export interface RiskItem {
+    id: string; // Unique ID
+    text: string;
+    actions: RiskAction[]; // Actions specific to this risk
+}
+
 export interface RiskMatrixRow {
     objective: {
         letter: string;
         title?: string;
         items?: string[];
     };
-    risks: Array<{ text: string }>;
-    actions: Array<{ text: string; link?: string }>;
+    risks: RiskItem[]; // Updated: Risks now contain their own actions
+    // actions: Array<{ text: string; link?: string }>; // REMOVED: Actions are now nested
 }
 
 export interface RiskMatrixData {
