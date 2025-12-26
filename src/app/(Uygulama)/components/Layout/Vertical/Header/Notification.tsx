@@ -68,22 +68,24 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       );
       const rowsAll: any = [];
 
-      bildirimler.forEach((veri: any) => {
-        const newRow: any = {
-          id: veri.id,
-          konu: veri.konu,
-          aciklama: veri.aciklama,
-          okundumu: veri.okundumu,
-        };
+      if (bildirimler && Array.isArray(bildirimler)) {
+        bildirimler.forEach((veri: any) => {
+          const newRow: any = {
+            id: veri.id,
+            konu: veri.konu,
+            aciklama: veri.aciklama,
+            okundumu: veri.okundumu,
+          };
 
-        rowsAll.push(newRow);
-      });
-      rowsAll.sort((a: Veri, b: Veri) => {
-        const aOkunmadi = a.okundumu === false;
-        const bOkunmadi = b.okundumu === false;
-        return bOkunmadi ? 1 : aOkunmadi ? -1 : 0;
-      });
-      setFetchedData(rowsAll);
+          rowsAll.push(newRow);
+        });
+        rowsAll.sort((a: Veri, b: Veri) => {
+          const aOkunmadi = a.okundumu === false;
+          const bOkunmadi = b.okundumu === false;
+          return bOkunmadi ? 1 : aOkunmadi ? -1 : 0;
+        });
+        setFetchedData(rowsAll);
+      }
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -149,9 +151,8 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
           <Typography variant="h6">Bildirimler</Typography>
           {fetchedData.filter((item) => !item.okundumu).length > 0 && (
             <Chip
-              label={`${
-                fetchedData.filter((item) => !item.okundumu).length
-              } Yeni`}
+              label={`${fetchedData.filter((item) => !item.okundumu).length
+                } Yeni`}
               color="primary"
             />
           )}

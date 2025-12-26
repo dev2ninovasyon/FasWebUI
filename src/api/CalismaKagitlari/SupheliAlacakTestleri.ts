@@ -82,7 +82,7 @@ export async function deleteSupheliAlacakTestleri(token: string, id: number) {
     return response.ok;
 }
 
-export async function varsayilanaDonSupheliAlacakTestleri(
+export async function varsayilanaDon(
     token: string,
     denetciId: number,
     yil: number,
