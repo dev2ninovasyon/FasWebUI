@@ -52,7 +52,6 @@ const MuhasebeHatalariVeHileTopCard = () => {
           bgcolor: randomColor(),
           href: `${item.url.replace(/\s/g, "")}`,
         }));
-
         setMuhasebeHatalariVeHileTopCars(enriched);
       } catch (error) {
         console.error("An error occurred:", error);

@@ -91,7 +91,6 @@ const Page = () => {
         if (normalizeString(veri.url).includes(normalizeString(formUrl))) {
           setDip(veri.name);
           setCode(veri.code.replace("/", ":"));
-
           const [sol, sag] = veri.code.split("/");
           if (user.bobimi && sol) {
             setDipnotNo(sol);
@@ -168,7 +167,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -220,43 +219,43 @@ const Page = () => {
               user.rol?.includes("SorumluDenetci") ||
               user.rol?.includes("Denetci") ||
               user.rol?.includes("DenetciYardimcisi")) && (
-              <Grid
-                container
-                sx={{
-                  width: "95%",
-                  margin: "0 auto",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-                  <BelgeKontrolCard
-                    fetch={() => {
-                      setIsRefresh(true);
-                    }}
-                    hazirlayan="Denetçi - Yardımcı Denetçi"
-                    controller={code}
-                  ></BelgeKontrolCard>
+                <Grid
+                  container
+                  sx={{
+                    width: "95%",
+                    margin: "0 auto",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                    <BelgeKontrolCard
+                      fetch={() => {
+                        setIsRefresh(true);
+                      }}
+                      hazirlayan="Denetçi - Yardımcı Denetçi"
+                      controller={code}
+                    ></BelgeKontrolCard>
+                  </Grid>
+                  <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                    <BelgeKontrolCard
+                      fetch={() => {
+                        setIsRefresh(true);
+                      }}
+                      onaylayan="Sorumlu Denetçi"
+                      controller={code}
+                    ></BelgeKontrolCard>
+                  </Grid>
+                  <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                    <BelgeKontrolCard
+                      fetch={() => {
+                        setIsRefresh(true);
+                      }}
+                      kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                      controller={code}
+                    ></BelgeKontrolCard>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-                  <BelgeKontrolCard
-                    fetch={() => {
-                      setIsRefresh(true);
-                    }}
-                    onaylayan="Sorumlu Denetçi"
-                    controller={code}
-                  ></BelgeKontrolCard>
-                </Grid>
-                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-                  <BelgeKontrolCard
-                    fetch={() => {
-                      setIsRefresh(true);
-                    }}
-                    kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                    controller={code}
-                  ></BelgeKontrolCard>
-                </Grid>
-              </Grid>
-            )}
+              )}
             <Grid
               container
               sx={{

@@ -60,37 +60,37 @@ const Page = () => {
   const thColors: colors[] = [
     {
       id: 1,
-      bgColor: "#5D87FF",
+      bgColor: "#113388",
       disp: "BLUE_THEME",
       disp2: "Mavi Tema",
     },
     {
       id: 2,
-      bgColor: "#0074BA",
+      bgColor: "#003355",
       disp: "AQUA_THEME",
       disp2: "Aqua Tema",
     },
     {
       id: 3,
-      bgColor: "#763EBD",
+      bgColor: "#301050",
       disp: "PURPLE_THEME",
       disp2: "Mor Tema",
     },
     {
       id: 4,
-      bgColor: "#0A7EA4",
+      bgColor: "#022c3c",
       disp: "GREEN_THEME",
       disp2: "Yeşil Tema",
     },
     {
       id: 5,
-      bgColor: "#01C0C8",
+      bgColor: "#004d50",
       disp: "CYAN_THEME",
       disp2: "Cyan Tema",
     },
     {
       id: 6,
-      bgColor: "#FA896B",
+      bgColor: "#7a2b1a",
       disp: "ORANGE_THEME",
       disp2: "Turuncu Tema",
     },
