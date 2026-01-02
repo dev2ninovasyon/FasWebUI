@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
+import KysRelatedDocumentsPopup from "./KysRelatedDocumentsPopup";
 
 export interface RiskMatrixRow {
     objective: {
@@ -43,6 +44,7 @@ const KysRiskMatrixTable: React.FC<KysRiskMatrixTableProps> = ({
 }) => {
     const router = useRouter();
     const [tableData, setTableData] = useState<RiskMatrixData>(data);
+    const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
 
     const handleCellEdit = (
         rowIndex: number,
@@ -72,8 +74,10 @@ const KysRiskMatrixTable: React.FC<KysRiskMatrixTableProps> = ({
     };
 
     const handleLinkClick = (link: string) => {
-        enqueueSnackbar("İlgili döküman açılıyor...", { variant: "info" });
-        router.push(link);
+        // Instead of navigation, open popup
+        // enqueueSnackbar("İlgili döküman açılıyor...", { variant: "info" });
+        // router.push(link);
+        setSelectedDoc(link);
     };
 
     const renderEditableCell = (
@@ -106,121 +110,132 @@ const KysRiskMatrixTable: React.FC<KysRiskMatrixTableProps> = ({
     };
 
     return (
-        <TableContainer component={Paper} elevation={0}>
-            <Table sx={{ border: "1px solid #e0e0e0" }}>
-                <TableHead>
-                    <TableRow sx={{ bgcolor: "#1976d2" }}>
-                        <TableCell
-                            sx={{
-                                color: "white",
-                                fontWeight: 600,
-                                width: "33%",
-                                border: "1px solid white",
-                            }}
-                        >
-                            Kalite Hedefleri
-                        </TableCell>
-                        <TableCell
-                            sx={{
-                                color: "white",
-                                fontWeight: 600,
-                                width: "33%",
-                                border: "1px solid white",
-                            }}
-                        >
-                            Örnek Kalite Riskleri
-                        </TableCell>
-                        <TableCell
-                            sx={{
-                                color: "white",
-                                fontWeight: 600,
-                                width: "34%",
-                                border: "1px solid white",
-                            }}
-                        >
-                            Risklere Karşı Yapılacak Örnek İşler
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {tableData.rows.map((row, rowIndex) => (
-                        <TableRow key={rowIndex}>
-                            {/* Kalite Hedefleri Column */}
-                            <TableCell sx={{ verticalAlign: "top", border: "1px solid #e0e0e0", p: 2 }}>
-                                <Box>
-                                    <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
-                                        ({row.objective.letter})
-                                        {row.objective.title && (
-                                            <span style={{ marginLeft: 4 }}>
-                                                {renderEditableCell(
-                                                    row.objective.title,
-                                                    (val) => handleCellEdit(rowIndex, "objective", val, -1)
-                                                )}
-                                            </span>
-                                        )}
-                                    </Typography>
-                                    {row.objective.items && (
-                                        <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                                            {row.objective.items.map((item, idx) => (
-                                                <li key={idx} style={{ marginBottom: 8 }}>
-                                                    {renderEditableCell(
-                                                        item,
-                                                        (val) => handleCellEdit(rowIndex, "objective", val, idx)
-                                                    )}
-                                                </li>
-                                            ))}
-                                        </Box>
-                                    )}
-                                </Box>
+        <>
+            <TableContainer component={Paper} elevation={0}>
+                <Table sx={{ border: "1px solid #e0e0e0" }}>
+                    <TableHead>
+                        <TableRow sx={{ bgcolor: "#1976d2" }}>
+                            <TableCell
+                                sx={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    width: "33%",
+                                    border: "1px solid white",
+                                }}
+                            >
+                                Kalite Hedefleri
                             </TableCell>
-
-                            {/* Örnek Kalite Riskleri Column */}
-                            <TableCell sx={{ verticalAlign: "top", border: "1px solid #e0e0e0", p: 2 }}>
-                                {row.risks.map((risk, riskIndex) => (
-                                    <Box key={riskIndex} sx={{ mb: riskIndex < row.risks.length - 1 ? 2 : 0 }}>
-                                        {renderEditableCell(
-                                            risk.text,
-                                            (val) => handleCellEdit(rowIndex, "risks", val, riskIndex)
-                                        )}
-                                    </Box>
-                                ))}
+                            <TableCell
+                                sx={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    width: "33%",
+                                    border: "1px solid white",
+                                }}
+                            >
+                                Örnek Kalite Riskleri
                             </TableCell>
-
-                            {/* Risklere Karşı Yapılacak Örnek İşler Column */}
-                            <TableCell sx={{ verticalAlign: "top", border: "1px solid #e0e0e0", p: 2 }}>
-                                {row.actions.map((action, actionIndex) => (
-                                    <Box key={actionIndex} sx={{ mb: actionIndex < row.actions.length - 1 ? 1 : 0 }}>
-                                        {action.link ? (
-                                            <MuiLink
-                                                component="button"
-                                                variant="body2"
-                                                onClick={() => handleLinkClick(action.link!)}
-                                                sx={{
-                                                    textAlign: "left",
-                                                    cursor: "pointer",
-                                                    textDecoration: "none",
-                                                    color: "#d32f2f",
-                                                    "&:hover": {
-                                                        textDecoration: "underline",
-                                                    },
-                                                }}
-                                            >
-                                                {action.text}
-                                            </MuiLink>
-                                        ) : (
-                                            renderEditableCell(
-                                                action.text,
-                                                (val) => handleCellEdit(rowIndex, "actions", val, actionIndex)
-                                            )
-                                        )}
-                                    </Box>
-                                ))}
+                            <TableCell
+                                sx={{
+                                    color: "white",
+                                    fontWeight: 600,
+                                    width: "34%",
+                                    border: "1px solid white",
+                                }}
+                            >
+                                Risklere Karşı Yapılacak Örnek İşler
                             </TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {tableData.rows.map((row, rowIndex) => (
+                            <TableRow key={rowIndex}>
+                                {/* Kalite Hedefleri Column */}
+                                <TableCell sx={{ verticalAlign: "top", border: "1px solid #e0e0e0", p: 2 }}>
+                                    <Box>
+                                        <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+                                            ({row.objective.letter})
+                                            {row.objective.title && (
+                                                <span style={{ marginLeft: 4 }}>
+                                                    {renderEditableCell(
+                                                        row.objective.title,
+                                                        (val) => handleCellEdit(rowIndex, "objective", val, -1)
+                                                    )}
+                                                </span>
+                                            )}
+                                        </Typography>
+                                        {row.objective.items && (
+                                            <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                                                {row.objective.items.map((item, idx) => (
+                                                    <li key={idx} style={{ marginBottom: 8 }}>
+                                                        {renderEditableCell(
+                                                            item,
+                                                            (val) => handleCellEdit(rowIndex, "objective", val, idx)
+                                                        )}
+                                                    </li>
+                                                ))}
+                                            </Box>
+                                        )}
+                                    </Box>
+                                </TableCell>
+
+                                {/* Örnek Kalite Riskleri Column */}
+                                <TableCell sx={{ verticalAlign: "top", border: "1px solid #e0e0e0", p: 2 }}>
+                                    {row.risks.map((risk, riskIndex) => (
+                                        <Box key={riskIndex} sx={{ mb: riskIndex < row.risks.length - 1 ? 2 : 0 }}>
+                                            {renderEditableCell(
+                                                risk.text,
+                                                (val) => handleCellEdit(rowIndex, "risks", val, riskIndex)
+                                            )}
+                                        </Box>
+                                    ))}
+                                </TableCell>
+
+                                {/* Risklere Karşı Yapılacak Örnek İşler Column */}
+                                <TableCell sx={{ verticalAlign: "top", border: "1px solid #e0e0e0", p: 2 }}>
+                                    {row.actions.map((action, actionIndex) => (
+                                        <Box key={actionIndex} sx={{ mb: actionIndex < row.actions.length - 1 ? 1 : 0 }}>
+                                            {action.link ? (
+                                                <MuiLink
+                                                    component="button"
+                                                    variant="body2"
+                                                    onClick={() => handleLinkClick(action.link!)}
+                                                    sx={{
+                                                        textAlign: "left",
+                                                        cursor: "pointer",
+                                                        textDecoration: "none",
+                                                        color: "#d32f2f",
+                                                        "&:hover": {
+                                                            textDecoration: "underline",
+                                                        },
+                                                    }}
+                                                >
+                                                    {action.text}
+                                                </MuiLink>
+                                            ) : (
+                                                renderEditableCell(
+                                                    action.text,
+                                                    (val) => handleCellEdit(rowIndex, "actions", val, actionIndex)
+                                                )
+                                            )}
+                                        </Box>
+                                    ))}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            {/* Document Popup */}
+            {selectedDoc && (
+                <KysRelatedDocumentsPopup
+                    documentKeys={[selectedDoc]} // Or pass appropriately if you want multiple
+                    selectedKey={selectedDoc}
+                    onClose={() => setSelectedDoc(null)}
+                />
+            )}
+        </>
     );
 };
 
