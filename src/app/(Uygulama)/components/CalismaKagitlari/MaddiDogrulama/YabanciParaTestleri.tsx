@@ -161,12 +161,13 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
         setEditValues(prev => ({ ...prev, [id]: val }));
     };
 
-    const handleSaveRow = async (row: YabanciParaTestleriRow) => {
-        const valStr = editValues[row.id];
+    const handleSaveRow = async (row: YabanciParaTestleriRow, value?: string) => {
+        const valStr = value !== undefined ? value : editValues[row.id];
         if (valStr === undefined) return; // No change
 
-        // Parse input string to number (handling Turkish locale if needed, but simple float parse for now)
-        const valNum = parseFloat(valStr.replace(",", "."));
+        // Parse input string to number (handling Turkish locale: 1.234,56 -> 1234.56)
+        const normalizedVal = valStr.replace(/\./g, "").replace(",", ".");
+        const valNum = parseFloat(normalizedVal);
 
         setSavingRowId(row.id);
         try {
@@ -239,13 +240,6 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                 <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 120, color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
                                     Mizan Farkı
                                 </TableCell>
-                                <TableCell sx={{ width: 70, textAlign: "center", padding: 0 }}>
-                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                                        <IconButton size="small" sx={{ backgroundColor: '#FBC02D', color: 'black', '&:hover': { backgroundColor: '#F9A825' } }}>
-                                            <IconPencil size={18} />
-                                        </IconButton>
-                                    </Box>
-                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -258,7 +252,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                 const fark = row.degisimTl ?? (hesaplanan - mizan);
 
                                 const isEditing = editValues[row.id] !== undefined;
-                                const displayValue = isEditing ? editValues[row.id] : dovizBakiye;
+                                const displayValue = isEditing ? editValues[row.id] : fmt(dovizBakiye);
 
                                 return (
                                     <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
@@ -269,7 +263,17 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                                 size="small"
                                                 value={displayValue}
                                                 onChange={(e) => handleInputChange(row.id, e.target.value)}
-                                                type="number"
+                                                onBlur={() => handleSaveRow(row)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        handleSaveRow(row);
+                                                    }
+                                                }}
+                                                onFocus={() => {
+                                                    if (!isEditing) {
+                                                        handleInputChange(row.id, dovizBakiye.toString().replace(".", ","));
+                                                    }
+                                                }}
                                                 variant="outlined"
                                                 sx={{
                                                     "& .MuiInputBase-input": { textAlign: "right", padding: "4px 8px", fontSize: '0.875rem', color: theme.palette.mode === 'dark' ? '#fff' : '#000' },
@@ -283,22 +287,6 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                         <TableCell align="right">{fmt(mizan)}</TableCell>
                                         <TableCell align="right" sx={{ color: fark !== 0 ? "error.main" : "inherit", fontWeight: fark !== 0 ? 700 : 400 }}>
                                             {fmt(fark)}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <IconButton
-                                                onClick={() => handleSaveRow(row)}
-                                                disabled={savingRowId === row.id}
-                                                size="small"
-                                                sx={{
-                                                    backgroundColor: '#26A69A', // Greenish color like in image
-                                                    color: 'white',
-                                                    '&:hover': { backgroundColor: '#00897B' },
-                                                    width: 32,
-                                                    height: 32
-                                                }}
-                                            >
-                                                <IconDeviceFloppy size={18} />
-                                            </IconButton>
                                         </TableCell>
                                     </TableRow>
                                 );

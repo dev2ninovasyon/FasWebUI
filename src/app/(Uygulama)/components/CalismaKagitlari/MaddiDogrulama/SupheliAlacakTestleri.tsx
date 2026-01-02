@@ -140,77 +140,80 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
         }
     };
 
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
     return (
-        <Box sx={{ bgcolor: "background.paper", p: 3, borderRadius: "12px", border: "1px solid #e0e0e0" }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3, alignItems: "center" }}>
-                <Typography variant="h5" sx={{ fontWeight: "bold", color: "text.primary" }}>
-                    {veriler[0]?.baslik || "Şüpheli Alacak Testleri"}
-                </Typography>
+        <Box sx={{ p: 3 }}>
+            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h5">Şüpheli Alacak Testleri</Typography>
                 <Button
                     variant="contained"
-                    color="success"
-                    startIcon={<IconDeviceFloppy size={20} />}
+                    color="primary"
+                    size="small"
+                    startIcon={<IconDeviceFloppy size={16} />}
                     onClick={handleSaveRow}
-                    sx={{ textTransform: "none", px: 3, borderRadius: "8px" }}
+                    sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem' }}
                 >
                     Seçili Satırı Kaydet
                 </Button>
             </Box>
 
-            {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>
-            ) : (
-                <Box sx={{ width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
-                    <HotTable
-                        ref={hotRef}
-                        data={veriler}
-                        language="tr-TR"
-                        colHeaders={[
-                            "Hesap No",
-                            "Hesap Adı",
-                            "Önceki Dönem Bakiye",
-                            "Cari Dönem Bakiye",
-                            "Değişim (TL)",
-                            "Avukat Mektubu"
-                        ]}
-                        columns={[
-                            { data: 'hesapNo', type: 'text' },
-                            { data: 'hesapAdi', type: 'text' },
-                            { data: 'oncekiDonemBakiye', type: 'numeric', numericFormat: { pattern: '0,0.00', culture: 'tr-TR' } },
-                            { data: 'cariDonemBakiye', type: 'numeric', numericFormat: { pattern: '0,0.00', culture: 'tr-TR' } },
-                            { data: 'degisimTl', type: 'numeric', numericFormat: { pattern: '0,0.00', culture: 'tr-TR' }, readOnly: true },
-                            { data: 'avukatMektubu', type: 'text' }
-                        ]}
-                        stretchH="all"
-                        height="auto"
-                        autoWrapRow={true}
-                        autoWrapCol={true}
-                        dropdownMenu={true}
-                        filters={true}
-                        contextMenu={{
-                            items: {
-                                "row_above": { name: "Üste Satır Ekle" },
-                                "row_below": { name: "Alta Satır Ekle" },
-                                "separator": Handsontable.plugins.ContextMenu.SEPARATOR,
-                                "remove_row": { name: "Seçili Satırı Sil" },
-                                "undo": { name: "Geri Al" },
-                                "redo": { name: "İleri Al" }
-                            }
-                        }}
-                        afterCreateRow={(index, amount) => {
-                            const hotInstance = hotRef.current?.hotInstance;
-                            for (let i = 0; i < amount; i++) {
-                                hotInstance.setDataAtRowProp(index + i, 'id', 0);
-                                hotInstance.setDataAtRowProp(index + i, 'oncekiDonemBakiye', 0);
-                                hotInstance.setDataAtRowProp(index + i, 'cariDonemBakiye', 0);
-                                hotInstance.setDataAtRowProp(index + i, 'degisimTl', 0);
-                            }
-                        }}
-                        afterChange={handleAfterChange}
-                        licenseKey="non-commercial-and-evaluation"
-                    />
-                </Box>
-            )}
+            <Box sx={{ width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
+                <HotTable
+                    ref={hotRef}
+                    data={veriler}
+                    language="tr-TR"
+                    colHeaders={[
+                        "Hesap No",
+                        "Hesap Adı",
+                        "Önceki Dönem Bakiye",
+                        "Cari Dönem Bakiye",
+                        "Değişim (TL)",
+                        "Avukat Mektubu"
+                    ]}
+                    columns={[
+                        { data: 'hesapNo', type: 'text' },
+                        { data: 'hesapAdi', type: 'text' },
+                        { data: 'oncekiDonemBakiye', type: 'numeric', numericFormat: { pattern: '0,0.00', culture: 'tr-TR' } },
+                        { data: 'cariDonemBakiye', type: 'numeric', numericFormat: { pattern: '0,0.00', culture: 'tr-TR' } },
+                        { data: 'degisimTl', type: 'numeric', numericFormat: { pattern: '0,0.00', culture: 'tr-TR' }, readOnly: true },
+                        { data: 'avukatMektubu', type: 'text' }
+                    ]}
+                    stretchH="all"
+                    height="auto"
+                    autoWrapRow={true}
+                    autoWrapCol={true}
+                    dropdownMenu={true}
+                    filters={true}
+                    contextMenu={{
+                        items: {
+                            "row_above": { name: "Üste Satır Ekle" },
+                            "row_below": { name: "Alta Satır Ekle" },
+                            "separator": Handsontable.plugins.ContextMenu.SEPARATOR,
+                            "remove_row": { name: "Seçili Satırı Sil" },
+                            "undo": { name: "Geri Al" },
+                            "redo": { name: "İleri Al" }
+                        }
+                    }}
+                    afterCreateRow={(index, amount) => {
+                        const hotInstance = hotRef.current?.hotInstance;
+                        for (let i = 0; i < amount; i++) {
+                            hotInstance.setDataAtRowProp(index + i, 'id', 0);
+                            hotInstance.setDataAtRowProp(index + i, 'oncekiDonemBakiye', 0);
+                            hotInstance.setDataAtRowProp(index + i, 'cariDonemBakiye', 0);
+                            hotInstance.setDataAtRowProp(index + i, 'degisimTl', 0);
+                        }
+                    }}
+                    afterChange={handleAfterChange}
+                    licenseKey="non-commercial-and-evaluation"
+                />
+            </Box>
 
             <Snackbar
                 open={snackbar.open}
