@@ -92,7 +92,7 @@ const ReeskontTestleriPage = () => {
         },
         {
             to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-            title: `${dip}`,
+            title: dip || parentName,
         },
         {
             title: "Reeskont Testleri",
@@ -101,12 +101,12 @@ const ReeskontTestleriPage = () => {
 
     return (
         <PageContainer
-            title={`${dip} | Reeskont Testleri`}
+            title={`${dip || parentName} | Reeskont Testleri`}
             description="Reeskont Testleri"
         >
             <Breadcrumb
                 title={"Reeskont Testleri"}
-                subtitle={`${dip}`}
+                subtitle={`${dip || parentName}`}
                 items={BCrumb}
             />
 

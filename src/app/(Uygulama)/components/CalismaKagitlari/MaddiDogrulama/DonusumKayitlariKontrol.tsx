@@ -91,15 +91,17 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {anaHesaplar.map((row, idx) => (
-                                <TableRow key={idx} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
-                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.kebirKodu}</TableCell>
-                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.vukBakiye)}</TableCell>
-                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.donusumBakiye)}</TableCell>
-                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.fark)}</TableCell>
-                                </TableRow>
-                            ))}
-                            {anaHesaplar.length === 0 && (
+                            {anaHesaplar
+                                .filter(row => (row.vukBakiye ?? 0) !== 0 || (row.donusumBakiye ?? 0) !== 0 || (row.fark ?? 0) !== 0)
+                                .map((row, idx) => (
+                                    <TableRow key={idx} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
+                                        <TableCell sx={{ color: TEXT_COLOR }}>{row.kebirKodu}</TableCell>
+                                        <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.vukBakiye)}</TableCell>
+                                        <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.donusumBakiye)}</TableCell>
+                                        <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.fark)}</TableCell>
+                                    </TableRow>
+                                ))}
+                            {anaHesaplar.filter(row => (row.vukBakiye ?? 0) !== 0 || (row.donusumBakiye ?? 0) !== 0 || (row.fark ?? 0) !== 0).length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={4} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadı</TableCell>
                                 </TableRow>
@@ -131,17 +133,19 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {donusumFisleri.map((row, idx) => (
-                            <TableRow key={idx} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
-                                <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapKodu}</TableCell>
-                                <TableCell sx={{ color: TEXT_COLOR }}>{row.yevmiyeNo}</TableCell>
-                                <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapAdi}</TableCell>
-                                <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.borc)}</TableCell>
-                                <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.alacak)}</TableCell>
-                                <TableCell sx={{ color: TEXT_COLOR }}>{row.aciklama}</TableCell>
-                            </TableRow>
-                        ))}
-                        {donusumFisleri.length === 0 && (
+                        {donusumFisleri
+                            .filter(row => (row.borc ?? 0) !== 0 || (row.alacak ?? 0) !== 0)
+                            .map((row, idx) => (
+                                <TableRow key={idx} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapKodu}</TableCell>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.yevmiyeNo}</TableCell>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapAdi}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.borc)}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.alacak)}</TableCell>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.aciklama}</TableCell>
+                                </TableRow>
+                            ))}
+                        {donusumFisleri.filter(row => (row.borc ?? 0) !== 0 || (row.alacak ?? 0) !== 0).length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={6} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadı</TableCell>
                             </TableRow>

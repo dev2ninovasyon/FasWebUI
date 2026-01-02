@@ -28,6 +28,7 @@ import { useSelector } from "@/store/hooks";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useRouter } from "next/navigation";
+import { useLoading } from "@/contexts/LoadingContext";
 
 interface CalismaKagidiProps { }
 
@@ -54,6 +55,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = () => {
     DenetimDosyaBelgeleriDto[]
   >([]);
   const router = useRouter();
+  const { setLoading } = useLoading();
 
   const removeTurkishChars = (str: string) => {
     return str
@@ -75,6 +77,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = () => {
   const handleChildClick = (parentId: string, childId: string) => {
     const cleanParentId = removeTurkishChars(parentId);
     const cleanChildId = removeTurkishChars(childId);
+    setLoading(true);
     router.push(
       `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${cleanParentId}/${cleanChildId}`
     );
@@ -195,6 +198,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = () => {
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
+                        setLoading(true);
                         router.push(
                           `/DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu?parentName=${parent.name}`
                         );
