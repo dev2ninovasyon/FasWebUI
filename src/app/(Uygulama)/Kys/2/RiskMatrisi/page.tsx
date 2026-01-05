@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿"use client";
+import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Typography, Box, Divider } from "@mui/material";
