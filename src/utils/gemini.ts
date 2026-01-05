@@ -22,7 +22,8 @@ const handleBackendCall = async (token: string, endpoint: string, body: any, fal
 
     const result = await response.json();
     // Backend returns IDataResult<string>, so we get result.data
-    return result.data || fallbackText;
+    // Also handling PascalCase or Message field as fallback
+    return result.data || result.Data || result.message || result.Message || fallbackText;
   } catch (error) {
     console.error(`Gemini API error (${endpoint}):`, error);
     return fallbackText;
