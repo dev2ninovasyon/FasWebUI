@@ -257,22 +257,22 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 
         return (
             <Box mb={4}>
-                <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
-                    <Typography variant="subtitle1" fontWeight={700} color="white">
+                <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700}>
                         Ana Hesaplar
                     </Typography>
                 </Box>
                 <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: HEADER_GRAY }}>
-                                <TableCell sx={{ fontWeight: 700, width: "10%" }}>Hesap No</TableCell>
-                                <TableCell sx={{ fontWeight: 700, width: "35%" }}>Hesap Açıklaması</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Önceki Dönem Bakiye</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Cari Dönem Bakiye</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Değişim TL</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "7%" }}>Değişim %</TableCell>
-                                <TableCell sx={{ width: "15%" }} />
+                            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                                <TableCell sx={{ fontWeight: 700, width: "10%", color: "white" }}>Hesap No</TableCell>
+                                <TableCell sx={{ fontWeight: 700, width: "35%", color: "white" }}>Hesap Açıklaması</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Önceki Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Cari Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Değişim TL</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "7%", color: "white" }}>Değişim %</TableCell>
+                                <TableCell sx={{ width: "15%", color: "white" }} />
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -318,22 +318,22 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 
         return (
             <Box mb={4} key={kebirKodu}>
-                <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
-                    <Typography variant="subtitle1" fontWeight={700} color="white">
+                <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700}>
                         {title}
                     </Typography>
                 </Box>
                 <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: HEADER_GRAY }}>
-                                <TableCell sx={{ fontWeight: 700, width: "10%" }}>Hesap No</TableCell>
-                                <TableCell sx={{ fontWeight: 700, width: "35%" }}>Hesap Açıklaması</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Önceki Dönem Bakiye</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Cari Dönem Bakiye</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%" }}>Değişim TL</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, width: "7%" }}>Değişim %</TableCell>
-                                <TableCell sx={{ fontWeight: 700, width: "15%" }}>
+                            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                                <TableCell sx={{ fontWeight: 700, width: "10%", color: "white" }}>Hesap No</TableCell>
+                                <TableCell sx={{ fontWeight: 700, width: "35%", color: "white" }}>Hesap Açıklaması</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Önceki Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Cari Dönem Bakiye</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Değişim TL</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700, width: "7%", color: "white" }}>Değişim %</TableCell>
+                                <TableCell sx={{ fontWeight: 700, width: "15%", color: "white" }}>
                                     <CustomSelect
                                         value={bulkOnemlilik[kebirKodu] || ""}
                                         onChange={(e: any) => handleSetBulkOnemlilik(kebirKodu, e.target.value)}
@@ -343,7 +343,8 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                         sx={{
                                             minWidth: 100, // Reduced from 140
                                             bgcolor: BG_PAPER,
-                                            "& .MuiOutlinedInput-notchedOutline": { borderColor: "transparent" }
+                                            "& .MuiOutlinedInput-notchedOutline": { borderColor: "transparent" },
+                                            "& .MuiSelect-select": { color: bulkOnemlilik[kebirKodu] ? "inherit" : "white" }
                                         }}
                                         displayEmpty
                                     >

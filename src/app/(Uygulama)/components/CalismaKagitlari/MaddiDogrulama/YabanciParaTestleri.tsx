@@ -207,37 +207,37 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
 
         return (
             <Box mb={4} key={kebirKodu}>
-                <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
-                    <Typography variant="subtitle1" fontWeight={700} color="white">
+                <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700}>
                         {title}
                     </Typography>
                 </Box>
                 <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0'}` }}>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: HEADER_GRAY }}>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "center", color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "center", color: 'white' }}>
                                     Hesap No
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "left", color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "left", color: 'white' }}>
                                     Hesap Açıklaması
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 160, color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 160, color: 'white' }}>
                                     Döviz Bakiye
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 90, color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 90, color: 'white' }}>
                                     Para Birimi
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 90, color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 90, color: 'white' }}>
                                     Kur
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 170, color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 170, color: 'white' }}>
                                     Hesaplanan Bakiye
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 150, color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 150, color: 'white' }}>
                                     Mizan Bakiyesi
                                 </TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 120, color: theme.palette.mode === 'dark' ? '#fff' : '#444' }}>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "center", width: 120, color: 'white' }}>
                                     Mizan Farkı
                                 </TableCell>
                             </TableRow>

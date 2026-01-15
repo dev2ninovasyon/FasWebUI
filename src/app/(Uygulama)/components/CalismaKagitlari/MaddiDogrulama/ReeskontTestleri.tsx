@@ -12,6 +12,7 @@ import {
     TableRow,
     Paper,
     Grid,
+    useTheme,
 } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
+    const theme = useTheme();
     const [data, setData] = useState<ReeskontTestleriData | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -89,7 +91,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
     };
 
     const tableHeaderStyle = {
-        backgroundColor: "#2196f3",
+        backgroundColor: theme.palette.primary.main,
         color: "white",
         fontWeight: "bold",
         textAlign: "center",

@@ -40,7 +40,7 @@ const Page = () => {
         },
         {
             to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-            title: "Hareketsiz Stoklar Çalışması",
+            title: "Hareketsiz Stoklar",
         },
     ];
 
@@ -119,11 +119,11 @@ const Page = () => {
 
     return (
         <PageContainer
-            title={`${dip} | Hareketsiz Stoklar Çalışması`}
-            description="Hareketsiz Stoklar Çalışması"
+            title={`${dip} | Hareketsiz Stoklar`}
+            description="Hareketsiz Stoklar"
         >
             <Breadcrumb
-                title={"Hareketsiz Stoklar Çalışması"}
+                title={"Hareketsiz Stoklar"}
                 subtitle={`${dip}`}
                 items={BCrumb}
             ></Breadcrumb>

@@ -172,23 +172,6 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      startIcon={<UploadFileIcon />}
-                      fullWidth
-                      sx={{
-                        mr: 1,
-                        backgroundColor:
-                          customizer.activeMode == "dark"
-                            ? theme.palette.primary.main
-                            : theme.palette.primary.main,
-                      }}
-                    >
-                      Referans Dosya Yükle
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      startIcon={<AddIcon />}
-                      fullWidth
                       sx={{
                         mr: 1,
                         backgroundColor:
@@ -224,11 +207,11 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = () => {
                 </Grid>
                 <Table>
                   <TableHead>
-                    <TableRow>
-                      <TableCell>Belge Adı</TableCell>
-                      <TableCell align="center">Hazırlandı </TableCell>
-                      <TableCell align="center">Onaylandı</TableCell>
-                      <TableCell align="center">Kalite Kontrol</TableCell>
+                    <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                      <TableCell sx={{ color: "white", fontWeight: 700 }}>Belge Adı</TableCell>
+                      <TableCell align="center" sx={{ color: "white", fontWeight: 700 }}>Hazırlandı </TableCell>
+                      <TableCell align="center" sx={{ color: "white", fontWeight: 700 }}>Onaylandı</TableCell>
+                      <TableCell align="center" sx={{ color: "white", fontWeight: 700 }}>Kalite Kontrol</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

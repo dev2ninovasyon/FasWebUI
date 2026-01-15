@@ -131,6 +131,10 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                     overflow: "hidden",
                     borderRadius: "8px",
                     border: `1px solid ${theme.palette.divider}`,
+                    "& .handsontable th": {
+                        backgroundColor: theme.palette.primary.main,
+                        color: "white",
+                    },
                 }}
             >
                 {/* Tablo her zaman render edilir (başlıklar için) */}

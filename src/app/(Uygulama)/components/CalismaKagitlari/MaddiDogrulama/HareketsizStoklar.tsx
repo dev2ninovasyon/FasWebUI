@@ -160,23 +160,23 @@ const HareketsizStoklar: React.FC<Props> = ({
         <Grid container>
             <Grid item xs={12}>
                 <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
-                    <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1, mb: 2 }}>
-                        <Typography variant="subtitle1" fontWeight={700} color="white">
+                    <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1, mb: 2 }}>
+                        <Typography variant="subtitle1" fontWeight={700}>
                             Hareketsiz Stoklar
                         </Typography>
                     </Box>
                     <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
                         <Table size="small">
                             <TableHead>
-                                <TableRow sx={{ backgroundColor: HEADER_GRAY }}>
-                                    <TableCell sx={{ fontWeight: 800, textAlign: "center" }}>Kebir Kodu</TableCell>
-                                    <TableCell sx={{ fontWeight: 800, textAlign: "center" }}>Detay Kodu</TableCell>
-                                    <TableCell sx={{ fontWeight: 800, textAlign: "center" }}>Hesap Adı</TableCell>
-                                    <TableCell sx={{ fontWeight: 800, textAlign: "center" }}>Borç Tutarı</TableCell>
-                                    <TableCell sx={{ fontWeight: 800, textAlign: "center" }}>Alacak Tutarı</TableCell>
-                                    <TableCell sx={{ fontWeight: 800, textAlign: "center" }}>Net Bakiye</TableCell>
-                                    <TableCell sx={{ fontWeight: 800, textAlign: "center" }}>Para Birimi</TableCell>
-                                    <TableCell sx={{ width: 70, textAlign: "center" }} />
+                                <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                                    <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Kebir Kodu</TableCell>
+                                    <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Detay Kodu</TableCell>
+                                    <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Hesap Adı</TableCell>
+                                    <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Borç Tutarı</TableCell>
+                                    <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Alacak Tutarı</TableCell>
+                                    <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Net Bakiye</TableCell>
+                                    <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Para Birimi</TableCell>
+                                    <TableCell sx={{ width: 70, textAlign: "center", color: "white" }} />
                                 </TableRow>
                             </TableHead>
                             <TableBody>

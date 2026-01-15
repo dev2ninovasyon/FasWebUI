@@ -14,7 +14,8 @@ import {
     TextField,
     Snackbar,
     Alert,
-    Grid
+    Grid,
+    useTheme
 } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -33,6 +34,7 @@ interface Props {
 }
 
 const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon }) => {
+    const theme = useTheme();
     const [veriler, setVeriler] = useState<SozlesmeTestleriData[]>([]);
     const [loading, setLoading] = useState(true);
     const user = useSelector((state: AppState) => state.userReducer);
@@ -102,7 +104,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
     // Stil Tanımlamaları
     const tableHeaderStyle = {
-        backgroundColor: "#2196f3",
+        backgroundColor: theme.palette.primary.main,
         color: "white",
         fontWeight: "bold",
         textAlign: "center",

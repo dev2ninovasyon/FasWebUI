@@ -7,7 +7,7 @@ import Handsontable from "handsontable";
 import "handsontable/dist/handsontable.full.min.css";
 import "@/utils/languages/handsontable.tr-TR";
 
-import { Box, Typography, Button, Snackbar, Alert, CircularProgress } from "@mui/material";
+import { Box, Typography, Button, Snackbar, Alert, CircularProgress, useTheme } from "@mui/material";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -34,6 +34,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
     isClickedVarsayilanaDon,
     setIsClickedVarsayilanaDon
 }) => {
+    const theme = useTheme();
     const hotRef = useRef<any>(null);
     const [veriler, setVeriler] = useState<SupheliAlacakTestleriData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -164,7 +165,16 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                 </Button>
             </Box>
 
-            <Box sx={{ width: '100%', border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
+            <Box sx={{
+                width: '100%',
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                "& .handsontable th": {
+                    backgroundColor: theme.palette.primary.main,
+                    color: "white",
+                },
+            }}>
                 <HotTable
                     ref={hotRef}
                     data={veriler}

@@ -99,12 +99,12 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         sm={6}
         lg={8}
         mb={0}
-        pl={children ? (mdDown ? "2%" : "10%") : ""}
         display="flex"
         flexDirection="column"
         justifyContent="center"
         sx={{
-          height: "100%", display: "flex",
+          height: "100%",
+          display: "flex",
           flexDirection: "column",
           justifyContent: "center",
         }}
@@ -178,90 +178,52 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
           </Breadcrumbs>
         )}
       </Grid>
-      <Grid item xs={12} sm={6} lg={4} display="flex" alignItems="flex-end">
+      <Grid item xs={12} sm={6} lg={4} display="flex" justifyContent="flex-end" alignItems="center">
         <Box
           sx={{
-            display: { xs: "block", md: "flex", lg: "flex" },
-            alignItems: "center",
-            justifyContent: "flex-end",
-            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            gap: 1,
+            pr: 2,
+            height: "100%"
           }}
         >
-          {children ? (
-            <>
-              {MenuItem ? (
-                <>
-                  {mdDown ? (
-                    ""
-                  ) : (
-                    <Box
-                      sx={{
-                        bottom: "0",
-                        left: children ? "2%" : "unset",
-                        right: children ? "unset" : "2%",
-                        position: "absolute",
-                        height: "100%",
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          color: "inherit",
-                          height: "100%",
-                          p: "3px 0",
-                        }}
-                      >
-                        {itemIcon}
-                      </ListItemIcon>
-                    </Box>
-                  )}
-                </>
-              ) : (
-                ""
-              )}
-              <Box
+          {MenuItem && !mdDown && (
+            <Box
+              sx={{
+                height: "60px",
+                width: "60px",
+                opacity: 0.2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  bottom: "0",
-                  right: "2%",
-                  position: "absolute",
-                  height: smDown ? "0%" : "100%",
-                  width: smDown ? "96%" : "auto",
+                  color: "inherit",
+                  height: "100%",
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "unset",
+                  "& svg": {
+                    width: "100%",
+                    height: "100%"
+                  }
                 }}
               >
-                {children}
-              </Box>
-            </>
-          ) : (
-            <>
-              {MenuItem ? (
-                <>
-                  {mdDown ? (
-                    ""
-                  ) : (
-                    <Box
-                      sx={{
-                        bottom: "0",
-                        left: children ? "2%" : "unset",
-                        right: children ? "unset" : "2%",
-                        position: "absolute",
-                        height: "100%",
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          color: "inherit",
-                          height: "100%",
-                          p: "3px 0",
-                        }}
-                      >
-                        {itemIcon}
-                      </ListItemIcon>
-                    </Box>
-                  )}
-                </>
-              ) : (
-                ""
-              )}
-            </>
+                {itemIcon}
+              </ListItemIcon>
+            </Box>
+          )}
+          {children && (
+            <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
+              {children}
+            </Box>
           )}
         </Box>
       </Grid>

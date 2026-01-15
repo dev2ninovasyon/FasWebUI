@@ -189,7 +189,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) =>
                     mb: 4,
                     backgroundColor: theme.palette.background.paper,
                     "& .handsontable th": {
-                        backgroundColor: "#4B49AC !important",
+                        backgroundColor: `${theme.palette.primary.main} !important`,
                         color: "white !important",
                         fontWeight: "bold !important",
                         textAlign: "center !important",
@@ -255,7 +255,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) =>
                     border: `1px solid ${theme.palette.divider}`,
                     backgroundColor: theme.palette.background.paper,
                     "& .handsontable th": {
-                        backgroundColor: "#4B49AC !important",
+                        backgroundColor: `${theme.palette.primary.main} !important`,
                         color: "white !important",
                         fontWeight: "bold !important",
                         textAlign: "center !important",

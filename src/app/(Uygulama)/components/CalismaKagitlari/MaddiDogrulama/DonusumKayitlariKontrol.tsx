@@ -40,7 +40,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
     // Header blue from image: approx #2196F3 or similar light blue
     const HEADER_BLUE = "#42A5F5";
     const HEADER_TEXT = "#FFFFFF";
-    const SUB_HEADER_BG = theme.palette.mode === 'dark' ? theme.palette.grey[800] : "#CFD8DC"; // Light gray for column headers
+    const SUB_HEADER_BG = theme.palette.primary.main; // Table header background
     const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
     const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
     const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
@@ -84,10 +84,10 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                     <Table size="small">
                         <TableHead>
                             <TableRow sx={{ backgroundColor: SUB_HEADER_BG }}>
-                                <TableCell sx={{ fontWeight: 700, color: TEXT_COLOR }}>Hesap No</TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: TEXT_COLOR }}>VUK Bakiye</TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: TEXT_COLOR }}>Dönüşüm Bakiye</TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: TEXT_COLOR }}>Fark</TableCell>
+                                <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap No</TableCell>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>VUK Bakiye</TableCell>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Dönüşüm Bakiye</TableCell>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Fark</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -124,12 +124,12 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                 <Table size="small">
                     <TableHead>
                         <TableRow sx={{ backgroundColor: SUB_HEADER_BG }}>
-                            <TableCell sx={{ fontWeight: 700, color: TEXT_COLOR }}>Hesap No</TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: TEXT_COLOR }}>Yevmiye No</TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: TEXT_COLOR }}>Hesap Adı</TableCell>
-                            <TableCell sx={{ fontWeight: 700, textAlign: "right", color: TEXT_COLOR }}>Borç</TableCell>
-                            <TableCell sx={{ fontWeight: 700, textAlign: "right", color: TEXT_COLOR }}>Alacak</TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: TEXT_COLOR }}>Açıklama</TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap No</TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: "white" }}>Yevmiye No</TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap Adı</TableCell>
+                            <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Borç</TableCell>
+                            <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Alacak</TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: "white" }}>Açıklama</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
