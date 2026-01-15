@@ -418,7 +418,7 @@ export const exportRiskMatrixToWord = async (data: KysRiskMatrisi[], relatedDocs
                                 verticalAlign: VerticalAlign.TOP
                             }),
                             new TableCell({
-                                children: row.actions.map(action => new Paragraph({
+                                children: (row.risks.flatMap(r => r.actions || [])).map(action => new Paragraph({
                                     children: [new TextRun({ text: action.text, size: 18 })],
                                     bullet: { level: 0 },
                                     spacing: { before: 60, after: 60 }

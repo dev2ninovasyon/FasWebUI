@@ -28,6 +28,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 interface NestedMenuItemProps {
   item: MenuitemsType;
   level: number; // Hiyerarşi seviyesi
+  showStatusIcons?: boolean;
 }
 
 const StatusIcon: React.FC<{ status: boolean }> = ({ status }) => {
@@ -38,7 +39,11 @@ const StatusIcon: React.FC<{ status: boolean }> = ({ status }) => {
   );
 };
 
-const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
+const NestedMenuItem: React.FC<NestedMenuItemProps> = ({
+  item,
+  level,
+  showStatusIcons = true,
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const [open, setOpen] = useState(false);
@@ -68,7 +73,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!item.formKodu) {
+      if (!item.formKodu || !showStatusIcons) {
         return;
       }
       try {
@@ -124,24 +129,30 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
             router.push(item.href);
           }
         }}      >
-        <TableCell sx={{ width: "40%" }}>
+        <TableCell sx={{ width: showStatusIcons ? "40%" : "85%" }}>
           <Typography variant={typographyVariant}>{item.title}</Typography>
         </TableCell>
 
         {/* Hazırlandı mı Icon */}
-        <TableCell sx={{ textAlign: "center", width: "15%" }}>
-          {!hasChildren && item.formKodu && <StatusIcon status={hazirlayan} />}
-        </TableCell>
+        {showStatusIcons && (
+          <TableCell sx={{ textAlign: "center", width: "15%" }}>
+            {!hasChildren && item.formKodu && <StatusIcon status={hazirlayan} />}
+          </TableCell>
+        )}
 
         {/* Onaylandı mı Icon */}
-        <TableCell sx={{ textAlign: "center", width: "15%" }}>
-          {!hasChildren && item.formKodu && <StatusIcon status={onaylayan} />}
-        </TableCell>
+        {showStatusIcons && (
+          <TableCell sx={{ textAlign: "center", width: "15%" }}>
+            {!hasChildren && item.formKodu && <StatusIcon status={onaylayan} />}
+          </TableCell>
+        )}
 
         {/* Kalite Kontrol Icon */}
-        <TableCell sx={{ textAlign: "center", width: "15%" }}>
-          {!hasChildren && item.formKodu && <StatusIcon status={kontrolEden} />}
-        </TableCell>
+        {showStatusIcons && (
+          <TableCell sx={{ textAlign: "center", width: "15%" }}>
+            {!hasChildren && item.formKodu && <StatusIcon status={kontrolEden} />}
+          </TableCell>
+        )}
 
         {/* Expand/Collapse or Arrow Icon */}
         <TableCell sx={{ textAlign: "center", width: "15%" }}>
@@ -178,7 +189,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
           }}
         >
           <TableCell
-            colSpan={5}
+            colSpan={showStatusIcons ? 5 : 2}
             sx={{
               paddingBottom: 0,
               paddingTop: 0,
@@ -195,6 +206,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
                       key={child.id}
                       item={child}
                       level={level + 1}
+                      showStatusIcons={showStatusIcons}
                     />
                   ))}
                 </TableBody>
@@ -208,7 +220,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
       {open && (
         <TableRow>
           <TableCell
-            colSpan={5}
+            colSpan={showStatusIcons ? 5 : 2}
             sx={{
               backgroundColor:
                 customizer.activeMode === "light"
@@ -223,7 +235,10 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({ item, level }) => {
   );
 };
 
-const FilteredMenu: React.FC<{ title: string }> = ({ title }) => {
+const FilteredMenu: React.FC<{ title: string; showStatusIcons?: boolean }> = ({
+  title,
+  showStatusIcons = true,
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const Menuitems: MenuitemsType[] = createMenuItems(
@@ -253,24 +268,33 @@ const FilteredMenu: React.FC<{ title: string }> = ({ title }) => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: "40%" }}>
+              <TableCell sx={{ width: showStatusIcons ? "40%" : "85%" }}>
                 <Typography variant="h5">İşlem</Typography>
               </TableCell>
-              <TableCell sx={{ textAlign: "center", width: "15%" }}>
-                <Typography variant="h5">Hazırlandı</Typography>
-              </TableCell>
-              <TableCell sx={{ textAlign: "center", width: "15%" }}>
-                <Typography variant="h5">Onaylandı</Typography>
-              </TableCell>
-              <TableCell sx={{ textAlign: "center", width: "15%" }}>
-                <Typography variant="h5">Kalite Kontrol</Typography>
-              </TableCell>
+              {showStatusIcons && (
+                <>
+                  <TableCell sx={{ textAlign: "center", width: "15%" }}>
+                    <Typography variant="h5">Hazırlandı</Typography>
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "center", width: "15%" }}>
+                    <Typography variant="h5">Onaylandı</Typography>
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "center", width: "15%" }}>
+                    <Typography variant="h5">Kalite Kontrol</Typography>
+                  </TableCell>
+                </>
+              )}
               <TableCell sx={{ textAlign: "center", width: "15%" }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {mainItem.children?.map((child) => (
-              <NestedMenuItem key={child.id} item={child} level={0} />
+              <NestedMenuItem
+                key={child.id}
+                item={child}
+                level={0}
+                showStatusIcons={showStatusIcons}
+              />
             ))}
           </TableBody>
         </Table>

@@ -148,9 +148,7 @@ const KysRelatedDocumentsPopup: React.FC<KysRelatedDocumentsPopupProps> = ({ doc
                     <Box sx={{ flexGrow: 1, p: 0.5, overflowY: "auto", bgcolor: "background.default" }}>
                         {doc ? (
                             <Box sx={{ maxWidth: "1200px", mx: "auto", p: 2 }}>
-                                <Typography variant="h5" sx={{ mb: 3, fontWeight: 700, color: "primary.main" }}>
-                                    {doc.title}
-                                </Typography>
+
 
                                 <Box sx={{ bgcolor: "background.paper", borderRadius: 2 }}>
                                     {doc.type === 1 && <KysCalismaKagidi formKodu={doc.formKodu} alanAdi={doc.title} />}

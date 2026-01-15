@@ -60,6 +60,13 @@ const MusteriEkleForm = ({
   const [sektor2Id, setSektor2Id] = useState(initialData?.sektor2Id || 0);
   const [sektor3Id, setSektor3Id] = useState(initialData?.sektor3Id || 0);
 
+  // New financial fields state
+  const [aktifBuyukluk, setAktifBuyukluk] = useState<number | null>(null);
+  const [ciro, setCiro] = useState<number | null>(null);
+  const [netKar, setNetKar] = useState<number | null>(null);
+  const [calisanSayisi, setCalisanSayisi] = useState<number | null>(null);
+  const [istirakTutari, setIstirakTutari] = useState<number | null>(null);
+
   const [sektor1List, setSektor1List] = useState<Veri2[]>([]);
   const [sektor2List, setSektor2List] = useState<Veri2[]>([]);
   const [sektor3List, setSektor3List] = useState<Veri2[]>([]);
@@ -104,6 +111,14 @@ const MusteriEkleForm = ({
         setVergiDairesi(data.vergiDairesi ?? "");
         setVergiNo(data.vergiNo ?? "");
 
+        // Set financial fields
+        setAktifBuyukluk(data.aktifBuyukluk ?? null);
+        setCiro(data.ciro ?? null);
+        setNetKar(data.netKar ?? null);
+        setCalisanSayisi(data.calisanSayisi ?? null);
+        setIstirakTutari(data.istirakTutari ?? null);
+
+
         // Set extracted year if available
         if (data.yil) {
           setPdfYil(data.yil);
@@ -144,12 +159,19 @@ const MusteriEkleForm = ({
       ticaretSicilNo,
       vergiDairesi,
       vergiNo,
+      yil: pdfYil || user.yil, // PDF'den alınan yıl veya kullanıcının aktif yılı
       konsolideMi,
       konsolideTipi,
       konsolideBagliSirketId,
       sektor1Id,
       sektor2Id,
       sektor3Id,
+      // Financial fields
+      aktifBuyukluk,
+      ciro,
+      netKar,
+      calisanSayisi,
+      istirakTutari
     };
 
     // Validation
@@ -159,6 +181,7 @@ const MusteriEkleForm = ({
     if (!sektor3Id) newErrors.sektor3Id = "Sektör seçimi zorunludur.";
 
     if (Object.keys(newErrors).length > 0) {
+
       setErrors(newErrors);
       enqueueSnackbar("Lütfen zorunlu alanları doldurunuz.", { variant: "warning" });
       return;

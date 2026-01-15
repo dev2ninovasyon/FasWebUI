@@ -135,13 +135,13 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                       >
                         <Typography
                           color={
-                            item.title === subtitle ? "white" : "textSecondary"
+                            item.title === subtitle ? "white" : "textPrimary"
                           }
                           sx={{
                             backgroundColor:
                               item.title === subtitle
                                 ? "primary.main"
-                                : "textSecondary",
+                                : "transparent",
                             px: item.title === subtitle ? 1 : 0,
                             borderRadius: (theme: Theme) =>
                               theme.shape.borderRadius / 4,
@@ -157,13 +157,13 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                     ) : (
                       <Typography
                         color={
-                          item.title === subtitle ? "white" : "textSecondary"
+                          item.title === subtitle ? "white" : "textPrimary"
                         }
                         sx={{
                           backgroundColor:
                             item.title === subtitle
                               ? "primary.main"
-                              : "textSecondary",
+                              : "transparent",
                           px: item.title === subtitle ? 1 : 0,
                           borderRadius: (theme: Theme) =>
                             theme.shape.borderRadius / 4,

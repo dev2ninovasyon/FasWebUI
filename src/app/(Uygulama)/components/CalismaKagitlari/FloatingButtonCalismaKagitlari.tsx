@@ -51,6 +51,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
 }) => {
   const theme = useTheme();
   const customizer = useSelector((state: AppState) => state.customizer);
+  const user = useSelector((state: AppState) => state.userReducer);
 
   const [message, setMessage] = useState(messages.welcome);
 
@@ -68,7 +69,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
     try {
       setControl2(true);
       setMessage(messages.working);
-      const enhancedText = await enhanceText(text, instruction);
+      const enhancedText = await enhanceText(user, text, instruction);
       setMessage(messages.done);
       setAiText(enhancedText);
     } catch (error) {

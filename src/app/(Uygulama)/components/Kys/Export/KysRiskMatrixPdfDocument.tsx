@@ -536,7 +536,7 @@ const KysRiskMatrixPdfDocument: React.FC<KysRiskMatrixPdfDocumentProps> = ({ dat
                                                 ))}
                                             </View>
                                             <View style={[styles.tableCell, styles.column3, { borderRight: 0 }]}>
-                                                {row.actions.map((action, actionIdx) => (
+                                                {(row.risks.flatMap(r => r.actions || [])).map((action, actionIdx) => (
                                                     <Text key={actionIdx} style={styles.item}>• {action.text}</Text>
                                                 ))}
                                             </View>

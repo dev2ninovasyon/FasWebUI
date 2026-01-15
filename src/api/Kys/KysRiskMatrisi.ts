@@ -176,3 +176,38 @@ export const getAllKysRiskMatrisi = async (
         return [];
     }
 };
+
+export const generateKysRiskMatrisiFullData = async (
+    token: string,
+    kategoriKodu: string,
+    denetciId: number,
+    denetlenenId: number,
+    yil: number
+): Promise<KysRiskMatrisi | null> => {
+    try {
+        const params = new URLSearchParams({
+            kategoriKodu,
+            denetciId: denetciId.toString(),
+            denetlenenId: denetlenenId.toString(),
+            yil: yil.toString()
+        });
+
+        const response = await apiFetch(`/KysRiskMatrisi/Generate?${params}`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                accept: "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            console.error("Risk matrisi verileri oluşturulamadı:", response.statusText);
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Risk matrisi verileri oluşturulamadı:", error);
+        return null;
+    }
+};

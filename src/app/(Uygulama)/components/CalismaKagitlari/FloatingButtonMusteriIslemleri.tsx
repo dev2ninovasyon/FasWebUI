@@ -69,6 +69,7 @@ export const FloatingButtonMusteriIslemleri: React.FC<FloatingButtonProps> = ({
 }) => {
   const theme = useTheme();
   const customizer = useSelector((state: AppState) => state.customizer);
+  const user = useSelector((state: AppState) => state.userReducer);
 
   const [message, setMessage] = useState(messages.welcome);
   const [loaded, setLoaded] = useState(false);
@@ -199,7 +200,7 @@ Eğer sağlanan URL'ye erişilemediyse veya içerik okunamadıysa (teknik bir ha
       setMessage(messages.working);
       setAiText("");
 
-      const raw = await enhanceTextMsuteriEkle(buildJsonPrompt(url), url);
+      const raw = await enhanceTextMsuteriEkle(user, buildJsonPrompt(url), url);
       const out = (raw || "").trim();
 
       // Kullanıcıya gördürdüğünüz metin JSON değilse kafa karıştırabilir,

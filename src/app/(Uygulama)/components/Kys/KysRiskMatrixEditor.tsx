@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
     Table,
     TableBody,
@@ -24,6 +24,9 @@ import {
     ListItem,
     ListItemText,
     Link as MuiLink,
+    Autocomplete,
+    Divider,
+    useTheme,
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -37,14 +40,19 @@ import { AppState } from "@/store/store";
 import {
     getKysRiskMatrisi,
     updateKysRiskMatrisi,
+    generateKysRiskMatrisiFullData,
     RiskMatrixData,
     RiskMatrixRow,
     RiskItem,
     RiskAction
 } from "@/api/Kys/KysRiskMatrisi";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
+import CloseIcon from "@mui/icons-material/Close";
+import BoltIcon from "@mui/icons-material/Bolt";
 import { enqueueSnackbar } from "notistack";
 import { v4 as uuidv4 } from 'uuid';
 import KysRelatedDocumentsPopup from "./KysRelatedDocumentsPopup";
+import { FloatingButtonCalismaKagitlari } from "../CalismaKagitlari/FloatingButtonCalismaKagitlari";
 import { documentMapping, KYS_PATH_TO_FORM_KODU, riskMatrixSections } from "@/api/Kys/KysRiskMatrixConstants";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -70,6 +78,9 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
 }) => {
     const router = useRouter();
     const user = useSelector((state: AppState) => state.userReducer);
+    const theme = useTheme();
+    const customizer = useSelector((state: AppState) => state.customizer);
+
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [matrisId, setMatrisId] = useState<number | null>(null);
@@ -77,18 +88,31 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
     const [tableData, setTableData] = useState<RiskMatrixData>({ rows: [] });
 
     // Dialog States
-    const [openObjectiveDialog, setOpenObjectiveDialog] = useState(false);
-    const [openRiskDialog, setOpenRiskDialog] = useState(false); // Renamed from openRisksDialog
-
-    // Indices to track what we are editing
+    const [openRowDialog, setOpenRowDialog] = useState(false);
     const [currentRowIndex, setCurrentRowIndex] = useState<number | null>(null);
-    const [currentRiskIndex, setCurrentRiskIndex] = useState<number | null>(null);
+    const [editingRowData, setEditingRowData] = useState<RiskMatrixRow | null>(null);
 
-    // Temp State for Editing
-    const [editingRow, setEditingRow] = useState<RiskMatrixRow | null>(null); // For Objective Dialog
+    // AI & Document States
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [aiDismissed, setAiDismissed] = useState(false);
+    const [isAiHovered, setIsAiHovered] = useState(false);
+    const [aiLoaded, setAiLoaded] = useState(false);
+    const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
+    const [docRefreshKey, setDocRefreshKey] = useState<number>(0);
 
-    // For Risk Dialog (Single Risk Editing)
-    const [editingRisk, setEditingRisk] = useState<RiskItem | null>(null);
+    // Focus tracking for AI
+    const [focusedField, setFocusedField] = useState<{
+        type: 'objective' | 'risk';
+        index?: number;
+    } | null>(null);
+    const [isAiButtonHovered, setIsAiButtonHovered] = useState(false);
+    const aiButtonRef = useRef<HTMLDivElement>(null);
+    const isInteractingWithAi = useRef(false);
+
+    const isMatrixEmpty = useCallback(() => {
+        if (!tableData?.rows || tableData.rows.length === 0) return true;
+        return tableData.rows.every(row => !row.risks || row.risks.length === 0);
+    }, [tableData]);
 
     const fetchData = useCallback(async () => {
         if (!user.token) return;
@@ -161,6 +185,38 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
         }
     };
 
+    const handleGenerateFullData = async () => {
+        if (!user.token || !user.denetciId || !user.denetlenenId || !user.yil) return;
+
+        setIsGenerating(true);
+        try {
+            const result = await generateKysRiskMatrisiFullData(
+                user.token,
+                kategoriKodu,
+                user.denetciId,
+                user.denetlenenId,
+                user.yil
+            );
+
+            if (result) {
+                setMatrisId(result.id);
+                setBaslik(result.baslik || "");
+                if (result.matrisJson) {
+                    setTableData(JSON.parse(result.matrisJson));
+                }
+                enqueueSnackbar("Riskler ve İşler başarıyla oluşturuldu!", { variant: "success" });
+                setAiDismissed(true); // Hide assistant after generation
+            } else {
+                enqueueSnackbar("Veriler oluşturulurken bir hata oluştu.", { variant: "error" });
+            }
+        } catch (error) {
+            console.error("AI Generation error:", error);
+            enqueueSnackbar("AI servis hatası.", { variant: "error" });
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
     // --- Row Management (Objective Level) ---
     const addObjectiveRow = () => {
         const newData = { ...tableData };
@@ -207,10 +263,8 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
         saveDataToBackend(newData);
     };
 
-    // --- Dialog Open Handlers ---
-
-    // 1. Objective Dialog
-    const handleOpenObjectiveDialog = (rowIndex: number) => {
+    // --- Unified Row Dialog Handler ---
+    const handleOpenRowDialog = (rowIndex: number) => {
         if (readOnly) return;
         setCurrentRowIndex(rowIndex);
         const row = JSON.parse(JSON.stringify(tableData.rows[rowIndex]));
@@ -218,117 +272,92 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
         // MERGE LOGIC: Combine Title + Items into Title
         if (row.objective.items && row.objective.items.length > 0) {
             row.objective.title = row.objective.title + "\n\n" + row.objective.items.join("\n");
-            row.objective.items = []; // Clear items as they are now in title
+            row.objective.items = [];
         }
 
-        setEditingRow(row);
-        setOpenObjectiveDialog(true);
+        setEditingRowData(row);
+        setOpenRowDialog(true);
     };
 
-    const saveObjectiveChanges = () => {
-        if (currentRowIndex !== null && editingRow) {
+    const saveRowChanges = () => {
+        if (currentRowIndex !== null && editingRowData) {
             const newData = { ...tableData };
-            newData.rows[currentRowIndex].objective = editingRow.objective;
+            newData.rows[currentRowIndex] = editingRowData;
             setTableData(newData);
-            setOpenObjectiveDialog(false);
-            setEditingRow(null);
-
+            setOpenRowDialog(false);
+            setEditingRowData(null);
+            setFocusedField(null);
             saveDataToBackend(newData);
         }
     };
 
-    // 2. Risk Dialog (New: Single Risk Editing)
-    const handleOpenRiskDialog = (rowIndex: number, riskIndex: number | null = null) => {
-        if (readOnly) return;
-        setCurrentRowIndex(rowIndex);
-        setCurrentRiskIndex(riskIndex); // If null, we are adding a NEW risk
-
-        if (riskIndex !== null) {
-            // Edit existing
-            const riskToEdit = tableData.rows[rowIndex].risks[riskIndex];
-            setEditingRisk(JSON.parse(JSON.stringify(riskToEdit)));
-        } else {
-            // New Risk
-            setEditingRisk({
-                id: uuidv4(),
-                text: "",
-                actions: []
-            });
-        }
-        setOpenRiskDialog(true);
+    // Helper functions for editing row data
+    const updateObjectiveTitle = (val: string) => {
+        if (!editingRowData) return;
+        setEditingRowData({
+            ...editingRowData,
+            objective: { ...editingRowData.objective, title: val }
+        });
     };
 
-    const saveRiskChanges = () => {
-        if (currentRowIndex !== null && editingRisk) {
-            const newData = { ...tableData };
-            const row = newData.rows[currentRowIndex];
-
-            if (currentRiskIndex !== null) {
-                // Update Existing
-                row.risks[currentRiskIndex] = editingRisk;
-            } else {
-                // Add New
-                if (!row.risks) row.risks = [];
-                row.risks.push(editingRisk);
-            }
-
-            setTableData(newData);
-            setOpenRiskDialog(false);
-            setEditingRisk(null);
-            setCurrentRiskIndex(null);
-
-            saveDataToBackend(newData);
-        }
+    const addRisk = () => {
+        if (!editingRowData) return;
+        const newRisks = [...(editingRowData.risks || [])];
+        newRisks.push({ id: uuidv4(), text: "", actions: [] });
+        setEditingRowData({ ...editingRowData, risks: newRisks });
     };
 
-    const deleteRisk = () => {
-        if (confirm("Bu riski silmek istediğinize emin misiniz?")) {
-            if (currentRowIndex !== null && currentRiskIndex !== null) {
-                const newData = { ...tableData };
-                newData.rows[currentRowIndex].risks.splice(currentRiskIndex, 1);
-                setTableData(newData);
-                setOpenRiskDialog(false);
-                setEditingRisk(null);
-                setCurrentRiskIndex(null);
-
-                saveDataToBackend(newData);
-            }
-        }
-    }
-
-
-    // Risk Dialog Helpers (Work on `editingRisk` state) - NO CHANGE needed here, they just edit temp state.
-
-    const updateRiskText = (val: string) => {
-        if (!editingRisk) return;
-        setEditingRisk({ ...editingRisk, text: val });
+    const removeRisk = (riskIdx: number) => {
+        if (!editingRowData) return;
+        const newRisks = [...(editingRowData.risks || [])];
+        newRisks.splice(riskIdx, 1);
+        setEditingRowData({ ...editingRowData, risks: newRisks });
     };
 
-    const addAction = () => {
-        if (!editingRisk) return;
-        const newActions = [...(editingRisk.actions || [])];
+    const updateRiskText = (riskIdx: number, val: string) => {
+        if (!editingRowData) return;
+        const newRisks = [...(editingRowData.risks || [])];
+        newRisks[riskIdx].text = val;
+        setEditingRowData({ ...editingRowData, risks: newRisks });
+    };
+
+    const addActionToRisk = (riskIdx: number) => {
+        if (!editingRowData) return;
+        const newRisks = [...(editingRowData.risks || [])];
+        const newActions = [...(newRisks[riskIdx].actions || [])];
         newActions.push({ id: uuidv4(), text: "" });
-        setEditingRisk({ ...editingRisk, actions: newActions });
+        newRisks[riskIdx].actions = newActions;
+        setEditingRowData({ ...editingRowData, risks: newRisks });
     };
 
-    const removeAction = (idx: number) => {
-        if (!editingRisk) return;
-        const newActions = [...(editingRisk.actions || [])];
-        newActions.splice(idx, 1);
-        setEditingRisk({ ...editingRisk, actions: newActions });
+    const removeActionFromRisk = (riskIdx: number, actionIdx: number) => {
+        if (!editingRowData) return;
+        const newRisks = [...(editingRowData.risks || [])];
+        const newActions = [...(newRisks[riskIdx].actions || [])];
+        newActions.splice(actionIdx, 1);
+        newRisks[riskIdx].actions = newActions;
+        setEditingRowData({ ...editingRowData, risks: newRisks });
     };
 
-    const updateActionText = (idx: number, val: string) => {
-        if (!editingRisk) return;
-        const newActions = [...(editingRisk.actions || [])];
-        newActions[idx].text = val;
-        setEditingRisk({ ...editingRisk, actions: newActions });
+    const updateActionText = (riskIdx: number, actionIdx: number, docKey: string) => {
+        if (!editingRowData) return;
+        const newRisks = [...(editingRowData.risks || [])];
+        const newActions = [...(newRisks[riskIdx].actions || [])];
+
+        // Get document info from mapping
+        const doc = documentMapping[docKey];
+        if (doc) {
+            newActions[actionIdx].text = `${docKey} ${doc.title}`;
+            newActions[actionIdx].link = docKey; // Store the doc key for later use
+        }
+
+        newRisks[riskIdx].actions = newActions;
+        setEditingRowData({ ...editingRowData, risks: newRisks });
     };
 
 
     // ... (previous helper functions)
 
-    const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
 
     const getDocKey = (action: { link?: string; text: string }): string | null => {
         // 1. Try to extract "X.Y" from text (most reliable for labeled items)
@@ -374,9 +403,18 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                 <Table sx={{ minWidth: 800 }} size="small">
                     <TableHead>
                         <TableRow sx={{ bgcolor: "action.hover" }}>
-                            <TableCell sx={{ fontWeight: "bold", color: "text.primary", width: "35%", borderRight: 1, borderBottom: 1, borderColor: "divider" }}>Kalite Hedefleri</TableCell>
-                            <TableCell sx={{ fontWeight: "bold", color: "text.primary", width: "30%", borderRight: 1, borderBottom: 1, borderColor: "divider" }}>Örnek Kalite Riskleri</TableCell>
-                            <TableCell sx={{ fontWeight: "bold", color: "text.primary", width: "35%", borderBottom: 1, borderColor: "divider" }}>Risklere Karşı Yapılacak Örnek İşler</TableCell>
+                            <TableCell sx={{
+                                fontWeight: "bold",
+                                color: "text.primary",
+                                width: "35%",
+                                borderRight: "1px solid",
+                                borderBottom: "1px solid",
+                                borderColor: "rgba(224, 224, 224, 1)"
+                            }}>
+                                Kalite Hedefleri
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: "bold", color: "text.primary", width: "30%", borderRight: "1px solid", borderBottom: "1px solid", borderColor: "rgba(224, 224, 224, 1)" }}>Kalite Riskleri</TableCell>
+                            <TableCell sx={{ fontWeight: "bold", color: "text.primary", width: "35%", borderBottom: "1px solid", borderColor: "rgba(224, 224, 224, 1)" }}>Risklere Karşı Yapılacak İşler</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -395,14 +433,14 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                             sx={{
                                                 verticalAlign: "top",
                                                 p: 2,
-                                                borderRight: 1,
-                                                borderBottom: 1,
-                                                borderColor: "divider",
+                                                borderRight: "1px solid",
+                                                borderBottom: "1px solid",
+                                                borderColor: "rgba(224, 224, 224, 1)",
                                                 bgcolor: "background.default"
                                             }}
                                         >
                                             <Box
-                                                onClick={() => handleOpenObjectiveDialog(rowIndex)}
+                                                onClick={() => handleOpenRowDialog(rowIndex)}
                                                 sx={{ cursor: readOnly ? "default" : "pointer", height: "100%" }}
                                             >
                                                 <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1, color: "text.primary" }}>
@@ -423,17 +461,23 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                             </Box>
                                         </TableCell>
 
-                                        {/* RISK & ACTION CELL 0 (Make sure we handle if risks array is empty) */}
+                                        {/* RISK & ACTION CELL 0 */}
                                         {riskCount > 0 ? (
                                             <>
                                                 <TableCell
-                                                    sx={{ verticalAlign: "top", p: 1.5, borderRight: 1, borderBottom: 1, borderColor: "divider", cursor: "pointer" }}
-                                                    onClick={() => handleOpenRiskDialog(rowIndex, 0)}
+                                                    sx={{
+                                                        verticalAlign: "top",
+                                                        p: 1.5,
+                                                        borderRight: "1px solid rgba(224, 224, 224, 1)",
+                                                        borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                                                        cursor: "pointer"
+                                                    }}
+                                                    onClick={() => handleOpenRowDialog(rowIndex)}
                                                 >
                                                     <Typography variant="body2">{row.risks[0].text}</Typography>
                                                 </TableCell>
                                                 <TableCell
-                                                    sx={{ verticalAlign: "top", p: 1.5, borderBottom: 1, borderColor: "divider" }}
+                                                    sx={{ verticalAlign: "top", p: 1.5, borderBottom: "1px solid rgba(224, 224, 224, 1)" }}
                                                 >
                                                     {row.risks[0].actions?.map((act, idx) => {
                                                         const docKey = getDocKey(act);
@@ -448,7 +492,16 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                                                             textAlign: "left",
                                                                             verticalAlign: "top",
                                                                             textDecoration: "underline",
-                                                                            color: "primary.main"
+                                                                            color: "primary.main",
+                                                                            cursor: "pointer",
+                                                                            fontWeight: 500,
+                                                                            transition: "all 0.2s ease",
+                                                                            "&:hover": {
+                                                                                color: "primary.dark",
+                                                                                backgroundColor: "action.hover",
+                                                                                textDecoration: "underline",
+                                                                                transform: "translateX(2px)"
+                                                                            }
                                                                         }}
                                                                     >
                                                                         {act.text}
@@ -466,11 +519,11 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                         ) : (
                                             <TableCell
                                                 colSpan={2}
-                                                sx={{ p: 1, bgcolor: "action.hover", cursor: "pointer", verticalAlign: "middle", borderBottom: 1, borderColor: "divider" }}
-                                                onClick={() => handleOpenRiskDialog(rowIndex, null)} // Add New
+                                                sx={{ p: 1.5, bgcolor: "action.hover", cursor: "pointer", verticalAlign: "middle", borderBottom: "1px solid", borderColor: "rgba(224, 224, 224, 1)" }}
+                                                onClick={() => handleOpenRowDialog(rowIndex)}
                                             >
-                                                <Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary", fontWeight: "bold" }}>
-                                                    [Varsa ilave riskleri ekleyin]
+                                                <Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary", fontWeight: "bold", textAlign: "center", opacity: 0.5 }}>
+                                                    –
                                                 </Typography>
                                             </TableCell>
                                         )}
@@ -482,13 +535,19 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                         return (
                                             <TableRow key={`${rowIndex}-${actualIndex}`} hover>
                                                 <TableCell
-                                                    sx={{ verticalAlign: "top", p: 1.5, borderRight: 1, borderBottom: 1, borderColor: "divider", cursor: "pointer" }}
-                                                    onClick={() => handleOpenRiskDialog(rowIndex, actualIndex)}
+                                                    sx={{
+                                                        verticalAlign: "top",
+                                                        p: 1.5,
+                                                        borderRight: "1px solid rgba(224, 224, 224, 1)",
+                                                        borderBottom: "1px solid rgba(224, 224, 224, 1)",
+                                                        cursor: "pointer"
+                                                    }}
+                                                    onClick={() => handleOpenRowDialog(rowIndex)}
                                                 >
                                                     <Typography variant="body2">{risk.text}</Typography>
                                                 </TableCell>
                                                 <TableCell
-                                                    sx={{ verticalAlign: "top", p: 1.5, borderBottom: 1, borderColor: "divider" }}
+                                                    sx={{ verticalAlign: "top", p: 1.5, borderBottom: "1px solid rgba(224, 224, 224, 1)" }}
                                                 >
                                                     {risk.actions?.map((act, actIdx) => {
                                                         const docKey = getDocKey(act);
@@ -503,7 +562,16 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                                                             textAlign: "left",
                                                                             verticalAlign: "top",
                                                                             textDecoration: "underline",
-                                                                            color: "primary.main"
+                                                                            color: "primary.main",
+                                                                            cursor: "pointer",
+                                                                            fontWeight: 500,
+                                                                            transition: "all 0.2s ease",
+                                                                            "&:hover": {
+                                                                                color: "primary.dark",
+                                                                                backgroundColor: "action.hover",
+                                                                                textDecoration: "underline",
+                                                                                transform: "translateX(2px)"
+                                                                            }
                                                                         }}
                                                                     >
                                                                         {act.text}
@@ -528,11 +596,11 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                         <TableRow hover>
                                             <TableCell
                                                 colSpan={2}
-                                                sx={{ p: 1, bgcolor: "action.hover", cursor: "pointer", borderBottom: 1, borderColor: "divider" }}
-                                                onClick={() => handleOpenRiskDialog(rowIndex, null)} // Add New
+                                                sx={{ p: 1.5, bgcolor: "action.hover", cursor: "pointer", borderBottom: "1px solid", borderColor: "rgba(224, 224, 224, 1)" }}
+                                                onClick={() => handleOpenRowDialog(rowIndex)}
                                             >
-                                                <Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary", fontWeight: "bold" }}>
-                                                    [Varsa ilave riskleri ekleyin]
+                                                <Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary", fontWeight: "bold", textAlign: "center", opacity: 0.5 }}>
+                                                    –
                                                 </Typography>
                                             </TableCell>
                                         </TableRow>
@@ -552,25 +620,184 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                 </Box>
             )}
 
-            {/* --- OBJECTIVE EDIT DIALOG --- */}
-            <Dialog open={openObjectiveDialog} onClose={() => setOpenObjectiveDialog(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Hedef Düzenle</DialogTitle>
+            {/* --- UNIFIED ROW EDIT DIALOG --- */}
+            <Dialog open={openRowDialog} onClose={() => {
+                setOpenRowDialog(false);
+                setFocusedField(null);
+            }} maxWidth="lg" fullWidth>
+                <DialogTitle>Satır Düzenle</DialogTitle>
                 <DialogContent dividers>
-                    {editingRow && (
+                    {editingRowData && (
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                            <TextField
-                                label="Hedef ve Detayları"
-                                fullWidth
-                                multiline
-                                minRows={4}
-                                maxRows={10}
-                                value={editingRow.objective.title || ""}
-                                onChange={(e) => setEditingRow({
-                                    ...editingRow,
-                                    objective: { ...editingRow.objective, title: e.target.value }
-                                })}
-                                helperText="Tüm hedef açıklamasını ve maddelerini bu alana giriniz."
-                            />
+                            {/* SECTION 1: Kalite Hedefi */}
+                            <Box>
+                                <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "text.primary" }}>
+                                    Kalite Hedefi
+                                </Typography>
+                                <TextField
+                                    id="ai-field-objective"
+                                    label="Hedef ve Detayları"
+                                    fullWidth
+                                    multiline
+                                    minRows={3}
+                                    maxRows={8}
+                                    value={editingRowData.objective.title || ""}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateObjectiveTitle(e.target.value)}
+                                    onFocus={() => setFocusedField({ type: 'objective' })}
+                                    onBlur={(e: React.FocusEvent) => {
+                                        setTimeout(() => {
+                                            if (isInteractingWithAi.current) return;
+                                            if (!document.activeElement?.id?.startsWith("ai-field-")) {
+                                                setFocusedField(null);
+                                            }
+                                        }, 200);
+                                    }}
+                                    helperText="Tüm hedef açıklamasını ve maddelerini bu alana giriniz."
+                                />
+                            </Box>
+
+                            {/* SECTION 2: Riskler ve İşler */}
+                            <Box>
+                                <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "text.primary" }}>
+                                    Riskler ve İşler
+                                </Typography>
+
+                                {editingRowData.risks?.map((risk, riskIdx) => (
+                                    <Box
+                                        key={risk.id || riskIdx}
+                                        sx={{
+                                            mb: 3,
+                                            p: 2,
+                                            border: 1,
+                                            borderColor: "divider",
+                                            borderRadius: 1,
+                                            bgcolor: "background.default"
+                                        }}
+                                    >
+                                        {/* Risk Header */}
+                                        <Box sx={{ display: "flex", gap: 1, mb: 2, alignItems: "flex-start" }}>
+                                            <TextField
+                                                id={`ai-field-risk-${riskIdx}`}
+                                                label={`Risk ${riskIdx + 1}`}
+                                                fullWidth
+                                                multiline
+                                                rows={2}
+                                                value={risk.text}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateRiskText(riskIdx, e.target.value)}
+                                                onFocus={() => setFocusedField({ type: 'risk', index: riskIdx })}
+                                                onBlur={(e: React.FocusEvent) => {
+                                                    setTimeout(() => {
+                                                        if (isInteractingWithAi.current) return;
+                                                        if (!document.activeElement?.id?.startsWith("ai-field-")) {
+                                                            setFocusedField(null);
+                                                        }
+                                                    }, 200);
+                                                }}
+                                                placeholder="Risk açıklamasını giriniz..."
+                                            />
+                                            <IconButton
+                                                onClick={() => removeRisk(riskIdx)}
+                                                color="error"
+                                                size="small"
+                                                sx={{ mt: 1 }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Box>
+
+                                        {/* Actions for this Risk */}
+                                        <Box sx={{ pl: 2, borderLeft: 4, borderColor: "divider" }}>
+                                            <Typography variant="subtitle2" sx={{ mb: 1.5, color: "text.secondary" }}>
+                                                Bu Riske Karşı Yapılacak İşler
+                                            </Typography>
+
+                                            {risk.actions?.map((action, actionIdx) => {
+                                                // Get available documents for this category
+                                                const section = riskMatrixSections.find(s => s.kategoriKodu === kategoriKodu);
+                                                const availableDocs = section?.documents || [];
+                                                const docOptions = availableDocs.map(key => ({
+                                                    key,
+                                                    label: documentMapping[key]?.title || key
+                                                }));
+
+                                                // Extract current doc key from action link or text
+                                                let currentDocKey = "";
+
+                                                // Skip if link is just "#" (legacy data)
+                                                if (action.link && action.link !== "#") {
+                                                    currentDocKey = action.link;
+                                                }
+                                                // Try to extract from text
+                                                else if (action.text) {
+                                                    // Try multiple patterns to extract doc key
+                                                    const patterns = [
+                                                        /^(\d+\.\d+)\s/,           // "1.1 Title"
+                                                        /^(\d+\.\d+)-/,            // "1.1-Title"  
+                                                        /(\d+\.\d+)/               // anywhere in text
+                                                    ];
+
+                                                    for (const pattern of patterns) {
+                                                        const match = action.text.match(pattern);
+                                                        if (match && match[1]) {
+                                                            currentDocKey = match[1];
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+
+                                                return (
+                                                    <Box key={action.id || actionIdx} sx={{ display: "flex", gap: 1, mb: 1, alignItems: "center" }}>
+                                                        <Autocomplete
+                                                            size="small"
+                                                            fullWidth
+                                                            options={docOptions}
+                                                            value={docOptions.find(opt => opt.key === currentDocKey) || null}
+                                                            onChange={(e, newValue) => {
+                                                                if (newValue) {
+                                                                    updateActionText(riskIdx, actionIdx, newValue.key);
+                                                                }
+                                                            }}
+                                                            getOptionLabel={(option) => option.label}
+                                                            renderInput={(params) => (
+                                                                <TextField
+                                                                    {...params}
+                                                                    placeholder="Doküman seçiniz..."
+                                                                />
+                                                            )}
+                                                        />
+                                                        <IconButton
+                                                            onClick={() => removeActionFromRisk(riskIdx, actionIdx)}
+                                                            color="error"
+                                                            size="small"
+                                                        >
+                                                            <DeleteIcon fontSize="small" />
+                                                        </IconButton>
+                                                    </Box>
+                                                );
+                                            })}
+
+                                            <Button
+                                                startIcon={<AddIcon />}
+                                                size="small"
+                                                variant="outlined"
+                                                onClick={() => addActionToRisk(riskIdx)}
+                                                sx={{ mt: 1 }}
+                                            >
+                                                İş Ekle
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                ))}
+
+                                <Button
+                                    startIcon={<AddIcon />}
+                                    variant="outlined"
+                                    onClick={addRisk}
+                                    sx={{ mt: 1 }}
+                                >
+                                    Risk Ekle
+                                </Button>
+                            </Box>
                         </Box>
                     )}
                 </DialogContent>
@@ -581,83 +808,48 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                         onClick={() => {
                             if (currentRowIndex !== null) {
                                 deleteObjectiveRow(currentRowIndex);
-                                setOpenObjectiveDialog(false);
+                                setOpenRowDialog(false);
                             }
                         }}
                     >
-                        Sil
+                        Satırı Sil
                     </Button>
                     <Box sx={{ display: "flex", gap: 1 }}>
-                        <Button onClick={() => setOpenObjectiveDialog(false)}>İptal</Button>
-                        <Button onClick={saveObjectiveChanges} variant="contained" color="primary">Tamam</Button>
+                        <Button onClick={() => setOpenRowDialog(false)}>İptal</Button>
+                        <Button onClick={saveRowChanges} variant="contained" color="primary">Kaydet</Button>
                     </Box>
                 </DialogActions>
-            </Dialog>
 
-            {/* --- RISK & ACTION SINGLE EDIT DIALOG --- */}
-            <Dialog open={openRiskDialog} onClose={() => setOpenRiskDialog(false)} maxWidth="md" fullWidth>
-                <DialogTitle>{currentRiskIndex !== null ? "Risk Düzenle" : "Yeni Risk Ekle"}</DialogTitle>
-                <DialogContent dividers>
-                    {editingRisk && (
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                            {/* Risk Text */}
-                            <TextField
-                                label="Risk Tanımı"
-                                fullWidth
-                                multiline
-                                rows={2}
-                                value={editingRisk.text}
-                                onChange={(e) => updateRiskText(e.target.value)}
-                                placeholder="Risk açıklamasını giriniz..."
-                            />
-
-                            {/* Actions List */}
-                            <Box sx={{ pl: 2, borderLeft: 4, borderColor: "divider" }}>
-                                <Typography variant="subtitle2" sx={{ mb: 2, color: "text.primary" }}>
-                                    Bu Riske Karşı Yapılacak İşler
-                                </Typography>
-
-                                {editingRisk.actions?.map((action, idx) => (
-                                    <Box key={action.id || idx} sx={{ display: "flex", gap: 1, mb: 1.5, alignItems: "center" }}>
-                                        <TextField
-                                            size="small"
-                                            fullWidth
-                                            placeholder="İşlem tanımı..."
-                                            value={action.text}
-                                            onChange={(e) => updateActionText(idx, e.target.value)}
-                                        />
-                                        <IconButton onClick={() => removeAction(idx)} color="error" size="small">
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                    </Box>
-                                ))}
-
-                                <Button
-                                    startIcon={<AddIcon />}
-                                    size="small"
-                                    variant="outlined"
-                                    onClick={addAction}
-                                    sx={{ mt: 1 }}
-                                >
-                                    İş Ekle
-                                </Button>
-                            </Box>
-                        </Box>
-                    )}
-                </DialogContent>
-                <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
-                    {currentRiskIndex !== null ? (
-                        <Button startIcon={<DeleteIcon />} color="error" onClick={deleteRisk}>
-                            Riski Sil
-                        </Button>
-                    ) : (
-                        <Box />
-                    )}
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                        <Button onClick={() => setOpenRiskDialog(false)}>İptal</Button>
-                        <Button onClick={saveRiskChanges} variant="contained" color="primary">Kaydet</Button>
+                {/* Fas AI Integration in Dialog */}
+                {openRowDialog && focusedField && (
+                    <Box
+                        ref={aiButtonRef}
+                        onMouseDown={() => { isInteractingWithAi.current = true; }}
+                        onMouseUp={() => { setTimeout(() => { isInteractingWithAi.current = false; }, 300); }}
+                    >
+                        <FloatingButtonCalismaKagitlari
+                            isHovered={isAiButtonHovered}
+                            setIsHovered={setIsAiButtonHovered}
+                            control={true}
+                            text={
+                                focusedField.type === 'objective'
+                                    ? editingRowData?.objective?.title || ""
+                                    : (focusedField.index !== undefined ? editingRowData?.risks[focusedField.index]?.text : "")
+                            }
+                            handleClick={() => { }}
+                            handleSetSelectedText={(newText) => {
+                                if (focusedField.type === 'objective') {
+                                    updateObjectiveTitle(newText);
+                                    setTimeout(() => document.getElementById("ai-field-objective")?.focus(), 100);
+                                } else if (focusedField.type === 'risk' && focusedField.index !== undefined) {
+                                    updateRiskText(focusedField.index, newText);
+                                    const idx = focusedField.index;
+                                    setTimeout(() => document.getElementById(`ai-field-risk-${idx}`)?.focus(), 100);
+                                }
+                            }}
+                        />
                     </Box>
-                </DialogActions>
+                )}
             </Dialog>
 
 
@@ -668,12 +860,26 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                 </Typography>
                 {(() => {
                     const section = riskMatrixSections.find(s => s.kategoriKodu === kategoriKodu);
-                    if (!section || !section.documents) return <Typography>Bu bölüm için tanımlı doküman bulunamadı.</Typography>;
+                    if (!section || !section.documents) return null;
 
-                    // Sort documents by key (e.g. "1.1", "1.2", "3.1")
-                    const sortedDocuments = [...section.documents].sort((a, b) => {
-                        // Simple string comparison works for "1.1", "1.2" but better safe with numeric parts if needed.
-                        // For now, strict string comparison is usually sufficient for "X.Y" format unless X > 9.
+                    // 1. Extract unique document keys referenced in the table
+                    const referencedDocKeys = new Set<string>();
+                    tableData.rows.forEach(row => {
+                        row.risks?.forEach(risk => {
+                            risk.actions?.forEach(action => {
+                                const docKey = getDocKey(action);
+                                if (docKey) referencedDocKeys.add(docKey);
+                            });
+                        });
+                    });
+
+                    // 2. Filter section documents by those referenced
+                    const filteredDocuments = section.documents.filter(docKey => referencedDocKeys.has(docKey));
+
+                    if (filteredDocuments.length === 0) return null;
+
+                    // 3. Sort filtered documents by key
+                    const sortedDocuments = [...filteredDocuments].sort((a, b) => {
                         return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
                     });
 
@@ -690,10 +896,10 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                 </AccordionSummary>
                                 <AccordionDetails sx={{ p: 2, bgcolor: "background.default" }}>
                                     {/* Render appropriate component based on type - USING SHOW COMPONENTS */}
-                                    {doc.type === 1 && <KysCalismaKagidiShow formKodu={doc.formKodu} alanAdi={doc.title} />}
-                                    {doc.type === 2 && <KysEditorShow formKodu={doc.formKodu} alanAdi={doc.title} />}
-                                    {doc.type === 3 && <KysCalismaKagidiUcSutunluShow formKodu={doc.formKodu} alanAdi={doc.title} />}
-                                    {doc.type === 4 && <KysBelgeShow formKodu={doc.formKodu} />}
+                                    {doc.type === 1 && <KysCalismaKagidiShow key={`${docKey}-${docRefreshKey}`} formKodu={doc.formKodu} alanAdi={doc.title} />}
+                                    {doc.type === 2 && <KysEditorShow key={`${docKey}-${docRefreshKey}`} formKodu={doc.formKodu} alanAdi={doc.title} />}
+                                    {doc.type === 3 && <KysCalismaKagidiUcSutunluShow key={`${docKey}-${docRefreshKey}`} formKodu={doc.formKodu} alanAdi={doc.title} />}
+                                    {doc.type === 4 && <KysBelgeShow key={`${docKey}-${docRefreshKey}`} formKodu={doc.formKodu} />}
                                 </AccordionDetails>
                             </Accordion>
                         );
@@ -706,10 +912,159 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                 <KysRelatedDocumentsPopup
                     documentKeys={[selectedDoc]}
                     selectedKey={selectedDoc}
-                    onClose={() => setSelectedDoc(null)}
+                    onClose={() => {
+                        setSelectedDoc(null);
+                        setDocRefreshKey(prev => prev + 1);
+                    }}
                 />
             )}
-        </Box>
+
+            {/* FAS AI ASSISTANT - Standard Design */}
+            {!readOnly && isMatrixEmpty() && !aiDismissed && (
+                <Box
+                    sx={{
+                        position: "fixed",
+                        bottom: 12,
+                        right: 24,
+                        zIndex: 1000,
+                        cursor: "pointer",
+                        opacity: aiLoaded ? 1 : 0,
+                        transition: "opacity 0.3s",
+                        display: "flex",
+                        alignItems: "center",
+                    }}
+                    onMouseEnter={() => setIsAiHovered(true)}
+                    onMouseLeave={() => setIsAiHovered(false)}
+                >
+                    <Box sx={{ position: "relative", zIndex: 1001 }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                animation: "float 2s linear infinite",
+                                "@keyframes float": { "50%": { transform: "translateY(-4px)" } },
+                                width: 72,
+                                position: "absolute",
+                                top: -30,
+                                left: 0,
+                            }}
+                        >
+                            <Typography
+                                align="center"
+                                variant="caption"
+                                fontWeight="bold"
+                                color={theme.palette.mode === "dark" ? "common.white" : "common.black"}
+                                sx={{
+                                    bgcolor: theme.palette.mode === "dark" ? "grey.800" : "grey.100",
+                                    px: 1,
+                                    borderRadius: 1,
+                                    boxShadow: 1
+                                }}
+                            >
+                                Fas AI
+                            </Typography>
+                        </Box>
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: 72,
+                                height: 72,
+                                backgroundColor: "white",
+                                borderRadius: "100%",
+                                overflow: "hidden",
+                                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                                border: "2px solid",
+                                borderColor: "primary.main",
+                                position: "relative",
+                                animation: "pulse 2s infinite",
+                                "@keyframes pulse": {
+                                    "0%": { boxShadow: "0 0 0 0 rgba(0, 123, 255, 0.4)" },
+                                    "70%": { boxShadow: "0 0 0 15px rgba(0, 123, 255, 0)" },
+                                    "100%": { boxShadow: "0 0 0 0 rgba(0, 123, 255, 0)" }
+                                }
+                            }}
+                        >
+                            <iframe
+                                src="https://widget.galichat.com/chat/6691wb9cakfml2mjro2x19"
+                                scrolling="no"
+                                style={{
+                                    pointerEvents: "none",
+                                    border: 0,
+                                    width: 63,
+                                    height: 63,
+                                    backgroundColor: "transparent"
+                                }}
+                                onLoad={() => setAiLoaded(true)}
+                            />
+                        </Box>
+                    </Box>
+
+                    <Paper
+                        elevation={4}
+                        sx={{
+                            display: "flex",
+                            alignItems: "start",
+                            justifyContent: isAiHovered ? "start" : "center",
+                            flexDirection: "column",
+                            width: isAiHovered ? 450 : 56,
+                            height: isAiHovered ? 120 : 72,
+                            borderRadius: "28px",
+                            transition: "all 0.3s ease-in-out",
+                            overflow: "hidden",
+                            padding: isAiHovered ? "0 16px" : 0,
+                            ml: -4, // Overlap with the circle
+                            pl: isAiHovered ? 6 : 0,
+                            zIndex: 1000,
+                            bgcolor: (theme) => theme.palette.mode === 'dark' ? 'grey.900' : 'background.paper',
+                            border: isAiHovered ? "1px solid" : "none",
+                            borderColor: "primary.main",
+                            boxShadow: isAiHovered ? 4 : 0,
+                            opacity: isAiHovered ? 1 : 0,
+                            pointerEvents: isAiHovered ? "auto" : "none",
+                        }}
+                    >
+                        {isAiHovered && (
+                            <Box sx={{ py: 2, px: 1, width: '100%' }}>
+                                <Typography variant="body1" fontWeight="bold" sx={{ mb: 1.5, color: "text.primary" }}>
+                                    Verileri senin için oluşturmamı ister misin?
+                                </Typography>
+                                <Box sx={{ display: "flex", gap: 1 }}>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleGenerateFullData();
+                                        }}
+                                        disabled={isGenerating}
+                                        startIcon={isGenerating ? <CircularProgress size={16} color="inherit" /> : <BoltIcon />}
+                                        sx={{ borderRadius: "18px", textTransform: "none" }}
+                                    >
+                                        {isGenerating ? "Oluşturuluyor..." : "Evet, Oluştur"}
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setAiDismissed(true);
+                                        }}
+                                        sx={{ borderRadius: "18px", textTransform: "none" }}
+                                    >
+                                        Hayır, Teşekkürler
+                                    </Button>
+                                </Box>
+                            </Box>
+                        )}
+                    </Paper>
+                </Box>
+            )}
+
+        </Box >
     );
 };
 

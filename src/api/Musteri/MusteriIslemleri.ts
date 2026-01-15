@@ -67,6 +67,8 @@ export const uploadAndParseKurumlarBeyannamesi = async (
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
         message = errorData.message || errorData || message;
+      } else {
+        message = await response.text();
       }
       return { success: false, message: message };
     }
