@@ -1,0 +1,77 @@
+import { apiFetch } from "@/api/apiBase";
+
+export interface DavaKarsiliklariSatir {
+    id: number;
+    denetciId: number;
+    denetlenenId: number;
+    yil: number;
+    aleyhteDavacininLehteDavalininUnvani: string;
+    aleyhteLehte: string;
+    davaKonusu: string;
+    davaYili: number;
+    mahkemeAsamasi: string;
+    varsaYerelMahkemeKarari: string;
+    durusmaAsamasi: string;
+    muhtemelDeger: number;
+    aleyhteKaybetmeLehteKazanmaIhtimali: string;
+    ongorulenSonuclanmaSuresi: string;
+    denetcininVardigiSonuc: string;
+    sonucunTutari: number;
+}
+
+export interface DavaKarsiliklariSummary {
+    hesaplananToplamAyrilacakDavaKarsiliklariSayisi: number;
+    hesaplananToplamAyrilacakDavaKarsiliklariTutari: number;
+    hesaplananToplamKosulluDavaBorclariSayisi: number;
+    hesaplananToplamKosulluDavaBorclariTutari: number;
+    hesaplananToplamKosulluDavaAlacaklariSayisi: number;
+    hesaplananToplamKosulluDavaAlacaklariTutari: number;
+    uzmanGorusuGerektirenlerSayisi: number;
+    uzmanGorusuGerektirenlerTutari: number;
+}
+
+export interface DavaKarsiliklariResponse {
+    liste: DavaKarsiliklariSatir[];
+    ozet: DavaKarsiliklariSummary;
+}
+
+export const getDavaKarsiliklariData = async (
+    token: string,
+    denetciId: number,
+    yil: number,
+    denetlenenId: number
+): Promise<DavaKarsiliklariResponse> => {
+    const response = await apiFetch(
+        `/DavaKarsiliklari/GetByDenetlenen?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+        {
+            method: "GET",
+            headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Dava karşılıkları verileri yüklenirken bir hata oluştu.");
+    }
+
+    return response.json();
+};
+
+export const updateDavaKarsiliklari = async (token: string, data: DavaKarsiliklariSatir[]) => {
+    const response = await apiFetch(`/DavaKarsiliklari`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        throw new Error("Güncelleme işlemi başarısız oldu.");
+    }
+
+    return response.json();
+};
