@@ -8,38 +8,10 @@ import { IconTrash, IconMail, IconLock } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import {
-  setDenetciId,
-  setId,
-  setKullaniciAdi,
-  setToken,
-  setRefreshToken,  // ✅ Yeni import
-  setYetki,
-  setMail,
-  setUnvan,
-  setRol,
-  setBddkmi,
-  setDenetciFirmaAdi,
-  setDenetlenenId,
-  setDenetlenenFirmaAdi,
-  setYil,
-  setDenetimTuru,
-  setBobimi,
-  setTfrsmi,
-  setEnflasyonmu,
-  setKonsolidemi,
-  setKurulumTamamlandi,
-  setKurulumAdimi,
-  setSetupWizardProgress,
-  setSonSecilenDenetlenenId,
-  setSonSecilenYil,
-  setSonSecilenDenetlenenFirmaAdi,
-  setSonSecilenDenetimTuru,
-  setSonSecilenBobimi,
-  setSonSecilenTfrsmi,
-  setSonSecilenEnflasyonmu,
-  setSonSecilenKonsolidemi,
   setSonSecilenBddkmi,
   setTurTamamlandi,
+  setUserData,
+  setBddkmi
 } from "@/store/user/UserSlice";
 import { apiFetch } from "@/api/apiBase";
 
@@ -68,6 +40,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleLogin = async () => {
+    console.time("Giriş İşlemi Toplam Süre");
     if (!executeRecaptcha) {
       enqueueSnackbar("Recaptcha yüklenemedi, lütfen sayfayı yenileyin.", {
         variant: "warning",
@@ -80,7 +53,9 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
     setIsVerifyingCaptcha(true);
     let token = "";
     try {
+      console.time("ReCAPTCHA Doğrulaması");
       token = await executeRecaptcha("login");
+      console.timeEnd("ReCAPTCHA Doğrulaması");
     } catch (error: any) {
       console.error("Recaptcha hatası:", error);
       let errorMessage = "Güvenlik doğrulaması sırasında bir hata oluştu.";
@@ -109,6 +84,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
     }
 
     try {
+      console.time("Login API İsteği");
       const response = await apiFetch(`/Auth/login`, {
         method: "POST",
         headers: {
@@ -117,7 +93,10 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         },
         body: JSON.stringify({ email, password, captchaToken: token }),
       });
+      console.timeEnd("Login API İsteği");
+
       if (response.ok) {
+        console.time("Veri İşleme ve Yönlendirme");
         const data = await response.json();
         const userToken = data.token;
         const userRefreshToken = data.refreshToken;
@@ -144,80 +123,74 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         const bddkmi = data.bddkmi;
         const turTamamlandi = data.turTamamlandi;
 
-        dispatch(setToken(userToken));
-        if (userRefreshToken) {
-          dispatch(setRefreshToken(userRefreshToken));
-        }
-        dispatch(setId(userId));
-        dispatch(setDenetciId(userDenetciId));
-        dispatch(setDenetciFirmaAdi(userDenetciFirmaAdi));
-        dispatch(setYetki(yetki));
-        dispatch(setRol(rol));
-        dispatch(setKullaniciAdi(kullaniciAdi));
-        dispatch(setMail(email));
-        dispatch(setUnvan(unvan));
-        dispatch(setKurulumTamamlandi(kurulumTamamlandi));
-        dispatch(setKurulumAdimi(kurulumAdimi));
-        dispatch(setSetupWizardProgress(setupWizardProgress));
-        dispatch(setSonSecilenDenetlenenId(sonSecilenDenetlenenId));
-        dispatch(setSonSecilenYil(sonSecilenYil));
-        dispatch(setSonSecilenDenetlenenFirmaAdi(sonSecilenDenetlenenFirmaAdi));
-        dispatch(setSonSecilenDenetimTuru(sonSecilenDenetimTuru));
-        dispatch(setSonSecilenBobimi(sonSecilenBobimi));
-        dispatch(setSonSecilenTfrsmi(sonSecilenTfrsmi));
-        dispatch(setSonSecilenEnflasyonmu(sonSecilenEnflasyonmu));
-        dispatch(setSonSecilenKonsolidemi(sonSecilenKonsolidemi));
-        dispatch(setSonSecilenBddkmi(sonSecilenBddkmi));
-        dispatch(setTurTamamlandi(turTamamlandi));
-        dispatch(setBddkmi(bddkmi)); // Set it from auto-selected company initially
+        const userData = {
+          token: userToken,
+          refreshToken: userRefreshToken,
+          id: userId,
+          denetciId: userDenetciId,
+          denetciFirmaAdi: userDenetciFirmaAdi,
+          yetki: yetki,
+          rol: rol,
+          kullaniciAdi: kullaniciAdi,
+          mail: email,
+          unvan: unvan,
+          kurulumTamamlandi: kurulumTamamlandi,
+          kurulumAdimi: kurulumAdimi,
+          setupWizardProgress: setupWizardProgress,
+          sonSecilenDenetlenenId: sonSecilenDenetlenenId,
+          sonSecilenYil: sonSecilenYil,
+          sonSecilenDenetlenenFirmaAdi: sonSecilenDenetlenenFirmaAdi,
+          sonSecilenDenetimTuru: sonSecilenDenetimTuru,
+          sonSecilenBobimi: sonSecilenBobimi,
+          sonSecilenTfrsmi: sonSecilenTfrsmi,
+          sonSecilenEnflasyonmu: sonSecilenEnflasyonmu,
+          sonSecilenKonsolidemi: sonSecilenKonsolidemi,
+          sonSecilenBddkmi: sonSecilenBddkmi,
+          turTamamlandi: turTamamlandi,
+          bddkmi: bddkmi
+        };
 
-        // Restore session if available
         if (sonSecilenDenetlenenId && sonSecilenYil && sonSecilenDenetlenenFirmaAdi) {
-          dispatch(setDenetlenenId(sonSecilenDenetlenenId));
-          dispatch(setDenetlenenFirmaAdi(sonSecilenDenetlenenFirmaAdi));
-          dispatch(setYil(sonSecilenYil));
-          dispatch(setDenetimTuru(sonSecilenDenetimTuru));
-          dispatch(setBobimi(sonSecilenBobimi));
-          dispatch(setTfrsmi(sonSecilenTfrsmi));
-          dispatch(setEnflasyonmu(sonSecilenEnflasyonmu));
-          dispatch(setKonsolidemi(sonSecilenKonsolidemi));
-          dispatch(setBddkmi(sonSecilenBddkmi));
+          Object.assign(userData, {
+            denetlenenId: sonSecilenDenetlenenId,
+            denetlenenFirmaAdi: sonSecilenDenetlenenFirmaAdi,
+            yil: sonSecilenYil,
+            denetimTuru: sonSecilenDenetimTuru,
+            bobimi: sonSecilenBobimi,
+            tfrsmi: sonSecilenTfrsmi,
+            enflasyonmu: sonSecilenEnflasyonmu,
+            konsolidemi: sonSecilenKonsolidemi,
+            bddkmi: sonSecilenBddkmi
+          });
 
           localStorage.setItem("fas_denetlenenId", sonSecilenDenetlenenId.toString());
           localStorage.setItem("fas_yil", sonSecilenYil.toString());
         }
 
-        if (bddkmi !== undefined) {
-          dispatch(setBddkmi(bddkmi));
-        } else {
-          const response2 = await getDenetciOdemeBilgileri(
+        dispatch(setUserData(userData));
+
+        if (bddkmi === undefined) {
+          console.time("Ek Bilgi API İsteği (bddkmi)");
+          const data2 = await getDenetciOdemeBilgileri(
             userToken,
             userDenetciId
           );
-          if (response2.ok) {
-            const data2 = await response2.json();
-            const bddkmi2 = data2.bddkmi;
-
-            dispatch(setBddkmi(bddkmi2));
+          if (data2 && data2.bddkmi !== undefined) {
+            dispatch(setBddkmi(data2.bddkmi));
           }
+          console.timeEnd("Ek Bilgi API İsteği (bddkmi)");
         }
 
         if (!sonSecilenDenetlenenId || !sonSecilenDenetlenenFirmaAdi) {
-          // Clear if no persistent session
-          dispatch(setDenetlenenId(undefined));
-          dispatch(setDenetlenenFirmaAdi(undefined));
-          dispatch(setYil(undefined));
-          dispatch(setDenetimTuru(undefined));
-          dispatch(setBobimi(undefined));
-          dispatch(setTfrsmi(undefined));
-          dispatch(setEnflasyonmu(undefined));
-          dispatch(setKonsolidemi(undefined));
           localStorage.removeItem("fas_denetlenenId");
           localStorage.removeItem("fas_yil");
         }
 
+        console.timeEnd("Veri İşleme ve Yönlendirme");
+        console.timeEnd("Giriş İşlemi Toplam Süre");
         router.push("/Anasayfa");
       } else {
+        console.timeEnd("Giriş İşlemi Toplam Süre");
         setIsLoggedIn(false);
         enqueueSnackbar("Giriş Başarısız", {
           variant: "error",
@@ -232,6 +205,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         });
       }
     } catch (error) {
+      console.timeEnd("Giriş İşlemi Toplam Süre");
       console.error("Bir hata oluştu:", error);
       setIsLoggedIn(false);
     }

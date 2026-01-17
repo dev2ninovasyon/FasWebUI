@@ -112,10 +112,12 @@ export const getDenetlenenByDenetciId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Denetlenenler getirilemedi");
+      console.error(`Denetlenenler getirilemedi (${denetciId}). Durum: ${response.status} ${response.statusText}`);
+      return [];
     }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
+  } catch (error: any) {
+    console.error("getDenetlenenByDenetciId hatası:", error);
+    return [];
   }
 };
 
@@ -158,15 +160,19 @@ export const getDenetlenenByRol = async (
           accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
+        timeout: 60000, // Şirket listesi için 60 saniye
+        ignoreCustomHeaders: true, // Listeleme yaparken seçili şirket header'larını gönderme
       }
     );
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Denetlenenler getirilemedi");
+      console.error(`Denetlenenler (Rol bazlı) getirilemedi. Durum: ${response.status} ${response.statusText}`);
+      return [];
     }
-  } catch (error) {
-    console.error("Bir hata oluştu:", error);
+  } catch (error: any) {
+    console.error("getDenetlenenByRol hatası:", error);
+    return [];
   }
 };
 

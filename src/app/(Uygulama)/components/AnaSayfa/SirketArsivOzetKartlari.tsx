@@ -50,7 +50,9 @@ export function SirketArsivOzetKartlari() {
 
     const fetchData = async () => {
       try {
+        console.time("API: SirketArsivOzet");
         const result = await getSirketArsivOzet(user.token!, user.denetciId!, user.id!);
+        console.timeEnd("API: SirketArsivOzet");
         setData(result);
       } catch (err: any) {
         setError(err.message || "Veriler alınırken hata oluştu.");

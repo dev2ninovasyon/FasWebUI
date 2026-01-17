@@ -57,12 +57,13 @@ export default function LoginPageClient() {
     }, [user?.token, router]);
 
     useEffect(() => {
+        router.prefetch("/Anasayfa");
         const interval = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
         }, 5000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [router]);
 
     const goToSlide = (index: number) => {
         setCurrentSlide(index);
@@ -75,8 +76,8 @@ export default function LoginPageClient() {
         <GoogleReCaptchaProvider
             reCaptchaKey="6Ld2CyEsAAAAALNU5rSOM_Q2RAWkQ2RADbsS5NQW"
             scriptProps={{
-                async: false,
-                defer: false,
+                async: true,
+                defer: true,
                 appendTo: "head",
                 nonce: undefined,
             }}

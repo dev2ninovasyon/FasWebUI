@@ -185,8 +185,11 @@ export const UserSlice = createSlice({
       state.enflasyonmu = action.payload.enflasyonmu;
       state.konsolidemi = action.payload.konsolidemi;
     },
+    setUserData: (state: StateType, action) => {
+      return { ...state, ...action.payload };
+    },
     resetToNull: (state: StateType, action) => {
-      if (action.payload == "") {
+      if (action.payload === "" || action.payload === undefined) {
         state.id = undefined;
         state.denetciId = undefined;
         state.denetciFirmaAdi = undefined;
@@ -260,7 +263,8 @@ export const {
   setSonSecilenKonsolidemi,
   setSonSecilenBddkmi,
   setTurTamamlandi,
-  setDenetlenen
+  setDenetlenen,
+  setUserData
 } = UserSlice.actions;
 
 export default UserSlice.reducer;

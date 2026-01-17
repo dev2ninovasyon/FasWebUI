@@ -42,13 +42,15 @@ export function SonIslemlerKartlari() {
 
     const fetchData = async () => {
       try {
+        console.time("API: SonIslemler");
         const data = await getUserRecentActions(
           user.token || "",
-          user.id||0,
-          user.denetlenenId||0,
-          user.yil||0,
+          user.id || 0,
+          user.denetlenenId || 0,
+          user.yil || 0,
           30 // server max 30 log dönsün, ekranda biz 6–8 gösteriyoruz
         );
+        console.timeEnd("API: SonIslemler");
         setActions(data || []);
       } catch (err: any) {
         setError(err.message || "Son işlemler alınırken hata oluştu.");
@@ -141,147 +143,147 @@ export function SonIslemlerKartlari() {
     }
   };
 
-return (
-  <Box mt={2}>
-    <Typography variant="h6" gutterBottom>
-      Son Yaptığınız İşlemler
-    </Typography>
-    <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-      Son çalıştığınız ekranlar. Kartlara tıklayarak ilgili sayfayı yeniden açabilirsiniz.
-    </Typography>
+  return (
+    <Box mt={2}>
+      <Typography variant="h6" gutterBottom>
+        Son Yaptığınız İşlemler
+      </Typography>
+      <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+        Son çalıştığınız ekranlar. Kartlara tıklayarak ilgili sayfayı yeniden açabilirsiniz.
+      </Typography>
 
-    {/* 5 sütunlu grid: md ve üstü için 5 kart yan yana */}
-    <Grid
-      container
-      spacing={2}
-      columns={{ xs: 1, sm: 2, md: 6 }} // 🔹 md ve üstü için 5 sütun
-    >
-      {actions.slice(0, 6).map((action, index) => { // 🔹 Sadece 5 kart
-        const { bg, text } = getCardPalette(index);
-        const created = new Date(action.createdAt);
-        const createdText = created.toLocaleString("tr-TR");
+      {/* 5 sütunlu grid: md ve üstü için 5 kart yan yana */}
+      <Grid
+        container
+        spacing={2}
+        columns={{ xs: 1, sm: 2, md: 6 }} // 🔹 md ve üstü için 5 sütun
+      >
+        {actions.slice(0, 6).map((action, index) => { // 🔹 Sadece 5 kart
+          const { bg, text } = getCardPalette(index);
+          const created = new Date(action.createdAt);
+          const createdText = created.toLocaleString("tr-TR");
 
-        const title = action.friendlyTitle || action.title || "İşlem";
-        const message =
-          action.friendlyMessage ||
-          action.subtitle ||
-          getMethodLabel(action.httpMethod);
+          const title = action.friendlyTitle || action.title || "İşlem";
+          const message =
+            action.friendlyMessage ||
+            action.subtitle ||
+            getMethodLabel(action.httpMethod);
 
-        const handleOpenPage = () => {
-          if (action.clientUrl) {
-            router.push(action.clientUrl);
-          }
-        };
+          const handleOpenPage = () => {
+            if (action.clientUrl) {
+              router.push(action.clientUrl);
+            }
+          };
 
 
-        const isClickable = !!action.clientUrl;
+          const isClickable = !!action.clientUrl;
 
-        return (
-          <Grid item xs={1} key={action.id}> 
-            <ButtonBase
-              onClick={handleOpenPage}
-              disabled={!isClickable}
-              sx={{
-                width: "100%",
-                height: "100%",        // 🔹 Grid hücresini tamamen doldur
-                borderRadius: 3,
-                textAlign: "left",
-              }}
-            >
-              <Card
+          return (
+            <Grid item xs={1} key={action.id}>
+              <ButtonBase
+                onClick={handleOpenPage}
+                disabled={!isClickable}
                 sx={{
                   width: "100%",
-                  height: "100%",       // 🔹 Tüm kartlar aynı yükseklikte
+                  height: "100%",        // 🔹 Grid hücresini tamamen doldur
                   borderRadius: 3,
-                  backgroundColor: bg,
-                  boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  flexDirection: "column", // 🔹 İçeriği dikeyde esnetebilmek için
-                  "&:hover": isClickable
-                    ? {
+                  textAlign: "left",
+                }}
+              >
+                <Card
+                  sx={{
+                    width: "100%",
+                    height: "100%",       // 🔹 Tüm kartlar aynı yükseklikte
+                    borderRadius: 3,
+                    backgroundColor: bg,
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+                    transition: "all 0.2s ease",
+                    display: "flex",
+                    flexDirection: "column", // 🔹 İçeriği dikeyde esnetebilmek için
+                    "&:hover": isClickable
+                      ? {
                         transform: "translateY(-3px)",
                         boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
                       }
-                    : undefined,
-                }}
-              >
-                <CardContent
-                  sx={{
-                    p: 2.5,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
+                      : undefined,
                   }}
                 >
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="flex-start"
-                    spacing={1.5}
+                  <CardContent
+                    sx={{
+                      p: 2.5,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
+                    }}
                   >
-                    <Avatar
-                      sx={{
-                        bgcolor: theme.palette.common.white,
-                        color: text,
-                        width: 40,
-                        height: 40,
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                      }}
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="flex-start"
+                      spacing={1.5}
                     >
-                      {action.isError ? <ErrorOutlineIcon /> : <EditNoteIcon />}
-                    </Avatar>
-
-                    {getStatusChip(action.statusCode, action.isError)}
-                  </Stack>
-
-                  <Box mt={2}>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{ color: text, fontWeight: 600 }}
-                    >
-                      {title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ mt: 0.5, color: text, opacity: 0.9 }}
-                    >
-                      {message}
-                    </Typography>
-                  </Box>
-
-                  {/* Alt kısmı aşağı itmek için flex-grow kullanıyoruz */}
-                  <Box mt="auto">
-                    <Typography
-                      variant="caption"
-                      sx={{ color: text, opacity: 0.8, display: "block" }}
-                    >
-                      {createdText}
-                    </Typography>
-                    {action.clientUrl && (
-                      <Typography
-                        variant="caption"
+                      <Avatar
                         sx={{
+                          bgcolor: theme.palette.common.white,
                           color: text,
-                          opacity: 0.95,
-                          fontWeight: 500,
-                          display: "block",
-                          mt: 0.5,
+                          width: 40,
+                          height: 40,
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                         }}
                       >
-                        Sayfayı açmak için tıklayın
+                        {action.isError ? <ErrorOutlineIcon /> : <EditNoteIcon />}
+                      </Avatar>
+
+                      {getStatusChip(action.statusCode, action.isError)}
+                    </Stack>
+
+                    <Box mt={2}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ color: text, fontWeight: 600 }}
+                      >
+                        {title}
                       </Typography>
-                    )}
-                  </Box>
-                </CardContent>
-              </Card>
-            </ButtonBase>
-          </Grid>
-        );
-      })}
-    </Grid>
-  
-  </Box>
-);
+                      <Typography
+                        variant="body2"
+                        sx={{ mt: 0.5, color: text, opacity: 0.9 }}
+                      >
+                        {message}
+                      </Typography>
+                    </Box>
+
+                    {/* Alt kısmı aşağı itmek için flex-grow kullanıyoruz */}
+                    <Box mt="auto">
+                      <Typography
+                        variant="caption"
+                        sx={{ color: text, opacity: 0.8, display: "block" }}
+                      >
+                        {createdText}
+                      </Typography>
+                      {action.clientUrl && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: text,
+                            opacity: 0.95,
+                            fontWeight: 500,
+                            display: "block",
+                            mt: 0.5,
+                          }}
+                        >
+                          Sayfayı açmak için tıklayın
+                        </Typography>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </ButtonBase>
+            </Grid>
+          );
+        })}
+      </Grid>
+
+    </Box>
+  );
 
 }

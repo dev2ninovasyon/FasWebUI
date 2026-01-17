@@ -45,12 +45,14 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
   const [rows, setRows] = useState<Company[]>([]);
 
   const fetchData = async () => {
+    console.log("CompanyBox: fetchData başlatıldı", { yetki: user.yetki, denetciId: user.denetciId, userId: user.id });
     try {
       if (user.yetki == "DenetciAdmin") {
         const musteriVerileri = await getDenetlenenByDenetciId(
           user.token || "",
           user.denetciId || 0
         );
+        console.log("CompanyBox: DenetciAdmin verisi", musteriVerileri);
         if (Array.isArray(musteriVerileri)) {
           const newRows = musteriVerileri.map((musteri: any) => ({
             denetlenenId: musteri.id,
@@ -63,6 +65,8 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
             label: musteri.firmaAdi,
           }));
           setRows(newRows);
+        } else {
+          console.warn("CompanyBox: DenetciAdmin verisi bir dizi değil!", musteriVerileri);
         }
       } else {
         const musteriVerileri = await getDenetlenenByRol(
@@ -70,6 +74,7 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
           user.denetciId || 0,
           user.id || 0
         );
+        console.log("CompanyBox: Normal kullanıcı verisi", musteriVerileri);
         if (Array.isArray(musteriVerileri)) {
           const newRows = musteriVerileri.map((musteri: any) => ({
             denetlenenId: musteri.id,
@@ -82,6 +87,8 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
             label: musteri.firmaAdi,
           }));
           setRows(newRows);
+        } else {
+          console.warn("CompanyBox: Normal kullanıcı verisi bir dizi değil!", musteriVerileri);
         }
       }
     } catch (error) {
@@ -96,6 +103,10 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
   }, [user.token, user.yetki, user.denetciId]);
 
   const selectedValue = rows.find(r => r.denetlenenId === currentId) || null;
+
+  if (rows.length === 0 && user.token) {
+    console.log("CompanyBox: Şirket listesi henüz boş veya yüklenemedi.");
+  }
 
   return (
     <Autocomplete
