@@ -172,5 +172,6 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
         </Box>
     );
 });
+StoklarNetGerceklesebilirDeger.displayName = "StoklarNetGerceklesebilirDeger";
 
 export default StoklarNetGerceklesebilirDeger;

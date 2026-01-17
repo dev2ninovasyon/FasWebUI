@@ -71,7 +71,7 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
         <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <Box>
                 <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                    Cari Dönem Kıdem Tazminatı Çalışması ({user.yil})
+                    Cari Dönem Kıdem Tazminatı Çalışması ({user.yil || ""})
                 </Typography>
                 <Box
                     sx={{
@@ -111,7 +111,7 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
 
             <Box>
                 <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                    Önceki Dönem Kıdem Tazminatı Çalışması ({user.yil - 1})
+                    Önceki Dönem Kıdem Tazminatı Çalışması ({(user.yil || 0) - 1})
                 </Typography>
                 <Box
                     sx={{

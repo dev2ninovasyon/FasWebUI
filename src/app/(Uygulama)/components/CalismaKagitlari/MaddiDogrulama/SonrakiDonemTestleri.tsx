@@ -209,5 +209,6 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
         </Box>
     );
 });
+SonrakiDonemTestleri.displayName = "SonrakiDonemTestleri";
 
 export default SonrakiDonemTestleri;
