@@ -1,3 +1,5 @@
+"use client";
+
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
@@ -5,7 +7,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, useTheme, Button, Typography, Stack, Box, useMediaQuery } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import {
   createKidemTazminatiBobiVerisi,
@@ -47,12 +49,21 @@ interface Props {
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (b: boolean) => void;
   setSonKaydedilmeTarihi: (str: string) => void;
+  // Yeni eklenen proplar (Page.tsx'ten gelecek)
+  setIsPopUpOpen?: (b: boolean) => void;
+  setShowDrawer?: (b: boolean) => void;
+  sonKaydedilmeTarihi?: string;
+  isDataFetched?: boolean;
 }
 
 const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   kaydetTiklandimi,
   setKaydetTiklandimi,
   setSonKaydedilmeTarihi,
+  setIsPopUpOpen,
+  setShowDrawer,
+  sonKaydedilmeTarihi,
+  isDataFetched
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -60,6 +71,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   const customizer = useSelector((state: AppState) => state.customizer);
   const dispatch = useDispatch();
   const theme = useTheme();
+  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const [rowCount, setRowCount] = useState<number>(200);
 
@@ -98,8 +110,9 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     loadStyles();
   }, [customizer.activeMode]);
 
-  const textValidator = (value: string, callback: (value: boolean) => void) => {
-    if (!value || value.trim() === "") {
+  const textValidator = function (this: any, value: any, callback: (isValid: boolean) => void) {
+    const strValue = (value === null || value === undefined) ? "" : String(value).trim();
+    if (strValue === "") {
       // Eğer değer boşsa geçersiz kabul et
       callback(false);
     } else {
@@ -119,19 +132,13 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     }
   };
 
-  const numberValidatorAllowNull = (
-    value: string,
-    callback: (value: boolean) => void
-  ) => {
-    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
-    if (!value || String(value).trim() === "") {
-      // Eğer değer boşsa geçerli kabul et
+  const numberValidatorAllowNull = (value: any, callback: (isValid: boolean) => void) => {
+    if (value === null || value === undefined || String(value).trim() === "" || value === 0) {
       callback(true);
-    } else if (numberRegex.test(value)) {
-      callback(true);
-    } else {
-      callback(false);
+      return;
     }
+    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
+    callback(numberRegex.test(value));
   };
 
   const dateValidator = (
@@ -148,27 +155,17 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   };
 
   const dateValidatorAllowNull = (
-    value: string,
+    value: any,
     callback: (isValid: boolean) => void
   ) => {
     // Tarih formatı düzenli ifadesi (dd.mm.yyyy)
-    const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
-    if (!value || value.trim() === "") {
+    if (!value || String(value).trim() === "") {
       // Eğer değer boşsa geçerli kabul et
       callback(true);
-    } else if (dateRegex.test(value)) {
-      const [, day, month, year] = value.match(dateRegex)!;
-
-      const date = new Date(`${year}-${month}-${day}`);
-      const isValidDate =
-        date.getFullYear() === Number(year) &&
-        date.getMonth() + 1 === Number(month) &&
-        date.getDate() === Number(day);
-
-      callback(isValidDate);
-    } else {
-      callback(false);
+      return;
     }
+    const dateRegex = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+    callback(dateRegex.test(String(value)));
   };
 
   function isRowEmpty(row: Veri): boolean {
@@ -207,8 +204,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
 
         enqueueSnackbar(
-          `${duplicatesMessage}Numaralı Satır${
-            duplicateRowNumbers.length > 1 ? "lar" : ""
+          `${duplicatesMessage}Numaralı Satır${duplicateRowNumbers.length > 1 ? "lar" : ""
           } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
           {
             variant: "warning",
@@ -301,7 +297,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       columnSorting: true,
       className: "htRight",
       validator: dateValidatorAllowNull,
-      allowInvalid: false,
+      allowInvalid: true,
     }, // İşletmeden Cıkış Tarihi
     {
       type: "numeric",
@@ -335,7 +331,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         "17-İşyerinin kapanması",
         "18-İşin sona ermesi",
         "19-Mevsim bitimi (İş akdinin askıya alınması halinde kullanılır. Tekrar başlatılmayacaksa '4' nolu  kod kullanılır)",
-        "20-Kampanya bitimi (İş akdinin askıya alınması halinde kullanılır. Tekrar başlatılmayacaksa '4' nolu  kod kullanılır)",
+        "20-Kampanya bitimi (İş akdinin askıya alınması halinde kullanılır. Tekrar başlatılmayacaksa '4' nolu  kod kullanılır)",
         "21-Statü değişikliği",
         "22-Diğer nedenler",
         "23-İşçi tarafından zorunlu nedenle fesih",
@@ -350,7 +346,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         "32-4046 sayılı Kanunun 21. maddesine göre özelleştirme nedeni ile fesih",
         "33-Gazeteci tarafından sözleşmenin feshi",
         "34-İşyerinin devri, işin veya işyerinin niteliğinin değişmesi nedeniyle fesih",
-        "36-KHK ile işyerinin kapatılması",
+        "36-KHK ile işyerinin kapanması",
         "37-KHK ile kamu görevinden çıkarma ",
         "38-Doğum nedeniyle ayrılma",
         "39-696 KHK ile kamu işçiliğine geçiş",
@@ -490,7 +486,19 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
 
-    if (row <= endRow && (value == undefined || value == null || value == "")) {
+    const isValueEmpty = value === undefined || value === null || String(value).trim() === "";
+    const rowData = fetchedData[row];
+    const isEmptyRow = !rowData || isRowEmpty(rowData);
+
+    if (isEmptyRow || isValueEmpty) {
+      TD.style.backgroundColor = (row % 2 === 0)
+        ? (customizer.activeMode === "dark" ? "#171c23" : "#ffffff")
+        : (customizer.activeMode === "dark" ? "#10141c" : "#cccccc");
+      if (isEmptyRow) return;
+    }
+
+    const zorunluSutunIndexleri = [1, 4, 5, 6]; // Adı Soyadı, Görev Dep., Brüt Ücret, Giriş Tarihi
+    if (row <= endRow && isValueEmpty && zorunluSutunIndexleri.includes(col)) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
     }
   };
@@ -512,30 +520,18 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     }
   };
 
-  const handleAfterRemoveRow = async (
-    index: number,
-    amount: number,
-    physicalRows: number[],
-    source: any
-  ) => {
-    console.log(
-      `Satır(lar) silindi: ${amount} adet satır ${index} indexinden itibaren.${physicalRows}`
-    );
+  const handleAfterRemoveRow = (index: number, amount: number) => {
+    setEndRow(prev => (prev >= index ? prev - amount : prev));
+    setTimeout(() => {
+      hotTableComponent.current?.hotInstance.render();
+    }, 100);
   };
 
-  const afterPaste = async (data: any, coords: any) => {
-    console.log("Pasted data:", data);
-
-    console.log("Pasted startRow coordinates:", coords[0].startRow);
-    console.log("Pasted endRow coordinates:", coords[0].endRow);
-    console.log("Pasted startCol coordinates:", coords[0].startCol);
-    console.log("Pasted endCol coordinates:", coords[0].endCol);
-
+  const afterPaste = (data: any, coords: any) => {
     if (endRow < coords[0].endRow) {
       setEndRow(coords[0].endRow);
     }
   };
-
   const handleAfterChange = async (changes: any, source: any) => {
     if (source === "loadData") {
       return; // Skip this hook on loadData
@@ -556,9 +552,9 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       const [row, prop, oldValue, newValue] = changes[i];
 
       if ([5, 8, 10, 11].includes(prop)) {
-        if (typeof newValue === "string") {
-          const cleanedNewValue = newValue.replaceAll(/\./g, "");
-          changes[i][3] = cleanedNewValue;
+        if (typeof newValue === "string" && newValue !== "") {
+          const cleanedNewValue = newValue.replaceAll(/\./g, "").replace(",", ".");
+          changes[i][2] = parseFloat(cleanedNewValue) || 0;
         }
       }
     }
@@ -776,25 +772,25 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
           veri.gorevDepartmani,
           veri.brutUcretiAylik,
           veri.isletmeyeGirisTarihi !== null &&
-          veri.isletmeyeGirisTarihi !== undefined
+            veri.isletmeyeGirisTarihi !== undefined
             ? veri.isletmeyeGirisTarihi
+              .split("T")[0]
+              .split("-")
+              .reverse()
+              .join(".")
+            : null,
+          veri.isletmedenCikisTarihi != null &&
+            veri.isletmedenCikisTarihi != undefined
+            ? veri.isletmedenCikisTarihi
+              .split("T")[0]
+              .split("-")
+              .reverse()
+              .join(".") != "01.01.0001"
+              ? veri.isletmedenCikisTarihi
                 .split("T")[0]
                 .split("-")
                 .reverse()
                 .join(".")
-            : null,
-          veri.isletmedenCikisTarihi != null &&
-          veri.isletmedenCikisTarihi != undefined
-            ? veri.isletmedenCikisTarihi
-                .split("T")[0]
-                .split("-")
-                .reverse()
-                .join(".") != "01.01.0001"
-              ? veri.isletmedenCikisTarihi
-                  .split("T")[0]
-                  .split("-")
-                  .reverse()
-                  .join(".")
               : null
             : null,
           veri.odenenBrutKidemTazminatiBobiTutariTL,
@@ -897,14 +893,14 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -912,6 +908,80 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   return (
     <>
       <WarnBox warn={uyari} />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: smDown ? "column" : "row",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          mb: 2,
+          mt: 1,
+          gap: 1,
+        }}
+      >
+        <Box sx={{
+          display: "flex",
+          flexDirection: smDown ? "column" : "row",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          mb: 2, mt: 1, gap: 1
+        }}></Box>
+        {sonKaydedilmeTarihi && (
+          <Typography
+            variant="body2"
+            sx={{ mb: smDown ? 1 : 0, mr: smDown ? 0 : "auto" }}
+          >
+            Son Kaydedilme: {sonKaydedilmeTarihi}
+          </Typography>
+        )}
+
+        <Box flex={1}></Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: smDown ? "column" : "row",
+            gap: 1,
+            width: smDown ? "100%" : "auto",
+          }}
+        >
+          <Button
+            type="button"
+            size="medium"
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              if (setIsPopUpOpen) setIsPopUpOpen(true);
+            }}
+          >
+            Paylaşım Bağlantısı
+          </Button>
+          <Button
+            type="button"
+            size="medium"
+            variant="outlined"
+            color="primary"
+            disabled={isDataFetched}
+            onClick={() => {
+              if (setShowDrawer) setShowDrawer(true);
+            }}
+          >
+            Ek Bilgi
+          </Button>
+          <Button
+            type="button"
+            size="medium"
+            variant="outlined"
+            color="primary"
+            disabled={isDataFetched}
+            onClick={() => {
+              setKaydetTiklandimi(true);
+            }}
+          >
+            Kaydet
+          </Button>
+        </Box>
+      </Box>
+
       <HotTable
         style={{
           height: "100%",
