@@ -158,6 +158,12 @@ const Page: React.FC = () => {
 
   const [hesaplananKarsilik, setHesaplananKarsilik] = useState<number>(0);
   const [izinKarsiligi, setIzinKarsiligi] = useState<number>(0);
+  const [hesap720, setHesap720] = useState<number>(20000);
+  const [hesap730, setHesap730] = useState<number>(20000);
+  const [hesap740, setHesap740] = useState<number>(40000);
+  const [hesap750, setHesap750] = useState<number>(40000);
+  const [hesap760, setHesap760] = useState<number>(40000);
+  const [hesap770, setHesap770] = useState<number>(40000);
   const [ayrilan2019, setAyrilan2019] = useState<number>(0);
   const [personel2019, setPersonel2019] = useState<number>(0);
   const [ayrilan2020, setAyrilan2020] = useState<number>(0);
@@ -226,6 +232,12 @@ const Page: React.FC = () => {
       hesaplansinMi: hesaplansinMi,
       kacGun: kacGun,
       izinKarsiligi: izinKarsiligi,
+      hesap720: hesap720,
+      hesap730: hesap730,
+      hesap740: hesap740,
+      hesap750: hesap750,
+      hesap760: hesap760,
+      hesap770: hesap770,
       ayrilan2019: ayrilan2019,
       personel2019: personel2019,
       ayrilan2020: ayrilan2020,
@@ -286,6 +298,12 @@ const Page: React.FC = () => {
         setHesaplansinMi(kidemEkBilgiVerileri.hesaplansinMi);
         setIzinKarsiligi(kidemEkBilgiVerileri.izinKarsiligi);
         setKacGun(kidemEkBilgiVerileri.kacGun);
+        setHesap720(kidemEkBilgiVerileri.hesap720);
+        setHesap730(kidemEkBilgiVerileri.hesap730);
+        setHesap740(kidemEkBilgiVerileri.hesap740);
+        setHesap750(kidemEkBilgiVerileri.hesap750);
+        setHesap760(kidemEkBilgiVerileri.hesap760);
+        setHesap770(kidemEkBilgiVerileri.hesap770);
         setAyrilan2019(kidemEkBilgiVerileri.ayrilan2019);
         setPersonel2019(kidemEkBilgiVerileri.personel2019);
         setAyrilan2020(kidemEkBilgiVerileri.ayrilan2020);
@@ -412,7 +430,6 @@ const Page: React.FC = () => {
         controller
       );
       if (baglantiBilgisi != undefined) {
-        // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
         const formatDateTime = (dateTimeStr?: string) => {
           if (!dateTimeStr) return "";
           const date = new Date(dateTimeStr);
@@ -471,836 +488,117 @@ const Page: React.FC = () => {
   }, [hesaplaTiklandimi]);
 
   return (
-    <PageContainer
-      title="Kıdem Tazminatı (Bobi)"
-      description="this is Kıdem Tazminatı (Bobi)"
-    >
+    <PageContainer title="Kıdem Tazminatı (Bobi)" description="this is Kıdem Tazminatı (Bobi)">
       <Breadcrumb title="Kıdem Tazminatı (Bobi)" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid item xs={12}>
           <TabContext value={tip}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <TabList onChange={(e, v) => setTip(v)}>
               <Tab label="Veri Yükleme" value="VeriYukleme" />
               <Tab label="Hesaplama" value="Hesaplama" />
             </TabList>
             <Divider />
             <TabPanel value="VeriYukleme" sx={{ paddingX: 0 }}>
-              <Grid container>
-                <Grid
-                  item
-                  xs={12}
-                  lg={12}
-                  sx={{
-                    display: "flex",
-                    flexDirection: smDown ? "column" : "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                    mb: 2,
-                    gap: 1,
-                  }}
-                >
-                  {sonKaydedilmeTarihi && (
-                    <Typography
-                      variant="body2"
-                      textAlign={"center"}
-                      sx={{ mb: smDown ? 1 : 0 }}
-                    >
-                      Son Kaydedilme: {sonKaydedilmeTarihi}
-                    </Typography>
-                  )}
-                  <Box flex={1}></Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: smDown ? "column" : "row",
-                      gap: 1,
-                      width: smDown ? "100%" : "auto",
-                    }}
-                  >
-                    <Button
-                      type="button"
-                      size="medium"
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        setIsPopUpOpen(true);
-                      }}
-                    >
-                      Paylaşım Bağlantısı
-                    </Button>
-                    <Button
-                      type="button"
-                      size="medium"
-                      disabled={
-                        kaydetTiklandimi ||
-                        hesaplaTiklandimi ||
-                        fetchedData != null
-                      }
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => setShowDrawer(true)}
-                    >
-                      Ek Bilgi
-                    </Button>
-                    <Button
-                      type="button"
-                      size="medium"
-                      disabled={
-                        kaydetTiklandimi ||
-                        hesaplaTiklandimi ||
-                        fetchedData != null
-                      }
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        setKaydetTiklandimi(true);
-                      }}
-                    >
-                      Kaydet
-                    </Button>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} lg={12}>
-                  <KidemTazminatiBobiVeriYukleme
-                    kaydetTiklandimi={kaydetTiklandimi}
-                    setKaydetTiklandimi={setKaydetTiklandimi}
-                    setSonKaydedilmeTarihi={setSonKaydedilmeTarihi}
-                  />
-                </Grid>
-                <Dialog
-                  open={showDrawer}
-                  onClose={() => setShowDrawer(false)}
-                  maxWidth={"md"}
-                >
-                  <DialogContent
-                    className="testdialog"
-                    sx={{ overflow: "visible" }}
-                  >
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      justifyContent={"space-between"}
-                      alignItems="center"
-                    >
-                      <Typography variant="h5" p={1}>
-                        Ek Bilgiler
-                      </Typography>
-                      <IconButton size="small" onClick={handleDrawerClose}>
-                        <IconX size="18" />
-                      </IconButton>
-                    </Stack>
-                  </DialogContent>
-                  <Divider />
-                  <DialogContent>
-                    <Grid container>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="hesaplananKarsilik"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Bir Önceki Yıl Hesaplanan Karşılık
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="hesaplananKarsilik"
-                            type="number"
-                            fullWidth
-                            value={hesaplananKarsilik}
-                            onChange={(e: any) =>
-                              setHesaplananKarsilik(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="hesaplansinMi"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Bir Yıldan Az Çalışma Süresi Olanlar İçin Kıdem
-                              Tazminatı Hesaplansın mı?
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomSelect
-                            labelId="hesaplansinMi"
-                            id="hesaplansinMi"
-                            size="medium"
-                            fullWidth
-                            value={hesaplansinMi}
-                            onChange={handleChangeHesaplansinMi}
-                          >
-                            <MenuItem value={"Evet"}>Evet</MenuItem>
-                            <MenuItem value={"Hayır"}>Hayır </MenuItem>
-                          </CustomSelect>
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="izinKarsiligi"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Bir Önceki Yıl Hesaplanan Kullanılmamış İzin
-                              Karşılığı
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="izinKarsiligi"
-                            type="number"
-                            fullWidth
-                            value={izinKarsiligi}
-                            onChange={(e: any) =>
-                              setIzinKarsiligi(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="kacGun"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Bir Yıl Kaç Gün Olarak Hesaplansın?
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomSelect
-                            labelId="kacGun"
-                            id="kacGun"
-                            size="medium"
-                            fullWidth
-                            value={kacGun}
-                            onChange={handleChangeKacGun}
-                          >
-                            <MenuItem value={365}>365</MenuItem>
-                            <MenuItem value={360}>360</MenuItem>
-                          </CustomSelect>
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 2,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="ayrilan2019"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Tazminat Almadan Ayrılan Kişi Sayısı (
-                              {user.yil ? user.yil - 4 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="ayrilan2019"
-                            type="number"
-                            fullWidth
-                            value={ayrilan2019}
-                            onChange={(e: any) =>
-                              setAyrilan2019(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="personel2019"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Ortalama Personel Sayısı (
-                              {user.yil ? user.yil - 4 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="personel2019"
-                            type="number"
-                            fullWidth
-                            value={personel2019}
-                            onChange={(e: any) =>
-                              setPersonel2019(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 2,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="ayrilan2020"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Tazminat Almadan Ayrılan Kişi Sayısı (
-                              {user.yil ? user.yil - 3 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="ayrilan2020"
-                            type="number"
-                            fullWidth
-                            value={ayrilan2020}
-                            onChange={(e: any) =>
-                              setAyrilan2020(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="personel2020"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Ortalama Personel Sayısı (
-                              {user.yil ? user.yil - 3 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="personel2020"
-                            type="number"
-                            fullWidth
-                            value={personel2020}
-                            onChange={(e: any) =>
-                              setPersonel2020(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 2,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="ayrilan2021"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Tazminat Almadan Ayrılan Kişi Sayısı (
-                              {user.yil ? user.yil - 2 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="ayrilan2021"
-                            type="number"
-                            fullWidth
-                            value={ayrilan2021}
-                            onChange={(e: any) =>
-                              setAyrilan2021(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="personel2021"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Ortalama Personel Sayısı (
-                              {user.yil ? user.yil - 2 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="personel2021"
-                            type="number"
-                            fullWidth
-                            value={personel2021}
-                            onChange={(e: any) =>
-                              setPersonel2021(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 2,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="ayrilan2022"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Tazminat Almadan Ayrılan Kişi Sayısı (
-                              {user.yil ? user.yil - 1 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="ayrilan2022"
-                            type="number"
-                            fullWidth
-                            value={ayrilan2022}
-                            onChange={(e: any) =>
-                              setAyrilan2022(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="personel2022"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Ortalama Personel Sayısı (
-                              {user.yil ? user.yil - 1 : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="personel2022"
-                            type="number"
-                            fullWidth
-                            value={personel2022}
-                            onChange={(e: any) =>
-                              setPersonel2022(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 2,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="ayrilan2023"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Tazminat Almadan Ayrılan Kişi Sayısı (
-                              {user.yil ? user.yil : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="ayrilan2023"
-                            type="number"
-                            fullWidth
-                            value={ayrilan2023}
-                            onChange={(e: any) =>
-                              setAyrilan2023(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        lg={12}
-                        sx={{
-                          display: "flex",
-                          alignContent: "center",
-                          justifyContent: "space-between",
-                          mt: 1,
-                        }}
-                      >
-                        <Grid item xs={12} lg={6}>
-                          <CustomFormLabel
-                            htmlFor="personel2023"
-                            sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
-                          >
-                            <Typography variant="h6" p={1}>
-                              Ortalama Personel Sayısı (
-                              {user.yil ? user.yil : 0})
-                            </Typography>
-                          </CustomFormLabel>
-                        </Grid>
-                        <Grid item xs={12} lg={6}>
-                          <CustomTextField
-                            id="personel2023"
-                            type="number"
-                            fullWidth
-                            value={personel2023}
-                            onChange={(e: any) =>
-                              setPersonel2023(parseInt(e.target.value))
-                            }
-                          />
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </DialogContent>
-                  <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
-                    <Button
-                      variant="outlined"
-                      color="success"
-                      onClick={() => handleSave()}
-                      sx={{ width: "20%" }}
-                    >
-                      Kaydet
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => handleDrawerClose()}
-                      sx={{ width: "20%" }}
-                    >
-                      Vazgeç
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </Grid>
+              <KidemTazminatiBobiVeriYukleme kaydetTiklandimi={kaydetTiklandimi} setKaydetTiklandimi={setKaydetTiklandimi} setSonKaydedilmeTarihi={setSonKaydedilmeTarihi} sonKaydedilmeTarihi={sonKaydedilmeTarihi} setIsPopUpOpen={setIsPopUpOpen} setShowDrawer={setShowDrawer} isDataFetched={fetchedData != null} />
+
+              <Dialog open={showDrawer} onClose={handleDrawerClose} maxWidth="md" fullWidth>
+                <DialogContent sx={{ overflow: "visible" }}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h5" p={1}>Ek Bilgiler</Typography>
+                    <IconButton size="small" onClick={handleDrawerClose}><IconX size="18" /></IconButton>
+                  </Stack>
+                </DialogContent>
+                <Divider />
+                <DialogContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} lg={6}><CustomFormLabel>Bir Önceki Yıl Hesaplanan Karşılık</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesaplananKarsilik} onChange={(e: any) => setHesaplananKarsilik(Number(e.target.value))} /></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>1 Yıldan Az Çalışanlar İçin Hesaplansın mı?</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomSelect fullWidth value={hesaplansinMi} onChange={(e: any) => setHesaplansinMi(e.target.value)}><MenuItem value="Evet">Evet</MenuItem><MenuItem value="Hayır">Hayır</MenuItem></CustomSelect></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>Bir Önceki Yıl İzin Karşılığı</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={izinKarsiligi} onChange={(e: any) => setIzinKarsiligi(Number(e.target.value))} /></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>Bir Yıl Kaç Gün?</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomSelect fullWidth value={kacGun} onChange={(e: any) => setKacGun(Number(e.target.value))}><MenuItem value={365}>365</MenuItem><MenuItem value={360}>360</MenuItem></CustomSelect></Grid>
+
+                    <Grid item xs={12}><Typography variant="h6" p={1} sx={{ mt: 2, fontWeight: 'bold' }}>Kıdem Tazminatı Bobi Karşılık Tablosu Verileri</Typography><Divider /></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>720 Hesap</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap720} onChange={(e: any) => setHesap720(Number(e.target.value))} /></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>730 Hesap</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap730} onChange={(e: any) => setHesap730(Number(e.target.value))} /></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>740 Hesap</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap740} onChange={(e: any) => setHesap740(Number(e.target.value))} /></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>750 Hesap</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap750} onChange={(e: any) => setHesap750(Number(e.target.value))} /></Grid>
+
+                    <Grid item xs={12} lg={6}><CustomFormLabel>760 Hesap</CustomFormLabel></Grid>
+                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap760} onChange={(e: any) => setHesap760(Number(e.target.value))} /></Grid>
+
+                    <Grid item xs={12}><Typography variant="h6" p={1} sx={{ mt: 2, fontWeight: 'bold' }}>Personel Turnover Verileri</Typography><Divider /></Grid>
+
+                    {[2019, 2020, 2021, 2022, 2023].map((yil) => {
+                      const yrAyrilan = yil === 2019 ? ayrilan2019 : yil === 2020 ? ayrilan2020 : yil === 2021 ? ayrilan2021 : yil === 2022 ? ayrilan2022 : ayrilan2023;
+                      const setYrAyrilan = yil === 2019 ? setAyrilan2019 : yil === 2020 ? setAyrilan2020 : yil === 2021 ? setAyrilan2021 : yil === 2022 ? setAyrilan2022 : setAyrilan2023;
+                      const yrPersonel = yil === 2019 ? personel2019 : yil === 2020 ? personel2020 : yil === 2021 ? personel2021 : yil === 2022 ? personel2022 : personel2023;
+                      const setYrPersonel = yil === 2019 ? setPersonel2019 : yil === 2020 ? setPersonel2020 : yil === 2021 ? setPersonel2021 : yil === 2022 ? setPersonel2022 : setPersonel2023;
+                      return (
+                        <React.Fragment key={yil}>
+                          <Grid item xs={12} lg={6}><CustomFormLabel>Tazminatsız Ayrılan Sayısı ({yil})</CustomFormLabel></Grid>
+                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={yrAyrilan} onChange={(e: any) => setYrAyrilan(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><CustomFormLabel>Ortalama Personel Sayısı ({yil})</CustomFormLabel></Grid>
+                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={yrPersonel} onChange={(e: any) => setYrPersonel(Number(e.target.value))} /></Grid>
+                        </React.Fragment>
+                      );
+                    })}
+                  </Grid>
+                </DialogContent>
+                <DialogActions sx={{ justifyContent: "center", mb: 2 }}>
+                  <Button variant="outlined" color="success" onClick={handleSave} sx={{ width: "20%" }}>Kaydet</Button>
+                  <Button variant="outlined" color="error" onClick={handleDrawerClose} sx={{ width: "20%" }}>Vazgeç</Button>
+                </DialogActions>
+              </Dialog>
             </TabPanel>
+
             <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
-              <Grid container>
-                <Grid
-                  item
-                  xs={12}
-                  lg={12}
-                  sx={{
-                    display: "flex",
-                    flexDirection: smDown ? "column" : "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                    mb: 2,
-                    gap: 1,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: smDown ? "column" : "row",
-                      gap: 1,
-                      width: smDown ? "100%" : "auto",
-                    }}
-                  >
-                    <Button
-                      type="button"
-                      size="medium"
-                      disabled={hesaplaTiklandimi || kaydetTiklandimi}
-                      variant="outlined"
-                      color="primary"
-                      sx={{ height: "100%" }}
-                      onClick={() => {
-                        setHesaplaTiklandimi(true);
-                        handleHesapla();
-                      }}
-                    >
-                      Hesapla
-                    </Button>
-                  </Box>
+              <Grid container spacing={3}>
+                <Grid item xs={12} display="flex" justifyContent="flex-end">
+                  <Button variant="outlined" onClick={() => { setHesaplaTiklandimi(true); handleHesapla(); }}>Hesapla</Button>
                 </Grid>
-                {fetchedKidemTazminatiCalismasi.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedKidemTazminatiCalismasi}
-                      title="Kıdem Tazminatı Çalışması"
-                    />
-                  </Grid>
-                )}
-                {fetchedHesaplananKidemTazminatiToplami.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedHesaplananKidemTazminatiToplami}
-                      title="Hesaplanan Dönem Kıdem Tazminatı Toplamı"
-                    />
-                  </Grid>
-                )}
-                {fetchedOdenenKidemTazminatiToplami.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedOdenenKidemTazminatiToplami}
-                      title="Ödenen Dönem Kıdem Tazminatı Toplamı"
-                    />
-                  </Grid>
-                )}
-                {fetchedDonemIcinKaydedilecekKidemTazminati.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedDonemIcinKaydedilecekKidemTazminati}
-                      title="Dönem İçin Kaydedilecek Kıdem Tazminatı"
-                    />
-                  </Grid>
-                )}
-                {fetchedGecmisYillarIcinKaydedilecekKidemTazminati.length >
-                  0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedGecmisYillarIcinKaydedilecekKidemTazminati}
-                      title="Geçmiş Yıllar İçin Kaydedilecek Kıdem Tazminatı"
-                    />
-                  </Grid>
-                )}
-                {fetchedIsTenCikisKodlari.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedIsTenCikisKodlari}
-                      title="İşten Çıkış Kodları ve Açıklamaları"
-                    />
-                  </Grid>
-                )}
-                {fetchedHesaplananKullanilmamisIzinKarsiligi.length > 0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedHesaplananKullanilmamisIzinKarsiligi}
-                      title="Hesaplanan Kullanılmamış İzin Karşılığı"
-                    />
-                  </Grid>
-                )}
-                {fetchedOncekiDonemKaydedilmisKullanilmamisIzinKarsiligi.length >
-                  0 && (
-                  <Grid item xs={12} lg={12} marginBottom={3}>
-                    <KidemTazminatiBobiHesaplama
-                      data={
-                        fetchedOncekiDonemKaydedilmisKullanilmamisIzinKarsiligi
-                      }
-                      title="Önceki Dönem Kaydedilmiş Kullanılmamış İzin Karşılığı"
-                    />
-                  </Grid>
-                )}
-                {fetchedOdenenKaydedilecekKullanilmamisIzinKarsiligi.length >
-                  0 && (
-                  <Grid item xs={12} lg={12}>
-                    <KidemTazminatiBobiHesaplama
-                      data={fetchedOdenenKaydedilecekKullanilmamisIzinKarsiligi}
-                      title="Kaydedilecek Kullanılmamış İzin Karşılığı"
-                    />
-                  </Grid>
-                )}
-                <FloatingButtonFisler
-                  handleClick={() => setFloatingButtonTiklandimi(true)}
-                />
-                <Dialog
-                  open={floatingButtonTiklandimi}
-                  onClose={() => setFloatingButtonTiklandimi(false)}
-                  fullWidth
-                  maxWidth={"lg"}
-                >
-                  <DialogContent
-                    className="testdialog"
-                    sx={{ overflow: "visible" }}
-                  >
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      justifyContent={"space-between"}
-                      alignItems="center"
-                    >
-                      <Box>
-                        <Typography variant="h5" p={1}>
-                          Sizin için oluşturduğum fişleri kaydetmek ister
-                          misiniz?
-                        </Typography>
-                        <Typography variant="body1" p={1}>
-                          Sizin için oluşturduğum fiş kayıtlarının doğruluğunu
-                          mutlaka kontrol edin. Fişlerinizi kontrol etmeden
-                          kaydetmek, hatalı kayıtların oluşmasına yol açabilir.
-                          Unutmayın, bu alanda gerçekleştirdiğiniz işlemlerden
-                          kaynaklanan hatalı kayıtlar
-                          <strong> tamamen sizin sorumluluğunuzdadır</strong>.
-                        </Typography>
-                      </Box>
-                      <IconButton
-                        size="small"
-                        onClick={() => setFloatingButtonTiklandimi(false)}
-                      >
-                        <IconX size="18" />
-                      </IconButton>
-                    </Stack>
-                  </DialogContent>
-                  <Divider />
-                  <DialogContent>
-                    <KidemTazminatiBobiOrnekFisler
-                      data={fetchedKidemTazminatiBobiOrnekFisler}
-                      kaydetTiklandimi={hesaplaKaydetTiklandimi}
-                      setkaydetTiklandimi={setHesaplaKaydetTiklandimi}
-                    />
-                  </DialogContent>
-                  <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
-                    <Button
-                      variant="outlined"
-                      color="success"
-                      onClick={() => {
-                        setHesaplaKaydetTiklandimi(true);
-                        setFloatingButtonTiklandimi(false);
-                      }}
-                      sx={{ width: "20%" }}
-                    >
-                      Evet, Kaydet
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => setFloatingButtonTiklandimi(false)}
-                      sx={{ width: "20%" }}
-                    >
-                      Hayır, Vazgeç
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-                {openCartAlert && (
-                  <InfoAlertCart
-                    openCartAlert={openCartAlert}
-                    setOpenCartAlert={setOpenCartAlert}
-                  ></InfoAlertCart>
-                )}
+                {fetchedKidemTazminatiCalismasi.length > 0 && <Grid item xs={12}><KidemTazminatiBobiHesaplama data={fetchedKidemTazminatiCalismasi} title="Kıdem Tazminatı Çalışması" /></Grid>}
+                {fetchedHesaplananKidemTazminatiToplami.length > 0 && <Grid item xs={12}><KidemTazminatiBobiHesaplama data={fetchedHesaplananKidemTazminatiToplami} title="Dönem Toplamı" /></Grid>}
+                <FloatingButtonFisler handleClick={() => setFloatingButtonTiklandimi(true)} />
               </Grid>
+
+              <Dialog open={floatingButtonTiklandimi} onClose={() => setFloatingButtonTiklandimi(false)} fullWidth maxWidth="lg">
+                <DialogContent>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h5">Örnek Fişleri Kaydet</Typography>
+                    <IconButton onClick={() => setFloatingButtonTiklandimi(false)}><IconX size="18" /></IconButton>
+                  </Stack>
+                  <Typography variant="body2" sx={{ mt: 1 }}>Oluşturulan fişleri kontrol ederek kaydediniz.</Typography>
+                </DialogContent>
+                <Divider />
+                <DialogContent>
+                  <KidemTazminatiBobiOrnekFisler data={fetchedKidemTazminatiBobiOrnekFisler} kaydetTiklandimi={hesaplaKaydetTiklandimi} setkaydetTiklandimi={setHesaplaKaydetTiklandimi} />
+                </DialogContent>
+                <DialogActions>
+                  <Button variant="outlined" color="success" onClick={() => { setHesaplaKaydetTiklandimi(true); setFloatingButtonTiklandimi(false); }}>Kaydet</Button>
+                  <Button variant="outlined" color="error" onClick={() => setFloatingButtonTiklandimi(false)}>Kapat</Button>
+                </DialogActions>
+              </Dialog>
+              {openCartAlert && <InfoAlertCart openCartAlert={openCartAlert} setOpenCartAlert={setOpenCartAlert} />}
             </TabPanel>
           </TabContext>
         </Grid>
-        {isPopUpOpen && (
-          <PaylasimBaglantisiPopUp
-            controller={controller}
-            setControl={setControl}
-            isPopUpOpen={isPopUpOpen}
-            handleClosePopUp={handleClosePopUp}
-          ></PaylasimBaglantisiPopUp>
-        )}
+        {isPopUpOpen && <PaylasimBaglantisiPopUp controller={controller} setControl={setControl} isPopUpOpen={isPopUpOpen} handleClosePopUp={handleClosePopUp} />}
       </Grid>
     </PageContainer>
   );
 };
-
 export default Page;
