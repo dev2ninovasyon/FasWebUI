@@ -7,12 +7,13 @@ import {
   Typography,
   useTheme,
   FormControl, InputLabel, Select, MenuItem, Box, Button, Skeleton,
+  Dialog, DialogTitle, DialogContent, DialogActions,
 } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { getBenfordDagilim, getBenfordHesapKodlari } from "@/api/Analizler/Benford";
+import { getBenfordDagilim, getBenfordHesapKodlari, getBenfordBasamakKayitlari } from "@/api/Analizler/Benford";
 import BenfordChart from "./BenfordAnalizChart";
-import { IconRefresh } from "@tabler/icons-react";
+import { IconRefresh, IconX } from "@tabler/icons-react";
 // import path’ını projendeki BlankCard konumuna göre ayarla:
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
 
@@ -45,6 +46,12 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
   const [data, setData] = useState<BenfordDagilimResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Popup state
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupBasamak, setPopupBasamak] = useState<number | null>(null);
+  const [popupRecords, setPopupRecords] = useState<any[]>([]);
+  const [popupLoading, setPopupLoading] = useState(false);
+
   const yil = user.yil || 0;
   const denetlenenId = user.denetlenenId || 0;
   const token = user.token || "";
@@ -75,6 +82,23 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
       toast("Benford verisi alınamadı", false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBasamakClick = async (basamak: number) => {
+    console.log("Grafik tıklandı, basamak:", basamak);
+    setPopupBasamak(basamak);
+    setPopupRecords([]);
+    setPopupOpen(true);
+    setPopupLoading(true);
+    try {
+      const kebirKodu = selectedKebir === "ALL" ? undefined : Number(selectedKebir);
+      const res = await getBenfordBasamakKayitlari(token, yil, denetlenenId, basamak, kebirKodu);
+      setPopupRecords(res ?? []);
+    } catch {
+      toast("Kayıtlar alınamadı", false);
+    } finally {
+      setPopupLoading(false);
     }
   };
 
@@ -144,7 +168,7 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   {title}
                 </Typography>
-                <BenfordChart response={data} title={title} />
+                <BenfordChart response={data} title={title} onBasamakClick={handleBasamakClick} />
               </Box>
             )}
           </BlankCard>
@@ -224,6 +248,61 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
           </BlankCard>
         </Grid>
       )}
+
+      {/* Kayıt Detay Popup */}
+      <Dialog open={popupOpen} onClose={() => setPopupOpen(false)} fullWidth maxWidth="lg">
+        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h5">
+            Basamak Detayı: {popupBasamak} ({popupRecords.length} Kayıt)
+          </Typography>
+          <Button onClick={() => setPopupOpen(false)} size="small">
+            <IconX size={20} />
+          </Button>
+        </DialogTitle>
+        <DialogContent dividers>
+          <TableContainer sx={{ maxHeight: 600 }}>
+            <Table stickyHeader size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Yevmiye No</TableCell>
+                  <TableCell>Tarih</TableCell>
+                  <TableCell>Hesap Adı</TableCell>
+                  <TableCell>Açıklama</TableCell>
+                  <TableCell align="right">Borç</TableCell>
+                  <TableCell align="right">Alacak</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {popupLoading ? (
+                  renderSkeletonRows()
+                ) : popupRecords.length > 0 ? (
+                  popupRecords.map((r, idx) => (
+                    <TableRow key={r.id || idx}>
+                      <TableCell>{r.yevmiyeNo}</TableCell>
+                      <TableCell>{r.yevmiyeTarih?.split("T")[0]}</TableCell>
+                      <TableCell>{r.hesapAdi}</TableCell>
+                      <TableCell>{r.aciklama}</TableCell>
+                      <TableCell align="right">{r.borc?.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell align="right">{r.alacak?.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center">
+                      Kayıt bulunamadı.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPopupOpen(false)} variant="outlined">
+            Kapat
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

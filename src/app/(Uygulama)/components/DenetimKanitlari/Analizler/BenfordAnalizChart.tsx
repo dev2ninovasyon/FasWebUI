@@ -15,9 +15,10 @@ const Chart = dynamic(() => import("react-apexcharts"), {
 interface Props {
   response: BenfordDagilimResponse | null;
   title: string; // başlığı dış kartta gösteriyoruz
+  onBasamakClick?: (basamak: number) => void;
 }
 
-const BenfordChart: React.FC<Props> = ({ response }) => {
+const BenfordChart: React.FC<Props> = ({ response, onBasamakClick }) => {
   const theme = useTheme();
   const customizer = useSelector((s: AppState) => s.customizer);
 
@@ -56,10 +57,24 @@ const BenfordChart: React.FC<Props> = ({ response }) => {
       foreColor: "#adb0bb",
       animations: { enabled: true },
       toolbar: { show: false },
+      events: {
+        markerClick: (event: any, chartContext: any, { dataPointIndex }: any) => {
+          const basamak = categories[dataPointIndex];
+          if (onBasamakClick && basamak) {
+            onBasamakClick(Number(basamak));
+          }
+        },
+        dataPointSelection: (event: any, chartContext: any, config: any) => {
+          const basamak = categories[config.dataPointIndex];
+          if (onBasamakClick && basamak) {
+            onBasamakClick(Number(basamak));
+          }
+        },
+      },
     },
     dataLabels: { enabled: false },
     stroke: { show: true, width: 3, curve: "smooth" },
-    markers: { size: 3, hover: { sizeOffset: 2 } },
+    markers: { size: 7, strokeWidth: 0, hover: { size: 10 } },
     xaxis: { categories, title: { text: "İlk Basamak" } },
     yaxis: {
       title: { text: "Yüzde (%)" },
