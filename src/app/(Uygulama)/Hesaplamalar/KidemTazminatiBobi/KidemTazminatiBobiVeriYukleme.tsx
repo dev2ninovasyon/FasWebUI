@@ -121,24 +121,15 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   };
 
   const numberValidator = (
-    value: string,
-    callback: (value: boolean) => void
+    value: any,
+    callback: (isValid: boolean) => void
   ) => {
-    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
-    if (numberRegex.test(value)) {
-      callback(true);
-    } else {
-      callback(false);
-    }
-  };
-
-  const numberValidatorAllowNull = (value: any, callback: (isValid: boolean) => void) => {
-    if (value === null || value === undefined || String(value).trim() === "" || value === 0) {
+    if (value === null || value === undefined || String(value).trim() === "") {
       callback(true);
       return;
     }
-    const numberRegex = /^[0-9]+(\.[0-9]+)?$/; // Regex to match numbers with optional decimal part
-    callback(numberRegex.test(value));
+    const numberRegex = /^[0-9]+(\.[0-9]+)?$/;
+    callback(numberRegex.test(String(value).replace(",", ".")));
   };
 
   const dateValidator = (
@@ -250,13 +241,13 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       columnSorting: true,
       className: "htLeft",
       validator: textValidator,
-      allowInvalid: false,
+      allowInvalid: true,
     }, // Adı Soyadı
     {
       type: "dropdown",
       source: ["", "Kadın", "Erkek"],
       className: "htLeft",
-      allowInvalid: false,
+      allowInvalid: true,
     }, // Cinsiyeti
     {
       type: "date",
@@ -264,13 +255,13 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       columnSorting: true,
       className: "htRight",
       validator: dateValidator,
-      allowInvalid: false,
+      allowInvalid: true,
     }, // Doğum Tarihi
     {
       type: "dropdown",
       source: ["Üretim", "Hizmet", "Ar-Ge", "Pazarlama", "Genel Yönetim"],
       className: "htLeft",
-      allowInvalid: false,
+      allowInvalid: true,
     }, // Görev Departmanı
     {
       type: "numeric",
@@ -281,7 +272,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       },
       className: "htRight",
       validator: numberValidator,
-      allowInvalid: false,
+      allowInvalid: true,
     }, // Brüt Ücreti (Aylık)
     {
       type: "date",
@@ -289,7 +280,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       columnSorting: true,
       className: "htRight",
       validator: dateValidator,
-      allowInvalid: false,
+      allowInvalid: true,
     }, // İşletmeye Giriş Tarihi
     {
       type: "date",
@@ -307,8 +298,8 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         culture: "tr-TR",
       },
       className: "htRight",
-      validator: numberValidatorAllowNull,
-      allowInvalid: false,
+      validator: numberValidator,
+      allowInvalid: true,
     }, // Ödenen Brüt Kıdem Tazminatı Tutarı (TL)
     {
       type: "dropdown",
@@ -363,7 +354,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         culture: "tr-TR",
       },
       className: "htRight",
-      validator: numberValidatorAllowNull,
+      validator: numberValidator,
       allowInvalid: false,
     }, // Kullanılmamış İzin Günü
     {
@@ -374,8 +365,8 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         culture: "tr-TR",
       },
       className: "htRight",
-      validator: numberValidatorAllowNull,
-      allowInvalid: false,
+      validator: numberValidator,
+      allowInvalid: true,
     }, // Kullanılmamış İzne Esas Brüt Ücret (Aylık)
   ];
 
@@ -1019,6 +1010,16 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         beforeChange={handleBeforeChange} // Add beforeChange hook
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
+        afterSelection={(row, col) => {
+          if (hotTableComponent.current) {
+            const hotInstance = hotTableComponent.current.hotInstance;
+            // Hücre seçildiğinde otomatik olarak düzenleme moduna geç
+            const editor = hotInstance.getActiveEditor();
+            if (editor) {
+              editor.beginEditing();
+            }
+          }
+        }}
         contextMenu={[
           "row_above",
           "row_below",
