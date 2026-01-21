@@ -8,7 +8,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 import HareketsizTicariAlacaklar from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HareketsizTicariAlacaklar";
@@ -26,71 +26,45 @@ const Page = () => {
     const [dip, setDip] = useState("");
     const [dipnotNo, setDipnotNo] = useState<string>("");
 
-    const BCrumb = [
-        {
-            to: "/DenetimKanitlari",
-            title: "Denetim Kanıtları",
-        },
-        {
-            to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
-            title: "Maddi Doğrulama Prosedürleri",
-        },
-        {
-            to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-            title: `${dip}`,
-        },
-        {
-            title: "Hareketsiz Ticari Alacaklar Çalışması",
-        },
-    ];
+    const currentPath = pathname;
+    const basePath = useMemo(() => {
+        if (!pathname) return "";
+        const parts = pathname.split("/").filter(Boolean);
+        if (parts.length <= 1) return "/";
+        return "/" + parts.slice(0, -1).join("/");
+    }, [pathname]);
 
     function normalizeString(str: string): string {
         const turkishChars: { [key: string]: string } = {
-            ç: "c",
-            ğ: "g",
-            ı: "i",
-            ö: "o",
-            ş: "s",
-            ü: "u",
-            Ç: "C",
-            Ğ: "G",
-            İ: "I",
-            Ö: "O",
-            Ş: "S",
-            Ü: "U",
+            ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u",
+            Ç: "C", Ğ: "G", İ: "I", Ö: "O", Ş: "S", Ü: "U",
         };
-
-        // Türkçe karakterleri değiştir
-        let normalized = str.replace(
-            /[çğıöşüÇĞÖŞÜıİ]/g,
-            (match) => turkishChars[match] || match
-        );
-
-        // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
+        let normalized = str.replace(/[çğıöşüÇĞÖŞÜıİ]/g, (match) => turkishChars[match] || match);
         normalized = normalized.replace(/\s+/g, "");
-
-        // Küçük harfe çevir
         return normalized.toLowerCase();
     }
 
-    const fetchData = async () => {
+    const fetchDipTitle = async () => {
         try {
             const maddiDogrulama = await getMaddiDogrulama(
-                user.token || "",
-                user.denetimTuru || "",
-                user.denetlenenId || 0,
-                user.yil || 0
+                user.token || "", user.denetimTuru || "", user.denetlenenId || 0, user.yil || 0
             );
-
-            maddiDogrulama.forEach((veri: any) => {
-                if (normalizeString(veri.name) == normalizeString(parentName)) {
-                    setDip(veri.name);
-                }
-            });
+            const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
+            if (found?.name) setDip(found.name);
         } catch (error) {
-            console.error("Hata:", error);
+            console.error("fetchDipTitle error:", error);
         }
     };
+
+    const BCrumbList = useMemo(() => {
+        return [
+            { to: "/DenetimKanitlari", title: "Denetim Kanıtları" },
+            { to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri", title: "Maddi Doğrulama Prosedürleri" },
+            { to: basePath || "/DenetimKanitlari/MaddiDogrulamaProsedurleri", title: dip || parentName },
+            { to: currentPath, title: "Hareketsiz Ticari Alacaklar Çalışması" },
+        ];
+    }, [basePath, currentPath, dip, parentName]);
+
     const fetchData2 = async () => {
         try {
             const dipnotNo = await getDipnotNoByDipnotAdi(
@@ -111,7 +85,7 @@ const Page = () => {
 
     useEffect(() => {
         if (parentName && parentName.length > 0) {
-            fetchData();
+            fetchDipTitle();
             fetchData2();
         }
     }, [parentName, user.token]);
@@ -122,9 +96,9 @@ const Page = () => {
             description="Hareketsiz Ticari Alacaklar Çalışması"
         >
             <Breadcrumb
-                title={"Hareketsiz Ticari Alacaklar Çalışması"}
-                subtitle={`${dip}`}
-                items={BCrumb}
+                title=""
+                subtitle="Hareketsiz Ticari Alacaklar Çalışması"
+                items={BCrumbList}
             ></Breadcrumb>
 
             {dipnotNo === "05-01" ? (

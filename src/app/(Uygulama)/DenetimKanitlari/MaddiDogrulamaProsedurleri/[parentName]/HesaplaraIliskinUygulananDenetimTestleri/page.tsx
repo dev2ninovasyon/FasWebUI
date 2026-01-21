@@ -1,14 +1,19 @@
 "use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
+
 import {
   getMaddiDogrulama,
   getDipnotNoByDipnotAdi,
 } from "@/api/MaddiDogrulama/MaddiDogrulama";
+
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import HesaplaraIliskinUygulananDenetimTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HesaplaraIliskinUygulananDenetimTestleri";
 
@@ -16,32 +21,16 @@ const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const pathname = usePathname();
-  const segments = pathname.split("/");
+
+  // ✅ Segmentleri güvenli al
+  const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
+
   const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
-  const parentName = segments[parentNameIndex];
-  const childName = segments[parentNameIndex + 1];
+  const parentName = segments[parentNameIndex] || "";
+  const childName = segments[parentNameIndex + 1] || "";
 
   const [dip, setDip] = useState("");
   const [dipnotNo, setDipnotNo] = useState<string>("");
-
-  const BCrumb = [
-    {
-      to: "/DenetimKanitlari",
-      title: "Denetim Kanıtları",
-    },
-    {
-      to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
-      title: "Maddi Doğrulama Prosedürleri",
-    },
-    {
-      to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: `${dip}`,
-    },
-    {
-      to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: "Hesaplara İlişkin Uygulanan Denetim Testleri",
-    },
-  ];
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -59,20 +48,16 @@ const Page = () => {
       Ü: "U",
     };
 
-    // Türkçe karakterleri değiştir
     let normalized = str.replace(
       /[çğıöşüÇĞÖŞÜıİ]/g,
       (match) => turkishChars[match] || match
     );
 
-    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
     normalized = normalized.replace(/\s+/g, "");
-
-    // Küçük harfe çevir
     return normalized.toLowerCase();
   }
 
-  const fetchData = async () => {
+  const fetchDipTitle = async () => {
     try {
       const maddiDogrulama = await getMaddiDogrulama(
         user.token || "",
@@ -81,19 +66,20 @@ const Page = () => {
         user.yil || 0
       );
 
-      maddiDogrulama.forEach((veri: any) => {
-        if (normalizeString(veri.name) == normalizeString(parentName)) {
-          setDip(veri.name);
-        }
-      });
+      const found = maddiDogrulama?.find(
+        (veri: any) =>
+          normalizeString(veri?.name || "") === normalizeString(parentName)
+      );
+
+      if (found?.name) setDip(found.name);
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.error("fetchDipTitle error:", error);
     }
   };
 
-  const fetchData2 = async () => {
+  const fetchDipnotNo = async () => {
     try {
-      const dipnotNo = await getDipnotNoByDipnotAdi(
+      const result = await getDipnotNoByDipnotAdi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -102,36 +88,62 @@ const Page = () => {
         user.denetimTuru === "Tfrs"
       );
 
-      console.log("dipnotNo", dipnotNo);
-      setDipnotNo(dipnotNo);
+      setDipnotNo(result || "");
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.error("fetchDipnotNo error:", error);
     }
   };
 
   useEffect(() => {
-    if (parentName && parentName.length > 0) {
-      fetchData();
-      fetchData2();
+    if (parentName) {
+      fetchDipTitle();
+      fetchDipnotNo();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parentName]);
 
+  /**
+   * ✅ EN KRİTİK DÜZELTME
+   * currentPath = şu anki sayfa (pathname) => 404 yok
+   * basePath = bir üst sayfa => Ticari Alacaklar'a döner
+   */
+  const currentPath = pathname;
 
+  const basePath = useMemo(() => {
+    if (!pathname) return "";
+    const parts = pathname.split("/").filter(Boolean);
+    if (parts.length <= 1) return "/";
+    return "/" + parts.slice(0, -1).join("/");
+  }, [pathname]);
 
-  console.log("dipnotNo", dipnotNo);
+  const BCrumb = useMemo(() => {
+    return [
+      { to: "/DenetimKanitlari", title: "Denetim Kanıtları" },
+      {
+        to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
+        title: "Maddi Doğrulama Prosedürleri",
+      },
+
+      // ✅ Ticari Alacaklar'a geri dönüş (üst sayfa)
+      { to: basePath || "/DenetimKanitlari/MaddiDogrulamaProsedurleri", title: dip || parentName },
+
+      // ✅ Bulunduğun sayfa (404 yok)
+      { to: currentPath, title: "Hesaplara İlişkin Uygulanan Denetim Testleri" },
+    ];
+  }, [basePath, currentPath, dip, parentName]);
 
   return (
     <PageContainer
-      title={`${dip} | Hesaplara İlişkin Uygulanan Denetim Testleri`}
+      title={`${dip || parentName} | Hesaplara İlişkin Uygulanan Denetim Testleri`}
       description="this is Hesaplara İlişkin Uygulanan Denetim Testleri"
     >
       <Breadcrumb
-        title={"Hesaplara İlişkin Uygulanan Denetim Testleri"}
-        subtitle={`${dip}`}
+        title=""
+        subtitle="Hesaplara İlişkin Uygulanan Denetim Testleri"
         items={BCrumb}
-      ></Breadcrumb>
+      />
 
-      {dipnotNo != "" ? (
+      {dipnotNo !== "" ? (
         <HesaplaraIliskinUygulananDenetimTestleri
           controller="HesaplaraIliskinUygulananDenetimTestleri"
           dipnotAdi={parentName}
@@ -139,9 +151,7 @@ const Page = () => {
           modelAdi={parentName}
           setDip={setDip}
         />
-      ) : (
-        <></>
-      )}
+      ) : null}
 
       <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
     </PageContainer>

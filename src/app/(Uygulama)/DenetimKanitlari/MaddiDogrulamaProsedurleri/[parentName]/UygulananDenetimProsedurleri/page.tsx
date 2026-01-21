@@ -10,7 +10,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Button, Grid, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 const Page = () => {
@@ -29,24 +29,22 @@ const Page = () => {
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
-  const BCrumb = [
-    {
-      to: "/DenetimKanitlari",
-      title: "Denetim Kanıtları",
-    },
-    {
-      to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
-      title: "Maddi Doğrulama Prosedürleri",
-    },
-    {
-      to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: `${dip}`,
-    },
-    {
-      to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${childName}`,
-      title: "Uygulanan Denetim Prosedürleri",
-    },
-  ];
+  const currentPath = pathname;
+  const basePath = useMemo(() => {
+    if (!pathname) return "";
+    const parts = pathname.split("/").filter(Boolean);
+    if (parts.length <= 1) return "/";
+    return "/" + parts.slice(0, -1).join("/");
+  }, [pathname]);
+
+  const BCrumb = useMemo(() => {
+    return [
+      { to: "/DenetimKanitlari", title: "Denetim Kanıtları" },
+      { to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri", title: "Maddi Doğrulama Prosedürleri" },
+      { to: basePath || "/DenetimKanitlari/MaddiDogrulamaProsedurleri", title: dip || parentName },
+      { to: currentPath, title: "Uygulanan Denetim Prosedürleri" },
+    ];
+  }, [basePath, currentPath, dip, parentName]);
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -135,8 +133,8 @@ const Page = () => {
       description="this is Uygulanan Denetim Prosedürleri"
     >
       <Breadcrumb
-        title={"Uygulanan Denetim Prosedürleri"}
-        subtitle={`${dip}`}
+        title=""
+        subtitle={`Uygulanan Denetim Prosedürleri`}
         items={BCrumb}
       >
         <>
@@ -210,7 +208,7 @@ const Page = () => {
         setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
         setTamamlanan={setTamamlanan}
         setToplam={setToplam}
-        dipnotAdi={parentName} // dipnotAdi olarak dinamik parentId'yi gönderiyoruz
+        dipnotAdi={parentName}
         setDip={setDip}
       />
       <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />

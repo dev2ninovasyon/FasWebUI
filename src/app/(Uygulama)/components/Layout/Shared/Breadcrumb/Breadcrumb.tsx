@@ -8,9 +8,10 @@ import {
   Theme,
   ListItemIcon,
   useMediaQuery,
+  Link as MuiLink,
 } from "@mui/material";
 import NextLink from "next/link";
-import { IconChevronLeft, IconCircle } from "@tabler/icons-react";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { useSelector } from "@/store/hooks";
@@ -30,26 +31,31 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const { setLoading } = useLoading();
   const pathname = usePathname();
 
-  // useMemo ile menü cache'leniyor - performans iyileştirmesi
-  const Menuitems: MenuitemsType[] = React.useMemo(() => createMenuItems(
-    user.rol || undefined,
-    user.denetimTuru || undefined,
-    user.enflasyonmu || undefined,
-    user.konsolidemi || undefined,
-    user.bddkmi || undefined
-  ), [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi]);
+  const Menuitems: MenuitemsType[] = React.useMemo(
+    () =>
+      createMenuItems(
+        user.rol || undefined,
+        user.denetimTuru || undefined,
+        user.enflasyonmu || undefined,
+        user.konsolidemi || undefined,
+        user.bddkmi || undefined
+      ),
+    [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi]
+  );
+
   const itemsTitle =
     items && items.length > 0
-      ? items.map((item) =>
-        item.title
-          .toUpperCase()
-          .replace(/I/g, "İ")
-          .replace(/C/g, "Ç")
-          .replace(/G/g, "Ğ")
-          .replace(/S/g, "Ş")
-          .replace(/O/g, "Ö")
-          .replace(/U/g, "Ü")
-      )[0]
+      ? items
+        .map((item) =>
+          item.title
+            .toUpperCase()
+            .replace(/I/g, "İ")
+            .replace(/C/g, "Ç")
+            .replace(/G/g, "Ğ")
+            .replace(/S/g, "Ş")
+            .replace(/O/g, "Ö")
+            .replace(/U/g, "Ü")
+        )[0]
       : "";
 
   const MenuItem: any =
@@ -69,7 +75,6 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const itemIcon = MenuItem && <Icon stroke={0.8} size="100%" />;
 
   const handleBreadcrumbClick = (to: string) => {
-    // Farklı bir sayfaya gidiyorsa loading göster
     if (pathname !== to) {
       setLoading(true);
     }
@@ -77,6 +82,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
 
   const mdDown = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   return (
     <Grid
       container
@@ -90,7 +96,6 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         overflow: { xs: "visible", sm: "hidden" },
         height: children ? (smDown ? "auto" : "") : "",
         minHeight: children ? "80" : "auto",
-
       }}
     >
       <Grid
@@ -99,85 +104,94 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         sm={6}
         lg={8}
         mb={0}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
         sx={{
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
+          minWidth: 0,
         }}
       >
         <Typography variant="h4">{title}</Typography>
 
         {items && (
-          <Breadcrumbs
-            separator={null}
-            sx={{ alignItems: "center", mt: 0.5, }}
-            aria-label="breadcrumb"
+          <Box
           >
-            {items
-              ? items
+            <Breadcrumbs
+              aria-label="breadcrumb"
+              // ✅ her item'in solunda ok görünsün (son item dahil)
+              separator={<IconChevronLeft size={16} style={{ margin: "0 6px" }} />}
+              sx={{
+                alignItems: "center",
+                "& .MuiBreadcrumbs-ol": {
+                  flexWrap: "nowrap",
+                  whiteSpace: "nowrap",
+                },
+                "& .MuiBreadcrumbs-li": {
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                },
+              }}
+            >
+              {items
                 .filter((item) => item.title !== title)
-                .map((item) => (
-                  <div key={item.title}>
-                    {item.to ? (
-                      <NextLink
+                .map((item) => {
+                  const isActive = item.title === subtitle;
+
+                  const typoSx = {
+                    backgroundColor: isActive ? "primary.main" : "transparent",
+                    px: isActive ? 1 : 0,
+                    borderRadius: (theme: Theme) => theme.shape.borderRadius / 4,
+                    maxWidth: { xs: 180, sm: 260, md: 320 },
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  };
+
+                  if (item.to) {
+                    return (
+                      <MuiLink
+                        key={item.title}
+                        component={NextLink}
                         href={item.to}
-                        passHref
+                        underline="none"
                         onClick={() => handleBreadcrumbClick(item.to)}
-                        style={{
-                          display: "flex",
+                        sx={{
+                          display: "inline-flex",
                           alignItems: "center",
-                          justifyContent: "center",
+                          color: "inherit",
+                          cursor: "pointer",
                         }}
                       >
                         <Typography
-                          color={
-                            item.title === subtitle ? "white" : "textPrimary"
-                          }
-                          sx={{
-                            backgroundColor:
-                              item.title === subtitle
-                                ? "primary.main"
-                                : "transparent",
-                            px: item.title === subtitle ? 1 : 0,
-                            borderRadius: (theme: Theme) =>
-                              theme.shape.borderRadius / 4,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
+                          color={isActive ? "white" : "textPrimary"}
+                          sx={typoSx}
+                          title={item.title}
                         >
-                          <IconChevronLeft style={{ marginRight: 4 }} />
                           {item.title}
                         </Typography>
-                      </NextLink>
-                    ) : (
-                      <Typography
-                        color={
-                          item.title === subtitle ? "white" : "textPrimary"
-                        }
-                        sx={{
-                          backgroundColor:
-                            item.title === subtitle
-                              ? "primary.main"
-                              : "transparent",
-                          px: item.title === subtitle ? 1 : 0,
-                          borderRadius: (theme: Theme) =>
-                            theme.shape.borderRadius / 4,
-                        }}
-                      >
-                        {item.title}
-                      </Typography>
-                    )}
-                  </div>
-                ))
-              : ""}
-          </Breadcrumbs>
+                      </MuiLink>
+                    );
+                  }
+
+                  return (
+                    <Typography
+                      key={item.title}
+                      color={isActive ? "white" : "textPrimary"}
+                      sx={typoSx}
+                      title={item.title}
+                    >
+                      {item.title}
+                    </Typography>
+                  );
+                })}
+            </Breadcrumbs>
+          </Box>
         )}
       </Grid>
+
       <Grid item xs={12} sm={6} lg={4} display="flex" justifyContent="flex-end" alignItems="center">
         <Box
           sx={{
@@ -187,7 +201,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
             justifyContent: "center",
             gap: 1,
             pr: 2,
-            height: "100%"
+            height: "100%",
           }}
         >
           {MenuItem && !mdDown && (
@@ -198,7 +212,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                 opacity: 0.2,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
               }}
             >
               <ListItemIcon
@@ -212,14 +226,15 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                   minWidth: "unset",
                   "& svg": {
                     width: "100%",
-                    height: "100%"
-                  }
+                    height: "100%",
+                  },
                 }}
               >
                 {itemIcon}
               </ListItemIcon>
             </Box>
           )}
+
           {children && (
             <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
               {children}
