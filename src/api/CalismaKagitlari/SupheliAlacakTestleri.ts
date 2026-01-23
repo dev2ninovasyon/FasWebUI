@@ -101,3 +101,19 @@ export async function varsayilanaDon(
 
     return response.ok;
 }
+
+export async function saveAllSupheliAlacakTestleri(
+    token: string,
+    data: SupheliAlacakTestleriData[]
+) {
+    const response = await apiFetch(`/SupheliAlacakTestleri/SaveAll`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+
+    return response.ok;
+}

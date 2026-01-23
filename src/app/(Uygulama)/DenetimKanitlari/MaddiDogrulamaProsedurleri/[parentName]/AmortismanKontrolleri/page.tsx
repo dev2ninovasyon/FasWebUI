@@ -9,7 +9,10 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { getDipnotNoByDipnotAdi, getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import AmortismanKontrolleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/AmortismanKontrolleri";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography, CircularProgress, Button } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useLoading } from "@/contexts/LoadingContext";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const Page = () => {
     const pathname = usePathname();
@@ -19,6 +22,9 @@ const Page = () => {
     const childName = segments[parentNameIndex + 1];
 
     const user = useSelector((state: AppState) => state.userReducer);
+    const router = useRouter();
+    const { setLoading } = useLoading();
+
     const [dip, setDip] = useState<string>("");
     const [parentTitle, setParentTitle] = useState<string>("");
     const [isSearching, setIsSearching] = useState<boolean>(true);
@@ -106,7 +112,27 @@ const Page = () => {
             <Breadcrumb
                 title=""
                 subtitle={`Amortisman Kontrolleri`}
-                items={BCrumbList} />
+                items={BCrumbList}>
+                <>
+                    <EkBelgeYukleButton
+                        formKodu={parentTitle || parentName}
+                        text="Ek Belge Yükle"
+                        fullWidth={false}
+                        sx={{ width: 110, height: 50, lineHeight: 1.2, fontSize: '0.85rem', whiteSpace: 'normal', textAlign: 'center' }}
+                    />
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        sx={{ textTransform: 'none', ml: 1, width: 110, height: 50, lineHeight: 1.2, fontSize: '0.85rem', whiteSpace: 'normal', textAlign: 'center' }}
+                        onClick={() => {
+                            setLoading(true);
+                            router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu?parentName=${parentTitle || parentName}`);
+                        }}
+                    >
+                        Çalışma Kağıdı Oluştur
+                    </Button>
+                </>
+            </Breadcrumb>
 
             {isSearching ? (
                 <Box sx={{ p: 5, textAlign: 'center' }}>

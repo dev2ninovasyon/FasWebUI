@@ -16,9 +16,14 @@ import { AppState } from "@/store/store";
 
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import YabanciParaTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/YabanciParaTestleri";
+import { Button } from "@mui/material";
+import { IconRefresh } from "@tabler/icons-react";
+import { varsayilanaDon } from "@/api/CalismaKagitlari/YabanciParaTestleri";
+import { useSnackbar } from "notistack";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const { enqueueSnackbar } = useSnackbar();
 
   const pathname = usePathname();
 
@@ -30,6 +35,7 @@ const Page = () => {
 
   const [dip, setDip] = useState("");
   const [dipnotNo, setDipnotNo] = useState<string>("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -100,6 +106,28 @@ const Page = () => {
     }
   }, [parentName]);
 
+  const handleYenidenOlustur = async () => {
+    try {
+      const result = await varsayilanaDon(
+        "YabanciParaTestleri",
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        dipnotNo
+      );
+      if (result) {
+        enqueueSnackbar("Kayıtlar başarıyla yeniden oluşturuldu.", { variant: "success" });
+        setRefreshKey((prev) => prev + 1);
+      } else {
+        enqueueSnackbar("Kayıtlar yeniden oluşturulurken bir hata oluştu.", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("handleYenidenOlustur error:", error);
+      enqueueSnackbar("Bir hata oluştu.", { variant: "error" });
+    }
+  };
+
   const currentPath = pathname;
 
   const basePath = useMemo(() => {
@@ -128,10 +156,30 @@ const Page = () => {
       title={`${dip || parentName} | Yabancı Para Testleri`}
       description="this is Yabancı Para Testleri"
     >
-      <Breadcrumb title="" subtitle="Yabancı Para Testleri" items={BCrumb} />
+      <Breadcrumb title="" subtitle="Yabancı Para Testleri" items={BCrumb}>
+        <Button
+          variant="outlined"
+          color="primary"
+          startIcon={<IconRefresh size="18" />}
+          onClick={handleYenidenOlustur}
+          sx={{
+            whiteSpace: "nowrap",
+            borderRadius: "50px",
+            textTransform: "none",
+            fontWeight: 600,
+            backgroundColor: "white",
+            "&:hover": {
+              backgroundColor: "primary.light",
+            },
+          }}
+        >
+          Kayıtları Yeniden Oluştur
+        </Button>
+      </Breadcrumb>
 
       {dipnotNo !== "" ? (
         <YabanciParaTestleri
+          key={refreshKey}
           controller="YabanciParaTestleri"
           dipnotAdi={parentName}
           dipnotNo={dipnotNo}

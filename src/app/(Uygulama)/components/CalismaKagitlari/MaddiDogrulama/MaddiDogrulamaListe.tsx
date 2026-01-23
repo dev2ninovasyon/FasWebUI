@@ -21,9 +21,6 @@ import {
 import { AppState } from "@/store/store";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import AddIcon from "@mui/icons-material/Add";
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useSelector } from "@/store/hooks";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -32,7 +29,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import Link from "next/link";
 import Image from "next/image";
-import { index } from "handsontable/helpers/dom";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 
 const allIcons = [
@@ -107,13 +104,14 @@ function getIconForCategory(index: number): string {
 }
 
 function getColorForCategory(categoryName: string): string {
-  const colors = ["error", "success", "info", "warning", "primary", "secondary"];
+  const colors = ["error", "success", "info"];
   const index = categoryName.length % colors.length;
   return colors[index];
 }
 
 interface CalismaKagidiProps {
   parentName?: string;
+  onViewModeChange?: (mode: "list" | "card") => void;
 }
 
 interface DenetimDosyaBelgeleriDto {
@@ -130,7 +128,7 @@ const StatusIcon: React.FC<{ status: boolean }> = ({ status }) => {
   );
 };
 
-const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName }) => {
+const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewModeChange }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -148,14 +146,18 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName }) => {
     const savedMode = localStorage.getItem("maddiDogrulamaViewMode") as "list" | "card";
     if (savedMode) {
       setViewMode(savedMode);
+      onViewModeChange?.(savedMode);
+    } else {
+      onViewModeChange?.(viewMode);
     }
   }, []);
 
-  // Görünüm değiştiğinde localStorage'a kaydet
+  // Görünüm değiştiğinde localStorage'a kaydet ve parent'a bildir
   const handleToggleView = () => {
     const newMode = viewMode === "list" ? "card" : "list";
     setViewMode(newMode);
     localStorage.setItem("maddiDogrulamaViewMode", newMode);
+    onViewModeChange?.(newMode);
   };
 
   const removeTurkishChars = (str: string) => {
@@ -210,15 +212,15 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName }) => {
     : calismaKagidiVerileri;
 
   return (
-    <Grid container sx={{ width: "95%", margin: "0 auto", justifyContent: "center" }}>
-      <Box sx={{ width: "100%", display: "flex", justifyContent: "end", paddingBottom: "10px", paddingRight: "10px" }}>
+    <>
+      <Box sx={{ display: "flex", justifyContent: "end", paddingBottom: viewMode === "list" ? "32px" : "0px", paddingRight: "10px" }}>
         <Button onClick={handleToggleView}>
           {viewMode === "list" ? <IconLayoutGrid size={24} /> : <IconList size={24} />}
         </Button>
       </Box>
 
       {viewMode === "card" ? (
-        <Grid container spacing={3}>
+        <Grid container spacing={3} mt={1}>
           {displayData.map((item, index) => {
             const bgcolor = getColorForCategory(item.name);
             const icon = getIconForCategory(index);
@@ -231,7 +233,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName }) => {
                 <Link href={targetPath} passHref onClick={() => setLoading(true)} style={{ textDecoration: 'none' }}>
                   <Box bgcolor={bgcolor + ".light"} textAlign="center" sx={{ borderRadius: "8px", cursor: "pointer" }}>
                     <CardContent style={{ height: "180px", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                      <Image src={icon} alt={"icon"} width="65" height="65" />
+                      <Image src={icon} alt={"icon"} width="50" height="50" />
                       <Typography color={bgcolor + ".main"} mt={1} variant="subtitle1" fontWeight={600}>
                         {item.name}
                       </Typography>
@@ -243,63 +245,84 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName }) => {
           })}
         </Grid>
       ) : (
-        calismaKagidiVerileri.map((parent, index) => (
-          <Grid item lg={12} xs={12} key={parent.id}>
-            <Card sx={{ padding: 0, width: "100%", maxHeight: 500, overflow: "auto", mt: "20px", bgcolor: customizer.activeMode === "dark" ? "#0e121a" : "#f5f5f5" }}>
-              <CardHeader
-                title={parent.name}
-                sx={{ cursor: "pointer", position: "sticky", top: 0, zIndex: "1", bgcolor: customizer.activeMode === "dark" ? "#0e121a" : "#f5f5f5" }}
-                onClick={() => handleOpenGroup(index)}
-                action={
-                  <IconButton aria-label="expand row" size="medium" onClick={(e) => { e.stopPropagation(); handleOpenGroup(index); }}>
-                    {openedGroupIndex === index ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                  </IconButton>
-                }
-              />
-              <Collapse in={openedGroupIndex === index} timeout="auto" unmountOnExit>
-                <Divider />
-                <CardContent>
-                  <Grid container mb={2} spacing={1}>
-                    <Grid item xs={12} display="flex" alignItems={"center"} justifyContent={"space-between"}>
-                      <Button variant="contained" color="primary" startIcon={<UploadFileIcon />} fullWidth sx={{ mr: 1 }}>Referans Dosya Yükle</Button>
-                      <Button variant="contained" color="secondary" startIcon={<AddIcon />} fullWidth sx={{ mr: 1 }} onClick={(e) => { e.stopPropagation(); setLoading(true); router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu?parentName=${parent.name}`); }}>
-                        Çalışma Kağıdı Oluştur
-                      </Button>
-                      <Button variant="contained" color="success" startIcon={<AssignmentIcon />} fullWidth>İmzalı Belge Yükle</Button>
+        <Grid container spacing={3} mt={1}>
+          {calismaKagidiVerileri.map((parent, index) => (
+            <Grid item lg={12} xs={12} key={parent.id}>
+              <Card sx={{ padding: 0, width: "100%", maxHeight: 500, overflow: "auto", mt: "20px", bgcolor: customizer.activeMode === "dark" ? "#0e121a" : "#f5f5f5" }}>
+                <CardHeader
+                  title={parent.name}
+                  sx={{ cursor: "pointer", position: "sticky", top: 0, zIndex: "1", bgcolor: customizer.activeMode === "dark" ? "#0e121a" : "#f5f5f5" }}
+                  onClick={() => handleOpenGroup(index)}
+                  action={
+                    <IconButton aria-label="expand row" size="medium" onClick={(e) => { e.stopPropagation(); handleOpenGroup(index); }}>
+                      {openedGroupIndex === index ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                  }
+                />
+                <Collapse in={openedGroupIndex === index} timeout="auto" unmountOnExit>
+                  <Divider />
+                  <CardContent>
+                    <Grid container mb={2} spacing={2} justifyContent="center">
+                      <Grid item xs={12} sm={6} display="flex" justifyContent={"center"}>
+                        <Box sx={{ width: "100%", maxWidth: 400 }}>
+                          <EkBelgeYukleButton
+                            formKodu={parent.name}
+                            text="Ek Belge Yükle"
+                            fullWidth={true}
+                            buttonVariant="contained"
+                            color="primary"
+                          />
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} sm={6} display="flex" justifyContent={"center"}>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          fullWidth
+                          sx={{ maxWidth: 400, textTransform: 'none' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLoading(true);
+                            router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu?parentName=${parent.name}`);
+                          }}
+                        >
+                          Çalışma Kağıdı Oluştur
+                        </Button>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Belge Adı</TableCell>
-                        <TableCell align="center">Hazırlandı</TableCell>
-                        <TableCell align="center">Onaylandı</TableCell>
-                        <TableCell align="center">Kalite Kontrol</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {parent.children?.map((child) => (
-                        <Tooltip title="Belgeye Git" followCursor placement="top" key={child.id}>
-                          <TableRow
-                            onClick={() => handleChildClick(parent.name, child.name)}
-                            sx={{ cursor: "pointer", transition: "background-color 0.3s", "&:hover": { backgroundColor: customizer.activeMode === "dark" ? "#333" : "#ddd" } }}
-                          >
-                            <TableCell><Typography variant="body1">{child.name}</Typography></TableCell>
-                            <TableCell align="center"><StatusIcon status={true} /></TableCell>
-                            <TableCell align="center"><StatusIcon status={false} /></TableCell>
-                            <TableCell align="center"><StatusIcon status={true} /></TableCell>
-                          </TableRow>
-                        </Tooltip>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Collapse>
-            </Card>
-          </Grid>
-        ))
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Belge Adı</TableCell>
+                          <TableCell align="center">Hazırlandı</TableCell>
+                          <TableCell align="center">Onaylandı</TableCell>
+                          <TableCell align="center">Kalite Kontrol</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {parent.children?.map((child) => (
+                          <Tooltip title="Belgeye Git" followCursor placement="top" key={child.id}>
+                            <TableRow
+                              onClick={() => handleChildClick(parent.name, child.name)}
+                              sx={{ cursor: "pointer", transition: "background-color 0.3s", "&:hover": { backgroundColor: customizer.activeMode === "dark" ? "#333" : "#ddd" } }}
+                            >
+                              <TableCell><Typography variant="body1">{child.name}</Typography></TableCell>
+                              <TableCell align="center"><StatusIcon status={true} /></TableCell>
+                              <TableCell align="center"><StatusIcon status={false} /></TableCell>
+                              <TableCell align="center"><StatusIcon status={true} /></TableCell>
+                            </TableRow>
+                          </Tooltip>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Collapse>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       )}
-    </Grid>
+    </>
   );
 };
 

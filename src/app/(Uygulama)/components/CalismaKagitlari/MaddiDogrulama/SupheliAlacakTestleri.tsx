@@ -13,8 +13,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
     getSupheliAlacakTestleri,
-    updateSupheliAlacakTestleri,
-    addSupheliAlacakTestleri,
+    saveAllSupheliAlacakTestleri,
     varsayilanaDon,
     SupheliAlacakTestleriData,
 } from "@/api/CalismaKagitlari/SupheliAlacakTestleri";
@@ -91,33 +90,18 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
         setSnackbar({ open: true, message, severity });
     };
 
-    const handleSaveRow = async () => {
+    const handleSaveAll = async () => {
         const hotInstance = hotRef.current?.hotInstance;
-        const selected = hotInstance.getSelected();
-
-        if (!selected) {
-            showSnackbar("Lütfen kaydetmek istediğiniz satırı seçin.", "error");
-            return;
-        }
-
-        const rowIndex = selected[0][0];
-        const rowData = hotInstance.getSourceDataAtRow(rowIndex);
+        const data = hotInstance.getSourceData();
 
         try {
-            let success;
-            if (!rowData.id || rowData.id === 0) {
-                success = await addSupheliAlacakTestleri(user.token!, {
-                    ...rowData,
-                    dipnotNo,
-                    baslik: veriler[0]?.baslik || "Şüpheli Alacak Testleri"
-                });
-            } else {
-                success = await updateSupheliAlacakTestleri(user.token!, rowData.id, rowData);
-            }
+            const success = await saveAllSupheliAlacakTestleri(user.token!, data);
 
             if (success) {
-                showSnackbar("Başarıyla kaydedildi.", "success");
+                showSnackbar("Tüm tablo başarıyla kaydedildi.", "success");
                 fetchData();
+            } else {
+                showSnackbar("Kaydetme sırasında bir hata oluştu.", "error");
             }
         } catch (error) {
             showSnackbar("Kaydetme hatası!", "error");
@@ -158,10 +142,10 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                     color="primary"
                     size="small"
                     startIcon={<IconDeviceFloppy size={16} />}
-                    onClick={handleSaveRow}
+                    onClick={handleSaveAll}
                     sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem' }}
                 >
-                    Seçili Satırı Kaydet
+                    Tüm Tabloyu Kaydet
                 </Button>
             </Box>
 
@@ -169,7 +153,8 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                 width: '100%',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
-                overflow: 'hidden',
+                overflow: 'auto',
+                maxHeight: '600px',
                 "& .handsontable th": {
                     backgroundColor: theme.palette.primary.main,
                     color: "white",
@@ -196,7 +181,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                         { data: 'avukatMektubu', type: 'text' }
                     ]}
                     stretchH="all"
-                    height="auto"
+                    height="600px"
                     autoWrapRow={true}
                     autoWrapCol={true}
                     dropdownMenu={true}

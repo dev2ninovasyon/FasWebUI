@@ -56,6 +56,9 @@ interface EkBelgeYukleButtonProps {
   onUploaded?: () => void;
   hideButton?: boolean;
   variant?: 'button' | 'menuitem';
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | 'inherit';
+  buttonVariant?: 'contained' | 'outlined' | 'text';
+  sx?: any;
 }
 
 export interface EkBelgeYukleButtonRef {
@@ -69,6 +72,9 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
   onUploaded,
   hideButton = false,
   variant = 'button',
+  color = 'primary',
+  buttonVariant = 'outlined',
+  sx,
 }, ref) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -590,7 +596,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
           <Grid
             container
             sx={{
-              width: "100%",
+              width: fullWidth ? "100%" : "auto",
               height: "100%",
               margin: "0 auto",
               justifyContent: "space-between",
@@ -599,7 +605,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
             <Grid
               onClick={handleOpen}
               item
-              xs={10}
+              xs={12}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -608,11 +614,11 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
             >
               <Button
                 size="medium"
-                variant="outlined"
-                color="primary"
-                sx={{ width: fullWidth ? "100%" : "auto" }}
+                variant={buttonVariant}
+                color={color}
+                sx={{ width: fullWidth ? "100%" : "auto", textTransform: 'none', ...sx }}
               >
-                <Typography variant="body2">{text}</Typography>
+                {text}
               </Button>
             </Grid>
           </Grid>

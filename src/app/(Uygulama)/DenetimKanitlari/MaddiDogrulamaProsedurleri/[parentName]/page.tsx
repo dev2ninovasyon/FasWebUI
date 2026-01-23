@@ -7,12 +7,19 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import MaddiDogrulamaListe from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaListe";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useLoading } from "@/contexts/LoadingContext";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const Page = ({ params }: { params: { parentName: string } }) => {
     const { parentName } = params;
     const user = useSelector((state: AppState) => state.userReducer);
+    const router = useRouter();
+    const { setLoading } = useLoading();
+
     const [dip, setDip] = useState<string>("");
+    const [viewMode, setViewMode] = useState<"list" | "card">("list");
 
     function normalizeString(str: string): string {
         const turkishChars: { [key: string]: string } = {
@@ -52,9 +59,31 @@ const Page = ({ params }: { params: { parentName: string } }) => {
 
     return (
         <PageContainer title={dip || parentName} description={dip || parentName}>
-            <Breadcrumb title={dip || parentName} items={BCrumbList} />
+            <Breadcrumb title={dip || parentName} items={BCrumbList}>
+                {viewMode === "card" ? (
+                    <>
+                        <EkBelgeYukleButton
+                            formKodu={dip || parentName}
+                            text="Ek Belge Yükle"
+                            fullWidth={false}
+                            sx={{ width: 110, height: 50, lineHeight: 1.2, fontSize: '0.85rem', whiteSpace: 'normal', textAlign: 'center' }}
+                        />
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            sx={{ textTransform: 'none', ml: 1, width: 110, height: 50, lineHeight: 1.2, fontSize: '0.85rem', whiteSpace: 'normal', textAlign: 'center' }}
+                            onClick={() => {
+                                setLoading(true);
+                                router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu?parentName=${dip || parentName}`);
+                            }}
+                        >
+                            Çalışma Kağıdı Oluştur
+                        </Button>
+                    </>
+                ) : undefined}
+            </Breadcrumb>
             <Box>
-                <MaddiDogrulamaListe parentName={parentName} />
+                <MaddiDogrulamaListe parentName={parentName} onViewModeChange={setViewMode} />
             </Box>
         </PageContainer>
     );

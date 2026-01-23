@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Typography,
@@ -8,12 +8,12 @@ import {
   Theme,
   ListItemIcon,
   useMediaQuery,
-  Link as MuiLink,
+  IconButton,
+  Menu,
 } from "@mui/material";
 import NextLink from "next/link";
-import { IconChevronLeft } from "@tabler/icons-react";
-import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
-import { createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
+import { IconChevronLeft, IconDotsVertical } from "@tabler/icons-react";
+import { MenuitemsType, createMenuItems } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { useLoading } from "@/contexts/LoadingContext";
@@ -31,57 +31,28 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const { setLoading } = useLoading();
   const pathname = usePathname();
 
-  const Menuitems: MenuitemsType[] = React.useMemo(
-    () =>
-      createMenuItems(
-        user.rol || undefined,
-        user.denetimTuru || undefined,
-        user.enflasyonmu || undefined,
-        user.konsolidemi || undefined,
-        user.bddkmi || undefined
-      ),
-    [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi]
-  );
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleCloseMenu = () => setAnchorEl(null);
 
-  const itemsTitle =
-    items && items.length > 0
-      ? items
-        .map((item) =>
-          item.title
-            .toUpperCase()
-            .replace(/I/g, "İ")
-            .replace(/C/g, "Ç")
-            .replace(/G/g, "Ğ")
-            .replace(/S/g, "Ş")
-            .replace(/O/g, "Ö")
-            .replace(/U/g, "Ü")
-        )[0]
-      : "";
+  const Menuitems: MenuitemsType[] = React.useMemo(() => createMenuItems(
+    user.rol || undefined,
+    user.denetimTuru || undefined,
+    user.enflasyonmu || undefined,
+    user.konsolidemi || undefined,
+    user.bddkmi || undefined
+  ), [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi]);
 
-  const MenuItem: any =
-    itemsTitle &&
-    Menuitems.find(
-      (item) =>
-        item.title
-          ?.replace(/I/g, "İ")
-          .replace(/C/g, "Ç")
-          .replace(/G/g, "Ğ")
-          .replace(/S/g, "Ş")
-          .replace(/O/g, "Ö")
-          .replace(/U/g, "Ü") === itemsTitle
-    );
+  const itemsTitle = items && items.length > 0 ? items.map((item) => item.title.toUpperCase().replace(/I/g, "İ"))[0] : "";
+  const MenuItemData: any = itemsTitle && Menuitems.find((item) => item.title?.toUpperCase() === itemsTitle);
+  const Icon = MenuItemData && MenuItemData?.icon;
+  const itemIcon = MenuItemData && <Icon stroke={0.8} size="100%" />;
 
-  const Icon = MenuItem && MenuItem?.icon;
-  const itemIcon = MenuItem && <Icon stroke={0.8} size="100%" />;
+  const handleBreadcrumbClick = (to: string) => { if (pathname !== to) setLoading(true); };
 
-  const handleBreadcrumbClick = (to: string) => {
-    if (pathname !== to) {
-      setLoading(true);
-    }
-  };
-
-  const mdDown = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
-  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+  const mdDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
+  const smDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
 
   return (
     <Grid
@@ -93,154 +64,117 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         p: "15px 25px",
         marginBottom: "15px",
         position: "relative",
-        overflow: { xs: "visible", sm: "hidden" },
-        height: children ? (smDown ? "auto" : "") : "",
-        minHeight: children ? "80" : "auto",
+        overflow: "hidden", // Arka plan ikonunun taşmaması için
+        minHeight: "80px",
       }}
     >
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        lg={8}
-        mb={0}
-        sx={{
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          minWidth: 0,
-        }}
-      >
+      {/* 1. ARKA PLAN İKONU (En altta kalması için zIndex: 0) */}
+      {!mdDown && itemIcon && (
+        <Box
+          sx={{
+            position: "absolute",
+            right: "2%",
+            top: 0,
+            bottom: 0,
+            height: "100%",
+            width: "100px",
+            opacity: 0.1,
+            zIndex: 0,
+            display: "flex",
+            alignItems: "center",
+            pointerEvents: "none", // Tıklamayı engellemez
+          }}
+        >
+          <ListItemIcon sx={{ color: "inherit", height: "80%", width: "100%" }}>
+            {itemIcon}
+          </ListItemIcon>
+        </Box>
+      )}
+
+      {/* 2. SOL TARAF: Yazılar (zIndex: 1 ile ikonun üstünde) */}
+      <Grid item xs={9} sm={8} sx={{ zIndex: 1 }}>
         <Typography variant="h4">{title}</Typography>
-
         {items && (
-          <Box
-          >
-            <Breadcrumbs
-              aria-label="breadcrumb"
-              // ✅ her item'in solunda ok görünsün (son item dahil)
-              separator={<IconChevronLeft size={16} style={{ margin: "0 6px" }} />}
-              sx={{
-                alignItems: "center",
-                "& .MuiBreadcrumbs-ol": {
-                  flexWrap: "nowrap",
-                  whiteSpace: "nowrap",
-                },
-                "& .MuiBreadcrumbs-li": {
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                },
-              }}
-            >
-              {items
-                .filter((item) => item.title !== title)
-                .map((item) => {
-                  const isActive = item.title === subtitle;
-
-                  const typoSx = {
-                    backgroundColor: isActive ? "primary.main" : "transparent",
-                    px: isActive ? 1 : 0,
-                    borderRadius: (theme: Theme) => theme.shape.borderRadius / 4,
-                    maxWidth: { xs: 180, sm: 260, md: 320 },
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    display: "inline-flex",
-                    alignItems: "center",
-                  };
-
-                  if (item.to) {
-                    return (
-                      <MuiLink
-                        key={item.title}
-                        component={NextLink}
-                        href={item.to}
-                        underline="none"
-                        onClick={() => handleBreadcrumbClick(item.to)}
-                        sx={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          color: "inherit",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <Typography
-                          color={isActive ? "white" : "textPrimary"}
-                          sx={typoSx}
-                          title={item.title}
-                        >
-                          {item.title}
-                        </Typography>
-                      </MuiLink>
-                    );
-                  }
-
-                  return (
+          <Breadcrumbs separator={null} sx={{ alignItems: "center", mt: 0.5 }} aria-label="breadcrumb">
+            {items.filter((item) => item.title !== title).map((item) => (
+              <div key={item.title}>
+                {item.to ? (
+                  <NextLink href={item.to} passHref onClick={() => handleBreadcrumbClick(item.to)} style={{ display: "flex", alignItems: "center" }}>
                     <Typography
-                      key={item.title}
-                      color={isActive ? "white" : "textPrimary"}
-                      sx={typoSx}
-                      title={item.title}
+                      color={item.title === subtitle ? "white" : "textPrimary"}
+                      sx={{
+                        backgroundColor: item.title === subtitle ? "primary.main" : "transparent",
+                        px: item.title === subtitle ? 1 : 0,
+                        borderRadius: (theme: Theme) => theme.shape.borderRadius / 4,
+                        display: "flex", alignItems: "center", fontSize: "0.875rem"
+                      }}
                     >
+                      <IconChevronLeft size="16" style={{ marginRight: 4 }} />
                       {item.title}
                     </Typography>
-                  );
-                })}
-            </Breadcrumbs>
-          </Box>
+                  </NextLink>
+                ) : (
+                  <Typography sx={{ fontSize: "0.875rem" }}>{item.title}</Typography>
+                )}
+              </div>
+            ))}
+          </Breadcrumbs>
         )}
       </Grid>
 
-      <Grid item xs={12} sm={6} lg={4} display="flex" justifyContent="flex-end" alignItems="center">
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            gap: 1,
-            pr: 2,
-            height: "100%",
-          }}
-        >
-          {MenuItem && !mdDown && (
-            <Box
-              sx={{
-                height: "60px",
-                width: "60px",
-                opacity: 0.2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  color: "inherit",
-                  height: "100%",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minWidth: "unset",
-                  "& svg": {
-                    width: "100%",
-                    height: "100%",
-                  },
-                }}
-              >
-                {itemIcon}
-              </ListItemIcon>
-            </Box>
-          )}
-
-          {children && (
-            <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-              {children}
-            </Box>
-          )}
-        </Box>
+      {/* 3. SAĞ TARAF: Aksiyonlar (zIndex: 1) */}
+      <Grid item xs={3} sm={4} display="flex" justifyContent="flex-end" alignItems="center" sx={{ zIndex: 1 }}>
+        {children && (
+          <>
+            {smDown ? (
+              <>
+                <IconButton onClick={handleOpenMenu} color="primary">
+                  <IconDotsVertical />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleCloseMenu}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  PaperProps={{
+                    sx: {
+                      p: 2,
+                      minWidth: '200px',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center', // BOX'I ORTALAR
+                    }
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center', // İÇİNDEKİLERİ ORTALAR
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      width: '100%',
+                      gap: 2
+                    }}
+                  >
+                    {/* Children içinde fragment varsa onları tek tek ele alıp ortalarız */}
+                    {React.Children.map(React.Children.toArray(children), (child) => (
+                      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                        {child}
+                      </Box>
+                    ))}
+                  </Box>
+                </Menu>
+              </>
+            ) : (
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                {children}
+              </Box>
+            )}
+          </>
+        )}
       </Grid>
     </Grid>
   );

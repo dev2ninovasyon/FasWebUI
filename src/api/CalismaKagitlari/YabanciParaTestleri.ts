@@ -114,14 +114,14 @@ export const varsayilanaDon = async (
   dipnotNo: string
 ) => {
   const url =
-    `/${controller}/CalismaKagitlariVarsayilanDon` +
+    `/${controller}/VarsayilanaDon` +
     `?denetciId=${denetciId}` +
     `&yil=${yil}` +
     `&denetlenenId=${denetlenenId}` +
     `&dipnotNo=${encodeURIComponent(dipnotNo)}`;
 
   const res = await apiFetch(url, {
-    method: "DELETE",
+    method: "POST",
     headers: withAuth(token),
   });
 
