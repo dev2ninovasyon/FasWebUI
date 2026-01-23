@@ -9,7 +9,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { getDipnotNoByDipnotAdi, getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import DavaKarsiliklariCalismasi from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/DavaKarsiliklariCalismasi";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Button, Typography } from "@mui/material";
 
 const Page = () => {
     const pathname = usePathname();
@@ -21,6 +21,7 @@ const Page = () => {
     const [dip, setDip] = useState<string>("");
     const [dipnotNo, setDipnotNo] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
+    const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
     const currentPath = pathname;
     const basePath = useMemo(() => {
@@ -78,16 +79,34 @@ const Page = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [parentName, user]);
 
-
-
     return (
         <PageContainer title="Dava Karşılıkları Çalışması" description="Dava Karşılıkları">
-            <Breadcrumb title="" subtitle="Dava Karşılıkları Çalışması" items={BCrumbList} />
+            <Breadcrumb title="" subtitle="Dava Karşılıkları Çalışması" items={BCrumbList}>
+                <Button
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    disabled={isClickedVarsayilanaDon}
+                    onClick={() => setIsClickedVarsayilanaDon(true)}
+                    sx={{ width: "200px", textTransform: "none" }}
+                >
+                    <Typography
+                        variant="body1"
+                        sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                    >
+                        Verileri Getir
+                    </Typography>
+                </Button>
+            </Breadcrumb>
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>
             ) : (
                 <>
-                    <DavaKarsiliklariCalismasi dipnotNo={dipnotNo} />
+                    <DavaKarsiliklariCalismasi
+                        dipnotNo={dipnotNo}
+                        isClickedVarsayilanaDon={isClickedVarsayilanaDon}
+                        setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                    />
                     <Box mt={3}>
                         <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
                     </Box>

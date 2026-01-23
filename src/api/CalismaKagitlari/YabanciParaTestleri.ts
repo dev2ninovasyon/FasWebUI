@@ -43,8 +43,8 @@ export const getYabanciParaTestleriByDenetlenen = async (
   controller: string,
   token: string,
   denetciId: number,
-  denetlenenId: number,
   yil: number,
+  denetlenenId: number,
   dipnotNo: string,
   modelAdi: string
 ) => {
@@ -87,7 +87,7 @@ export const updateYabanciParaTestleriRow = async (
         : Number(payload.onemlilik),
   };
 
-  const res = await apiFetch(`/${controller}/Update?id=${id}`, {
+  const res = await apiFetch(`/${controller}/${id}`, {
     method: "PUT",
     headers: {
       ...withAuth(token),
@@ -104,13 +104,12 @@ export const updateYabanciParaTestleriRow = async (
   return res.json();
 };
 
-
 export const varsayilanaDon = async (
   controller: string,
   token: string,
   denetciId: number,
-  denetlenenId: number,
   yil: number,
+  denetlenenId: number,
   dipnotNo: string
 ) => {
   const url =
@@ -121,7 +120,7 @@ export const varsayilanaDon = async (
     `&dipnotNo=${encodeURIComponent(dipnotNo)}`;
 
   const res = await apiFetch(url, {
-    method: "POST",
+    method: "GET",
     headers: withAuth(token),
   });
 

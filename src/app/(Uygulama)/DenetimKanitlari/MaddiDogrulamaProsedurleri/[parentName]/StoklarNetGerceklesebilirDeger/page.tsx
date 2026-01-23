@@ -72,14 +72,7 @@ const Page = () => {
     return (
         <PageContainer title="Stoklar Net Gerçekleşebilir Değer" description="Stoklar Net Gerçekleşebilir Değer">
             <Breadcrumb title="" subtitle="Stoklar Net Gerçekleşebilir Değer" items={BCrumbList}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<IconRefresh size="18" />}
-                    onClick={() => childRef.current?.handleOlustur()}
-                >
-                    Verileri Getir
-                </Button>
+
             </Breadcrumb>
 
             <StoklarNetGerceklesebilirDeger

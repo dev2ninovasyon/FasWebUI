@@ -12,7 +12,7 @@ import { useEffect, useState, useMemo } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 import HareketsizTicariAlacaklar from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HareketsizTicariAlacaklar";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 
 const Page = () => {
     const user = useSelector((state: AppState) => state.userReducer);
@@ -25,6 +25,7 @@ const Page = () => {
 
     const [dip, setDip] = useState("");
     const [dipnotNo, setDipnotNo] = useState<string>("");
+    const [isClickedHesapla, setIsClickedHesapla] = useState(false);
 
     const currentPath = pathname;
     const basePath = useMemo(() => {
@@ -76,7 +77,6 @@ const Page = () => {
                 user.denetimTuru === "Tfrs"
             );
 
-            console.log("dipnotNo", dipnotNo);
             setDipnotNo(dipnotNo);
         } catch (error) {
             console.error("An error occurred:", error);
@@ -99,7 +99,23 @@ const Page = () => {
                 title=""
                 subtitle="Hareketsiz Ticari Alacaklar Çalışması"
                 items={BCrumbList}
-            ></Breadcrumb>
+            >
+                <Button
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    disabled={isClickedHesapla}
+                    onClick={() => setIsClickedHesapla(true)}
+                    sx={{ width: "200px", textTransform: "none" }}
+                >
+                    <Typography
+                        variant="body1"
+                        sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                    >
+                        Hesapla
+                    </Typography>
+                </Button>
+            </Breadcrumb>
 
             {dipnotNo === "05-01" ? (
                 <HareketsizTicariAlacaklar
@@ -108,6 +124,8 @@ const Page = () => {
                     dipnotNo={dipnotNo}
                     modelAdi={parentName}
                     setDip={setDip}
+                    isClickedHesapla={isClickedHesapla}
+                    setIsClickedHesapla={setIsClickedHesapla}
                 />
             ) : dipnotNo !== "" ? (
                 <Box sx={{ p: 3, textAlign: "center", border: "1px dashed #ccc", borderRadius: 2, my: 2 }}>

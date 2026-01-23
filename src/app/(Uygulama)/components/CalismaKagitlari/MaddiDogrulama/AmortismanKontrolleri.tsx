@@ -60,9 +60,20 @@ const AmortismanKontrolleri: React.FC<Props> = ({
 
         if (result.success) {
             enqueueSnackbar("Kaydedildi", { variant: "success" });
-            fetchData();
+            fetchDataSilently();
         } else {
             enqueueSnackbar("Kaydetme başarısız", { variant: "error" });
+        }
+    };
+
+    const fetchDataSilently = async () => {
+        try {
+            const result = await fetchAmortismanKontrolleri(token, denetlenenId, yil, dipnotNo);
+            if (result?.success && result.data) {
+                setData(result.data);
+            }
+        } catch (error) {
+            console.error("Silent fetch error:", error);
         }
     };
 
@@ -222,6 +233,8 @@ const AmortismanKontrolleri: React.FC<Props> = ({
                                             <TableCell align="right">
                                                 <input
                                                     type="number"
+                                                    step="0.01"
+                                                    inputMode="decimal"
                                                     defaultValue={tahmini}
                                                     onBlur={(e) => handleSaveSatir(row.detayKodu, e.target.value, kontrolKayit?.id || 0)}
                                                     className="w-full p-1 text-right border rounded bg-white focus:ring-blue-500 focus:border-blue-500"

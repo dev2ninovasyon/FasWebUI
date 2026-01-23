@@ -9,7 +9,7 @@ export interface DonusumKayitlariKontrolSatirDto {
 
 export interface DonusumBobiFisDto {
     hesapKodu: string;
-    yevmiyeNo: string;
+    yevmiyeNo: number;
     hesapAdi: string;
     borc: number;
     alacak: number;

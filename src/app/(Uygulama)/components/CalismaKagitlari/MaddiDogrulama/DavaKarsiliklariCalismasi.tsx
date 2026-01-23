@@ -22,6 +22,7 @@ import { AppState } from "@/store/store";
 import {
     getDavaKarsiliklariData,
     updateDavaKarsiliklari,
+    varsayilanaDonDavaKarsiliklari,
     DavaKarsiliklariSatir,
     DavaKarsiliklariSummary
 } from "@/api/CalismaKagitlari/DavaKarsiliklariCalismasi";
@@ -33,7 +34,13 @@ registerAllModules();
 const fmt = (n: any) =>
     Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const DavaKarsiliklariCalismasi = ({ dipnotNo }: { dipnotNo: string }) => {
+interface Props {
+    dipnotNo: string;
+    isClickedVarsayilanaDon?: boolean;
+    setIsClickedVarsayilanaDon?: (val: boolean) => void;
+}
+
+const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon }: Props) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -60,25 +67,74 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo }: { dipnotNo: string }) => {
         }
     };
 
-    useEffect(() => { fetchData(); }, [user.denetlenenId, user.yil, user.token]);
+    useEffect(() => { fetchData(); }, [user.denetlenenId, user.yil, user.token, user.denetciId]);
 
-    const handleAfterChange = async (changes: any) => {
-        if (!changes || !user.token) return;
+    useEffect(() => {
+        if (isClickedVarsayilanaDon && setIsClickedVarsayilanaDon) {
+            const handleVarsayilanaDon = async () => {
+                try {
+                    setLoading(true);
+                    await varsayilanaDonDavaKarsiliklari(user.token || "", user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
+                    enqueueSnackbar("Veriler başarıyla getirildi.", { variant: "success" });
+                    await fetchData();
+                } catch (error) {
+                    enqueueSnackbar("İşlem sırasında bir hata oluştu!", { variant: "error" });
+                } finally {
+                    setIsClickedVarsayilanaDon(false);
+                    setLoading(false);
+                }
+            };
+            handleVarsayilanaDon();
+        }
+    }, [isClickedVarsayilanaDon]);
+
+    const handleAfterChange = async (changes: any, source: string) => {
+        if (!changes || !user.token || source === "loadData") return;
+
         let hasChange = false;
         const updatedData = [...data];
+
         for (const [row, prop, oldValue, newValue] of changes) {
             if (oldValue === newValue) continue;
+
+            // Ensure the row exists in updatedData (for new rows)
+            if (!updatedData[row]) {
+                updatedData[row] = {
+                    id: 0,
+                    denetciId: user.denetciId || 0,
+                    denetlenenId: user.denetlenenId || 0,
+                    yil: user.yil || 0,
+                    aleyhteDavacininLehteDavalininUnvani: "",
+                    aleyhteLehte: "",
+                    davaKonusu: "",
+                    davaYili: user.yil || 0,
+                    mahkemeAsamasi: "",
+                    varsaYerelMahkemeKarari: "",
+                    durusmaAsamasi: "",
+                    muhtemelDeger: 0,
+                    aleyhteKaybetmeLehteKazanmaIhtimali: "",
+                    ongorulenSonuclanmaSuresi: "",
+                    denetcininVardigiSonuc: "",
+                    sonucunTutari: 0
+                };
+            }
+
             updatedData[row] = { ...updatedData[row], [prop]: newValue };
             hasChange = true;
         }
+
         if (hasChange) {
             try {
-                await updateDavaKarsiliklari(user.token, updatedData);
+                // Filter out empty rows before sending
+                const filteredData = updatedData.filter(row => row && row.aleyhteDavacininLehteDavalininUnvani);
+                await updateDavaKarsiliklari(user.token, filteredData);
                 setData(updatedData);
                 enqueueSnackbar("Güncellendi", { variant: "success" });
                 const refresh = await getDavaKarsiliklariData(user.token, user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
                 setSummary(refresh.ozet);
-            } catch (error) { enqueueSnackbar("Hata oluştu!", { variant: "error" }); }
+            } catch (error) {
+                enqueueSnackbar("Hata oluştu!", { variant: "error" });
+            }
         }
     };
 
@@ -172,6 +228,8 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo }: { dipnotNo: string }) => {
                     ]}
                     stretchH="all"
                     height="auto"
+                    minRows={10}
+                    contextMenu={true}
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
@@ -186,7 +244,7 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo }: { dipnotNo: string }) => {
                         borderTop: `1px solid ${theme.palette.divider}`
                     }}>
                         <Typography variant="body2" color="textSecondary">
-                            Görüntülenecek veri bulunmamaktadır.
+                            Görüntülenecek veri bulunmamaktadır. Sağ tıklayarak satır ekleyebilirsiniz.
                         </Typography>
                     </Box>
                 )}
