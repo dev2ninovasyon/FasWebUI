@@ -80,9 +80,9 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
   const uyari = [
-    "Boş Bırakılmaması Gereken Sütunlar: Adı Soyadı, Görev Departmanı, Brüt Ücreti (Aylık), İşletmeye Giriş Tarihi",
+    "Boş Bırakılmaması Gereken Sütunlar: Görev Departmanı, Brüt Ücreti (Aylık), İşletmeye Giriş Tarihi",
     "TC Kimlik No Sütunu Boş Bırakılabilir.",
-    "Adı Soyadı Sütunu Boş Bırakılmamalıdır.",
+    "Adı Soyadı Sütunu Boş Bırakılabilir.",
     "Cinsiyeti Ve Sgk İşten Ayrılış Nedeni Kodu Sütunlarında Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
     "Doğum Tarihi Ve İşletmeden Çıkış Tarihi Sütunlarına GG.AA.YYYY Formatında Tarih Girilmelidir Veya Boş Bırakılabilir.",
     "Görev Departmanı Sütununda Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
@@ -457,8 +457,10 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     TD.style.fontFamily = plus.style.fontFamily;
     TD.style.fontWeight = 500;
     TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
-    //TD.style.textAlign = "left";
+    TD.style.lineHeight = "35px";
+    TD.style.verticalAlign = "middle";
+    TD.style.paddingTop = "0px";
+    TD.style.paddingBottom = "0px";
 
     //color
     TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
@@ -488,7 +490,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       if (isEmptyRow) return;
     }
 
-    const zorunluSutunIndexleri = [1, 4, 5, 6]; // Adı Soyadı, Görev Dep., Brüt Ücret, Giriş Tarihi
+    const zorunluSutunIndexleri = [4, 5, 6]; // Görev Dep., Brüt Ücret, Giriş Tarihi
     if (row <= endRow && isValueEmpty && zorunluSutunIndexleri.includes(col)) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
     }
@@ -519,7 +521,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
   };
 
   const afterPaste = (data: any, coords: any) => {
-    if (endRow < coords[0].endRow) {
+    if (coords && coords.length > 0 && coords[0] && endRow < coords[0].endRow) {
       setEndRow(coords[0].endRow);
     }
   };
@@ -542,17 +544,64 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     for (let i = 0; i < changes.length; i++) {
       const [row, prop, oldValue, newValue] = changes[i];
 
+      // Numeric Fields: 5 (Brüt Ücret), 8 (Ödenen Kıdem), 10 (Kullanılmamış İzin Günü), 11 (İzne Esas Brüt Ücret)
       if ([5, 8, 10, 11].includes(prop)) {
         if (typeof newValue === "string" && newValue !== "") {
-          const cleanedNewValue = newValue.replaceAll(/\./g, "").replace(",", ".");
-          changes[i][2] = parseFloat(cleanedNewValue) || 0;
+          const cleanedNewValue = newValue
+            .replace(/\s/g, "")
+            .replaceAll(/\./g, "")
+            .replace(",", ".");
+          changes[i][3] = parseFloat(cleanedNewValue) || 0;
         }
+      }
+
+      // Date Fields: 3 (Doğum Tarihi), 6 (Giriş Tarihi), 7 (Çıkış Tarihi)
+      if ([3, 6, 7].includes(prop)) {
+        if (typeof newValue === "string" && newValue !== "") {
+          let cleanedValue = newValue.trim().replace(/\//g, ".").replace(/-/g, ".");
+
+          // Remove potential time part if pasted from Excel (e.g. "21.01.2026 00:00:00")
+          if (cleanedValue.includes(" ")) {
+            cleanedValue = cleanedValue.split(" ")[0];
+          }
+
+          const parts = cleanedValue.split(".");
+          if (parts.length === 3) {
+            let day = parts[0];
+            let month = parts[1];
+            let year = parts[2];
+
+            // Reorder if it looks like YYYY.MM.DD
+            if (day.length === 4) {
+              const temp = day;
+              day = year;
+              year = temp;
+            }
+
+            const formattedDate = `${day.padStart(2, "0")}.${month.padStart(2, "0")}.${year}`;
+            changes[i][3] = formattedDate;
+          }
+        }
+      }
+
+      // Update endRow if user adds data to a new row
+      if (newValue !== null && newValue !== "" && row > endRow) {
+        setEndRow(row);
       }
     }
   };
 
   const handleCreateKidemTazminatiBobiVerisi = async () => {
-    if (fetchedData.filter((item: any) => item[1]).length == 0) {
+    // Veri dolu mu kontrolünü sadece Adı Soyadı (item[1]) üzerinden değil,
+    // en az bir anlamlı veri içeren (Adı Soyadı, Görev Dep, Maaş vs.) satırları alacak şekilde güncelliyoruz.
+    const hasDataCallback = (item: any) => {
+      // item[1]: Adı Soyadı, item[4]: Görev Departmanı, item[5]: Brüt Ücret
+      return (item[1] && item[1].toString().trim() !== "") ||
+        (item[4] && item[4].toString().trim() !== "") ||
+        (item[5] && item[5] !== null && item[5] !== undefined);
+    };
+
+    if (fetchedData.filter(hasDataCallback).length == 0) {
       await handleDeleteKidemTazminatiBobiVerisi();
       return;
     }
@@ -575,7 +624,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     ];
 
     const jsonData = fetchedData
-      .filter((item: any) => item[1])
+      .filter(hasDataCallback)
       .map((item: any) => {
         let obj: { [key: string]: any } = {};
         keys.forEach((key, index) => {
@@ -604,6 +653,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
               ).toISOString();
             }
           } else if (
+            key === "brutUcretiAylik" ||
             key === "odenenBrutKidemTazminatiBobiTutariTL" ||
             key === "kullanilmamisIzinGunu" ||
             key === "kullanilmamisIzneEsasBrutUcretAylik"
@@ -615,10 +665,18 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
             ) {
               obj[key] = 0.0;
             } else {
-              obj[key] = item[index - 3];
+              // Sayısal değerlerin string gelme ihtimaline karşı parse işlemi
+              if (typeof item[index - 3] === 'string') {
+                const val = item[index - 3].replace(/\./g, "").replace(",", ".");
+                obj[key] = parseFloat(val) || 0.0;
+              } else {
+                obj[key] = item[index - 3];
+              }
             }
           } else if (
             key === "tcKimlikNo" ||
+            key === "adiSoyadi" ||
+            key === "gorevDepartmani" ||
             key === "cinsiyeti" ||
             key === "sgkIstenAyrilisNedeniKodu"
           ) {
@@ -629,7 +687,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
             ) {
               obj[key] = "";
             } else {
-              obj[key] = item[index - 3];
+              obj[key] = String(item[index - 3]);
             }
           } else {
             if (
@@ -1011,21 +1069,24 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         afterCreateRow={handleCreateRow} // Add createRow hook
         afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
         afterSelection={(row, col) => {
-          if (hotTableComponent.current) {
-            const hotInstance = hotTableComponent.current.hotInstance;
-            // Hücre seçildiğinde otomatik olarak düzenleme moduna geç
-            const editor = hotInstance.getActiveEditor();
-            if (editor) {
-              editor.beginEditing();
-            }
-          }
+          // Standart Excel davranışını korumak için buradaki otomatik beginEditing kodunu kaldırdık.
+          // Bu sayede çoklu seçim ve fillHandle düzgün çalışır.
         }}
+        fillHandle={true}
+        outsideClickDeselects={false}
+        fragmentSelection={true}
+        search={true}
         contextMenu={[
           "row_above",
           "row_below",
           "remove_row",
-          "alignment",
+          "---------",
+          "undo",
+          "redo",
+          "---------",
           "copy",
+          "cut",
+          "alignment",
         ]}
       />
       <Grid container marginTop={2}>

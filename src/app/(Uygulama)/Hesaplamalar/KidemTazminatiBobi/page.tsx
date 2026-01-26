@@ -41,6 +41,7 @@ import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgi
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { Collapse } from "@mui/material";
+import NumericInput from "@/app/(Uygulama)/components/Forms/ThemeElements/NumericInput";
 
 const BCrumb = [
   {
@@ -539,7 +540,7 @@ const Page: React.FC = () => {
                 <DialogContent>
                   <Grid container spacing={2}>
                     <Grid item xs={12} lg={6}><CustomFormLabel>Bir Önceki Yıl Hesaplanan Karşılık</CustomFormLabel></Grid>
-                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesaplananKarsilik} onChange={(e: any) => setHesaplananKarsilik(Number(e.target.value))} /></Grid>
+                    <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesaplananKarsilik} onChange={(val) => setHesaplananKarsilik(val)} /></Grid>
 
                     <Grid item xs={12}>
                       <Stack
@@ -560,18 +561,18 @@ const Page: React.FC = () => {
                       <Collapse in={openHesapDetay}>
                         <Grid container spacing={2} sx={{ mt: 1 }}>
                           <Grid item xs={12} lg={6}><CustomFormLabel>620 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap620} onChange={(e: any) => setHesap620(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap620} onChange={(val) => setHesap620(val)} /></Grid>
                           <Grid item xs={12} lg={6}><CustomFormLabel>630 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap630} onChange={(e: any) => setHesap630(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap630} onChange={(val) => setHesap630(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>640 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap640} onChange={(e: any) => setHesap640(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap640} onChange={(val) => setHesap640(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>650 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap650} onChange={(e: any) => setHesap650(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap650} onChange={(val) => setHesap650(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>660 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap660} onChange={(e: any) => setHesap660(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap660} onChange={(val) => setHesap660(val)} /></Grid>
 
                         </Grid>
                       </Collapse>
@@ -581,7 +582,7 @@ const Page: React.FC = () => {
                     <Grid item xs={12} lg={6}><CustomSelect fullWidth value={hesaplansinMi} onChange={(e: any) => setHesaplansinMi(e.target.value)}><MenuItem value="Evet">Evet</MenuItem><MenuItem value="Hayır">Hayır</MenuItem></CustomSelect></Grid>
 
                     <Grid item xs={12} lg={6}><CustomFormLabel>Bir Önceki Yıl İzin Karşılığı</CustomFormLabel></Grid>
-                    <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={izinKarsiligi} onChange={(e: any) => setIzinKarsiligi(Number(e.target.value))} /></Grid>
+                    <Grid item xs={12} lg={6}><NumericInput fullWidth value={izinKarsiligi} onChange={(val) => setIzinKarsiligi(val)} /></Grid>
 
                     <Grid item xs={12} lg={6}><CustomFormLabel>Bir Yıl Kaç Gün?</CustomFormLabel></Grid>
                     <Grid item xs={12} lg={6}><CustomSelect fullWidth value={kacGun} onChange={(e: any) => setKacGun(Number(e.target.value))}><MenuItem value={365}>365</MenuItem><MenuItem value={360}>360</MenuItem></CustomSelect></Grid>
@@ -606,22 +607,22 @@ const Page: React.FC = () => {
                       <Collapse in={openOdenenKidem}>
                         <Grid container spacing={2} sx={{ mt: 1 }}>
                           <Grid item xs={12} lg={6}><CustomFormLabel>720 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap720} onChange={(e: any) => setHesap720(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap720} onChange={(val) => setHesap720(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>730 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap730} onChange={(e: any) => setHesap730(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap730} onChange={(val) => setHesap730(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>740 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap740} onChange={(e: any) => setHesap740(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap740} onChange={(val) => setHesap740(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>750 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap750} onChange={(e: any) => setHesap750(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap750} onChange={(val) => setHesap750(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>760 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap760} onChange={(e: any) => setHesap760(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap760} onChange={(val) => setHesap760(val)} /></Grid>
 
                           <Grid item xs={12} lg={6}><CustomFormLabel>760 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={hesap770} onChange={(e: any) => setHesap770(Number(e.target.value))} /></Grid>
+                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap770} onChange={(val) => setHesap770(val)} /></Grid>
                         </Grid>
                       </Collapse>
                     </Grid>
@@ -653,9 +654,9 @@ const Page: React.FC = () => {
                             return (
                               <React.Fragment key={yil}>
                                 <Grid item xs={12} lg={6}><CustomFormLabel>Tazminatsız Ayrılan Sayısı ({yil})</CustomFormLabel></Grid>
-                                <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={yrAyrilan} onChange={(e: any) => setYrAyrilan(Number(e.target.value))} /></Grid>
+                                <Grid item xs={12} lg={6}><NumericInput fullWidth value={yrAyrilan} onChange={(val) => setYrAyrilan(val)} /></Grid>
                                 <Grid item xs={12} lg={6}><CustomFormLabel>Ortalama Personel Sayısı ({yil})</CustomFormLabel></Grid>
-                                <Grid item xs={12} lg={6}><CustomTextField type="number" fullWidth value={yrPersonel} onChange={(e: any) => setYrPersonel(Number(e.target.value))} /></Grid>
+                                <Grid item xs={12} lg={6}><NumericInput fullWidth value={yrPersonel} onChange={(val) => setYrPersonel(val)} /></Grid>
                               </React.Fragment>
                             );
                           })}
