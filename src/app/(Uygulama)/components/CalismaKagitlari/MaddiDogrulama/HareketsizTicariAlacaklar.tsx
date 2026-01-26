@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -15,6 +17,7 @@ import {
     Alert,
     TextField,
     Tooltip,
+    CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { IconDeviceFloppy } from "@tabler/icons-react";
@@ -25,6 +28,7 @@ import { useSelector } from "@/store/hooks";
 import {
     getHareketsizTicariAlacaklarByDenetlenen,
     updateHareketsizTicariAlacaklarRow,
+    calculateHareketsizTicariAlacaklar,
     type HareketsizTicariAlacaklarRow,
 } from "../../../../../api/CalismaKagitlari/HareketsizTicariAlacaklar";
 
@@ -34,10 +38,12 @@ interface Props {
     dipnotNo: string;
     modelAdi: string;
     setDip: (str: string) => void;
+    isClickedHesapla?: boolean;
+    setIsClickedHesapla?: (val: boolean) => void;
 }
 
 const fmt = (n: any) =>
-    Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/\./g, " ").replace(/,/g, ".").replace(/ /g, ".");
+    Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const HareketsizTicariAlacaklar: React.FC<Props> = ({
     controller,
@@ -45,6 +51,8 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
     dipnotNo,
     modelAdi,
     setDip,
+    isClickedHesapla,
+    setIsClickedHesapla,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -54,6 +62,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
     const BG_PAPER = theme.palette.background.paper;
 
     const [veriler, setVeriler] = useState<HareketsizTicariAlacaklarRow[]>([]);
+    const [loading, setLoading] = useState(false);
     const [savingRowId, setSavingRowId] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Record<number, Partial<HareketsizTicariAlacaklarRow>>>({});
 
@@ -74,6 +83,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
 
     const fetchData = async () => {
         try {
+            setLoading(true);
             const res = await getHareketsizTicariAlacaklarByDenetlenen(
                 controller,
                 user.token || "",
@@ -90,13 +100,42 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
         } catch (error) {
             console.error("Veri çekme hatası:", error);
             setVeriler([]);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [user.denetlenenId, user.yil]);
+
+    useEffect(() => {
+        if (isClickedHesapla && setIsClickedHesapla) {
+            const handleHesapla = async () => {
+                try {
+                    setLoading(true);
+                    // Varsayılan olarak açılış fiş no 1 kabul ediliyor. 
+                    // İleride gerekirse kullanıcıdan alınabilir.
+                    await calculateHareketsizTicariAlacaklar(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.yil || 0,
+                        user.denetlenenId || 0,
+                        1
+                    );
+                    showSnackbar("Hesaplama başarıyla tamamlandı.", "success");
+                    await fetchData();
+                } catch (error) {
+                    showSnackbar("Hesaplama sırasında bir hata oluştu. Lütfen kapanış fişlerini kontrol edin.", "error");
+                } finally {
+                    setIsClickedHesapla(false);
+                    setLoading(false);
+                }
+            };
+            handleHesapla();
+        }
+    }, [isClickedHesapla]);
 
     const handleInputChange = (id: number, field: keyof HareketsizTicariAlacaklarRow, val: string) => {
         setEditValues(prev => ({
@@ -112,17 +151,10 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
         const changes = editValues[row.id];
         if (!changes) return;
 
-        // Convert string inputs to numbers where necessary
         const parseAmount = (val: any) => {
             if (val === undefined || val === null || val === "") return 0;
             if (typeof val === "number") return val;
-            const parts = String(val).split(".");
-            if (parts.length > 1) {
-                const decimal = parts.pop();
-                const integer = parts.join("");
-                return parseFloat(`${integer}.${decimal}`);
-            }
-            return parseFloat(String(val));
+            return parseFloat(String(val).replace(/\./g, "").replace(",", "."));
         };
 
         const payload: Partial<HareketsizTicariAlacaklarRow> = { ...changes };
@@ -151,16 +183,18 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
         }
     };
 
+    if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
+
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
+                <Box px={0} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
                     <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1, mb: 2 }}>
                         <Typography variant="subtitle1" fontWeight={700}>
                             Hareketsiz Ticari Alacaklar
                         </Typography>
                     </Box>
-                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${theme.palette.divider}` }}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
@@ -178,10 +212,6 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                 {veriler.map((row, idx) => {
                                     const isEditing = !!editValues[row.id];
                                     const changes = editValues[row.id] || {};
-
-                                    const borc = changes.borcTutari !== undefined ? changes.borcTutari : row.borcTutari;
-                                    const alacak = changes.alacakTutari !== undefined ? changes.alacakTutari : row.alacakTutari;
-                                    const net = changes.netBakiye !== undefined ? changes.netBakiye : row.netBakiye;
 
                                     return (
                                         <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
@@ -240,7 +270,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                 {veriler.length === 0 && (
                                     <TableRow>
                                         <TableCell colSpan={8} align="center" sx={{ py: 3 }}>
-                                            Veri bulunamadı.
+                                            Veri bulunamadı. Hesapla butonuna basarak verileri oluşturabilirsiniz.
                                         </TableCell>
                                     </TableRow>
                                 )}

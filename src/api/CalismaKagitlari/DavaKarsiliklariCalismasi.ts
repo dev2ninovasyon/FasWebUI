@@ -75,3 +75,18 @@ export const updateDavaKarsiliklari = async (token: string, data: DavaKarsilikla
 
     return response.json();
 };
+
+export const varsayilanaDonDavaKarsiliklari = async (token: string, denetciId: number, yil: number, denetlenenId: number) => {
+    const response = await apiFetch(`/DavaKarsiliklari/VarsayilanaDon?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error("Varsayılana dönme işlemi başarısız oldu.");
+    }
+
+    return response.json();
+};

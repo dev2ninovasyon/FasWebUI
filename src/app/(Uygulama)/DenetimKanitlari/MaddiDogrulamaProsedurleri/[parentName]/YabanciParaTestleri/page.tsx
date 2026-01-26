@@ -16,7 +16,16 @@ import { AppState } from "@/store/store";
 
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import YabanciParaTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/YabanciParaTestleri";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Box,
+  Typography,
+} from "@mui/material";
 import { IconRefresh } from "@tabler/icons-react";
 import { varsayilanaDon } from "@/api/CalismaKagitlari/YabanciParaTestleri";
 import { useSnackbar } from "notistack";
@@ -36,6 +45,7 @@ const Page = () => {
   const [dip, setDip] = useState("");
   const [dipnotNo, setDipnotNo] = useState<string>("");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -107,13 +117,14 @@ const Page = () => {
   }, [parentName]);
 
   const handleYenidenOlustur = async () => {
+    setOpenConfirm(false);
     try {
       const result = await varsayilanaDon(
         "YabanciParaTestleri",
         user.token || "",
         user.denetciId || 0,
-        user.denetlenenId || 0,
         user.yil || 0,
+        user.denetlenenId || 0,
         dipnotNo
       );
       if (result) {
@@ -161,7 +172,7 @@ const Page = () => {
           variant="outlined"
           color="primary"
           startIcon={<IconRefresh size="18" />}
-          onClick={handleYenidenOlustur}
+          onClick={() => setOpenConfirm(true)}
           sx={{
             whiteSpace: "nowrap",
             borderRadius: "50px",
@@ -176,6 +187,75 @@ const Page = () => {
           Kayıtları Yeniden Oluştur
         </Button>
       </Breadcrumb>
+
+      <Dialog
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        PaperProps={{
+          sx: {
+            borderRadius: "12px",
+            padding: "10px",
+            maxWidth: "500px"
+          }
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 3 }}>
+          <Box sx={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            border: '4px solid #f8bb86',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 2
+          }}>
+            <Typography sx={{ color: '#f8bb86', fontSize: '50px', fontWeight: 'bold' }}>!</Typography>
+          </Box>
+          <DialogTitle id="alert-dialog-title" sx={{ textAlign: 'center', fontWeight: 700, fontSize: '1.5rem', color: '#545454' }}>
+            {"Yeniden Oluşturmak istediğinize emin misiniz?"}
+          </DialogTitle>
+        </Box>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description" sx={{ textAlign: 'center', color: '#545454', fontSize: '1rem' }}>
+            Yeniden oluşturma işlemi onaylandığında kaydettiğiniz mevcut veriler kalıcı olarak silinecektir. Yabancı para testleri yeniden tespit edilecektir.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center', pb: 4, gap: 2 }}>
+          <Button
+            onClick={handleYenidenOlustur}
+            variant="contained"
+            sx={{
+              backgroundColor: '#2CD396',
+              '&:hover': { backgroundColor: '#28be88' },
+              textTransform: 'none',
+              fontWeight: 700,
+              px: 4,
+              py: 1,
+              fontSize: '1rem'
+            }}
+          >
+            EVET, SİL!
+          </Button>
+          <Button
+            onClick={() => setOpenConfirm(false)}
+            variant="outlined"
+            sx={{
+              color: '#545454',
+              borderColor: '#d3d3d3',
+              textTransform: 'none',
+              fontWeight: 700,
+              px: 4,
+              py: 1,
+              fontSize: '1rem'
+            }}
+          >
+            HAYIR, İPTAL ET
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {dipnotNo !== "" ? (
         <YabanciParaTestleri

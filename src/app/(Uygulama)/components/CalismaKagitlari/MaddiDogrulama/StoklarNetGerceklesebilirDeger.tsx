@@ -99,7 +99,6 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
                     satisGiderleri: updatedRow.satisGiderleri,
                 });
                 if (result.success) {
-                    // Update local state without full fetch to keep focus
                     const newData = [...data];
                     newData[row] = {
                         ...updatedRow,
@@ -130,11 +129,22 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
 
     return (
         <Box>
+            {/* Buton ve Başlık Bölümü */}
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
                 <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
                     Stoklar Net Gerçekleşebilir Değer
                 </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<IconRefresh size={18} />}
+                    onClick={handleOlustur}
+                    sx={{ borderRadius: "8px", textTransform: "none", fontWeight: "600" }}
+                >
+                    Verileri Getir
+                </Button>
             </Box>
+
             <Box
                 sx={{
                     width: "100%",
@@ -165,13 +175,16 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
                 />
                 {data.length === 0 && (
                     <Box sx={{ p: 4, textAlign: "center" }}>
-                        <Typography variant="body1" color="textSecondary">Veri bulunmamaktadır. "Verileri Oluştur" butonuna basarak verileri çekebilirsiniz.</Typography>
+                        <Typography variant="body1" color="textSecondary">
+                            Veri bulunmamaktadır. Sağ üstteki buton yardımıyla verileri oluşturabilirsiniz.
+                        </Typography>
                     </Box>
                 )}
             </Box>
         </Box>
     );
 });
+
 StoklarNetGerceklesebilirDeger.displayName = "StoklarNetGerceklesebilirDeger";
 
 export default StoklarNetGerceklesebilirDeger;

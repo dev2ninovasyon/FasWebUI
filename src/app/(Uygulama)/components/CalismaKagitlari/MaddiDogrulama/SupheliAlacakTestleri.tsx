@@ -18,7 +18,6 @@ import {
     SupheliAlacakTestleriData,
 } from "@/api/CalismaKagitlari/SupheliAlacakTestleri";
 
-// Handsontable modüllerini kaydet
 registerAllModules();
 
 interface Props {
@@ -78,7 +77,6 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                 }
             }
         };
-
         handleVarsayilanaDon();
     }, [isClickedVarsayilanaDon, user, dipnotNo, fetchData, setIsClickedVarsayilanaDon]);
 
@@ -92,19 +90,40 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
 
     const handleSaveAll = async () => {
         const hotInstance = hotRef.current?.hotInstance;
-        const data = hotInstance.getSourceData();
+        if (!hotInstance) return;
+
+        const allData = hotInstance.getSourceData();
+
+        // Sadece gerekli alanları gönderiyoruz ve navigation property'leri temizliyoruz
+        const dataToSend = allData.map((row: any) => ({
+            id: Number(row.id) || 0,
+            denetciId: user.denetciId,
+            denetlenenId: user.denetlenenId,
+            yil: user.yil,
+            dipnotNo: dipnotNo,
+            baslik: row.baslik || "Şüpheli Alacak Testleri",
+            hesapNo: row.hesapNo || "",
+            hesapAdi: row.hesapAdi || "",
+            kebirKodu: row.kebirKodu || "128",
+            oncekiDonemBakiye: Number(row.oncekiDonemBakiye) || 0,
+            cariDonemBakiye: Number(row.cariDonemBakiye) || 0,
+            degisimTl: Number(row.degisimTl) || 0,
+            avukatMektubu: row.avukatMektubu || "",
+            standartmi: row.standartmi === true,
+            tfrsmi: row.tfrsmi === true
+        }));
 
         try {
-            const success = await saveAllSupheliAlacakTestleri(user.token!, data);
+            const success = await saveAllSupheliAlacakTestleri(user.token!, dataToSend);
 
             if (success) {
                 showSnackbar("Tüm tablo başarıyla kaydedildi.", "success");
                 fetchData();
             } else {
-                showSnackbar("Kaydetme sırasında bir hata oluştu.", "error");
+                showSnackbar("Kaydetme sırasında bir hata oluştu. Lütfen verileri kontrol ediniz.", "error");
             }
         } catch (error) {
-            showSnackbar("Kaydetme hatası!", "error");
+            showSnackbar("Bağlantı hatası oluştu!", "error");
         }
     };
 
@@ -143,7 +162,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                     size="small"
                     startIcon={<IconDeviceFloppy size={16} />}
                     onClick={handleSaveAll}
-                    sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem' }}
+                    sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem', textTransform: 'none' }}
                 >
                     Tüm Tabloyu Kaydet
                 </Button>
@@ -153,11 +172,12 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                 width: '100%',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
-                overflow: 'auto',
-                maxHeight: '600px',
+                backgroundColor: '#fff',
+                overflow: 'hidden',
                 "& .handsontable th": {
                     backgroundColor: theme.palette.primary.main,
                     color: "white",
+                    fontWeight: 'bold',
                 },
             }}>
                 <HotTable
@@ -181,7 +201,10 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                         { data: 'avukatMektubu', type: 'text' }
                     ]}
                     stretchH="all"
-                    height="600px"
+                    height="500px"
+                    width="100%"
+                    viewportColumnRenderingOffset={10}
+                    viewportRowRenderingOffset={10}
                     autoWrapRow={true}
                     autoWrapCol={true}
                     dropdownMenu={true}

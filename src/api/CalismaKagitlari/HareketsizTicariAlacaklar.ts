@@ -76,3 +76,23 @@ export const updateHareketsizTicariAlacaklarRow = async (
 
     return res.json();
 };
+
+export const calculateHareketsizTicariAlacaklar = async (
+    token: string,
+    denetciId: number,
+    yil: number,
+    denetlenenId: number,
+    acilisFisNo: number
+) => {
+    const url = `/Hesaplamalar/HareketsizTicariAlacaklarHesapla?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&acilisFisNo=${acilisFisNo}`;
+    const res = await apiFetch(url, {
+        method: "POST",
+        headers: withAuth(token),
+    });
+
+    if (!res.ok) {
+        throw new Error("Hesaplama işlemi başarısız oldu.");
+    }
+
+    return res.json();
+};
