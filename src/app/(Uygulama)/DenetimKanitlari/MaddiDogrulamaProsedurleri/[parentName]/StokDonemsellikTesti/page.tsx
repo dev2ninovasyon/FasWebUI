@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -9,9 +9,12 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { getDipnotNoByDipnotAdi, getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import StokDonemsellikTesti from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/StokDonemsellikTesti";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Stok Dönemsellik Testi";
     const segments = pathname.split("/");
     const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
     const parentName = segments[parentNameIndex];
@@ -86,7 +89,14 @@ const Page = () => {
 
     return (
         <PageContainer title="Stok Dönemsellik Testi" description="Stok Dönemsellik Testi">
-            <Breadcrumb title="" subtitle="Stok Dönemsellik Testi" items={BCrumbList} />
+            <Breadcrumb title="" subtitle="Stok Dönemsellik Testi" items={BCrumbList}>
+                <MaddiDogrulamaEkBelgeYukleButton
+                    belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                    text="Belge Yükle"
+                    fullWidth={false}
+                    sx={{ width: 140, height: 45, lineHeight: 1.2, fontSize: '0.9rem', whiteSpace: 'normal', textAlign: 'center' }}
+                />
+            </Breadcrumb>
             <StokDonemsellikTesti
                 parentName={parentName}
                 childName={childName}

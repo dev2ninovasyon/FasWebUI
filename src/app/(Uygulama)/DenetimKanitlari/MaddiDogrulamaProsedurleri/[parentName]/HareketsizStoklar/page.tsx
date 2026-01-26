@@ -7,17 +7,20 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 import HareketsizStoklar from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HareketsizStoklar";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Grid } from "@mui/material";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
     const user = useSelector((state: AppState) => state.userReducer);
 
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Hareketsiz Stoklar";
     const segments = pathname.split("/");
     const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
     const parentName = segments[parentNameIndex];
@@ -100,21 +103,23 @@ const Page = () => {
                 subtitle="Hareketsiz Stoklar Çalışması"
                 items={BCrumbList}
             >
-                <Button
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    disabled={isClickedHesapla}
-                    onClick={() => setIsClickedHesapla(true)}
-                    sx={{ width: "200px", textTransform: "none" }}
-                >
-                    <Typography
-                        variant="body1"
-                        sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                <Grid container justifyContent="center" alignItems="center" sx={{ gap: 1 }}>
+                    <MaddiDogrulamaEkBelgeYukleButton
+                        belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                        fullWidth
+                        sx={{ height: 45, flex: 1 }}
+                    />
+                    <Button
+                        size="medium"
+                        variant="outlined"
+                        color="primary"
+                        disabled={isClickedHesapla}
+                        onClick={() => setIsClickedHesapla(true)}
+                        sx={{ height: 45, flex: 1, textTransform: "none", fontSize: '0.9rem' }}
                     >
                         Hesapla
-                    </Typography>
-                </Button>
+                    </Button>
+                </Grid>
             </Breadcrumb>
 
             {dipnotNo === "15-01" || dipnotNo === "15-02" || dipnotNo === "15-03" ? (

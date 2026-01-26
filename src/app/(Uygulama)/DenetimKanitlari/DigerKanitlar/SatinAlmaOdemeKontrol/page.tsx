@@ -151,10 +151,10 @@ const Page = () => {
               }}
             >
               <EkBelgeYukleButton
-        formKodu={controller}
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
+                formKodu={controller}
+                fullWidth={false}           // sağda küçük buton
+                text="Belge Yükle"
+              />
             </Grid>
             <Grid
               item
@@ -167,7 +167,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"

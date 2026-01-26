@@ -7,16 +7,19 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 
 import DonusumKayitlariKontrol from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/DonusumKayitlariKontrol";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
     const user = useSelector((state: AppState) => state.userReducer);
 
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Dönüşüm Kayıtları Kontrol";
     const segments = pathname.split("/");
     const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
     const parentName = segments[parentNameIndex];
@@ -124,7 +127,14 @@ const Page = () => {
                 title=""
                 subtitle="Dönüşüm Kayıtları Kontrol"
                 items={BCrumb}
-            ></Breadcrumb>
+            >
+                <MaddiDogrulamaEkBelgeYukleButton
+                    belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                    text="Belge Yükle"
+                    fullWidth={false}
+                    sx={{ width: 140, height: 45, lineHeight: 1.2, fontSize: '0.9rem', whiteSpace: 'normal', textAlign: 'center' }}
+                />
+            </Breadcrumb>
 
             {dipnotNo != "" ? (
                 <DonusumKayitlariKontrol

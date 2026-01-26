@@ -157,3 +157,71 @@ export async function deleteEkBelgelerSecilenler(
 
   return await res.json();
 }
+
+// MaddiDogrulama specific functions
+export async function uploadMaddiDogrulamaEkBelge(
+  token: string,
+  formData: FormData
+): Promise<boolean | { success: boolean; message?: string }> {
+  try {
+    const response = await apiFetch(
+      `/ArsivIslemleri/upload-ek-belge`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (response.ok) {
+      return true;
+    }
+
+    const data = await response.json().catch(() => null);
+
+    return {
+      success: false,
+      message: data?.message || "Ek belge yüklenemedi.",
+    };
+  } catch (error) {
+    console.error("uploadMaddiDogrulamaEkBelge hata:", error);
+    return {
+      success: false,
+      message: "Sunucuya bağlanırken bir hata oluştu.",
+    };
+  }
+}
+
+export async function getMaddiDogrulamaEkBelgeler(
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  belgeAdi: string
+): Promise<EkBelgeDto[]> {
+  const params = new URLSearchParams({
+    denetciId: String(denetciId),
+    denetlenenId: String(denetlenenId),
+    yil: String(yil),
+    belgeAdi: belgeAdi,
+  });
+
+  const response = await apiFetch(
+    `/ArsivIslemleri/ek-belge-listesi?${params.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    console.error("getMaddiDogrulamaEkBelgeler hata:", response.status);
+    return [];
+  }
+
+  const data = await response.json();
+  return data as EkBelgeDto[];
+}

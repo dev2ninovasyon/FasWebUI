@@ -9,14 +9,17 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import React, { useEffect, useState, useMemo } from "react";
 import Orneklem from "./Orneklem";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const documentTitle = searchParams.get('title') || "Örneklem Çalışması";
   const segments = pathname.split("/");
   const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
   const parentName = segments[parentNameIndex];
@@ -132,7 +135,14 @@ const Page = () => {
         title=""
         subtitle="Örneklem Çalışması"
         items={BCrumbList}
-      ></Breadcrumb>
+      >
+        <MaddiDogrulamaEkBelgeYukleButton
+          belgeAdi={`${dip || parentName}|||${documentTitle}`}
+          text="Belge Yükle"
+          fullWidth={false}
+          sx={{ width: 140, height: 45, lineHeight: 1.2, fontSize: '0.9rem', whiteSpace: 'normal', textAlign: 'center' }}
+        />
+      </Breadcrumb>
       <Grid container>
         <Grid item xs={12} sm={12} lg={12} mb={3}>
           <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />

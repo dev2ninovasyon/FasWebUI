@@ -10,7 +10,7 @@ import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useLoading } from "@/contexts/LoadingContext";
-import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = ({ params }: { params: { parentName: string } }) => {
     const { parentName } = params;
@@ -62,9 +62,9 @@ const Page = ({ params }: { params: { parentName: string } }) => {
             <Breadcrumb title={dip || parentName} items={BCrumbList}>
                 {viewMode === "card" ? (
                     <>
-                        <EkBelgeYukleButton
-                            formKodu={dip || parentName}
-                            text="Ek Belge Yükle"
+                        <MaddiDogrulamaEkBelgeYukleButton
+                            belgeAdi={dip || parentName}
+                            text="Belge Yükle"
                             fullWidth={false}
                             sx={{ width: 110, height: 50, lineHeight: 1.2, fontSize: '0.85rem', whiteSpace: 'normal', textAlign: 'center' }}
                         />

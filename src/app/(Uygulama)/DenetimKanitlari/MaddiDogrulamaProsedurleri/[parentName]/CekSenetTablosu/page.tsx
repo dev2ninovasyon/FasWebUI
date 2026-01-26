@@ -4,15 +4,18 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Box } from "@mui/material";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import CekSenetTablosu from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/CekSenetTablosu";
 import { getDipnotNoByDipnotAdi, getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Çek Senet Tablosu";
     const segments = pathname.split("/");
     const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
     const parentName = segments[parentNameIndex];
@@ -88,7 +91,14 @@ const Page = () => {
 
     return (
         <PageContainer title="Çek Senet Tablosu" description="Çek Senet Tablosu">
-            <Breadcrumb title="" subtitle="Çek Senet Tablosu" items={BCrumbList} />
+            <Breadcrumb title="" subtitle="Çek Senet Tablosu" items={BCrumbList}>
+                <MaddiDogrulamaEkBelgeYukleButton
+                    belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                    text="Belge Yükle"
+                    fullWidth={false}
+                    sx={{ width: 140, height: 45, lineHeight: 1.2, fontSize: '0.9rem', whiteSpace: 'normal', textAlign: 'center' }}
+                />
+            </Breadcrumb>
             <Box>
                 <CekSenetTablosu dipnotNo={dipnotNo} />
             </Box>

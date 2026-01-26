@@ -187,7 +187,7 @@ const Page = () => {
                 <EkBelgeYukleButton
                   formKodu={controller}
                   fullWidth={false}           // sağda küçük buton
-                  text="Ek Belge Yükle"
+                  text="Belge Yükle"
                 />
                 <Typography
                   variant="body1"

@@ -3,21 +3,22 @@ import React, { useEffect, useState, useMemo } from "react";
 import RiskTespiti from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/RiskTespiti";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
-import { useRouter } from "next/navigation";
 import { useLoading } from "@/contexts/LoadingContext";
-import { Button } from "@mui/material";
-import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+import { Button, Grid } from "@mui/material";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
     const user = useSelector((state: AppState) => state.userReducer);
     const router = useRouter();
     const { setLoading } = useLoading();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Risk Tespiti";
     const segments = pathname.split("/");
     const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
     const parentName = segments[parentNameIndex];
@@ -80,17 +81,17 @@ const Page = () => {
                 subtitle="Risk Tespiti"
                 items={BCrumbList}
             >
-                <>
-                    <EkBelgeYukleButton
-                        formKodu={dip || parentName}
-                        text="Ek Belge Yükle"
-                        fullWidth={false}
-                        sx={{ width: 110, height: 50, lineHeight: 1.2, fontSize: '0.85rem', whiteSpace: 'normal', textAlign: 'center' }}
+                <Grid container justifyContent="center" alignItems="center" sx={{ gap: 1 }}>
+                    <MaddiDogrulamaEkBelgeYukleButton
+                        belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                        text="Belge Yükle"
+                        fullWidth
+                        sx={{ height: 45, flex: 1 }}
                     />
                     <Button
                         variant="outlined"
                         color="primary"
-                        sx={{ textTransform: 'none', ml: 1, width: 110, height: 50, lineHeight: 1.2, fontSize: '0.85rem', whiteSpace: 'normal', textAlign: 'center' }}
+                        sx={{ textTransform: 'none', height: 45, flex: 1, fontSize: '0.9rem' }}
                         onClick={() => {
                             setLoading(true);
                             router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu?parentName=${dip || parentName}`);
@@ -98,7 +99,7 @@ const Page = () => {
                     >
                         Çalışma Kağıdı Oluştur
                     </Button>
-                </>
+                </Grid>
             </Breadcrumb>
             <RiskTespiti
                 controller="FinansalTablolarDenetimRiskiBelirleme"

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -11,10 +11,13 @@ import SupheliAlacakTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import { getMaddiDogrulama, getDipnotNoByDipnotAdi } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const SupheliAlacakTestleriPage = () => {
     const user = useSelector((state: AppState) => state.userReducer);
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Şüpheli Alacak Testleri";
     const [dipnotNo, setDipnotNo] = useState<string>("");
     const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState<boolean>(false);
     const tableRef = useRef<any>(null); // Tablo fonksiyonlarına erişim için ref
@@ -95,24 +98,23 @@ const SupheliAlacakTestleriPage = () => {
     return (
         <PageContainer title={`${dip} | Şüpheli Alacak Testleri`} description="Şüpheli Alacak Testleri">
             <Breadcrumb title="" subtitle="Şüpheli Alacak Testleri" items={BCrumbList}>
-                <Grid container justifyContent="flex-end" alignItems="center" sx={{ mt: 1 }}>
-                    <Grid item>
-                        <Button
-                            size="medium"
-                            variant="outlined"
-                            color="primary"
-                            disabled={isClickedVarsayilanaDon}
-                            onClick={() => setIsClickedVarsayilanaDon(true)}
-                            sx={{ width: "100%" }}
-                        >
-                            <Typography
-                                variant="body1"
-                                sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                            >
-                                Varsayılana Dön
-                            </Typography>
-                        </Button>
-                    </Grid>
+                <Grid container justifyContent="center" alignItems="center" sx={{ mt: 1, gap: 1 }}>
+                    <MaddiDogrulamaEkBelgeYukleButton
+                        belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                        text="Belge Yükle"
+                        fullWidth
+                        sx={{ height: 45, flex: 1 }}
+                    />
+                    <Button
+                        size="medium"
+                        variant="outlined"
+                        color="primary"
+                        disabled={isClickedVarsayilanaDon}
+                        onClick={() => setIsClickedVarsayilanaDon(true)}
+                        sx={{ height: 45, flex: 1, textTransform: "none", fontSize: '0.9rem' }}
+                    >
+                        Varsayılana Dön
+                    </Button>
                 </Grid>
             </Breadcrumb>
 

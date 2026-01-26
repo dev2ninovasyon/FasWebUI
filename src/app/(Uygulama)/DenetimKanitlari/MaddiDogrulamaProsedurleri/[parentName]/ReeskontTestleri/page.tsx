@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { Box } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
@@ -11,10 +11,13 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import ReeskontTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/ReeskontTestleri";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import { getDipnotNoByDipnotAdi } from "@/api/MaddiDogrulama/MaddiDogrulama";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const ReeskontTestleriPage = () => {
     const user = useSelector((state: AppState) => state.userReducer);
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Reeskont Testleri";
     const [dipnotNo, setDipnotNo] = useState<string>("");
 
     // URL segmentlerinden hiyerarşiyi çözüyoruz
@@ -104,7 +107,14 @@ const ReeskontTestleriPage = () => {
                 title=""
                 subtitle="Reeskont Testleri"
                 items={BCrumbList}
-            />
+            >
+                <MaddiDogrulamaEkBelgeYukleButton
+                    belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                    text="Belge Yükle"
+                    fullWidth={false}
+                    sx={{ width: 140, height: 45, lineHeight: 1.2, fontSize: '0.9rem', whiteSpace: 'normal', textAlign: 'center' }}
+                />
+            </Breadcrumb>
 
             <Box sx={{ mb: 3 }}>
                 <ReeskontTestleri

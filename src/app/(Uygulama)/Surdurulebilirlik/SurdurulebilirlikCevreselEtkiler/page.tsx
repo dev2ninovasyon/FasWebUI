@@ -141,7 +141,7 @@ const Page = () => {
                     </MenuItem>
                   )}
                   <MenuItem onClick={handleMenuClose}>
-                    Ek Belge Yükle
+                    Belge Yükle
                   </MenuItem>
                   <MenuItem
                     onClick={() => { setIsClickedVarsayilanaDon(true); handleMenuClose(); }}
@@ -230,7 +230,7 @@ const Page = () => {
                 <EkBelgeYukleButton
                   formKodu={controller}
                   fullWidth={false}
-                  text="Ek Belge Yükle"
+                  text="Belge Yükle"
                 />
               </Grid>
               <Grid

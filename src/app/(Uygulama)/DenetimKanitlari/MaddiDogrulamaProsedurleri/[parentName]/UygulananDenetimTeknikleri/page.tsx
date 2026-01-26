@@ -9,14 +9,17 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Button, Grid, Typography } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const documentTitle = searchParams.get('title') || "Uygulanan Denetim Teknikleri";
   const segments = pathname.split("/");
   const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
   const parentName = segments[parentNameIndex];
@@ -178,22 +181,24 @@ const Page = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                gap: 1
               }}
             >
+              <MaddiDogrulamaEkBelgeYukleButton
+                belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                text="Belge Yükle"
+                fullWidth
+                sx={{ height: 45, flex: 1 }}
+              />
               <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
                 disabled={isClickedVarsayilanaDon}
                 onClick={() => setIsClickedVarsayilanaDon(true)}
-                sx={{ width: "100%" }}
+                sx={{ height: 45, flex: 1, textTransform: 'none', fontSize: '0.9rem' }}
               >
-                <Typography
-                  variant="body1"
-                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                >
-                  Varsayılana Dön
-                </Typography>
+                Varsayılana Dön
               </Button>
             </Grid>
           </Grid>

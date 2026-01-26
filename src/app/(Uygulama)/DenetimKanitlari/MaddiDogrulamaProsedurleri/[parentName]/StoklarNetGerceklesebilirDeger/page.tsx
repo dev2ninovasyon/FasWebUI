@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -11,9 +11,12 @@ import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKag
 import { Box, Button } from "@mui/material";
 import { IconRefresh } from "@tabler/icons-react";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Stoklar Net Gerçekleşebilir Değer";
     const segments = pathname.split("/");
     const parentNameIndex = segments.indexOf("MaddiDogrulamaProsedurleri") + 1;
     const parentName = segments[parentNameIndex];
@@ -72,7 +75,12 @@ const Page = () => {
     return (
         <PageContainer title="Stoklar Net Gerçekleşebilir Değer" description="Stoklar Net Gerçekleşebilir Değer">
             <Breadcrumb title="" subtitle="Stoklar Net Gerçekleşebilir Değer" items={BCrumbList}>
-
+                <MaddiDogrulamaEkBelgeYukleButton
+                    belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                    text="Belge Yükle"
+                    fullWidth={false}
+                    sx={{ width: 140, height: 45, lineHeight: 1.2, fontSize: '0.9rem', whiteSpace: 'normal', textAlign: 'center' }}
+                />
             </Breadcrumb>
 
             <StoklarNetGerceklesebilirDeger

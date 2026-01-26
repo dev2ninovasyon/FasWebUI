@@ -148,11 +148,11 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-        <EkBelgeYukleButton
-        formKodu={controller}
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
+              <EkBelgeYukleButton
+                formKodu={controller}
+                fullWidth={false}           // sağda küçük buton
+                text="Belge Yükle"
+              />
             </Grid>
             <Grid
               item
