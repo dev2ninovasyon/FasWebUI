@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useCallback } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -11,6 +13,7 @@ import PersonelBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical
 import {
   getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu,
   updateFormHazirlayanOnaylayan,
+  getCalismaKagidiVerileriByDenetciDenetlenenYil,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { enqueueSnackbar } from "notistack";
 import { setFormHazirlayanOnaylayan } from "@/store/user/UserSlice";
@@ -43,190 +46,174 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
-
   const dispatch = useDispatch();
 
   const [id, setId] = React.useState<number | undefined>(undefined);
 
-  const [selectedId, setSelectedId] = React.useState<number | undefined>(
-    undefined
-  );
-  const [selectedAdi, setSelectedAdi] = React.useState<string | undefined>(
-    undefined
-  );
-  const [selectedDate, setSelectedDate] = React.useState<string | undefined>(
-    undefined
-  );
+  const [selectedId, setSelectedId] = React.useState<number | undefined>(undefined);
+  const [selectedAdi, setSelectedAdi] = React.useState<string | undefined>(undefined);
+  const [selectedDate, setSelectedDate] = React.useState<string | undefined>(undefined);
 
-  const [hazirlayanId, setHazirlayanId] = React.useState<number | undefined>(
-    undefined
-  );
-  const [onaylayanId, setOnaylayanId] = React.useState<number | undefined>(
-    undefined
-  );
-  const [kontrolEdenId, setKontrolEdenId] = React.useState<number | undefined>(
-    undefined
-  );
+  const [hazirlayanId, setHazirlayanId] = React.useState<number | undefined>(undefined);
+  const [onaylayanId, setOnaylayanId] = React.useState<number | undefined>(undefined);
+  const [kontrolEdenId, setKontrolEdenId] = React.useState<number | undefined>(undefined);
 
-  const [hazirlayanTarih, setHazirlayanTarih] = React.useState<
-    string | undefined
-  >(undefined);
-  const [onaylayanTarih, setOnaylayanTarih] = React.useState<
-    string | undefined
-  >(undefined);
-  const [kontrolEdenTarih, setKontrolEdenTarih] = React.useState<
-    string | undefined
-  >(undefined);
+  const [hazirlayanTarih, setHazirlayanTarih] = React.useState<string | undefined>(undefined);
+  const [onaylayanTarih, setOnaylayanTarih] = React.useState<string | undefined>(undefined);
+  const [kontrolEdenTarih, setKontrolEdenTarih] = React.useState<string | undefined>(undefined);
 
   const [isClickedUpdate, setIsClickedUpdate] = React.useState<boolean>(false);
 
+  function normalizeString(str: string): string {
+    const turkishChars: { [key: string]: string } = {
+      ç: "c",
+      ğ: "g",
+      ı: "i",
+      ö: "o",
+      ş: "s",
+      ü: "u",
+      Ç: "C",
+      Ğ: "G",
+      İ: "I",
+      Ö: "O",
+      Ş: "S",
+      Ü: "U",
+    };
+    let normalized = (str || "").replace(/[çğıöşüÇĞÖŞÜıİ]/g, (match) => turkishChars[match] || match);
+    normalized = normalized.replace(/\s+/g, "");
+    return normalized.toLowerCase();
+  }
+
+  const showWarn = (msg: string) =>
+    enqueueSnackbar(msg, {
+      variant: "warning",
+      autoHideDuration: 5000,
+      style: {
+        backgroundColor:
+          customizer.activeMode === "dark"
+            ? theme.palette.warning.dark
+            : theme.palette.warning.main,
+      },
+    });
+
+  const showSuccess = (msg: string) =>
+    enqueueSnackbar(msg, {
+      variant: "success",
+      autoHideDuration: 5000,
+      style: {
+        backgroundColor:
+          customizer.activeMode === "dark"
+            ? theme.palette.success.light
+            : theme.palette.success.main,
+        maxWidth: "720px",
+      },
+    });
+
   const handleOnayla = async () => {
     if (!selectedDate) {
-      enqueueSnackbar("Tarih Seçmelisiniz", {
-        variant: "warning",
-        autoHideDuration: 5000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.warning.dark
-              : theme.palette.warning.main,
-        },
-      });
+      showWarn("Tarih Seçmelisiniz");
       return;
     }
-    let updatedFormHazirlayanOnaylayanVerisi: Veri = {
-      hazirlayanId: hazirlayanId,
-      onaylayanId: onaylayanId,
-      kontrolEdenId: kontrolEdenId,
+
+    let updated: Veri = {
+      hazirlayanId,
+      onaylayanId,
+      kontrolEdenId,
       hazirlanmaTarihi: hazirlayanTarih,
       onaylanmaTarihi: onaylayanTarih,
       kontrolTarihi: kontrolEdenTarih,
     };
 
     if (hazirlayan) {
-      updatedFormHazirlayanOnaylayanVerisi.hazirlayanId = selectedId;
-      updatedFormHazirlayanOnaylayanVerisi.hazirlanmaTarihi = selectedDate;
+      updated.hazirlayanId = selectedId;
+      updated.hazirlanmaTarihi = selectedDate;
     }
     if (onaylayan) {
-      updatedFormHazirlayanOnaylayanVerisi.onaylayanId = selectedId;
-      updatedFormHazirlayanOnaylayanVerisi.onaylanmaTarihi = selectedDate;
+      updated.onaylayanId = selectedId;
+      updated.onaylanmaTarihi = selectedDate;
     }
     if (kaliteKontrol) {
-      updatedFormHazirlayanOnaylayanVerisi.kontrolEdenId = selectedId;
-      updatedFormHazirlayanOnaylayanVerisi.kontrolTarihi = selectedDate;
+      updated.kontrolEdenId = selectedId;
+      updated.kontrolTarihi = selectedDate;
     }
 
     setIsClickedUpdate(true);
+
     try {
       const result = await updateFormHazirlayanOnaylayan(
         user.token || "",
         id,
-        updatedFormHazirlayanOnaylayanVerisi,
+        updated,
         false
       );
-      if (result == true) {
+
+      if (result === true) {
         setIsClickedUpdate(false);
-        enqueueSnackbar("Onaylandı", {
-          variant: "success",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.success.light
-                : theme.palette.success.main,
-            maxWidth: "720px",
-          },
-        });
-        if (hazirlayan && fetch) {
-          fetch();
-        }
+        showSuccess("Onaylandı");
+        if (hazirlayan && fetch) fetch();
       } else {
         setIsClickedUpdate(false);
-        enqueueSnackbar(result && result.message, {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
+        showWarn((result as any)?.message || "İşlem başarısız");
       }
     } catch (error) {
+      setIsClickedUpdate(false);
       console.error("Bir hata oluştu:", error);
     }
   };
 
   const handleOnayiKaldir = async () => {
-    let updatedFormHazirlayanOnaylayanVerisi: Veri = {
-      hazirlayanId: hazirlayanId,
-      onaylayanId: onaylayanId,
-      kontrolEdenId: kontrolEdenId,
+    let updated: Veri = {
+      hazirlayanId,
+      onaylayanId,
+      kontrolEdenId,
       hazirlanmaTarihi: hazirlayanTarih,
       onaylanmaTarihi: onaylayanTarih,
       kontrolTarihi: kontrolEdenTarih,
     };
 
     if (hazirlayan) {
-      updatedFormHazirlayanOnaylayanVerisi.hazirlayanId = undefined;
-      updatedFormHazirlayanOnaylayanVerisi.hazirlanmaTarihi = undefined;
+      updated.hazirlayanId = undefined;
+      updated.hazirlanmaTarihi = undefined;
     }
     if (onaylayan) {
-      updatedFormHazirlayanOnaylayanVerisi.onaylayanId = undefined;
-      updatedFormHazirlayanOnaylayanVerisi.onaylanmaTarihi = undefined;
+      updated.onaylayanId = undefined;
+      updated.onaylanmaTarihi = undefined;
     }
     if (kaliteKontrol) {
-      updatedFormHazirlayanOnaylayanVerisi.kontrolEdenId = undefined;
-      updatedFormHazirlayanOnaylayanVerisi.kontrolTarihi = undefined;
+      updated.kontrolEdenId = undefined;
+      updated.kontrolTarihi = undefined;
     }
 
     setIsClickedUpdate(true);
+
     try {
       const result = await updateFormHazirlayanOnaylayan(
         user.token || "",
         id,
-        updatedFormHazirlayanOnaylayanVerisi,
+        updated,
         true
       );
-      if (result == true) {
+
+      if (result === true) {
         setIsClickedUpdate(false);
         dispatch(setFormHazirlayanOnaylayan(true));
-        enqueueSnackbar("Onay Kaldırıldı", {
-          variant: "success",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.success.light
-                : theme.palette.success.main,
-            maxWidth: "720px",
-          },
-        });
+        showSuccess("Onay Kaldırıldı");
       } else {
         setIsClickedUpdate(false);
         dispatch(setFormHazirlayanOnaylayan(true));
-        enqueueSnackbar(result && result.message, {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
+        showWarn((result as any)?.message || "İşlem başarısız");
       }
     } catch (error) {
+      setIsClickedUpdate(false);
       console.error("Bir hata oluştu:", error);
     }
   };
 
   const fetchData = useCallback(async () => {
     try {
-      const formHazirlayanOnaylayanVerileri =
+      if (!user.token) return;
+
+      const formVeri =
         await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
           user.token || "",
           user.denetciId || 0,
@@ -235,20 +222,20 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
           controller
         );
 
-      setId(formHazirlayanOnaylayanVerileri.id);
+      setId(formVeri?.id);
 
-      if (formHazirlayanOnaylayanVerileri.hazirlayanId) {
-        setHazirlayanId(formHazirlayanOnaylayanVerileri.hazirlayanId);
-        setHazirlayanTarih(
-          formHazirlayanOnaylayanVerileri?.hazirlanmaTarihi?.split("T")[0] ||
-          undefined
-        );
+      // -------------------------
+      // HAZIRLAYAN
+      // -------------------------
+      if (formVeri?.hazirlayanId) {
+        setHazirlayanId(formVeri.hazirlayanId);
+        setHazirlayanTarih(formVeri?.hazirlanmaTarihi?.split("T")[0] || undefined);
       } else {
         if (hazirlayan) {
+          // rol -> seçili personel
           if (
             user.rol &&
-            (user.rol.at(-1) == "Denetci" ||
-              user.rol.at(-1) == "DenetciYardimcisi")
+            (user.rol.at(-1) == "Denetci" || user.rol.at(-1) == "DenetciYardimcisi")
           ) {
             setSelectedId(user.id);
           } else {
@@ -256,14 +243,40 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
             setHazirlayanId(undefined);
             setHazirlayanTarih(undefined);
           }
+
+          // ✅ OTOMATİK TARİH: MaddiDogrulukGorevAtamalari bitiş tarihi
+          try {
+            const gorevAtamalari =
+              await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+                "MaddiDogrulukGorevAtamalari",
+                user.token || "",
+                user.denetciId || 0,
+                user.denetlenenId || 0,
+                user.yil || 0
+              );
+
+            const matchingGorev = gorevAtamalari?.find(
+              (g: any) =>
+                normalizeString(g?.maddiDogruluk ?? "") === normalizeString(controller)
+            );
+
+            const bitisTarihi = matchingGorev?.bitisTarihi?.split("T")[0];
+            if (bitisTarihi) {
+              setHazirlayanTarih(bitisTarihi);
+              setSelectedDate(bitisTarihi);
+            }
+          } catch (e) {
+            console.log("Bitiş tarihi getirilemedi", e);
+          }
         }
       }
-      if (formHazirlayanOnaylayanVerileri.onaylayanId) {
-        setOnaylayanId(formHazirlayanOnaylayanVerileri.onaylayanId);
-        setOnaylayanTarih(
-          formHazirlayanOnaylayanVerileri?.onaylanmaTarihi?.split("T")[0] ||
-          undefined
-        );
+
+      // -------------------------
+      // ONAYLAYAN
+      // -------------------------
+      if (formVeri?.onaylayanId) {
+        setOnaylayanId(formVeri.onaylayanId);
+        setOnaylayanTarih(formVeri?.onaylanmaTarihi?.split("T")[0] || undefined);
       } else {
         if (onaylayan) {
           if (user.rol && user.rol.at(-1) == "SorumluDenetci") {
@@ -275,12 +288,13 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
           }
         }
       }
-      if (formHazirlayanOnaylayanVerileri.kontrolEdenId) {
-        setKontrolEdenId(formHazirlayanOnaylayanVerileri.kontrolEdenId);
-        setKontrolEdenTarih(
-          formHazirlayanOnaylayanVerileri?.kontrolTarihi?.split("T")[0] ||
-          undefined
-        );
+
+      // -------------------------
+      // KALİTE KONTROL
+      // -------------------------
+      if (formVeri?.kontrolEdenId) {
+        setKontrolEdenId(formVeri.kontrolEdenId);
+        setKontrolEdenTarih(formVeri?.kontrolTarihi?.split("T")[0] || undefined);
       } else {
         if (kaliteKontrol) {
           if (user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci") {
@@ -295,7 +309,18 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
-  }, [user.token, user.denetciId, user.denetlenenId, user.yil, controller, hazirlayan, onaylayan, kaliteKontrol, user.rol, user.id]);
+  }, [
+    user.token,
+    user.denetciId,
+    user.denetlenenId,
+    user.yil,
+    controller,
+    hazirlayan,
+    onaylayan,
+    kaliteKontrol,
+    user.rol,
+    user.id,
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -334,33 +359,27 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
           }}
         >
           {hazirlayan && (
-            <CardHeader
-              title={<Typography variant="h5">Hazırlayan:</Typography>}
-            ></CardHeader>
+            <CardHeader title={<Typography variant="h5">Hazırlayan:</Typography>} />
           )}
           {onaylayan && (
-            <CardHeader
-              title={<Typography variant="h5">Onaylayan:</Typography>}
-            ></CardHeader>
+            <CardHeader title={<Typography variant="h5">Onaylayan:</Typography>} />
           )}
           {kaliteKontrol && (
-            <CardHeader
-              title={<Typography variant="h5">Kalite Kontrol:</Typography>}
-            ></CardHeader>
+            <CardHeader title={<Typography variant="h5">Kalite Kontrol:</Typography>} />
           )}
 
           <CardContent sx={{ bgcolor: "primary.light" }}>
             <CustomFormLabel htmlFor="name" sx={{ mt: 0 }}>
               Personel
             </CustomFormLabel>
+
             <PersonelBoxAutocomplete
               initialValue={
                 hazirlayan
                   ? hazirlayanId
                     ? hazirlayanId
                     : user.rol &&
-                      (user.rol.at(-1) == "Denetci" ||
-                        user.rol.at(-1) == "DenetciYardimcisi")
+                      (user.rol.at(-1) == "Denetci" || user.rol.at(-1) == "DenetciYardimcisi")
                       ? user.kullaniciAdi
                       : undefined
                   : onaylayan
@@ -372,21 +391,12 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                     : kaliteKontrol
                       ? kontrolEdenId
                         ? kontrolEdenId
-                        : user.rol &&
-                          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                        : user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                           ? user.kullaniciAdi
                           : undefined
                       : undefined
               }
-              tip={
-                hazirlayan
-                  ? "Hazırlayan"
-                  : onaylayan
-                    ? "Onaylayan"
-                    : kaliteKontrol
-                      ? "Kalite Kontrol"
-                      : ""
-              }
+              tip={hazirlayan ? "Hazırlayan" : onaylayan ? "Onaylayan" : kaliteKontrol ? "Kalite Kontrol" : ""}
               disabled={
                 (hazirlayan
                   ? hazirlayanId
@@ -394,8 +404,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                       ? false
                       : true
                     : user.rol &&
-                      (user.rol.at(-1) == "Denetci" ||
-                        user.rol.at(-1) == "DenetciYardimcisi")
+                      (user.rol.at(-1) == "Denetci" || user.rol.at(-1) == "DenetciYardimcisi")
                       ? false
                       : true
                   : onaylayan
@@ -411,8 +420,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                         ? kontrolEdenId == user.id
                           ? false
                           : true
-                        : user.rol &&
-                          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                        : user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                           ? false
                           : true
                       : true) ||
@@ -420,8 +428,8 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                 (onaylayan && onaylayanId ? true : false) ||
                 (kaliteKontrol && kontrolEdenId ? true : false)
               }
-              onSelectId={(selectedId) => setSelectedId(selectedId)}
-              onSelectAdi={(selectedAdi) => setSelectedAdi(selectedAdi)}
+              onSelectId={(x) => setSelectedId(x)}
+              onSelectAdi={(x) => setSelectedAdi(x)}
             />
 
             <CustomFormLabel htmlFor="date">Tarih</CustomFormLabel>
@@ -441,13 +449,10 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
               onChange={(e: any) => {
                 const newValue = e.target.value;
 
-                if (hazirlayan) {
-                  setHazirlayanTarih(newValue);
-                } else if (onaylayan) {
-                  setOnaylayanTarih(newValue);
-                } else if (kaliteKontrol) {
-                  setKontrolEdenTarih(newValue);
-                }
+                if (hazirlayan) setHazirlayanTarih(newValue);
+                else if (onaylayan) setOnaylayanTarih(newValue);
+                else if (kaliteKontrol) setKontrolEdenTarih(newValue);
+
                 setSelectedDate(newValue);
               }}
               disabled={
@@ -457,8 +462,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                       ? false
                       : true
                     : user.rol &&
-                      (user.rol.at(-1) == "Denetci" ||
-                        user.rol.at(-1) == "DenetciYardimcisi")
+                      (user.rol.at(-1) == "Denetci" || user.rol.at(-1) == "DenetciYardimcisi")
                       ? false
                       : true
                   : onaylayan
@@ -474,8 +478,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                         ? kontrolEdenId == user.id
                           ? false
                           : true
-                        : user.rol &&
-                          user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                        : user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                           ? false
                           : true
                       : true) ||
@@ -484,9 +487,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                 (kaliteKontrol && kontrolEdenId ? true : false)
               }
               fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
+              InputLabelProps={{ shrink: true }}
             />
 
             {(hazirlayan && hazirlayanId ? true : false) ||
@@ -503,8 +504,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                         ? false
                         : true
                       : user.rol &&
-                        (user.rol.at(-1) == "Denetci" ||
-                          user.rol.at(-1) == "DenetciYardimcisi")
+                        (user.rol.at(-1) == "Denetci" || user.rol.at(-1) == "DenetciYardimcisi")
                         ? false
                         : true
                     : onaylayan
@@ -520,15 +520,12 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                           ? kontrolEdenId == user.id
                             ? false
                             : true
-                          : user.rol &&
-                            user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                          : user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                             ? false
                             : true
                         : true
                 }
-                onClick={() => {
-                  handleOnayiKaldir();
-                }}
+                onClick={handleOnayiKaldir}
                 sx={{ width: "100%", mt: 5 }}
               >
                 Onayı Kaldır
@@ -545,8 +542,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                         ? false
                         : true
                       : user.rol &&
-                        (user.rol.at(-1) == "Denetci" ||
-                          user.rol.at(-1) == "DenetciYardimcisi")
+                        (user.rol.at(-1) == "Denetci" || user.rol.at(-1) == "DenetciYardimcisi")
                         ? false
                         : true
                     : onaylayan
@@ -562,15 +558,12 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                           ? kontrolEdenId == user.id
                             ? false
                             : true
-                          : user.rol &&
-                            user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
+                          : user.rol && user.rol.at(-1) == "KaliteKontrolSorumluDenetci"
                             ? false
                             : true
                         : true
                 }
-                onClick={() => {
-                  handleOnayla();
-                }}
+                onClick={handleOnayla}
                 sx={{ width: "100%", mt: 5 }}
               >
                 Onayla
