@@ -87,18 +87,7 @@ const CalismaKagidiRaporu = () => {
         let type: DetailData["type"] = "Other";
 
         const itemName = item.name;
-
-        const toRows = (x: any) =>
-            Array.isArray(x) ? x
-                : Array.isArray(x?.data) ? x.data
-                    : Array.isArray(x?.result) ? x.result
-                        : Array.isArray(x?.items) ? x.items
-                            : Array.isArray(x?.value) ? x.value
-                                : Array.isArray(x?.data?.data) ? x.data.data
-                                    : Array.isArray(x?.data?.result) ? x.data.result
-                                        : Array.isArray(x?.success && x?.data) ? x.data
-                                            : [];
-
+        const toRows = (x: any) => (Array.isArray(x) ? x : Array.isArray(x?.data) ? x.data : Array.isArray(x?.result) ? x.result : []);
         const normalizedItemName = normalizeString(itemName);
 
         try {
@@ -141,15 +130,14 @@ const CalismaKagidiRaporu = () => {
                     user.denetlenenId || 0,
                     user.yil || 0
                 );
-                data = toRows(allRiskData).filter(
-                    (r: any) => normalizeString(r.finansalTabloHesaplar) === normalizeString(pName)
-                );
+                data = allRiskData.filter((r: any) => normalizeString(r.finansalTabloHesaplar) === normalizeString(pName));
+
             } else if (
                 normalizedItemName.includes("uygulanandenetimprosedurleri") ||
                 normalizedItemName.includes("hesaplarailiskin")
             ) {
                 type = "Prosedur";
-                data = await getUygulananDenetimProsedurleri(
+                const allProcs = await getUygulananDenetimProsedurleri(
                     user.token || "",
                     user.denetciId || 0,
                     user.denetlenenId || 0,
@@ -157,6 +145,8 @@ const CalismaKagidiRaporu = () => {
                     pName,
                     user.tfrsmi || false
                 );
+                data = allProcs;
+
             } else if (normalizedItemName.includes("uygulanandenetimteknikleri")) {
                 type = "Teknik";
                 if (dipnotNo) {
@@ -171,7 +161,6 @@ const CalismaKagidiRaporu = () => {
                 }
             } else if (normalizedItemName.includes("yabanciparatestleri")) {
                 type = "YabanciPara";
-                const param = dipnotNo || pName;
                 if (dipnotNo) {
                     data = await getYabanciParaTestleriByDenetlenen(
                         "YabanciParaTestleri",
@@ -180,7 +169,7 @@ const CalismaKagidiRaporu = () => {
                         user.yil || 0,
                         user.denetlenenId || 0,
                         dipnotNo,
-                        param
+                        pName
                     );
                 }
             } else if (normalizedItemName.includes("amortismankontrolleri")) {
@@ -192,22 +181,32 @@ const CalismaKagidiRaporu = () => {
                         user.yil || 0,
                         dipnotNo
                     );
-                    if (res && res.success) data = res.data;
+                    if (res && res.success) {
+                        data = res.data;
+                    }
                 }
             } else if (normalizedItemName.includes("envanterkontrolleri")) {
                 type = "Envanter";
                 if (dipnotNo) {
-                    data = await getEnvanterKontrolleri(user.denetlenenId || 0, user.yil || 0, dipnotNo);
+                    data = await getEnvanterKontrolleri(
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        dipnotNo
+                    );
                 }
             } else if (normalizedItemName.includes("maliyetkontrolleri")) {
                 type = "Maliyet";
                 if (dipnotNo) {
-                    data = await getMaliyetKontrolleri(user.denetlenenId || 0, user.yil || 0, dipnotNo);
+                    data = await getMaliyetKontrolleri(
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        dipnotNo
+                    );
                 }
             } else if (normalizedItemName.includes("donusumkayitlarikontrol")) {
                 type = "Donusum";
                 if (dipnotNo) {
-                    data = await getDonusumKayitlari(
+                    const res = await getDonusumKayitlari(
                         "DonusumKayitlariKontrol",
                         user.token || "",
                         user.denetciId || 0,
@@ -215,13 +214,22 @@ const CalismaKagidiRaporu = () => {
                         user.yil || 0,
                         dipnotNo
                     );
+                    if (res) {
+                        data = res;
+                    }
                 }
-            } else if (normalizedItemName.includes("sonrakidonemtestleri")) {
+            }
+            else if (normalizedItemName.includes("sonrakidonemtestleri")) {
                 type = "SonrakiDonemTestleri";
                 if (dipnotNo) {
-                    data = await getSonrakiDonemTestleri(user.denetlenenId || 0, user.yil || 0, dipnotNo);
+                    data = await getSonrakiDonemTestleri(
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        dipnotNo
+                    );
                 }
-            } else if (normalizedItemName.includes("sozlesmetestleri")) {
+            }
+            else if (normalizedItemName.includes("sozlesmetestleri")) {
                 type = "SozlesmeTestleri";
                 if (dipnotNo) {
                     data = await getSozlesmeTestleri(
@@ -232,17 +240,26 @@ const CalismaKagidiRaporu = () => {
                         dipnotNo
                     );
                 }
-            } else if (normalizedItemName.includes("stokdonemselliktesti")) {
+            }
+            else if (normalizedItemName.includes("stokdonemselliktesti")) {
                 type = "StokDonemsellikTesti";
                 if (dipnotNo) {
-                    data = await getStokDonemsellikTesti(user.token || "", user.denetlenenId || 0);
+                    data = await getStokDonemsellikTesti(
+                        user.token || "",
+                        user.denetlenenId || 0,
+                    );
                 }
-            } else if (normalizedItemName.includes("stoklarnetgerceklesebilirdegerleri")) {
+            }
+            else if (normalizedItemName.includes("stoklarnetgerceklesebilirdegerleri")) {
                 type = "StoklarNetGerceklesebilirDegerleri";
                 if (dipnotNo) {
-                    data = await getStoklarNetGerceklesebilirDeger(user.denetlenenId || 0, user.yil || 0);
+                    data = await getStoklarNetGerceklesebilirDeger(
+                        user.denetlenenId || 0,
+                        user.yil || 0
+                    );
                 }
-            } else if (normalizedItemName.includes("hareketsizstoklar")) {
+            }
+            else if (normalizedItemName.includes("hareketsizstoklar")) {
                 type = "HareketsizStoklar";
                 if (dipnotNo) {
                     data = await getHareketsizStoklarByDenetlenen(
@@ -250,12 +267,12 @@ const CalismaKagidiRaporu = () => {
                         user.token || "",
                         user.denetciId || 0,
                         user.denetlenenId || 0,
-                        user.yil || 0
+                        user.yil || 0,
                     );
                 }
-            } else if (normalizedItemName.includes("reeskonttestleri")) {
+            }
+            else if (normalizedItemName.includes("reeskonttestleri")) {
                 type = "ReeskontTestleri";
-                const param = dipnotNo || pName;
                 if (dipnotNo) {
                     data = await getReeskontTestleri(
                         "ReeskontTestleri",
@@ -264,14 +281,14 @@ const CalismaKagidiRaporu = () => {
                         user.yil || 0,
                         user.denetlenenId || 0,
                         dipnotNo,
-                        param
+                        pName
                     );
                 }
             }
+
         } catch (err) {
             console.warn(`Failed to fetch details for ${item.name}`, err);
         }
-
         const normalizedData =
             type === "Amortisman" || type === "Donusum"
                 ? data
@@ -280,11 +297,10 @@ const CalismaKagidiRaporu = () => {
         return {
             documentId: item.id,
             documentName: item.name,
-            data: normalizedData, // ✅ kesinlikle normalizedData döndür
+            data,
             type,
         };
     };
-
 
     const fetchData = async () => {
         try {
@@ -449,7 +465,7 @@ const CalismaKagidiRaporu = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {detail.data.map((row: any, i: number) => (
+                            {rows.map((row: any, i: number) => (
                                 <TableRow key={row.id || i}>
                                     <TableCell>{row.kebirKodu}</TableCell>
                                     <TableCell>{stripHtml(row.hesapAdi)}</TableCell>
