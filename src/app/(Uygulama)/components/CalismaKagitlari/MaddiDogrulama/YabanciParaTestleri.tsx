@@ -32,6 +32,7 @@ interface CalismaKagidiProps {
     dipnotNo: string;
     modelAdi: string;
     setDip: (str: string) => void;
+    isReport?: boolean;
 }
 
 const fmt = (n: any) =>
@@ -45,6 +46,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
     dipnotNo,
     modelAdi,
     setDip,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -181,7 +183,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
     }
 
     return (
-        <Box sx={{ mt: 2, mb: 4, width: "100%" }}>
+        <Box sx={{ mt: isReport ? 0 : 2, mb: 4, width: "100%" }}>
             <TableContainer
                 component={Paper}
                 elevation={0}
@@ -193,12 +195,12 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
             >
                 <Table size="small" sx={{ minWidth: 650 }}>
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: HEADER_BG }}>
+                        <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
                                     textAlign: "center",
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -298,7 +300,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                         key={row.id}
                                         sx={{
                                             backgroundColor: idx % 2 === 1 ? ZEBRA_ROW : BG_PAPER,
-                                            "&:hover": { backgroundColor: "#ebf5fb" },
+                                            "&:hover": { backgroundColor: theme.palette.action.hover },
                                         }}
                                     >
                                         <TableCell
@@ -312,24 +314,28 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                         </TableCell>
 
                                         <TableCell align="center">
-                                            <TextField
-                                                size="small"
-                                                value={displayValue}
-                                                onChange={(e) => handleInputChange(row.id, e.target.value)}
-                                                onBlur={() => handleSaveRow(row)}
-                                                onKeyDown={(e) => e.key === "Enter" && handleSaveRow(row)}
-                                                variant="outlined"
-                                                sx={{
-                                                    "& .MuiInputBase-input": {
-                                                        textAlign: "right",
-                                                        padding: "4px 8px",
-                                                        fontSize: "0.875rem",
-                                                        fontWeight: 500,
-                                                    },
-                                                    backgroundColor: "#fff",
-                                                    width: "130px",
-                                                }}
-                                            />
+                                            {isReport ? (
+                                                <span>{displayValue}</span>
+                                            ) : (
+                                                <TextField
+                                                    size="small"
+                                                    value={displayValue}
+                                                    onChange={(e) => handleInputChange(row.id, e.target.value)}
+                                                    onBlur={() => handleSaveRow(row)}
+                                                    onKeyDown={(e) => e.key === "Enter" && handleSaveRow(row)}
+                                                    variant="outlined"
+                                                    sx={{
+                                                        "& .MuiInputBase-input": {
+                                                            textAlign: "right",
+                                                            padding: "4px 8px",
+                                                            fontSize: "0.875rem",
+                                                            fontWeight: 500,
+                                                        },
+                                                        backgroundColor: "#fff",
+                                                        width: "130px",
+                                                    }}
+                                                />
+                                            )}
                                         </TableCell>
 
                                         <TableCell

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import {
   getMaddiDogrulama,
@@ -17,24 +17,28 @@ import { AppState } from "@/store/store";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import YabanciParaTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/YabanciParaTestleri";
 import {
+  Box,
+  Typography,
+  Grid,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Box,
-  Typography,
 } from "@mui/material";
 import { IconRefresh } from "@tabler/icons-react";
 import { varsayilanaDon } from "@/api/CalismaKagitlari/YabanciParaTestleri";
 import { useSnackbar } from "notistack";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const { enqueueSnackbar } = useSnackbar();
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const documentTitle = searchParams.get('title') || "Yabancı Para Testleri";
 
   const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
 
@@ -168,24 +172,31 @@ const Page = () => {
       description="this is Yabancı Para Testleri"
     >
       <Breadcrumb title="" subtitle="Yabancı Para Testleri" items={BCrumb}>
-        <Button
-          variant="outlined"
-          color="primary"
-          startIcon={<IconRefresh size="18" />}
-          onClick={() => setOpenConfirm(true)}
-          sx={{
-            whiteSpace: "nowrap",
-            borderRadius: "50px",
-            textTransform: "none",
-            fontWeight: 600,
-            backgroundColor: "white",
-            "&:hover": {
-              backgroundColor: "primary.light",
-            },
-          }}
-        >
-          Kayıtları Yeniden Oluştur
-        </Button>
+        <>
+          <Grid container justifyContent="center" alignItems="center" sx={{ gap: 1 }}>
+            <MaddiDogrulamaEkBelgeYukleButton
+              belgeAdi={`${dip || parentName}|||${documentTitle}`}
+              text="Ek Belge Yükle"
+              fullWidth
+              sx={{ height: 45, flex: 1 }}
+            />
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<IconRefresh size="18" />}
+              onClick={() => setOpenConfirm(true)}
+              sx={{
+                height: 45,
+                flex: 1,
+                whiteSpace: "nowrap",
+                textTransform: "none",
+                fontSize: '0.9rem'
+              }}
+            >
+              Kayıtları Yeniden Oluştur
+            </Button>
+          </Grid>
+        </>
       </Breadcrumb>
 
       <Dialog

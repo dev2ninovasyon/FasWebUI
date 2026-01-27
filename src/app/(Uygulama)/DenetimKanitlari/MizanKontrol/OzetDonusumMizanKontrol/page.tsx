@@ -34,15 +34,15 @@ const Page: React.FC = () => {
       title="Özet Dönüşüm Mizan Kontrol"
       description="this is  Özet Dönüşüm Mizan Kontrol"
     >
-     <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb}>
-  <>
-    <EkBelgeYukleButton
-        formKodu="OzetDonusumMizan"
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
-  </>
-</Breadcrumb>
+      <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb}>
+        <>
+          <EkBelgeYukleButton
+            formKodu="OzetDonusumMizan"
+            fullWidth={false}           // sağda küçük buton
+            text="Belge Yükle"
+          />
+        </>
+      </Breadcrumb>
 
       <Grid container>
         <Grid item xs={12} lg={12}>

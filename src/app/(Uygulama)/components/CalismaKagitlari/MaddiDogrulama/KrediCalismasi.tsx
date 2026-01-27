@@ -21,9 +21,10 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
-const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) => {
+const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isReport }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -171,12 +172,14 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) =>
     ];
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Box sx={{ mb: 2 }}>
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                    Kredi Çalışması
-                </Typography>
-            </Box>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            {!isReport && (
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                        Kredi Çalışması
+                    </Typography>
+                </Box>
+            )}
 
             {/* ANA TABLO */}
             <Box
@@ -224,7 +227,6 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) =>
                     width="100%"
                     height="400px"
                     stretchH="none"
-                    manualColumnResize={true}
                     autoColumnSize={{ useHeaders: false }}
                     autoRowSize={true}
                     autoWrapRow={true}
@@ -232,6 +234,12 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) =>
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {data.length === 0 && (
@@ -280,7 +288,6 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) =>
                     rowHeaders={false}
                     width="100%"
                     height="400px"
-                    manualColumnResize={true}
                     autoColumnSize={{ useHeaders: true }}
                     autoWrapRow={true}
                     autoWrapCol={true}
@@ -288,6 +295,12 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo }) =>
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     stretchH="all"
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {detailData.length === 0 && (

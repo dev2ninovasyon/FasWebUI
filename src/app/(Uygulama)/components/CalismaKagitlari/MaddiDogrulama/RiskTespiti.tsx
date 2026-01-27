@@ -79,14 +79,16 @@ interface Veri {
 
 interface CalismaKagidiProps {
   controller: string;
-  dipnotAdi: string; // Ek olarak dipnotAdi prop'u eklendi
+  dipnotAdi: string;
   setDip: (str: string) => void;
+  isReport?: boolean;
 }
 
 const RiskTespiti: React.FC<CalismaKagidiProps> = ({
   controller,
   dipnotAdi,
   setDip,
+  isReport,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -348,7 +350,8 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
                 xs={12}
                 lg={12}
                 my="20px"
-                onClick={() => handleCardClick(veri)}
+                onClick={() => !isReport && handleCardClick(veri)}
+                sx={{ cursor: isReport ? "default" : "pointer" }}
               >
                 <CalismaKagidiCard
                   title={`${veri.finansalTabloHesaplar} Risk Tespiti`}

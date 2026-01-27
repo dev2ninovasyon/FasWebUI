@@ -21,9 +21,10 @@ import { getReeskontTestleri, ReeskontTestleriData } from "@/api/CalismaKagitlar
 interface Props {
     dipnotNo: string;
     modelAdi: string;
+    isReport?: boolean;
 }
 
-const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
+const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => {
     const theme = useTheme();
     const [data, setData] = useState<ReeskontTestleriData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -112,10 +113,12 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi }) => {
     };
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom>
-                {data?.dipnotAdi || modelAdi} - Reeskont Testleri
-            </Typography>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            {!isReport && (
+                <Typography variant="h4" gutterBottom>
+                    {data?.dipnotAdi || modelAdi} - Reeskont Testleri
+                </Typography>
+            )}
 
             {loading && <Typography sx={{ mb: 2 }}>Veriler yükleniyor...</Typography>}
 

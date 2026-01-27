@@ -32,8 +32,9 @@ interface Veri {
 
 interface Props {
   dipnot: string;
+  isReport?: boolean;
 }
-const Onemlilik: React.FC<Props> = ({ dipnot }) => {
+const Onemlilik: React.FC<Props> = ({ dipnot, isReport }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -178,8 +179,8 @@ const Onemlilik: React.FC<Props> = ({ dipnot }) => {
     TH.style.lineHeight = "1.334rem";
 
     //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
+    TH.style.color = "white";
+    TH.style.backgroundColor = theme.palette.primary.main;
     //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
 
     TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
@@ -317,14 +318,14 @@ const Onemlilik: React.FC<Props> = ({ dipnot }) => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -346,7 +347,6 @@ const Onemlilik: React.FC<Props> = ({ dipnot }) => {
         columns={columns}
         colWidths={[0, 40, 100, 80, 60, 80, 80, 80, 100]}
         stretchH="all"
-        manualColumnResize={true}
         rowHeaders={true}
         rowHeights={35}
         autoWrapRow={true}
@@ -355,18 +355,20 @@ const Onemlilik: React.FC<Props> = ({ dipnot }) => {
         hiddenColumns={{
           columns: [0],
         }}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
+        filters={!isReport}
+        columnSorting={!isReport}
+        dropdownMenu={isReport ? false : [
           "filter_by_condition",
           "filter_by_value",
           "filter_action_bar",
         ]}
+        manualColumnResize={!isReport}
         licenseKey="non-commercial-and-evaluation" // For non-commercial use only
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
-        contextMenu={["alignment", "copy"]}
+        contextMenu={isReport ? false : ["alignment", "copy"]}
+        readOnly={isReport}
       />
     </>
   );

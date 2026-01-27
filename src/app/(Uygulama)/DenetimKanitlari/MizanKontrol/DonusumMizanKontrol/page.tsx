@@ -39,7 +39,7 @@ const Page: React.FC = () => {
           <EkBelgeYukleButton
             formKodu="DonusumMizan"
             fullWidth={false}           // sağda küçük buton
-            text="Ek Belge Yükle"
+            text="Belge Yükle"
           />
         </>
       </Breadcrumb>

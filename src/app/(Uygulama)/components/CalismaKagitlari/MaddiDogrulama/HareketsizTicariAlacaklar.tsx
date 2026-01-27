@@ -40,6 +40,7 @@ interface Props {
     setDip: (str: string) => void;
     isClickedHesapla?: boolean;
     setIsClickedHesapla?: (val: boolean) => void;
+    isReport?: boolean;
 }
 
 const fmt = (n: any) =>
@@ -53,6 +54,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
     setDip,
     isClickedHesapla,
     setIsClickedHesapla,
+    isReport
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -205,7 +207,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Alacak Tutarı</TableCell>
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Net Bakiye</TableCell>
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Para Birimi</TableCell>
-                                    <TableCell sx={{ width: 70, textAlign: "center", color: "white" }} />
+                                    {!isReport && <TableCell sx={{ width: 70, textAlign: "center", color: "white" }} />}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -224,7 +226,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     value={isEditing && changes.borcTutari !== undefined ? changes.borcTutari : fmt(row.borcTutari)}
                                                     onChange={(e) => handleInputChange(row.id, 'borcTutari', e.target.value)}
                                                     variant="standard"
-                                                    InputProps={{ disableUnderline: true }}
+                                                    InputProps={{ disableUnderline: true, readOnly: isReport }}
                                                     sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
                                                 />
                                             </TableCell>
@@ -234,7 +236,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     value={isEditing && changes.alacakTutari !== undefined ? changes.alacakTutari : fmt(row.alacakTutari)}
                                                     onChange={(e) => handleInputChange(row.id, 'alacakTutari', e.target.value)}
                                                     variant="standard"
-                                                    InputProps={{ disableUnderline: true }}
+                                                    InputProps={{ disableUnderline: true, readOnly: isReport }}
                                                     sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
                                                 />
                                             </TableCell>
@@ -244,26 +246,28 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     value={isEditing && changes.netBakiye !== undefined ? changes.netBakiye : fmt(row.netBakiye)}
                                                     onChange={(e) => handleInputChange(row.id, 'netBakiye', e.target.value)}
                                                     variant="standard"
-                                                    InputProps={{ disableUnderline: true }}
+                                                    InputProps={{ disableUnderline: true, readOnly: isReport }}
                                                     sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
                                                 />
                                             </TableCell>
                                             <TableCell align="center">{row.paraBirimi}</TableCell>
-                                            <TableCell align="center">
-                                                {isEditing && (
-                                                    <Tooltip title="Kaydet">
-                                                        <IconButton
-                                                            color="primary"
-                                                            onClick={() => handleSaveRow(row)}
-                                                            disabled={savingRowId === row.id}
-                                                            size="small"
-                                                            sx={{ color: theme.palette.success.main }}
-                                                        >
-                                                            <IconDeviceFloppy size={18} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </TableCell>
+                                            {!isReport && (
+                                                <TableCell align="center">
+                                                    {isEditing && (
+                                                        <Tooltip title="Kaydet">
+                                                            <IconButton
+                                                                color="primary"
+                                                                onClick={() => handleSaveRow(row)}
+                                                                disabled={savingRowId === row.id}
+                                                                size="small"
+                                                                sx={{ color: theme.palette.success.main }}
+                                                            >
+                                                                <IconDeviceFloppy size={18} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    )}
+                                                </TableCell>
+                                            )}
                                         </TableRow>
                                     );
                                 })}

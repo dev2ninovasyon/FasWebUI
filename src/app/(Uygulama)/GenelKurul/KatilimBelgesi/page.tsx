@@ -66,10 +66,10 @@ const Page = () => {
               }}
             >
               <EkBelgeYukleButton
-        formKodu={controller}
-        fullWidth={false}           // sağda küçük buton
-        text="Ek Belge Yükle"
-      />
+                formKodu={controller}
+                fullWidth={false}           // sağda küçük buton
+                text="Belge Yükle"
+              />
             </Grid>
             <Grid
               item
@@ -82,7 +82,7 @@ const Page = () => {
                 justifyContent: "center",
               }}
             >
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -215,9 +215,9 @@ const Page = () => {
           }}
         ></Grid>
         {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-        user.rol?.includes("SorumluDenetci") ||
-        user.rol?.includes("Denetci") ||
-        user.rol?.includes("DenetciYardimcisi") ? (
+          user.rol?.includes("SorumluDenetci") ||
+          user.rol?.includes("Denetci") ||
+          user.rol?.includes("DenetciYardimcisi") ? (
           <Grid
             container
             sx={{

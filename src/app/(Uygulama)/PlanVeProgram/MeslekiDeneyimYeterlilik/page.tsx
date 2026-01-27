@@ -92,7 +92,7 @@ const Page = () => {
     <>
       <Breadcrumb title="Mesleki Deneyim Yeterlilik" items={BCrumb}>
         <>
-{isMobile ? (
+          {isMobile ? (
             // Mobile layout - compact with dropdown menu
             <Grid
               container
@@ -142,7 +142,7 @@ const Page = () => {
                     </MenuItem>
                   )}
                   <MenuItem onClick={handleMenuClose}>
-                    Ek Belge Yükle
+                    Belge Yükle
                   </MenuItem>
                   <MenuItem
                     onClick={() => { setIsClickedVarsayilanaDon(true); handleMenuClose(); }}
@@ -231,7 +231,7 @@ const Page = () => {
                 <EkBelgeYukleButton
                   formKodu={controller}
                   fullWidth={false}
-                  text="Ek Belge Yükle"
+                  text="Belge Yükle"
                 />
               </Grid>
               <Grid
@@ -291,37 +291,37 @@ const Page = () => {
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
+            <Grid
+              container
+              sx={{
+                width: "95%",
+                margin: "0 auto",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  hazirlayan="Denetçi - Yardımcı Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  onaylayan="Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
+              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <BelgeKontrolCard
+                  fetch={() => { }}
+                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                  controller={controller}
+                ></BelgeKontrolCard>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={() => {}}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )}
+          )}
         <Grid
           container
           sx={{

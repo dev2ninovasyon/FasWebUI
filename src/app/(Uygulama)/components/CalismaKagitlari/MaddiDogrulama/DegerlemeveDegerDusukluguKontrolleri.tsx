@@ -20,12 +20,14 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
     parentName,
     childName,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -69,10 +71,12 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
     }));
 
     return (
-        <Box>
-            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                Değerleme ve Değer Düşüklüğü Kontrolleri
-            </Typography>
+        <Box sx={{ p: isReport ? 0 : 0 }}>
+            {!isReport && (
+                <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+                    Değerleme ve Değer Düşüklüğü Kontrolleri
+                </Typography>
+            )}
             <Box
                 sx={{
                     width: "100%",
@@ -98,6 +102,16 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={isReport ? false : [
+                        "filter_by_condition",
+                        "filter_by_value",
+                        "filter_action_bar",
+                    ]}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
                 {processedData.length === 0 && (
                     <Box sx={{ p: 4, textAlign: "center" }}>

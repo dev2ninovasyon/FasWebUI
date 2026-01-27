@@ -24,12 +24,14 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const HasilatDonemsellikTesti: React.FC<Props> = ({
     parentName,
     childName,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -141,69 +143,71 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
     ];
 
     return (
-        <Box>
-            <Grid container spacing={2} mb={3} alignItems="flex-end">
-                <Grid item xs={12} sm={3}>
-                    <TextField
-                        fullWidth
-                        label="Başlangıç Tarihi"
-                        type="date"
-                        name="baslangictarih"
-                        value={filters.baslangictarih}
-                        onChange={handleFilterChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
+        <Box sx={{ p: isReport ? 0 : 0 }}>
+            {!isReport && (
+                <Grid container spacing={2} mb={3} alignItems="flex-end">
+                    <Grid item xs={12} sm={3}>
+                        <TextField
+                            fullWidth
+                            label="Başlangıç Tarihi"
+                            type="date"
+                            name="baslangictarih"
+                            value={filters.baslangictarih}
+                            onChange={handleFilterChange}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <TextField
+                            fullWidth
+                            label="Bitiş Tarihi"
+                            type="date"
+                            name="bitistarih"
+                            value={filters.bitistarih}
+                            onChange={handleFilterChange}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <TextField
+                            fullWidth
+                            label="Hesaplar"
+                            name="hesaplar"
+                            value={filters.hesaplar}
+                            onChange={handleFilterChange}
+                            placeholder="600,601,602"
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <TextField
+                            fullWidth
+                            label="Tutardan Fazla"
+                            type="number"
+                            name="tutardanFazla"
+                            value={filters.tutardanFazla}
+                            onChange={handleFilterChange}
+                        />
+                    </Grid>
+                    <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={fetchData}
+                            sx={{ borderRadius: "20px", textTransform: "none" }}
+                        >
+                            Verileri Getir
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleSave}
+                            sx={{ borderRadius: "20px", textTransform: "none" }}
+                        >
+                            Verileri Kaydet
+                        </Button>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={3}>
-                    <TextField
-                        fullWidth
-                        label="Bitiş Tarihi"
-                        type="date"
-                        name="bitistarih"
-                        value={filters.bitistarih}
-                        onChange={handleFilterChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <TextField
-                        fullWidth
-                        label="Hesaplar"
-                        name="hesaplar"
-                        value={filters.hesaplar}
-                        onChange={handleFilterChange}
-                        placeholder="600,601,602"
-                    />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <TextField
-                        fullWidth
-                        label="Tutardan Fazla"
-                        type="number"
-                        name="tutardanFazla"
-                        value={filters.tutardanFazla}
-                        onChange={handleFilterChange}
-                    />
-                </Grid>
-                <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={fetchData}
-                        sx={{ borderRadius: "20px", textTransform: "none" }}
-                    >
-                        Verileri Getir
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleSave}
-                        sx={{ borderRadius: "20px", textTransform: "none" }}
-                    >
-                        Verileri Kaydet
-                    </Button>
-                </Grid>
-            </Grid>
+            )}
 
             <Box
                 sx={{
@@ -232,6 +236,16 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                     afterChange={handleAfterChange}
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={isReport ? false : [
+                        "filter_by_condition",
+                        "filter_by_value",
+                        "filter_action_bar",
+                    ]}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {data.length === 0 && (

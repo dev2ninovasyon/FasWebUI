@@ -24,12 +24,14 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const EnvanterKontrolleri: React.FC<Props> = ({
     parentName,
     childName,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -139,6 +141,16 @@ const EnvanterKontrolleri: React.FC<Props> = ({
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={isReport ? false : [
+                        "filter_by_condition",
+                        "filter_by_value",
+                        "filter_action_bar",
+                    ]}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                     cells={(row, col) => {
                         const cellProperties: any = {};
                         const rowData = tableData[row];

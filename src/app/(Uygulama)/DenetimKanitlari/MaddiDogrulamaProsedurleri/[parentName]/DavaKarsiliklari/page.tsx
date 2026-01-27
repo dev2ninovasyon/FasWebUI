@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -9,10 +9,13 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { getDipnotNoByDipnotAdi, getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import DavaKarsiliklariCalismasi from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/DavaKarsiliklariCalismasi";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
-import { Box, CircularProgress, Button, Typography } from "@mui/material";
+import { Box, CircularProgress, Button, Typography, Grid } from "@mui/material";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Dava Karşılıkları Çalışması";
     const segments = pathname.split("/");
     const parentName = segments[segments.indexOf("MaddiDogrulamaProsedurleri") + 1];
     const childName = segments[segments.indexOf("MaddiDogrulamaProsedurleri") + 2];
@@ -82,21 +85,24 @@ const Page = () => {
     return (
         <PageContainer title="Dava Karşılıkları Çalışması" description="Dava Karşılıkları">
             <Breadcrumb title="" subtitle="Dava Karşılıkları Çalışması" items={BCrumbList}>
-                <Button
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    disabled={isClickedVarsayilanaDon}
-                    onClick={() => setIsClickedVarsayilanaDon(true)}
-                    sx={{ width: "200px", textTransform: "none" }}
-                >
-                    <Typography
-                        variant="body1"
-                        sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                <Grid container justifyContent="center" alignItems="center" sx={{ gap: 1 }}>
+                    <MaddiDogrulamaEkBelgeYukleButton
+                        belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                        text="Belge Yükle"
+                        fullWidth
+                        sx={{ height: 45, flex: 1 }}
+                    />
+                    <Button
+                        size="medium"
+                        variant="outlined"
+                        color="primary"
+                        disabled={isClickedVarsayilanaDon}
+                        onClick={() => setIsClickedVarsayilanaDon(true)}
+                        sx={{ height: 45, flex: 1, textTransform: "none", fontSize: '0.9rem' }}
                     >
                         Verileri Getir
-                    </Typography>
-                </Button>
+                    </Button>
+                </Grid>
             </Breadcrumb>
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>

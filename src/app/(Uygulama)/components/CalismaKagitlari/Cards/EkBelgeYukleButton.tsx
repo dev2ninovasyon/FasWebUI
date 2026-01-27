@@ -67,7 +67,7 @@ export interface EkBelgeYukleButtonRef {
 
 const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonProps>(({
   formKodu,
-  text = "Ek Belge Yükle",
+  text = "Belge Yükle",
   fullWidth = true,
   onUploaded,
   hideButton = false,
@@ -649,7 +649,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
             justifyContent="space-between"
           >
             <Box>
-              <Typography variant="h5">Ek Belge Yükle</Typography>
+              <Typography variant="h5">Belge Yükle</Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"

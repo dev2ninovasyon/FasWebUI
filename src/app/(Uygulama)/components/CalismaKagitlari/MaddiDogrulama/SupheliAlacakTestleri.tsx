@@ -25,12 +25,14 @@ interface Props {
     modelAdi: string;
     isClickedVarsayilanaDon: boolean;
     setIsClickedVarsayilanaDon: (deger: boolean) => void;
+    isReport?: boolean;
 }
 
 const SupheliAlacakTestleri: React.FC<Props> = ({
     dipnotNo,
     isClickedVarsayilanaDon,
-    setIsClickedVarsayilanaDon
+    setIsClickedVarsayilanaDon,
+    isReport
 }) => {
     const theme = useTheme();
     const hotRef = useRef<any>(null);
@@ -153,20 +155,22 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
     }
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h5">Şüpheli Alacak Testleri</Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<IconDeviceFloppy size={16} />}
-                    onClick={handleSaveAll}
-                    sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem', textTransform: 'none' }}
-                >
-                    Tüm Tabloyu Kaydet
-                </Button>
-            </Box>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            {!isReport && (
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="h5">Şüpheli Alacak Testleri</Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        startIcon={<IconDeviceFloppy size={16} />}
+                        onClick={handleSaveAll}
+                        sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem', textTransform: 'none' }}
+                    >
+                        Tüm Tabloyu Kaydet
+                    </Button>
+                </Box>
+            )}
 
             <Box sx={{
                 width: '100%',
@@ -207,9 +211,11 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                     viewportRowRenderingOffset={10}
                     autoWrapRow={true}
                     autoWrapCol={true}
-                    dropdownMenu={true}
-                    filters={true}
-                    contextMenu={{
+                    dropdownMenu={!isReport}
+                    filters={!isReport}
+                    manualColumnResize={!isReport}
+                    columnSorting={!isReport}
+                    contextMenu={isReport ? false : {
                         items: {
                             "row_above": { name: "Üste Satır Ekle" },
                             "row_below": { name: "Alta Satır Ekle" },
@@ -219,6 +225,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                             "redo": { name: "İleri Al" }
                         }
                     }}
+                    readOnly={isReport}
                     afterCreateRow={(index, amount) => {
                         const hotInstance = hotRef.current?.hotInstance;
                         for (let i = 0; i < amount; i++) {

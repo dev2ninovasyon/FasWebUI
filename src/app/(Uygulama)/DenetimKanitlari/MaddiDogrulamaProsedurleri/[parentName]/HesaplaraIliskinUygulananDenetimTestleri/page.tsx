@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import {
   getMaddiDogrulama,
@@ -16,11 +16,14 @@ import { AppState } from "@/store/store";
 
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import HesaplaraIliskinUygulananDenetimTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/HesaplaraIliskinUygulananDenetimTestleri";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const documentTitle = searchParams.get('title') || "Hesaplara İlişkin Uygulanan Denetim Testleri";
 
   // ✅ Segmentleri güvenli al
   const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
@@ -141,7 +144,14 @@ const Page = () => {
         title=""
         subtitle="Hesaplara İlişkin Uygulanan Denetim Testleri"
         items={BCrumb}
-      />
+      >
+        <MaddiDogrulamaEkBelgeYukleButton
+          belgeAdi={`${dip || parentName}|||${documentTitle}`}
+          text="Belge Yükle"
+          fullWidth={false}
+          sx={{ width: 140, height: 45, lineHeight: 1.2, fontSize: '0.9rem', whiteSpace: 'normal', textAlign: 'center' }}
+        />
+      </Breadcrumb>
 
       {dipnotNo !== "" ? (
         <HesaplaraIliskinUygulananDenetimTestleri

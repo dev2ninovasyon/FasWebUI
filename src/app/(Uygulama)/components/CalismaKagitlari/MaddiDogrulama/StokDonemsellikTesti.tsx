@@ -23,12 +23,14 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const StokDonemsellikTesti: React.FC<Props> = ({
     parentName,
     childName,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -114,16 +116,18 @@ const StokDonemsellikTesti: React.FC<Props> = ({
 
     return (
         <Box>
-            <Box display="flex" justifyContent="flex-end" mb={2}>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleVarsayilanaDon}
-                    sx={{ borderRadius: "20px", textTransform: "none" }}
-                >
-                    Verileri Getir
-                </Button>
-            </Box>
+            {!isReport && (
+                <Box display="flex" justifyContent="flex-end" mb={2}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={handleVarsayilanaDon}
+                        sx={{ borderRadius: "20px", textTransform: "none" }}
+                    >
+                        Verileri Getir
+                    </Button>
+                </Box>
+            )}
 
             <Box
                 sx={{
@@ -152,6 +156,12 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                     afterChange={handleAfterChange}
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {/* Eğer veri yoksa tablonun hemen altına mesajı basıyoruz */}

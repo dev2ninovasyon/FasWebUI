@@ -8,7 +8,7 @@ import { AppState } from "@/store/store";
 import { useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import { getOrneklemByDipnot } from "@/api/DenetimKanitlari/DenetimKanitlari";
+import { getMutabakatByDipnot } from "@/api/DenetimKanitlari/DenetimKanitlari";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
@@ -21,26 +21,22 @@ numbro.setLanguage("tr-TR");
 interface Veri {
   id: number;
   kebirKodu: number;
+  detayKodu: string;
   hesapAdi: string;
-  borc: number;
-  borcIslemSayisi: number;
-  borcOrtalama: number;
-  alacak: number;
-  alacakIslemSayisi: number;
-  alacakOrtalama: number;
-  kalanBakiye: number;
-  toplamIslemSayisi: number;
-  orneklemSayisi: number;
-  borcOrneklemSayisi: number;
-  alacakOrneklemSayisi: number;
-  listelemeTuru: string;
-  guvenilirlikDuzeyi: string;
+  borcAlacakToplami: number;
+  bakiye: number;
+  ortalamaBakiyeSecilen: number;
+  yargisalRastgeleSecilen: number;
+  gelenYanit: number;
+  fark: number;
+  orneklemeyeAlinmadi: string;
 }
 
 interface Props {
   dipnot: string;
+  isReport?: boolean;
 }
-const Orneklem: React.FC<Props> = ({ dipnot }) => {
+const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -72,20 +68,15 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
   const colHeaders = [
     "Id",
     "Kebir Kodu",
+    "Detay Kodu",
     "Hesap Adı",
-    "Borç",
-    "B. Fiş Sayısı",
-    "B. Ortalaması",
-    "Alacak",
-    "A. Fiş Sayısı",
-    "A. Ortalaması",
+    "Borç Alacak Toplamı",
     "Bakiye",
-    "Toplam Fiş Sayısı",
-    "Örneklem Sayısı",
-    "Borç Örnek Sayısı",
-    "Alacak Örnek Sayısı",
-    "Listeleme Türü",
-    "Güvenilirlik Düzeyi",
+    "Ortalama Bakiye Bazında Seçilen",
+    "Yargısal Olarak Rastgele Seçilen",
+    "Gelen Yanıt",
+    "Fark",
+    "Durum",
   ];
 
   const columns = [
@@ -94,9 +85,18 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
       type: "numeric",
       columnSorting: true,
       className: "htLeft",
+      allowInvalid: false,
       readOnly: true,
       editor: false,
     }, // Kebir Kodu
+    {
+      type: "text",
+      columnSorting: true,
+      className: "htLeft",
+      allowInvalid: false,
+      readOnly: true,
+      editor: false,
+    }, // Detay Kodu
     {
       type: "text",
       columnSorting: true,
@@ -115,62 +115,7 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Borç
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Borç Fiş Sayısı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Borç Ortalaması
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Alacak
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Alacak Fiş Sayısı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      className: "htRight",
-      readOnly: true,
-      editor: false,
-    }, // Alacak Ortalaması
+    }, // Borç Alacak Toplamı
     {
       type: "numeric",
       numericFormat: {
@@ -185,47 +130,47 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0",
+        pattern: "0,0.00",
         columnSorting: true,
         culture: "tr-TR",
       },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Toplam İşlem Sayısı
+    }, // Ortalama Bakiye Bazında Seçilen
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0",
+        pattern: "0,0.00",
         columnSorting: true,
         culture: "tr-TR",
       },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Örneklem Sayısı
+    }, // Yargısal Olarak Rastgele Seçilen
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0",
+        pattern: "0,0.00",
         columnSorting: true,
         culture: "tr-TR",
       },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Borç Örnek Sayısı
+    }, // Gelen Yanıt
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0",
+        pattern: "0,0.00",
         columnSorting: true,
         culture: "tr-TR",
       },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // Alacak Örnek Sayısı
+    }, // Fark
     {
       type: "text",
       columnSorting: true,
@@ -233,15 +178,7 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Listeleme Türü
-    {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-      allowInvalid: false,
-      readOnly: true,
-      editor: false,
-    }, // Güvenilirlik Düzeyi
+    }, // Durum
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -267,8 +204,8 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
     TH.style.lineHeight = "1.334rem";
 
     //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
+    TH.style.color = "white";
+    TH.style.backgroundColor = theme.palette.primary.main;
     //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
 
     TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
@@ -362,39 +299,34 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
 
   const fetchData = async () => {
     try {
-      const orneklemVerileri = await getOrneklemByDipnot(
+      const mutabakatVerileri = await getMutabakatByDipnot(
         user.token || "",
         user.denetciId || 0,
-        user.denetlenenId || 0,
         user.yil || 0,
+        user.denetlenenId || 0,
         dipnot
       );
-
       const rowsAll: any = [];
-      orneklemVerileri.forEach((veri: any) => {
+
+      mutabakatVerileri.forEach((veri: any) => {
         const newRow: any = [
           veri.id,
           veri.kebirKodu,
+          veri.detayKodu,
           veri.hesapAdi,
-          veri.borc,
-          veri.borcIslemSayisi,
-          veri.borcOrtalama,
-          veri.alacak,
-          veri.alacakIslemSayisi,
-          veri.alacakOrtalama,
-          veri.kalanBakiye,
-          veri.toplamIslemSayisi,
-          veri.orneklemSayisi,
-          veri.borcOrneklemSayisi,
-          veri.alacakOrneklemSayisi,
-          veri.listelemeTuru,
-          veri.guvenilirlikDuzeyi,
+          veri.borc + veri.alacak,
+          veri.bakiye,
+          veri.ortalamaBakiyeSecilen,
+          veri.yargisalRastgeleSecilen,
+          veri.gelenYanit,
+          veri.fark,
+          veri.orneklemeyeAlinmadi,
         ];
         rowsAll.push(newRow);
       });
 
-      setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      setRowCount(rowsAll.length);
     } catch (error) {
       console.error("Bir hata oluştu:", error);
     }
@@ -413,14 +345,14 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -440,11 +372,8 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
         height={432}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[
-          0, 70, 100, 80, 60, 80, 80, 60, 80, 80, 60, 60, 60, 60, 90, 60,
-        ]}
+        colWidths={[0, 60, 80, 100, 80, 80, 80, 80, 80, 80, 80]}
         stretchH="all"
-        manualColumnResize={true}
         rowHeaders={true}
         rowHeights={35}
         autoWrapRow={true}
@@ -453,21 +382,23 @@ const Orneklem: React.FC<Props> = ({ dipnot }) => {
         hiddenColumns={{
           columns: [0],
         }}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
+        filters={!isReport}
+        columnSorting={!isReport}
+        dropdownMenu={isReport ? false : [
           "filter_by_condition",
           "filter_by_value",
           "filter_action_bar",
         ]}
+        manualColumnResize={!isReport}
         licenseKey="non-commercial-and-evaluation" // For non-commercial use only
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
-        contextMenu={["alignment", "copy"]}
+        contextMenu={isReport ? false : ["alignment", "copy"]}
+        readOnly={isReport}
       />
     </>
   );
 };
 
-export default Orneklem;
+export default Mutabakat;

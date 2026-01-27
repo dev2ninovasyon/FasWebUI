@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -10,10 +10,13 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import SozlesmeTestleri from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/SozlesmeTestleri";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import { getMaddiDogrulama, getDipnotNoByDipnotAdi } from "@/api/MaddiDogrulama/MaddiDogrulama";
+import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
 const SozlesmeTestleriPage = () => {
     const user = useSelector((state: AppState) => state.userReducer);
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const documentTitle = searchParams.get('title') || "Sözleşme Testleri";
     const [dipnotNo, setDipnotNo] = useState<string>("");
     const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
@@ -94,7 +97,16 @@ const SozlesmeTestleriPage = () => {
         <PageContainer title={`${dip} | Sözleşme Testleri`} description="Sözleşme Testleri">
             <Breadcrumb title="" subtitle="Sözleşme Testleri" items={BCrumbList}>
                 <Grid container justifyContent="center" alignItems="center" sx={{ mt: 1 }}>
-                    <Grid item xs={12} md={6} lg={4}></Grid>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <MaddiDogrulamaEkBelgeYukleButton
+                            belgeAdi={`${dip || parentName}|||${documentTitle}`}
+                            text="Belge Yükle"
+                            fullWidth
+                            sx={{ height: 45 }}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={2}></Grid>
 
                     <Grid
                         item
@@ -113,14 +125,9 @@ const SozlesmeTestleriPage = () => {
                             color="primary"
                             disabled={isClickedVarsayilanaDon}
                             onClick={() => setIsClickedVarsayilanaDon(true)}
-                            sx={{ width: "100%" }}
+                            sx={{ width: "100%", height: 45, textTransform: 'none', fontSize: '0.9rem' }}
                         >
-                            <Typography
-                                variant="body1"
-                                sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                            >
-                                Varsayılana Dön
-                            </Typography>
+                            Varsayılana Dön
                         </Button>
                     </Grid>
                 </Grid>

@@ -38,9 +38,10 @@ interface Props {
     dipnotNo: string;
     isClickedVarsayilanaDon?: boolean;
     setIsClickedVarsayilanaDon?: (val: boolean) => void;
+    isReport?: boolean;
 }
 
-const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon }: Props) => {
+const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon, isReport }: Props) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -150,24 +151,24 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
             <TableContainer component={Paper} elevation={0} sx={{ borderRadius: "8px", border: `1px solid ${TITLE_BOX_COLOR}`, mb: 5 }}>
                 <Table size="small">
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: TITLE_BOX_COLOR }}>
-                            <TableCell sx={{ borderRight: `1px solid rgba(0,0,0,0.1)`, width: "120px" }}></TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 700, color: TITLE_TEXT_COLOR, borderRight: `1px solid rgba(0,0,0,0.1)` }}>Hesaplanan Toplam Ayrılacak Dava Karşılıkları</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 700, color: TITLE_TEXT_COLOR, borderRight: `1px solid rgba(0,0,0,0.1)` }}>Hesaplanan Toplam Koşullu Dava Borçları</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 700, color: TITLE_TEXT_COLOR, borderRight: `1px solid rgba(0,0,0,0.1)` }}>Hesaplanan Toplam Koşullu Dava Alacakları</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 700, color: TITLE_TEXT_COLOR }}>Uzman Görüşü Gerektirenler</TableCell>
+                        <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                            <TableCell sx={{ borderRight: `1px solid rgba(255,255,255,0.2)`, width: "120px" }}></TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid rgba(255,255,255,0.2)` }}>Hesaplanan Toplam Ayrılacak Dava Karşılıkları</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid rgba(255,255,255,0.2)` }}>Hesaplanan Toplam Koşullu Dava Borçları</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid rgba(255,255,255,0.2)` }}>Hesaplanan Toplam Koşullu Dava Alacakları</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 700, color: "white" }}>Uzman Görüşü Gerektirenler</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         <TableRow>
-                            <TableCell sx={{ fontWeight: 700, backgroundColor: TITLE_BOX_COLOR, color: TITLE_TEXT_COLOR, textAlign: 'center' }}>Sayısı</TableCell>
+                            <TableCell sx={{ fontWeight: 700, backgroundColor: theme.palette.primary.main, color: "white", textAlign: 'center' }}>Sayısı</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.hesaplananToplamAyrilacakDavaKarsiliklariSayisi || 0}</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.hesaplananToplamKosulluDavaBorclariSayisi || 0}</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.hesaplananToplamKosulluDavaAlacaklariSayisi || 0}</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.uzmanGorusuGerektirenlerSayisi || 0}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell sx={{ fontWeight: 700, backgroundColor: TITLE_BOX_COLOR, color: TITLE_TEXT_COLOR, textAlign: 'center' }}>Tutarı</TableCell>
+                            <TableCell sx={{ fontWeight: 700, backgroundColor: theme.palette.primary.main, color: "white", textAlign: 'center' }}>Tutarı</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 600 }}>{fmt(summary?.hesaplananToplamAyrilacakDavaKarsiliklariTutari)}</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 600 }}>{fmt(summary?.hesaplananToplamKosulluDavaBorclariTutari)}</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 600 }}>{fmt(summary?.hesaplananToplamKosulluDavaAlacaklariTutari)}</TableCell>
@@ -187,12 +188,12 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
                 borderRadius: "8px",
                 overflow: "hidden",
                 "& .handsontable th": {
-                    backgroundColor: `${TITLE_BOX_COLOR} !important`,
-                    color: `${TITLE_TEXT_COLOR} !important`,
+                    backgroundColor: `${theme.palette.primary.main} !important`,
+                    color: `white !important`,
                     fontWeight: "bold",
                     padding: "8px 4px !important",
                     fontSize: "13px",
-                    border: `1px solid rgba(0,0,0,0.05) !important`,
+                    border: `1px solid rgba(255,255,255,0.2) !important`,
                     whiteSpace: "normal",
                     lineHeight: "1.2 !important",
                     verticalAlign: "middle !important",
@@ -229,7 +230,10 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
                     stretchH="all"
                     height="auto"
                     minRows={10}
-                    contextMenu={true}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}

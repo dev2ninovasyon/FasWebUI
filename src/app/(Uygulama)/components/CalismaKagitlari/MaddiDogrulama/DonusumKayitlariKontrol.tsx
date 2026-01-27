@@ -20,6 +20,7 @@ import { getDonusumKayitlari, DonusumKayitlariKontrolSatirDto, DonusumBobiFisDto
 interface DonusumKayitlariProps {
     controller: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const fmt = (n: any) =>
@@ -28,6 +29,7 @@ const fmt = (n: any) =>
 const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
     controller,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -75,8 +77,8 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 
         return (
             <Box mb={4}>
-                <Box sx={{ backgroundColor: HEADER_BLUE, px: 2, py: 1 }}>
-                    <Typography variant="subtitle1" fontWeight={700} color={HEADER_TEXT}>
+                <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700} color="white">
                         Ana Hesaplar
                     </Typography>
                 </Box>
@@ -115,8 +117,8 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 
     const renderDonusumFisleriTable = () => (
         <Box mb={4}>
-            <Box sx={{ backgroundColor: HEADER_BLUE, px: 2, py: 1 }}>
-                <Typography variant="subtitle1" fontWeight={700} color={HEADER_TEXT}>
+            <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
+                <Typography variant="subtitle1" fontWeight={700} color="white">
                     Dönüşüm Fişleri
                 </Typography>
             </Box>
@@ -159,7 +161,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
+                <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     {renderAnaHesaplarTable()}
                     {renderDonusumFisleriTable()}
                 </Box>

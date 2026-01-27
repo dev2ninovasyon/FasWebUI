@@ -72,9 +72,10 @@ interface YorumEditorProps {
   denetlenenId: number;
   yil: number;
   belgeAdi: string;
+  isReport?: boolean;
 }
 
-const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }) => {
+const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, isReport }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -122,13 +123,14 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
     // Initial mount'ta fetchData çalışıp editorData'yı set ettiğinde
     // bu effect'in tetiklenmesini istemeyebiliriz ama veri geldikten sonra kullanıcı değiştikçe tetiklenmeli.
     // Basit bir debounce yeterli.
+    if (isReport) return;
     const timeout = setTimeout(() => {
       if (editorData) // Boş değilse kaydet (veya boş kaydetmeye izin verilebilir ama genelde gereksiz request)
         handleUpdate(editorData);
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [editorData]);
+  }, [editorData, isReport]);
 
   const editorConfig = {
     toolbar: {
@@ -284,21 +286,23 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
             padding: 0,
           }}
         >
-          <CardHeader
-            title="Yorum & Notlar"
-            titleTypographyProps={{
-              variant: "h6",
-              fontWeight: 600,
-              fontSize: "1.1rem",
-            }}
-            sx={{
-              padding: "16px 24px",
-              borderBottom:
-                customizer.activeMode === "dark"
-                  ? "1px solid rgba(255, 255, 255, 0.12)"
-                  : "1px solid rgba(0, 0, 0, 0.08)",
-            }}
-          />
+          {!isReport && (
+            <CardHeader
+              title="Yorum & Notlar"
+              titleTypographyProps={{
+                variant: "h6",
+                fontWeight: 600,
+                fontSize: "1.1rem",
+              }}
+              sx={{
+                padding: "16px 24px",
+                borderBottom:
+                  customizer.activeMode === "dark"
+                    ? "1px solid rgba(255, 255, 255, 0.12)"
+                    : "1px solid rgba(0, 0, 0, 0.08)",
+              }}
+            />
+          )}
           <CardContent sx={{ padding: "24px", maxHeight: "300px", overflow: "auto" }}>
             <Box
               sx={{
@@ -313,14 +317,27 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi }
               }}
             >
               <Box sx={{ width: "100%", margin: "0 auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
-                <CKEditor
-                  editor={ClassicEditor}
-                  config={editorConfig}
-                  data={editorData}
-                  onChange={handleChange}
-                />
+                {isReport ? (
+                  <Box
+                    sx={{
+                      width: "100%",
+                      p: 2,
+                      border: "1px solid #ddd",
+                      borderRadius: 1,
+                      backgroundColor: customizer.activeMode === "dark" ? "rgba(255,255,255,0.05)" : "#f9f9f9"
+                    }}
+                    dangerouslySetInnerHTML={{ __html: editorData || "Yorum bulunmamaktadır." }}
+                  />
+                ) : (
+                  <CKEditor
+                    editor={ClassicEditor}
+                    config={editorConfig}
+                    data={editorData}
+                    onChange={handleChange}
+                  />
+                )}
               </Box>
-              {kayitMesaji && (
+              {!isReport && kayitMesaji && (
                 <Typography
                   variant="body2"
                   sx={{

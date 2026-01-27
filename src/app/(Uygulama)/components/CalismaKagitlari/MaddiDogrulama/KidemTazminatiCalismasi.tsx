@@ -21,12 +21,14 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const KidemTazminatiCalismasi: React.FC<Props> = ({
     parentName,
     childName,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -68,11 +70,13 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
     ];
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: isReport ? 2 : 4 }}>
             <Box>
-                <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                    Cari Dönem Kıdem Tazminatı Çalışması ({user.yil || ""})
-                </Typography>
+                {!isReport && (
+                    <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+                        Cari Dönem Kıdem Tazminatı Çalışması ({user.yil || ""})
+                    </Typography>
+                )}
                 <Box
                     sx={{
                         width: "100%",
@@ -98,6 +102,12 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
                         language="tr-TR"
                         licenseKey="non-commercial-and-evaluation"
                         className={customizer.activeMode === "dark" ? "htDark" : ""}
+                        readOnly={isReport}
+                        contextMenu={isReport ? false : true}
+                        dropdownMenu={!isReport}
+                        manualColumnResize={!isReport}
+                        filters={!isReport}
+                        columnSorting={!isReport}
                     />
                     {dataBobi.length === 0 && (
                         <Box sx={{ p: 4, textAlign: "center" }}>
@@ -110,9 +120,11 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
             <Divider />
 
             <Box>
-                <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                    Önceki Dönem Kıdem Tazminatı Çalışması ({(user.yil || 0) - 1})
-                </Typography>
+                {!isReport && (
+                    <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+                        Önceki Dönem Kıdem Tazminatı Çalışması ({(user.yil || 0) - 1})
+                    </Typography>
+                )}
                 <Box
                     sx={{
                         width: "100%",
@@ -138,6 +150,12 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
                         language="tr-TR"
                         licenseKey="non-commercial-and-evaluation"
                         className={customizer.activeMode === "dark" ? "htDark" : ""}
+                        readOnly={isReport}
+                        contextMenu={isReport ? false : true}
+                        dropdownMenu={!isReport}
+                        manualColumnResize={!isReport}
+                        filters={!isReport}
+                        columnSorting={!isReport}
                     />
                     {dataOncekiBobi.length === 0 && (
                         <Box sx={{ p: 4, textAlign: "center" }}>

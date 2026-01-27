@@ -36,6 +36,7 @@ interface CalismaKagidiProps {
     dipnotNo: string;
     modelAdi: string;
     setDip: (str: string) => void;
+    isReport?: boolean;
 }
 
 const fmt = (n: any) =>
@@ -58,6 +59,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
     dipnotNo,
     modelAdi,
     setDip,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -334,26 +336,28 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                 <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Değişim TL</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700, width: "7%", color: "white" }}>Değişim %</TableCell>
                                 <TableCell sx={{ fontWeight: 700, width: "15%", color: "white" }}>
-                                    <CustomSelect
-                                        value={bulkOnemlilik[kebirKodu] || ""}
-                                        onChange={(e: any) => handleSetBulkOnemlilik(kebirKodu, e.target.value)}
-                                        size="small"
-                                        fullWidth
-                                        disabled={savingKebir === kebirKodu}
-                                        sx={{
-                                            minWidth: 100, // Reduced from 140
-                                            bgcolor: BG_PAPER,
-                                            "& .MuiOutlinedInput-notchedOutline": { borderColor: "transparent" },
-                                            "& .MuiSelect-select": { color: bulkOnemlilik[kebirKodu] ? "inherit" : "white" }
-                                        }}
-                                        displayEmpty
-                                    >
-                                        <MenuItem value="" disabled>Tümü İçin Önemlilik</MenuItem>
-                                        <MenuItem value="0">Önemlilik Yok</MenuItem>
-                                        <MenuItem value="1">Önemsiz</MenuItem>
-                                        <MenuItem value="2">Orta</MenuItem>
-                                        <MenuItem value="3">Yüksek</MenuItem>
-                                    </CustomSelect>
+                                    {!isReport && (
+                                        <CustomSelect
+                                            value={bulkOnemlilik[kebirKodu] || ""}
+                                            onChange={(e: any) => handleSetBulkOnemlilik(kebirKodu, e.target.value)}
+                                            size="small"
+                                            fullWidth
+                                            disabled={savingKebir === kebirKodu}
+                                            sx={{
+                                                minWidth: 100, // Reduced from 140
+                                                bgcolor: BG_PAPER,
+                                                "& .MuiOutlinedInput-notchedOutline": { borderColor: "transparent" },
+                                                "& .MuiSelect-select": { color: bulkOnemlilik[kebirKodu] ? "inherit" : "white" }
+                                            }}
+                                            displayEmpty
+                                        >
+                                            <MenuItem value="" disabled>Tümü İçin Önemlilik</MenuItem>
+                                            <MenuItem value="0">Önemlilik Yok</MenuItem>
+                                            <MenuItem value="1">Önemsiz</MenuItem>
+                                            <MenuItem value="2">Orta</MenuItem>
+                                            <MenuItem value="3">Yüksek</MenuItem>
+                                        </CustomSelect>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         </TableHead>
@@ -367,19 +371,25 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                     <TableCell align="right">{fmt(row.degisimTl)}</TableCell>
                                     <TableCell align="right">% {(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
                                     <TableCell>
-                                        <CustomSelect
-                                            value={row.onemlilik || "0"}
-                                            onChange={(e: any) => handleSetRowOnemlilik(row.id, e.target.value)}
-                                            size="small"
-                                            fullWidth
-                                            disabled={savingRowId === row.id}
-                                            sx={{ minWidth: 100, bgcolor: BG_PAPER }} // Reduced from 130
-                                        >
-                                            <MenuItem value="0">Önemlilik Seçiniz</MenuItem>
-                                            <MenuItem value="1">Önemsiz</MenuItem>
-                                            <MenuItem value="2">Orta</MenuItem>
-                                            <MenuItem value="3">Yüksek</MenuItem>
-                                        </CustomSelect>
+                                        {isReport ? (
+                                            <span>
+                                                {row.onemlilik === "1" ? "Önemsiz" : row.onemlilik === "2" ? "Orta" : row.onemlilik === "3" ? "Yüksek" : "Önemlilik Yok"}
+                                            </span>
+                                        ) : (
+                                            <CustomSelect
+                                                value={row.onemlilik || "0"}
+                                                onChange={(e: any) => handleSetRowOnemlilik(row.id, e.target.value)}
+                                                size="small"
+                                                fullWidth
+                                                disabled={savingRowId === row.id}
+                                                sx={{ minWidth: 100, bgcolor: BG_PAPER }} // Reduced from 130
+                                            >
+                                                <MenuItem value="0">Önemlilik Seçiniz</MenuItem>
+                                                <MenuItem value="1">Önemsiz</MenuItem>
+                                                <MenuItem value="2">Orta</MenuItem>
+                                                <MenuItem value="3">Yüksek</MenuItem>
+                                            </CustomSelect>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -394,7 +404,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
+                <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     {renderAnaHesaplar()}
                     {/* Render each kebir group */}
                     {anaHesaplar.map(main => (

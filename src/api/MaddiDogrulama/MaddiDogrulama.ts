@@ -54,6 +54,7 @@ export const getUygulananDenetimProsedurleri = async (
       }
     );
     if (response.ok) {
+
       return response.json();
     } else {
       console.error("Çalışma kağıdı verileri getirilemedi");

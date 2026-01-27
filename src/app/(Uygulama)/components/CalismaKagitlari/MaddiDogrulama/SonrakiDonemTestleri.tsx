@@ -26,12 +26,14 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const SonrakiDonemTestleri = forwardRef<any, Props>(({
     parentName,
     childName,
     dipnotNo,
+    isReport,
 }, ref) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -160,7 +162,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
     };
 
     const columns = [
-        { data: "selected", title: "Seç", type: "checkbox", className: "htCenter" },
+        ...(!isReport ? [{ data: "selected", title: "Seç", type: "checkbox", className: "htCenter" }] : []),
         { data: "kayitNo", title: "Kayıt No" },
         { data: "hesapNo", title: "Hesap No" },
         { data: "hesapAciklamasi", title: "Hesap Açıklaması" },
@@ -199,6 +201,12 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     afterChange={handleAfterChange}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
                 {data.length === 0 && (
                     <Box sx={{ p: 4, textAlign: "center" }}>

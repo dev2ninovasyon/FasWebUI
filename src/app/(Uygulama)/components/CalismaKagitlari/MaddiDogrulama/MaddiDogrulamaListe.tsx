@@ -173,7 +173,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
     const cleanParentId = removeTurkishChars(parentId);
     const cleanChildId = removeTurkishChars(childId);
     setLoading(true);
-    router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/${cleanParentId}/${cleanChildId}`);
+    router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/${cleanParentId}/${cleanChildId}?title=${encodeURIComponent(childId)}`);
   };
 
   const handleOpenGroup = (index: number) => {
@@ -225,8 +225,8 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
             const bgcolor = getColorForCategory(item.name);
             const icon = getIconForCategory(index);
             const targetPath = parentName
-              ? `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${removeTurkishChars(item.name)}`
-              : `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}`;
+              ? `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`
+              : `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`;
 
             return (
               <Grid item xs={12} sm={4} lg={3} key={item.id}>
@@ -267,7 +267,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
                         <Box sx={{ width: "100%", maxWidth: 400 }}>
                           <EkBelgeYukleButton
                             formKodu={parent.name}
-                            text="Ek Belge Yükle"
+                            text="Belge Yükle"
                             fullWidth={true}
                             buttonVariant="contained"
                             color="primary"

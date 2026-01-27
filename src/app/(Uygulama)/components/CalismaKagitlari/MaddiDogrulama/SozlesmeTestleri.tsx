@@ -28,12 +28,13 @@ import {
 
 interface Props {
     dipnotNo: string;
-    modelAdi: string
+    modelAdi: string;
     isClickedVarsayilanaDon: boolean;
     setIsClickedVarsayilanaDon: (deger: boolean) => void;
+    isReport?: boolean;
 }
 
-const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon }) => {
+const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon, isReport }) => {
     const theme = useTheme();
     const [veriler, setVeriler] = useState<SozlesmeTestleriData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -153,12 +154,14 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
     }, [isClickedVarsayilanaDon]);
 
     return (
-        <Box sx={{ p: 2 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                <Typography variant="h5" sx={{ fontWeight: "600", color: "#333" }}>
-                    Sözleşme Testleri
-                </Typography>
-            </Box>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            {!isReport && (
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Typography variant="h5" sx={{ fontWeight: "600", color: "#333" }}>
+                        Sözleşme Testleri
+                    </Typography>
+                </Box>
+            )}
 
             <Grid container>
                 <Grid item xs={12}>
@@ -193,33 +196,37 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
                                         {/* Sözleşmedeki Bakiye (Input) */}
                                         <TableCell sx={{ ...tableCellStyle, p: 0.5, textAlign: "center" }}>
-                                            <TextField
-                                                size="small"
-                                                type="text"
-                                                defaultValue={row.sozlesmedekiBakiye}
-                                                onBlur={(e) => handleInputChange(row.id, e.target.value)}
-                                                inputProps={{ step: "0.01" }}
-                                                variant="outlined"
-                                                sx={{
-                                                    width: "140px",
-                                                    "& .MuiOutlinedInput-input": {
-                                                        textAlign: "right",
-                                                        padding: "6px 10px",
-                                                        fontSize: "0.85rem",
-                                                        backgroundColor: "white",
-                                                        "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
-                                                            "-webkit-appearance": "none",
-                                                            margin: 0,
+                                            {isReport ? (
+                                                <span>{fmt(row.sozlesmedekiBakiye)}</span>
+                                            ) : (
+                                                <TextField
+                                                    size="small"
+                                                    type="text"
+                                                    defaultValue={row.sozlesmedekiBakiye}
+                                                    onBlur={(e) => handleInputChange(row.id, e.target.value)}
+                                                    inputProps={{ step: "0.01" }}
+                                                    variant="outlined"
+                                                    sx={{
+                                                        width: "140px",
+                                                        "& .MuiOutlinedInput-input": {
+                                                            textAlign: "right",
+                                                            padding: "6px 10px",
+                                                            fontSize: "0.85rem",
+                                                            backgroundColor: "white",
+                                                            "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
+                                                                "-webkit-appearance": "none",
+                                                                margin: 0,
+                                                            },
+                                                            "&[type=number]": {
+                                                                "-moz-appearance": "textfield",
+                                                            }
                                                         },
-                                                        "&[type=number]": {
-                                                            "-moz-appearance": "textfield",
+                                                        "& .MuiOutlinedInput-root": {
+                                                            borderRadius: "4px"
                                                         }
-                                                    },
-                                                    "& .MuiOutlinedInput-root": {
-                                                        borderRadius: "4px"
-                                                    }
-                                                }}
-                                            />
+                                                    }}
+                                                />
+                                            )}
                                         </TableCell>
 
                                         {/* Fark */}
