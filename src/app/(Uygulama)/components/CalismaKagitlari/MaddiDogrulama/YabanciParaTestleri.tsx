@@ -210,7 +210,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                 sx={{
                                     fontWeight: 700,
                                     textAlign: "left",
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -221,7 +221,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                     fontWeight: 700,
                                     textAlign: "center",
                                     width: 150,
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -232,7 +232,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                     fontWeight: 700,
                                     textAlign: "center",
                                     width: 100,
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -243,7 +243,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                     fontWeight: 700,
                                     textAlign: "center",
                                     width: 100,
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -254,7 +254,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                     fontWeight: 700,
                                     textAlign: "center",
                                     width: 150,
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -265,7 +265,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                     fontWeight: 700,
                                     textAlign: "center",
                                     width: 150,
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -276,7 +276,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                     fontWeight: 700,
                                     textAlign: "center",
                                     width: 150,
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
