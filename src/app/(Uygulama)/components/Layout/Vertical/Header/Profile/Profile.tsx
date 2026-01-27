@@ -76,7 +76,6 @@ const Profile = () => {
         onClose={handleClose2}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
-        TransitionComponent={Box as any}
         slotProps={{
           paper: {
             sx: {
