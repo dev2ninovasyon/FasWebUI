@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation";
 import { useLoading } from "@/contexts/LoadingContext";
 import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
-const Page = ({ params }: { params: { parentName: string } }) => {
-    const { parentName } = params;
+const Page = ({ params }: { params: Promise<{ parentName: string }> }) => {
+    const { parentName } = React.use(params);
     const user = useSelector((state: AppState) => state.userReducer);
     const router = useRouter();
     const { setLoading } = useLoading();
