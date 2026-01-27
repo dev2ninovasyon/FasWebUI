@@ -364,13 +364,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
               </Grid>
             ))}
           </Grid>
-          <Box px={3}>
-            <YorumBolumu
-              belgeAdi={`${dipnotAdi} Risk Tespiti`}
-              denetlenenId={user.denetlenenId || 0}
-              yil={user.yil || 0}
-            />
-          </Box>
+
 
         </Grid>
       </Grid>
