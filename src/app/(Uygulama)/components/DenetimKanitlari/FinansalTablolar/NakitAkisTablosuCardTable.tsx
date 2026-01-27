@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Typography,
   Table,
@@ -134,7 +134,12 @@ const NakitAkisCardTable = ({ fdtData, natData }: Props) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} sx={{ mb: 2 }}>
+      <Grid
+        sx={{ mb: 2 }}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         {1 && (
           <>
             <Paper

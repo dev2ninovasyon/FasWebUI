@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
@@ -89,7 +89,11 @@ const BenfordChart: React.FC<Props> = ({ response, onBasamakClick }) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         {(response?.dagilim ?? []).length > 0 ? (
           <Chart options={options} series={series} type="line" height={420} width="100%" />
         ) : null}

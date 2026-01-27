@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 import { DonusumMizanKarsilastirmaItem } from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/VukMizanDonusumMizanKarsilastirma";
 

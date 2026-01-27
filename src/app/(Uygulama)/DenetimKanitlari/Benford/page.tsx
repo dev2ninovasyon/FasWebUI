@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { Button, Grid, useTheme } from "@mui/material";
@@ -46,13 +46,22 @@ const Page = () => {
     <PageContainer title="Benford Analizi" description="Benford ilk basamak analizi">
       <Breadcrumb title="Benford Analizi" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Grid
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Button onClick={() => setShowGraph((p) => !p)}>
             {showGraph ? <IconTable size={24} /> : <IconChartBar size={24} />}
           </Button>
         </Grid>
 
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <BenfordAnaliz showGraph={showGraph} toast={toast} />
         </Grid>
       </Grid>

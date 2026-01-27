@@ -1,4 +1,4 @@
-import { Button, Grid, Typography, useTheme } from "@mui/material";
+﻿import { Button, Grid, Typography, useTheme } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import { AppState } from "@/store/store";
@@ -610,16 +610,25 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
     <Grid container>
       {tabloAdi == "finansaldurum" && (
         <>
-          <Grid item xs={12} lg={12} mb={3}>
+          <Grid
+            mb={3}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <ParentCard title={`${title} (${user.yil ? user.yil - 1 : 0})`}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Grid item xs={12} lg={4}>
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1}>
                       Dönen Varlıklar
                     </Typography>
@@ -633,7 +642,11 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                       width="100%"
                     />
                   </Grid>
-                  <Grid item xs={12} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1}>
                       Duran Varlıklar
                     </Typography>
@@ -649,12 +662,16 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                   </Grid>
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Grid item xs={12} lg={4}>
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1} mt={3}>
                       Kısa Vadeli Yükümlülükler
                     </Typography>
@@ -668,7 +685,11 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                       width="100%"
                     />
                   </Grid>
-                  <Grid item xs={12} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1} mt={3}>
                       Uzun Vadeli Yükümlülükler
                     </Typography>
@@ -682,7 +703,11 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                       width="100%"
                     />
                   </Grid>
-                  <Grid item xs={12} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1} mt={3}>
                       Özkaynaklar
                     </Typography>
@@ -700,16 +725,24 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
               </Grid>
             </ParentCard>
           </Grid>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <ParentCard title={`${title} (${user.yil ? user.yil : 0})`}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Grid item xs={12} lg={4}>
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1}>
                       Dönen Varlıklar
                     </Typography>
@@ -723,7 +756,11 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                       width="100%"
                     />
                   </Grid>
-                  <Grid item xs={12} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1}>
                       Duran Varlıklar
                     </Typography>
@@ -739,12 +776,16 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                   </Grid>
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Grid item xs={12} lg={4}>
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1} mt={3}>
                       Kısa Vadeli Yükümlülükler
                     </Typography>
@@ -758,7 +799,11 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                       width="100%"
                     />
                   </Grid>
-                  <Grid item xs={12} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1} mt={3}>
                       Uzun Vadeli Yükümlülükler
                     </Typography>
@@ -772,7 +817,11 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
                       width="100%"
                     />
                   </Grid>
-                  <Grid item xs={12} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Typography variant="h6" align="center" mb={1} mt={3}>
                       Özkaynaklar
                     </Typography>
@@ -794,16 +843,25 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
       )}
       {tabloAdi == "karzarar" && (
         <>
-          <Grid item xs={12} lg={12} mb={3}>
+          <Grid
+            mb={3}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <ParentCard title={`${title} (${user.yil ? user.yil - 1 : 0})`}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Grid item xs={12} lg={4}>
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Chart
                       options={chartOptionsDonemNetKariZarariOnceki}
                       series={donemNetKariZarariOranlarOnceki.map((val) =>
@@ -818,16 +876,24 @@ const DikeyAnalizChart: React.FC<Props> = ({ kalemData, tabloAdi, title }) => {
               </Grid>
             </ParentCard>
           </Grid>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <ParentCard title={`${title} (${user.yil ? user.yil : 0})`}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <Grid item xs={12} lg={4}>
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 4
+                    }}>
                     <Chart
                       options={chartOptionsDonemNetKariZarariCari}
                       series={donemNetKariZarariOranlarCari.map((val) =>

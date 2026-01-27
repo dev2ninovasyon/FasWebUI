@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -26,7 +26,12 @@ const Page = () => {
     >
       <Breadcrumb title="Denetim Dosya Yazdır" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12} mb={3}>
+        <Grid
+          mb={3}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <DenetimDosyaYazdirTable />
 
         </Grid>

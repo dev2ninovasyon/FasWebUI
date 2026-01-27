@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+﻿import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Divider,
@@ -253,12 +253,12 @@ const HileUsulsuzlukToplantidaGorusulenHususlarBelge: React.FC<
             {veriler.map((veri, index) => (
               <Grid
                 key={index}
-                item
-                xs={12}
-                lg={12}
                 mt="20px"
                 onClick={() => handleCardClick(veri)}
-              >
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <CalismaKagidiCard
                   title={`${index + 1}. ${veri.islem}`}
                   content={`${veri.tespit}`}

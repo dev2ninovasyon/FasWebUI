@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+﻿import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getKullaniciById } from "@/api/Kullanici/KullaniciIslemleri";
@@ -44,7 +44,13 @@ const KullaniciDetay = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="personelAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -52,12 +58,22 @@ const KullaniciDetay = () => {
             Personel Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {personelAdi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="unvani"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -65,12 +81,22 @@ const KullaniciDetay = () => {
             Ünvanı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {unvani}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="email"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -78,12 +104,22 @@ const KullaniciDetay = () => {
             Email
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {email}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="tel"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -91,12 +127,22 @@ const KullaniciDetay = () => {
             Tel
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {tel}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="gsm"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -104,12 +150,22 @@ const KullaniciDetay = () => {
             Gsm
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {gsm}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="personelDosyaArsivId"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -117,12 +173,22 @@ const KullaniciDetay = () => {
             Personel Dosya Arşiv Id
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {personelDosyaArsivId}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="aktifPasif"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -130,13 +196,21 @@ const KullaniciDetay = () => {
             Durum
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {aktifPasif ? "Aktif" : "Pasif"}
           </Typography>
         </Grid>
 
-        <Grid item xs={12} sm={3}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
       </Grid>
     </div>
   );

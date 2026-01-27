@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
     Box,
     Table,
@@ -72,8 +72,8 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                 controller,
                 user.token || "",
                 user.denetciId || 0,
-                user.yil || 0, // ✅ yil
-                user.denetlenenId || 0, // ✅ denetlenenId
+                user.yil || 0, // âœ… yil
+                user.denetlenenId || 0, // âœ… denetlenenId
                 dipnotNo,
                 modelAdi
             );

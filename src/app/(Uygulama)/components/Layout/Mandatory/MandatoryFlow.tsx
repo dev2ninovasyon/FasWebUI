@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import {
@@ -96,7 +96,11 @@ export default function MandatoryFlow({
                             </Box>
 
                             <Grid container spacing={{ xs: 3, md: 4 }}>
-                                <Grid item xs={12} md={8}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        md: 8
+                                    }}>
                                     <Box>
                                         <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
                                             <IconBuildingSkyscraper size={22} color={theme.palette.primary.main} />
@@ -115,7 +119,11 @@ export default function MandatoryFlow({
                                     </Box>
                                 </Grid>
 
-                                <Grid item xs={12} md={4}>
+                                <Grid
+                                    size={{
+                                        xs: 12,
+                                        md: 4
+                                    }}>
                                     <Box>
                                         <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
                                             <IconCalendar size={22} color={theme.palette.primary.main} />
@@ -130,7 +138,7 @@ export default function MandatoryFlow({
                                     </Box>
                                 </Grid>
 
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Button
                                         fullWidth
                                         variant="contained"
@@ -297,7 +305,7 @@ export default function MandatoryFlow({
             {/* Footer */}
             <Box sx={{ p: 3, textAlign: "center", opacity: 0.6, position: "relative", zIndex: 1 }}>
                 <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
-                    © {new Date().getFullYear()} Fas Denetim. Tüm Hakları Saklıdır.
+                    Â© {new Date().getFullYear()} Fas Denetim. Tüm Hakları Saklıdır.
                 </Typography>
             </Box>
         </Box>

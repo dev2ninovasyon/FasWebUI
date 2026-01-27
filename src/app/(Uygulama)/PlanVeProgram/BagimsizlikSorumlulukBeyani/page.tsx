@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { Box, Grid } from "@mui/material";
@@ -33,7 +33,7 @@ const Page = () => {
         description="this is Bağımsızlık Sorumluluk Beyanı"
       >
         <Grid container>
-          <Grid item xs={12} mb={3}>
+          <Grid mb={3} size={12}>
             <PersonelBoxAutocomplete
               initialValue={user.kullaniciAdi}
               tip={"Hepsi"}
@@ -64,21 +64,39 @@ const Page = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => { }}
                   hazirlayan="Denetçi - Yardımcı Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => { }}
                   onaylayan="Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => { }}
                   kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -96,7 +114,12 @@ const Page = () => {
             gap: 1,
           }}
         >
-          <Grid item xs={12} lg={12} mt={5}>
+          <Grid
+            mt={5}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <IslemlerCard controller={controller} />
           </Grid>
         </Grid>

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
 import { MenuitemsType } from "@/app/(Uygulama)/components/Layout/Vertical/Sidebar/MenuItems";
@@ -36,7 +36,7 @@ function extractMenuItems(menuItems: MenuitemsType[]) {
     let finalTitle = formattedTitle;
 
     if (menuItem.parentTitle && formattedParentTitle !== formattedTitle) {
-      finalTitle = `${formattedParentTitle} ⚬ ${formattedTitle}`;
+      finalTitle = `${formattedParentTitle} âš¬ ${formattedTitle}`;
     }
 
     // Aynı başlık daha önce eklendiyse, tekrar ekleme

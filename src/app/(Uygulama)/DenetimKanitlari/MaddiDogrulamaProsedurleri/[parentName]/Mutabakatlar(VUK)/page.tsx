@@ -145,10 +145,21 @@ const Page = () => {
       </Breadcrumb>
       <Grid container>
 
-        <Grid item xs={12} sm={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 12,
+            lg: 12
+          }}>
           {dipnotNo != "" ? <Mutabakat dipnot={dipnotNo} /> : <></>}
         </Grid>
-        <Grid item xs={12} sm={12} lg={12} mb={3}>
+        <Grid
+          mb={3}
+          size={{
+            xs: 12,
+            sm: 12,
+            lg: 12
+          }}>
           <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
         </Grid>
       </Grid>

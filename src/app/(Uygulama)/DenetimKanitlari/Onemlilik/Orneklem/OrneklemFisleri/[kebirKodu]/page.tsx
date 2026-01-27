@@ -31,9 +31,12 @@ const Page = () => {
       description="this is Örneklem Fişleri"
     >
       <Breadcrumb title="Örneklem Fişleri" items={BCrumb} />
-
       <Grid container marginTop={3}>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <OrneklemFisleri />
         </Grid>
       </Grid>

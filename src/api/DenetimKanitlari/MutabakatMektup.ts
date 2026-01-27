@@ -1,4 +1,4 @@
-import { apiFetch } from "../apiBase";
+﻿import { apiFetch } from "../apiBase";
 
 // DTOs and Interfaces
 export interface MutabakatMektupBelgeDto {

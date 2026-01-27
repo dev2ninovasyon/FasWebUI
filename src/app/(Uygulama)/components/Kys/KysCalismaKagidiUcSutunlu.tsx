@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -198,12 +198,12 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     {veriler.map((veri, index) => (
                         <Grid
                             key={index}
-                            item
-                            xs={12}
-                            lg={12}
                             mt="20px"
                             onClick={() => handleRowClick(veri)}
-                        >
+                            size={{
+                                xs: 12,
+                                lg: 12
+                            }}>
                             <CalismaKagidiCard
                                 title={`${index + 1}. ${veri.konu}`}
                                 standartMi={veri.standartMi}
@@ -221,15 +221,15 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                         }}
                     >
                         <Grid
-                            item
-                            xs={12}
-                            lg={1.5}
                             my={2}
                             sx={{
                                 display: "flex",
                                 justifyContent: "end",
                             }}
-                        >
+                            size={{
+                                xs: 12,
+                                lg: 1.5
+                            }}>
                             <Button
                                 size="medium"
                                 variant="outlined"
@@ -253,7 +253,6 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     </Grid>
                 )}
             </Grid>
-
             {isPopUpOpen && (
                 <PopUpComponent
                     konu={selectedKonu}
@@ -274,8 +273,6 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     readOnly={readOnly}
                 />
             )}
-
-
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}

@@ -1,4 +1,4 @@
-// src/app/(Uygulama)/components/CalismaKagitlari/EkBelgeYukleButton.tsx
+﻿// src/app/(Uygulama)/components/CalismaKagitlari/EkBelgeYukleButton.tsx
 
 import React, {
   useEffect,
@@ -604,14 +604,12 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
           >
             <Grid
               onClick={handleOpen}
-              item
-              xs={12}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-            >
+              size={12}>
               <Button
                 size="medium"
                 variant={buttonVariant}
@@ -624,7 +622,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
           </Grid>
         )
       )}
-
       {/* gizli input */}
       <input
         ref={inputRef}
@@ -634,7 +631,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         accept=".pdf,.doc,.docx,.xls,.xlsx,.xlsm,.png"
         onChange={handleFileChange}
       />
-
       {/* Ek belgeler popup */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogTitle
@@ -678,7 +674,11 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         >
           <Grid container spacing={3}>
             {/* Sol: yükleme alanı */}
-            <Grid item xs={12} md={5}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 5
+              }}>
               <Box
                 onClick={handleClickUploadButton}
                 onDragOver={handleDragOver}
@@ -725,7 +725,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Grid item xs={12} style={{ textAlign: "center" }}>
+                    <Grid style={{ textAlign: "center" }} size={12}>
                       <Stack spacing={1.5} alignItems="center">
                         <CloudUploadIcon
                           fontSize="large"
@@ -757,7 +757,11 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
             </Grid>
 
             {/* Sağ: Yüklenmiş Dosya Bilgileri */}
-            <Grid item xs={12} md={7}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 7
+              }}>
               <Paper
                 elevation={0}
                 sx={{
@@ -771,7 +775,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                   flexDirection: "column",
                   height: "100%",
                   minHeight: 285,
-                  maxHeight: 420,          // 🔹 üst sınır, fazlası için scroll
+                  maxHeight: 420,          // ğŸ”¹ üst sınır, fazlası için scroll
                 }}
               >
                 {/* Başlık + arama */}
@@ -801,8 +805,8 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                 <TableContainer
                   sx={{
                     flex: 1,
-                    overflowY: "auto",     // 🔹 dikey scroll
-                    overflowX: "auto",     // 🔹 sadece gerekirse yatay scroll
+                    overflowY: "auto",     // ğŸ”¹ dikey scroll
+                    overflowX: "auto",     // ğŸ”¹ sadece gerekirse yatay scroll
                   }}
                 >
                   <Table size="small" stickyHeader>
@@ -859,7 +863,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                                   variant="body2"
                                   title={belge.orijinalDosyaAdi}
                                   sx={{
-                                    wordBreak: "break-word",   // 🔹 isim alt satıra insin
+                                    wordBreak: "break-word",   // ğŸ”¹ isim alt satıra insin
                                     whiteSpace: "normal",
                                   }}
                                 >
@@ -942,7 +946,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
           <Button onClick={handleClose}>Kapat</Button>
         </DialogActions>
       </Dialog >
-
       {/* Seçilenleri silme onay popup'ı */}
       <Dialog
         open={deleteConfirmOpen}
@@ -974,7 +977,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* PDF Önizleme popup */}
       <Dialog
         open={previewOpen}

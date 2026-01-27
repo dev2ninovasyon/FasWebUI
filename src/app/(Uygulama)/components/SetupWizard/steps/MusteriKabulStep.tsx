@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
     Box,
@@ -161,11 +161,8 @@ export default function MusteriKabulStep({
             <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 3, fontStyle: "italic" }}>
                 * Denetim türü ve yıl tercihlerini daha sonra 'Müşteri İşlemleri {">"} Müşteri Detay' sayfasından değiştirebilirsiniz.
             </Typography>
-
             <Grid container spacing={2}>
                 <Grid
-                    item
-                    xs={12}
                     sx={{
                         display: "flex",
                         flexDirection: smDown ? "column" : "row",
@@ -173,7 +170,7 @@ export default function MusteriKabulStep({
                         justifyContent: "center",
                         gap: 1.5,
                     }}
-                >
+                    size={12}>
                     <Box
                         sx={{
                             display: "flex",
@@ -284,7 +281,6 @@ export default function MusteriKabulStep({
                     </Box>
                 </Grid>
             </Grid>
-
             <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-start" }}>
                 <Button
                     variant="text"

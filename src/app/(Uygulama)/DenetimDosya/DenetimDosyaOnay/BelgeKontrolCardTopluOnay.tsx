@@ -1,4 +1,4 @@
-// BelgeKontrolCardTopluOnay.tsx
+﻿// BelgeKontrolCardTopluOnay.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, Grid, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -89,7 +89,7 @@ const BelgeKontrolCardTopluOnay: React.FC<CardProps> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card sx={{ width: "100%", bgcolor: "primary.light" }}>
           <CardHeader title={<Typography variant="h6">{title}</Typography>} />
           <CardContent>

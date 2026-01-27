@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { HotTable } from "@handsontable/react";

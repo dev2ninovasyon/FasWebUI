@@ -1,4 +1,4 @@
-export const isTokenExpired = (token: string): boolean => {
+﻿export const isTokenExpired = (token: string): boolean => {
     if (!token) return true;
     try {
         const base64Url = token.split(".")[1];

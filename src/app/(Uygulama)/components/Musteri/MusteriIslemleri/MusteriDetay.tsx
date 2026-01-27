@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+﻿import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
@@ -112,7 +112,13 @@ const MusteriDetay = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="firmaAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -120,12 +126,22 @@ const MusteriDetay = () => {
             Firma Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {firmaAdi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="yetkili"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -133,12 +149,22 @@ const MusteriDetay = () => {
             Yetkili
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {yetkili}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="tel"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -146,12 +172,22 @@ const MusteriDetay = () => {
             Telefon
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {tel}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="adres"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -159,12 +195,22 @@ const MusteriDetay = () => {
             Adres
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {adres}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="email"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -172,12 +218,22 @@ const MusteriDetay = () => {
             Email
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {email}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="webAdresi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -185,12 +241,22 @@ const MusteriDetay = () => {
             Web Adresi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {webAdresi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="ticaretSicilNo"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -198,12 +264,22 @@ const MusteriDetay = () => {
             Ticaret Sicil No
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {ticaretSicilNo}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="vergiDairesi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -211,12 +287,22 @@ const MusteriDetay = () => {
             Vergi Dairesi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {vergiDairesi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="vergiNo"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -224,12 +310,22 @@ const MusteriDetay = () => {
             Vergi No
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {vergiNo}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="konsolideMi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -237,14 +333,24 @@ const MusteriDetay = () => {
             Konsolide Mi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {konsolideMi}
           </Typography>
         </Grid>
         {konsolideMi === "Evet" && (
           <>
-            <Grid item xs={12} sm={3} display="flex" alignItems="center">
+            <Grid
+              display="flex"
+              alignItems="center"
+              size={{
+                xs: 12,
+                sm: 3
+              }}>
               <CustomFormLabel
                 htmlFor="konsolideTipi"
                 sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -252,7 +358,11 @@ const MusteriDetay = () => {
                 Konsolide Tipi
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 9
+              }}>
               <Typography textAlign="left" variant="h6">
                 {konsolideTipi}
               </Typography>
@@ -263,7 +373,13 @@ const MusteriDetay = () => {
           (konsolideTipi == "Alt Şirket" ||
             konsolideTipi == "Yavru Şirket") && (
             <>
-              <Grid item xs={12} sm={3} display="flex" alignItems="center">
+              <Grid
+                display="flex"
+                alignItems="center"
+                size={{
+                  xs: 12,
+                  sm: 3
+                }}>
                 <CustomFormLabel
                   htmlFor="konsolideBagliSirketAdi"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -271,7 +387,11 @@ const MusteriDetay = () => {
                   Konsolide Bağlı Olduğu Şirket
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 9
+                }}>
                 <Typography textAlign="left" variant="h6">
                   {konsolideBagliSirketAdi}
                 </Typography>
@@ -279,7 +399,13 @@ const MusteriDetay = () => {
             </>
           )}
 
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sektor1Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -287,12 +413,22 @@ const MusteriDetay = () => {
             Sektör 1
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {sektor1List.find((item) => item.id === sektor1Id)?.adi || ""}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sektor2Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -300,12 +436,22 @@ const MusteriDetay = () => {
             Sektör 2
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {sektor2List.find((item) => item.id === sektor2Id)?.adi || ""}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sektor3Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -313,12 +459,20 @@ const MusteriDetay = () => {
             Sektör 3
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {sektor3List.find((item) => item.id === sektor3Id)?.adi || ""}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
       </Grid>
     </div>
   );

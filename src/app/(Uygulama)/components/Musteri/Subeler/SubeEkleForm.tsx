@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -38,7 +38,13 @@ const SubeEkleForm = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="unvan"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -46,14 +52,24 @@ const SubeEkleForm = () => {
             Ünvan
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="unvan"
             fullWidth
             onChange={(e: any) => setUnvan(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="subeAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -61,14 +77,24 @@ const SubeEkleForm = () => {
             Şube Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="subeAdi"
             fullWidth
             onChange={(e: any) => setSubeAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="adres"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -76,15 +102,27 @@ const SubeEkleForm = () => {
             Adres
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="adres"
             fullWidth
             onChange={(e: any) => setAdres(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

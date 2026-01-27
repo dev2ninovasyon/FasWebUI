@@ -1,4 +1,4 @@
-// src/app/(Uygulama)/components/Dashboards/DriverTour.tsx
+﻿// src/app/(Uygulama)/components/Dashboards/DriverTour.tsx
 "use client";
 
 import React, { useEffect, useMemo } from "react";
@@ -57,7 +57,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Veri"]',
             popover: {
-                title: "VERİ – Veri Girişi Modülü",
+                title: "VERİ â€“ Veri Girişi Modülü",
                 description:
                     "Veri Girişi modülü, denetim sürecinin temelini oluşturan tüm veri toplama ve kayıt işlemlerini kapsar. Mizan, e-defter, fatura ve beyannameler gibi verileri buradan sisteme yüklersiniz.",
                 side: "right",
@@ -71,7 +71,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/MusteriBelgeleri"]',
             popover: {
-                title: "MÜŞTERİ BELGELERİ – Belgelerin Arşivlenmesi",
+                title: "MÜŞTERİ BELGELERİ â€“ Belgelerin Arşivlenmesi",
                 description:
                     "Müşteri Belgeleri modülü, müşteriye ait sözleşme, yazışma, ek doküman ve diğer belgelerin dijital olarak saklandığı alandır.",
                 side: "right",
@@ -85,7 +85,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Hesaplamalar"]',
             popover: {
-                title: "HESAPLAMALAR – Finansal ve Denetim Hesaplamaları",
+                title: "HESAPLAMALAR â€“ Finansal ve Denetim Hesaplamaları",
                 description:
                     "Hesaplamalar modülü; önemlilik ve örneklem, kıdem tazminatı, reeskont, kredi, kur farkı, yaşlandırma ve benzeri teknik hesaplama araçlarını içerir.",
                 side: "right",
@@ -99,7 +99,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Donusum"]',
             popover: {
-                title: "DÖNÜŞÜM – VUK’tan BOBİ/TFRS’ye Geçiş",
+                title: "DÖNÜŞÜM â€“ VUKâ€™tan BOBİ/TFRSâ€™ye Geçiş",
                 description:
                     "Dönüşüm modülü; VUK kayıtlarının BOBİ FRS veya TFRS gibi standartlara dönüştürüldüğü, dönüşüm fişlerinin oluşturulduğu ve kontrol edildiği bölümdür.",
                 side: "right",
@@ -113,7 +113,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/PlanVeProgram"]',
             popover: {
-                title: "PLAN VE PROGRAM – Stratejik Planlama",
+                title: "PLAN VE PROGRAM â€“ Stratejik Planlama",
                 description:
                     "Planlama modülü, denetim sürecinin stratejik planlamasını ve organizasyonunu içerir. Denetim programı, görev atamaları, risk değerlendirmeleri ve denetim stratejisini bu bölümden yönetirsiniz.",
                 side: "right",
@@ -127,7 +127,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/DenetimKanitlari"]',
             popover: {
-                title: "DENETİM KANITLARI – Çalışma Kağıtları",
+                title: "DENETİM KANITLARI â€“ Çalışma Kağıtları",
                 description:
                     "Denetim Kanıtları modülü; tüm çalışma kağıtlarınızı, test sonuçlarını, mutabakatları, analitik incelemeleri ve diğer denetim kanıtlarını kaydettiğiniz ana bölümdür.",
                 side: "right",
@@ -141,7 +141,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/GenelKurul"]',
             popover: {
-                title: "GENEL KURUL – Toplantı ve İzleme Belgeleri",
+                title: "GENEL KURUL â€“ Toplantı ve İzleme Belgeleri",
                 description:
                     "Genel Kurul modülü; genel kurul toplantısı görevlendirme, katılım, denetim çalışması izleme ve faaliyet raporuna ilişkin belgelerin üretildiği alandır.",
                 side: "right",
@@ -155,7 +155,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Rapor"]',
             popover: {
-                title: "RAPOR – Bağımsız Denetçi Raporları",
+                title: "RAPOR â€“ Bağımsız Denetçi Raporları",
                 description:
                     "Rapor modülü; bağımsız denetçi raporu, dipnotlar ve faaliyet raporuna ilişkin denetçi raporlarının hazırlandığı ve yönetildiği bölümdür.",
                 side: "right",
@@ -169,7 +169,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/DenetimDosya"]',
             popover: {
-                title: "DENETİM DOSYA – Çalışma Dosyası Kurgusu",
+                title: "DENETİM DOSYA â€“ Çalışma Dosyası Kurgusu",
                 description:
                     "Denetim Dosya modülü; denetim metodolojisi dokümanları ve tüm çalışma kağıtlarının yazdırma/arsiv dosyası kurgusunun izlendiği bölümdür.",
                 side: "right",
@@ -183,7 +183,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Kys"]',
             popover: {
-                title: "KYS – Kalite Yönetim Sistemi",
+                title: "KYS â€“ Kalite Yönetim Sistemi",
                 description:
                     "KYS modülü; KGK KYS standardına uygun olarak kalite politikaları, risk değerlendirme süreci ve izleme-düzeltme faaliyetlerine ilişkin belgeleri içerir.",
                 side: "right",
@@ -197,7 +197,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Surdurulebilirlik"]',
             popover: {
-                title: "SÜRDÜRÜLEBİLİRLİK – ESG Bilgi Formları",
+                title: "SÜRDÜRÜLEBİLİRLİK â€“ ESG Bilgi Formları",
                 description:
                     "Sürdürülebilirlik modülü; çevresel, sosyal ve yönetişim (ESG) kapsamındaki genel bilgiler, çevresel etkiler, sosyal sorumluluk ve kurumsal yönetişim formlarını içerir.",
                 side: "right",
@@ -211,7 +211,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Enflasyon"]',
             popover: {
-                title: "ENFLASYON – Enflasyon Düzeltmesi Modülü",
+                title: "ENFLASYON â€“ Enflasyon Düzeltmesi Modülü",
                 description:
                     "Enflasyon modülü; düzeltme katsayıları, reel olmayan finansman maliyeti, stok ve duran varlık düzeltmeleri ile enflasyonlu finansal tabloların oluşturulmasını sağlar.",
                 side: "right",
@@ -225,7 +225,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Konsolidasyon"]',
             popover: {
-                title: "KONSOLİDASYON – Birleştirilmiş Finansal Tablolar",
+                title: "KONSOLİDASYON â€“ Birleştirilmiş Finansal Tablolar",
                 description:
                     "Konsolidasyon modülü; grup şirketlerinin mizanın birleştirilmesi, eliminasyon fişleri ve konsolide finansal tabloların oluşturulması süreçlerini yönetir.",
                 side: "right",
@@ -239,7 +239,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/DigerIslemler"]',
             popover: {
-                title: "DİĞER İŞLEMLER – Arşiv ve Genel Ayarlar",
+                title: "DİĞER İŞLEMLER â€“ Arşiv ve Genel Ayarlar",
                 description:
                     "Diğer İşlemler menüsü; arşiv, denetçi firma bilgileri, üyelik bilgileri ve veri aktarma gibi genel yönetim fonksiyonlarını içerir.",
                 side: "right",
@@ -253,7 +253,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/KullanimKilavuzu"]',
             popover: {
-                title: "KULLANIM KILAVUZU – Yardım ve Dökümantasyon",
+                title: "KULLANIM KILAVUZU â€“ Yardım ve Dökümantasyon",
                 description:
                     "Kullanım Kılavuzu; uygulamayı kullanırken ihtiyaç duyacağınız açıklamalar, ekran anlatımları ve yardım dokümanlarına ulaşmanızı sağlar. Rehber burada sona eriyor.",
                 side: "right",

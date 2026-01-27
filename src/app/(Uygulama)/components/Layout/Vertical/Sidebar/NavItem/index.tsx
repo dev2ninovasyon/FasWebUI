@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 // mui imports
 import Chip from "@mui/material/Chip";
 import List from "@mui/material/List";
@@ -112,7 +112,7 @@ export default function NavItem({
           disabled={item?.disabled}
           selected={pathDirect === item?.href}
           onClick={handleClick}
-          data-tour-id={item?.href} // 👈 Driver.js için hedef
+          data-tour-id={item?.href} // ğŸ‘ˆ Driver.js için hedef
         >
           <ListItemIcon
             sx={{

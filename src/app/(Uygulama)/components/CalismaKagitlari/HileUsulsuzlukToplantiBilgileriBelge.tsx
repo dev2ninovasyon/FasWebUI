@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+﻿import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Divider,
@@ -283,12 +283,12 @@ const HileUsulsuzlukToplantiBilgileriBelge: React.FC<CalismaKagidiProps> = ({
           {veriler.map((veri, index) => (
             <Grid
               key={index}
-              item
-              xs={12}
-              lg={12}
               mt="20px"
               onClick={() => handleCardClick(veri)}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CalismaKagidiCard
                 title={`${index + 1}. Toplantı Tarihi, Saati, Yeri ve Amacı`}
                 standartMi={veri.standartMi}

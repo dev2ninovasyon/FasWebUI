@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+﻿import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   Box,
   Card,
@@ -35,13 +35,13 @@ import { ConfirmPopUpComponent } from "./ConfirmPopUp";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 
-// 🔔 bildirim
+// ğŸ”” bildirim
 import { enqueueSnackbar } from "notistack";
 
-// ✅ Gönderilen eşleşmeleri API + tip
+// âœ… Gönderilen eşleşmeleri API + tip
 import { getSentInvoiceMatches, SentInvoiceMatchRow } from "@/api/Fatura/FaturaApi";
 
-// ✅ Handsontable
+// âœ… Handsontable
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import "handsontable/dist/handsontable.full.min.css";
@@ -100,7 +100,7 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
 
   const [openedGroupIndex, setOpenGroupIndex] = useState<any>(null);
 
-  // 🔽 Gönderilen eşleşmeleri için state
+  // ğŸ”½ Gönderilen eşleşmeleri için state
   const [matchRows, setMatchRows] = useState<SentInvoiceMatchRow[]>([]);
   const hotRef = useRef<any>(null);
 
@@ -329,7 +329,7 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     }
   };
 
-  // 🔽 Gönderilen eşleşmeleri yükle
+  // ğŸ”½ Gönderilen eşleşmeleri yükle
   const loadMatches = async () => {
     try {
       const data = await getSentInvoiceMatches(user);
@@ -358,7 +358,7 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     }
   }, [isClickedVarsayilanaDon]);
 
-  // 🔽 Handsontable data + kolonlar (gönderilen eşleşmeleri)
+  // ğŸ”½ Handsontable data + kolonlar (gönderilen eşleşmeleri)
   const matchesMatrix = useMemo(
     () =>
       matchRows.map((r) => [
@@ -466,7 +466,11 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                   justifyContent: "center",
                 }}
               >
-                <Grid item lg={12} xs={12}>
+                <Grid
+                  size={{
+                    lg: 12,
+                    xs: 12
+                  }}>
                   <Card
                     sx={{
                       padding: 0,
@@ -506,14 +510,14 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                             .map((veriWithBaslikId: any, index: any) => (
                               <Grid
                                 key={index}
-                                item
-                                xs={12}
-                                lg={12}
                                 mb={3}
                                 onClick={() => {
                                   handleCardClick(veriWithBaslikId);
                                 }}
-                              >
+                                size={{
+                                  xs: 12,
+                                  lg: 12
+                                }}>
                                 <CalismaKagidiCard
                                   title={`${index + 1}. ${veriWithBaslikId.kontrolTesti}`}
                                   content={veriWithBaslikId.kontrolAmaci}
@@ -530,14 +534,14 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                             }}
                           >
                             <Grid
-                              item
-                              xs={12}
-                              lg={1.5}
                               sx={{
                                 display: "flex",
                                 justifyContent: "start",
                               }}
-                            >
+                              size={{
+                                xs: 12,
+                                lg: 1.5
+                              }}>
                               <Button
                                 size="medium"
                                 variant="outlined"
@@ -559,14 +563,14 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                               </Button>
                             </Grid>
                             <Grid
-                              item
-                              xs={12}
-                              lg={1.5}
                               sx={{
                                 display: "flex",
                                 justifyContent: "end",
                               }}
-                            >
+                              size={{
+                                xs: 12,
+                                lg: 1.5
+                              }}>
                               <Button
                                 size="medium"
                                 variant="outlined"
@@ -607,7 +611,14 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
               }}
             >
               {veriler.map((veri, index) => (
-                <Grid key={index} item xs={12} lg={12} mt="20px" onClick={() => handleCardClick(veri)}>
+                <Grid
+                  key={index}
+                  mt="20px"
+                  onClick={() => handleCardClick(veri)}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CalismaKagidiCard
                     title={`${index + 1}. ${veri.kontrolTesti}`}
                     content={veri.kontrolAmaci}
@@ -625,15 +636,15 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={1.5}
                 my={2}
                 sx={{
                   display: "flex",
                   justifyContent: "end",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 1.5
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -658,15 +669,20 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           </>
         )}
 
-        {/* 🔽🔽🔽 BURAYA EKLEDİK: Kartların ALTINA, önizleme (BelgeKontrol) kartlarının ÜSTÜNE */}
+        {/* ğŸ”½ğŸ”½ğŸ”½ BURAYA EKLEDİK: Kartların ALTINA, önizleme (BelgeKontrol) kartlarının ÜSTÜNE */}
         <Grid
           container
           sx={{ width: "95%", margin: "0 auto", justifyContent: "center" }}
         >
-          <Grid item xs={12} lg={12} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Card>
               <CardHeader
-                title="Gönderilen Fatura ↔ Yevmiye Eşleşmeleri"
+                title="Gönderilen Fatura â†” Yevmiye Eşleşmeleri"
                 action={
                   <Button size="small" variant="outlined" onClick={loadMatches}>
                     Yenile
@@ -689,7 +705,7 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
             </Card>
           </Grid>
         </Grid>
-        {/* 🔼🔼🔼 EKLENEN KISIM SONU */}
+        {/* ğŸ”¼ğŸ”¼ğŸ”¼ EKLENEN KISIM SONU */}
 
         {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
           user.rol?.includes("SorumluDenetci") ||
@@ -703,13 +719,31 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
               justifyContent: "space-between",
             }}
           >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard fetch={fetchData} hazirlayan="Denetçi - Yardımcı Denetçi" controller={controller} />
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard fetch={fetchData} onaylayan="Sorumlu Denetçi" controller={controller} />
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={fetchData}
                 kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -728,12 +762,16 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
             gap: 1,
           }}
         >
-          <Grid item xs={12} lg={12} mt={5}>
+          <Grid
+            mt={5}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <IslemlerCard controller={controller} />
           </Grid>
         </Grid>
       </Grid>
-
       {isPopUpOpen && (
         <PopUpComponent
           kontrolTesti={selectedKontrolTesti}
@@ -751,7 +789,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
           isNew={isNew}
         />
       )}
-
       {isGroupPopUpOpen && (
         <DuzenleGroupPopUp
           islem={selectedGroupIslem}

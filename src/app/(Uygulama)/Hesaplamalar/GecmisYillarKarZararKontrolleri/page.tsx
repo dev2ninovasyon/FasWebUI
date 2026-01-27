@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -54,7 +54,12 @@ const Page: React.FC = () => {
     >
       <Breadcrumb title="Geçmiş Yıllar Kar Zarar Kontrolleri" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12} mb={2}>
+        <Grid
+          mb={2}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <GecmisYillarKarZararKontrolleri />
         </Grid>
         <FloatingButtonFisler

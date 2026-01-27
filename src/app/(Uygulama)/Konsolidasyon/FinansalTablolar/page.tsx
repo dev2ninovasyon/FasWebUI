@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";

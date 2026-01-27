@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
     Box,
     Grid,
@@ -160,7 +160,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 
     return (
         <Grid container>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     {renderAnaHesaplarTable()}
                     {renderDonusumFisleriTable()}

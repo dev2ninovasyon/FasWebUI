@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -20,7 +20,11 @@ const Page: React.FC = () => {
     <PageContainer title="Fiş Listesi" description="this is Fiş Listesi">
       <Breadcrumb title="Fiş Listesi" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <FisListesi />
         </Grid>
       </Grid>

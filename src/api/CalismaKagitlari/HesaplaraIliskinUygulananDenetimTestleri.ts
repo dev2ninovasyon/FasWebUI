@@ -1,4 +1,4 @@
-// src/api/CalismaKagitlari/HesaplaraIliskinUygulananDenetimTestleri.ts
+﻿// src/api/CalismaKagitlari/HesaplaraIliskinUygulananDenetimTestleri.ts
 
 import { apiFetch } from "@/api/apiBase";
 export interface Denetlenen {

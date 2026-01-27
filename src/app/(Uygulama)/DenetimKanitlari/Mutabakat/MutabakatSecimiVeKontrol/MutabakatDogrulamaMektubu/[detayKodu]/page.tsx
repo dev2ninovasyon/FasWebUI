@@ -452,7 +452,6 @@ const Page = () => {
   }, []);
 
   return (
-
     <>
       <Breadcrumb title="Mutabakat Doğrulama Mektubu" items={BCrumb}>
         <Grid
@@ -466,17 +465,17 @@ const Page = () => {
           }}
         >
           <Grid
-            item
-            xs={12}
-            md={10}
-            lg={8}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-end",
               gap: 2,
             }}
-          >
+            size={{
+              xs: 12,
+              md: 10,
+              lg: 8
+            }}>
             <Button
               variant="outlined"
               onClick={() => setUploadDialogOpen(true)}
@@ -596,7 +595,11 @@ const Page = () => {
 
           {/* Editor */}
           {veriler && (
-            <Grid item xs={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CustomEditorWVeri controller={controller} veri={veriler} />
             </Grid>
           )}

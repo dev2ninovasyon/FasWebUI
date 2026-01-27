@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -165,7 +165,7 @@ const Page = () => {
             {pAvatars.map((avatar) => {
               const isSelected = customizer.avatarSrc === avatar.src;
               return (
-                <Grid item xs={2.4} key={avatar.id}>
+                <Grid key={avatar.id} size={2.4}>
                   <StyledBox
                     onClick={() => dispatch(setAvatar(avatar.src))}
                     sx={{
@@ -203,7 +203,13 @@ const Page = () => {
           <ChildCard>
             <Grid container spacing={3}>
               {/* Eski Şifre */}
-              <Grid item xs={12} sm={3} display="flex" alignItems="center">
+              <Grid
+                display="flex"
+                alignItems="center"
+                size={{
+                  xs: 12,
+                  sm: 3
+                }}>
                 <CustomFormLabel
                   htmlFor="oldPassword"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -211,7 +217,11 @@ const Page = () => {
                   Eski Şifre
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 9
+                }}>
                 <form autoComplete="off">
                   <CustomTextField
                     id="oldPassword"
@@ -235,7 +245,13 @@ const Page = () => {
                 </form>
               </Grid>
               {/* Yeni Şifre */}
-              <Grid item xs={12} sm={3} display="flex" alignItems="center">
+              <Grid
+                display="flex"
+                alignItems="center"
+                size={{
+                  xs: 12,
+                  sm: 3
+                }}>
                 <CustomFormLabel
                   htmlFor="newPassword"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -243,7 +259,11 @@ const Page = () => {
                   Yeni Şifre
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 9
+                }}>
                 <form autoComplete="off">
                   <CustomTextField
                     id="newPassword"
@@ -267,7 +287,13 @@ const Page = () => {
                 </form>
               </Grid>
               {/* Yeni Şifre Tekrar */}
-              <Grid item xs={12} sm={3} display="flex" alignItems="center">
+              <Grid
+                display="flex"
+                alignItems="center"
+                size={{
+                  xs: 12,
+                  sm: 3
+                }}>
                 <CustomFormLabel
                   htmlFor="confirmPassword"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -275,7 +301,11 @@ const Page = () => {
                   Yeni Şifre (Tekrar)
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 9
+                }}>
                 <form autoComplete="off">
                   <CustomTextField
                     id="confirmPassword"
@@ -305,8 +335,16 @@ const Page = () => {
                 </form>
               </Grid>
               {/* Kaydet Butonu */}
-              <Grid item xs={12} sm={3}></Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 3
+                }}></Grid>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 9
+                }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -357,7 +395,6 @@ const Page = () => {
           </Button>
         </Box>
       </PageContainer>
-
       {/* Setup Wizard Modal */}
       {showSetupWizard && (
         <SetupWizardModal
@@ -370,7 +407,6 @@ const Page = () => {
           }}
         />
       )}
-
       {/* Manual Driver Tour */}
       <DriverTour run={showManualTour} onClose={() => setShowManualTour(false)} />
     </HesapAyarlariLayout>

@@ -29,7 +29,7 @@ const Page = () => {
     >
       <Breadcrumb title="İlişkili Taraf Düzenle" items={BCrumb} />
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ParentCard title="İlişkili Taraf Düzenle">
             <IliskiliTarafDuzenleForm />
           </ParentCard>

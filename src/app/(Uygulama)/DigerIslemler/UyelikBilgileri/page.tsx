@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -28,7 +28,12 @@ const Page = () => {
     >
       <Breadcrumb title="Üyelik Bilgileri" items={BCrumb} />
       <Grid container spacing={3}>
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 12,
+            lg: 12
+          }}>
           <ParentCard title={`${user.denetciFirmaAdi} Üyelik Bilgileri`}>
             <OdemeBilgileriTable />
           </ParentCard>

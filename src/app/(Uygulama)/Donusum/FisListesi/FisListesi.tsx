@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -482,7 +482,12 @@ const FisListesi = () => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} mb={2}>
+      <Grid
+        mb={2}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <HotTable
           style={{
             height: "100%",
@@ -540,15 +545,19 @@ const FisListesi = () => {
           copyPaste={false}
         />
       </Grid>
-      <Grid item xs={12} lg={10}></Grid>
       <Grid
-        item
-        xs={12}
-        lg={2}
+        size={{
+          xs: 12,
+          lg: 10
+        }}></Grid>
+      <Grid
         display={"flex"}
         alignItems={"end"}
         sx={{ py: 2, pl: { lg: 2 } }}
-      >
+        size={{
+          xs: 12,
+          lg: 2
+        }}>
         <Button
           size="medium"
           variant="outlined"

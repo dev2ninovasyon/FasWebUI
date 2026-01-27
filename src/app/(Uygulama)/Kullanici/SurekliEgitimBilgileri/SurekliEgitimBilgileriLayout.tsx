@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ProtectedRoute from "@/app/ProtectedRoute";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";

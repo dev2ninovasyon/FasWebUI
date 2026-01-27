@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, BorderStyle, HeadingLevel, AlignmentType, TextRun, PageBreak, VerticalAlign, Header, Footer, ImageRun } from "docx";
+﻿import { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, BorderStyle, HeadingLevel, AlignmentType, TextRun, PageBreak, VerticalAlign, Header, Footer, ImageRun } from "docx";
 import { saveAs } from "file-saver";
 import { KysRiskMatrisi, RiskMatrixData } from "@/api/Kys/KysRiskMatrisi";
 import { riskMatrixSections, documentMapping } from "@/api/Kys/KysRiskMatrixConstants";
@@ -529,7 +529,7 @@ export const exportRiskMatrixToWord = async (data: KysRiskMatrisi[], relatedDocs
                         new TableRow({
                             children: [
                                 new TableCell({
-                                    children: [new Paragraph({ children: [new TextRun({ text: item.checked ? "☑" : "☐", bold: true, color: item.checked ? "2E75B6" : "A6A6A6", size: 22 })], alignment: AlignmentType.CENTER })],
+                                    children: [new Paragraph({ children: [new TextRun({ text: item.checked ? "â˜‘" : "â˜", bold: true, color: item.checked ? "2E75B6" : "A6A6A6", size: 22 })], alignment: AlignmentType.CENTER })],
                                     width: { size: 8, type: WidthType.PERCENTAGE },
                                     margins: { top: 80, bottom: 80, left: 80, right: 80 },
                                     shading: idx % 2 === 1 ? { fill: "F9F9F9" } : undefined,

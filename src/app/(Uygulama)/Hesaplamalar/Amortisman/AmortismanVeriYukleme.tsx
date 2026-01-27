@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -942,16 +942,20 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         ]}
       />
       <Grid container marginTop={2}>
-        <Grid item xs={12} lg={10}></Grid>
         <Grid
-          item
-          xs={12}
-          lg={2}
+          size={{
+            xs: 12,
+            lg: 10
+          }}></Grid>
+        <Grid
           sx={{
             display: "flex",
             justifyContent: "flex-end",
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>

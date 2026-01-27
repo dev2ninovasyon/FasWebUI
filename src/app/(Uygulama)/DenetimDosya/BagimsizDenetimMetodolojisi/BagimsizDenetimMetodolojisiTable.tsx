@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -17,7 +17,7 @@ import {
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getDenetimDosya } from "@/api/DenetimDosya/DenetimDosya";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import Link from "next/link";
 

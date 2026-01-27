@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "@/store/hooks";
 import { CircularProgress, MenuItem, Select, InputLabel, FormControl, Button, Snackbar, Alert } from "@mui/material";
@@ -64,7 +64,7 @@ const [seciliAy, setSeciliAy] = useState<string>("Ocak");
     );
   };
 const saveNoteForMonth = async (ay: string) => {
-  // varsa bekleyen debounce’u iptal et
+  // varsa bekleyen debounceâ€™u iptal et
   if (timersRef.current[ay]) {
     clearTimeout(timersRef.current[ay]);
     delete timersRef.current[ay];
@@ -101,7 +101,7 @@ const saveNoteForMonth = async (ay: string) => {
     s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
      .replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 
-  // 👇 Offscreen render edilen TÜM grafiklerden PNG topla
+  // ğŸ‘‡ Offscreen render edilen TÜM grafiklerden PNG topla
   const collectChartImages = async () => {
     const ApexChartsAny: any = (window as any).ApexCharts;
     if (!ApexChartsAny?.exec) return;
@@ -159,7 +159,7 @@ const saveNoteForMonth = async (ay: string) => {
   `;
   };
 
-  // 🔸 HTML'i ASENKRON üret: önce TÜM PNG'leri offscreen'ten topla
+  // ğŸ”¸ HTML'i ASENKRON üret: önce TÜM PNG'leri offscreen'ten topla
   const buildFullHtmlAsync = async () => {
     await collectChartImages();
     const sections = aylar.map(buildSectionHtml).join("\n");
@@ -197,17 +197,21 @@ const saveNoteForMonth = async (ay: string) => {
     );
   }
 
-  // ✅ UI'de gösterilecek ay listesi (tek ay)
+  // âœ… UI'de gösterilecek ay listesi (tek ay)
   const gosterilecekAylar =
     seciliAy === "Tümü" ? [] : aylar.filter((x) => x.ay === seciliAy);
 
   return (
     <PageContainer title="Fiş Büyüklüğü Analizi" description="this is Fiş Büyüklüğü Analizi">
       <Breadcrumb title="Fiş Büyüklüğü Analizi" items={BCrumb} />
-
       <Grid container>
         {/* Üst toolbar: Ay seçimi */}
-        <Grid item xs={12} lg={12} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2, gap: 1 }}>
+        <Grid
+          sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2, gap: 1 }}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <FormControl size="small" sx={{ minWidth: 220 }}>
             <InputLabel id="ay-secimi-label">Ay Seç</InputLabel>
             <Select
@@ -226,7 +230,11 @@ const saveNoteForMonth = async (ay: string) => {
         </Grid>
 
         {/* UI: Sadece seçili ayın grafiği */}
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           {gosterilecekAylar.length > 0 ? (
             <FisBuyukluguAnaliziChart
               title={`Fiş Büyüklüğü - ${seciliAy}`}
@@ -243,7 +251,7 @@ const saveNoteForMonth = async (ay: string) => {
           )}
         </Grid>
 
-        {/* 🔒 OFFSCREEN EXPORT STAGING: TÜM AYLARIN GRAFİĞİ burada render edilir */}
+        {/* ğŸ”’ OFFSCREEN EXPORT STAGING: TÜM AYLARIN GRAFİĞİ burada render edilir */}
       {/* OFFSCREEN EXPORT STAGING */}
 <Box
   sx={{
@@ -269,26 +277,53 @@ const saveNoteForMonth = async (ay: string) => {
 
 
         {/* Yetkilendirme kartları + işlemler */}
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
           user.rol?.includes("DenetciYardimcisi") ? (
             <Grid container sx={{ width: "100%", margin: "0 auto", justifyContent: "space-between" }}>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard fetch={() => {}} hazirlayan="Denetçi - Yardımcı Denetçi" controller={controller} />
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard fetch={() => {}} onaylayan="Sorumlu Denetçi" controller={controller} />
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard fetch={() => {}} kaliteKontrol="Kalite Kontrol Sorumlu Denetçi" controller={controller} />
               </Grid>
             </Grid>
           ) : null}
 
           <Grid container sx={{ width: "100%", margin: "0 auto", justifyContent: "space-between", gap: 1 }}>
-            <Grid item xs={12} lg={12} mt={5}>
+            <Grid
+              mt={5}
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <IslemlerCardHtml
                 controller={controller}
                 buildHtmlAsync={buildFullHtmlAsync}  // Önizleme tüm ayları gönderecek

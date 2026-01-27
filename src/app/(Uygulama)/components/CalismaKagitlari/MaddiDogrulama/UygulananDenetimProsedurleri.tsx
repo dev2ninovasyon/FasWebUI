@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -275,7 +275,11 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
   return (
     <>
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Grid
             container
             sx={{
@@ -287,13 +291,13 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
             {veriler.map((veri, index) => (
               <Grid
                 key={index}
-                item
-                xs={12}
-                lg={12}
                 mt="20px"
                 onClick={() => !isReport && handleCardClick(veri)}
                 sx={{ cursor: isReport ? "default" : "pointer" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <CalismaKagidiCard
                   title={`${index + 1}. ${veri.kategori || "Kategori seçiniz"}`}
                   content={veri.konu
@@ -314,15 +318,15 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={1.5}
                 my={2}
                 sx={{
                   display: "flex",
                   justifyContent: "end",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 1.5
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"

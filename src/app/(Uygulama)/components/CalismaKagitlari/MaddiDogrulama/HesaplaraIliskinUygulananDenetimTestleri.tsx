@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import {
     Box,
     Grid,
@@ -403,7 +403,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 
     return (
         <Grid container>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     {renderAnaHesaplar()}
                     {/* Render each kebir group */}
@@ -411,14 +411,11 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                         // only render if there are sub accounts? Or render empty if needed? 
                         // Usually there are sub accounts if it's in the list.
                         // But use groupedAlt keys for safety or iterate anaHesaplar and find children.
-                        groupedAlt[main.kebirKodu] && groupedAlt[main.kebirKodu].length > 0
-                            ? renderDetailTable(main.kebirKodu)
-                            : null
+                        (groupedAlt[main.kebirKodu] && groupedAlt[main.kebirKodu].length > 0 ? renderDetailTable(main.kebirKodu) : null)
                     ))}
                     {/* Catch any orphan groups that didn't have a main account logic? (Unlikely per logic) */}
                 </Box>
             </Grid>
-
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}

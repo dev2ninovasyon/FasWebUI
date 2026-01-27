@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -154,7 +154,11 @@ const Page: React.FC = () => {
     <PageContainer title="Hareketsiz" description="this is Hareketsiz">
       <Breadcrumb title="Hareketsiz" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TabContext value={tip}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab label="Ticari Alacaklar" value="TicariAlacaklar" />
@@ -164,9 +168,6 @@ const Page: React.FC = () => {
             <TabPanel value="TicariAlacaklar" sx={{ paddingX: 0 }}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{
                     display: "flex",
                     flexDirection: smDown ? "column" : "row",
@@ -175,7 +176,10 @@ const Page: React.FC = () => {
                     mb: 2,
                     gap: 1,
                   }}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Box
                     sx={{
                       display: "flex",
@@ -222,13 +226,22 @@ const Page: React.FC = () => {
                     </Button>
                   </Box>
                 </Grid>
-                <Grid item xs={12} lg={12} mb={3}>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <HareketsizOzet
                     hesaplaTiklandimi={hesaplaTiklandimi}
                     tip={tip}
                   />
                 </Grid>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Hareketsiz hesaplaTiklandimi={hesaplaTiklandimi} tip={tip} />
                 </Grid>
               </Grid>
@@ -236,9 +249,6 @@ const Page: React.FC = () => {
             <TabPanel value="Stoklar" sx={{ paddingX: 0 }}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{
                     display: "flex",
                     flexDirection: smDown ? "column" : "row",
@@ -247,7 +257,10 @@ const Page: React.FC = () => {
                     mb: 2,
                     gap: 1,
                   }}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Box
                     sx={{
                       display: "flex",
@@ -294,13 +307,22 @@ const Page: React.FC = () => {
                     </Button>
                   </Box>
                 </Grid>
-                <Grid item xs={12} lg={12} mb={3}>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <HareketsizOzet
                     hesaplaTiklandimi={hesaplaTiklandimi}
                     tip={tip}
                   />
                 </Grid>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Hareketsiz hesaplaTiklandimi={hesaplaTiklandimi} tip={tip} />
                 </Grid>
               </Grid>

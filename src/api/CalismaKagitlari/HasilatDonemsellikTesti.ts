@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 export interface HasilatDonemsellikTestiResponseDto {
     detayKodu: string;

@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+﻿import { Button, Grid, Typography } from "@mui/material";
 import React from "react";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextAreaAutoSize from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextAreaAutoSize";
@@ -18,22 +18,29 @@ const TespitAciklamaForm: React.FC<Props> = ({
     <div>
       <Grid container spacing={3}>
         <Grid
-          item
-          xs={12}
-          sm={3.25}
-          lg={3.25}
           display="flex"
           alignItems="center"
-        ></Grid>
+          size={{
+            xs: 12,
+            sm: 3.25,
+            lg: 3.25
+          }}></Grid>
         <Grid
-          item
-          xs={12}
-          sm={3.25}
-          lg={3.25}
           display="flex"
           alignItems="center"
-        ></Grid>
-        <Grid item xs={12} sm={3.5} lg={3.5} display="flex" alignItems="center">
+          size={{
+            xs: 12,
+            sm: 3.25,
+            lg: 3.25
+          }}></Grid>
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3.5,
+            lg: 3.5
+          }}>
           <CustomFormLabel
             htmlFor="tespitAciklama"
             sx={{
@@ -52,7 +59,12 @@ const TespitAciklamaForm: React.FC<Props> = ({
             onChange={(e: any) => setTespitAciklama(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={2} lg={2}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 2,
+            lg: 2
+          }}>
           <Button
             size="medium"
             variant="outlined"

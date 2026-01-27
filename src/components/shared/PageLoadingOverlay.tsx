@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import { Box, Skeleton, Grid, Stack, Fade, useTheme } from "@mui/material";
 import { useLoading } from "@/contexts/LoadingContext";
@@ -37,7 +37,13 @@ export default function PageLoadingOverlay() {
                 <Grid container spacing={3}>
                     {/* Top Stats/Cards Skeleton */}
                     {[1, 2, 3, 4].map((item) => (
-                        <Grid item xs={12} sm={6} lg={3} key={item}>
+                        <Grid
+                            key={item}
+                            size={{
+                                xs: 12,
+                                sm: 6,
+                                lg: 3
+                            }}>
                             <Box sx={{
                                 p: 3,
                                 borderRadius: (theme.shape.borderRadius as number) / 5 || 2,
@@ -57,7 +63,7 @@ export default function PageLoadingOverlay() {
                     ))}
 
                     {/* Main Content Area Skeleton */}
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Box sx={{
                             p: 3,
                             borderRadius: (theme.shape.borderRadius as number) / 5 || 2,

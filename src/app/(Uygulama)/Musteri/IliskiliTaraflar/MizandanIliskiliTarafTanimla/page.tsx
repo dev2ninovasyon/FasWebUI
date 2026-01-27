@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -46,14 +46,22 @@ const Page = () => {
     >
       <Breadcrumb title="Mizandan İlişkili Taraf Tanımla" items={BCrumb} />
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <IliskiliTaraflarMizanForm
             hesapNo={hesapNo}
             setHesapNo={setHesapNo}
             setVerileriGetirTiklandimi={setVerileriGetirTiklandimi}
           />
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <IliskiliTaraflarMizanTable
             hesapNo={hesapNo}
             verileriGetirTiklandimi={verileriGetirTiklandimi}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Box, Typography, useMediaQuery, Button, Stack } from "@mui/material";
 import { useCallback, useEffect, useState, FC } from "react";
@@ -116,9 +116,9 @@ const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent, read
 
             document
                 .querySelectorAll(`.opt[data-q="${q}"]`)
-                .forEach(x => (x.textContent = '☐'));
+                .forEach(x => (x.textContent = 'â˜'));
 
-            el.textContent = '☑';
+            el.textContent = 'â˜‘';
         };
 
         document.addEventListener('click', handler);

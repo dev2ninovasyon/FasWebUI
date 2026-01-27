@@ -1,4 +1,4 @@
-import { Grid, Button, MenuItem, useTheme, Box, CircularProgress, Typography } from "@mui/material";
+﻿import { Grid, Button, MenuItem, useTheme, Box, CircularProgress, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -299,7 +299,7 @@ const MusteriEkleForm = ({
   return (
     <div>
       <Grid container spacing={isWizardView ? 2 : 3}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box
             {...getRootProps()}
             sx={{
@@ -326,14 +326,22 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Firma Adı - Always Full Width */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 2 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 2 : 3
+              }}>
               <CustomFormLabel htmlFor="firmaAdi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Firma Adı
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 10 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 10 : 9
+              }}>
               <CustomTextField
                 id="firmaAdi"
                 fullWidth
@@ -354,14 +362,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Web Adresi */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="webAdresi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Web Adresi
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomTextField
                 id="webAdresi"
                 fullWidth
@@ -375,14 +395,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Yetkili */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="yetkili" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Yetkili
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomTextField
                 id="yetkili"
                 fullWidth
@@ -395,14 +427,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Telefon */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="tel" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Telefon
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomTextField
                 id="tel"
                 fullWidth
@@ -415,14 +459,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Email */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="email" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Email
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomTextField
                 id="email"
                 fullWidth
@@ -435,14 +491,22 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Adres */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 2 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 2 : 3
+              }}>
               <CustomFormLabel htmlFor="adres" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Adres
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 10 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 10 : 9
+              }}>
               <CustomTextField
                 id="adres"
                 fullWidth
@@ -455,14 +519,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Ticaret Sicil No */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="ticaretSicilNo" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Ticaret Sicil No
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomTextField
                 id="ticaretSicilNo"
                 fullWidth
@@ -475,14 +551,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Vergi No */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="vergiNo" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Vergi No
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomTextField
                 id="vergiNo"
                 fullWidth
@@ -503,14 +591,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Vergi Dairesi */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="vergiDairesi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Vergi Dairesi
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomTextField
                 id="vergiDairesi"
                 fullWidth
@@ -523,14 +623,26 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Konsolide Mi */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="konsolideMi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Konsolide Mi
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <CustomSelect
                 labelId="konsolideMi"
                 id="konsolideMi"
@@ -556,14 +668,26 @@ const MusteriEkleForm = ({
 
         {/* Konsolide Tipi */}
         {konsolideMi === "Evet" && (
-          <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid
+            size={{
+              xs: 12,
+              md: isWizardView ? 6 : 12
+            }}>
             <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-              <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: isWizardView ? 4 : 3
+                }}>
                 <CustomFormLabel htmlFor="konsolideTipi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                   Konsolide Tipi
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: isWizardView ? 8 : 9
+                }}>
                 <CustomSelect
                   labelId="konsolideTipi"
                   id="konsolideTipi"
@@ -591,14 +715,26 @@ const MusteriEkleForm = ({
 
         {/* Bağlı Şirket */}
         {konsolideMi === "Evet" && (konsolideTipi === "Alt Şirket" || konsolideTipi === "Yavru Şirket") && (
-          <Grid item xs={12} md={isWizardView ? 6 : 12}>
+          <Grid
+            size={{
+              xs: 12,
+              md: isWizardView ? 6 : 12
+            }}>
             <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-              <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: isWizardView ? 4 : 3
+                }}>
                 <CustomFormLabel htmlFor="konsolideBagliSirketId" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                   Bağlı Şirket
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: isWizardView ? 8 : 9
+                }}>
                 <CustomSelect
                   labelId="konsolideBagliSirketId"
                   id="konsolideBagliSirketId"
@@ -626,14 +762,26 @@ const MusteriEkleForm = ({
         )}
 
         {/* Sektör */}
-        <Grid item xs={12} md={isWizardView ? 6 : 12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: isWizardView ? 6 : 12
+          }}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
-            <Grid item xs={12} sm={isWizardView ? 4 : 3}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 4 : 3
+              }}>
               <CustomFormLabel htmlFor="sektor3Id" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
                 Sektör Seç
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={isWizardView ? 8 : 9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: isWizardView ? 8 : 9
+              }}>
               <Autocomplete
                 options={sektor3List}
                 size="small"
@@ -667,7 +815,7 @@ const MusteriEkleForm = ({
         </Grid>
 
         {/* Buttons */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box sx={{ display: "flex", justifyContent: isWizardView ? "flex-end" : "flex-start", mt: 2 }}>
             {showNavigationButtons ? (
               <Box sx={{ display: "flex", gap: 2 }}>

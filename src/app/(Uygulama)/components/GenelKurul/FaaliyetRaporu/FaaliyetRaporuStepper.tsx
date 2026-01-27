@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState, useCallback } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -705,7 +705,12 @@ const FaaliyetRaporuStepper = () => {
       <>
         {activeStep == 0 && (
           <Grid container mb={3}>
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <CalismaKagidiBelge
                 controller={controller}
                 grupluMu={grupluMu}
@@ -722,7 +727,12 @@ const FaaliyetRaporuStepper = () => {
         )}
         {activeStep == 1 && (
           <Grid container spacing={3} mb={3} wrap="wrap">
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"warning.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -733,7 +743,13 @@ const FaaliyetRaporuStepper = () => {
                   }}
                 >
                   <Grid container>
-                    <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 12,
+                        md: 6,
+                        lg: 6
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -744,7 +760,12 @@ const FaaliyetRaporuStepper = () => {
                         Kapak İçin Arka Plan Resmi Yükle
                       </Typography>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 3,
+                        lg: 3
+                      }}>
                       <CustomSelect
                         labelId="resim"
                         id="resim"
@@ -760,7 +781,12 @@ const FaaliyetRaporuStepper = () => {
                         <MenuItem value={"Resim3"}>Resim 3</MenuItem>
                       </CustomSelect>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 3,
+                        lg: 3
+                      }}>
                       <input
                         accept="image/*"
                         style={{ display: "none" }}
@@ -783,7 +809,12 @@ const FaaliyetRaporuStepper = () => {
                 </CardContent>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"warning.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -794,7 +825,13 @@ const FaaliyetRaporuStepper = () => {
                   }}
                 >
                   <Grid container>
-                    <Grid item xs={4} md={4} lg={4} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 4,
+                        md: 4,
+                        lg: 4
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -806,14 +843,14 @@ const FaaliyetRaporuStepper = () => {
                       </Typography>
                     </Grid>
                     <Grid
-                      item
-                      xs={8}
-                      md={8}
-                      lg={8}
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
-                    >
+                      size={{
+                        xs: 8,
+                        md: 8,
+                        lg: 8
+                      }}>
                       {kapakImage && (
                         <Box
                           sx={{
@@ -845,7 +882,12 @@ const FaaliyetRaporuStepper = () => {
                 </CardContent>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"info.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -856,7 +898,13 @@ const FaaliyetRaporuStepper = () => {
                   }}
                 >
                   <Grid container justifyContent={"space-between"}>
-                    <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 12,
+                        md: 6,
+                        lg: 6
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -867,7 +915,12 @@ const FaaliyetRaporuStepper = () => {
                         Kapak İçin Firma Logosu Yükle
                       </Typography>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 3,
+                        lg: 3
+                      }}>
                       <input
                         accept="image/*"
                         style={{ display: "none" }}
@@ -890,7 +943,12 @@ const FaaliyetRaporuStepper = () => {
                 </CardContent>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"info.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -901,7 +959,13 @@ const FaaliyetRaporuStepper = () => {
                   }}
                 >
                   <Grid container>
-                    <Grid item xs={4} md={4} lg={4} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 4,
+                        md: 4,
+                        lg: 4
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -913,14 +977,14 @@ const FaaliyetRaporuStepper = () => {
                       </Typography>
                     </Grid>
                     <Grid
-                      item
-                      xs={8}
-                      md={8}
-                      lg={8}
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
-                    >
+                      size={{
+                        xs: 8,
+                        md: 8,
+                        lg: 8
+                      }}>
                       {firmaLogoImage && (
                         <Box
                           sx={{
@@ -954,7 +1018,12 @@ const FaaliyetRaporuStepper = () => {
             </Grid>
             {firmaLogoImage && (
               <>
-                <Grid item xs={12} sm={6} lg={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    lg: 6
+                  }}>
                   <Box bgcolor={"info.light"} textAlign="center">
                     <CardContent
                       style={{
@@ -965,7 +1034,13 @@ const FaaliyetRaporuStepper = () => {
                       }}
                     >
                       <Grid container justifyContent={"space-between"}>
-                        <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                        <Grid
+                          mb={mdDown ? 3 : 0}
+                          size={{
+                            xs: 12,
+                            md: 6,
+                            lg: 6
+                          }}>
                           <Typography
                             variant="subtitle1"
                             height={"100%"}
@@ -976,7 +1051,12 @@ const FaaliyetRaporuStepper = () => {
                             Firma Logosu Dikey Konum
                           </Typography>
                         </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            md: 3,
+                            lg: 3
+                          }}>
                           <CustomSelect
                             labelId="dikeyKonum"
                             id="dikeyKonum"
@@ -994,7 +1074,12 @@ const FaaliyetRaporuStepper = () => {
                     </CardContent>
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={6} lg={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    lg: 6
+                  }}>
                   <Box bgcolor={"info.light"} textAlign="center">
                     <CardContent
                       style={{
@@ -1005,7 +1090,13 @@ const FaaliyetRaporuStepper = () => {
                       }}
                     >
                       <Grid container justifyContent={"space-between"}>
-                        <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                        <Grid
+                          mb={mdDown ? 3 : 0}
+                          size={{
+                            xs: 12,
+                            md: 6,
+                            lg: 6
+                          }}>
                           <Typography
                             variant="subtitle1"
                             height={"100%"}
@@ -1016,7 +1107,12 @@ const FaaliyetRaporuStepper = () => {
                             Firma Logosu Yatay Konum
                           </Typography>
                         </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            md: 3,
+                            lg: 3
+                          }}>
                           <CustomSelect
                             labelId="yatayKonum"
                             id="yatayKonum"
@@ -1042,14 +1138,14 @@ const FaaliyetRaporuStepper = () => {
         {activeStep == 2 && !smDown && (
           <Grid container spacing={3} mb={3} wrap="wrap">
             <Grid
-              item
-              xs={12}
-              sm={12}
-              lg={12}
               display={"flex"}
               alignItems={"center"}
               justifyContent={"center"}
-            >
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <Button
                 type="button"
                 size="medium"
@@ -1073,14 +1169,14 @@ const FaaliyetRaporuStepper = () => {
               </Button>
             </Grid>
             <Grid
-              item
-              xs={12}
-              sm={12}
-              lg={12}
               display={"flex"}
               alignItems={"center"}
               justifyContent={"center"}
-            >
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <Rapor
                 kapakImage={kapakImage || ""}
                 firmaLogoImage={firmaLogoImage || ""}

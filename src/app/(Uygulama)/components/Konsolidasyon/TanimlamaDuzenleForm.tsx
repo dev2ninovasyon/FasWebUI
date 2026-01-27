@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -67,7 +67,13 @@ const TanimlamaDuzenleForm = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="firmaAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -75,7 +81,11 @@ const TanimlamaDuzenleForm = () => {
             Firma Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="firmaAdi"
             value={firmaAdi}
@@ -84,7 +94,13 @@ const TanimlamaDuzenleForm = () => {
             onChange={(e: any) => setFirmaAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="yil"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -92,7 +108,11 @@ const TanimlamaDuzenleForm = () => {
             Yıl
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="yil"
             value={yil}
@@ -101,7 +121,13 @@ const TanimlamaDuzenleForm = () => {
             onChange={(e: any) => setYil(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="bagliIstirakOrani"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -109,7 +135,11 @@ const TanimlamaDuzenleForm = () => {
             Bağlı İştirak Oranı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="bagliIstirakOrani"
             value={bagliIstirakOrani}
@@ -117,8 +147,16 @@ const TanimlamaDuzenleForm = () => {
             onChange={(e: any) => setBagliIstirakOrani(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

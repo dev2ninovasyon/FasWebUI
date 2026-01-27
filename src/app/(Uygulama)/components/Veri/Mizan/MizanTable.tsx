@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -18,7 +18,7 @@ import {
 import { Stack } from "@mui/system";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 import {
   deleteMizanBilgisiMultiple,

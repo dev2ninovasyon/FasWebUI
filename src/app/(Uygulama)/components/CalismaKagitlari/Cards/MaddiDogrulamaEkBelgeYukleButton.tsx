@@ -1,4 +1,4 @@
-// src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulamaEkBelgeYukleButton.tsx
+﻿// src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulamaEkBelgeYukleButton.tsx
 
 import React, {
     useEffect,
@@ -623,7 +623,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                     </Box>
                 )
             )}
-
             {/* gizli input */}
             <input
                 ref={inputRef}
@@ -633,7 +632,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.xlsm,.png"
                 onChange={handleFileChange}
             />
-
             {/* Ek belgeler popup */}
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
                 <DialogTitle
@@ -677,7 +675,11 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                 >
                     <Grid container spacing={3}>
                         {/* Sol: yükleme alanı */}
-                        <Grid item xs={12} md={5}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 5
+                            }}>
                             <Box
                                 onClick={handleClickUploadButton}
                                 onDragOver={handleDragOver}
@@ -724,7 +726,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                                         alignItems="center"
                                         justifyContent="center"
                                     >
-                                        <Grid item xs={12} style={{ textAlign: "center" }}>
+                                        <Grid style={{ textAlign: "center" }} size={12}>
                                             <Stack spacing={1.5} alignItems="center">
                                                 <CloudUploadIcon
                                                     fontSize="large"
@@ -756,7 +758,11 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                         </Grid>
 
                         {/* Sağ: Yüklenmiş Dosya Bilgileri */}
-                        <Grid item xs={12} md={7}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 7
+                            }}>
                             <Paper
                                 elevation={0}
                                 sx={{
@@ -941,7 +947,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                     <Button onClick={handleClose}>Kapat</Button>
                 </DialogActions>
             </Dialog >
-
             {/* Seçilenleri silme onay popup'ı */}
             <Dialog
                 open={deleteConfirmOpen}
@@ -973,7 +978,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                     </Button>
                 </DialogActions>
             </Dialog>
-
             {/* PDF Önizleme popup */}
             <Dialog
                 open={previewOpen}

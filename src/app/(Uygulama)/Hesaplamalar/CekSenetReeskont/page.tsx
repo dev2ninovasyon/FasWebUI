@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -325,7 +325,11 @@ const Page: React.FC = () => {
     >
       <Breadcrumb title="Çek / Senet Reeskont" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TabContext value={tip}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab label="Veri Yükleme" value="VeriYukleme" />
@@ -335,9 +339,6 @@ const Page: React.FC = () => {
             <TabPanel value="VeriYukleme" sx={{ paddingX: 0 }}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{
                     display: "flex",
                     flexDirection: smDown ? "column" : "row",
@@ -346,7 +347,10 @@ const Page: React.FC = () => {
                     mb: 2,
                     gap: 1,
                   }}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   {sonKaydedilmeTarihi && (
                     <Typography
                       variant="body2"
@@ -408,7 +412,11 @@ const Page: React.FC = () => {
                     </Button>
                   </Box>
                 </Grid>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CekSenetReeskontVeriYukleme
                     kaydetTiklandimi={kaydetTiklandimi}
                     setKaydetTiklandimi={setKaydetTiklandimi}
@@ -442,16 +450,20 @@ const Page: React.FC = () => {
                   <DialogContent>
                     <Grid container>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="vukAlinan"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -461,7 +473,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomTextField
                             id="vukAlinan"
                             type="number"
@@ -474,17 +490,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 1,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="vukVerilen"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -494,7 +514,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomTextField
                             id="vukVerilen"
                             type="number"
@@ -507,17 +531,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 1,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="oran"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -527,7 +555,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomSelect
                             labelId="oran"
                             id="oran"
@@ -542,17 +574,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 1,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="kacGun"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -562,7 +598,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomSelect
                             labelId="kacGun"
                             id="kacGun"
@@ -577,17 +617,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 2,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="iskonto130"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -597,7 +641,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomTextField
                             id="iskonto130"
                             type="number"
@@ -610,17 +658,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 2,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="iskonto3090"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -630,7 +682,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomTextField
                             id="iskonto3090"
                             type="number"
@@ -643,17 +699,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 2,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="iskonto90180"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -663,7 +723,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomTextField
                             id="iskonto90180"
                             type="number"
@@ -676,17 +740,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 2,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="iskonto180365"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -696,7 +764,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomTextField
                             id="iskonto180365"
                             type="number"
@@ -709,17 +781,21 @@ const Page: React.FC = () => {
                         </Grid>
                       </Grid>
                       <Grid
-                        item
-                        xs={12}
-                        lg={12}
                         sx={{
                           display: "flex",
                           alignContent: "center",
                           justifyContent: "space-between",
                           mt: 2,
                         }}
-                      >
-                        <Grid item xs={12} lg={6}>
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomFormLabel
                             htmlFor="iskonto365"
                             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -729,7 +805,11 @@ const Page: React.FC = () => {
                             </Typography>
                           </CustomFormLabel>
                         </Grid>
-                        <Grid item xs={12} lg={6}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            lg: 6
+                          }}>
                           <CustomTextField
                             id="iskonto365"
                             type="number"
@@ -767,9 +847,6 @@ const Page: React.FC = () => {
             <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
               <Grid container>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{
                     display: "flex",
                     flexDirection: smDown ? "column" : "row",
@@ -778,7 +855,10 @@ const Page: React.FC = () => {
                     mb: 2,
                     gap: 1,
                   }}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Box
                     sx={{
                       display: "flex",
@@ -803,17 +883,32 @@ const Page: React.FC = () => {
                     </Button>
                   </Box>
                 </Grid>
-                <Grid item xs={12} lg={12} marginBottom={3}>
+                <Grid
+                  marginBottom={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CekSenetReeskontHesaplama
                     hesaplaTiklandimi={hesaplaTiklandimi}
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} marginBottom={3}>
+                <Grid
+                  marginBottom={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CekSenetReeskontDuzeltmeFarklari
                     hesaplaTiklandimi={hesaplaTiklandimi}
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} marginBottom={3}>
+                <Grid
+                  marginBottom={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CekSenetReeskontHesaplamadaKullanilanDegerler
                     hesaplaTiklandimi={hesaplaTiklandimi}
                   />

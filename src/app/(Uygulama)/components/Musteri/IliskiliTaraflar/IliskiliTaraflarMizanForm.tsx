@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+﻿import { Button, Grid, Typography } from "@mui/material";
 import React from "react";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextAreaAutoSize from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextAreaAutoSize";
@@ -17,7 +17,14 @@ const IliskiliTaraflarMizanForm: React.FC<Props> = ({
   return (
     <div>
       <Grid container spacing={3} justifyContent={"flex-end"}>
-        <Grid item xs={12} sm={3.5} lg={3.5} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3.5,
+            lg: 3.5
+          }}>
           <CustomFormLabel
             htmlFor="hesapNo"
             sx={{
@@ -37,7 +44,12 @@ const IliskiliTaraflarMizanForm: React.FC<Props> = ({
             onChange={(e: any) => setHesapNo(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={1.5} lg={1.5}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 1.5,
+            lg: 1.5
+          }}>
           <Button
             size="medium"
             variant="outlined"

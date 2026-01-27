@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
@@ -338,7 +338,7 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
     fetchData();
   }, []);
 
-  // Alternatif renderer’i set et
+  // Alternatif rendererâ€™i set et
   useEffect(() => {
     if (!hotTableComponent.current) return;
 
@@ -432,7 +432,12 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} mb={2}>
+      <Grid
+        mb={2}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <HotTable
           style={{
             height: "100%",
@@ -473,8 +478,6 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
           copyPaste={false}
         />
       </Grid>
-
-      
       {roluVarMi && (
         <Grid
           container
@@ -484,31 +487,52 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
             justifyContent: "space-between",
           }}
         >
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             
             <BelgeKontrolCard controller={controller} fetch={fetchData} hazirlayan="Denetçi - Yardımcı Denetçi"/>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             
             <BelgeKontrolCard controller={controller} fetch={fetchData} onaylayan="Sorumlu Denetçi"/>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             
             <BelgeKontrolCard controller={controller} fetch={fetchData} kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"/>
           </Grid>
         </Grid>
       )}
-
       {/* Excel butonu */}
-      <Grid item xs={12} lg={10}></Grid>
       <Grid
-        item
-        xs={12}
-        lg={2}
+        size={{
+          xs: 12,
+          lg: 10
+        }}></Grid>
+      <Grid
         display={"flex"}
         alignItems={"end"}
         sx={{ py: 2, pl: { lg: 2 } }}
-      >
+        size={{
+          xs: 12,
+          lg: 2
+        }}>
         <Button
           size="medium"
           variant="outlined"

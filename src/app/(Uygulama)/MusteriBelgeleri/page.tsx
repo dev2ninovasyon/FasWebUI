@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -460,7 +460,11 @@ const Page = () => {
       <Breadcrumb title="Müşteri Belgeleri" items={BCrumb} />
       <Grid container spacing={3}>
         {/* SOL: Dosya yükleme alanı */}
-        <Grid item xs={12} lg={5}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 5
+          }}>
           <Box
             sx={{
               height: "550px",
@@ -499,7 +503,11 @@ const Page = () => {
             {/* Cari dosya alt tür */}
             {fileType === "CariDosya" && (
               <Grid container mt={1} padding={"16px"}>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CustomSelect
                     labelId="cariDosya"
                     id="cariDosya"
@@ -529,7 +537,11 @@ const Page = () => {
             {/* Sürekli dosya alt tür */}
             {fileType === "SürekliDosya" && (
               <Grid container mt={1} padding={"16px"}>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CustomSelect
                     labelId="surekliDosya"
                     id="surekliDosya"
@@ -579,7 +591,12 @@ const Page = () => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Grid item sm={12} lg={12} style={{ textAlign: "center" }}>
+                  <Grid
+                    style={{ textAlign: "center" }}
+                    size={{
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Typography>Dosyaları buraya bırakın...</Typography>
                   </Grid>
                 </Grid>
@@ -590,7 +607,12 @@ const Page = () => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Grid item sm={12} lg={12} style={{ textAlign: "center" }}>
+                  <Grid
+                    style={{ textAlign: "center" }}
+                    size={{
+                      sm: 12,
+                      lg: 12
+                    }}>
                     {uploading ? (
                       <Stack
                         spacing={2}
@@ -628,7 +650,11 @@ const Page = () => {
         </Grid>
 
         {/* SAĞ: Yüklenmiş dosya listesi */}
-        <Grid item xs={12} lg={7}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 7
+          }}>
           <Box
             sx={{
               height: smDown ? "610px" : "550px",
@@ -821,7 +847,6 @@ const Page = () => {
           </Box>
         </Grid>
       </Grid>
-
       {/* Silme onayı popup'ı */}
       <Dialog open={confirmOpen} onClose={handleCloseConfirm}>
         <DialogTitle>Silme Onayı</DialogTitle>

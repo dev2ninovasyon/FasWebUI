@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -39,7 +39,13 @@ const IliskiliTarafTanimlaForm = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="adi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -47,15 +53,27 @@ const IliskiliTarafTanimlaForm = () => {
             Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="adi"
             fullWidth
             onChange={(e: any) => setAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

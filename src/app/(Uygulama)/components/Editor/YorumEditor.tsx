@@ -1,4 +1,4 @@
-import { CKEditor } from "@ckeditor/ckeditor5-react";
+﻿import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
   Box,
   Card,
@@ -266,7 +266,11 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
         justifyContent: "center",
       }}
     >
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <Card
           sx={{
             width: "100%",

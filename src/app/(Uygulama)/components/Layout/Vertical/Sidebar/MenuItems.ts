@@ -1,4 +1,4 @@
-import { uniqueId } from "lodash";
+﻿import { uniqueId } from "lodash";
 
 export interface MenuitemsType {
   [x: string]: any;
@@ -2181,7 +2181,7 @@ export function createMenuItems(
               },
               {
                 id: uniqueId(),
-                title: "8.2 Kültür Değerlendirmesi – Kalite",
+                title: "8.2 Kültür Değerlendirmesi â€“ Kalite",
                 icon: IconPoint,
                 href: "/Kys/BilgiVeIletisim/KulturDegerlendirmesi",
                 formKodu: "KysBilgiVeIletisimKulturDegerlendirmesi",

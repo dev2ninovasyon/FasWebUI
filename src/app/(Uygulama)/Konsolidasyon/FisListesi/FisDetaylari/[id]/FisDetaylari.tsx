@@ -581,7 +581,12 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} mb={2}>
+      <Grid
+        mb={2}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <HotTable
           style={{
             height: "100%",
@@ -702,16 +707,20 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
           }}
         />
       </Grid>
-      <Grid item xs={12} lg={6}></Grid>
       <Grid
-        item
-        xs={12}
-        lg={4}
+        size={{
+          xs: 12,
+          lg: 6
+        }}></Grid>
+      <Grid
         sx={{
           display: "flex",
           justifyContent: "flex-end",
         }}
-      >
+        size={{
+          xs: 12,
+          lg: 4
+        }}>
         <Box
           display="flex"
           justifyContent="space-between"
@@ -753,15 +762,14 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
           </Paper>
         </Box>
       </Grid>
-
       <Grid
-        item
-        xs={12}
-        lg={2}
         display={"flex"}
         alignItems={"center"}
         sx={{ py: 2, pl: { lg: 2 } }}
-      >
+        size={{
+          xs: 12,
+          lg: 2
+        }}>
         <Button
           size="medium"
           variant="outlined"

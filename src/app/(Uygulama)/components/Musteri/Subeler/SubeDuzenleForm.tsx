@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -57,7 +57,13 @@ const SubeDuzenleForm = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="unvan"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -65,7 +71,11 @@ const SubeDuzenleForm = () => {
             Ünvan
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="unvan"
             value={unvan}
@@ -73,7 +83,13 @@ const SubeDuzenleForm = () => {
             onChange={(e: any) => setUnvan(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="subeAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -81,7 +97,11 @@ const SubeDuzenleForm = () => {
             Şube Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="subeAdi"
             value={subeAdi}
@@ -89,7 +109,13 @@ const SubeDuzenleForm = () => {
             onChange={(e: any) => setSubeAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="adres"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -97,7 +123,11 @@ const SubeDuzenleForm = () => {
             Adres
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="adres"
             value={adres}
@@ -105,8 +135,16 @@ const SubeDuzenleForm = () => {
             onChange={(e: any) => setAdres(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -299,7 +299,12 @@ const KarZararTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                     unmountOnExit
                   >
                     <Grid container>
-                      <Grid item xs={12} lg={12} sx={{ mx: 3, my: 2 }}>
+                      <Grid
+                        sx={{ mx: 3, my: 2 }}
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
                         <Paper
                           elevation={2}
                           sx={{
@@ -323,7 +328,12 @@ const KarZararTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                       </Grid>
                     </Grid>
                     <Grid container>
-                      <Grid item xs={12} lg={12} sx={{ mx: 3, mb: 2 }}>
+                      <Grid
+                        sx={{ mx: 3, mb: 2 }}
+                        size={{
+                          xs: 12,
+                          lg: 12
+                        }}>
                         <Table aria-label="collapse table">
                           <TableHead
                             sx={{
@@ -460,11 +470,18 @@ const KarZararTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <KarZararCardTable kztData={kztData} fdtData={fdtData} />
       </Grid>
-
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <TableContainer
           sx={{
             maxHeight: "684px",

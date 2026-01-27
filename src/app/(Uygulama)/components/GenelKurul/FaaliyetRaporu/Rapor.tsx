@@ -1,4 +1,4 @@
-import "print-friendly";
+﻿import "print-friendly";
 import "print-friendly/index.css";
 import "./print-friendly.css";
 import "./rapor.css";
@@ -790,7 +790,7 @@ const Rapor: React.FC<RaporProps> = ({
       {kalemDataKA.length > 0 && (
         <div className="page">
           <div className="text-center" style={{ marginBottom: 8 }}>
-            <h3>KARŞILAŞTIRMALI ANALİZ – FİNANSAL DURUM</h3>
+            <h3>KARŞILAŞTIRMALI ANALİZ â€“ FİNANSAL DURUM</h3>
           </div>
           <div className="table-container">
             <table className="table-plain">
@@ -823,7 +823,7 @@ const Rapor: React.FC<RaporProps> = ({
       {kalemDataKA2.length > 0 && (
         <div className="page">
           <div className="text-center" style={{ marginBottom: 8 }}>
-            <h3>KARŞILAŞTIRMALI ANALİZ – KAR/ZARAR</h3>
+            <h3>KARŞILAŞTIRMALI ANALİZ â€“ KAR/ZARAR</h3>
           </div>
           <div className="table-container">
             <table className="table-plain">
@@ -859,7 +859,7 @@ const Rapor: React.FC<RaporProps> = ({
       {kalemDataDA.length > 0 && (
         <div className="page">
           <div className="text-center" style={{ marginBottom: 8 }}>
-            <h3>DİKEY ANALİZ – FİNANSAL DURUM</h3>
+            <h3>DİKEY ANALİZ â€“ FİNANSAL DURUM</h3>
           </div>
           <div className="table-container">
             <table className="table-plain">
@@ -893,7 +893,7 @@ const Rapor: React.FC<RaporProps> = ({
       {kalemDataDA2.length > 0 && (
         <div className="page">
           <div className="text-center" style={{ marginBottom: 8 }}>
-            <h3>DİKEY ANALİZ – KAR/ZARAR</h3>
+            <h3>DİKEY ANALİZ â€“ KAR/ZARAR</h3>
           </div>
           <div className="table-container">
             <table className="table-plain">

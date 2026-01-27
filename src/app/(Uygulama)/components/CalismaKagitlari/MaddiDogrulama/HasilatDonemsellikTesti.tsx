@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useRef } from "react";
 import { HotTable } from "@handsontable/react";
@@ -146,7 +146,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
         <Box sx={{ p: isReport ? 0 : 0 }}>
             {!isReport && (
                 <Grid container spacing={2} mb={3} alignItems="flex-end">
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Başlangıç Tarihi"
@@ -157,7 +161,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             InputLabelProps={{ shrink: true }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Bitiş Tarihi"
@@ -168,7 +176,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             InputLabelProps={{ shrink: true }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Hesaplar"
@@ -178,7 +190,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             placeholder="600,601,602"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Tutardan Fazla"
@@ -188,7 +204,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             onChange={handleFilterChange}
                         />
                     </Grid>
-                    <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <Grid display="flex" justifyContent="flex-end" gap={2} size={12}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -208,7 +224,6 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                     </Grid>
                 </Grid>
             )}
-
             <Box
                 sx={{
                     width: "100%",

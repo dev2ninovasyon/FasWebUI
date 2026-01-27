@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -90,7 +90,12 @@ const Page: React.FC = () => {
     >
       <Breadcrumb title="İlişkili Taraf Sınıflama" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12} position={"relative"}>
+        <Grid
+          position={"relative"}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TabContext value={tip}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               {hesaplar.map((hesap, index) => (
@@ -102,15 +107,15 @@ const Page: React.FC = () => {
               ))}
             </TabList>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 position: "absolute",
                 top: 9,
                 right: 9,
               }}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <Tooltip title="Hesap Ekle">
                 <Fab
                   color="info"
@@ -129,7 +134,11 @@ const Page: React.FC = () => {
                 sx={{ paddingX: 0 }}
               >
                 <Grid container>
-                  <Grid item xs={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      lg: 12
+                    }}>
                     <IliskiliTarafSiniflama hesap={hesap} />
                   </Grid>
                 </Grid>
@@ -163,16 +172,20 @@ const Page: React.FC = () => {
         <DialogContent>
           <Grid container>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomFormLabel
                   htmlFor="kebirKodu"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -182,7 +195,11 @@ const Page: React.FC = () => {
                   </Typography>
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomTextField
                   id="kebirKodu"
                   type="number"

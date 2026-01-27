@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   Box,
@@ -103,7 +103,12 @@ const LogoDuzenleForm = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} sm={6} lg={6}>
+      <Grid
+        size={{
+          xs: 12,
+          sm: 6,
+          lg: 6
+        }}>
         <Box bgcolor={"info.light"} textAlign="center">
           <CardContent
             style={{
@@ -114,7 +119,13 @@ const LogoDuzenleForm = () => {
             }}
           >
             <Grid container justifyContent={"space-between"}>
-              <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+              <Grid
+                mb={mdDown ? 3 : 0}
+                size={{
+                  xs: 12,
+                  md: 6,
+                  lg: 6
+                }}>
                 <Typography
                   variant="subtitle1"
                   height={"100%"}
@@ -125,7 +136,12 @@ const LogoDuzenleForm = () => {
                   Firma Logosu Yükle
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={3} lg={3}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 3,
+                  lg: 3
+                }}>
                 <input
                   accept=".png,.jpg,.jpeg"
                   style={{ display: "none" }}
@@ -148,7 +164,12 @@ const LogoDuzenleForm = () => {
           </CardContent>
         </Box>
       </Grid>
-      <Grid item xs={12} sm={6} lg={6}>
+      <Grid
+        size={{
+          xs: 12,
+          sm: 6,
+          lg: 6
+        }}>
         <Box bgcolor={"info.light"} textAlign="center">
           <CardContent
             style={{
@@ -159,7 +180,13 @@ const LogoDuzenleForm = () => {
             }}
           >
             <Grid container>
-              <Grid item xs={4} md={4} lg={4} mb={mdDown ? 3 : 0}>
+              <Grid
+                mb={mdDown ? 3 : 0}
+                size={{
+                  xs: 4,
+                  md: 4,
+                  lg: 4
+                }}>
                 <Typography
                   variant="subtitle1"
                   height={"100%"}
@@ -171,14 +198,14 @@ const LogoDuzenleForm = () => {
                 </Typography>
               </Grid>
               <Grid
-                item
-                xs={8}
-                md={8}
-                lg={8}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-              >
+                size={{
+                  xs: 8,
+                  md: 8,
+                  lg: 8
+                }}>
                 {firmaLogoImage && (
                   <Box
                     sx={{

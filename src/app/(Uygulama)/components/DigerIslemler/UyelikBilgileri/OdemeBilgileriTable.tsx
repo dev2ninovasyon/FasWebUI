@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import {
@@ -398,17 +398,23 @@ const OdemeBilgileriTable = () => {
       </TableContainer>
       {rows.map((row) => (
         <Grid container rowSpacing={3} key={row.denetciFirmaAdi}>
-          <Grid item xs={12} sm={3} display="flex" alignItems="center">
+          <Grid
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 3
+            }}>
             <Typography variant="h6">Modüller: {}</Typography>
           </Grid>
           <Grid
-            item
-            xs={1.5}
-            sm={9}
             display="flex"
             alignItems="center"
             justifyContent={"space-between"}
-          >
+            size={{
+              xs: 1.5,
+              sm: 9
+            }}>
             <Chip
               label={"Bobi"}
               sx={{
@@ -491,30 +497,82 @@ const OdemeBilgileriTable = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={3} display="flex" alignItems="center">
+          <Grid
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 3
+            }}>
             <Typography variant="h6">Mevcut Firma Sayısı:</Typography>
           </Grid>
-          <Grid item xs={12} sm={9} pl={1.5} display="flex" alignItems="center">
+          <Grid
+            pl={1.5}
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 9
+            }}>
             <Typography variant="h6">{row.mevcutFirmaSayisi}</Typography>
           </Grid>
-          <Grid item xs={12} sm={3} display="flex" alignItems="center">
+          <Grid
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 3
+            }}>
             <Typography variant="h6">Solo Firma Sayısı:</Typography>
           </Grid>
-          <Grid item xs={12} sm={9} pl={1.5} display="flex" alignItems="center">
+          <Grid
+            pl={1.5}
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 9
+            }}>
             <Typography variant="h6">{row.soloFirmaSayisi}</Typography>
           </Grid>
-          <Grid item xs={12} sm={3} display="flex" alignItems="center">
+          <Grid
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 3
+            }}>
             <Typography variant="h6">Konsolide Ana Şirket Sayısı:</Typography>
           </Grid>
-          <Grid item xs={12} sm={9} pl={1.5} display="flex" alignItems="center">
+          <Grid
+            pl={1.5}
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 9
+            }}>
             <Typography variant="h6">{row.konsolideAnaFirmaSayisi}</Typography>
           </Grid>
-          <Grid item xs={12} sm={3} display="flex" alignItems="center">
+          <Grid
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 3
+            }}>
             <Typography variant="h6">
               Konsolide Yavru Şirket Firma Sayısı:
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={9} pl={1.5} display="flex" alignItems="center">
+          <Grid
+            pl={1.5}
+            display="flex"
+            alignItems="center"
+            size={{
+              xs: 12,
+              sm: 9
+            }}>
             <Typography variant="h6">
               {row.konsolideYavruFirmaSayisi}
             </Typography>

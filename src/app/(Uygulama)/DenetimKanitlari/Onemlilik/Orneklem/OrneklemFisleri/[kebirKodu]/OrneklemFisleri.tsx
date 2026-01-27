@@ -535,7 +535,11 @@ const OrneklemFisleri = () => {
   return (
     <>
       <Grid container mb={2}>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TespitAciklamaForm
             tespitAciklama={tespitAciklama}
             setTespitAciklama={setTespitAciklama}
@@ -601,16 +605,20 @@ const OrneklemFisleri = () => {
       />
       {fetchedData.length > 0 && (
         <Grid container marginTop={2}>
-          <Grid item xs={12} lg={10}></Grid>
           <Grid
-            item
-            xs={12}
-            lg={2}
+            size={{
+              xs: 12,
+              lg: 10
+            }}></Grid>
+          <Grid
             sx={{
               display: "flex",
               justifyContent: "flex-end",
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 2
+            }}>
             <ExceleAktarButton
               handleDownload={handleDownload}
             ></ExceleAktarButton>

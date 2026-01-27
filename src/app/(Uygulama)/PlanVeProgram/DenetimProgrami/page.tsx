@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -87,7 +87,7 @@ const Page = () => {
         <>
           {isMobile ? (
             // Mobile layout - compact with dropdown menu
-            <Grid
+            (<Grid
               container
               sx={{
                 width: "95%",
@@ -97,7 +97,7 @@ const Page = () => {
                 alignItems: "center",
               }}
             >
-              <Grid item xs={8}>
+              <Grid size={8}>
                 <Typography
                   variant="body2"
                   sx={{
@@ -109,7 +109,7 @@ const Page = () => {
                   {tamamlanan}/{toplam} Tamamlandı
                 </Typography>
               </Grid>
-              <Grid item xs={4} sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Grid sx={{ display: "flex", justifyContent: "flex-end" }} size={4}>
                 <IconButton
                   onClick={handleMenuOpen}
                   size="small"
@@ -145,10 +145,10 @@ const Page = () => {
                   </MenuItem>
                 </Menu>
               </Grid>
-            </Grid>
+            </Grid>)
           ) : (
             // Desktop layout - original button grid
-            <Grid
+            (<Grid
               container
               sx={{
                 width: "95%",
@@ -158,16 +158,16 @@ const Page = () => {
               }}
             >
               <Grid
-                item
-                xs={12}
-                md={grupluMu ? 2.8 : 3.8}
-                lg={grupluMu ? 2.8 : 3.8}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "flex-end",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  md: grupluMu ? 2.8 : 3.8,
+                  lg: grupluMu ? 2.8 : 3.8
+                }}>
                 <Typography
                   variant="body1"
                   sx={{
@@ -181,16 +181,16 @@ const Page = () => {
               </Grid>
               {grupluMu && (
                 <Grid
-                  item
-                  xs={3.8}
-                  md={grupluMu ? 2.8 : 3.8}
-                  lg={grupluMu ? 2.8 : 3.8}
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                >
+                  size={{
+                    xs: 3.8,
+                    md: grupluMu ? 2.8 : 3.8,
+                    lg: grupluMu ? 2.8 : 3.8
+                  }}>
                   <Button
                     size="medium"
                     variant="outlined"
@@ -211,16 +211,16 @@ const Page = () => {
                 </Grid>
               )}
               <Grid
-                item
-                xs={5.8}
-                md={grupluMu ? 2.8 : 3.8}
-                lg={grupluMu ? 2.8 : 3.8}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 5.8,
+                  md: grupluMu ? 2.8 : 3.8,
+                  lg: grupluMu ? 2.8 : 3.8
+                }}>
                 <EkBelgeYukleButton
                   formKodu={controller}
                   fullWidth={false}
@@ -228,16 +228,16 @@ const Page = () => {
                 />
               </Grid>
               <Grid
-                item
-                xs={5.8}
-                md={grupluMu ? 2.8 : 3.8}
-                lg={grupluMu ? 2.8 : 3.8}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 5.8,
+                  md: grupluMu ? 2.8 : 3.8,
+                  lg: grupluMu ? 2.8 : 3.8
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -254,7 +254,7 @@ const Page = () => {
                   </Typography>
                 </Button>
               </Grid>
-            </Grid>
+            </Grid>)
           )}
           {isCreatePopUpOpen && (
             <CreateGroupPopUp

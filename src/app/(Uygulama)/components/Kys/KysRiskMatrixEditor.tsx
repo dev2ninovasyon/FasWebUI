@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
@@ -398,7 +398,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
 
     return (
         <Box>
-
             <TableContainer component={Paper} elevation={3} sx={{ border: 1, borderColor: "divider" }}>
                 <Table sx={{ minWidth: 800 }} size="small">
                     <TableHead>
@@ -523,7 +522,7 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                                 onClick={() => handleOpenRowDialog(rowIndex)}
                                             >
                                                 <Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary", fontWeight: "bold", textAlign: "center", opacity: 0.5 }}>
-                                                    –
+                                                    â€“
                                                 </Typography>
                                             </TableCell>
                                         )}
@@ -600,7 +599,7 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                                                 onClick={() => handleOpenRowDialog(rowIndex)}
                                             >
                                                 <Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary", fontWeight: "bold", textAlign: "center", opacity: 0.5 }}>
-                                                    –
+                                                    â€“
                                                 </Typography>
                                             </TableCell>
                                         </TableRow>
@@ -611,7 +610,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                     </TableBody>
                 </Table>
             </TableContainer>
-
             {!readOnly && (
                 <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2, gap: 1 }}>
                     <Button variant="contained" startIcon={<AddIcon />} onClick={addObjectiveRow}>
@@ -619,7 +617,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                     </Button>
                 </Box>
             )}
-
             {/* --- UNIFIED ROW EDIT DIALOG --- */}
             <Dialog open={openRowDialog} onClose={() => {
                 setOpenRowDialog(false);
@@ -851,8 +848,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                     </Box>
                 )}
             </Dialog>
-
-
             {/* --- RELEVANT DOCUMENTS LIST BELOW MATRIX --- */}
             <Box sx={{ mt: 4 }}>
                 <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "text.primary" }}>
@@ -906,7 +901,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                     });
                 })()}
             </Box>
-
             {/* Document Popup (Still active for quick links) */}
             {selectedDoc && (
                 <KysRelatedDocumentsPopup
@@ -918,7 +912,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                     }}
                 />
             )}
-
             {/* FAS AI ASSISTANT - Standard Design */}
             {!readOnly && isMatrixEmpty() && !aiDismissed && (
                 <Box
@@ -1063,7 +1056,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                     </Paper>
                 </Box>
             )}
-
         </Box >
     );
 };

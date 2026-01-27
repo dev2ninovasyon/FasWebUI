@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -397,7 +397,12 @@ const controller = "GelirDegerlendirmeBelgesi";
   return (
     <Grid container>
       {showGraph ? (
-        <Grid item xs={12} lg={12} mt={3}>
+        <Grid
+          mt={3}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           {kalemData.length > 0 && (
             <DikeyAnalizChart
               kalemData={kalemData}
@@ -407,7 +412,12 @@ const controller = "GelirDegerlendirmeBelgesi";
           )}
         </Grid>
       ) : (
-        <Grid item xs={12} lg={12} mt={1}>
+        <Grid
+          mt={1}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TableContainer
             sx={{
               maxHeight: "684px",
@@ -467,7 +477,7 @@ const controller = "GelirDegerlendirmeBelgesi";
         </Grid>
       )}
       {!showGraph && roluVarMi && (
-        <Grid item xs={12} mt={4}>
+        <Grid mt={4} size={12}>
           <Grid
             container
             sx={{
@@ -476,7 +486,13 @@ const controller = "GelirDegerlendirmeBelgesi";
               justifyContent: "space-between",
             }}
           >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <CardHeader
                 title={<Typography variant="h5">Hazırlayan:</Typography>}
                 sx={{ p: 0, mb: 1 }}
@@ -487,7 +503,13 @@ const controller = "GelirDegerlendirmeBelgesi";
                 hazirlayan="Denetçi - Yardımcı Denetçi"
               />
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <CardHeader
                 title={<Typography variant="h5">Onaylayan:</Typography>}
                 sx={{ p: 0, mb: 1 }}
@@ -498,7 +520,13 @@ const controller = "GelirDegerlendirmeBelgesi";
                 onaylayan="Sorumlu Denetçi"
               />
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <CardHeader
                 title={<Typography variant="h5">Belge Kontrol:</Typography>}
                 sx={{ p: 0, mb: 1 }}

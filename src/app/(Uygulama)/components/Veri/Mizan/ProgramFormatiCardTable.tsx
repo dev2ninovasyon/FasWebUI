@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
   Box,
   Typography,
@@ -45,11 +45,11 @@ const ProgramFormatiCardTable: React.FC<CardTableProps> = ({
   return (
     <Grid container>
       <Grid
-        item
-        xs={12}
-        lg={8}
         sx={{ px: { xs: 0, lg: 1 }, mb: { xs: 2, lg: 0 } }}
-      >
+        size={{
+          xs: 12,
+          lg: 8
+        }}>
         <Paper
           elevation={2}
           sx={{
@@ -156,7 +156,12 @@ const ProgramFormatiCardTable: React.FC<CardTableProps> = ({
           </TableContainer>
         </Paper>
       </Grid>
-      <Grid item xs={12} lg={4} sx={{ pl: { xs: 0, lg: 1 } }}>
+      <Grid
+        sx={{ pl: { xs: 0, lg: 1 } }}
+        size={{
+          xs: 12,
+          lg: 4
+        }}>
         <Box height={"100%"}>
           <Box
             display="flex"

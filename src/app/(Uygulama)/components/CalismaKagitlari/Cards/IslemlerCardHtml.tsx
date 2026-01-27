@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
@@ -15,7 +15,7 @@ import { enqueueSnackbar } from "notistack";
 
 interface Props {
   controller: string;
-  buildHtmlAsync?: () => Promise<string>; // 🔑
+  buildHtmlAsync?: () => Promise<string>; // ğŸ”‘
   previewEndpoint?: string; // opsiyonel override (şimdilik kullanılmıyor)
 }
 
@@ -89,7 +89,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
     }
   };
 
-  // 🔸 Önizleme: HTML'i (PNG gömülü) üret → gönder → PDF blob aç
+  // ğŸ”¸ Önizleme: HTML'i (PNG gömülü) üret â†’ gönder â†’ PDF blob aç
   const handlePreview = async () => {
     try {
       setOpenCartAlert(true);
@@ -144,7 +144,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
     }
   };
 
-  // 🔸 Sadece arşive kaydet (indir / preview yok)
+  // ğŸ”¸ Sadece arşive kaydet (indir / preview yok)
   const handleArchive = async () => {
     try {
       setOpenCartAlert(true);
@@ -154,7 +154,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
       }
 
       const html = await buildHtmlAsync();
-      const endpoint = `/ArsivIslemleri/ArsiveKaydetHtml`; // 🔴 Backend'de bu endpoint'i karşılamalısın
+      const endpoint = `/ArsivIslemleri/ArsiveKaydetHtml`; // ğŸ”´ Backend'de bu endpoint'i karşılamalısın
 
       await axios.post(
         endpoint,
@@ -207,7 +207,11 @@ const IslemlerCardHtml: React.FC<Props> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <Card sx={{ width: "100%", bgcolor: "primary.light" }}>
           <CardContent sx={{ bgcolor: "primary.light" }}>
             <Grid
@@ -220,11 +224,11 @@ const IslemlerCardHtml: React.FC<Props> = ({
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={3.75}
                 sx={{ display: "flex", justifyContent: "center" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 3.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -239,11 +243,11 @@ const IslemlerCardHtml: React.FC<Props> = ({
               </Grid>
 
               <Grid
-                item
-                xs={12}
-                lg={3.75}
                 sx={{ display: "flex", justifyContent: "center" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 3.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -258,11 +262,11 @@ const IslemlerCardHtml: React.FC<Props> = ({
               </Grid>
 
               <Grid
-                item
-                xs={12}
-                lg={3.75}
                 sx={{ display: "flex", justifyContent: "center" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 3.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -279,7 +283,6 @@ const IslemlerCardHtml: React.FC<Props> = ({
           </CardContent>
         </Card>
       </Grid>
-
       <Dialog
         open={isOpen}
         onClose={() => setIsOpen(false)}
@@ -296,7 +299,6 @@ const IslemlerCardHtml: React.FC<Props> = ({
           </div>
         </DialogContent>
       </Dialog>
-
       {openCartAlert && (
         <InfoAlertCart
           openCartAlert={openCartAlert}

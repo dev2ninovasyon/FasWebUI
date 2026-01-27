@@ -1,4 +1,4 @@
-// app/data-migration/page.tsx
+﻿// app/data-migration/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -157,7 +157,7 @@ export default function DataMigrationPage() {
 
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <FormControl fullWidth>
                                     <InputLabel id="old-company-label">Eski Şirket (Kaynak)</InputLabel>
                                     <Select
@@ -178,7 +178,7 @@ export default function DataMigrationPage() {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <FormControl fullWidth>
                                     <InputLabel id="new-company-label">Yeni Şirket (Hedef)</InputLabel>
                                     <Select
@@ -199,7 +199,7 @@ export default function DataMigrationPage() {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <FormControl fullWidth>
                                     <InputLabel id="table-select-label">Taşınacak Veriler</InputLabel>
                                     <Select
@@ -229,7 +229,7 @@ export default function DataMigrationPage() {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <Button
                                     type="submit"
                                     variant="contained"

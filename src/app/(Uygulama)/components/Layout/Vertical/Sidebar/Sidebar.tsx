@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -93,7 +93,7 @@ const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
           </Drawer>
         </Box>
 
-        {/* 👉 Sağ alttaki rehber butonu (desktop) */}
+        {/* ğŸ‘‰ Sağ alttaki rehber butonu (desktop) */}
         <TourFloatingButton />
       </>
     );
@@ -125,7 +125,7 @@ const Sidebar: React.FC<Props> = ({ isSidebarHover, setIsSidebarHover }) => {
         <SidebarItems isSidebarHover={isSidebarHover} />
       </Drawer>
 
-      {/* 👉 Sağ alttaki rehber butonu (mobile) */}
+      {/* ğŸ‘‰ Sağ alttaki rehber butonu (mobile) */}
       <TourFloatingButton />
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+﻿import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Checkbox,
@@ -491,12 +491,12 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<
             {veriler.map((veri, index) => (
               <Grid
                 key={index}
-                item
-                xs={12}
-                lg={12}
                 mt="20px"
                 onClick={() => handleCardClick(veri)}
-              >
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <CalismaKagidiCard
                   title={`${index + 1}. ${veri.finansalTabloHesaplar}`}
                   standartMi={veri.standartMi}
@@ -513,15 +513,15 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<
             }}
           >
             <Grid
-              item
-              xs={12}
-              lg={1.5}
               my={2}
               sx={{
                 display: "flex",
                 justifyContent: "end",
               }}
-            >
+              size={{
+                xs: 12,
+                lg: 1.5
+              }}>
               <Button
                 size="medium"
                 variant="outlined"
@@ -555,21 +555,39 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<
                   justifyContent: "space-between",
                 }}
               >
-                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <Grid
+                  mt={3}
+                  size={{
+                    xs: 12,
+                    md: 3.9,
+                    lg: 3.9
+                  }}>
                   <BelgeKontrolCard
                     fetch={fetchData}
                     hazirlayan="Denetçi - Yardımcı Denetçi"
                     controller={controller}
                   ></BelgeKontrolCard>
                 </Grid>
-                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <Grid
+                  mt={3}
+                  size={{
+                    xs: 12,
+                    md: 3.9,
+                    lg: 3.9
+                  }}>
                   <BelgeKontrolCard
                     fetch={fetchData}
                     onaylayan="Sorumlu Denetçi"
                     controller={controller}
                   ></BelgeKontrolCard>
                 </Grid>
-                <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+                <Grid
+                  mt={3}
+                  size={{
+                    xs: 12,
+                    md: 3.9,
+                    lg: 3.9
+                  }}>
                   <BelgeKontrolCard
                     fetch={fetchData}
                     kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -587,7 +605,12 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<
               gap: 1,
             }}
           >
-            <Grid item xs={12} lg={12} mt={5}>
+            <Grid
+              mt={5}
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <IslemlerCard controller={controller} />
             </Grid>
           </Grid>
@@ -848,28 +871,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               </Typography>
               <Box px={3} pt={3}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Cari</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={cari}
                           color="primary"
@@ -880,28 +908,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Önceki</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={onceki}
                           color="primary"
@@ -912,28 +945,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"right"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Geçmiş</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"right"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={gecmis}
                           color="primary"
@@ -953,28 +991,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               </Typography>
               <Box px={3} pt={3}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} lg={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      lg: 6
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Tam Olma</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="tamOlma"
                           id="tamOlma"
@@ -995,28 +1038,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      lg: 6
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Doğruluk</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="dogruluk"
                           id="dogruluk"
@@ -1037,28 +1085,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      lg: 6
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Var Olma</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="varOlma"
                           id="varOlma"
@@ -1079,28 +1132,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      lg: 6
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Değerleme</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="degerleme"
                           id="degerleme"
@@ -1121,28 +1179,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      lg: 6
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Dönemsellik</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="donemsellik"
                           id="donemsellik"
@@ -1163,28 +1226,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      lg: 6
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Geçerlilik</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="gecerlilik"
                           id="gecerlilik"
@@ -1205,28 +1273,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                      lg: 6
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Sunum ve Açıklama</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="sunumVeAciklama"
                           id="sunumVeAciklama"
@@ -1256,28 +1329,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               </Typography>
               <Box px={3} pt={3}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Önemsiz Risk</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={onemsizRisk}
                           color="primary"
@@ -1288,28 +1366,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Ciddi Risk</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={ciddiRisk}
                           color="primary"
@@ -1329,28 +1412,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               </Typography>
               <Box px={3} pt={3}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Referans</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={referans}
                           color="primary"
@@ -1361,30 +1449,35 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">
                           Kontrollerin Etkinliğinin Test Edilmesi
                         </Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={kontrollerinEtkinligininTestEdilmesi}
                           color="primary"
@@ -1397,30 +1490,35 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"right"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">
                           Analitik Prosedürler
                         </Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"right"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={analitikProsedurler}
                           color="primary"
@@ -1433,28 +1531,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Detay Testler</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={detayTestler}
                           color="primary"
@@ -1465,30 +1568,35 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">
                           Genel Denetim Yaklaşımı
                         </Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={genelDenetimYaklasimi}
                           color="primary"

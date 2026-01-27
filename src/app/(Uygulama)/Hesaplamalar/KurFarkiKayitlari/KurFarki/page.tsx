@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import {
@@ -57,24 +57,33 @@ const Page: React.FC = () => {
     <PageContainer title="Kur Farkı" description="this is Kur Farkı">
       <Breadcrumb title="Kur Farkı" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12} mb={3}>
+        <Grid
+          mb={3}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <KurFarki />
         </Grid>
         <Grid
-          item
-          xs={12}
-          lg={12}
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-start",
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Typography variant="h6" paddingRight={"16px"} paddingY={"16px"}>
             Kur Bilgileri
           </Typography>
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <DovizKurlariOtuzBirAralik />
         </Grid>
         <FloatingButtonFisler

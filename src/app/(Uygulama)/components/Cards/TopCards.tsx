@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import {
   Box,
   CardContent,
@@ -105,7 +105,13 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
   return (
     <Grid container spacing={3} mt={1}>
       {TopCards.map((topcard, i) => (
-        <Grid item xs={12} sm={4} lg={3} key={i}>
+        <Grid
+          key={i}
+          size={{
+            xs: 12,
+            sm: 4,
+            lg: 3
+          }}>
           {topcard.aciklama != undefined ? (
             <Tooltip
               title={topcard.aciklama}

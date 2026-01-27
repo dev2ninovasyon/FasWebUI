@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -26,7 +26,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { useSnackbar } from "notistack";
 import { Stack } from "@mui/system";
-// import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+// import TablePaginationActions from "@mui/material/TablePagination";
 import {
   deleteDosyaBilgisiMultiple,
   getDefterYuklemeLoglari,

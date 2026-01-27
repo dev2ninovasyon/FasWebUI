@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import dynamic from "next/dynamic";
@@ -28,8 +28,8 @@ type Props = {
   title?: string;
   aylar: FisAyVerisi[];
   onNotChange?: (ay: string, value: string) => void;
-  onSaveNote?: (ay: string) => void;    // ⬅️ eklendi
-  saveLoading?: boolean;                 // ⬅️ eklendi
+  onSaveNote?: (ay: string) => void;    // â¬…ï¸ eklendi
+  saveLoading?: boolean;                 // â¬…ï¸ eklendi
   registerChartDom?: (ay: string, el: HTMLDivElement | null) => void;
 };
 

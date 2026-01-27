@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 export const getKullaniciAyarlar = async (token: string, kullaniciId: number) => {
     try {

@@ -481,19 +481,22 @@ const FisDetaylari = () => {
         afterChange={handleAfterChange}
         copyPaste={false}
       />
-
       {fetchedData.length > 0 && (
         <Grid container marginTop={2}>
-          <Grid item xs={12} lg={10}></Grid>
           <Grid
-            item
-            xs={12}
-            lg={2}
+            size={{
+              xs: 12,
+              lg: 10
+            }}></Grid>
+          <Grid
             sx={{
               display: "flex",
               justifyContent: "flex-end",
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 2
+            }}>
             <ExceleAktarButton
               handleDownload={handleDownload}
             ></ExceleAktarButton>

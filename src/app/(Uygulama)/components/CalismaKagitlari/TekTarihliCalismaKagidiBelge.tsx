@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Card,
@@ -383,7 +383,11 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                     justifyContent: "center",
                   }}
                 >
-                  <Grid item lg={12} xs={12}>
+                  <Grid
+                    size={{
+                      lg: 12,
+                      xs: 12
+                    }}>
                     <Card
                       sx={{
                         padding: 0,
@@ -438,14 +442,14 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                               .map((veriWithBaslikId: any, index: any) => (
                                 <Grid
                                   key={index}
-                                  item
-                                  xs={12}
-                                  lg={12}
                                   mb={3}
                                   onClick={() => {
                                     handleCardClick(veriWithBaslikId);
                                   }}
-                                >
+                                  size={{
+                                    xs: 12,
+                                    lg: 12
+                                  }}>
                                   <CalismaKagidiTekTarihCard
                                     title={veriWithBaslikId.islem}
                                     content={veriWithBaslikId.tespit}
@@ -463,14 +467,14 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                               }}
                             >
                               <Grid
-                                item
-                                xs={12}
-                                lg={1.5}
                                 sx={{
                                   display: "flex",
                                   justifyContent: "start",
                                 }}
-                              >
+                                size={{
+                                  xs: 12,
+                                  lg: 1.5
+                                }}>
                                 <Button
                                   size="medium"
                                   variant="outlined"
@@ -492,14 +496,14 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                                 </Button>
                               </Grid>
                               <Grid
-                                item
-                                xs={12}
-                                lg={1.5}
                                 sx={{
                                   display: "flex",
                                   justifyContent: "end",
                                 }}
-                              >
+                                size={{
+                                  xs: 12,
+                                  lg: 1.5
+                                }}>
                                 <Button
                                   size="medium"
                                   variant="outlined"
@@ -543,12 +547,12 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
               {veriler.map((veri, index) => (
                 <Grid
                   key={index}
-                  item
-                  xs={12}
-                  lg={12}
                   mt="20px"
                   onClick={() => handleCardClick(veri)}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CalismaKagidiTekTarihCard
                     title={veri.islem}
                     content={veri.tespit}
@@ -567,15 +571,15 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={1.5}
                 my={2}
                 sx={{
                   display: "flex",
                   justifyContent: "end",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 1.5
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -611,21 +615,39 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
               justifyContent: "space-between",
             }}
           >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={fetchData}
                 hazirlayan="Denetçi - Yardımcı Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={fetchData}
                 onaylayan="Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={fetchData}
                 kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -643,7 +665,12 @@ const TekTarihliCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
             gap: 1,
           }}
         >
-          <Grid item xs={12} lg={12} mt={5}>
+          <Grid
+            mt={5}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <IslemlerCard controller={controller} />
           </Grid>
         </Grid>

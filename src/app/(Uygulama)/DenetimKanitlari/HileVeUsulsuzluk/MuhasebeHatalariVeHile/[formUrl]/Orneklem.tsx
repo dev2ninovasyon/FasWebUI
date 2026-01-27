@@ -522,15 +522,15 @@ const Orneklem: React.FC<Props> = ({ dipnot, tersMi }) => {
         <>
           <Grid container>
             <Grid
-              item
-              xs={12}
-              lg={12}
               my={2}
               sx={{
                 display: "flex",
                 justifyContent: "center",
               }}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <Tooltip title={detayTiklandimi ? "Detay Gizle" : "Detay Göster"}>
                 <Fab
                   color="warning"

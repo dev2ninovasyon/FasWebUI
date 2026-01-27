@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+﻿import { Button, Grid, Typography } from "@mui/material";
 import React from "react";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
@@ -32,7 +32,13 @@ const HaricFisListesiForm: React.FC<Props> = ({
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={2} lg={2} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 2,
+            lg: 2
+          }}>
           <CustomFormLabel
             htmlFor="baslangicTarihi"
             sx={{
@@ -52,7 +58,13 @@ const HaricFisListesiForm: React.FC<Props> = ({
             onChange={(e: any) => setBaslangicTarihi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={2} lg={2} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 2,
+            lg: 2
+          }}>
           <CustomFormLabel
             htmlFor="bitisTarihi"
             sx={{
@@ -72,7 +84,13 @@ const HaricFisListesiForm: React.FC<Props> = ({
             onChange={(e: any) => setBitisTarihi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={2.5} lg={2.5} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 2.5,
+            lg: 2.5
+          }}>
           <CustomFormLabel
             //htmlFor="hesapNo"
             sx={{
@@ -92,7 +110,13 @@ const HaricFisListesiForm: React.FC<Props> = ({
             onChange={(e: any) => setHesapNo(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={4} lg={4} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 4,
+            lg: 4
+          }}>
           <CustomFormLabel
             //htmlFor="YevmiyeFisNo"
             sx={{
@@ -112,7 +136,12 @@ const HaricFisListesiForm: React.FC<Props> = ({
             onChange={(e: any) => setYevmiyeFisNo(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={1.5} lg={1.5}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 1.5,
+            lg: 1.5
+          }}>
           <Button
             size="medium"
             variant="outlined"

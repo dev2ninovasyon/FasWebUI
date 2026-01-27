@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -162,9 +162,8 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
                     </Typography>
                 </Box>
             )}
-
             <Grid container>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <TableContainer component={Paper} elevation={3} sx={{ borderRadius: "8px", overflow: "hidden" }}>
                         <Table size="small">
                             <TableHead>
@@ -247,7 +246,6 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
                     </TableContainer>
                 </Grid>
             </Grid>
-
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={3000}

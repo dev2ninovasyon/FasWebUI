@@ -1,4 +1,4 @@
-// src/app/(Uygulama)/components/Dashboard/SirketArsivOzetKartlari.tsx
+﻿// src/app/(Uygulama)/components/Dashboard/SirketArsivOzetKartlari.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -64,7 +64,7 @@ export function SirketArsivOzetKartlari() {
     fetchData();
   }, [user.token, user.id, user.denetciId]);
   const sirketBazliToplamlar = useMemo(() => {
-    if (!data || !data.sirketler) return [];  // 🔹 data yoksa boş dizi dön
+    if (!data || !data.sirketler) return [];  // ğŸ”¹ data yoksa boş dizi dön
 
     const map = new Map<
       number,
@@ -83,7 +83,7 @@ export function SirketArsivOzetKartlari() {
     });
 
     return Array.from(map.values());
-  }, [data]); // 🔹 data.sirketler yerine direkt data'yı ekle
+  }, [data]); // ğŸ”¹ data.sirketler yerine direkt data'yı ekle
 
   if (!user.token) return null;
 
@@ -170,9 +170,13 @@ export function SirketArsivOzetKartlari() {
       <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }} >
         Kullanıcıya tanımlı şirketlerin ve modüllerin sayısı.
       </Typography>
-
       <Grid container spacing={3} columns={{ xs: 1, sm: 2, md: 4 }}>
-        <Grid item xs={12} sm={6} md={1}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 1
+          }}>
           <Card
             sx={{
               borderWidth: 3,
@@ -225,7 +229,12 @@ export function SirketArsivOzetKartlari() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={1}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 1
+          }}>
           <Card
             sx={{
               borderWidth: 3,
@@ -259,7 +268,7 @@ export function SirketArsivOzetKartlari() {
               </Typography>
               <Typography color="orange" variant="h4" fontWeight={600}>
                 <Link
-                  color={orange}
+                  color={orange[500]}
                   underline="hover"
                   sx={{
                     display: "flex",
@@ -280,7 +289,12 @@ export function SirketArsivOzetKartlari() {
         </Grid>
 
 
-        <Grid item xs={12} sm={6} md={1}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 1
+          }}>
           <Card
             sx={{
               borderWidth: 3,
@@ -336,7 +350,12 @@ export function SirketArsivOzetKartlari() {
         </Grid>
 
 
-        <Grid item xs={12} sm={6} md={1}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 6,
+            md: 1
+          }}>
           <Card
             sx={{
               borderWidth: 3,
@@ -412,7 +431,6 @@ export function SirketArsivOzetKartlari() {
           </Card>
         </Grid>
       </Grid>
-
       <br></br>
       <Typography variant="h6" gutterBottom>
         Şirketler ve Arşiv Alanı Kullanımı
@@ -421,9 +439,12 @@ export function SirketArsivOzetKartlari() {
         Kullanıcıya tanımlı şirketlerin sayısı ve bu şirketlerin arşivde
         kapladığı alanlar.
       </Typography>
-
       {/* Bar chart */}
-      <Grid item xs={12} md={6}>
+      <Grid
+        size={{
+          xs: 12,
+          md: 6
+        }}>
         <Card sx={{ height: "100%" }}>
           <CardContent>
             <Typography variant="subtitle1" gutterBottom>
@@ -438,9 +459,8 @@ export function SirketArsivOzetKartlari() {
           </CardContent>
         </Card>
       </Grid>
-
       {/* Detay tablo */}
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card>
           <CardContent>
             <Typography variant="subtitle1" gutterBottom>

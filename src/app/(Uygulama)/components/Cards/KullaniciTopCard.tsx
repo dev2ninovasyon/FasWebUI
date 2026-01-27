@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { Box, CardContent, Grid, Typography } from "@mui/material";
 const icon2 = "/images/svgs/icon-user-male.svg";
 const icon3 = "/images/svgs/icon-briefcase.svg";
@@ -39,7 +39,13 @@ const KullaniciTopCard = () => {
   return (
     <Grid container spacing={3} mt={1}>
       {KullaniciTopCards.map((topcard, i) => (
-        <Grid item xs={12} sm={4} lg={3} key={i}>
+        <Grid
+          key={i}
+          size={{
+            xs: 12,
+            sm: 4,
+            lg: 3
+          }}>
           <Link href={topcard.href} onClick={() => setLoading(true)}>
             <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
               <CardContent style={{ height: "180px" }}>

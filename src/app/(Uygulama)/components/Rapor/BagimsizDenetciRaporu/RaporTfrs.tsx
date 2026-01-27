@@ -1,4 +1,4 @@
-import "print-friendly";
+﻿import "print-friendly";
 import "print-friendly/index.css";
 import "./print-friendly.css";
 import "./rapor.css";

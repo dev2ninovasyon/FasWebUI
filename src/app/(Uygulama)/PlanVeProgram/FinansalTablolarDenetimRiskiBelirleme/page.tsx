@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -48,16 +48,16 @@ const Page = () => {
             }}
           >
             <Grid
-              item
-              xs={12}
-              md={3.8}
-              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "flex-end",
               }}
-            >
+              size={{
+                xs: 12,
+                md: 3.8,
+                lg: 3.8
+              }}>
               <Typography
                 variant="body1"
                 sx={{
@@ -70,16 +70,16 @@ const Page = () => {
               </Typography>
             </Grid>
             <Grid
-              item
-              xs={5.8}
-              md={3.8}
-              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-            >
+              size={{
+                xs: 5.8,
+                md: 3.8,
+                lg: 3.8
+              }}>
               <EkBelgeYukleButton
                 formKodu={controller}
                 fullWidth={false}           // sağda küçük buton
@@ -87,16 +87,16 @@ const Page = () => {
               />
             </Grid>
             <Grid
-              item
-              xs={5.8}
-              md={3.8}
-              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-            >
+              size={{
+                xs: 5.8,
+                md: 3.8,
+                lg: 3.8
+              }}>
               <Button
                 size="medium"
                 variant="outlined"

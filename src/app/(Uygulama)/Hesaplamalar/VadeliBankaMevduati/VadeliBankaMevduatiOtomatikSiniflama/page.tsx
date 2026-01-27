@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -114,9 +114,6 @@ const Page = () => {
       />
       <Grid container>
         <Grid
-          item
-          xs={12}
-          lg={12}
           sx={{
             display: "flex",
             flexDirection: smDown ? "column" : "row",
@@ -125,7 +122,10 @@ const Page = () => {
             mb: 2,
             gap: 1,
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Box
             sx={{
               display: "flex",
@@ -150,7 +150,11 @@ const Page = () => {
             </Button>
           </Box>
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <VadeliBankaMevduatiOtomatikSiniflama
             hesaplaTiklandimi={hesaplaTiklandimi}
           />

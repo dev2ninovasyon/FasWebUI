@@ -1,4 +1,4 @@
-import { Grid, Button, useTheme } from "@mui/material";
+﻿import { Grid, Button, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -76,7 +76,13 @@ const DenetimKadrosuEkleForm = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="kullaniciAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -84,7 +90,11 @@ const DenetimKadrosuEkleForm = () => {
             Personel Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <KullaniciBoxAutocomplete
             onSelectAdi={(selectedKullaniciAdi) =>
               setKullaniciAdi(selectedKullaniciAdi)
@@ -94,7 +104,13 @@ const DenetimKadrosuEkleForm = () => {
             }
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="unvanAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -102,7 +118,11 @@ const DenetimKadrosuEkleForm = () => {
             Ünvanı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <UnvanBoxAutocomplete
             onSelect={(selectedUnvanAdi) => setUnvanAdi(selectedUnvanAdi)}
             onSelectId={(selectedUnvanId) => {
@@ -111,7 +131,13 @@ const DenetimKadrosuEkleForm = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="asilYedek"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -119,12 +145,22 @@ const DenetimKadrosuEkleForm = () => {
             Asil / Yedek
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <AsilYedekBoxAutocomplete
             onSelect={(selectedAsilYedek) => setAsilYedek(selectedAsilYedek)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="calismaSaati"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -132,7 +168,11 @@ const DenetimKadrosuEkleForm = () => {
             Çalışma Saati
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="calismaSaati"
             type="number"
@@ -159,7 +199,13 @@ const DenetimKadrosuEkleForm = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="saatBasiUcreti"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -167,7 +213,11 @@ const DenetimKadrosuEkleForm = () => {
             Saat Başı Ücreti
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="saatBasiUcreti"
             type="number"
@@ -197,7 +247,13 @@ const DenetimKadrosuEkleForm = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="denetimUcreti"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -205,7 +261,11 @@ const DenetimKadrosuEkleForm = () => {
             Denetim Ücreti
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="denetimUcreti"
             type="number"
@@ -235,7 +295,13 @@ const DenetimKadrosuEkleForm = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="aktifPasif"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -243,7 +309,11 @@ const DenetimKadrosuEkleForm = () => {
             Durum
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <AktifPasifBoxAutocomplete
             onSelect={(selectedAktifPasif) =>
               selectedAktifPasif == "Aktif"
@@ -252,8 +322,16 @@ const DenetimKadrosuEkleForm = () => {
             }
           />
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { Divider, Grid, Tab, Typography, useTheme } from "@mui/material";
@@ -208,7 +208,11 @@ const Page: React.FC = () => {
     >
       <Breadcrumb title="Kur Farkı Kontrolleri" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TabContext value={tip}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab label="646 Kambiyo Kârları" value="646 Kambiyo Kârları" />
@@ -220,7 +224,12 @@ const Page: React.FC = () => {
             <Divider />
             <TabPanel value="646 Kambiyo Kârları" sx={{ paddingX: 0 }}>
               <Grid container>
-                <Grid item xs={12} lg={12} mb={3}>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <KurFarkiKontrolleriForm
                     hesapNo={hesapNo}
                     baslangicTarihi={baslangicTarihi}
@@ -231,19 +240,24 @@ const Page: React.FC = () => {
                     setVerileriGetirTiklandimi={setVerileriGetirTiklandimi}
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} mb={3}>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <KurFarkiKontrolleriOzet data={fetchedDataOzet} />
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "flex-start",
                   }}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Typography
                     variant="h6"
                     paddingRight={"16px"}
@@ -252,14 +266,23 @@ const Page: React.FC = () => {
                     Fiş Listesi
                   </Typography>
                 </Grid>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <KurFarkiKontrolleriFis data={fetchedDataFis} />
                 </Grid>
               </Grid>
             </TabPanel>
             <TabPanel value="656 Kambiyo Zararları" sx={{ paddingX: 0 }}>
               <Grid container>
-                <Grid item xs={12} lg={12} mb={3}>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <KurFarkiKontrolleriForm
                     hesapNo={hesapNo}
                     baslangicTarihi={baslangicTarihi}
@@ -270,19 +293,24 @@ const Page: React.FC = () => {
                     setVerileriGetirTiklandimi={setVerileriGetirTiklandimi}
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} mb={3}>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <KurFarkiKontrolleriOzet data={fetchedDataOzet} />
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "flex-start",
                   }}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Typography
                     variant="h6"
                     paddingRight={"16px"}
@@ -291,7 +319,11 @@ const Page: React.FC = () => {
                     Fiş Listesi
                   </Typography>
                 </Grid>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <KurFarkiKontrolleriFis data={fetchedDataFis} />
                 </Grid>
               </Grid>

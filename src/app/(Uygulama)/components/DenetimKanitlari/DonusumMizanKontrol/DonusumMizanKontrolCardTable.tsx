@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Typography,
   Table,
@@ -138,7 +138,12 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} sx={{ mb: 2 }}>
+      <Grid
+        sx={{ mb: 2 }}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         {programVukMizanHesaplari.length > 0 && (
           <>
             <Typography variant="h6" textAlign="left" mb={2}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Divider,
@@ -253,12 +253,12 @@ const IliskiliTarafIncelemeBelge: React.FC<CalismaKagidiProps> = ({
           {veriler.map((veri, index) => (
             <Grid
               key={index}
-              item
-              xs={12}
-              lg={12}
               mt="20px"
               onClick={() => handleCardClick(veri)}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CalismaKagidiCard
                 title={`${index + 1}. ${veri.islem}`}
                 content={veri.tespit}
@@ -276,15 +276,15 @@ const IliskiliTarafIncelemeBelge: React.FC<CalismaKagidiProps> = ({
           }}
         >
           <Grid
-            item
-            xs={12}
-            lg={1.5}
             my={2}
             sx={{
               display: "flex",
               justifyContent: "end",
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 1.5
+            }}>
             <Button
               size="medium"
               variant="outlined"

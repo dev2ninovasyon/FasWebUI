@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
     Grid,
     Typography,
@@ -48,17 +48,17 @@ const BreadcrumbActions: React.FC<BreadcrumbActionsProps> = ({
         >
             {statusText && (
                 <Grid
-                    item
-                    xs={12}
-                    md={grupluMu ? 2.8 : 3.8}
-                    lg={grupluMu ? 2.8 : 3.8}
                     sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: { xs: "flex-start", md: "flex-end" },
                         mb: { xs: 1, md: 0 },
                     }}
-                >
+                    size={{
+                        xs: 12,
+                        md: grupluMu ? 2.8 : 3.8,
+                        lg: grupluMu ? 2.8 : 3.8
+                    }}>
                     <Typography
                         variant="body2"
                         sx={{
@@ -71,17 +71,16 @@ const BreadcrumbActions: React.FC<BreadcrumbActionsProps> = ({
                     </Typography>
                 </Grid>
             )}
-
             <Grid
-                item
-                xs={12}
-                md={statusText ? (grupluMu ? 9 : 8) : 12}
                 sx={{
                     display: "flex",
                     justifyContent: "flex-end",
                     alignItems: "center",
                 }}
-            >
+                size={{
+                    xs: 12,
+                    md: statusText ? (grupluMu ? 9 : 8) : 12
+                }}>
                 <ResponsiveButtonGroup>
                     {visibleActions.map((action, index) => {
                         if (action.renderButton) {

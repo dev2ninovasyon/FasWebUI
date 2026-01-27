@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -190,7 +190,11 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
   return (
     <>
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Grid
             container
             sx={{
@@ -204,12 +208,12 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
               .map((veri) => (
                 <Grid
                   key={veri.id}
-                  item
-                  xs={12}
-                  lg={12}
                   mt="20px"
                   onClick={() => handleCardClick(veri)}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <RaporDipnotCard
                     dipnotKodu={veri.dipnotKodu}
                     title={`${veri.text}`}

@@ -1,4 +1,4 @@
-// /api/CalismaKagitlari/CalismaKagitlari.ts
+﻿// /api/CalismaKagitlari/CalismaKagitlari.ts
 import { apiFetch } from "@/api/apiBase";
 
 export interface EkBelgeDto {

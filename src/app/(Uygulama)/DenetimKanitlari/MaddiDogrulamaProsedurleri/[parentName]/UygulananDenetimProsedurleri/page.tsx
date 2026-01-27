@@ -151,16 +151,16 @@ const Page = () => {
             }}
           >
             <Grid
-              item
-              xs={12}
-              md={4}
-              lg={4}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "flex-end",
               }}
-            >
+              size={{
+                xs: 12,
+                md: 4,
+                lg: 4
+              }}>
               <Typography
                 variant="body1"
                 sx={{
@@ -173,17 +173,17 @@ const Page = () => {
               </Typography>
             </Grid>
             <Grid
-              item
-              xs={12}
-              md={6}
-              lg={6}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 1
               }}
-            >
+              size={{
+                xs: 12,
+                md: 6,
+                lg: 6
+              }}>
               <MaddiDogrulamaEkBelgeYukleButton
                 belgeAdi={`${dip || parentName}|||${documentTitle}`}
                 text="Belge Yükle"

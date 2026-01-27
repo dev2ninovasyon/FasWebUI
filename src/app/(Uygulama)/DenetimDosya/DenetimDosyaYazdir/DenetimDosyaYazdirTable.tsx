@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+﻿import React, { useEffect, useState, useMemo } from "react";
 import {
   TableContainer,
   Table,
@@ -17,7 +17,7 @@ import {
   Button,
   useMediaQuery,
   Chip,
-  CircularProgress, // ⬅️ eklendi
+  CircularProgress, // â¬…ï¸ eklendi
 } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -27,7 +27,7 @@ import {
   getLastBirlesikPdf,
   createAndFetchBirlesikPdf, // binary -> blobUrl + fileName döner (güncel API)
 } from "@/api/DenetimDosya/DenetimDosya";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -304,7 +304,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
       </Stack>
 
       <TableContainer sx={{ mt: 0.5, maxHeight: "500px", minHeight: "500px", position: "relative" }}>
-        {/* ⬇️ Oluşturma sırasında tablo ortasında ring */}
+        {/* â¬‡ï¸ Oluşturma sırasında tablo ortasında ring */}
         {isMerging && (
           <Stack
             direction="row"
@@ -515,7 +515,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
               SelectProps={{ native: true }}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions as any}
+              ActionsComponent={TablePaginationActions}
               labelRowsPerPage="Sayfa başına satır sayısı:"
               labelDisplayedRows={({ from, to, count }) =>
                 `${from}-${to} arası / ${count !== -1 ? count : `daha fazla`} satır`

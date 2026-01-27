@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+﻿import React, { useMemo } from "react";
 import {
   Box,
   Typography,
@@ -41,7 +41,7 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
       maximumFractionDigits: 2,
     }).format(num);
 
-  // 🔹 Sayısal toleransla kontrol et (0,00’a yuvarlanacak kadar küçük mü?)
+  // ğŸ”¹ Sayısal toleransla kontrol et (0,00â€™a yuvarlanacak kadar küçük mü?)
   const isAktifPasifBalanced = useMemo(
     () => Math.abs(aktifPasifFark) < 0.005,
     [aktifPasifFark]
@@ -54,7 +54,12 @@ const DonusumIslemiCardTable: React.FC<CardTableProps> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} sx={{ mb: { xs: 2, lg: 0 } }}>
+      <Grid
+        sx={{ mb: { xs: 2, lg: 0 } }}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <Paper
           elevation={2}
           sx={{

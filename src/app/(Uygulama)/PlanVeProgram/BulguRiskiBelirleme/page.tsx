@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -242,7 +242,7 @@ const Page = () => {
                 alignItems: "center",
               }}
             >
-              <Grid item xs={8}>
+              <Grid size={8}>
                 <Typography
                   variant="body2"
                   sx={{
@@ -254,7 +254,7 @@ const Page = () => {
                   {tamamlanan1 + tamamlanan2}/{toplam1 + toplam2} Tamamlandı
                 </Typography>
               </Grid>
-              <Grid item xs={4} sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Grid sx={{ display: "flex", justifyContent: "flex-end" }} size={4}>
                 <IconButton
                   onClick={handleMenuOpen}
                   size="small"
@@ -303,16 +303,16 @@ const Page = () => {
               }}
             >
               <Grid
-                item
-                xs={12}
-                md={grupluMu ? 2.8 : 3.8}
-                lg={grupluMu ? 2.8 : 3.8}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "flex-end",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  md: grupluMu ? 2.8 : 3.8,
+                  lg: grupluMu ? 2.8 : 3.8
+                }}>
                 <Typography
                   variant="body1"
                   sx={{
@@ -360,16 +360,16 @@ const Page = () => {
                   I'll remove the "Yeni Grup Ekle" button from the Breadcrumb children.
               */}
               <Grid
-                item
-                xs={5.8}
-                md={grupluMu ? 2.8 : 3.8}
-                lg={grupluMu ? 2.8 : 3.8}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 5.8,
+                  md: grupluMu ? 2.8 : 3.8,
+                  lg: grupluMu ? 2.8 : 3.8
+                }}>
                 <EkBelgeYukleButton
                   formKodu={controller}
                   fullWidth={false}
@@ -377,16 +377,16 @@ const Page = () => {
                 />
               </Grid>
               <Grid
-                item
-                xs={5.8}
-                md={grupluMu ? 2.8 : 3.8}
-                lg={grupluMu ? 2.8 : 3.8}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 5.8,
+                  md: grupluMu ? 2.8 : 3.8,
+                  lg: grupluMu ? 2.8 : 3.8
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -448,14 +448,14 @@ const Page = () => {
                 }}
               >
                 <Grid
-                  item
-                  xs={12}
-                  md={12}
-                  lg={12}
                   display={"flex"}
                   alignItems={"center"}
                   justifyContent={"space-between"}
-                >
+                  size={{
+                    xs: 12,
+                    md: 12,
+                    lg: 12
+                  }}>
                   <Button
                     size="medium"
                     variant="outlined"
@@ -517,14 +517,14 @@ const Page = () => {
                 }}
               >
                 <Grid
-                  item
-                  xs={12}
-                  md={12}
-                  lg={12}
                   display={"flex"}
                   alignItems={"center"}
                   justifyContent={"space-between"}
-                >
+                  size={{
+                    xs: 12,
+                    md: 12,
+                    lg: 12
+                  }}>
                   <Button
                     size="medium"
                     variant="outlined"
@@ -575,9 +575,6 @@ const Page = () => {
           }}
         >
           <Grid
-            item
-            xs={12}
-            lg={12}
             sx={{
               display: "flex",
               flexDirection: smDown ? "column" : "row",
@@ -586,7 +583,10 @@ const Page = () => {
               mb: 2,
               gap: 1,
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Box
               sx={{
                 display: "flex",
@@ -633,10 +633,19 @@ const Page = () => {
               </Button>
             </Box>
           </Grid>
-          <Grid item xs={12} lg={12} mb={3}>
+          <Grid
+            mb={3}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <BulguRiskiBelirleme hesaplaTiklandimi={hesaplaTiklandimi} />
           </Grid>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <BulguRiskiBelirlemeBelge />
           </Grid>
           {openCartAlert && (
@@ -658,7 +667,13 @@ const Page = () => {
               justifyContent: "space-between",
             }}
           >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={() => {
                   setIsRefresh(true);
@@ -667,7 +682,13 @@ const Page = () => {
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={() => {
                   setIsRefresh(true);
@@ -676,7 +697,13 @@ const Page = () => {
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={() => {
                   setIsRefresh(true);
@@ -698,7 +725,12 @@ const Page = () => {
             gap: 1,
           }}
         >
-          <Grid item xs={12} lg={12} mt={5}>
+          <Grid
+            mt={5}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <IslemlerCard controller={controller} />
           </Grid>
         </Grid>

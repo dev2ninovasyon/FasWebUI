@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -744,7 +744,11 @@ const FisGirisi: React.FC<Props> = ({
   return (
     <>
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <HotTable
             style={{
               width: "100%",
@@ -835,7 +839,11 @@ const FisGirisi: React.FC<Props> = ({
         </Grid>
       </Grid>
       <Grid container justifyContent={"end"} spacing={1}>
-        <Grid item xs={12} lg={2}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <Paper
             elevation={1}
             sx={{
@@ -853,7 +861,11 @@ const FisGirisi: React.FC<Props> = ({
             </Typography>
           </Paper>
         </Grid>
-        <Grid item xs={12} lg={2}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <Paper
             elevation={1}
             sx={{
@@ -872,13 +884,13 @@ const FisGirisi: React.FC<Props> = ({
           </Paper>
         </Grid>
         <Grid
-          item
-          xs={12}
-          lg={2}
           display={"flex"}
           alignItems={"center"}
           sx={{ py: 2, pl: { lg: 2 } }}
-        >
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <Button
             size="medium"
             variant="outlined"

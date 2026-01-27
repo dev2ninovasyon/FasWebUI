@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
@@ -21,7 +21,7 @@ const Page = () => {
       <PageContainer title="Şubeler" description="this is Şubeler">
         <ParentCard title={title}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <SubeEkleButton />
               <Box>
                 <SubelerTable />
@@ -42,21 +42,39 @@ const Page = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   hazirlayan="Denetçi - Yardımcı Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   onaylayan="Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -74,7 +92,12 @@ const Page = () => {
               gap: 1,
             }}
           >
-            <Grid item xs={12} lg={12} mt={5}>
+            <Grid
+              mt={5}
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <IslemlerCard controller={controller} />
             </Grid>
           </Grid>

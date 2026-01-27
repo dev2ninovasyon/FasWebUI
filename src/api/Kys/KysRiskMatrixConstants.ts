@@ -1,4 +1,4 @@
-export const documentMapping: Record<string, { formKodu: string; title: string; type: number }> = {
+﻿export const documentMapping: Record<string, { formKodu: string; title: string; type: number }> = {
     "1.1": { formKodu: "KysBelgelendirmePolitikasi", title: "1.1 Belgelendirme Politikası Beyanı", type: 1 },
     "1.2": { formKodu: "KysKaliteYonetimSistemiEsasBelgesi", title: "1.2 Kalite Yönetim Sistemi 'Esas' Belgesi", type: 1 },
     "1.3": { formKodu: "KysDenetimSirketininYapisi", title: "1.3 Denetim Şirketinin Yapısı", type: 1 },

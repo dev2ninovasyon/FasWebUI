@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -38,7 +38,7 @@ const CariDonemDonusumDuzeltmeBelgesiPage = () => {
         items={BCrumb}
       />
       <Grid container spacing={2} mt={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <CariDonemDonusumDuzeltmeBelgesi />
             </Grid>
       </Grid>

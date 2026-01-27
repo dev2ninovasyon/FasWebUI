@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -189,7 +189,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
 
     return (
         <Grid container>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Box px={0} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
                     <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1, mb: 2 }}>
                         <Typography variant="subtitle1" fontWeight={700}>
@@ -283,7 +283,6 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                     </TableContainer>
                 </Box>
             </Grid>
-
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}

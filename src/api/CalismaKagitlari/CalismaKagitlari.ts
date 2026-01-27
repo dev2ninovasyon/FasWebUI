@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
@@ -504,7 +504,7 @@ export async function uploadEkBelge(
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // ❗ DİKKAT: Burada "Content-Type" KESİNLİKLE yazılmaz.
+          // â— DİKKAT: Burada "Content-Type" KESİNLİKLE yazılmaz.
           // Çünkü FormData kendi boundary bilgisini oluşturur.
         },
         body: formData,

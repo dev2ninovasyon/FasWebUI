@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -118,7 +118,12 @@ const Page: React.FC = () => {
       >
         <Breadcrumb title="Eliminasyon Fiş İşlemleri" items={BCrumb} />
         <Grid container>
-          <Grid item xs={12} lg={12} mb={2}>
+          <Grid
+            mb={2}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <FisGirisiKontrol
               konsolidasyonMu={true}
               filterValue={filterValue}
@@ -126,7 +131,12 @@ const Page: React.FC = () => {
               setAd={setAd}
             />
           </Grid>
-          <Grid item xs={12} lg={12} my={1}>
+          <Grid
+            my={1}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Stack
               direction={{ xs: "column", lg: "row" }}
               alignItems={"center"}
@@ -189,7 +199,12 @@ const Page: React.FC = () => {
               </Box>
             </Stack>
           </Grid>
-          <Grid item xs={12} lg={12} mb={3}>
+          <Grid
+            mb={3}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <FisGirisi
               konsolidasyonMu={true}
               kod={kod}
@@ -201,12 +216,20 @@ const Page: React.FC = () => {
               setHazirFislerTiklandimi={setHazirFislerTiklandimi}
             />
           </Grid>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Typography variant="h6" paddingRight={"16px"} paddingY={"16px"}>
               Son Girilen Fişler
             </Typography>
           </Grid>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <SonGirilenFisler
               konsolidasyonMu={true}
               hazirFislerTiklandimi={hazirFislerTiklandimi}

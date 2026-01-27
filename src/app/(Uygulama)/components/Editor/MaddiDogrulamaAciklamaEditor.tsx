@@ -1,4 +1,4 @@
-import { CKEditor } from "@ckeditor/ckeditor5-react";
+﻿import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Box, useMediaQuery } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { AppState } from "@/store/store";

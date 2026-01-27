@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
@@ -161,7 +161,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
     );
   };
 
-  // Sağ tık menü → ÖNCE veriyi çek, sonra diyalogu aç
+  // Sağ tık menü â†’ ÖNCE veriyi çek, sonra diyalogu aç
   const openYevmiyeDialogFromRow = async (rowIndex: number) => {
     const faturaId = masterRows[rowIndex]?.[0] as string;
     const fatura = items.find((f) => f.id === faturaId);
@@ -174,7 +174,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
         : (fatura.alici as any)?.vergiNo ?? "";
 
     // Loading snackbar (persist)
-    enqueueSnackbar("Yevmiye eşleşmeleri getiriliyor…", {
+    enqueueSnackbar("Yevmiye eşleşmeleri getiriliyorâ€¦", {
       key: LOADING_SNACK_KEY,
       variant: "info",
       persist: true,
@@ -196,7 +196,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
     <>
       {/* Tip seçici / sayfa bilgisi */}
       <Grid container mb={2} alignItems="center" justifyContent="space-between">
-        <Grid item>
+        <Grid>
           <ToggleButtonGroup
             size="small"
             exclusive
@@ -207,9 +207,8 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
             <ToggleButton value="Gönderilen">Gönderilen</ToggleButton>
           </ToggleButtonGroup>
         </Grid>
-        <Grid item>Toplam: {total} | Sayfa: {page}</Grid>
+        <Grid>Toplam: {total} | Sayfa: {page}</Grid>
       </Grid>
-
       {/* MASTER: Faturalar */}
       <HotTable
         ref={hotRef}
@@ -237,13 +236,23 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
           },
         }}
       />
-
       {/* DETAIL: Satırlar */}
       <Grid container mt={2} spacing={2} alignItems="center">
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Typography variant="subtitle1">Fatura Satırları</Typography>
         </Grid>
-        <Grid item xs={12} md={6} display="flex" justifyContent="flex-end" gap={1}>
+        <Grid
+          display="flex"
+          justifyContent="flex-end"
+          gap={1}
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <Button
             size="small"
             variant="outlined"
@@ -261,10 +270,10 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
             Sonraki
           </Button>
           <Button size="small" variant="contained" onClick={handleExportExcel}>
-            Excel’e Aktar
+            Excelâ€™e Aktar
           </Button>
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <HotTable
             ref={linesRef}
             data={lineRows}
@@ -278,8 +287,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
           />
         </Grid>
       </Grid>
-
-      {/* Yevmiye eşleşmeleri diyalogu — veri hazır olunca açılıyor */}
+      {/* Yevmiye eşleşmeleri diyalogu â€” veri hazır olunca açılıyor */}
       {ctx && (
         <YevmiyeFaturaDialog
           open={yevOpen}

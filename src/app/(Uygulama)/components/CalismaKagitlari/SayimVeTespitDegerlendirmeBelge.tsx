@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Divider,
@@ -266,12 +266,12 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
           {veriler.map((veri, index) => (
             <Grid
               key={index}
-              item
-              xs={12}
-              lg={12}
               mt="20px"
               onClick={() => handleCardClick(veri)}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CalismaKagidiCard
                 title={`${index + 1}. ${veri.detayKodu} ${veri.islem}`}
                 content={veri.tespit}
@@ -289,15 +289,15 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
           }}
         >
           <Grid
-            item
-            xs={12}
-            lg={1.5}
             my={2}
             sx={{
               display: "flex",
               justifyContent: "end",
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 1.5
+            }}>
             <Button
               size="medium"
               variant="outlined"
@@ -331,21 +331,39 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
               justifyContent: "space-between",
             }}
           >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={fetchData}
                 hazirlayan="Denetçi - Yardımcı Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={fetchData}
                 onaylayan="Sorumlu Denetçi"
                 controller={controller}
               ></BelgeKontrolCard>
             </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+            <Grid
+              mt={3}
+              size={{
+                xs: 12,
+                md: 3.9,
+                lg: 3.9
+              }}>
               <BelgeKontrolCard
                 fetch={fetchData}
                 kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -363,7 +381,12 @@ const SayimVeTespitDegerlendirmeBelge: React.FC<CalismaKagidiProps> = ({
             gap: 1,
           }}
         >
-          <Grid item xs={12} lg={12} mt={5}>
+          <Grid
+            mt={5}
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <IslemlerCard controller={controller} />
           </Grid>
         </Grid>

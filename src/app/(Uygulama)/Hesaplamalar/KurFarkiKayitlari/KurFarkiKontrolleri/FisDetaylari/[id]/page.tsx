@@ -28,9 +28,12 @@ const Page = () => {
   return (
     <PageContainer title="Fiş Detayları" description="this is Fiş Detayları">
       <Breadcrumb title="Fiş Detayları" items={BCrumb} />
-
       <Grid container marginTop={3}>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <FisDetaylari />
         </Grid>
       </Grid>

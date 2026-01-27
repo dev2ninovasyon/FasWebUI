@@ -1,4 +1,4 @@
-// src/app/(Uygulama)/dashboard/page.tsx
+﻿// src/app/(Uygulama)/dashboard/page.tsx
 "use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";

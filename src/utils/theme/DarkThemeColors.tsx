@@ -1,4 +1,4 @@
-const DarkThemeColors = [
+﻿const DarkThemeColors = [
   {
     name: "BLUE_THEME",
     palette: {

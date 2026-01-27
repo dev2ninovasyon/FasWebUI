@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -218,7 +218,6 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
           {viewMode === "list" ? <IconLayoutGrid size={24} /> : <IconList size={24} />}
         </Button>
       </Box>
-
       {viewMode === "card" ? (
         <Grid container spacing={3} mt={1}>
           {displayData.map((item, index) => {
@@ -229,7 +228,13 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
               : `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`;
 
             return (
-              <Grid item xs={12} sm={4} lg={3} key={item.id}>
+              <Grid
+                key={item.id}
+                size={{
+                  xs: 12,
+                  sm: 4,
+                  lg: 3
+                }}>
                 <Link href={targetPath} passHref onClick={() => setLoading(true)} style={{ textDecoration: 'none' }}>
                   <Box bgcolor={bgcolor + ".light"} textAlign="center" sx={{ borderRadius: "8px", cursor: "pointer" }}>
                     <CardContent style={{ height: "180px", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -247,7 +252,12 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
       ) : (
         <Grid container spacing={3} mt={1}>
           {calismaKagidiVerileri.map((parent, index) => (
-            <Grid item lg={12} xs={12} key={parent.id}>
+            <Grid
+              key={parent.id}
+              size={{
+                lg: 12,
+                xs: 12
+              }}>
               <Card sx={{ padding: 0, width: "100%", maxHeight: 500, overflow: "auto", mt: "20px", bgcolor: customizer.activeMode === "dark" ? "#0e121a" : "#f5f5f5" }}>
                 <CardHeader
                   title={parent.name}
@@ -263,7 +273,13 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
                   <Divider />
                   <CardContent>
                     <Grid container mb={2} spacing={2} justifyContent="center">
-                      <Grid item xs={12} sm={6} display="flex" justifyContent={"center"}>
+                      <Grid
+                        display="flex"
+                        justifyContent={"center"}
+                        size={{
+                          xs: 12,
+                          sm: 6
+                        }}>
                         <Box sx={{ width: "100%", maxWidth: 400 }}>
                           <EkBelgeYukleButton
                             formKodu={parent.name}
@@ -274,7 +290,13 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
                           />
                         </Box>
                       </Grid>
-                      <Grid item xs={12} sm={6} display="flex" justifyContent={"center"}>
+                      <Grid
+                        display="flex"
+                        justifyContent={"center"}
+                        size={{
+                          xs: 12,
+                          sm: 6
+                        }}>
                         <Button
                           variant="contained"
                           color="secondary"

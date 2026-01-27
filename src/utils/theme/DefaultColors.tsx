@@ -1,4 +1,4 @@
-const baselightTheme = {
+﻿const baselightTheme = {
   direction: 'ltr',
   palette: {
     primary: {

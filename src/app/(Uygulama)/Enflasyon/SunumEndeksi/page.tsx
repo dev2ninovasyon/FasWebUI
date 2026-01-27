@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -28,7 +28,12 @@ const Page: React.FC = () => {
       <PageContainer title="Sunum Endeksi" description="this is Sunum Endeksi">
         <Breadcrumb title="Sunum Endeksi" items={BCrumb} />
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <iframe
               src={`${ENFLASYON_BASE_URL}/EnflasyonDuzeltmesi/SunumEndeksi?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
               style={{
