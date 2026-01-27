@@ -24,7 +24,8 @@ interface SearchItemType {
   isDynamic?: boolean;
 }
 
-function firstLetterUpperCase(str: string) {
+function firstLetterUpperCase(str: string | undefined | null) {
+  if (!str) return "";
   var words = str.split(" ");
   var newWord = "";
   for (var i = 0; i < words.length; i++) {
@@ -50,6 +51,7 @@ function extractMenuItems(
     if (menuItem.navlabel || !menuItem.title) continue;
 
     const formattedTitle = firstLetterUpperCase(menuItem.title);
+    if (!formattedTitle) continue;
 
     // Breadcrumb path'i oluştur
     const currentPath = [...breadcrumbPath, formattedTitle];
@@ -82,9 +84,11 @@ function extractDynamicMenuItems(dynamicItems: any[]): SearchItemType[] {
   const pages: SearchItemType[] = [];
 
   for (const item of dynamicItems) {
-    if (!item.name) continue;
+    if (!item || !item.name) continue;
 
     const formattedTitle = firstLetterUpperCase(item.name);
+    if (!formattedTitle) continue;
+
     const breadcrumb = `Maddi Doğrulama Prosedürleri > ${formattedTitle}`;
 
     const key = `dynamic-${breadcrumb}`;
@@ -104,8 +108,10 @@ function extractDynamicMenuItems(dynamicItems: any[]): SearchItemType[] {
     // Alt menüleri işle
     if (item.children && item.children.length > 0) {
       for (const child of item.children) {
-        if (!child.name) continue;
+        if (!child || !child.name) continue;
         const childTitle = firstLetterUpperCase(child.name);
+        if (!childTitle) continue;
+
         const childBreadcrumb = `Maddi Doğrulama Prosedürleri > ${formattedTitle} > ${childTitle}`;
         const childKey = `dynamic-${childBreadcrumb}`;
 

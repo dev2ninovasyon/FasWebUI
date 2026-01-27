@@ -23,7 +23,8 @@ const BCrumb = [
   },
 ];
 
-const removeTurkishChars = (str: string) => {
+const removeTurkishChars = (str: string | undefined | null) => {
+  if (!str) return "";
   return str
     .replace(/\s/g, "")
     .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u")
