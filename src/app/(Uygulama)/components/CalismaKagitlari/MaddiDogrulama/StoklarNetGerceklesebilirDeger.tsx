@@ -23,11 +23,13 @@ registerAllModules();
 interface Props {
     parentName: string;
     childName: string;
+    isReport?: boolean;
 }
 
 const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
     parentName,
     childName,
+    isReport,
 }, ref) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -130,20 +132,22 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
     return (
         <Box>
             {/* Buton ve Başlık Bölümü */}
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                    Stoklar Net Gerçekleşebilir Değer
-                </Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<IconRefresh size={18} />}
-                    onClick={handleOlustur}
-                    sx={{ borderRadius: "8px", textTransform: "none", fontWeight: "600" }}
-                >
-                    Verileri Getir
-                </Button>
-            </Box>
+            {!isReport && (
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+                        Stoklar Net Gerçekleşebilir Değer
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<IconRefresh size={18} />}
+                        onClick={handleOlustur}
+                        sx={{ borderRadius: "8px", textTransform: "none", fontWeight: "600" }}
+                    >
+                        Verileri Getir
+                    </Button>
+                </Box>
+            )}
 
             <Box
                 sx={{
@@ -172,6 +176,8 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     afterChange={handleAfterChange}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
                 />
                 {data.length === 0 && (
                     <Box sx={{ p: 4, textAlign: "center" }}>

@@ -57,6 +57,7 @@ interface CalismaKagidiProps {
   setToplam: (deger: number) => void;
   dipnotAdi: string; // Ek olarak dipnotAdi prop'u eklendi
   setDip: (str: string) => void;
+  isReport?: boolean;
 }
 
 const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
@@ -70,6 +71,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
   setToplam,
   dipnotAdi,
   setDip,
+  isReport,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -289,7 +291,8 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
                 xs={12}
                 lg={12}
                 mt="20px"
-                onClick={() => handleCardClick(veri)}
+                onClick={() => !isReport && handleCardClick(veri)}
+                sx={{ cursor: isReport ? "default" : "pointer" }}
               >
                 <CalismaKagidiCard
                   title={`${index + 1}. ${veri.kategori || "Kategori seçiniz"}`}
@@ -301,45 +304,47 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
               </Grid>
             ))}
           </Grid>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "end",
-            }}
-          >
+          {!isReport && (
             <Grid
-              item
-              xs={12}
-              lg={1.5}
-              my={2}
+              container
               sx={{
-                display: "flex",
+                width: "95%",
+                margin: "0 auto",
                 justifyContent: "end",
               }}
             >
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                onClick={() => handleNew()}
+              <Grid
+                item
+                xs={12}
+                lg={1.5}
+                my={2}
                 sx={{
-                  width: "100%",
+                  display: "flex",
+                  justifyContent: "end",
                 }}
               >
-                <Typography
-                  variant="body1"
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleNew()}
                   sx={{
-                    overflowWrap: "break-word",
-                    wordWrap: "break-word",
+                    width: "100%",
                   }}
                 >
-                  Yeni İşlem Ekle
-                </Typography>
-              </Button>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      overflowWrap: "break-word",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    Yeni İşlem Ekle
+                  </Typography>
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
 
         </Grid>
         {/*

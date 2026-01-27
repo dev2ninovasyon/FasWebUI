@@ -21,10 +21,12 @@ registerAllModules();
 
 interface Props {
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const CekSenetTablosu: React.FC<Props> = ({
     dipnotNo,
+    isReport
 }) => {
     const theme = useTheme();
     const hotRef = useRef<any>(null);
@@ -81,20 +83,22 @@ const CekSenetTablosu: React.FC<Props> = ({
     }
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h5">Çek Senet Tablosu</Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<IconDeviceFloppy size={16} />}
-                    onClick={handleSave}
-                    sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem' }}
-                >
-                    Tümünü Kaydet
-                </Button>
-            </Box>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            {!isReport && (
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="h5">Çek Senet Tablosu</Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        startIcon={<IconDeviceFloppy size={16} />}
+                        onClick={handleSave}
+                        sx={{ px: 2, borderRadius: "6px", fontSize: '0.8125rem' }}
+                    >
+                        Tümünü Kaydet
+                    </Button>
+                </Box>
+            )}
 
             <Box sx={{
                 width: '100%',
@@ -140,9 +144,9 @@ const CekSenetTablosu: React.FC<Props> = ({
                     height="auto"
                     autoWrapRow={true}
                     autoWrapCol={true}
-                    dropdownMenu={true}
+                    dropdownMenu={isReport ? false : true}
                     filters={true}
-                    contextMenu={{
+                    contextMenu={isReport ? false : {
                         items: {
                             "row_above": { name: "Üste Satır Ekle" },
                             "row_below": { name: "Alta Satır Ekle" },
@@ -152,6 +156,7 @@ const CekSenetTablosu: React.FC<Props> = ({
                             "redo": { name: "İleri Al" }
                         }
                     }}
+                    readOnly={isReport}
                     afterCreateRow={(index, amount) => {
                         const hotInstance = hotRef.current?.hotInstance;
                         for (let i = 0; i < amount; i++) {

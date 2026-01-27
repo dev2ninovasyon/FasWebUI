@@ -11,7 +11,7 @@ import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, useMemo } from "react";
-import Orneklem from "./Orneklem";
+import Orneklem from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Orneklem";
 import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/MaddiDogrulamaYorumComponent";
 import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 const Page = () => {

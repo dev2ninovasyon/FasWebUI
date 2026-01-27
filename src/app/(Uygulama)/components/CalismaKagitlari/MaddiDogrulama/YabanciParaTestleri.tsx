@@ -32,6 +32,7 @@ interface CalismaKagidiProps {
     dipnotNo: string;
     modelAdi: string;
     setDip: (str: string) => void;
+    isReport?: boolean;
 }
 
 const fmt = (n: any) =>
@@ -45,6 +46,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
     dipnotNo,
     modelAdi,
     setDip,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -312,24 +314,28 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                         </TableCell>
 
                                         <TableCell align="center">
-                                            <TextField
-                                                size="small"
-                                                value={displayValue}
-                                                onChange={(e) => handleInputChange(row.id, e.target.value)}
-                                                onBlur={() => handleSaveRow(row)}
-                                                onKeyDown={(e) => e.key === "Enter" && handleSaveRow(row)}
-                                                variant="outlined"
-                                                sx={{
-                                                    "& .MuiInputBase-input": {
-                                                        textAlign: "right",
-                                                        padding: "4px 8px",
-                                                        fontSize: "0.875rem",
-                                                        fontWeight: 500,
-                                                    },
-                                                    backgroundColor: "#fff",
-                                                    width: "130px",
-                                                }}
-                                            />
+                                            {isReport ? (
+                                                <span>{displayValue}</span>
+                                            ) : (
+                                                <TextField
+                                                    size="small"
+                                                    value={displayValue}
+                                                    onChange={(e) => handleInputChange(row.id, e.target.value)}
+                                                    onBlur={() => handleSaveRow(row)}
+                                                    onKeyDown={(e) => e.key === "Enter" && handleSaveRow(row)}
+                                                    variant="outlined"
+                                                    sx={{
+                                                        "& .MuiInputBase-input": {
+                                                            textAlign: "right",
+                                                            padding: "4px 8px",
+                                                            fontSize: "0.875rem",
+                                                            fontWeight: 500,
+                                                        },
+                                                        backgroundColor: "#fff",
+                                                        width: "130px",
+                                                    }}
+                                                />
+                                            )}
                                         </TableCell>
 
                                         <TableCell

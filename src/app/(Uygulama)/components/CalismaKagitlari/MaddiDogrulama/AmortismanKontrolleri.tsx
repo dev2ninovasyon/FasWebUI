@@ -12,6 +12,7 @@ interface Props {
     denetlenenId: number;
     yil: number;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const AmortismanKontrolleri: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
     denetlenenId,
     yil,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const [data, setData] = useState<AmortismanKontrolleriResponseDto | null>(null);
@@ -158,7 +160,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
     };
 
     return (
-        <div className="p-4 space-y-8">
+        <div className={isReport ? "space-y-4" : "p-4 space-y-8"}>
             {/* Table 1: Hesap Bakiyeleri */}
             <Card>
                 <CardContent>
@@ -231,14 +233,18 @@ const AmortismanKontrolleri: React.FC<Props> = ({
                                             <TableCell align="right">{oncekiDonem.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
                                             <TableCell align="right">{cariDonemGider.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
                                             <TableCell align="right">
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    inputMode="decimal"
-                                                    defaultValue={tahmini}
-                                                    onBlur={(e) => handleSaveSatir(row.detayKodu, e.target.value, kontrolKayit?.id || 0)}
-                                                    className="w-full p-1 text-right border rounded bg-white focus:ring-blue-500 focus:border-blue-500"
-                                                />
+                                                {isReport ? (
+                                                    <span>{tahmini.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</span>
+                                                ) : (
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        inputMode="decimal"
+                                                        defaultValue={tahmini}
+                                                        onBlur={(e) => handleSaveSatir(row.detayKodu, e.target.value, kontrolKayit?.id || 0)}
+                                                        className="w-full p-1 text-right border rounded bg-white focus:ring-blue-500 focus:border-blue-500"
+                                                    />
+                                                )}
                                             </TableCell>
                                             <TableCell align="right" className="font-bold">
                                                 {fark.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}

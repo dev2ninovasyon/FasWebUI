@@ -20,6 +20,7 @@ import { getDonusumKayitlari, DonusumKayitlariKontrolSatirDto, DonusumBobiFisDto
 interface DonusumKayitlariProps {
     controller: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const fmt = (n: any) =>
@@ -28,6 +29,7 @@ const fmt = (n: any) =>
 const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
     controller,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -159,7 +161,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
+                <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     {renderAnaHesaplarTable()}
                     {renderDonusumFisleriTable()}
                 </Box>

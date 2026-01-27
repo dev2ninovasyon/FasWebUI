@@ -38,9 +38,10 @@ interface Props {
     dipnotNo: string;
     isClickedVarsayilanaDon?: boolean;
     setIsClickedVarsayilanaDon?: (val: boolean) => void;
+    isReport?: boolean;
 }
 
-const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon }: Props) => {
+const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsClickedVarsayilanaDon, isReport }: Props) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -229,11 +230,12 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
                     stretchH="all"
                     height="auto"
                     minRows={10}
-                    contextMenu={true}
+                    contextMenu={isReport ? false : true}
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     fixedColumnsLeft={1}
+                    readOnly={isReport}
                 />
 
                 {data.length === 0 && (

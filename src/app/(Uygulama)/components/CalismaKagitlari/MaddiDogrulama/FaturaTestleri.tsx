@@ -14,7 +14,7 @@ import moment from "moment";
 
 registerAllModules();
 
-const FaturaTestleriTablo = ({ dipnotNo }: { dipnotNo: string }) => {
+const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isReport?: boolean }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -63,10 +63,12 @@ const FaturaTestleriTablo = ({ dipnotNo }: { dipnotNo: string }) => {
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
 
     return (
-        <Box sx={{ width: "100%", p: 0 }}>
-            <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: TITLE_TEXT_COLOR }}>
-                Fatura Testleri Listesi
-            </Typography>
+        <Box sx={{ width: "100%", p: isReport ? 0 : 0 }}>
+            {!isReport && (
+                <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: TITLE_TEXT_COLOR }}>
+                    Fatura Testleri Listesi
+                </Typography>
+            )}
 
             <Box
                 sx={{
@@ -133,6 +135,8 @@ const FaturaTestleriTablo = ({ dipnotNo }: { dipnotNo: string }) => {
                     fixedColumnsLeft={2} // Soldaki 2 sütunu sabitler
                     fixedRowsTop={0} // Başlıklar zaten otomatik sabitlenir
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
                 />
 
                 {data.length === 0 && (

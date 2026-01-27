@@ -40,6 +40,7 @@ interface Props {
     setDip: (str: string) => void;
     isClickedHesapla?: boolean;
     setIsClickedHesapla?: (val: boolean) => void;
+    isReport?: boolean;
 }
 
 const fmt = (n: any) =>
@@ -53,6 +54,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
     setDip,
     isClickedHesapla,
     setIsClickedHesapla,
+    isReport
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -224,7 +226,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     value={isEditing && changes.borcTutari !== undefined ? changes.borcTutari : fmt(row.borcTutari)}
                                                     onChange={(e) => handleInputChange(row.id, 'borcTutari', e.target.value)}
                                                     variant="standard"
-                                                    InputProps={{ disableUnderline: true }}
+                                                    InputProps={{ disableUnderline: true, readOnly: isReport }}
                                                     sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
                                                 />
                                             </TableCell>
@@ -234,7 +236,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     value={isEditing && changes.alacakTutari !== undefined ? changes.alacakTutari : fmt(row.alacakTutari)}
                                                     onChange={(e) => handleInputChange(row.id, 'alacakTutari', e.target.value)}
                                                     variant="standard"
-                                                    InputProps={{ disableUnderline: true }}
+                                                    InputProps={{ disableUnderline: true, readOnly: isReport }}
                                                     sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
                                                 />
                                             </TableCell>
@@ -244,13 +246,13 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     value={isEditing && changes.netBakiye !== undefined ? changes.netBakiye : fmt(row.netBakiye)}
                                                     onChange={(e) => handleInputChange(row.id, 'netBakiye', e.target.value)}
                                                     variant="standard"
-                                                    InputProps={{ disableUnderline: true }}
+                                                    InputProps={{ disableUnderline: true, readOnly: isReport }}
                                                     sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
                                                 />
                                             </TableCell>
                                             <TableCell align="center">{row.paraBirimi}</TableCell>
                                             <TableCell align="center">
-                                                {isEditing && (
+                                                {isEditing && !isReport && (
                                                     <Tooltip title="Kaydet">
                                                         <IconButton
                                                             color="primary"

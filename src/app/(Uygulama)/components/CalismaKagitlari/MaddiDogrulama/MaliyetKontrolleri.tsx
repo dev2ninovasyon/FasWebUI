@@ -21,12 +21,14 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
 const MaliyetKontrolleri: React.FC<Props> = ({
     parentName,
     childName,
     dipnotNo,
+    isReport,
 }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
@@ -117,6 +119,8 @@ const MaliyetKontrolleri: React.FC<Props> = ({
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
                     cells={(row, col) => {
                         const cellProperties: any = {};
                         const rowData = data[row];

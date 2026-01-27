@@ -34,8 +34,9 @@ interface Veri {
 
 interface Props {
   dipnot: string;
+  isReport?: boolean;
 }
-const Mutabakat: React.FC<Props> = ({ dipnot }) => {
+const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -344,14 +345,14 @@ const Mutabakat: React.FC<Props> = ({ dipnot }) => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -393,7 +394,8 @@ const Mutabakat: React.FC<Props> = ({ dipnot }) => {
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
-        contextMenu={["alignment", "copy"]}
+        contextMenu={isReport ? false : ["alignment", "copy"]}
+        readOnly={isReport}
       />
     </>
   );

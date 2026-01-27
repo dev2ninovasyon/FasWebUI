@@ -21,9 +21,10 @@ interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
+    isReport?: boolean;
 }
 
-const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, dipnotNo }) => {
+const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, dipnotNo, isReport }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -135,12 +136,14 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
     }, []);
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Box sx={{ mb: 2 }}>
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                    Varlık ve Amortisman Özet Tablo
-                </Typography>
-            </Box>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            {!isReport && (
+                <Box sx={{ mb: 2 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                        Varlık ve Amortisman Özet Tablo
+                    </Typography>
+                </Box>
+            )}
 
             <Box
                 sx={{
@@ -187,6 +190,8 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                     language="tr-TR"
                     licenseKey="non-commercial-and-evaluation"
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
+                    readOnly={isReport}
+                    contextMenu={isReport ? false : true}
                 />
 
                 {data.length === 0 && (

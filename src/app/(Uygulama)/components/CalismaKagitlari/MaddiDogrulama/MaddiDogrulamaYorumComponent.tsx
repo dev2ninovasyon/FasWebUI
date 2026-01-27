@@ -14,11 +14,12 @@ const YorumEditor = dynamic(
 interface MaddiDogrulamaYorumComponentProps {
     parentName: string;
     childName: string;
+    isReport?: boolean;
 }
 
 const MaddiDogrulamaYorumComponent: React.FC<
     MaddiDogrulamaYorumComponentProps
-> = ({ parentName, childName }) => {
+> = ({ parentName, childName, isReport }) => {
     const user = useSelector((state: AppState) => state.userReducer);
 
     // belgeAdi oluşturma mantığı:
@@ -32,6 +33,7 @@ const MaddiDogrulamaYorumComponent: React.FC<
                 denetlenenId={user.denetlenenId || 0}
                 yil={user.yil || 0}
                 belgeAdi={belgeAdi}
+                isReport={isReport}
             />
         </Box>
     );
