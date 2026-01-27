@@ -207,7 +207,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Alacak Tutarı</TableCell>
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Net Bakiye</TableCell>
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Para Birimi</TableCell>
-                                    <TableCell sx={{ width: 70, textAlign: "center", color: "white" }} />
+                                    {!isReport && <TableCell sx={{ width: 70, textAlign: "center", color: "white" }} />}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -251,21 +251,23 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                 />
                                             </TableCell>
                                             <TableCell align="center">{row.paraBirimi}</TableCell>
-                                            <TableCell align="center">
-                                                {isEditing && !isReport && (
-                                                    <Tooltip title="Kaydet">
-                                                        <IconButton
-                                                            color="primary"
-                                                            onClick={() => handleSaveRow(row)}
-                                                            disabled={savingRowId === row.id}
-                                                            size="small"
-                                                            sx={{ color: theme.palette.success.main }}
-                                                        >
-                                                            <IconDeviceFloppy size={18} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </TableCell>
+                                            {!isReport && (
+                                                <TableCell align="center">
+                                                    {isEditing && (
+                                                        <Tooltip title="Kaydet">
+                                                            <IconButton
+                                                                color="primary"
+                                                                onClick={() => handleSaveRow(row)}
+                                                                disabled={savingRowId === row.id}
+                                                                size="small"
+                                                                sx={{ color: theme.palette.success.main }}
+                                                            >
+                                                                <IconDeviceFloppy size={18} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    )}
+                                                </TableCell>
+                                            )}
                                         </TableRow>
                                     );
                                 })}

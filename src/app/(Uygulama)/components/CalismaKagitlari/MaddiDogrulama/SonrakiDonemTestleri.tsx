@@ -203,6 +203,10 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                     afterChange={handleAfterChange}
                     readOnly={isReport}
                     contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
                 {data.length === 0 && (
                     <Box sx={{ p: 4, textAlign: "center" }}>

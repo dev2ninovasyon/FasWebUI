@@ -121,6 +121,10 @@ const MaliyetKontrolleri: React.FC<Props> = ({
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     readOnly={isReport}
                     contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                     cells={(row, col) => {
                         const cellProperties: any = {};
                         const rowData = data[row];

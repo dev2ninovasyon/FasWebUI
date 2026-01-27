@@ -227,7 +227,6 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     width="100%"
                     height="400px"
                     stretchH="none"
-                    manualColumnResize={true}
                     autoColumnSize={{ useHeaders: false }}
                     autoRowSize={true}
                     autoWrapRow={true}
@@ -237,6 +236,10 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     readOnly={isReport}
                     contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {data.length === 0 && (
@@ -285,7 +288,6 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     rowHeaders={false}
                     width="100%"
                     height="400px"
-                    manualColumnResize={true}
                     autoColumnSize={{ useHeaders: true }}
                     autoWrapRow={true}
                     autoWrapCol={true}
@@ -295,6 +297,10 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     stretchH="all"
                     readOnly={isReport}
                     contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {detailData.length === 0 && (

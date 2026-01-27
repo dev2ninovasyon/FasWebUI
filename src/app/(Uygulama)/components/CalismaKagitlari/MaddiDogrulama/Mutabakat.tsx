@@ -204,8 +204,8 @@ const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
     TH.style.lineHeight = "1.334rem";
 
     //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
+    TH.style.color = "white";
+    TH.style.backgroundColor = theme.palette.primary.main;
     //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
 
     TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
@@ -374,7 +374,6 @@ const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
         columns={columns}
         colWidths={[0, 60, 80, 100, 80, 80, 80, 80, 80, 80, 80]}
         stretchH="all"
-        manualColumnResize={true}
         rowHeaders={true}
         rowHeights={35}
         autoWrapRow={true}
@@ -383,13 +382,14 @@ const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
         hiddenColumns={{
           columns: [0],
         }}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
+        filters={!isReport}
+        columnSorting={!isReport}
+        dropdownMenu={isReport ? false : [
           "filter_by_condition",
           "filter_by_value",
           "filter_action_bar",
         ]}
+        manualColumnResize={!isReport}
         licenseKey="non-commercial-and-evaluation" // For non-commercial use only
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}

@@ -556,15 +556,15 @@ const CalismaKagidiRaporu = () => {
                 return (
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                                <TableCell>Risk Alanı</TableCell>
-                                <TableCell>Tam Olma</TableCell>
-                                <TableCell>Doğruluk</TableCell>
-                                <TableCell>Var Olma</TableCell>
-                                <TableCell>Değerleme</TableCell>
-                                <TableCell>Dönem.</TableCell>
-                                <TableCell>Geçer.</TableCell>
-                                <TableCell>Sunum</TableCell>
+                            <TableRow sx={{ bgcolor: "primary.main" }}>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Risk Alanı</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Tam Olma</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Doğruluk</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Var Olma</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Değerleme</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Dönem.</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Geçer.</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Sunum</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -591,10 +591,10 @@ const CalismaKagidiRaporu = () => {
                 return (
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                                <TableCell>Kategori</TableCell>
-                                <TableCell>Konu</TableCell>
-                                <TableCell>Açıklama</TableCell>
+                            <TableRow sx={{ bgcolor: "primary.main" }}>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Kategori</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Konu</TableCell>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Açıklama</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -613,8 +613,8 @@ const CalismaKagidiRaporu = () => {
                 return (
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                                <TableCell>Başlık</TableCell>
+                            <TableRow sx={{ bgcolor: "primary.main" }}>
+                                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Başlık</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

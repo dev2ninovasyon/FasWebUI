@@ -404,7 +404,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Box px={3} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
+                <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     {renderAnaHesaplar()}
                     {/* Render each kebir group */}
                     {anaHesaplar.map(main => (

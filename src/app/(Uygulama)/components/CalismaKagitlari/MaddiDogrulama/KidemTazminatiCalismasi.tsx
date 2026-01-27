@@ -104,6 +104,10 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
                         className={customizer.activeMode === "dark" ? "htDark" : ""}
                         readOnly={isReport}
                         contextMenu={isReport ? false : true}
+                        dropdownMenu={!isReport}
+                        manualColumnResize={!isReport}
+                        filters={!isReport}
+                        columnSorting={!isReport}
                     />
                     {dataBobi.length === 0 && (
                         <Box sx={{ p: 4, textAlign: "center" }}>
@@ -148,6 +152,10 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
                         className={customizer.activeMode === "dark" ? "htDark" : ""}
                         readOnly={isReport}
                         contextMenu={isReport ? false : true}
+                        dropdownMenu={!isReport}
+                        manualColumnResize={!isReport}
+                        filters={!isReport}
+                        columnSorting={!isReport}
                     />
                     {dataOncekiBobi.length === 0 && (
                         <Box sx={{ p: 4, textAlign: "center" }}>

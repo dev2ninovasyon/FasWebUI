@@ -144,8 +144,10 @@ const CekSenetTablosu: React.FC<Props> = ({
                     height="auto"
                     autoWrapRow={true}
                     autoWrapCol={true}
-                    dropdownMenu={isReport ? false : true}
-                    filters={true}
+                    dropdownMenu={!isReport}
+                    filters={!isReport}
+                    manualColumnResize={!isReport}
+                    columnSorting={!isReport}
                     contextMenu={isReport ? false : {
                         items: {
                             "row_above": { name: "Üste Satır Ekle" },

@@ -211,8 +211,10 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                     viewportRowRenderingOffset={10}
                     autoWrapRow={true}
                     autoWrapCol={true}
-                    dropdownMenu={true}
-                    filters={true}
+                    dropdownMenu={!isReport}
+                    filters={!isReport}
+                    manualColumnResize={!isReport}
+                    columnSorting={!isReport}
                     contextMenu={isReport ? false : {
                         items: {
                             "row_above": { name: "Üste Satır Ekle" },

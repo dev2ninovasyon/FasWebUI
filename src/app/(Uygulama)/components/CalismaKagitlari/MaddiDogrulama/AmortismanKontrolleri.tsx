@@ -246,7 +246,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
                                                     />
                                                 )}
                                             </TableCell>
-                                            <TableCell align="right" className="font-bold">
+                                            <TableCell align="right" sx={{ fontWeight: "bold" }}>
                                                 {fark.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}
                                             </TableCell>
                                         </TableRow>

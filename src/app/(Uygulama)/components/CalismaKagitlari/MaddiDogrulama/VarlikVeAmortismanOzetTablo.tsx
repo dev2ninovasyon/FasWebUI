@@ -182,7 +182,6 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                     width="100%"
                     height="500px"
                     stretchH="none"
-                    manualColumnResize={true}
                     autoColumnSize={{ useHeaders: true }}
                     autoRowSize={true}
                     autoWrapRow={true}
@@ -192,6 +191,10 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     readOnly={isReport}
                     contextMenu={isReport ? false : true}
+                    dropdownMenu={!isReport}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {data.length === 0 && (

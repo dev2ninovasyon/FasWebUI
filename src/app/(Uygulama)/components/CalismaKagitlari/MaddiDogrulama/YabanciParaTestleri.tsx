@@ -183,7 +183,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
     }
 
     return (
-        <Box sx={{ mt: 2, mb: 4, width: "100%" }}>
+        <Box sx={{ mt: isReport ? 0 : 2, mb: 4, width: "100%" }}>
             <TableContainer
                 component={Paper}
                 elevation={0}
@@ -195,12 +195,12 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
             >
                 <Table size="small" sx={{ minWidth: 650 }}>
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: HEADER_BG }}>
+                        <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
                                     textAlign: "center",
-                                    color: "#2c3e50",
+                                    color: "white",
                                     py: 1.5,
                                 }}
                             >
@@ -300,7 +300,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                         key={row.id}
                                         sx={{
                                             backgroundColor: idx % 2 === 1 ? ZEBRA_ROW : BG_PAPER,
-                                            "&:hover": { backgroundColor: "#ebf5fb" },
+                                            "&:hover": { backgroundColor: theme.palette.action.hover },
                                         }}
                                     >
                                         <TableCell

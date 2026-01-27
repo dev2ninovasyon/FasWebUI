@@ -21,8 +21,7 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
     const [data, setData] = useState<FaturaTestleriSatir[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const TITLE_BOX_COLOR = "#B4C7E7";
-    const TITLE_TEXT_COLOR = "#2C3E50";
+    const TITLE_TEXT_COLOR = "#FFFFFF";
 
     const fetchData = async () => {
         setLoading(true);
@@ -72,15 +71,15 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
 
             <Box
                 sx={{
-                    border: `1px solid ${TITLE_BOX_COLOR}`,
+                    border: `1px solid ${theme.palette.primary.main}`,
                     borderRadius: "8px",
                     overflow: "hidden", // Dış kutu taşmaları engeller
                     "& .handsontable": {
                         fontFamily: "inherit",
                     },
                     "& .handsontable th": {
-                        backgroundColor: `${TITLE_BOX_COLOR} !important`,
-                        color: `${TITLE_TEXT_COLOR} !important`,
+                        backgroundColor: `${theme.palette.primary.main} !important`,
+                        color: `white !important`,
                         fontWeight: "bold",
                         fontSize: "13px",
                         whiteSpace: "normal",
@@ -129,7 +128,10 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
                     height="auto" // Aşağı-yukarı scrollu kaldır
                     stretchH="none" // Verilere göre genişliği korumak için 'none' yapıldı
                     autoColumnSize={true}
-                    manualColumnResize={true} // Kullanıcı sütun genişliğini ayarlayabilir
+                    manualColumnResize={!isReport} // Kullanıcı sütun genişliğini ayarlayabilir
+                    filters={!isReport}
+                    columnSorting={!isReport}
+                    dropdownMenu={!isReport}
                     language={dictionary.languageCode}
                     licenseKey="non-commercial-and-evaluation"
                     fixedColumnsLeft={2} // Soldaki 2 sütunu sabitler

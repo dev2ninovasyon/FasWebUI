@@ -154,7 +154,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
     }, [isClickedVarsayilanaDon]);
 
     return (
-        <Box sx={{ p: isReport ? 0 : 2 }}>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
             {!isReport && (
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
                     <Typography variant="h5" sx={{ fontWeight: "600", color: "#333" }}>

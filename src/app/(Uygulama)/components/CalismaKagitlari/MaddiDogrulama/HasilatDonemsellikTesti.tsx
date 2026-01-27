@@ -238,6 +238,14 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     readOnly={isReport}
                     contextMenu={isReport ? false : true}
+                    dropdownMenu={isReport ? false : [
+                        "filter_by_condition",
+                        "filter_by_value",
+                        "filter_action_bar",
+                    ]}
+                    manualColumnResize={!isReport}
+                    filters={!isReport}
+                    columnSorting={!isReport}
                 />
 
                 {data.length === 0 && (
