@@ -26,34 +26,8 @@ const nextConfig = {
     swcMinify: true,
   },
 
-  // Webpack optimizations
-  webpack: (config, { dev, isServer }) => {
-    if (dev && !isServer) {
-      // Speed up Fast Refresh
-      config.watchOptions = {
-        poll: 1000, // Check for changes every second
-        aggregateTimeout: 300, // Delay before rebuilding
-        ignored: ['**/node_modules', '**/.git', '**/build', '**/.next'],
-      };
-
-      // Optimize cache
-      config.cache = {
-        type: 'filesystem',
-        buildDependencies: {
-          config: [__filename],
-        },
-      };
-
-      // Increase parallelism
-      config.parallelism = 100;
-
-      // Optimize module resolution
-      config.resolve = {
-        ...config.resolve,
-        symlinks: false,
-      };
-    }
-
+  // Webpack optimizations - Only add what's necessary, performance tweaks are redundant with Turbopack
+  webpack: (config) => {
     return config;
   },
 };

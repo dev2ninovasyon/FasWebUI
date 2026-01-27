@@ -7,6 +7,7 @@ import { Grid } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import ProtectedPage from "@/app/ProtectedPage";
+import { ENFLASYON_BASE_URL } from "@/config/enflasyonConfig";
 
 const BCrumb = [
   {
@@ -37,7 +38,7 @@ const Page: React.FC = () => {
           <Grid item xs={12} sm={12} lg={12}>
             {user.denetimTuru == "Bobi" ? (
               <iframe
-                src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/BilancoTablosu?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+                src={`${ENFLASYON_BASE_URL}/EnflasyonDuzeltmesi/BilancoTablosu?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
                 style={{
                   border: "0px",
                   width: "100%",
@@ -46,7 +47,7 @@ const Page: React.FC = () => {
               ></iframe>
             ) : (
               <iframe
-                src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/BilancoTablosuTfrs?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+                src={`${ENFLASYON_BASE_URL}/EnflasyonDuzeltmesi/BilancoTablosuTfrs?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
                 style={{
                   border: "0px",
                   width: "100%",
