@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from "react";
 import { Box, Skeleton, Grid, Stack, Fade, useTheme } from "@mui/material";
 import { useLoading } from "@/contexts/LoadingContext";

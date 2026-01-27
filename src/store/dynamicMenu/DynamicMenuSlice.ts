@@ -53,3 +53,4 @@ export const {
 } = DynamicMenuSlice.actions;
 
 export default DynamicMenuSlice.reducer;
+

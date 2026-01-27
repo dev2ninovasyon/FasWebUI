@@ -24,10 +24,10 @@ export const getBaglantiBilgileri = async (
     } else {
       const errorData = await response.json().catch(() => null);
       const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.error(errorMessage);
+      console.log(errorMessage);
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -55,10 +55,10 @@ export const getBaglantiBilgileriByTip = async (
     } else {
       const errorData = await response.json().catch(() => null);
       const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.error(errorMessage);
+      console.log(errorMessage);
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -86,10 +86,10 @@ export const getBaglantiBilgileriByLink = async (
     } else {
       const errorData = await response.json().catch(() => null);
       const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.error(errorMessage);
+      console.log(errorMessage);
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -120,7 +120,7 @@ export const createBaglantiBilgileri = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -150,7 +150,7 @@ export const deleteBaglantiBilgileri = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -181,7 +181,7 @@ export const deleteBaglantiBilgileriById = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -200,10 +200,10 @@ export const getBildirimler = async (token: string, denetciId: number) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Bildirimler getirilemedi");
+      console.log("Bildirimler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -231,6 +231,6 @@ export const updateBildirimlerOkundumu = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

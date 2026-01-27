@@ -175,6 +175,50 @@ const SearchBoxAutocomplete = () => {
     setLocalPages(allPages);
   }, [Menuitems, dynamicMenu.maddiDogrulamaItems]);
 
+  // Türkçe karakterleri normalize ederek arama yapan custom filter
+  const normalizeText = (text: string) => {
+    return text
+      // Önce büyük harfleri düzelt (toLowerCase() öncesi)
+      .replace(/İ/g, "i")
+      .replace(/I/g, "i")
+      // Sonra küçük harfe dönüştür
+      .toLowerCase()
+      // Türkçe karakterleri ASCII'ye çevir
+      .replace(/ç/g, "c")
+      .replace(/ğ/g, "g")
+      .replace(/ı/g, "i")
+      .replace(/ö/g, "o")
+      .replace(/ş/g, "s")
+      .replace(/ü/g, "u");
+  };
+
+  const filterOptions = (
+    options: SearchItemType[],
+    { inputValue }: { inputValue: string }
+  ) => {
+    if (!inputValue) return options;
+    
+    // Input'taki birden fazla boşlukları tek boşluğa dönüştür ve normalize et
+    const normalizedInput = normalizeText(
+      inputValue.replace(/\s+/g, " ").trim()
+    );
+
+    return options.filter((option) => {
+      // Option'ın label ve breadcrumb'ını normalize edip aranır
+      const normalizedLabel = normalizeText(
+        option.label.replace(/\s+/g, " ").trim()
+      );
+      const normalizedBreadcrumb = normalizeText(
+        option.breadcrumb.replace(/\s+/g, " ").trim()
+      );
+
+      return (
+        normalizedLabel.includes(normalizedInput) ||
+        normalizedBreadcrumb.includes(normalizedInput)
+      );
+    });
+  };
+
   return (
     <Autocomplete
       disablePortal
@@ -183,6 +227,7 @@ const SearchBoxAutocomplete = () => {
       noOptionsText="Bulunamadı"
       size="small"
       fullWidth
+      filterOptions={filterOptions}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.label}
       onChange={(event, value) => handleButtonClick(value?.href || "")}
@@ -203,10 +248,8 @@ const SearchBoxAutocomplete = () => {
             <Typography
               variant="body2"
               sx={{
-                fontWeight: 500,
-                color: option.isDynamic
-                  ? theme.palette.info.main
-                  : theme.palette.text.primary,
+                fontWeight: 600,
+                color: theme.palette.text.primary,
               }}
             >
               {option.label}
@@ -231,6 +274,7 @@ const SearchBoxAutocomplete = () => {
           {...params}
           placeholder="Ara"
           aria-label="MenuAra"
+          color="secondary"
           InputProps={{
             ...params.InputProps,
             endAdornment: (

@@ -1,1 +1,2 @@
-﻿declare module "ckeditor5/translations/tr.js";
+declare module "ckeditor5/translations/tr.js";
+

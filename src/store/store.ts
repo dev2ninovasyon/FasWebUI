@@ -1,4 +1,4 @@
-﻿import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 
 import CustomizerReducer from "./customizer/CustomizerSlice";
@@ -23,3 +23,4 @@ export const rootReducer = combineReducers({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppState = ReturnType<typeof rootReducer>;
+

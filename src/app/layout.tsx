@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { resetToNull } from "@/store/user/UserSlice";
 import { isTokenExpired } from "@/utils/tokenUtils";
+import { setMaddiDogrulamaItems } from "@/store/dynamicMenu/DynamicMenuSlice";
+import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import { Provider } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -23,6 +25,17 @@ import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
 import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
 import { LoadingProvider } from "@/contexts/LoadingContext";
+
+// Turkish character removal helper function
+const removeTurkishChars = (str: string | undefined | null) => {
+  if (!str) return "";
+  return str
+    .replace(/\s/g, "")
+    .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u")
+    .replace(/ş/g, "s").replace(/ğ/g, "g").replace(/ç/g, "c")
+    .replace(/İ/g, "I").replace(/Ö/g, "O").replace(/Ü/g, "U")
+    .replace(/Ş/g, "S").replace(/Ğ/g, "G").replace(/Ç/g, "C");
+};
 
 export const MyApp = ({ children }: { children: React.ReactNode }) => {
   useAutoLogout(
@@ -95,6 +108,45 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
       router.push("/");
     }
   }, [user.token]);
+
+  // Kullanıcı giriş yaptığında MaddiDogrulama verilerini yükle
+  useEffect(() => {
+    if (user.token && user.denetlenenId && user.yil) {
+      const loadMaddiDogrulamaData = async () => {
+        try {
+          const data = await getMaddiDogrulama(
+            user.token || "",
+            user.denetimTuru || "",
+            user.denetlenenId || 0,
+            user.yil || 0
+          );
+
+          // Veriyi dönüştür ve store'a kaydet
+          const transformedData = data?.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            category: "MaddiDogrulama",
+            href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`,
+            children: item.children?.map((child: any) => ({
+              id: child.id,
+              name: child.name,
+              parentName: item.name,
+              category: "MaddiDogrulama",
+              href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}/${removeTurkishChars(child.name)}?title=${encodeURIComponent(child.name)}`,
+            })) || [],
+          })) || [];
+
+          dispatch(setMaddiDogrulamaItems(transformedData));
+          // localStorage'a kaydet
+          localStorage.setItem("maddiDogrulamaData", JSON.stringify(transformedData));
+        } catch (error) {
+          console.error("Maddi Doğrulama verileri yüklenirken hata oluştu:", error);
+        }
+      };
+
+      loadMaddiDogrulamaData();
+    }
+  }, [user.token, user.denetlenenId, user.yil, dispatch]);
 
 
   return (
