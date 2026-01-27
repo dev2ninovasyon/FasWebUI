@@ -141,8 +141,7 @@ const SearchBoxAutocomplete = () => {
             <Typography
               variant="body2"
               sx={{
-                fontWeight: 700,
-                fontSize: "0.95rem",
+                fontWeight: 500,
                 color: theme.palette.text.primary,
               }}
             >
@@ -153,7 +152,7 @@ const SearchBoxAutocomplete = () => {
                 variant="caption"
                 sx={{
                   color: theme.palette.text.secondary,
-                  fontSize: "0.8rem",
+                  fontSize: "0.75rem",
                   fontStyle: "italic",
                 }}
               >
