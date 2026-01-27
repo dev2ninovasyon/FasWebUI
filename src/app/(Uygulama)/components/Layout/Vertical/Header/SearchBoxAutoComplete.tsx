@@ -21,6 +21,7 @@ interface SearchItemType {
   href: string;
   breadcrumb: string;
   id: string;
+  isDynamic?: boolean;
 }
 
 function firstLetterUpperCase(str: string) {
@@ -62,6 +63,7 @@ function extractMenuItems(
       breadcrumb: breadcrumb,
       href: menuItem.href || "",
       id: menuItem.id || "",
+      isDynamic: false,
     };
 
     pages.push(searchItem);
@@ -70,6 +72,55 @@ function extractMenuItems(
     // Alt menüleri işle - yeni path ile
     if (menuItem.children && menuItem.children.length > 0) {
       pages.push(...extractMenuItems(menuItem.children, currentPath));
+    }
+  }
+
+  return pages;
+}
+
+function extractDynamicMenuItems(dynamicItems: any[]): SearchItemType[] {
+  const pages: SearchItemType[] = [];
+
+  for (const item of dynamicItems) {
+    if (!item.name) continue;
+
+    const formattedTitle = firstLetterUpperCase(item.name);
+    const breadcrumb = `Maddi Doğrulama Prosedürleri > ${formattedTitle}`;
+
+    const key = `dynamic-${breadcrumb}`;
+    if (seenTitles.has(key)) continue;
+
+    const searchItem: SearchItemType = {
+      label: formattedTitle,
+      breadcrumb: breadcrumb,
+      href: item.href || "",
+      id: `dynamic-${item.id}`,
+      isDynamic: true,
+    };
+
+    pages.push(searchItem);
+    seenTitles.set(key, searchItem);
+
+    // Alt menüleri işle
+    if (item.children && item.children.length > 0) {
+      for (const child of item.children) {
+        if (!child.name) continue;
+        const childTitle = firstLetterUpperCase(child.name);
+        const childBreadcrumb = `Maddi Doğrulama Prosedürleri > ${formattedTitle} > ${childTitle}`;
+        const childKey = `dynamic-${childBreadcrumb}`;
+
+        if (!seenTitles.has(childKey)) {
+          const childSearchItem: SearchItemType = {
+            label: childTitle,
+            breadcrumb: childBreadcrumb,
+            href: child.href || "",
+            id: `dynamic-${child.id}`,
+            isDynamic: true,
+          };
+          pages.push(childSearchItem);
+          seenTitles.set(childKey, childSearchItem);
+        }
+      }
     }
   }
 
@@ -85,6 +136,7 @@ function handleButtonClick(link: string) {
 const SearchBoxAutocomplete = () => {
   const theme = useTheme();
   const user = useSelector((state: AppState) => state.userReducer);
+  const dynamicMenu = useSelector((state: AppState) => state.dynamicMenu);
   const [localPages, setLocalPages] = React.useState<SearchItemType[]>([]);
 
   // useMemo ile menü cache'leniyor - performans iyileştirmesi
@@ -109,9 +161,13 @@ const SearchBoxAutocomplete = () => {
   // Menü itemlerini extract et ve state'e kaydet
   React.useEffect(() => {
     seenTitles.clear();
-    const extractedPages = extractMenuItems(Menuitems);
-    setLocalPages(extractedPages);
-  }, [Menuitems]);
+    const staticPages = extractMenuItems(Menuitems);
+    const dynamicPages = extractDynamicMenuItems(
+      dynamicMenu.maddiDogrulamaItems || []
+    );
+    const allPages = [...staticPages, ...dynamicPages];
+    setLocalPages(allPages);
+  }, [Menuitems, dynamicMenu.maddiDogrulamaItems]);
 
   return (
     <Autocomplete
@@ -142,7 +198,9 @@ const SearchBoxAutocomplete = () => {
               variant="body2"
               sx={{
                 fontWeight: 500,
-                color: theme.palette.text.primary,
+                color: option.isDynamic
+                  ? theme.palette.info.main
+                  : theme.palette.text.primary,
               }}
             >
               {option.label}

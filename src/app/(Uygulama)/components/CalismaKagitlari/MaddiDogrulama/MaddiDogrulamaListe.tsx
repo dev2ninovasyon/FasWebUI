@@ -21,7 +21,7 @@ import {
 import { AppState } from "@/store/store";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { getMaddiDogrulama } from "@/api/MaddiDogrulama/MaddiDogrulama";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useRouter } from "next/navigation";
@@ -30,6 +30,7 @@ import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import Link from "next/link";
 import Image from "next/image";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+import { setMaddiDogrulamaItems } from "@/store/dynamicMenu/DynamicMenuSlice";
 
 
 const allIcons = [
@@ -131,6 +132,7 @@ const StatusIcon: React.FC<{ status: boolean }> = ({ status }) => {
 const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewModeChange }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
+  const dispatch = useDispatch();
   const theme = useTheme();
   const [openedGroupIndex, setOpenGroupIndex] = useState<number | null>(null);
   const [calismaKagidiVerileri, setCalismaKagidiVerileri] = useState<DenetimDosyaBelgeleriDto[]>([]);
@@ -197,6 +199,21 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
         }
       } else {
         setCalismaKagidiVerileri(data || []);
+        // Store'a maddiDogrulama verilerini kaydet - dinamik menü için
+        const transformedData = data?.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          category: "MaddiDogrulama",
+          href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`,
+          children: item.children?.map((child: any) => ({
+            id: child.id,
+            name: child.name,
+            parentName: item.name,
+            category: "MaddiDogrulama",
+            href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}/${removeTurkishChars(child.name)}?title=${encodeURIComponent(child.name)}`,
+          })) || [],
+        })) || [];
+        dispatch(setMaddiDogrulamaItems(transformedData));
       }
     } catch (error) {
       console.error("An error occurred:", error);
