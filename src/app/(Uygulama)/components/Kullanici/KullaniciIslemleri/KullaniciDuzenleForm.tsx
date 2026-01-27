@@ -53,10 +53,10 @@ const KullaniciDuzenleForm = () => {
       if (result) {
         router.push("/Kullanici/KullaniciIslemleri");
       } else {
-        console.error("Kullanıcı düzenleme başarısız");
+        console.log("Kullanıcı düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -74,7 +74,7 @@ const KullaniciDuzenleForm = () => {
       setSifre(kullaniciVerileri.sifre);
       setAktifPasif(kullaniciVerileri.aktifPasif);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

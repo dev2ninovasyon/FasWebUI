@@ -80,10 +80,10 @@ const Page = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        console.log("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -116,7 +116,7 @@ console.log(newVeri)
         console.warn("No data found");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -137,7 +137,7 @@ console.log(newVeri)
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

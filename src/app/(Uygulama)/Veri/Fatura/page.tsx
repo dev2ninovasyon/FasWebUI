@@ -134,7 +134,7 @@ const Page: React.FC = () => {
         }
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
       toast("Kayıtlar çekilemedi.", "error");
     } finally {
       if (opts?.initial) setInitialLoading(false);
@@ -171,7 +171,7 @@ const Page: React.FC = () => {
       // mini bir â€œtek-sefer kontrolâ€ daha (ör. 15sn sonra)
       setTimeout(() => { void fetchRows({ tryCloseSnack: true }); }, 15000);
     } catch (e) {
-      console.error(e);
+      console.log(e);
       toast("Yükleme sırasında hata oluştu.", "error");
     } finally {
       setUploading(false);

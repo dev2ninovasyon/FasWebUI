@@ -44,7 +44,7 @@ export async function getReeskontTestleri(
     if (response.ok) {
         return response.json();
     } else {
-        console.error("Veriler getirilemedi");
+        console.log("Veriler getirilemedi");
         return null;
     }
 }

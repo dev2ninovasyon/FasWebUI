@@ -133,7 +133,7 @@ const EDefterMizanStepper = () => {
       setYevmiyeFisNo(standartfisListesi);
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -173,7 +173,7 @@ const EDefterMizanStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -214,7 +214,7 @@ const EDefterMizanStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -253,7 +253,7 @@ const EDefterMizanStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -268,7 +268,7 @@ const EDefterMizanStepper = () => {
 
       setYevmiyeFisNo(fisListesi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -308,7 +308,7 @@ const EDefterMizanStepper = () => {
         setTip(programVukMizanControl);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -326,7 +326,7 @@ const EDefterMizanStepper = () => {
         setActiveStep(1);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

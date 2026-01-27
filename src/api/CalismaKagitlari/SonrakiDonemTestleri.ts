@@ -38,11 +38,11 @@ export const getSonrakiDonemTestleri = async (
             return response.json();
         } else {
             const errorText = await response.text();
-            console.error("Sonraki Dönem Testleri verileri alınırken hata oluştu:", response.status, errorText);
+            console.log("Sonraki Dönem Testleri verileri alınırken hata oluştu:", response.status, errorText);
             throw new Error(`API Error: ${response.status} - ${errorText}`);
         }
     } catch (error) {
-        console.error("Sonraki Dönem Testleri verileri alınırken hata oluştu:", error);
+        console.log("Sonraki Dönem Testleri verileri alınırken hata oluştu:", error);
         throw error;
     }
 };
@@ -64,11 +64,11 @@ export const sonrakiDonemTestleriSatirEkle = async (dto: any) => {
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Sonraki Dönem Testleri satırı eklenirken hata oluştu:", response.status);
+            console.log("Sonraki Dönem Testleri satırı eklenirken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Sonraki Dönem Testleri satırı eklenirken hata oluştu:", error);
+        console.log("Sonraki Dönem Testleri satırı eklenirken hata oluştu:", error);
         throw error;
     }
 };
@@ -88,11 +88,11 @@ export const sonrakiDonemTestleriSatirSil = async (id: number) => {
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Sonraki Dönem Testleri satırı silinirken hata oluştu:", response.status);
+            console.log("Sonraki Dönem Testleri satırı silinirken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Sonraki Dönem Testleri satırı silinirken hata oluştu:", error);
+        console.log("Sonraki Dönem Testleri satırı silinirken hata oluştu:", error);
         throw error;
     }
 };
@@ -114,11 +114,11 @@ export const sonrakiDonemTestleriTopluSatirSil = async (ids: number[]) => {
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Sonraki Dönem Testleri satırları silinirken hata oluştu:", response.status);
+            console.log("Sonraki Dönem Testleri satırları silinirken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Sonraki Dönem Testleri satırları silinirken hata oluştu:", error);
+        console.log("Sonraki Dönem Testleri satırları silinirken hata oluştu:", error);
         throw error;
     }
 };
@@ -140,11 +140,11 @@ export const sonrakiDonemTestleriSatirGuncelle = async (satir: any) => {
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Sonraki Dönem Testleri satırı güncellenirken hata oluştu:", response.status);
+            console.log("Sonraki Dönem Testleri satırı güncellenirken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Sonraki Dönem Testleri satırı güncellenirken hata oluştu:", error);
+        console.log("Sonraki Dönem Testleri satırı güncellenirken hata oluştu:", error);
         throw error;
     }
 };

@@ -334,7 +334,7 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -396,7 +396,7 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
         saveAs(blob, "HazirFisListesi.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -504,7 +504,7 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                       });
                     }
                   } catch (error) {
-                    console.error("Bir hata oluştu:", error);
+                    console.log("Bir hata oluştu:", error);
                   }
                 },
               },

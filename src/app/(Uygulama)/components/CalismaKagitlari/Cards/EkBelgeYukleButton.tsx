@@ -149,7 +149,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
       setSelectedIds([]);
       setPage(0);
     } catch (error) {
-      console.error("Ek belgeler alınırken hata oluştu:", error);
+      console.log("Ek belgeler alınırken hata oluştu:", error);
       setEkBelgeler([]);
     } finally {
       setIsLoadingList(false);
@@ -303,7 +303,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         }
       }
     } catch (err) {
-      console.error("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
+      console.log("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
       enqueueSnackbar(
         "PNG dosyası PDF'e dönüştürülürken bir hata oluştu. Lütfen tekrar deneyin.",
         {
@@ -367,7 +367,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         );
       }
     } catch (error) {
-      console.error("Ek belge yüklenirken hata oluştu:", error);
+      console.log("Ek belge yüklenirken hata oluştu:", error);
       enqueueSnackbar("Ek belgeler yüklenirken beklenmeyen bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,
@@ -405,7 +405,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Ek belge indirilirken hata:", error);
+      console.log("Ek belge indirilirken hata:", error);
       enqueueSnackbar("Ek belge indirilirken bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,
@@ -444,7 +444,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         window.URL.revokeObjectURL(url);
       }
     } catch (error) {
-      console.error("Ek belge görüntülenirken hata:", error);
+      console.log("Ek belge görüntülenirken hata:", error);
       enqueueSnackbar("Ek belge görüntülenirken bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,

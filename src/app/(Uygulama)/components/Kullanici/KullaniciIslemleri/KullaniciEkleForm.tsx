@@ -46,10 +46,10 @@ const KullaniciEkleForm = () => {
       if (result) {
         router.push("/Kullanici/KullaniciIslemleri");
       } else {
-        console.error("Kullanıcı ekleme başarısız");
+        console.log("Kullanıcı ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

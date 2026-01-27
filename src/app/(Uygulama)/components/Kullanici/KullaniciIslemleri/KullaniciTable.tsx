@@ -69,10 +69,10 @@ const KullaniciTable = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("Denetci silinemedi");
+        console.log("Denetci silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -95,7 +95,7 @@ const KullaniciTable = () => {
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

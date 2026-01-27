@@ -79,7 +79,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                 enqueueSnackbar("Veri bulunamadı", { variant: "info" });
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             setData([]);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
@@ -110,7 +110,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
             await saveHasilatDonemsellikTesti(listToSave, true);
             enqueueSnackbar("Veriler başarıyla kaydedildi", { variant: "success" });
         } catch (error) {
-            console.error("Kaydetme hatası:", error);
+            console.log("Kaydetme hatası:", error);
             enqueueSnackbar("Kaydetme sırasında bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);

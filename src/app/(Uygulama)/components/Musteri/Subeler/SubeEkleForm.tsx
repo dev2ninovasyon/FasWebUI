@@ -28,10 +28,10 @@ const SubeEkleForm = () => {
       if (result) {
         router.push("/Musteri/Subeler");
       } else {
-        console.error("Şube ekleme başarısız");
+        console.log("Şube ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

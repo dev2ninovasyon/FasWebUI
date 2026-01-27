@@ -436,7 +436,7 @@ const CalismaKagidiRaporu = () => {
                 kalite: kalite ? { adSoyad: kalite.personelAdi, unvan: kalite.unvan, tarih: formData.kontrolTarihi } : null,
             });
         } catch (e) {
-            console.error("fetchSignatureData error:", e);
+            console.log("fetchSignatureData error:", e);
         }
     };
 
@@ -579,7 +579,7 @@ const CalismaKagidiRaporu = () => {
                 setReportData(finalDetails);
             }
         } catch (error) {
-            console.error("Error fetching report data:", error);
+            console.log("Error fetching report data:", error);
         } finally {
             setLoading(false);
         }

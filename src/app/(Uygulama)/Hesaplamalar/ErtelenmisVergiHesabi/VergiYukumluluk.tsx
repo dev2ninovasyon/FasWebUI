@@ -229,7 +229,7 @@ const VergiYukumluluk: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -290,7 +290,7 @@ const VergiYukumluluk: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         saveAs(blob, "ErtelenmisVergiHesabiHesaplama.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

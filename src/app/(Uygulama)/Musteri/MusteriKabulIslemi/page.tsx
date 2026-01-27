@@ -127,7 +127,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -147,7 +147,7 @@ const Page: React.FC = () => {
         setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
   const [odemeBilgileriBobi, setOdemeBilgileriBobi] = useState(false);
@@ -169,7 +169,7 @@ const Page: React.FC = () => {
         setOdemeBilgileriEnflasyon(response.enflasyonModulu);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

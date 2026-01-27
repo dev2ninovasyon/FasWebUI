@@ -50,7 +50,7 @@ export default function KullaniciStep({
                     onDataChange(result);
                 }
             } catch (error) {
-                console.error("Kullanıcılar getirilemedi:", error);
+                console.log("Kullanıcılar getirilemedi:", error);
                 showSnackbar("Kullanıcılar yüklenirken bir hata oluştu", "error");
             }
         }
@@ -115,7 +115,7 @@ export default function KullaniciStep({
                 showSnackbar("İşlem başarısız oldu", "error");
             }
         } catch (error) {
-            console.error("İşlem sırasında hata:", error);
+            console.log("İşlem sırasında hata:", error);
             showSnackbar("Bir hata oluştu", "error");
         }
     };
@@ -131,7 +131,7 @@ export default function KullaniciStep({
                     showSnackbar("Silme işlemi başarısız", "error");
                 }
             } catch (error) {
-                console.error("Silme hatası:", error);
+                console.log("Silme hatası:", error);
                 showSnackbar("Silme işlemi sırasında hata oluştu", "error");
             }
         }

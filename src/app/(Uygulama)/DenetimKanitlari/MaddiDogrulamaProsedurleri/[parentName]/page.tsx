@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useSelector } from "@/store/hooks";
@@ -39,7 +39,7 @@ const Page = ({ params }: { params: Promise<{ parentName: string }> }) => {
             const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
             if (found?.name) setDip(found.name);
         } catch (error) {
-            console.error("fetchDipTitle error:", error);
+            console.log("fetchDipTitle error:", error);
         }
     };
 

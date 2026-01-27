@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -126,7 +126,7 @@ const Page = () => {
         console.warn("No data found");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -141,7 +141,7 @@ const Page = () => {
       );
       setMektupBelge(belge);
     } catch (error) {
-      console.error("Mektup bilgisi alınamadı:", error);
+      console.log("Mektup bilgisi alınamadı:", error);
     }
   };
 
@@ -156,7 +156,7 @@ const Page = () => {
       );
       setActiveTokens(tokens);
     } catch (error) {
-      console.error("Aktif tokenlar alınamadı:", error);
+      console.log("Aktif tokenlar alınamadı:", error);
     }
   };
 

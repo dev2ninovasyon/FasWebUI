@@ -68,7 +68,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
             );
             setVeriler(result);
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         }
     };
 
@@ -86,7 +86,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
             fetchData();
             handleClosePopUp();
         } catch (error) {
-            console.error("Ekleme hatası:", error);
+            console.log("Ekleme hatası:", error);
         }
     };
 
@@ -100,7 +100,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
             fetchData();
             handleClosePopUp();
         } catch (error) {
-            console.error("Güncelleme hatası:", error);
+            console.log("Güncelleme hatası:", error);
         }
     };
 
@@ -110,7 +110,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
             fetchData();
             handleClosePopUp();
         } catch (error) {
-            console.error("Silme hatası:", error);
+            console.log("Silme hatası:", error);
         }
     };
 

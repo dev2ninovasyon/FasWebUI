@@ -135,7 +135,7 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                     setTableData(parsedData);
                 }
             } catch (e) {
-                console.error("JSON parse error:", e);
+                console.log("JSON parse error:", e);
             }
         }
         setLoading(false);
@@ -178,7 +178,7 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                 }
             }
         } catch (error) {
-            console.error("Auto-save error:", error);
+            console.log("Auto-save error:", error);
             enqueueSnackbar("Kaydetme hatası.", { variant: "error" });
         } finally {
             setSaving(false);
@@ -210,7 +210,7 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
                 enqueueSnackbar("Veriler oluşturulurken bir hata oluştu.", { variant: "error" });
             }
         } catch (error) {
-            console.error("AI Generation error:", error);
+            console.log("AI Generation error:", error);
             enqueueSnackbar("AI servis hatası.", { variant: "error" });
         } finally {
             setIsGenerating(false);

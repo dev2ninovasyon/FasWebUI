@@ -101,7 +101,7 @@ export default function DenetimKadrosuStep({
             );
             setRows(res || []);
         } catch (error) {
-            console.error("Kadrosu verileri çekilirken hata:", error);
+            console.log("Kadrosu verileri çekilirken hata:", error);
         } finally {
             setLoading(false);
         }
@@ -130,7 +130,7 @@ export default function DenetimKadrosuStep({
                 fetchData();
             }
         } catch (error) {
-            console.error("Silme hatası:", error);
+            console.log("Silme hatası:", error);
         } finally {
             handleMenuClose();
         }
@@ -172,7 +172,7 @@ export default function DenetimKadrosuStep({
                 enqueueSnackbar("Atama yapılamadı.", { variant: "error" });
             }
         } catch (error) {
-            console.error("Atama hatası:", error);
+            console.log("Atama hatası:", error);
         } finally {
             setSavingMember(false);
         }

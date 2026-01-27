@@ -21,7 +21,7 @@ export const getMusteriBirakmaFormu = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("MusteriBirakmaFormu getirme hatası:", error);
+        console.log("MusteriBirakmaFormu getirme hatası:", error);
         throw error;
     }
 };
@@ -44,7 +44,7 @@ export const createMusteriBirakmaFormu = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("MusteriBirakmaFormu oluşturma hatası:", error);
+        console.log("MusteriBirakmaFormu oluşturma hatası:", error);
         throw error;
     }
 };
@@ -68,7 +68,7 @@ export const updateMusteriBirakmaFormu = async (
         }
         return true;
     } catch (error) {
-        console.error("MusteriBirakmaFormu güncelleme hatası:", error);
+        console.log("MusteriBirakmaFormu güncelleme hatası:", error);
         throw error;
     }
 };
@@ -89,7 +89,7 @@ export const deleteMusteriBirakmaFormu = async (
         }
         return true;
     } catch (error) {
-        console.error("MusteriBirakmaFormu silme hatası:", error);
+        console.log("MusteriBirakmaFormu silme hatası:", error);
         throw error;
     }
 };

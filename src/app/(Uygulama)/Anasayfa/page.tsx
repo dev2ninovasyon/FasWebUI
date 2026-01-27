@@ -40,7 +40,7 @@ export default function DashboardPage() {
         await updateTurTamamlandi(user.token || "", user.id || 0, true);
         dispatch(setTurTamamlandiRedux(true));
       } catch (error) {
-        console.error("Tur durumu güncellenirken hata oluştu:", error);
+        console.log("Tur durumu güncellenirken hata oluştu:", error);
       }
     }
   };

@@ -64,7 +64,7 @@ export const getYabanciParaTestleriByDenetlenen = async (
   if (res.status === 204) return [];
 
   if (!res.ok) {
-    console.error("GetByDenetlenen başarısız:", res.status);
+    console.log("GetByDenetlenen başarısız:", res.status);
     return null;
   }
 
@@ -97,7 +97,7 @@ export const updateYabanciParaTestleriRow = async (
   });
 
   if (!res.ok) {
-    console.error("Update başarısız:", res.status);
+    console.log("Update başarısız:", res.status);
     return null;
   }
 
@@ -125,7 +125,7 @@ export const varsayilanaDon = async (
   });
 
   if (!res.ok) {
-    console.error("Varsayılana dön başarısız:", res.status);
+    console.log("Varsayılana dön başarısız:", res.status);
     return null;
   }
 

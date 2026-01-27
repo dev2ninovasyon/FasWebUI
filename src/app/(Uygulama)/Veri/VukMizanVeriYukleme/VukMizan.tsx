@@ -561,7 +561,7 @@ const VukMizan: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -600,7 +600,7 @@ const VukMizan: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -630,7 +630,7 @@ const VukMizan: React.FC<Props> = ({
       setFetchedData(rowsAll);
       setDuplicatesControl(true);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -639,7 +639,7 @@ const VukMizan: React.FC<Props> = ({
       const format = await getFormat(user.token || "", "Vuk Mizan");
       setRowCount(format.satirSayisi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -702,7 +702,7 @@ const VukMizan: React.FC<Props> = ({
         saveAs(blob, "VukMizanFormati.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

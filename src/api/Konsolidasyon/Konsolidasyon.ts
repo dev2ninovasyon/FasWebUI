@@ -21,10 +21,10 @@ export const getTanimlamalar = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Tanımlamalar getirilemedi");
+      console.log("Tanımlamalar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -40,10 +40,10 @@ export const getTanimlamalarById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Tanımlamalar getirilemedi");
+      console.log("Tanımlamalar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -69,7 +69,7 @@ export const updateTanimlamalar = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -93,9 +93,9 @@ export const createBirlestirilmisMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Birleştirilmiş Mizan oluşturulamadı");
+      console.log("Birleştirilmiş Mizan oluşturulamadı");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

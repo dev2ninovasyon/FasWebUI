@@ -67,7 +67,7 @@ const Page = () => {
 
         dispatch(setMaddiDogrulamaItems(transformedData));
       } catch (error) {
-        console.error("Maddi Doğrulama verileri yüklenirken hata oluştu:", error);
+        console.log("Maddi Doğrulama verileri yüklenirken hata oluştu:", error);
       }
     };
 

@@ -22,7 +22,7 @@ export const getKysBelgeler = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("KysBelgeler getirme hatası:", error);
+        console.log("KysBelgeler getirme hatası:", error);
         throw error;
     }
 };
@@ -45,7 +45,7 @@ export const createKysBelge = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("KysBelge oluşturma hatası:", error);
+        console.log("KysBelge oluşturma hatası:", error);
         throw error;
     }
 };
@@ -69,7 +69,7 @@ export const updateKysBelge = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("KysBelge güncelleme hatası:", error);
+        console.log("KysBelge güncelleme hatası:", error);
         throw error;
     }
 };
@@ -90,7 +90,7 @@ export const deleteKysBelge = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("KysBelge silme hatası:", error);
+        console.log("KysBelge silme hatası:", error);
         throw error;
     }
 };

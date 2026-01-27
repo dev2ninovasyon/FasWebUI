@@ -21,10 +21,10 @@ export const getKrediHesaplamaVerileriByDenetciDenetlenenYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kredi Hesaplama verileri getirilemedi");
+      console.log("Kredi Hesaplama verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -49,10 +49,10 @@ export const getKrediHesaplamaVerileriByDenetciDenetlenenYilId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kredi Hesaplama verisi getirilemedi");
+      console.log("Kredi Hesaplama verisi getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -77,7 +77,7 @@ export const createKrediHesaplamaVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -106,6 +106,6 @@ export const deleteKrediHesaplamaVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

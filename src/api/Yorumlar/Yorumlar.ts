@@ -20,11 +20,11 @@ export const getYorum = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Yorum getirilemedi");
+            console.log("Yorum getirilemedi");
             return null;
         }
     } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
         return null;
     }
 };
@@ -54,11 +54,11 @@ export const saveYorum = async (
         if (response.ok) {
             return await response.json();
         } else {
-            console.error("Yorum kaydedilemedi");
+            console.log("Yorum kaydedilemedi");
             return null;
         }
     } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
         return null;
     }
 };

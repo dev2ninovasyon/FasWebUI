@@ -52,7 +52,7 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
         onEmptyUsers();
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

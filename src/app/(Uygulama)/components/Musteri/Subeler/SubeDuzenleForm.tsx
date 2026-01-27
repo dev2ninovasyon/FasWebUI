@@ -32,10 +32,10 @@ const SubeDuzenleForm = () => {
       if (result) {
         router.push("/Musteri/Subeler");
       } else {
-        console.error("Şube düzenleme başarısız");
+        console.log("Şube düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -46,7 +46,7 @@ const SubeDuzenleForm = () => {
       setSubeAdi(subelerVerileri.subeAdi);
       setAdres(subelerVerileri.adres);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

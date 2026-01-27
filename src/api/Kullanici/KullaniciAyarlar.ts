@@ -8,7 +8,7 @@ export const getKullaniciAyarlar = async (token: string, kullaniciId: number) =>
         });
         return response.ok ? await response.json() : null;
     } catch (error) {
-        console.error("KullaniciAyarlar API - getKullaniciAyarlar Hata:", error);
+        console.log("KullaniciAyarlar API - getKullaniciAyarlar Hata:", error);
         return null;
     }
 };
@@ -25,7 +25,7 @@ export const updateKullaniciAyarlar = async (token: string, kullaniciId: number,
         });
         return response.ok ? await response.json() : null;
     } catch (error) {
-        console.error("KullaniciAyarlar API - updateKullaniciAyarlar Hata:", error);
+        console.log("KullaniciAyarlar API - updateKullaniciAyarlar Hata:", error);
         throw error;
     }
 };
@@ -46,7 +46,7 @@ export const updateKurulumAyarlari = async (token: string, kullaniciId: number, 
         });
         return response.ok ? await response.json() : null;
     } catch (error) {
-        console.error("KullaniciAyarlar API - updateKurulumAyarlari Hata:", error);
+        console.log("KullaniciAyarlar API - updateKurulumAyarlari Hata:", error);
         throw error;
     }
 };
@@ -68,11 +68,11 @@ export const updateSonSecilenAyarlari = async (token: string, kullaniciId: numbe
             return await response.json();
         } else {
             const errorText = await response.text();
-            console.error("KullaniciAyarlar API - Update failed:", response.status, errorText);
+            console.log("KullaniciAyarlar API - Update failed:", response.status, errorText);
             throw new Error(`Update failed: ${response.status}`);
         }
     } catch (error) {
-        console.error("KullaniciAyarlar API - Hata:", error);
+        console.log("KullaniciAyarlar API - Hata:", error);
         throw error;
     }
 };
@@ -91,7 +91,7 @@ export const updateTurTamamlandi = async (token: string, kullaniciId: number, ta
         });
         return response.ok ? await response.json() : null;
     } catch (error) {
-        console.error("KullaniciAyarlar API - updateTurTamamlandi Hata:", error);
+        console.log("KullaniciAyarlar API - updateTurTamamlandi Hata:", error);
         throw error;
     }
 };

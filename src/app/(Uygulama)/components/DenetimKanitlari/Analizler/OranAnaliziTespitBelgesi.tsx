@@ -112,7 +112,7 @@ const OranAnaliziTespitBelgesi: React.FC<Props> = ({
       setKalemData(kalemList);
       setHesapData(hesapList);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

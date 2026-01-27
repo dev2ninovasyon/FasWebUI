@@ -225,7 +225,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       setSelected([]);
       handleIsConfirm();
     } catch (error: any) {
-      console.error("Silme hatası:", error);
+      console.log("Silme hatası:", error);
     }
   };
 
@@ -266,7 +266,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       setSelected([]);
       handleIsConfirm();
     } catch (error: any) {
-      console.error("Silme hatası:", error);
+      console.log("Silme hatası:", error);
     }
   };
 
@@ -288,7 +288,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       document.body.appendChild(link);
       link.click();
     } catch (error) {
-      console.error("İndirme hatası:", error);
+      console.log("İndirme hatası:", error);
     }
   };
 
@@ -325,7 +325,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       document.body.appendChild(link);
       link.click();
     } catch (error) {
-      console.error("İndirme hatası:", error);
+      console.log("İndirme hatası:", error);
     }
   };
 

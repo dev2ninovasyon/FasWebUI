@@ -144,7 +144,7 @@ const Page: React.FC = () => {
           setControl(true);
         }
       } catch (error: any) {
-        console.error("Dosya yüklenirken hata oluştu:", error);
+        console.log("Dosya yüklenirken hata oluştu:", error);
         const errorMessage = error.response?.data?.message || error.response?.data || "Dosya yüklenirken bir hata oluştu.";
         enqueueSnackbar(errorMessage, { variant: "error" });
       } finally {
@@ -204,7 +204,7 @@ const Page: React.FC = () => {
         setFetchedData(null);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

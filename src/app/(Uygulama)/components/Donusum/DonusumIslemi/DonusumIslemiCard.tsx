@@ -75,7 +75,7 @@ const DonusumIslemiCard: React.FC<Props> = ({
       setAltiliBorcTutari(totalAltiliBorcTutari);
       setAltiliAlacakTutari(totalAltiliAlacakTutari);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

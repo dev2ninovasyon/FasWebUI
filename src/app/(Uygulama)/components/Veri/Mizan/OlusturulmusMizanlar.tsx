@@ -314,7 +314,7 @@ const OlusturulmusMizanlar: React.FC<Props> = ({ type1, type2 }) => {
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -370,7 +370,7 @@ const OlusturulmusMizanlar: React.FC<Props> = ({ type1, type2 }) => {
         saveAs(blob, "EDefterMizan.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

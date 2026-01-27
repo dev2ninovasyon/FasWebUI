@@ -50,7 +50,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                 setData(response);
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);
@@ -78,7 +78,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                 enqueueSnackbar("Veriler getirilirken bir hata oluştu", { variant: "error" });
             }
         } catch (error) {
-            console.error("Varsayılana dönme hatası:", error);
+            console.log("Varsayılana dönme hatası:", error);
         } finally {
             setLoading(false);
         }
@@ -94,7 +94,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                     try {
                         await updateStokDonemsellikTesti(user.token || "", updatedRow.id, updateData);
                     } catch (error) {
-                        console.error("Güncelleme hatası:", error);
+                        console.log("Güncelleme hatası:", error);
                         enqueueSnackbar("Güncelleme sırasında bir hata oluştu", { variant: "error" });
                     }
                 }

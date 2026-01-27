@@ -46,7 +46,7 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
             );
             setData(response.donusumMizanBobi || []);
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);

@@ -105,7 +105,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -146,7 +146,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -216,7 +216,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

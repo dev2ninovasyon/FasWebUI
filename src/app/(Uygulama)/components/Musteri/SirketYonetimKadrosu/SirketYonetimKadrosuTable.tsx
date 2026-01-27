@@ -59,10 +59,10 @@ const SirketYonetimKadrosuTable = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("Şirket Yönetim Kadrosu silinemedi");
+        console.log("Şirket Yönetim Kadrosu silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -84,7 +84,7 @@ const SirketYonetimKadrosuTable = () => {
       );
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

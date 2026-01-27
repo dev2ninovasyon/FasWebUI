@@ -94,7 +94,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
             console.log("GetByDenetlenen raw res =", res);
 
         } catch (error) {
-            console.error("fetchData error:", error);
+            console.log("fetchData error:", error);
             setVeriler([]);
         } finally {
             setLoading(false);

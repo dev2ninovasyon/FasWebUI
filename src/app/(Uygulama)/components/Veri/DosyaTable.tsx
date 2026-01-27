@@ -303,7 +303,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       setDefterLoglari(defterYuklemeLoglari);
       setIsOpen(true);
     } catch (error) {
-      console.error("Defter Logları getirilemedi");
+      console.log("Defter Logları getirilemedi");
     }
   };
 
@@ -338,7 +338,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       setIsOpen2(true);
       handleClose();
     } catch (error) {
-      console.error("Error fetching file:", error);
+      console.log("Error fetching file:", error);
       enqueueSnackbar("Dosya yüklenirken bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 3000,
@@ -370,7 +370,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       setRows(newRows);
       setControl(true);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -471,7 +471,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
       enqueueSnackbar("Silme işlemi sırasında bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,

@@ -680,7 +680,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -719,7 +719,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -798,7 +798,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -807,7 +807,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
       const format = await getFormat(user.token || "", "Amortisman");
       setRowCount(format.satirSayisi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -870,7 +870,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
         saveAs(blob, "AmortismanFormati.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

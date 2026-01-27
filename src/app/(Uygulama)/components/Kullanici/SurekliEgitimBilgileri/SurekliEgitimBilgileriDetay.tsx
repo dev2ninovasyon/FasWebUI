@@ -48,7 +48,7 @@ const SurekliEgitimBilgileriDetay = () => {
       setEldeEdilenKredi(surekliEgitimBilgileriVerileri.eldeEdilenKredi);
       setEgitimTuru(surekliEgitimBilgileriVerileri.egitimTuru);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

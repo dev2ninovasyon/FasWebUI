@@ -330,7 +330,7 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
         saveAs(blob, "KurFarkiKontrolleriFisler.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

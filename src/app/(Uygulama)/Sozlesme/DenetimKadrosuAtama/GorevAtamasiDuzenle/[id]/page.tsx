@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";

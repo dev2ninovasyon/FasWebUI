@@ -183,7 +183,7 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -197,7 +197,7 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
       setRows(data);
       setLoading(false);
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 

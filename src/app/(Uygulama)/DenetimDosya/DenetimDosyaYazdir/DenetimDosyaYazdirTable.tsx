@@ -104,7 +104,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
       const data = await getDenetimDosyaTransfer(user.token || "", user.denetimTuru || "");
       setRows(data);
     } catch (error) {
-      console.error(error);
+      console.log(error);
       enqueueSnackbar("Liste yüklenemedi.", { variant: "error" });
     } finally {
       setLoading(false);
@@ -127,7 +127,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
         enqueueSnackbar("Daha önce oluşturulmuş bir PDF bulunamadı.", { variant: "info" });
       }
     } catch (err) {
-      console.error("getLastBirlesikPdf hata:", err);
+      console.log("getLastBirlesikPdf hata:", err);
       enqueueSnackbar("Birleştirilmiş PDF alınamadı.", { variant: "error" });
     }
   };

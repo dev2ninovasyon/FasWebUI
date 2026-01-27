@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Box, Button, Grid, Typography, useMediaQuery } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -67,7 +67,7 @@ const Page = () => {
 
       setKrediNo(krediHesaplamaVerisi.alinanKrediNumarasi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -106,7 +106,7 @@ const Page = () => {
         setFetchedData(null);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

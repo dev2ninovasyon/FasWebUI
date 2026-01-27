@@ -397,7 +397,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

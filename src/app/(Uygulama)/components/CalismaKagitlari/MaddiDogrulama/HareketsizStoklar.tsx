@@ -100,7 +100,7 @@ const HareketsizStoklar: React.FC<Props> = ({
                 setVeriler([]);
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             setVeriler([]);
         } finally {
             setLoading(false);
@@ -176,7 +176,7 @@ const HareketsizStoklar: React.FC<Props> = ({
                 return copy;
             });
         } catch (err) {
-            console.error(err);
+            console.log(err);
             showSnackbar("Güncelleme sırasında bir hata oluştu.", "error");
         } finally {
             setSavingRowId(null);

@@ -130,7 +130,7 @@ const MusteriEkleForm = ({
         enqueueSnackbar(result.message || "PDF okunamadı.", { variant: "error" });
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       enqueueSnackbar("Beklenmedik bir hata oluştu.", { variant: "error" });
     } finally {
       setLoading(false);
@@ -205,7 +205,7 @@ const MusteriEkleForm = ({
             );
             enqueueSnackbar("PDF belgesi yeni şirkete başarıyla kaydedildi.", { variant: "success" });
           } catch (uploadError) {
-            console.error("PDF kaydetme hatası:", uploadError);
+            console.log("PDF kaydetme hatası:", uploadError);
             enqueueSnackbar("Şirket eklendi ancak PDF kaydedilemedi.", { variant: "warning" });
           }
         }
@@ -226,7 +226,7 @@ const MusteriEkleForm = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     } finally {
       setLoading(false);
     }
@@ -246,7 +246,7 @@ const MusteriEkleForm = ({
       if (!sektor1) return;
       setSektor1Id(sektor1.id);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -263,7 +263,7 @@ const MusteriEkleForm = ({
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -282,7 +282,7 @@ const MusteriEkleForm = ({
         setSektor3List(newRows.filter((item: Veri2) => item.kirilim === 3));
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

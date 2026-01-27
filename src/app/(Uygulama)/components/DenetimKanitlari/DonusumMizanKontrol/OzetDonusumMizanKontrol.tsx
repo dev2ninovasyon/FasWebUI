@@ -413,7 +413,7 @@ const OzetDonusumMizanKontrol: React.FC<Props> = ({
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -474,7 +474,7 @@ const OzetDonusumMizanKontrol: React.FC<Props> = ({
         saveAs(blob, "DonusumMizan.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

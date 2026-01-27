@@ -54,7 +54,7 @@ const KysCalismaKagidiUcSutunluShow: React.FC<KysCalismaKagidiUcSutunluShowProps
             );
             setVeriler(result);
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         } finally {
             setLoading(false);
         }

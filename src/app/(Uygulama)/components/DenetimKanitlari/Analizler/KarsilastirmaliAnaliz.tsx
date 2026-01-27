@@ -134,7 +134,7 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

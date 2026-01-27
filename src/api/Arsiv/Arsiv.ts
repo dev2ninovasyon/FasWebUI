@@ -21,10 +21,10 @@ export const getArsiv = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Arşiv getirilemedi");
+      console.log("Arşiv getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -44,7 +44,7 @@ export const deleteArsiv = async (token: string, path: string) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -65,6 +65,6 @@ export const deleteAllArsiv = async (token: string, paths: string[]) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

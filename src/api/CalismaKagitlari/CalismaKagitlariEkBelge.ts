@@ -36,7 +36,7 @@ export async function uploadEkBelge(
       message: data?.message || "Ek belge yüklenemedi.",
     };
   } catch (error) {
-    console.error("uploadEkBelge hata:", error);
+    console.log("uploadEkBelge hata:", error);
     return {
       success: false,
       message: "Sunucuya bağlanırken bir hata oluştu.",
@@ -68,7 +68,7 @@ export async function getEkBelgeler(
   );
 
   if (!response.ok) {
-    console.error("getEkBelgeler hata:", response.status);
+    console.log("getEkBelgeler hata:", response.status);
     return [];
   }
 
@@ -128,7 +128,7 @@ export async function deleteEkBelge(
 
     return response.ok;
   } catch (error) {
-    console.error("deleteEkBelge hata:", error);
+    console.log("deleteEkBelge hata:", error);
     return false;
   }
 }
@@ -186,7 +186,7 @@ export async function uploadMaddiDogrulamaEkBelge(
       message: data?.message || "Ek belge yüklenemedi.",
     };
   } catch (error) {
-    console.error("uploadMaddiDogrulamaEkBelge hata:", error);
+    console.log("uploadMaddiDogrulamaEkBelge hata:", error);
     return {
       success: false,
       message: "Sunucuya bağlanırken bir hata oluştu.",
@@ -218,7 +218,7 @@ export async function getMaddiDogrulamaEkBelgeler(
   );
 
   if (!response.ok) {
-    console.error("getMaddiDogrulamaEkBelgeler hata:", response.status);
+    console.log("getMaddiDogrulamaEkBelgeler hata:", response.status);
     return [];
   }
 

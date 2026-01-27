@@ -155,7 +155,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       }
     } catch (error) {
       setIsClickedUpdate(false);
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -203,7 +203,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       }
     } catch (error) {
       setIsClickedUpdate(false);
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -305,7 +305,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
         }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [
     user.token,

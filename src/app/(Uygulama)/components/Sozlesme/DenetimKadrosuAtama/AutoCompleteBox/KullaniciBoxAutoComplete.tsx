@@ -47,7 +47,7 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
         onEmptyUsers();
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

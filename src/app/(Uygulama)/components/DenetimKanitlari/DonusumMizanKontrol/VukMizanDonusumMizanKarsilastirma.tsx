@@ -161,7 +161,7 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
       setVeriler(res);
       setError(null);
     } catch (err) {
-      console.error("getDonusumMizanKarsilastirma hatası:", err);
+      console.log("getDonusumMizanKarsilastirma hatası:", err);
       setError("Veri alınırken hata oluştu.");
     } finally {
       setLoading(false);

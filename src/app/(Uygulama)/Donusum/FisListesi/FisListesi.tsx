@@ -364,7 +364,7 @@ const FisListesi = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -395,7 +395,7 @@ const FisListesi = () => {
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -457,7 +457,7 @@ const FisListesi = () => {
         saveAs(blob, "FisListesi.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

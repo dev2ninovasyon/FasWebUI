@@ -1,4 +1,4 @@
-// src/types/html-docx-global.d.ts
+﻿// src/types/html-docx-global.d.ts
 export {};
 
 declare global {

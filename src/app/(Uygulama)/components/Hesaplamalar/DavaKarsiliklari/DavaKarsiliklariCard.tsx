@@ -45,7 +45,7 @@ const DavaKarsiliklariCard: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       );
       setDavaKarsiliklariVerileri(davaKarsiliklariVerileri);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

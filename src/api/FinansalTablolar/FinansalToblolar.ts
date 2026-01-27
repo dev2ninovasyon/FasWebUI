@@ -22,10 +22,10 @@ export const getFinansalDurumTablosu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Finansal Durum Tablosu verileri getirilemedi");
+      console.log("Finansal Durum Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -50,10 +50,10 @@ export const getKarZararTablosu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kar Zarar Tablosu verileri getirilemedi");
+      console.log("Kar Zarar Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -78,10 +78,10 @@ export const getNakitAkisTablosu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Nakit Akış Tablosu verileri getirilemedi");
+      console.log("Nakit Akış Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -106,10 +106,10 @@ export const getOzkaynakTablosu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Özkaynak Tablosu verileri getirilemedi");
+      console.log("Özkaynak Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -138,6 +138,6 @@ export const FinansalTabloOlustur = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

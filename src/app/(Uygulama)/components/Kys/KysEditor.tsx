@@ -146,7 +146,7 @@ const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent, read
                 setSonGuncelleme(null);
             }
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         }
     };
 
@@ -172,7 +172,7 @@ const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent, read
             setTimeout(() => setKayitMesaji(null), 3000);
 
         } catch (error) {
-            console.error("Kaydetme hatası:", error);
+            console.log("Kaydetme hatası:", error);
             setKayitMesaji("Hata oluştu!");
         }
     };

@@ -64,7 +64,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                     setDonusumFisleri(res.donusumFisler);
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.log("Error fetching data:", error);
             } finally {
                 setLoading(false);
             }

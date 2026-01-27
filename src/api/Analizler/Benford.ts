@@ -23,7 +23,7 @@ export const getBenfordHesapKodlari = async (
     // return data?.data ?? data;
     return data?.data ?? data;
   } catch (e) {
-    console.error(e);
+    console.log(e);
   }
 };
 
@@ -51,7 +51,7 @@ export const getBenfordDagilim = async (
     const data = await res.json();
     return data?.data ?? data;
   } catch (e) {
-    console.error(e);
+    console.log(e);
   }
 };
 
@@ -81,6 +81,6 @@ export const getBenfordBasamakKayitlari = async (
     const data = await res.json();
     return data?.data ?? data;
   } catch (e) {
-    console.error(e);
+    console.log(e);
   }
 };

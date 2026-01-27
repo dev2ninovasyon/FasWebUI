@@ -130,7 +130,7 @@ const VukMizanStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -169,7 +169,7 @@ const VukMizanStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -203,7 +203,7 @@ const VukMizanStepper = () => {
         setTip(programVukMizanControl);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -226,7 +226,7 @@ const VukMizanStepper = () => {
         setActiveStep(1);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

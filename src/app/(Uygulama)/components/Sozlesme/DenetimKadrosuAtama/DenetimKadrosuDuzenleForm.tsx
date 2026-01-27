@@ -77,7 +77,7 @@ const DenetimKadrosuDuzenleForm = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -97,7 +97,7 @@ const DenetimKadrosuDuzenleForm = () => {
       setDenetimUcreti(görevAtamalariVerileri.denetimUcreti);
       setAktifPasif(görevAtamalariVerileri.aktifPasif);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

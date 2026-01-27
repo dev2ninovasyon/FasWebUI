@@ -582,7 +582,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -621,7 +621,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -677,7 +677,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
         setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -686,7 +686,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
       const format = await getFormat(user.token || "", "Kredi Hesaplama");
       setRowCount(format.satirSayisi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -749,7 +749,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
         saveAs(blob, "KrediHesaplamaFormati.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

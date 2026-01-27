@@ -64,7 +64,7 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                     console.log("Formatlanmış veri:", formattedData);
                     setData(formattedData);
                 } else {
-                    console.error("API yanıtı beklenmeyen formatta:", response.data);
+                    console.log("API yanıtı beklenmeyen formatta:", response.data);
                     setData([]);
                     enqueueSnackbar("Veri formatı hatalı", { variant: "error" });
                 }
@@ -75,7 +75,7 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                     enqueueSnackbar(response.message, { variant: "info" });
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", {
                 variant: "error",
             });

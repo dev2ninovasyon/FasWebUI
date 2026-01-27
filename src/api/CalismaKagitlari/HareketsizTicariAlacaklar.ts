@@ -47,7 +47,7 @@ export const getHareketsizTicariAlacaklarByDenetlenen = async (
     if (res.status === 204) return [];
 
     if (!res.ok) {
-        console.error("GetByDenetlenen başarısız:", res.status);
+        console.log("GetByDenetlenen başarısız:", res.status);
         return null;
     }
 
@@ -70,7 +70,7 @@ export const updateHareketsizTicariAlacaklarRow = async (
     });
 
     if (!res.ok) {
-        console.error("Update başarısız:", res.status);
+        console.log("Update başarısız:", res.status);
         return null;
     }
 

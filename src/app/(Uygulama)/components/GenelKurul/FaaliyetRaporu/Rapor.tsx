@@ -186,7 +186,7 @@ const Rapor: React.FC<RaporProps> = ({
       setKalemDataKA2(kalemList2);
       setHesapDataKA2(hesapList2);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [user.token, user.denetciId, user.yil, user.denetlenenId, setKalemDataKA, setHesapDataKA, setKalemDataKA2, setHesapDataKA2, setTitleKA, setTitleKA2]);
 
@@ -346,7 +346,7 @@ const Rapor: React.FC<RaporProps> = ({
       setKalemDataDA2(kalemList2);
       setHesapDataDA2(hesapList2);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [user.token, user.denetciId, user.yil, user.denetlenenId, setKalemDataDA, setHesapDataDA, setKalemDataDA2, setHesapDataDA2, setTitleDA, setTitleDA2]);
 

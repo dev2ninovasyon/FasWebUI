@@ -140,7 +140,7 @@ export const MyApp = ({ children }: { children: React.ReactNode }) => {
           // localStorage'a kaydet
           localStorage.setItem("maddiDogrulamaData", JSON.stringify(transformedData));
         } catch (error) {
-          console.error("Maddi Doğrulama verileri yüklenirken hata oluştu:", error);
+          console.log("Maddi Doğrulama verileri yüklenirken hata oluştu:", error);
         }
       };
 

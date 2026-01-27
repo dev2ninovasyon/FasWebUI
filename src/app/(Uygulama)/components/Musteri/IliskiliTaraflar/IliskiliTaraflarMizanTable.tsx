@@ -105,7 +105,7 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
       );
       router.push("/Musteri/IliskiliTaraflar");
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -156,7 +156,7 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
 
       setRows(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

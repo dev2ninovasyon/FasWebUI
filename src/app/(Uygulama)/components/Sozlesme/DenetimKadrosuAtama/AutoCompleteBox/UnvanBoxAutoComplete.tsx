@@ -38,7 +38,7 @@ const UnvanBoxAutocomplete: React.FC<UnvanBoxProps> = ({
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

@@ -21,10 +21,10 @@ export const getKidemTazminatiBobiVerileriByDenetciDenetlenenYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kıdem Tazminatı Bobi verileri getirilemedi");
+      console.log("Kıdem Tazminatı Bobi verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -49,7 +49,7 @@ export const createKidemTazminatiBobiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -78,6 +78,6 @@ export const deleteKidemTazminatiBobiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

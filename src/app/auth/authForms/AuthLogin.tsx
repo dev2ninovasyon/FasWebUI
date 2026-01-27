@@ -57,7 +57,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
       token = await executeRecaptcha("login");
       console.timeEnd("ReCAPTCHA Doğrulaması");
     } catch (error: any) {
-      console.error("Recaptcha hatası:", error);
+      console.log("Recaptcha hatası:", error);
       let errorMessage = "Güvenlik doğrulaması sırasında bir hata oluştu.";
 
       if (error?.message?.includes("message channel closed")) {
@@ -206,7 +206,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
       }
     } catch (error) {
       console.timeEnd("Giriş İşlemi Toplam Süre");
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
       setIsLoggedIn(false);
     }
   };

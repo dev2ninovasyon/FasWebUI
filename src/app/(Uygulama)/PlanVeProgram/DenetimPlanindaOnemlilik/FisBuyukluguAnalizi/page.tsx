@@ -48,7 +48,7 @@ const [seciliAy, setSeciliAy] = useState<string>("Ocak");
         );
         setAylar(result || []);
       } catch (err) {
-        console.error("Fiş büyüklüğü verisi alınamadı:", err);
+        console.log("Fiş büyüklüğü verisi alınamadı:", err);
       } finally {
         setLoading(false);
       }
@@ -86,7 +86,7 @@ const saveNoteForMonth = async (ay: string) => {
     );
     setSnack({ open: true, message: `${ay} notu kaydedildi.`, severity: "success" });
   } catch (e:any) {
-    console.error("Not kaydedilemedi:", e);
+    console.log("Not kaydedilemedi:", e);
     setSnack({ open: true, message: `${ay} notu kaydedilemedi.`, severity: "error" });
   } finally {
     setSaveLoading(false);
@@ -113,7 +113,7 @@ const saveNoteForMonth = async (ay: string) => {
         const res = await ApexChartsAny.exec(id, "dataURI"); // { imgURI, blob }
         if (res?.imgURI) chartImageMapRef.current[item.ay] = res.imgURI;
       } catch (e) {
-        console.error("Grafik export başarısız:", id, e);
+        console.log("Grafik export başarısız:", id, e);
       }
     }
   };

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { getHile } from "@/api/DenetimDosya/DenetimDosya";
 import HileCalismaKagitlariBelge from "@/app/(Uygulama)/components/CalismaKagitlari/HileCalismaKagitlariBelge";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -108,7 +108,7 @@ const Page = () => {
         }
       });
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 

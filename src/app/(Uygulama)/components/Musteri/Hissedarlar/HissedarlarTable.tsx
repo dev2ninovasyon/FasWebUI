@@ -72,10 +72,10 @@ const HissedarlarTable: React.FC<Props> = ({
       if (result) {
         fetchData();
       } else {
-        console.error("Hissedar silinemedi");
+        console.log("Hissedar silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -97,7 +97,7 @@ const HissedarlarTable: React.FC<Props> = ({
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

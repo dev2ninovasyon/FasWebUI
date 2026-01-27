@@ -142,7 +142,7 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
       setKztData(newRowsKzt);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

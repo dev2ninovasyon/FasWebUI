@@ -494,7 +494,7 @@ const KysRiskMatrixPdfDocument: React.FC<KysRiskMatrixPdfDocumentProps> = ({ dat
                 try {
                     matrixData = JSON.parse(matrix.matrisJson);
                 } catch (e) {
-                    console.error("JSON parse error for PDF", e);
+                    console.log("JSON parse error for PDF", e);
                 }
 
                 return (

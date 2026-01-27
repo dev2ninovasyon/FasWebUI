@@ -88,7 +88,7 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
       });
       setProgramVukMizanHesaplari(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -117,7 +117,7 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
       });
       setDonusumMizanHesaplari(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

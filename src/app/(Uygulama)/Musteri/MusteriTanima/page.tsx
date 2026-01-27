@@ -143,7 +143,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -183,7 +183,7 @@ const Page: React.FC = () => {
           setDigerBilgiler(musteriTanimaStatikBilgiler.digerBilgiler);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

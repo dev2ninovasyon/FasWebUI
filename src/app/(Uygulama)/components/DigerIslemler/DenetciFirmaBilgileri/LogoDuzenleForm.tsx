@@ -70,7 +70,7 @@ const LogoDuzenleForm = () => {
           });
         }
       } catch (err) {
-        console.error("Logo yükleme hatası:", err);
+        console.log("Logo yükleme hatası:", err);
       }
     }
   };
@@ -93,7 +93,7 @@ const LogoDuzenleForm = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

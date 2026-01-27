@@ -480,7 +480,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
             });
       return jsonData;
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -522,7 +522,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -593,7 +593,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -656,7 +656,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
         saveAs(blob, `VadeliBankaMevduatiFaizTahakkukHesapla.xlsx`);
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

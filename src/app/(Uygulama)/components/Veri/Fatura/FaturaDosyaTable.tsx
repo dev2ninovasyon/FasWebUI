@@ -195,7 +195,7 @@ const DosyaTable: React.FC<{
 
         setFetchedFiles(prev => ({ ...prev, [id]: mapped }));
       } catch (error) {
-        console.error(error);
+        console.log(error);
         toast("Dosyalar yüklenemedi", "error");
       } finally {
         setLoadingFiles(prev => ({ ...prev, [id]: false }));
@@ -470,7 +470,7 @@ const DosyaTable: React.FC<{
                                             setPreviewUrl(blobUrl);
                                             setPreviewOpen(true);
                                           } catch (err) {
-                                            console.error(err);
+                                            console.log(err);
                                             setPreviewErr("Önizleme açılamadı.");
                                           } finally {
                                             setPreviewLoading(false);

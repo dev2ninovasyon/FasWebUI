@@ -341,7 +341,7 @@ const SonGirilenFisler: React.FC<Props> = ({
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -356,7 +356,7 @@ const SonGirilenFisler: React.FC<Props> = ({
       );
       setLastFisNo(fisNo);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

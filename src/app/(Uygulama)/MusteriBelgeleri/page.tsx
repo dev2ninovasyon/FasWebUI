@@ -150,7 +150,7 @@ const Page = () => {
       setRows(list);
       setSelectedIds([]);
     } catch (error) {
-      console.error("Müşteri belgeleri listesi alınırken hata:", error);
+      console.log("Müşteri belgeleri listesi alınırken hata:", error);
       enqueueSnackbar("Yüklenmiş belgeler alınırken hata oluştu.", {
         variant: "error",
       });
@@ -225,7 +225,7 @@ const Page = () => {
 
         await loadEkBelgeler();
       } catch (error) {
-        console.error("Dosya yüklenirken hata oluştu:", error);
+        console.log("Dosya yüklenirken hata oluştu:", error);
         enqueueSnackbar("Dosya yüklenirken bir hata oluştu.", {
           variant: "error",
         });
@@ -270,7 +270,7 @@ const Page = () => {
       }
       // ToplantıTutanakları için ilerde fetch eklenebilir
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 
@@ -347,7 +347,7 @@ const Page = () => {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Belge indirilirken hata:", error);
+      console.log("Belge indirilirken hata:", error);
       enqueueSnackbar("Belge indirilirken bir hata oluştu.", {
         variant: "error",
       });
@@ -377,7 +377,7 @@ const Page = () => {
 
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Belge görüntülenirken hata:", error);
+      console.log("Belge görüntülenirken hata:", error);
       enqueueSnackbar("Belge görüntülenirken bir hata oluştu.", {
         variant: "error",
       });
@@ -439,7 +439,7 @@ const Page = () => {
         });
       }
     } catch (error) {
-      console.error("Seçilen belgeler silinirken hata:", error);
+      console.log("Seçilen belgeler silinirken hata:", error);
       enqueueSnackbar(
         "Seçilen belgeler silinirken beklenmeyen bir hata oluştu.",
         {

@@ -106,7 +106,7 @@ const SirketPopup = () => {
         console.warn("SirketPopup - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
 
     handleDrawerClose2();

@@ -212,7 +212,7 @@ Eğer sağlanan URL'ye erişilemediyse veya içerik okunamadıysa (teknik bir ha
       try {
         parsed = safeParseJson(out);
       } catch (e) {
-        console.error("JSON parse failed:", e, "Sample:", out.slice(0, 200));
+        console.log("JSON parse failed:", e, "Sample:", out.slice(0, 200));
         setControl2(false);
         setMessage("Çıktı JSON formatında değil, metin gösterildi.");
         return;
@@ -230,7 +230,7 @@ Eğer sağlanan URL'ye erişilemediyse veya içerik okunamadıysa (teknik bir ha
         setMessage(messages.done);
       }
     } catch (err) {
-      console.error("Gemini fetch/parse error:", err);
+      console.log("Gemini fetch/parse error:", err);
       setControl2(false);
       setMessage("Çıktı JSON formatında değil, metin gösterildi.");
     }

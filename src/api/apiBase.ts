@@ -39,7 +39,7 @@ export async function apiFetch(
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
     const timeoutMsg = `âš ï¸ API Timeout: ${fullUrl} (${timeout}ms süresini aştı)`;
-    console.error(timeoutMsg);
+    console.log(timeoutMsg);
     controller.abort("timeout");
   }, timeout);
 
@@ -69,7 +69,7 @@ export async function apiFetch(
       const isTimeout = controller.signal.reason === "timeout";
       console.warn(`ğŸ›‘ [%cAPI Hata   %c] ${path} -> ${isTimeout ? 'TIMED OUT' : 'CANCELLED'}.`, 'color: #ef4444; font-weight: bold;', 'color: inherit;');
     } else {
-      console.error(`âŒ [%cAPI Hata   %c] (${path}):`, 'color: #ef4444; font-weight: bold;', 'color: inherit;', error);
+      console.log(`âŒ [%cAPI Hata   %c] (${path}):`, 'color: #ef4444; font-weight: bold;', 'color: inherit;', error);
     }
     throw error;
   } finally {

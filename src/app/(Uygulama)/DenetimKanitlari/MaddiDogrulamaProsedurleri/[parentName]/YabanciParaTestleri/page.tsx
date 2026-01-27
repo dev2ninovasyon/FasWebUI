@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -92,7 +92,7 @@ const Page = () => {
 
       if (found?.name) setDip(found.name);
     } catch (error) {
-      console.error("fetchDipTitle error:", error);
+      console.log("fetchDipTitle error:", error);
     }
   };
 
@@ -109,7 +109,7 @@ const Page = () => {
 
       setDipnotNo(result || "");
     } catch (error) {
-      console.error("fetchDipnotNo error:", error);
+      console.log("fetchDipnotNo error:", error);
     }
   };
 
@@ -138,7 +138,7 @@ const Page = () => {
         enqueueSnackbar("Kayıtlar yeniden oluşturulurken bir hata oluştu.", { variant: "error" });
       }
     } catch (error) {
-      console.error("handleYenidenOlustur error:", error);
+      console.log("handleYenidenOlustur error:", error);
       enqueueSnackbar("Bir hata oluştu.", { variant: "error" });
     }
   };

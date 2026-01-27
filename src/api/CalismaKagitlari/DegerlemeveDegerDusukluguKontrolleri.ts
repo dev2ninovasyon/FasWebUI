@@ -23,11 +23,11 @@ export const getDegerlemeveDegerDusukluguKontrolleri = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Değerleme ve Değer Düşüklüğü Kontrolleri verileri alınırken hata oluştu:", response.status);
+            console.log("Değerleme ve Değer Düşüklüğü Kontrolleri verileri alınırken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Değerleme ve Değer Düşüklüğü Kontrolleri verileri alınırken hata oluştu:", error);
+        console.log("Değerleme ve Değer Düşüklüğü Kontrolleri verileri alınırken hata oluştu:", error);
         throw error;
     }
 };

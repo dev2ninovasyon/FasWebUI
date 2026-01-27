@@ -35,7 +35,7 @@ export const getKysBelge = async (
         });
 
         if (!response.ok) {
-            console.error("KYS Belge getirilemedi:", response.statusText);
+            console.log("KYS Belge getirilemedi:", response.statusText);
             return null;
         }
 
@@ -61,7 +61,7 @@ export const getKysBelge = async (
             kontrolListesi
         };
     } catch (error) {
-        console.error("KYS Belge getirilemedi:", error);
+        console.log("KYS Belge getirilemedi:", error);
         return null;
     }
 };
@@ -94,13 +94,13 @@ export const updateKysBelge = async (
         });
 
         if (!response.ok) {
-            console.error("KYS Belge güncellenemedi:", response.statusText);
+            console.log("KYS Belge güncellenemedi:", response.statusText);
             return null;
         }
 
         return await response.json();
     } catch (error) {
-        console.error("KYS Belge güncellenemedi:", error);
+        console.log("KYS Belge güncellenemedi:", error);
         return null;
     }
 };
@@ -121,13 +121,13 @@ export const updateKysBelgeChecklist = async (
         });
 
         if (!response.ok) {
-            console.error("KYS Belge checklist güncellenemedi:", response.statusText);
+            console.log("KYS Belge checklist güncellenemedi:", response.statusText);
             return false;
         }
 
         return true;
     } catch (error) {
-        console.error("KYS Belge checklist güncellenemedi:", error);
+        console.log("KYS Belge checklist güncellenemedi:", error);
         return false;
     }
 };

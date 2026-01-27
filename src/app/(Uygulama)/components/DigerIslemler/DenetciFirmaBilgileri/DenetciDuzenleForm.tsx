@@ -49,10 +49,10 @@ const DenetciDuzenleForm = () => {
       if (result) {
         router.push("/DenetciFirmaIslemleri");
       } else {
-        console.error("Denetçi düzenleme başarısız");
+        console.log("Denetçi düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -75,7 +75,7 @@ const DenetciDuzenleForm = () => {
       setTicaretSicilNo(denetciVerileri.ticaretSicilNo);
       setAktifmi(denetciVerileri.aktifmi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

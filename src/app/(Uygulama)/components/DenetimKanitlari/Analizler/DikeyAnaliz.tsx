@@ -120,7 +120,7 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
       setKalemData2(kalemList2);
       setHesapData2(hesapList2);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

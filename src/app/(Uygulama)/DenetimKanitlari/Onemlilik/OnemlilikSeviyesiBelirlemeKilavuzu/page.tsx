@@ -68,7 +68,7 @@ const Page = () => {
         console.warn("No data found");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

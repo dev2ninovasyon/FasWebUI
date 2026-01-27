@@ -39,10 +39,10 @@ const TanimlamaDuzenleForm = () => {
       if (result) {
         router.push("/Konsolidasyon/Tanimlamalar");
       } else {
-        console.error("Tanımlama düzenleme başarısız");
+        console.log("Tanımlama düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -56,7 +56,7 @@ const TanimlamaDuzenleForm = () => {
       setYil(tanimlamalarVerileri.yil);
       setBagliIstirakOrani(tanimlamalarVerileri.bagliIstirakOrani);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

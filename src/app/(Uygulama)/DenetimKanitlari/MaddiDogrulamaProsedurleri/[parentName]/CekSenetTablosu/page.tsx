@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import { Box } from "@mui/material";
@@ -51,7 +51,7 @@ const Page = () => {
             const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
             if (found?.name) setDip(found.name);
         } catch (error) {
-            console.error("fetchDipTitle error:", error);
+            console.log("fetchDipTitle error:", error);
         }
     };
 
@@ -82,7 +82,7 @@ const Page = () => {
                     setDipnotNo(result);
                 }
             } catch (error) {
-                console.error("Error fetching dipnot:", error);
+                console.log("Error fetching dipnot:", error);
             }
         };
         fetchData();

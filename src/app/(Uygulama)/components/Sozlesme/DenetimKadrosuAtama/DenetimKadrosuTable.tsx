@@ -61,10 +61,10 @@ const DenetimKadrosuTable = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("Gorev Atamaları silinemedi");
+        console.log("Gorev Atamaları silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -92,7 +92,7 @@ const DenetimKadrosuTable = () => {
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";

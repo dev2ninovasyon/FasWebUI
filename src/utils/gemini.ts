@@ -25,7 +25,7 @@ const handleBackendCall = async (token: string, endpoint: string, body: any, fal
     // Also handling PascalCase or Message field as fallback
     return result.data || result.Data || result.message || result.Message || fallbackText;
   } catch (error) {
-    console.error(`Gemini API error (${endpoint}):`, error);
+    console.log(`Gemini API error (${endpoint}):`, error);
     return fallbackText;
   }
 };

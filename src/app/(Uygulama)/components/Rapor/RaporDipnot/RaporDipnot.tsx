@@ -80,7 +80,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
 
       handleClosePopUp();
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -96,10 +96,10 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
       if (result) {
         fetchData();
       } else {
-        console.error("Dipnot Verileri silme başarısız");
+        console.log("Dipnot Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -152,7 +152,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
         setVeriler(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

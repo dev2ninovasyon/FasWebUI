@@ -61,11 +61,11 @@ export const getYeniMusteriFormu = async (
         if (response.ok) {
             return await response.json();
         } else {
-            console.error("Form verisi getirilemedi");
+            console.log("Form verisi getirilemedi");
             return null;
         }
     } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
         return null;
     }
 };
@@ -88,11 +88,11 @@ export const saveYeniMusteriFormu = async (
         if (response.ok) {
             return true;
         } else {
-            console.error("Form kaydedilemedi");
+            console.log("Form kaydedilemedi");
             return false;
         }
     } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
         return false;
     }
 };

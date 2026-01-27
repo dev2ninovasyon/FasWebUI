@@ -39,7 +39,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       document.body.appendChild(link);
       link.click();
     } catch (error) {
-      console.error("İndirme hatası:", error);
+      console.log("İndirme hatası:", error);
     } finally {
       setOpenCartAlert(false);
     }
@@ -61,7 +61,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       setPdfBlobUrl(pdfBlobUrl);
       setIsOpen(true);
     } catch (error) {
-      console.error("Error fetching PDF:", error);
+      console.log("Error fetching PDF:", error);
     } finally {
       setOpenCartAlert(false);
     }

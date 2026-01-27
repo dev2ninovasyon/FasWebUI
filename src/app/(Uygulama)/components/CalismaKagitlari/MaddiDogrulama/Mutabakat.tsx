@@ -328,7 +328,7 @@ const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

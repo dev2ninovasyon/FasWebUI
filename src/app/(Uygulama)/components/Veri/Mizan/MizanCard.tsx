@@ -46,7 +46,7 @@ const MizanCard: React.FC<Props> = ({
       setBorcTutari(totalBorcTutari);
       setAlacakTutari(totalAlacakTutari);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

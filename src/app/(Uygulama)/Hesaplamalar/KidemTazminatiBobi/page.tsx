@@ -298,7 +298,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -333,7 +333,7 @@ const Page: React.FC = () => {
         setPersonel2023(kidemEkBilgiVerileri.personel2023);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -432,7 +432,7 @@ const Page: React.FC = () => {
       setFetchedKaydedilecekKullanilmamisIzinKarsiligi(rows9);
       setFetchedKidemTazminatiBobiOrnekFisler(rows10);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -470,7 +470,7 @@ const Page: React.FC = () => {
         setFetchedData(null);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

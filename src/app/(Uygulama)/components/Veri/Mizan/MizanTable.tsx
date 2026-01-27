@@ -127,7 +127,7 @@ const MizanTable: React.FC<Props> = ({ type }) => {
       });
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -192,10 +192,10 @@ const MizanTable: React.FC<Props> = ({ type }) => {
         selected.length = 0;
         fetchData();
       } else {
-        console.error("Dosya Bilgileri silinemedi");
+        console.log("Dosya Bilgileri silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

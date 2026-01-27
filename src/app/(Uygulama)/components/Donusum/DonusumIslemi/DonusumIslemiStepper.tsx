@@ -103,7 +103,7 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -145,7 +145,7 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

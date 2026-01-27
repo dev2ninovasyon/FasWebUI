@@ -93,10 +93,10 @@ const MusteriDuzenleForm = () => {
       if (result) {
         router.push("/Musteri/MusteriIslemleri");
       } else {
-        console.error("Müşteri düzenleme başarısız");
+        console.log("Müşteri düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -117,7 +117,7 @@ const MusteriDuzenleForm = () => {
 
       setSektor1Id(sektor1.id);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -147,7 +147,7 @@ const MusteriDuzenleForm = () => {
       setSektor2Id(musteriVerileri.sektor2Id);
       setSektor3Id(musteriVerileri.sektor3Id);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -164,7 +164,7 @@ const MusteriDuzenleForm = () => {
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -185,7 +185,7 @@ const MusteriDuzenleForm = () => {
         setSektor3List(newRows.filter((item: Veri2) => item.kirilim === 3));
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -50,7 +50,7 @@ const Page = () => {
             const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
             if (found?.name) setDip(found.name);
         } catch (error) {
-            console.error("fetchDipTitle error:", error);
+            console.log("fetchDipTitle error:", error);
         }
     };
 
@@ -78,7 +78,7 @@ const Page = () => {
                     // setDip("21");
                 }
             } catch (error) {
-                console.error("DipnotNo çekme hatası:", error);
+                console.log("DipnotNo çekme hatası:", error);
             } finally {
                 setIsSearching(false);
             }

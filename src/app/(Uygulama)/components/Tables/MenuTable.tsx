@@ -96,7 +96,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({
           setKontrolEden(true);
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     };
     fetchData();

@@ -580,7 +580,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -619,7 +619,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -674,7 +674,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
         setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -683,7 +683,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
       const format = await getFormat(user.token || "", "Dava Karşılıkları");
       setRowCount(format.satirSayisi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -746,7 +746,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
         saveAs(blob, "DavaKarsiliklariFormati.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

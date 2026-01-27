@@ -81,7 +81,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     enqueueSnackbar(response.message, { variant: "info" });
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", {
                 variant: "error",
             });

@@ -92,7 +92,7 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
         }
       }
     } catch (error) {
-      console.error("CompanyBox fetchData hatası:", error);
+      console.log("CompanyBox fetchData hatası:", error);
     }
   };
 

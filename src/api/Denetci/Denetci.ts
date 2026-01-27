@@ -13,10 +13,10 @@ export const getDenetciById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Denetci getirilemedi");
+      console.log("Denetci getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -42,7 +42,7 @@ export const updateDenetci = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -61,10 +61,10 @@ export const getDenetciOdemeBilgileri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Denetci Ödeme Bilgileri getirilemedi");
+      console.log("Denetci Ödeme Bilgileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -80,10 +80,10 @@ export const getDenetciKotaGecmisi = async (token: string, denetciId: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Denetci Kota Geçmişi getirilemedi");
+      console.log("Denetci Kota Geçmişi getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -111,7 +111,7 @@ export const getLogo = async (token: string, denetciId: any) => {
       return { message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -135,6 +135,6 @@ export const createLogo = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

@@ -334,7 +334,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -401,7 +401,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
         saveAs(blob, "GecmisDonemDonusumDuzeltmeBelgesi.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
 

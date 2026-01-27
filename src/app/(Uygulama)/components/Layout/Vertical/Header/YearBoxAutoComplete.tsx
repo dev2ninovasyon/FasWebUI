@@ -55,7 +55,7 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
         setRows(newRows);
       }
     } catch (error) {
-      console.error("YearBox fetchData hatası:", error);
+      console.log("YearBox fetchData hatası:", error);
     }
   };
 

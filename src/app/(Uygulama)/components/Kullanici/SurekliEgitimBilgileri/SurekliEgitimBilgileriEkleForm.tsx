@@ -44,10 +44,10 @@ const SurekliEgitimBilgileriEkleForm = () => {
       if (result) {
         router.push("/Kullanici/SurekliEgitimBilgileri");
       } else {
-        console.error("Sürekli Eğitim Bilgileri ekleme başarısız");
+        console.log("Sürekli Eğitim Bilgileri ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

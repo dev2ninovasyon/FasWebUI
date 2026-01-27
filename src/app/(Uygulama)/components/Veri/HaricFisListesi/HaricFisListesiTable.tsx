@@ -137,7 +137,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
         },
       });
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -180,7 +180,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
       setSelected(selectedIds);
       setLoading(false);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

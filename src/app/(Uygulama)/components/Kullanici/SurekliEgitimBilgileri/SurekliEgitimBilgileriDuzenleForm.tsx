@@ -50,10 +50,10 @@ const SurekliEgitimBilgileriDuzenleForm = () => {
       if (result) {
         router.push("/Kullanici/SurekliEgitimBilgileri");
       } else {
-        console.error("Sürekli Eğitim Bilgileri düzenleme başarısız");
+        console.log("Sürekli Eğitim Bilgileri düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -74,7 +74,7 @@ const SurekliEgitimBilgileriDuzenleForm = () => {
       setEldeEdilenKredi(surekliEgitimBilgileriVerileri.eldeEdilenKredi);
       setEgitimTuru(surekliEgitimBilgileriVerileri.egitimTuru);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

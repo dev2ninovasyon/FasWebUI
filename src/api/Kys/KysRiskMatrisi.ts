@@ -62,13 +62,13 @@ export const getKysRiskMatrisi = async (
         );
 
         if (!response.ok) {
-            console.error("Risk matrisi getirilemedi:", response.statusText);
+            console.log("Risk matrisi getirilemedi:", response.statusText);
             return null;
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Risk matrisi getirilemedi:", error);
+        console.log("Risk matrisi getirilemedi:", error);
         return null;
     }
 };
@@ -96,13 +96,13 @@ export const updateKysRiskMatrisi = async (
         });
 
         if (!response.ok) {
-            console.error("Risk matrisi güncellenemedi:", response.statusText);
+            console.log("Risk matrisi güncellenemedi:", response.statusText);
             return null;
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Risk matrisi güncellenemedi:", error);
+        console.log("Risk matrisi güncellenemedi:", error);
         return null;
     }
 };
@@ -135,13 +135,13 @@ export const createKysRiskMatrisi = async (
         });
 
         if (!response.ok) {
-            console.error("Risk matrisi oluşturulamadı:", response.statusText);
+            console.log("Risk matrisi oluşturulamadı:", response.statusText);
             return null;
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Risk matrisi oluşturulamadı:", error);
+        console.log("Risk matrisi oluşturulamadı:", error);
         return null;
     }
 };
@@ -166,13 +166,13 @@ export const getAllKysRiskMatrisi = async (
         });
 
         if (!response.ok) {
-            console.error("Risk matrisleri getirilemedi:", response.statusText);
+            console.log("Risk matrisleri getirilemedi:", response.statusText);
             return [];
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Risk matrisleri getirilemedi:", error);
+        console.log("Risk matrisleri getirilemedi:", error);
         return [];
     }
 };
@@ -201,13 +201,13 @@ export const generateKysRiskMatrisiFullData = async (
         });
 
         if (!response.ok) {
-            console.error("Risk matrisi verileri oluşturulamadı:", response.statusText);
+            console.log("Risk matrisi verileri oluşturulamadı:", response.statusText);
             return null;
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Risk matrisi verileri oluşturulamadı:", error);
+        console.log("Risk matrisi verileri oluşturulamadı:", error);
         return null;
     }
 };

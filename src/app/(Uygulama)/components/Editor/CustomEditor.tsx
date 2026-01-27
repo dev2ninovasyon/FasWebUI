@@ -103,10 +103,10 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
       );
 
       if (!result) {
-        console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+        console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -128,7 +128,7 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
         if (result) {
           fetchData();
         } else {
-          console.error("Çalışma Kağıdı Verileri silme başarısız");
+          console.log("Çalışma Kağıdı Verileri silme başarısız");
         }
       } else {
         const result = await deleteAllCalismaKagidiVerileri(
@@ -141,11 +141,11 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
         if (result) {
           fetchData();
         } else {
-          console.error("Çalışma Kağıdı Verileri silme başarısız");
+          console.log("Çalışma Kağıdı Verileri silme başarısız");
         }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -191,7 +191,7 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
         }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

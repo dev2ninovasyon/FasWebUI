@@ -20,11 +20,11 @@ export const getDenetimDosya = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -49,11 +49,11 @@ export const getDenetimDosyaByFormKodu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -77,11 +77,11 @@ export const getCariDosya = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -105,11 +105,11 @@ export const getSurekliDosya = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -133,11 +133,11 @@ export const getHile = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -164,11 +164,11 @@ export const getDenetimDosyaTransfer = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -211,7 +211,7 @@ export const denetimDosyaTransfer = async (
       return { message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export async function createBirlesikPdfByFormat(

@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -381,10 +381,10 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         }
         console.log("Fiş Verisi ekleme başarılı");
       } else {
-        console.error("Fiş Verisi ekleme başarısız");
+        console.log("Fiş Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -414,10 +414,10 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         await fetchData();
         console.log("Fiş Verisi güncelleme başarılı");
       } else {
-        console.error("Fiş güncelleme başarısız");
+        console.log("Fiş güncelleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -456,7 +456,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -489,7 +489,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -556,7 +556,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
         saveAs(blob, "FisDetaylari.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -659,7 +659,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
                       handleDeleteFisVerisi(ids);
                     })
                     .catch((error) => {
-                      console.error("Veri alınırken bir hata oluştu: ", error);
+                      console.log("Veri alınırken bir hata oluştu: ", error);
                     });
                 },
               },

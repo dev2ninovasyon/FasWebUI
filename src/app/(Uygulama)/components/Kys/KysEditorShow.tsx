@@ -44,7 +44,7 @@ const KysEditorShow: React.FC<KysEditorShowProps> = ({ formKodu, alanAdi }) => {
                 setEditorData(result.metin);
             }
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         } finally {
             setLoading(false);
         }

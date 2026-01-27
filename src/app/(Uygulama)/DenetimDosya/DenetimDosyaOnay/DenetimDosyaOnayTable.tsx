@@ -107,7 +107,7 @@ const DenetimDosyaOnayTable: React.FC<Props> = ({
       setUpdatedRows([]); // yeni liste çekilince sonuçları sıfırla
       setSelectedIds([]); // seçimleri de sıfırla
     } catch (error) {
-      console.error(error);
+      console.log(error);
       enqueueSnackbar("Liste yüklenemedi.", { variant: "error" });
     } finally {
       setLoading(false);
@@ -199,7 +199,7 @@ const DenetimDosyaOnayTable: React.FC<Props> = ({
         variant: successCount === selectedIds.length ? "success" : successCount > 0 ? "info" : "error",
       });
     } catch (e) {
-      console.error(e);
+      console.log(e);
       enqueueSnackbar("Toplu işlem sırasında beklenmeyen bir hata oluştu.", { variant: "error" });
     } finally {
       setIsSending(false);

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -90,7 +90,7 @@ const Page = () => {
                     setDip("05");
                 }
             } catch (error) {
-                console.error("Veri çekme hatası:", error);
+                console.log("Veri çekme hatası:", error);
             } finally {
                 setIsSearching(false);
             }

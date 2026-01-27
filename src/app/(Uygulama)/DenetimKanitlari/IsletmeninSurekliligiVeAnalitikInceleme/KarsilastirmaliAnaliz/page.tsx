@@ -78,7 +78,7 @@ const Page = () => {
         },
       });
     } catch (error) {
-      console.error("PowerBI export error:", error);
+      console.log("PowerBI export error:", error);
       enqueueSnackbar("PowerBI paketi oluşturulurken hata oluştu", {
         variant: "error",
         autoHideDuration: 5000,
@@ -126,7 +126,7 @@ const Page = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

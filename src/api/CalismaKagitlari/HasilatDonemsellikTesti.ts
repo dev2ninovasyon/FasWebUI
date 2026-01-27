@@ -53,11 +53,11 @@ export const getHasilatDonemsellikTesti = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Hasılat Dönemsellik Testi verileri alınırken hata oluştu:", response.status);
+            console.log("Hasılat Dönemsellik Testi verileri alınırken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Hasılat Dönemsellik Testi verileri alınırken hata oluştu:", error);
+        console.log("Hasılat Dönemsellik Testi verileri alınırken hata oluştu:", error);
         throw error;
     }
 };
@@ -82,11 +82,11 @@ export const saveHasilatDonemsellikTesti = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Hasılat Dönemsellik Testi verileri kaydedilirken hata oluştu:", response.status);
+            console.log("Hasılat Dönemsellik Testi verileri kaydedilirken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Hasılat Dönemsellik Testi verileri kaydedilirken hata oluştu:", error);
+        console.log("Hasılat Dönemsellik Testi verileri kaydedilirken hata oluştu:", error);
         throw error;
     }
 };

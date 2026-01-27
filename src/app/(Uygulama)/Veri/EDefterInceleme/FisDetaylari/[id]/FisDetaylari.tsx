@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -325,10 +325,10 @@ const FisDetaylari = () => {
         await fetchData();
         console.log("E-Defter İnceleme Verisi güncelleme başarılı");
       } else {
-        console.error("E-Defter İnceleme güncelleme başarısız");
+        console.log("E-Defter İnceleme güncelleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -362,7 +362,7 @@ const FisDetaylari = () => {
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -414,7 +414,7 @@ const FisDetaylari = () => {
         saveAs(blob, "FisDetaylari.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

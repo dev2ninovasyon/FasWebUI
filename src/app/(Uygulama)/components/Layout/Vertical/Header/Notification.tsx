@@ -56,7 +56,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         await updateBildirimlerOkundumu(user.token || "", ids);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -87,7 +87,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         setFetchedData(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

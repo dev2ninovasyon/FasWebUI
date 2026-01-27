@@ -140,7 +140,7 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
         },
       });
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -183,7 +183,7 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
       setSelected(selectedIds);
       setLoading(false);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

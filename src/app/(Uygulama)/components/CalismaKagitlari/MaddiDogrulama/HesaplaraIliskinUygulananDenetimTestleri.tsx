@@ -184,7 +184,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                 showSnackbar("Kayıt başarıyla güncellendi.", "success");
             }
         } catch (err) {
-            console.error(err);
+            console.log(err);
             showSnackbar("Güncelleme sırasında bir hata oluştu.", "error");
         } finally {
             setSavingRowId(null);
@@ -217,7 +217,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
             );
             showSnackbar("Tüm kayıtlar başarıyla güncellendi.", "success");
         } catch (err) {
-            console.error(err);
+            console.log(err);
             showSnackbar("Toplu güncelleme sırasında bir hata oluştu.", "error");
         } finally {
             setSavingKebir(null);

@@ -57,12 +57,12 @@ const MaliyetKontrolleri: React.FC<Props> = ({
                 console.log("Veri geldi, satır sayısı:", response.length);
                 setData(response);
             } else {
-                console.error("Beklenmeyen veri formatı:", response);
+                console.log("Beklenmeyen veri formatı:", response);
                 enqueueSnackbar("Sunucudan geçersiz veri formatı alındı", { variant: "error" });
                 setData([]);
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);

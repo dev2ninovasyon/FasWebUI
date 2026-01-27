@@ -89,7 +89,7 @@ export default function DenetimSozlesmesiStep({
                 setVeriler(newVeri);
             }
         } catch (error) {
-            console.error("Sözleşme verileri çekilirken hata:", error);
+            console.log("Sözleşme verileri çekilirken hata:", error);
         } finally {
             setLoading(false);
         }
@@ -105,7 +105,7 @@ export default function DenetimSozlesmesiStep({
             );
             setRows(teamData || []);
         } catch (error) {
-            console.error("Ekip verileri çekilirken hata:", error);
+            console.log("Ekip verileri çekilirken hata:", error);
         }
     };
 

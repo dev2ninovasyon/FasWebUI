@@ -345,7 +345,7 @@ export const exportRiskMatrixToWord = async (data: KysRiskMatrisi[], relatedDocs
         try {
             matrixData = JSON.parse(matrix.matrisJson);
         } catch (e) {
-            console.error("Word export JSON parse error", e);
+            console.log("Word export JSON parse error", e);
         }
 
         // Section Title

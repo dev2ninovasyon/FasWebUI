@@ -148,10 +148,10 @@ const Page = () => {
         setIsCreatePopUpOpen1(false);
         setIsClickedYeniGrupEkle1(false);
       } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -173,10 +173,10 @@ const Page = () => {
         setIsCreatePopUpOpen2(false);
         setIsClickedYeniGrupEkle2(false);
       } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -215,7 +215,7 @@ const Page = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

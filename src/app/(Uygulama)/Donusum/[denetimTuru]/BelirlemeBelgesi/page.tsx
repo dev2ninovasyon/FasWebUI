@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -62,10 +62,10 @@ const Page = () => {
         setIsCreatePopUpOpen(false);
         setIsClickedYeniGrupEkle(false);
       } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
   return (

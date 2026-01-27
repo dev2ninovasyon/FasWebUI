@@ -395,7 +395,7 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -431,7 +431,7 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
       });
       setJson(jsonData);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -489,7 +489,7 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
         saveAs(blob, `IliskiliTarafSiniflamaHesaplama.xlsx`);
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

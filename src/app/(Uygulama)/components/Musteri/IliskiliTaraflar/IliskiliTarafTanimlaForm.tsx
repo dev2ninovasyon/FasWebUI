@@ -29,10 +29,10 @@ const IliskiliTarafTanimlaForm = () => {
       if (result) {
         router.push("/Musteri/IliskiliTaraflar");
       } else {
-        console.error("İlişkili Taraf Tanımlama başarısız");
+        console.log("İlişkili Taraf Tanımlama başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

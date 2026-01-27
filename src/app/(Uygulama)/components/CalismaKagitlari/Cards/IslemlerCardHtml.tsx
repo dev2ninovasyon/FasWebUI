@@ -72,7 +72,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
       link.click();
       link.remove();
     } catch (error) {
-      console.error("İndirme hatası:", error);
+      console.log("İndirme hatası:", error);
       enqueueSnackbar("İndirme sırasında hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,
@@ -127,7 +127,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
       setPdfBlobUrl(pdfUrl);
       setIsOpen(true);
     } catch (error: any) {
-      console.error("Önizleme/Export hatası:", error?.response || error);
+      console.log("Önizleme/Export hatası:", error?.response || error);
       enqueueSnackbar("Önizleme sırasında hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,
@@ -188,7 +188,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
         },
       });
     } catch (error: any) {
-      console.error("Arşive kaydetme hatası:", error?.response || error);
+      console.log("Arşive kaydetme hatası:", error?.response || error);
       enqueueSnackbar("Arşive kaydedilirken hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,

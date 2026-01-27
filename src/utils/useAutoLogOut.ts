@@ -98,16 +98,16 @@ export default function useAutoLogout(
       });
 
       if (!response.ok) {
-        console.error("Refresh token yenilenemedi, response.ok=false");
-        console.error("HTTP Status:", response.status);
-        console.error("Status Text:", response.statusText);
+        console.log("Refresh token yenilenemedi, response.ok=false");
+        console.log("HTTP Status:", response.status);
+        console.log("Status Text:", response.statusText);
 
         // Backend'den gelen hata mesajını göster
         try {
           const errorData = await response.json();
-          console.error("Backend Error:", errorData);
+          console.log("Backend Error:", errorData);
         } catch (e) {
-          console.error("Response body okunamadı");
+          console.log("Response body okunamadı");
         }
 
         logout();
@@ -121,7 +121,7 @@ export default function useAutoLogout(
       }
       // console.log("âœ… Token başarıyla yenilendi!");
     } catch (err) {
-      console.error("Refresh token yenilenemedi (catch):", err);
+      console.log("Refresh token yenilenemedi (catch):", err);
       logout();
     }
   }, [user?.token, user?.refreshToken, dispatch, logout]);

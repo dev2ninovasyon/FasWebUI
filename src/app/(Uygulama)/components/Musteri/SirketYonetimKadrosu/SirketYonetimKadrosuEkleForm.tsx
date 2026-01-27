@@ -29,10 +29,10 @@ const SirketYonetimKadrosuEkleForm = () => {
       if (result) {
         router.push("/Musteri/SirketYonetimKadrosu");
       } else {
-        console.error("Şirket Yönetim Kadrosu ekleme başarısız");
+        console.log("Şirket Yönetim Kadrosu ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -294,7 +294,7 @@ const OrneklemFisleri: React.FC<Props> = ({ kebirKodu }) => {
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -346,7 +346,7 @@ const OrneklemFisleri: React.FC<Props> = ({ kebirKodu }) => {
         saveAs(blob, "OrneklemFisleri.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

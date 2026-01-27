@@ -631,7 +631,7 @@ const FisGirisi: React.FC<Props> = ({
           });
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     } else {
       if (!controlDetayKoduHesapAdi) {
@@ -698,7 +698,7 @@ const FisGirisi: React.FC<Props> = ({
       const hotInstance = hotTableComponent.current.hotInstance;
       hotInstance.setDataAtCell(0, 0, fisNo + 1); // index satır, 0 sütun, 5 değer
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

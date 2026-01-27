@@ -36,11 +36,11 @@ export const getStoklarNetGerceklesebilirDeger = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Stoklar Net Gerçekleşebilir Değer verileri alınırken hata oluştu:", response.status);
+            console.log("Stoklar Net Gerçekleşebilir Değer verileri alınırken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Stoklar Net Gerçekleşebilir Değer verileri alınırken hata oluştu:", error);
+        console.log("Stoklar Net Gerçekleşebilir Değer verileri alınırken hata oluştu:", error);
         throw error;
     }
 };
@@ -63,11 +63,11 @@ export const stoklarNetGerceklesebilirDegerOlustur = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Stoklar Net Gerçekleşebilir Değer oluşturulurken hata oluştu:", response.status);
+            console.log("Stoklar Net Gerçekleşebilir Değer oluşturulurken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Stoklar Net Gerçekleşebilir Değer oluşturulurken hata oluştu:", error);
+        console.log("Stoklar Net Gerçekleşebilir Değer oluşturulurken hata oluştu:", error);
         throw error;
     }
 };
@@ -89,11 +89,11 @@ export const stokNetGerceklesebilirDegerUpdate = async (dto: any) => {
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Stok Net Gerçekleşebilir Değer güncellenirken hata oluştu:", response.status);
+            console.log("Stok Net Gerçekleşebilir Değer güncellenirken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Stok Net Gerçekleşebilir Değer güncellenirken hata oluştu:", error);
+        console.log("Stok Net Gerçekleşebilir Değer güncellenirken hata oluştu:", error);
         throw error;
     }
 };

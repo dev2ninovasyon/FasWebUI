@@ -417,7 +417,7 @@ const KrediRiskiCari: React.FC<Props> = ({
         setRowCount(rowsAll.length);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -476,7 +476,7 @@ const KrediRiskiCari: React.FC<Props> = ({
         saveAs(blob, "KrediRiski.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

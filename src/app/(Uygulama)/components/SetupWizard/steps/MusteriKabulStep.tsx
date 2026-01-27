@@ -80,7 +80,7 @@ export default function MusteriKabulStep({
                 setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
         }
     };
 
@@ -97,7 +97,7 @@ export default function MusteriKabulStep({
                 setOdemeBilgileriEnflasyon(response.enflasyonModulu);
             }
         } catch (error) {
-            console.error("Ödeme bilgileri hatası:", error);
+            console.log("Ödeme bilgileri hatası:", error);
         }
     };
 
@@ -146,7 +146,7 @@ export default function MusteriKabulStep({
                 enqueueSnackbar((result as any)?.message || "Bir hata oluştu", { variant: "error" });
             }
         } catch (error) {
-            console.error("Kabul işlemi hatası:", error);
+            console.log("Kabul işlemi hatası:", error);
         } finally {
             setLoading(false);
         }

@@ -41,10 +41,10 @@ const HissedarDuzenleForm = () => {
       if (result) {
         router.push("/Musteri/Hissedarlar");
       } else {
-        console.error("Hissedar düzenleme başarısız");
+        console.log("Hissedar düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -59,7 +59,7 @@ const HissedarDuzenleForm = () => {
       setPaySayisi(hissedarlarVerileri.paySayisi);
       setHisseOrani(hissedarlarVerileri.hisseOrani);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

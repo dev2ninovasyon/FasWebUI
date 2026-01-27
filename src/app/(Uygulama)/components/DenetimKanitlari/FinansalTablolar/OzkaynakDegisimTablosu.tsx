@@ -118,7 +118,7 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
       setOzkaynakData(ozkaynakData);
       setRenkliKalemIds(renkli);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

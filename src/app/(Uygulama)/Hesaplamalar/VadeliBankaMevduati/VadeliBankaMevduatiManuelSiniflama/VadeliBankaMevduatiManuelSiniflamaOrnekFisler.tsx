@@ -125,7 +125,7 @@ const VadeliBankaMevduatiManuelSiniflamaOrnekFisler: React.FC<Props> = ({
       }
       setkaydetTiklandimi(false);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -462,7 +462,7 @@ const VadeliBankaMevduatiManuelSiniflamaOrnekFisler: React.FC<Props> = ({
         setFetchedData(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -520,7 +520,7 @@ const VadeliBankaMevduatiManuelSiniflamaOrnekFisler: React.FC<Props> = ({
         saveAs(blob, `VadeliBankaMevduatiManuelSiniflamaOrnekFisler.xlsx`);
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

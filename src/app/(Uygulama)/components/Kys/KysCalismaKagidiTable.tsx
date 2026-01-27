@@ -85,7 +85,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             );
             setVeriler(result);
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         }
     };
 
@@ -106,7 +106,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             handleClosePopUp();
             showSnackbar("Kayıt başarıyla oluşturuldu.", "success");
         } catch (error) {
-            console.error("Ekleme hatası:", error);
+            console.log("Ekleme hatası:", error);
             setSaving(false);
             showSnackbar("Kayıt oluşturulurken bir hata oluştu.", "error");
         }
@@ -127,7 +127,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             handleClosePopUp();
             showSnackbar("Kayıt başarıyla güncellendi.", "success");
         } catch (error) {
-            console.error("Güncelleme hatası:", error);
+            console.log("Güncelleme hatası:", error);
             setSaving(false);
             showSnackbar("Kayıt güncellenirken bir hata oluştu. Kayıt bulunamamış olabilir.", "error");
         }
@@ -142,7 +142,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             handleClosePopUp();
             showSnackbar("Kayıt başarıyla silindi.", "success");
         } catch (error) {
-            console.error("Silme hatası:", error);
+            console.log("Silme hatası:", error);
             setDeleting(false);
             showSnackbar("Kayıt silinirken bir hata oluştu.", "error");
         }

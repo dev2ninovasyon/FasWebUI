@@ -269,7 +269,7 @@ const FisGirisiKontrol: React.FC<Props> = ({
         setFilteredData(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

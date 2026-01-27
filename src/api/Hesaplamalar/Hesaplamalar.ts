@@ -27,7 +27,7 @@ export const createAmortismanHesaplanmis = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -51,10 +51,10 @@ export const getAmortismanHesaplanmis = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Amortisman Tablosu verileri getirilemedi");
+      console.log("Amortisman Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -83,7 +83,7 @@ export const createKrediHesaplanmis = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -107,10 +107,10 @@ export const getKrediHesaplanmis = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kredi Tablosu verileri getirilemedi");
+      console.log("Kredi Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -134,10 +134,10 @@ export const getKrediHesaplanmisDetay = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kredi Detay Tablosu verileri getirilemedi");
+      console.log("Kredi Detay Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -161,10 +161,10 @@ export const getKrediHesaplanmisOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kredi Örnek Fişler getirilemedi");
+      console.log("Kredi Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -194,7 +194,7 @@ export const createDavaKarsiliklariHesaplanmis = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -218,10 +218,10 @@ export const getDavaKarsiliklariHesaplanmis = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dava Karşılıkları Tablosu verileri getirilemedi");
+      console.log("Dava Karşılıkları Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -250,7 +250,7 @@ export const createYaslandirmaHesaplanmis = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -274,10 +274,10 @@ export const getYaslandirmaHesaplanmis = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Yaşlandırma Tablosu verileri getirilemedi");
+      console.log("Yaşlandırma Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -301,10 +301,10 @@ export const createKidemTazminatiBobiHesapla = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kıdem Tazminatı Tablosu verileri getirilemedi");
+      console.log("Kıdem Tazminatı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -328,10 +328,10 @@ export const createKidemTazminatiTfrsHesapla = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kıdem Tazminatı Tablosu verileri getirilemedi");
+      console.log("Kıdem Tazminatı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -359,7 +359,7 @@ export const createKidemTazminatiBobiEkBilgi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -384,10 +384,10 @@ export const getKidemTazminatiBobiEkBilgi = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Kıdem Tazminatı Bobi Ek verileri getirilemedi");
+      console.log("Kıdem Tazminatı Bobi Ek verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -415,7 +415,7 @@ export const createKidemTazminatiTfrsEkBilgi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -440,10 +440,10 @@ export const getKidemTazminatiTfrsEkBilgi = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Kıdem Tazminatı Tfrs Ek verileri getirilemedi");
+      console.log("Kıdem Tazminatı Tfrs Ek verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -467,10 +467,10 @@ export const createCekSenetReeskontHesapla = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Çek Senet Reeskont Tablosu verileri getirilemedi");
+      console.log("Çek Senet Reeskont Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -498,7 +498,7 @@ export const createCekSenetReeskontEkBilgi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -523,10 +523,10 @@ export const getCekSenetReeskontEkBilgi = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Çek Senet Reeskont Ek verileri getirilemedi");
+      console.log("Çek Senet Reeskont Ek verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -551,10 +551,10 @@ export const getCekSenetReeskontIskontoOranlari = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Çek Senet Reeskont Iskonto Oranı verileri getirilemedi");
+      console.log("Çek Senet Reeskont Iskonto Oranı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -579,10 +579,10 @@ export const getCekSenetReeskontHesaplama = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Çek Senet Reeskont Hesaplama verileri getirilemedi");
+      console.log("Çek Senet Reeskont Hesaplama verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -607,12 +607,12 @@ export const getCekSenetReeskontDuzeltmeFarklari = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
+      console.log(
         "Çek Senet Reeskont Düzeltme Farkları verileri getirilemedi"
       );
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -637,12 +637,12 @@ export const getCekSenetReeskontHesaplamadaKullanilanDegerler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
+      console.log(
         "Çek Senet Reeskont Hesaplamada Kullanılan veriler getirilemedi"
       );
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -673,7 +673,7 @@ export const createBeklenenKrediZarariHesaplanmis = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -697,10 +697,10 @@ export const getBeklenenKrediZarariHesaplanmis = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Beklenen Kredi Zararı Tablosu verileri getirilemedi");
+      console.log("Beklenen Kredi Zararı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -719,10 +719,10 @@ export const getEnflasyonOrani = async (token: string, yil: number) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Enflasyon Oranı getirilemedi");
+      console.log("Enflasyon Oranı getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -738,10 +738,10 @@ export const getFaizOrani = async (token: string, yil: number) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Faiz Oranı getirilemedi");
+      console.log("Faiz Oranı getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -760,10 +760,10 @@ export const getIskontoOrani = async (token: string, yil: number) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İskonto Oranı getirilemedi");
+      console.log("İskonto Oranı getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -795,7 +795,7 @@ export const createVergiVarligiVeYukumlulugu = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -819,12 +819,12 @@ export const getVergiVarligiVeYukumluluguOzet = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
+      console.log(
         "Ertelenmiş Vergi Hesabı Özet Tablosu verileri getirilemedi"
       );
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -848,10 +848,10 @@ export const getVergiVarligi = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Vergi Varlığı Tablosu verileri getirilemedi");
+      console.log("Vergi Varlığı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -875,10 +875,10 @@ export const getVergiYukumlulugu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Vergi Yükümlülüğü Tablosu verileri getirilemedi");
+      console.log("Vergi Yükümlülüğü Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -902,10 +902,10 @@ export const getVergiVarligiVeYukumluluguOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Ertelenmiş Vergi Hesabı Örnek Fişler getirilemedi");
+      console.log("Ertelenmiş Vergi Hesabı Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -929,10 +929,10 @@ export const getIliskiliTarafSiniflamaHesaplar = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İlişkili Taraf Sınıflama Hesap verileri getirilemedi");
+      console.log("İlişkili Taraf Sınıflama Hesap verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -957,10 +957,10 @@ export const getIliskiliTarafSiniflama = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İlişkili Taraf Sınıflama verileri getirilemedi");
+      console.log("İlişkili Taraf Sınıflama verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -988,10 +988,10 @@ export const getIliskiliTarafSiniflamaOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İlişkili Taraf Sınıflama Örnek Fişler getirilemedi");
+      console.log("İlişkili Taraf Sınıflama Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1020,7 +1020,7 @@ export const createVadeliBankaMevduatiOtomatikSiniflama = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1048,7 +1048,7 @@ export const createVadeliBankaMevduatOtomatikSiniflama = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1072,10 +1072,10 @@ export const getVadeliBankaMevduatiOtomatikSiniflama = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Vadeli Banka Mevduatı Tablosu verileri getirilemedi");
+      console.log("Vadeli Banka Mevduatı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1099,10 +1099,10 @@ export const getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Vadeli Banka Mevduatı Örnek Fişler getirilemedi");
+      console.log("Vadeli Banka Mevduatı Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1127,7 +1127,7 @@ export const deleteVadeliBankaMevduatiOtomatikSiniflamaById = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1151,10 +1151,10 @@ export const getVadeliBankaMevduatiManuelSiniflama = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Vadeli Banka Mevduatı Tablosu verileri getirilemedi");
+      console.log("Vadeli Banka Mevduatı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1181,10 +1181,10 @@ export const getVadeliBankaMevduatiManuelSiniflamaOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Vadeli Banka Mevduatı Örnek Fişler getirilemedi");
+      console.log("Vadeli Banka Mevduatı Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1211,10 +1211,10 @@ export const createVadeliBankaMevduatiFaizTahakkuk = async (
     if (response.ok) {
       return true;
     } else {
-      console.error("Vadeli Banka Mevduatı Faiz Tahakkuk getirilemedi");
+      console.log("Vadeli Banka Mevduatı Faiz Tahakkuk getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1238,12 +1238,12 @@ export const getVadeliBankaMevduatiFaizTahakkuk = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
+      console.log(
         "Vadeli Banka Mevduatı Faiz Tahakkuk Tablosu verileri getirilemedi"
       );
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1273,7 +1273,7 @@ export const createHareketsizTicariAlacaklar = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1298,7 +1298,7 @@ export const createHareketsizTicariAlacak = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1322,12 +1322,12 @@ export const getHareketsizTicariAlacaklar = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
+      console.log(
         "Hareketsiz Ticari Alacaklar Tablosu verileri getirilemedi"
       );
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1351,12 +1351,12 @@ export const getHareketsizTicariAlacaklarOzet = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
+      console.log(
         "Hareketsiz Ticari Alacaklar Tablosu verileri getirilemedi"
       );
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1380,10 +1380,10 @@ export const getHareketsizTicariAlacaklarOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hareketsiz Ticari Alacaklar Örnek Fişler getirilemedi");
+      console.log("Hareketsiz Ticari Alacaklar Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1408,7 +1408,7 @@ export const deleteHareketsizTicariAlacaklarById = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1438,7 +1438,7 @@ export const createHareketsizStoklar = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1463,7 +1463,7 @@ export const createHareketsizStok = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1487,10 +1487,10 @@ export const getHareketsizStoklar = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hareketsiz Stoklar Tablosu verileri getirilemedi");
+      console.log("Hareketsiz Stoklar Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1514,10 +1514,10 @@ export const getHareketsizStoklarOzet = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hareketsiz Stoklar Tablosu verileri getirilemedi");
+      console.log("Hareketsiz Stoklar Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1541,10 +1541,10 @@ export const getHareketsizStoklarOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hareketsiz Stoklar Örnek Fişler getirilemedi");
+      console.log("Hareketsiz Stoklar Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1569,7 +1569,7 @@ export const deleteHareketsizStoklarById = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1593,12 +1593,12 @@ export const getGecmisYilKarZararKontrol = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
+      console.log(
         "Geçmiş Yıl Kar Zarar Kontrol Tablosu verileri getirilemedi"
       );
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1622,10 +1622,10 @@ export const getGecmisYilKarZararKontrolOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Geçmiş Yıl Kar Zarar Kontrol Örnek Fişler getirilemedi");
+      console.log("Geçmiş Yıl Kar Zarar Kontrol Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1649,10 +1649,10 @@ export const getKurFarki = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kur Farkı Tablosu verileri getirilemedi");
+      console.log("Kur Farkı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1680,10 +1680,10 @@ export const getKurFarkiKontrolleriOzet = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kur Farkı Tablosu verileri getirilemedi");
+      console.log("Kur Farkı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1711,10 +1711,10 @@ export const getKurFarkiKontrolleriFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kur Farkı Tablosu verileri getirilemedi");
+      console.log("Kur Farkı Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1738,10 +1738,10 @@ export const getKurFarkiOrnekFisler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kur Farkı Örnek Fişler getirilemedi");
+      console.log("Kur Farkı Örnek Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1757,9 +1757,9 @@ export const getDovizKurlariOtuzBirAralik = async (token: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("31 Aralık verileri getirilemedi");
+      console.log("31 Aralık verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

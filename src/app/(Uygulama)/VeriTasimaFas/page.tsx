@@ -76,7 +76,7 @@ export default function DataMigrationPage() {
                     setSelectedTableKeys([tablesJson[0].key]);
                 }
             } catch (error) {
-                console.error("Veri yüklenirken hata oluştu:", error);
+                console.log("Veri yüklenirken hata oluştu:", error);
             }
         };
 

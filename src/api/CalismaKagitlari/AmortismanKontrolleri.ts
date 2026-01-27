@@ -32,15 +32,15 @@ export async function fetchAmortismanKontrolleri(token: string, denetlenenId: nu
         } else {
             try {
                 const errorData = await response.json();
-                console.error("API Error Body:", errorData);
+                console.log("API Error Body:", errorData);
                 return errorData;
             } catch {
-                console.error("API Error:", response.statusText);
+                console.log("API Error:", response.statusText);
                 return { success: false, message: "Veri çekilemedi." };
             }
         }
     } catch (error) {
-        console.error("Fetch Error:", error);
+        console.log("Fetch Error:", error);
         return { success: false, message: "Bir hata oluştu." };
     }
 }
@@ -62,11 +62,11 @@ export async function saveAmortismanKontrolSatir(token: string, dto: AmortismanK
             const data = await response.json();
             return data;
         } else {
-            console.error("API Error:", response.statusText);
+            console.log("API Error:", response.statusText);
             return { success: false, message: "Kaydedilemedi." };
         }
     } catch (error) {
-        console.error("Save Error:", error);
+        console.log("Save Error:", error);
         return { success: false, message: "Bir hata oluştu." };
     }
 }

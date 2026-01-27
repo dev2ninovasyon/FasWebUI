@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -58,7 +58,7 @@ const Page = () => {
 
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

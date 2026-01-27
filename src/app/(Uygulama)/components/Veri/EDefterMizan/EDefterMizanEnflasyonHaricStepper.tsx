@@ -130,7 +130,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       setYevmiyeFisNo(standartfisListesi);
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -170,7 +170,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -211,7 +211,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -250,7 +250,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -265,7 +265,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 
       setYevmiyeFisNo(fisListesi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -305,7 +305,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         setTip(programVukMizanControl);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -323,7 +323,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         setActiveStep(1);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

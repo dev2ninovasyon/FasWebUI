@@ -99,10 +99,10 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
         handleClosePopUp();
         setIsNew(false);
       } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -132,10 +132,10 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }
   };
@@ -151,10 +151,10 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
         fetchData();
         handleClosePopUp();
       } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
+        console.log("Çalışma Kağıdı Verisi silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -199,7 +199,7 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
       setToplam(toplam.length);
       setTamamlanan(tamamlanan.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, konu, setToplam, setTamamlanan]);
 
@@ -216,10 +216,10 @@ const HesaplaraIliskinIcKontrolTespitBelge: React.FC<CalismaKagidiProps> = ({
       if (result) {
         fetchData();
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        console.log("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, konu, fetchData]);
 

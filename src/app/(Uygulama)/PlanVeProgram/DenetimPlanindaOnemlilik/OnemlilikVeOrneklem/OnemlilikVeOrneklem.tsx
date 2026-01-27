@@ -395,7 +395,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -430,7 +430,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -491,7 +491,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         saveAs(blob, "OnemlilikVeOrneklem.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

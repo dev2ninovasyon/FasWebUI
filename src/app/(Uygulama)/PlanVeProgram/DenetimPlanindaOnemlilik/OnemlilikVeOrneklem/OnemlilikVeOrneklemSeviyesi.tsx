@@ -301,7 +301,7 @@ const OnemlilikVeOrneklemSeviyesi: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -329,7 +329,7 @@ const OnemlilikVeOrneklemSeviyesi: React.FC<Props> = ({
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

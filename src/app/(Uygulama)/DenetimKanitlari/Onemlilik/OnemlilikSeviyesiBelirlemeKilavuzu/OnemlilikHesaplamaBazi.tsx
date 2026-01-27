@@ -326,7 +326,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -357,7 +357,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
         setFetchedData(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

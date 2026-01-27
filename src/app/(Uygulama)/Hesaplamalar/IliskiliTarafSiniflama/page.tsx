@@ -75,7 +75,7 @@ const Page: React.FC = () => {
       setTip(hesapVerileri[0].toString());
       setHesaplar(hesapVerileri);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

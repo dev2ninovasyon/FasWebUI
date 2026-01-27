@@ -74,7 +74,7 @@ export default function MandatoryFlow({
                 year: selectedYearNumber,
             });
         } catch (error) {
-            console.error(error);
+            console.log(error);
         } finally {
             setIsSubmitting(false);
         }

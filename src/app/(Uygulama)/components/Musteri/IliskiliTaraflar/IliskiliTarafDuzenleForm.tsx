@@ -35,10 +35,10 @@ const IliskiliTarafDuzenleForm = () => {
       if (result) {
         router.push("/Musteri/IliskiliTaraflar");
       } else {
-        console.error("İlişkili Taraf düzenleme başarısız");
+        console.log("İlişkili Taraf düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -50,7 +50,7 @@ const IliskiliTarafDuzenleForm = () => {
       );
       setAdi(iliskiliTaraflarVerileri.adi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

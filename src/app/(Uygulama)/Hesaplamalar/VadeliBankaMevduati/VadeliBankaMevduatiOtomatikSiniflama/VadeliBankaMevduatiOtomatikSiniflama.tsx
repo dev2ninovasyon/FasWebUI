@@ -334,7 +334,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -384,7 +384,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -431,7 +431,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -492,7 +492,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         saveAs(blob, `VadeliBankaMevduatiOtomatikSiniflamaHesaplama.xlsx`);
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();

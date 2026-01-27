@@ -32,10 +32,10 @@ const HissedarEkleForm = () => {
       if (result) {
         router.push("/Musteri/Hissedarlar");
       } else {
-        console.error("Hissedar ekleme başarısız");
+        console.log("Hissedar ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

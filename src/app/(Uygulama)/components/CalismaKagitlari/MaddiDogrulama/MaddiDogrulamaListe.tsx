@@ -200,7 +200,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
         setCalismaKagidiVerileri(data || []);
       }
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 

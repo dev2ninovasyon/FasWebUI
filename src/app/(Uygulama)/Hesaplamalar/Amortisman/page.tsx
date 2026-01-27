@@ -119,7 +119,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -158,7 +158,7 @@ const Page: React.FC = () => {
         setFetchedData(null);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

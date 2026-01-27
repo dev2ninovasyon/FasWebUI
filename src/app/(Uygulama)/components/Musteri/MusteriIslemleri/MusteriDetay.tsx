@@ -79,7 +79,7 @@ const MusteriDetay = () => {
         setKonsolideBagliSirketAdi(result2.firmaAdi);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -100,7 +100,7 @@ const MusteriDetay = () => {
         setSektor3List(newRows.filter((item: Veri) => item.kirilim === 3));
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

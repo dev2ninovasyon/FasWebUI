@@ -296,7 +296,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
       handleClosePopUp();
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -387,7 +387,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
       setVeriler(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -636,7 +636,7 @@ const BagimsizDenetciRaporuStepper = () => {
       setOzkYatayDataOnceki(filteredYatayDataOnceki);
       setOzkDataOnceki(filteredOzkaynakDataOnceki);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -676,7 +676,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
       setDipnotVeriler(groupedArray); // Grup verilerini duruma aktar
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -954,7 +954,7 @@ const wordDocument = `
 
 
     if (!window.htmlDocx || typeof window.htmlDocx.asBlob !== "function") {
-      console.error("htmlDocx globali bulunamadı.");
+      console.log("htmlDocx globali bulunamadı.");
       enqueueSnackbar("DOCX kütüphanesi yüklenemedi.", { /* ... */ });
       return;
     }
@@ -979,7 +979,7 @@ formData.append("save", "true");
 
     enqueueSnackbar("Rapor arşive kaydedildi.", { /* success style */ });
   } catch (error) {
-    console.error("Arşive kaydetme hatası:", error);
+    console.log("Arşive kaydetme hatası:", error);
     enqueueSnackbar("Rapor arşive kaydedilirken hata oluştu.", { /* error style */ });
   }
 }

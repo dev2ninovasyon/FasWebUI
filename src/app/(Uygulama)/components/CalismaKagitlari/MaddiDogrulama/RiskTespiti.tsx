@@ -210,10 +210,10 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }
   };
@@ -264,7 +264,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
       });
       setVeriler(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

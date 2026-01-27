@@ -48,7 +48,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                         setData(result);
                     }
                 } catch (error) {
-                    console.error("Hata:", error);
+                    console.log("Hata:", error);
                 } finally {
                     setLoading(false);
                 }

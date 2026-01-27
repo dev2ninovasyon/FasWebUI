@@ -95,7 +95,7 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
         setKayitMesaji("Kaydedilemedi!");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
       setKayitMesaji("Hata oluştu!");
     }
   };
@@ -111,7 +111,7 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
         setEditorData(result.icerik);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

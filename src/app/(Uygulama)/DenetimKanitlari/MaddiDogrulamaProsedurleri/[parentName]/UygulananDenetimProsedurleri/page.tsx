@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import {
   getMaddiDogrulama,
   getUygulananDenetimProsedurleri,
@@ -93,7 +93,7 @@ const Page = () => {
         }
       });
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 
@@ -114,7 +114,7 @@ const Page = () => {
         }
       });
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 

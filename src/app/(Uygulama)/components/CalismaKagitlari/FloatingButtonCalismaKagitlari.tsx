@@ -73,7 +73,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
       setMessage(messages.done);
       setAiText(enhancedText);
     } catch (error) {
-      console.error("Text enhancement error:", error);
+      console.log("Text enhancement error:", error);
     }
   };
 

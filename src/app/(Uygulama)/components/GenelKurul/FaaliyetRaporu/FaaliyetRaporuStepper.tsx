@@ -415,7 +415,7 @@ const FaaliyetRaporuStepper = () => {
       setOzkYatayDataOnceki(filteredYatayDataOnceki);
       setOzkDataOnceki(filteredOzkaynakDataOnceki);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [user.token, user.denetciId, user.yil, user.denetlenenId, setFdtData, setKztData, setNatData, setOzkDikeyDataCari, setOzkYatayDataCari, setOzkDataCari, setOzkDikeyDataOnceki, setOzkYatayDataOnceki, setOzkDataOnceki]);
 
@@ -478,7 +478,7 @@ const FaaliyetRaporuStepper = () => {
       setToplam(toplam.length);
       setTamamlanan(tamamlanan.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, grupluMu, setVeriler, setVerilerWithBaslikId, setVerilerWithoutBaslikId, setToplam, setTamamlanan]);
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import { Box, Button, Grid, Typography } from "@mui/material";
@@ -57,7 +57,7 @@ const SozlesmeTestleriPage = () => {
             const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
             if (found?.name) setDip(found.name);
         } catch (error) {
-            console.error("An error occurred while fetching dipnot name:", error);
+            console.log("An error occurred while fetching dipnot name:", error);
         }
     };
 
@@ -73,7 +73,7 @@ const SozlesmeTestleriPage = () => {
             );
             setDipnotNo(result);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log("An error occurred:", error);
         }
     };
 

@@ -37,10 +37,10 @@ const SirketYonetimKadrosuDuzenleForm = () => {
       if (result) {
         router.push("/Musteri/SirketYonetimKadrosu");
       } else {
-        console.error("Şirket Yönetim Kadrosu düzenleme başarısız");
+        console.log("Şirket Yönetim Kadrosu düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -53,7 +53,7 @@ const SirketYonetimKadrosuDuzenleForm = () => {
       setUyeAdiSoyadi(sirketYonetimKadrosuVerileri.uyeAdiSoyadi);
       setUnvani(sirketYonetimKadrosuVerileri.uyeUnvani);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
