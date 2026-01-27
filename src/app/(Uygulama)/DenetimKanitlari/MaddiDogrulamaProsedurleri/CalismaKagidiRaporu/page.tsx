@@ -650,8 +650,8 @@ const CalismaKagidiRaporu = () => {
                 <ReportHeader
                     denetlenenId={user.denetlenenId || 0}
                     yil={user.yil || 0}
-                    denetciName={user.adSoyad || ""}
-                    denetlenenName={user.denetlenenAdi || ""}
+                    denetciName={""}
+                    denetlenenName={""}
                     reportName={`${parentName} - Detaylı Çalışma Kağıdı Raporu`}
                 />
 
