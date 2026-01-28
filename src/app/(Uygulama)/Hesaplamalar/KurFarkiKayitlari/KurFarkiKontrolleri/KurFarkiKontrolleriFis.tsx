@@ -341,14 +341,14 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "99.9%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -356,7 +356,7 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
   return (
     <>
       {/*<Grid container mb={3}>
-        <Grid item xs={12} lg={12} sx={{ mb: { xs: 2, lg: 0 } }}>
+        <Grid size={12} sx={{ mb: { xs: 2, lg: 0 } }}>
           <Paper
             elevation={2}
             sx={{

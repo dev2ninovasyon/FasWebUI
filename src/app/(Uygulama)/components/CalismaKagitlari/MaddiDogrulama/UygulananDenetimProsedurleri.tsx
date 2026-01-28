@@ -281,7 +281,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
         Uygulanan Denetim Prosedürleri
       </Typography>
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid size={12}>
           <Grid
             container
             sx={{
@@ -293,9 +293,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
             {veriler.map((veri, index) => (
               <Grid
                 key={index}
-                item
-                xs={12}
-                lg={12}
+                size={12}
                 mt="20px"
                 onClick={() => !isReport && handleCardClick(veri)}
                 sx={{ cursor: isReport ? "default" : "pointer" }}
@@ -320,9 +318,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={1.5}
+                size={{ xs: 12, lg: 1.5 }}
                 my={2}
                 sx={{
                   display: "flex",
