@@ -37,7 +37,7 @@ const removeTurkishChars = (str: string | undefined | null) => {
     .replace(/Ş/g, "S").replace(/Ğ/g, "G").replace(/Ç/g, "C");
 };
 
-export const MyApp = ({ children }: { children: React.ReactNode }) => {
+const MyApp = ({ children }: { children: React.ReactNode }) => {
   useAutoLogout(
     40 * 60 * 1000, // 45 dakika idle süresi
     999 * 60 * 1000  // Token yenileme devre dışı (çok yüksek değer)
