@@ -185,16 +185,12 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            {!isReport && (
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                    <Typography variant="h5" sx={{ fontWeight: "600", color: "#333" }}>
-                        Sözleşme Testleri
-                    </Typography>
-                </Box>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Sözleşme Testleri
+            </Typography>
 
             <Grid container>
-                <Grid size={12}>
+                <Grid item xs={12}>
                     <TableContainer component={Paper} elevation={3} sx={{ borderRadius: "8px", overflow: "hidden" }}>
                         <Table size="small">
                             <TableHead>
@@ -277,6 +273,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
                     </TableContainer>
                 </Grid>
             </Grid>
+
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={3000}

@@ -114,10 +114,10 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
         handleClosePopUp();
         setIsNew(false);
       } else {
-        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("Bir hata oluştu:", error);
     }
   };
 
@@ -144,10 +144,10 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
           fetchData();
           handleClosePopUp();
         } else {
-          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.log("Bir hata oluştu:", error);
+        console.error("Bir hata oluştu:", error);
       }
     }
   };
@@ -162,10 +162,10 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
         fetchData();
         handleClosePopUp();
       } else {
-        console.log("Çalışma Kağıdı Verisi silme başarısız");
+        console.error("Çalışma Kağıdı Verisi silme başarısız");
       }
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("Bir hata oluştu:", error);
     }
   };
 
@@ -182,10 +182,10 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
       if (result) {
         fetchData();
       } else {
-        console.log("Çalışma Kağıdı Verileri silme başarısız");
+        console.error("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("Bir hata oluştu:", error);
     }
   };
 
@@ -226,7 +226,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
       setToplam(toplam.length);
       setTamamlanan(tamamlanan.length);
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("Bir hata oluştu:", error);
     }
   };
 
@@ -281,11 +281,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
         Uygulanan Denetim Prosedürleri
       </Typography>
       <Grid container>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 12
-          }}>
+        <Grid item xs={12} lg={12}>
           <Grid
             container
             sx={{
@@ -297,13 +293,13 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
             {veriler.map((veri, index) => (
               <Grid
                 key={index}
+                item
+                xs={12}
+                lg={12}
                 mt="20px"
                 onClick={() => !isReport && handleCardClick(veri)}
                 sx={{ cursor: isReport ? "default" : "pointer" }}
-                size={{
-                  xs: 12,
-                  lg: 12
-                }}>
+              >
                 <CalismaKagidiCard
                   title={`${index + 1}. ${veri.kategori || "Kategori seçiniz"}`}
                   content={veri.konu
@@ -324,15 +320,15 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
               }}
             >
               <Grid
+                item
+                xs={12}
+                lg={1.5}
                 my={2}
                 sx={{
                   display: "flex",
                   justifyContent: "end",
                 }}
-                size={{
-                  xs: 12,
-                  lg: 1.5
-                }}>
+              >
                 <Button
                   size="medium"
                   variant="outlined"

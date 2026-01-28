@@ -76,7 +76,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                         setData(result);
                     }
                 } catch (error) {
-                    console.log("Hata:", error);
+                    console.error("Hata:", error);
                 } finally {
                     setLoading(false);
                 }
@@ -153,15 +153,14 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            {!isReport && (
-                <Typography variant="h4" gutterBottom>
-                    {data?.dipnotAdi || modelAdi} - Reeskont Testleri
-                </Typography>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Reeskont Testleri
+            </Typography>
 
             {loading && <Typography sx={{ mb: 2 }}>Veriler yükleniyor...</Typography>}
+
             <Grid container spacing={3}>
-                <Grid size={12}>
+                <Grid item xs={12}>
                     <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: "bold" }}>
                         Reeskont Hesaplama
                     </Typography>
@@ -209,7 +208,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                     </TableContainer>
                 </Grid>
 
-                <Grid size={12}>
+                <Grid item xs={12}>
                     <Typography variant="h6" align="center" sx={{ mb: 1, mt: 2, fontWeight: "bold" }}>
                         Reeskont Düzeltme Farkları
                     </Typography>
@@ -261,7 +260,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                     </TableContainer>
                 </Grid>
 
-                <Grid size={12}>
+                <Grid item xs={12}>
                     <Typography variant="h6" align="center" sx={{ mb: 1, mt: 2, fontWeight: "bold" }}>
                         Reeskont Hesaplamada Kullanılan Değerler
                     </Typography>
