@@ -153,7 +153,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
             {!isReport && (
                 <Grid container spacing={2} mb={3} alignItems="flex-end">
                     <Grid
-                        item={{
+                        size={{
                             xs: 12,
                             sm: 3
                         }}>
@@ -168,7 +168,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                         />
                     </Grid>
                     <Grid
-                        item={{
+                        size={{
                             xs: 12,
                             sm: 3
                         }}>
@@ -183,7 +183,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                         />
                     </Grid>
                     <Grid
-                        item={{
+                        size={{
                             xs: 12,
                             sm: 3
                         }}>
@@ -197,7 +197,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                         />
                     </Grid>
                     <Grid
-                        item={{
+                        size={{
                             xs: 12,
                             sm: 3
                         }}>
