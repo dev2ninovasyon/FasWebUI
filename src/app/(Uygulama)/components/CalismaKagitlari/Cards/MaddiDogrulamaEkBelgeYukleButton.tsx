@@ -1,4 +1,6 @@
-﻿// src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulamaEkBelgeYukleButton.tsx
+﻿"use client";
+
+// src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulamaEkBelgeYukleButton.tsx
 
 import React, {
     useEffect,
@@ -594,33 +596,22 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                         <Typography textAlign="center">{text}</Typography>
                     </MenuItem>
                 ) : (
-                    <Box
+                    <Button
+                        size="medium"
+                        variant={buttonVariant}
+                        color={color}
+                        onClick={handleOpen}
                         sx={{
                             width: fullWidth ? "100%" : "auto",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "100%",
+                            textTransform: 'none',
+                            whiteSpace: 'normal',
+                            textAlign: 'center',
+                            lineHeight: 1.2,
                             ...sx
                         }}
                     >
-                        <Button
-                            size="medium"
-                            variant={buttonVariant}
-                            color={color}
-                            onClick={handleOpen}
-                            sx={{
-                                width: "100%",
-                                height: "100%",
-                                textTransform: 'none',
-                                whiteSpace: 'normal',
-                                textAlign: 'center',
-                                lineHeight: 1.2
-                            }}
-                        >
-                            {text}
-                        </Button>
-                    </Box>
+                        {text}
+                    </Button>
                 )
             )}
             {/* gizli input */}

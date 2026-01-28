@@ -1,4 +1,6 @@
-﻿// src/app/(Uygulama)/components/CalismaKagitlari/EkBelgeYukleButton.tsx
+﻿"use client";
+
+// src/app/(Uygulama)/components/CalismaKagitlari/EkBelgeYukleButton.tsx
 
 import React, {
   useEffect,
@@ -593,33 +595,15 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
             <Typography textAlign="center">{text}</Typography>
           </MenuItem>
         ) : (
-          <Grid
-            container
-            sx={{
-              width: fullWidth ? "100%" : "auto",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
+          <Button
+            onClick={handleOpen}
+            size="medium"
+            variant={buttonVariant}
+            color={color}
+            sx={{ width: fullWidth ? "100%" : "auto", textTransform: 'none', ...sx }}
           >
-            <Grid
-              onClick={handleOpen}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              size={12}>
-              <Button
-                size="medium"
-                variant={buttonVariant}
-                color={color}
-                sx={{ width: fullWidth ? "100%" : "auto", textTransform: 'none', ...sx }}
-              >
-                {text}
-              </Button>
-            </Grid>
-          </Grid>
+            {text}
+          </Button>
         )
       )}
       {/* gizli input */}

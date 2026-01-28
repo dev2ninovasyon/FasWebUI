@@ -181,7 +181,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning>
+    <html lang="tr" suppressHydrationWarning>
       <body>
         <Script
           src="/libs/html-docx.js"

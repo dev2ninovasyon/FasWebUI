@@ -3,6 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import dynamic from "next/dynamic";
 import {
+  Box,
   Button,
   Fab,
   Grid,
@@ -155,50 +156,22 @@ const Page = () => {
   return (
     <>
       <Breadcrumb title="Bağımsız Denetim Sözleşmesi" items={BCrumb}>
-        <>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <EkBelgeYukleButton
+            formKodu={controller}
+            fullWidth={false}
+            text="Belge Yükle"
+          />
+          <Button
+            size="medium"
+            variant="outlined"
+            color="primary"
+            disabled={isClickedVarsayilanaDon}
+            onClick={() => setIsClickedVarsayilanaDon(true)}
           >
-            <Grid
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              size={{
-                xs: 12,
-                md: 12,
-                lg: 12
-              }}>
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                disabled={isClickedVarsayilanaDon}
-                onClick={() => setIsClickedVarsayilanaDon(true)}
-                sx={{ width: "100%" }}
-              >
-                <EkBelgeYukleButton
-                  formKodu={controller}
-                  fullWidth={false}           // sağda küçük buton
-                  text="Belge Yükle"
-                />
-                <Typography
-                  variant="body1"
-                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                >
-                  Varsayılana Dön
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
-        </>
+            Varsayılana Dön
+          </Button>
+        </Box>
       </Breadcrumb>
       <PageContainer
         title="Bağımsız Denetim Sözleşmesi"

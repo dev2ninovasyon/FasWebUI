@@ -1,63 +1,8 @@
-﻿import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Box, useMediaQuery } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+﻿import { Box, useMediaQuery } from "@mui/material";
+import React, { useEffect, useState, useCallback } from "react";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
-import "ckeditor5/ckeditor5.css";
-import {
-  ClassicEditor,
-  AccessibilityHelp,
-  Autoformat,
-  AutoImage,
-  AutoLink,
-  Autosave,
-  Bold,
-  CloudServices,
-  Code,
-  CodeBlock,
-  Essentials,
-  GeneralHtmlSupport,
-  Heading,
-  HtmlComment,
-  HtmlEmbed,
-  ImageBlock,
-  ImageCaption,
-  ImageInline,
-  ImageInsert,
-  ImageInsertViaUrl,
-  ImageResize,
-  ImageStyle,
-  ImageTextAlternative,
-  ImageToolbar,
-  ImageUpload,
-  Italic,
-  Link,
-  LinkImage,
-  List,
-  ListProperties,
-  PageBreak,
-  Paragraph,
-  PasteFromOffice,
-  RemoveFormat,
-  SelectAll,
-  ShowBlocks,
-  SimpleUploadAdapter,
-  SourceEditing,
-  Table,
-  TableCaption,
-  TableCellProperties,
-  TableColumnResize,
-  TableProperties,
-  TableToolbar,
-  TextPartLanguage,
-  TextTransformation,
-  Undo,
-  View,
-} from "ckeditor5";
-import translations from "ckeditor5/translations/tr.js";
-import "ckeditor5/ckeditor5.css";
-import "./custom.css";
-import "./light.css";
+import LexicalEditor from "./LexicalEditor";
 
 interface MaddiDogrulamaAciklamaEditorProps {
   control1: boolean;
@@ -80,19 +25,16 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
     const customizer = useSelector((state: AppState) => state.customizer);
     const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
 
-    const editorRef = useRef<any>(null);
-
     const [editorData, setEditorData] = useState("");
     const [editorDataTemp, setEditorDataTemp] = useState(aciklama);
 
-
-    const handleChange = (event: any, editor: any) => {
+    const handleChange = useCallback((html: string) => {
       if (control1 || control2) {
-        setEditorDataTemp(editor.getData());
+        setEditorDataTemp(html);
       } else {
-        setEditorData(editor.getData());
+        setEditorData(html);
       }
-    };
+    }, [control1, control2]);
 
     useEffect(() => {
       if (control1 || control2) {
@@ -100,150 +42,14 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
       } else {
         handleSetSelectedAciklama(editorData);
       }
-    }, [editorData, editorDataTemp]);
+    }, [editorData, editorDataTemp, control1, control2, handleSetSelectedAciklama]);
 
     useEffect(() => {
-      if (aciklama) {
+      if (aciklama !== undefined) {
         setEditorDataTemp(aciklama);
       }
     }, [aciklama]);
 
-    useEffect(() => {
-      if (isHovered && editorRef.current) {
-        editorRef.current.editing.view.focus();
-      } else if (!isHovered && editorRef.current) {
-        const editableElement = editorRef.current.ui.view.editable.element;
-        if (editableElement) {
-          editableElement.blur();
-        }
-      }
-    }, [isHovered]);
-
-    const editorConfig = {
-      toolbar: {
-        items: [
-          "undo",
-          "redo",
-          "|",
-          "showBlocks",
-          "selectAll",
-          "textPartLanguage",
-          "|",
-          "heading",
-          "|",
-          "bold",
-          "italic",
-          "removeFormat",
-          "|",
-          "pageBreak",
-          "link",
-          "insertTable",
-          "|",
-          "bulletedList",
-          "numberedList",
-          "|",
-          "accessibilityHelp",
-        ],
-        shouldNotGroupWhenFull: false,
-      },
-      plugins: [
-        AccessibilityHelp,
-        Autoformat,
-        AutoImage,
-        AutoLink,
-        Autosave,
-        Bold,
-        CloudServices,
-        Code,
-        CodeBlock,
-        Essentials,
-        GeneralHtmlSupport,
-        Heading,
-        HtmlComment,
-        HtmlEmbed,
-        ImageBlock,
-        ImageCaption,
-        ImageInline,
-        ImageInsert,
-        ImageInsertViaUrl,
-        ImageResize,
-        ImageStyle,
-        ImageTextAlternative,
-        ImageToolbar,
-        ImageUpload,
-        Italic,
-        Link,
-        LinkImage,
-        List,
-        ListProperties,
-        PageBreak,
-        Paragraph,
-        PasteFromOffice,
-        RemoveFormat,
-        SelectAll,
-        ShowBlocks,
-        SimpleUploadAdapter,
-        SourceEditing,
-        Table,
-        TableCaption,
-        TableCellProperties,
-        TableColumnResize,
-        TableProperties,
-        TableToolbar,
-        TextPartLanguage,
-        TextTransformation,
-        Undo,
-      ],
-      heading: {
-        options: [
-          {
-            model: "paragraph" as const,
-            view: "p",
-            title: "Paragraph",
-            class: "ck-heading_paragraph",
-          },
-          {
-            model: "heading1" as const,
-            view: "h1",
-            title: "Heading 1",
-            class: "ck-heading_heading1",
-          },
-          {
-            model: "heading2" as const,
-            view: "h2",
-            title: "Heading 2",
-            class: "ck-heading_heading2",
-          },
-          {
-            model: "heading3" as const,
-            view: "h3",
-            title: "Heading 3",
-            class: "ck-heading_heading3",
-          },
-          {
-            model: "heading4" as const,
-            view: "h4",
-            title: "Heading 4",
-            class: "ck-heading_heading4",
-          },
-          {
-            model: "heading5" as const,
-            view: "h5",
-            title: "Heading 5",
-            class: "ck-heading_heading5",
-          },
-          {
-            model: "heading6" as const,
-            view: "h6",
-            title: "Heading 6",
-            class: "ck-heading_heading6",
-          },
-        ],
-      },
-      language: "tr",
-      placeholder: "İçeriğinizi buraya yazın veya yapıştırın!",
-      translations: [translations],
-    };
     return (
       <Box
         sx={
@@ -258,14 +64,11 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
         }
       >
         <Box sx={{ width: "100%", margin: "auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
-          <CKEditor
-            editor={ClassicEditor}
-            config={editorConfig}
-            data={control1 || control2 ? editorDataTemp : editorData}
+          <LexicalEditor
+            initialValue={control1 || control2 ? editorDataTemp : editorData}
             onChange={handleChange}
-            onReady={(editor) => {
-              editorRef.current = editor;
-            }}
+            mode={customizer.activeMode === "dark" ? "dark" : "light"}
+            placeholder="İçeriğinizi buraya yazın veya yapıştırın!"
           />
         </Box>
       </Box>
@@ -273,3 +76,4 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
   };
 
 export default MaddiDogrulamaAciklamaEditor;
+

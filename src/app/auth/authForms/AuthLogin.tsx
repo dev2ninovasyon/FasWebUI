@@ -91,7 +91,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           accept: "*/*",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, captchaToken: token }),
+        body: JSON.stringify({ email, password, CaptchaToken: token }),
       });
       console.timeEnd("Login API İsteği");
 

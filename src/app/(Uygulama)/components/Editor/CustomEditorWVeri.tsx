@@ -1,63 +1,9 @@
-﻿import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+﻿import { Box, Typography, useMediaQuery } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { updateCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
-import "ckeditor5/ckeditor5.css";
-import {
-  ClassicEditor,
-  AccessibilityHelp,
-  Autoformat,
-  AutoImage,
-  AutoLink,
-  Autosave,
-  Bold,
-  CloudServices,
-  Code,
-  CodeBlock,
-  Essentials,
-  GeneralHtmlSupport,
-  Heading,
-  HtmlComment,
-  HtmlEmbed,
-  ImageBlock,
-  ImageCaption,
-  ImageInline,
-  ImageInsert,
-  ImageInsertViaUrl,
-  ImageResize,
-  ImageStyle,
-  ImageTextAlternative,
-  ImageToolbar,
-  ImageUpload,
-  Italic,
-  Link,
-  LinkImage,
-  List,
-  ListProperties,
-  PageBreak,
-  Paragraph,
-  PasteFromOffice,
-  RemoveFormat,
-  SelectAll,
-  ShowBlocks,
-  SimpleUploadAdapter,
-  SourceEditing,
-  Table,
-  TableCaption,
-  TableCellProperties,
-  TableColumnResize,
-  TableProperties,
-  TableToolbar,
-  TextPartLanguage,
-  TextTransformation,
-  Undo,
-} from "ckeditor5";
-import translations from "ckeditor5/translations/tr.js";
-import "ckeditor5/ckeditor5.css";
-import "./custom.css";
-import "./light.css";
+import LexicalEditor from "./LexicalEditor";
 
 interface Veri {
   id: number;
@@ -67,14 +13,12 @@ interface Veri {
 interface CustomEditorProps {
   controller: string;
   veri: Veri;
-
   sozlesmeTarihi?: string;
 }
 
 const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
   controller,
   veri,
-
   sozlesmeTarihi,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
@@ -82,34 +26,29 @@ const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
   const lgDown = useMediaQuery((theme: any) => theme.breakpoints.down("lg"));
 
   const [editorData, setEditorData] = useState("");
-  const [kayitMesaji, setKayitMesaji] = useState<string | null>(null); // State for save message
-
+  const [kayitMesaji, setKayitMesaji] = useState<string | null>(null);
 
   const handleUpdate = async () => {
+    if (!veri) return;
     const updatedData = {
       id: veri.id,
       metin: editorData,
       sozlesmeTarihi: sozlesmeTarihi == "" ? undefined : sozlesmeTarihi,
     };
     try {
-      const result = await updateCalismaKagidiVerisi(
+      await updateCalismaKagidiVerisi(
         controller,
         user.token || "",
         veri?.id,
         updatedData
       );
-
-      if (result) {
-      } else {
-        console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
-      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
   };
 
-  const handleChange = useCallback((event: any, editor: any) => {
-    setEditorData(editor.getData());
+  const handleChange = useCallback((html: string) => {
+    setEditorData(html);
   }, []);
 
   useEffect(() => {
@@ -146,132 +85,6 @@ const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
     return () => clearTimeout(timeout);
   }, [editorData]);
 
-  const editorConfig = {
-    toolbar: {
-      items: [
-        "undo",
-        "redo",
-        "|",
-        "showBlocks",
-        "selectAll",
-        "textPartLanguage",
-        "|",
-        "heading",
-        "|",
-        "bold",
-        "italic",
-        "removeFormat",
-        "|",
-        "pageBreak",
-        "link",
-        "insertTable",
-        "|",
-        "bulletedList",
-        "numberedList",
-        "|",
-        "accessibilityHelp",
-      ],
-      shouldNotGroupWhenFull: false,
-    },
-    plugins: [
-      AccessibilityHelp,
-      Autoformat,
-      AutoImage,
-      AutoLink,
-      Autosave,
-      Bold,
-      CloudServices,
-      Code,
-      CodeBlock,
-      Essentials,
-      GeneralHtmlSupport,
-      Heading,
-      HtmlComment,
-      HtmlEmbed,
-      ImageBlock,
-      ImageCaption,
-      ImageInline,
-      ImageInsert,
-      ImageInsertViaUrl,
-      ImageResize,
-      ImageStyle,
-      ImageTextAlternative,
-      ImageToolbar,
-      ImageUpload,
-      Italic,
-      Link,
-      LinkImage,
-      List,
-      ListProperties,
-      PageBreak,
-      Paragraph,
-      PasteFromOffice,
-      RemoveFormat,
-      SelectAll,
-      ShowBlocks,
-      SimpleUploadAdapter,
-      SourceEditing,
-      Table,
-      TableCaption,
-      TableCellProperties,
-      TableColumnResize,
-      TableProperties,
-      TableToolbar,
-      TextPartLanguage,
-      TextTransformation,
-      Undo,
-    ],
-    heading: {
-      options: [
-        {
-          model: "paragraph" as const,
-          view: "p",
-          title: "Paragraph",
-          class: "ck-heading_paragraph",
-        },
-        {
-          model: "heading1" as const,
-          view: "h1",
-          title: "Heading 1",
-          class: "ck-heading_heading1",
-        },
-        {
-          model: "heading2" as const,
-          view: "h2",
-          title: "Heading 2",
-          class: "ck-heading_heading2",
-        },
-        {
-          model: "heading3" as const,
-          view: "h3",
-          title: "Heading 3",
-          class: "ck-heading_heading3",
-        },
-        {
-          model: "heading4" as const,
-          view: "h4",
-          title: "Heading 4",
-          class: "ck-heading_heading4",
-        },
-        {
-          model: "heading5" as const,
-          view: "h5",
-          title: "Heading 5",
-          class: "ck-heading_heading5",
-        },
-        {
-          model: "heading6" as const,
-          view: "h6",
-          title: "Heading 6",
-          class: "ck-heading_heading6",
-        },
-      ],
-    },
-    language: "tr",
-    placeholder: "İçeriğinizi buraya yazın veya yapıştırın!",
-    translations: [translations],
-  };
-
   return (
     <Box
       sx={
@@ -280,12 +93,17 @@ const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
           : {}
       }
     >
-      <Box sx={{ width: "95%", margin: "auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
-        <CKEditor
-          editor={ClassicEditor}
-          config={editorConfig}
-          data={editorData}
+      <Box
+        sx={{ width: "95%", margin: "auto" }}
+        className={
+          customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"
+        }
+      >
+        <LexicalEditor
+          initialValue={editorData}
           onChange={handleChange}
+          mode={customizer.activeMode === "dark" ? "dark" : "light"}
+          placeholder="İçeriğinizi buraya yazın veya yapıştırın!"
         />
         {kayitMesaji && (
           <Typography
