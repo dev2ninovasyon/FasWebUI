@@ -59,9 +59,11 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
 
-    const HEADER_GRAY = theme.palette.mode === 'dark' ? theme.palette.grey[800] : "#F1F2F4";
-    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.action.hover : "#F9FAFB";
-    const BG_PAPER = theme.palette.background.paper;
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
 
     const [veriler, setVeriler] = useState<HareketsizTicariAlacaklarRow[]>([]);
     const [loading, setLoading] = useState(false);
@@ -191,13 +193,13 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
         <Grid container>
             <Grid size={12}>
                 <Box px={0} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
-                    <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                    <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                         Hareketsiz Ticari Alacaklar
                     </Typography>
-                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid #2C3E50` }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
                         <Table size="small">
                             <TableHead>
-                                <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                                <TableRow sx={{ backgroundColor: HEADER_BG }}>
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Kebir Kodu</TableCell>
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Detay Kodu</TableCell>
                                     <TableCell sx={{ fontWeight: 800, textAlign: "center", color: "white" }}>Hesap Adı</TableCell>
@@ -215,9 +217,9 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
 
                                     return (
                                         <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
-                                            <TableCell align="center">{row.kebirKodu}</TableCell>
-                                            <TableCell align="center">{row.detayKodu}</TableCell>
-                                            <TableCell>{row.hesapAdi}</TableCell>
+                                            <TableCell align="center" sx={{ color: TEXT_COLOR }}>{row.kebirKodu}</TableCell>
+                                            <TableCell align="center" sx={{ color: TEXT_COLOR }}>{row.detayKodu}</TableCell>
+                                            <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapAdi}</TableCell>
                                             <TableCell align="right">
                                                 <TextField
                                                     size="small"
@@ -225,7 +227,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     onChange={(e) => handleInputChange(row.id, 'borcTutari', e.target.value)}
                                                     variant="standard"
                                                     InputProps={{ disableUnderline: true, readOnly: isReport }}
-                                                    sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
+                                                    sx={{ "& .MuiInputBase-input": { textAlign: "right", color: TEXT_COLOR } }}
                                                 />
                                             </TableCell>
                                             <TableCell align="right">
@@ -235,7 +237,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     onChange={(e) => handleInputChange(row.id, 'alacakTutari', e.target.value)}
                                                     variant="standard"
                                                     InputProps={{ disableUnderline: true, readOnly: isReport }}
-                                                    sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
+                                                    sx={{ "& .MuiInputBase-input": { textAlign: "right", color: TEXT_COLOR } }}
                                                 />
                                             </TableCell>
                                             <TableCell align="right">
@@ -245,10 +247,10 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                                                     onChange={(e) => handleInputChange(row.id, 'netBakiye', e.target.value)}
                                                     variant="standard"
                                                     InputProps={{ disableUnderline: true, readOnly: isReport }}
-                                                    sx={{ "& .MuiInputBase-input": { textAlign: "right" } }}
+                                                    sx={{ "& .MuiInputBase-input": { textAlign: "right", color: TEXT_COLOR } }}
                                                 />
                                             </TableCell>
-                                            <TableCell align="center">{row.paraBirimi}</TableCell>
+                                            <TableCell align="center" sx={{ color: TEXT_COLOR }}>{row.paraBirimi}</TableCell>
                                             {!isReport && (
                                                 <TableCell align="center">
                                                     {isEditing && (

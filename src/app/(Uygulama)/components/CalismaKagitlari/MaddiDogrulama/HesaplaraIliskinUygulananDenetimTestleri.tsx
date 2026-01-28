@@ -65,9 +65,10 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
     const user = useSelector((state: AppState) => state.userReducer);
 
     // Dynamic colors based on theme mode
-    const HEADER_GRAY = theme.palette.mode === 'dark' ? theme.palette.grey[800] : "#F1F2F4";
-    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.action.hover : "#F9FAFB";
-    const BG_PAPER = theme.palette.background.paper;
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
 
     const [veriler, setVeriler] = useState<HesapTestRow[]>([]);
     const [savingRowId, setSavingRowId] = useState<number | null>(null);
@@ -307,15 +308,15 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 
         return (
             <Box mb={4}>
-                <Box sx={{ backgroundColor: "#2C3E50", px: 2, py: 1 }}>
+                <Box sx={{ backgroundColor: HEADER_BG, px: 2, py: 1 }}>
                     <Typography variant="subtitle1" fontWeight={700} color="white">
                         Ana Hesaplar
                     </Typography>
                 </Box>
-                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
+                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0'}` }}>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: "#2C3E50" }}>
+                            <TableRow sx={{ backgroundColor: HEADER_BG }}>
                                 <TableCell sx={{ fontWeight: 700, width: "10%", color: "white" }}>Hesap No</TableCell>
                                 <TableCell sx={{ fontWeight: 700, width: "35%", color: "white" }}>Hesap Açıklaması</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Önceki Dönem Bakiye</TableCell>
@@ -333,21 +334,21 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                             )}
                             {anaHesaplar.map((row, idx) => (
                                 <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
-                                    <TableCell>{row.kebirKodu}</TableCell>
-                                    <TableCell>{row.hesapAdi}</TableCell>
-                                    <TableCell align="right">{fmt(row.oncekiDonemBakiye)}</TableCell>
-                                    <TableCell align="right">{fmt(row.cariDonemBakiye)}</TableCell>
-                                    <TableCell align="right">{fmt(row.degisimTl)}</TableCell>
-                                    <TableCell align="right">% {(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.kebirKodu}</TableCell>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapAdi}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.oncekiDonemBakiye)}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.cariDonemBakiye)}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.degisimTl)}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>% {(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
                                     <TableCell />
                                 </TableRow>
                             ))}
                             {/* Grand Total Row */}
-                            <TableRow sx={{ backgroundColor: BG_PAPER, borderTop: `2px solid #2C3E50` }}>
-                                <TableCell colSpan={2} sx={{ fontWeight: 800 }}>Toplam</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tOnceki)}</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tCari)}</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tDegisim)}</TableCell>
+                            <TableRow sx={{ backgroundColor: BG_PAPER, borderTop: `2px solid ${HEADER_BG}` }}>
+                                <TableCell colSpan={2} sx={{ fontWeight: 800, color: TEXT_COLOR }}>Toplam</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 800, color: TEXT_COLOR }}>{fmt(tOnceki)}</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 800, color: TEXT_COLOR }}>{fmt(tCari)}</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 800, color: TEXT_COLOR }}>{fmt(tDegisim)}</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 800 }}>% {tYuzde.toFixed(2)}</TableCell>
                                 <TableCell />
                             </TableRow>
@@ -368,15 +369,15 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 
         return (
             <Box mb={4} key={kebirKodu}>
-                <Box sx={{ backgroundColor: "#2C3E50", px: 2, py: 1 }}>
+                <Box sx={{ backgroundColor: HEADER_BG, px: 2, py: 1 }}>
                     <Typography variant="subtitle1" fontWeight={700} color="white">
                         {title}
                     </Typography>
                 </Box>
-                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
+                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0'}` }}>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                            <TableRow sx={{ backgroundColor: HEADER_BG }}>
                                 <TableCell sx={{ fontWeight: 700, width: "10%", color: "white" }}>Hesap No</TableCell>
                                 <TableCell sx={{ fontWeight: 700, width: "35%", color: "white" }}>Hesap Açıklaması</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Önceki Dönem Bakiye</TableCell>
@@ -412,12 +413,12 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                         <TableBody>
                             {rows.map((row, idx) => (
                                 <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
-                                    <TableCell>{row.detayKodu}</TableCell>
-                                    <TableCell>{row.hesapAdi} {row.paraBirimi ? `(${row.paraBirimi})` : ""}</TableCell>
-                                    <TableCell align="right">{fmt(row.oncekiDonemBakiye)}</TableCell>
-                                    <TableCell align="right">{fmt(row.cariDonemBakiye)}</TableCell>
-                                    <TableCell align="right">{fmt(row.degisimTl)}</TableCell>
-                                    <TableCell align="right">% {(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.detayKodu}</TableCell>
+                                    <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapAdi} {row.paraBirimi ? `(${row.paraBirimi})` : ""}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.oncekiDonemBakiye)}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.cariDonemBakiye)}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>{fmt(row.degisimTl)}</TableCell>
+                                    <TableCell align="right" sx={{ color: TEXT_COLOR }}>% {(row.degisimYuzde ?? 0).toFixed(2)}</TableCell>
                                     <TableCell>
                                         {isReport ? (
                                             <span>

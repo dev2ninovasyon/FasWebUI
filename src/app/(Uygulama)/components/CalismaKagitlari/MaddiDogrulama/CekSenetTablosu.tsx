@@ -106,8 +106,9 @@ const CekSenetTablosu: React.FC<Props> = ({
 
             <Box sx={{
                 width: '100%',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
+                border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                borderRadius: '0px',
+                backgroundColor: theme.palette.background.paper,
                 overflow: 'hidden',
                 "& .handsontable th": {
                     backgroundColor: `${theme.palette.primary.main} !important`,
@@ -116,7 +117,16 @@ const CekSenetTablosu: React.FC<Props> = ({
                     textAlign: "center !important",
                     verticalAlign: "middle !important",
                     padding: "8px !important",
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
                 },
+                "& .handsontable td": {
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
+                },
+                "& .handsontable tr:nth-of-type(even) td": {
+                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
+                }
             }}>
                 <HotTable
                     ref={hotRef}

@@ -168,7 +168,7 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Varlık ve Amortisman Özet Tablo
             </Typography>
 
@@ -177,8 +177,8 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                     width: "100%",
                     overflowX: "auto",
                     minHeight: "500px",
-                    borderRadius: "8px",
-                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: "0px",
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
                     backgroundColor: theme.palette.background.paper,
                     "& .handsontable th": {
                         backgroundColor: `${theme.palette.primary.main} !important`,
@@ -186,17 +186,22 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                         fontWeight: "bold !important",
                         textAlign: "center !important",
                         verticalAlign: "middle !important",
-                        border: `1px solid ${theme.palette.divider} !important`,
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
                         whiteSpace: "pre-line !important",
                         lineHeight: "1.2 !important",
                         padding: "8px !important",
                     },
                     "& .handsontable td": {
-                        border: `1px solid ${theme.palette.divider} !important`,
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
                         whiteSpace: "nowrap !important",
                         verticalAlign: "middle !important",
                         padding: "4px 8px !important",
                     },
+                    "& .handsontable tr:nth-of-type(even) td": {
+                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
+                    }
                 }}
             >
                 <HotTable
@@ -207,7 +212,7 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
                     colHeaders={false}
                     rowHeaders={false}
                     width="100%"
-                    height="500px"
+                    height={isReport ? "auto" : "500px"}
                     stretchH="none"
                     autoColumnSize={{ useHeaders: true }}
                     autoRowSize={true}

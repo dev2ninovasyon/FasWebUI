@@ -191,7 +191,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Şüpheli Alacak Testleri
             </Typography>
             {!isReport && (
@@ -211,15 +211,24 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
 
             <Box sx={{
                 width: '100%',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                backgroundColor: '#fff',
+                border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                borderRadius: '0px',
+                backgroundColor: theme.palette.background.paper,
                 overflow: 'hidden',
                 "& .handsontable th": {
-                    backgroundColor: "#2C3E50",
+                    backgroundColor: theme.palette.primary.main,
                     color: "white",
                     fontWeight: 'bold',
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
                 },
+                "& .handsontable td": {
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                },
+                "& .handsontable tr:nth-of-type(even) td": {
+                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
+                }
             }}>
                 <HotTable
                     ref={hotRef}
@@ -242,7 +251,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                         { data: 'avukatMektubu', type: 'text' }
                     ]}
                     stretchH="all"
-                    height="500px"
+                    height={isReport ? "auto" : "500px"}
                     width="100%"
                     viewportColumnRenderingOffset={10}
                     viewportRowRenderingOffset={10}

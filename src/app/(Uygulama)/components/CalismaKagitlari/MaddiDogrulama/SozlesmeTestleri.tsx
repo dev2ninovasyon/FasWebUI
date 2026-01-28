@@ -131,13 +131,19 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
             maximumFractionDigits: 2,
         });
 
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
+
     // Stil Tanımlamaları
     const tableHeaderStyle = {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: HEADER_BG,
         color: "white",
         fontWeight: "bold",
         textAlign: "center",
-        border: "1px solid #e0e0e0",
+        border: `1px solid ${BORDER_COLOR}`,
         fontSize: "0.85rem",
         padding: "10px 5px",
         whiteSpace: "nowrap"
@@ -145,18 +151,20 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
     const tableCellStyle = {
         textAlign: "right",
-        border: "1px solid #e0e0e0",
+        border: `1px solid ${BORDER_COLOR}`,
         fontSize: "0.85rem",
-        padding: "8px"
+        padding: "8px",
+        color: TEXT_COLOR
     };
 
     const firstColStyle = {
         textAlign: "center",
         fontWeight: "bold",
-        border: "1px solid #e0e0e0",
-        backgroundColor: "#f5f5f5",
+        border: `1px solid ${BORDER_COLOR}`,
+        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : "#f5f5f5",
         fontSize: "0.85rem",
-        width: "80px"
+        width: "80px",
+        color: TEXT_COLOR
     };
 
     const handleReset = async () => {
@@ -185,13 +193,13 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Sözleşme Testleri
             </Typography>
 
             <Grid container>
                 <Grid size={12}>
-                    <TableContainer component={Paper} elevation={3} sx={{ borderRadius: "8px", overflow: "hidden" }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
@@ -203,8 +211,8 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {veriler.map((row) => (
-                                    <TableRow key={row.id} hover>
+                                {veriler.map((row, idx) => (
+                                    <TableRow key={row.id} sx={{ backgroundColor: idx % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
                                         {/* Hesap No */}
                                         <TableCell sx={firstColStyle}>
                                             {row.detayKodu}
@@ -238,7 +246,8 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
                                                             textAlign: "right",
                                                             padding: "6px 10px",
                                                             fontSize: "0.85rem",
-                                                            backgroundColor: "white",
+                                                            backgroundColor: theme.palette.background.paper,
+                                                            color: TEXT_COLOR,
                                                             "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
                                                                 "-webkit-appearance": "none",
                                                                 margin: 0,

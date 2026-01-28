@@ -277,7 +277,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+      <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
         Uygulanan Denetim Prosedürleri
       </Typography>
       <Grid container>

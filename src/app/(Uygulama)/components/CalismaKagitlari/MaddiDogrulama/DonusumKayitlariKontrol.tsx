@@ -40,12 +40,11 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 
     // Colors
     // Header blue from image: approx #2196F3 or similar light blue
-    const HEADER_BLUE = "#42A5F5";
-    const HEADER_TEXT = "#FFFFFF";
-    const SUB_HEADER_BG = theme.palette.primary.main; // Table header background
-    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
     const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
     const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
 
     const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
 
@@ -114,15 +113,15 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 
         return (
             <Box mb={4}>
-                <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
+                <Box sx={{ backgroundColor: HEADER_BG, px: 2, py: 1 }}>
                     <Typography variant="subtitle1" fontWeight={700} color="white">
                         Ana Hesaplar
                     </Typography>
                 </Box>
-                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0'}` }}>
+                <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: SUB_HEADER_BG }}>
+                            <TableRow sx={{ backgroundColor: HEADER_BG }}>
                                 <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap No</TableCell>
                                 <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>VUK Bakiye</TableCell>
                                 <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Dönüşüm Bakiye</TableCell>
@@ -154,15 +153,15 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 
     const renderDonusumFisleriTable = () => (
         <Box mb={4}>
-            <Box sx={{ backgroundColor: theme.palette.primary.main, px: 2, py: 1 }}>
+            <Box sx={{ backgroundColor: HEADER_BG, px: 2, py: 1 }}>
                 <Typography variant="subtitle1" fontWeight={700} color="white">
                     Dönüşüm Fişleri
                 </Typography>
             </Box>
-            <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0'}` }}>
+            <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
                 <Table size="small">
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: SUB_HEADER_BG }}>
+                        <TableRow sx={{ backgroundColor: HEADER_BG }}>
                             <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap No</TableCell>
                             <TableCell sx={{ fontWeight: 700, color: "white" }}>Yevmiye No</TableCell>
                             <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap Adı</TableCell>
@@ -199,7 +198,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
         <Grid container>
             <Grid size={12}>
                 <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
-                    <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                    <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                         Dönüşüm Kayıtları Kontrol
                     </Typography>
                     {renderAnaHesaplarTable()}

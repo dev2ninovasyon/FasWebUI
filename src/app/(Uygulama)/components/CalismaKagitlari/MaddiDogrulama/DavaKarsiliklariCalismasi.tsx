@@ -50,9 +50,11 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
     const [summary, setSummary] = useState<DavaKarsiliklariSummary | null>(null);
     const [loading, setLoading] = useState(false);
 
-    // Görseldeki Ana Başlık Kutusu Rengi (Açık Mavi/Gri Tonu)
-    const TITLE_BOX_COLOR = "#B4C7E7";
-    const TITLE_TEXT_COLOR = "#2C3E50"; // Başlık içindeki koyu yazı rengi
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
 
     const fetchData = async () => {
         if (!user.token) return;
@@ -145,64 +147,73 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
 
     return (
         <Box sx={{ width: "100%", p: 0 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Dava Karşılıkları Çalışması
             </Typography>
             {/* Arka plansız Düz Metin Başlık */}
-            <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: TITLE_TEXT_COLOR }}>
+            <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50" }}>
                 Dava Karşılıkları Özeti
             </Typography>
 
-            <TableContainer component={Paper} elevation={0} sx={{ borderRadius: "8px", border: `1px solid ${TITLE_BOX_COLOR}`, mb: 5 }}>
+            <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}`, mb: 5 }}>
                 <Table size="small">
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
-                            <TableCell sx={{ borderRight: `1px solid rgba(255,255,255,0.2)`, width: "120px" }}></TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid rgba(255,255,255,0.2)` }}>Hesaplanan Toplam Ayrılacak Dava Karşılıkları</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid rgba(255,255,255,0.2)` }}>Hesaplanan Toplam Koşullu Dava Borçları</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid rgba(255,255,255,0.2)` }}>Hesaplanan Toplam Koşullu Dava Alacakları</TableCell>
+                        <TableRow sx={{ backgroundColor: HEADER_BG }}>
+                            <TableCell sx={{ borderRight: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'}`, width: "120px" }}></TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'}` }}>Hesaplanan Toplam Ayrılacak Dava Karşılıkları</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'}` }}>Hesaplanan Toplam Koşullu Dava Borçları</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 700, color: "white", borderRight: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'}` }}>Hesaplanan Toplam Koşullu Dava Alacakları</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 700, color: "white" }}>Uzman Görüşü Gerektirenler</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            <TableCell sx={{ fontWeight: 700, backgroundColor: theme.palette.primary.main, color: "white", textAlign: 'center' }}>Sayısı</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.hesaplananToplamAyrilacakDavaKarsiliklariSayisi || 0}</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.hesaplananToplamKosulluDavaBorclariSayisi || 0}</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.hesaplananToplamKosulluDavaAlacaklariSayisi || 0}</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{summary?.uzmanGorusuGerektirenlerSayisi || 0}</TableCell>
+                        <TableRow sx={{ backgroundColor: BG_PAPER }}>
+                            <TableCell sx={{ fontWeight: 700, backgroundColor: HEADER_BG, color: "white", textAlign: 'center', borderRight: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'}` }}>Sayısı</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR, borderRight: `1px solid ${BORDER_COLOR}` }}>{summary?.hesaplananToplamAyrilacakDavaKarsiliklariSayisi || 0}</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR, borderRight: `1px solid ${BORDER_COLOR}` }}>{summary?.hesaplananToplamKosulluDavaBorclariSayisi || 0}</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR, borderRight: `1px solid ${BORDER_COLOR}` }}>{summary?.hesaplananToplamKosulluDavaAlacaklariSayisi || 0}</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR }}>{summary?.uzmanGorusuGerektirenlerSayisi || 0}</TableCell>
                         </TableRow>
-                        <TableRow>
-                            <TableCell sx={{ fontWeight: 700, backgroundColor: theme.palette.primary.main, color: "white", textAlign: 'center' }}>Tutarı</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{fmt(summary?.hesaplananToplamAyrilacakDavaKarsiliklariTutari)}</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{fmt(summary?.hesaplananToplamKosulluDavaBorclariTutari)}</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{fmt(summary?.hesaplananToplamKosulluDavaAlacaklariTutari)}</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 600 }}>{fmt(summary?.uzmanGorusuGerektirenlerTutari)}</TableCell>
+                        <TableRow sx={{ backgroundColor: ZEBRA_ROW }}>
+                            <TableCell sx={{ fontWeight: 700, backgroundColor: HEADER_BG, color: "white", textAlign: 'center', borderRight: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'}` }}>Tutarı</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR, borderRight: `1px solid ${BORDER_COLOR}` }}>{fmt(summary?.hesaplananToplamAyrilacakDavaKarsiliklariTutari)}</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR, borderRight: `1px solid ${BORDER_COLOR}` }}>{fmt(summary?.hesaplananToplamKosulluDavaBorclariTutari)}</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR, borderRight: `1px solid ${BORDER_COLOR}` }}>{fmt(summary?.hesaplananToplamKosulluDavaAlacaklariTutari)}</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 600, color: TEXT_COLOR }}>{fmt(summary?.uzmanGorusuGerektirenlerTutari)}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
 
             {/* Arka plansız Düz Metin Başlık */}
-            <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: TITLE_TEXT_COLOR }}>
+            <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50" }}>
                 Dava Detayı Listesi
             </Typography>
 
             <Box sx={{
-                border: `1px solid ${TITLE_BOX_COLOR}`,
-                borderRadius: "8px",
+                border: `1px solid ${BORDER_COLOR}`,
+                borderRadius: "0px",
+                backgroundColor: BG_PAPER,
                 overflow: "hidden",
                 "& .handsontable th": {
-                    backgroundColor: `${theme.palette.primary.main} !important`,
+                    backgroundColor: `${HEADER_BG} !important`,
                     color: `white !important`,
                     fontWeight: "bold",
                     padding: "8px 4px !important",
                     fontSize: "13px",
-                    border: `1px solid rgba(255,255,255,0.2) !important`,
+                    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'} !important`,
                     whiteSpace: "normal",
                     lineHeight: "1.2 !important",
                     verticalAlign: "middle !important",
                     height: "45px !important"
+                },
+                "& .handsontable td": {
+                    backgroundColor: BG_PAPER,
+                    color: TEXT_COLOR,
+                    border: `1px solid ${BORDER_COLOR} !important`,
+                },
+                "& .handsontable tr:nth-of-type(even) td": {
+                    backgroundColor: ZEBRA_ROW,
                 }
             }}>
                 <HotTable

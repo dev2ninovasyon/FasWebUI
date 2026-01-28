@@ -152,15 +152,26 @@ const EnvanterKontrolleri: React.FC<Props> = ({
                 sx={{
                     width: "100%",
                     overflow: "hidden",
-                    borderRadius: "8px",
-                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: "0px",
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                    backgroundColor: theme.palette.background.paper,
                     "& .handsontable th": {
                         backgroundColor: theme.palette.primary.main,
                         color: "white",
+                        fontWeight: 'bold',
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                    },
+                    "& .handsontable td": {
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                    },
+                    "& .handsontable tr:nth-of-type(even) td": {
+                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
                     },
                     "& .bold-row": {
                         fontWeight: "bold",
-                        backgroundColor: theme.palette.action.hover,
+                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.action.hover,
                     }
                 }}
             >

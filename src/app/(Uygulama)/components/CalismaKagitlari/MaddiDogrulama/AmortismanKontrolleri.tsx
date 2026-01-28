@@ -152,15 +152,21 @@ const AmortismanKontrolleri: React.FC<Props> = ({
         return map[accDeprCode] || [];
     };
 
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
+
     // Common Header Style
     const headerStyle = {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: HEADER_BG,
         "& th": {
             color: "white",
             fontWeight: "bold",
             textAlign: "center",
             verticalAlign: "middle",
-            borderRight: "1px solid rgba(255,255,255,0.2)",
+            borderRight: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'}`,
         },
         "& th:last-child": {
             borderRight: "none",
@@ -169,23 +175,24 @@ const AmortismanKontrolleri: React.FC<Props> = ({
 
     // Zebra Striping Style
     const rowStyle = {
+        backgroundColor: BG_PAPER,
         "&:nth-of-type(even)": {
-            backgroundColor: "#f8f9fa", // Light gray/blue for even rows
+            backgroundColor: ZEBRA_ROW,
         },
         "&:hover": {
-            backgroundColor: "#f0f0f0",
+            backgroundColor: theme.palette.action.hover,
         },
     };
 
     return (
         <div className={isReport ? "space-y-4" : "p-4 space-y-8"}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Amortisman Kontrolleri
             </Typography>
             {/* Table 1: Hesap Bakiyeleri */}
-            <Card>
-                <CardContent>
-                    <TableContainer component={Paper} elevation={0} className="border">
+            <Card sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}`, backgroundColor: BG_PAPER }}>
+                <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
                         <Table size="small">
                             <TableHead sx={headerStyle}>
                                 <TableRow>
@@ -205,12 +212,12 @@ const AmortismanKontrolleri: React.FC<Props> = ({
 
                                     return (
                                         <TableRow key={row.detayKodu} sx={rowStyle}>
-                                            <TableCell align="center">{row.detayKodu}</TableCell>
-                                            <TableCell>{row.hesapAdi}</TableCell>
-                                            <TableCell align="right">{row.onceki.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
-                                            <TableCell align="right">{giris.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
-                                            <TableCell align="right">{cikis.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
-                                            <TableCell align="right">{row.cari.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                                            <TableCell align="center" sx={{ color: TEXT_COLOR }}>{row.detayKodu}</TableCell>
+                                            <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapAdi}</TableCell>
+                                            <TableCell align="right" sx={{ color: TEXT_COLOR }}>{row.onceki.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                                            <TableCell align="right" sx={{ color: TEXT_COLOR }}>{giris.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                                            <TableCell align="right" sx={{ color: TEXT_COLOR }}>{cikis.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                                            <TableCell align="right" sx={{ color: TEXT_COLOR }}>{row.cari.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -221,9 +228,9 @@ const AmortismanKontrolleri: React.FC<Props> = ({
             </Card>
 
             {/* Table 2: Amortisman Kontrolleri */}
-            <Card>
-                <CardContent>
-                    <TableContainer component={Paper} elevation={0} className="border">
+            <Card sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}`, backgroundColor: BG_PAPER }}>
+                <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
                         <Table size="small">
                             <TableHead sx={headerStyle}>
                                 <TableRow>
@@ -248,11 +255,11 @@ const AmortismanKontrolleri: React.FC<Props> = ({
 
                                     return (
                                         <TableRow key={row.detayKodu} sx={rowStyle}>
-                                            <TableCell align="center">{index + 1}</TableCell>
-                                            <TableCell align="center">{row.detayKodu}</TableCell>
-                                            <TableCell>{row.hesapAdi}</TableCell>
-                                            <TableCell align="right">{oncekiDonem.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
-                                            <TableCell align="right">{cariDonemGider.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                                            <TableCell align="center" sx={{ color: TEXT_COLOR }}>{index + 1}</TableCell>
+                                            <TableCell align="center" sx={{ color: TEXT_COLOR }}>{row.detayKodu}</TableCell>
+                                            <TableCell sx={{ color: TEXT_COLOR }}>{row.hesapAdi}</TableCell>
+                                            <TableCell align="right" sx={{ color: TEXT_COLOR }}>{oncekiDonem.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
+                                            <TableCell align="right" sx={{ color: TEXT_COLOR }}>{cariDonemGider.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</TableCell>
                                             <TableCell align="right">
                                                 {isReport ? (
                                                     <span>{tahmini.toLocaleString("tr-TR", { minimumFractionDigits: 2 })}</span>
