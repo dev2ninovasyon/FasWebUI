@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -52,7 +52,7 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
         onEmptyUsers();
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

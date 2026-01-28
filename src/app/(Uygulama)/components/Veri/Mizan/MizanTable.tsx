@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -18,7 +18,7 @@ import {
 import { Stack } from "@mui/system";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
 import {
   deleteMizanBilgisiMultiple,
@@ -127,7 +127,7 @@ const MizanTable: React.FC<Props> = ({ type }) => {
       });
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -192,10 +192,10 @@ const MizanTable: React.FC<Props> = ({ type }) => {
         selected.length = 0;
         fetchData();
       } else {
-        console.error("Dosya Bilgileri silinemedi");
+        console.log("Dosya Bilgileri silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

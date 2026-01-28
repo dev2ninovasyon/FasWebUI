@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { Divider, Grid, Tab } from "@mui/material";
@@ -39,7 +39,6 @@ const Page: React.FC = () => {
       description="this is E-Defter Mizan Oluşturma"
     >
       <Breadcrumb title="E-Defter Mizan Oluşturma" items={BCrumb} />
-
       {user.yil == 2024 ? (
         <TabContext value={tip}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -49,14 +48,22 @@ const Page: React.FC = () => {
           <Divider />
           <TabPanel value="EnflasyonDahil" sx={{ paddingX: 0 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} lg={12}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <EDefterMizanEnflasyonDahilStepper />
               </Grid>
             </Grid>
           </TabPanel>
           <TabPanel value="EnflasyonHaric" sx={{ paddingX: 0 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} lg={12}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <EDefterMizanEnflasyonHaricStepper />
               </Grid>
             </Grid>
@@ -64,7 +71,11 @@ const Page: React.FC = () => {
         </TabContext>
       ) : (
         <Grid container spacing={3}>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <EDefterMizanStepper />
           </Grid>
         </Grid>

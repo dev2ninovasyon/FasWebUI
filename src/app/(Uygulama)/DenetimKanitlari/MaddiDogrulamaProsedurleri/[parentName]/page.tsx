@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useSelector } from "@/store/hooks";
@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation";
 import { useLoading } from "@/contexts/LoadingContext";
 import MaddiDogrulamaEkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/MaddiDogrulamaEkBelgeYukleButton";
 
-const Page = ({ params }: { params: { parentName: string } }) => {
-    const { parentName } = params;
+const Page = ({ params }: { params: Promise<{ parentName: string }> }) => {
+    const { parentName } = React.use(params);
     const user = useSelector((state: AppState) => state.userReducer);
     const router = useRouter();
     const { setLoading } = useLoading();
@@ -39,7 +39,7 @@ const Page = ({ params }: { params: { parentName: string } }) => {
             const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
             if (found?.name) setDip(found.name);
         } catch (error) {
-            console.error("fetchDipTitle error:", error);
+            console.log("fetchDipTitle error:", error);
         }
     };
 

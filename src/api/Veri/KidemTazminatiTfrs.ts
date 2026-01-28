@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil = async (
@@ -21,10 +21,10 @@ export const getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kıdem Tazminatı Tfrs verileri getirilemedi");
+      console.log("Kıdem Tazminatı Tfrs verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -49,7 +49,7 @@ export const createKidemTazminatiTfrsVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -78,6 +78,6 @@ export const deleteKidemTazminatiTfrsVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

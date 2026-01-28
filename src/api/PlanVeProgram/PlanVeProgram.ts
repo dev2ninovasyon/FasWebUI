@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getOnemlilikVeOrneklemSeviyesi = async (
@@ -21,10 +21,10 @@ export const getOnemlilikVeOrneklemSeviyesi = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Önemlilik Ve Örneklem Seviyesi getirilemedi");
+      console.log("Önemlilik Ve Örneklem Seviyesi getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -55,7 +55,7 @@ export const createOnemlilikVeOrneklem = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -79,10 +79,10 @@ export const getOnemlilikVeOrneklem = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Önemlilik Ve Örneklem getirilemedi");
+      console.log("Önemlilik Ve Örneklem getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -107,7 +107,7 @@ export const updateOnemlilikVeOrneklem = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -138,7 +138,7 @@ export const createOnemlilikVeOrneklemHesaplamaBazi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -162,10 +162,10 @@ export const getOnemlilikVeOrneklemHesaplamaBazi = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Önemlilik Ve Örneklem Hesaplama Bazı getirilemedi");
+      console.log("Önemlilik Ve Örneklem Hesaplama Bazı getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -193,7 +193,7 @@ export const updateOnemlilikVeOrneklemHesaplamaBazi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -222,7 +222,7 @@ export const createFinansalTabloKalemlerindeDegisim = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -246,10 +246,10 @@ export const getFinansalTabloKalemlerindeDegisim = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Finansal Tablo Kalemlerinde Değişim getirilemedi");
+      console.log("Finansal Tablo Kalemlerinde Değişim getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -277,7 +277,7 @@ export const updateFinansalTabloKalemlerindeDegisim = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -307,7 +307,7 @@ export const createBulguRiskiBelirleme = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -331,10 +331,10 @@ export const getBulguRiskiBelirleme = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Bulgu Riski Belirleme getirilemedi");
+      console.log("Bulgu Riski Belirleme getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -359,10 +359,10 @@ export const getFisBuyukluguAnaliziYillik = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Bulgu Riski Belirleme getirilemedi");
+      console.log("Bulgu Riski Belirleme getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export const upsertFisBuyukluguAylikNot = async (
@@ -397,9 +397,9 @@ export const upsertFisBuyukluguAylikNot = async (
       const data = await response.json();
       return data;
     } else {
-      console.error("Fiş büyüklüğü notu kaydedilemedi");
+      console.log("Fiş büyüklüğü notu kaydedilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

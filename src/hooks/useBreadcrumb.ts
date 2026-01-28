@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { usePathname } from "next/navigation";
 import { breadcrumbConfig } from "@/config/breadcrumbConfig";
@@ -32,3 +32,4 @@ export const useBreadcrumb = () => {
         currentTitle: items[items.length - 1]?.title || "",
     };
 };
+

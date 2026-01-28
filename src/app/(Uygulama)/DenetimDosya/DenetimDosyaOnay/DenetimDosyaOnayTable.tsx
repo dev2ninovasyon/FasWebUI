@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
   TableContainer,
   Table,
@@ -22,7 +22,7 @@ import {
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getDenetimDosyaTransfer, sendBulkOnay } from "@/api/DenetimDosya/DenetimDosya";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 
 interface Veri {
@@ -107,7 +107,7 @@ const DenetimDosyaOnayTable: React.FC<Props> = ({
       setUpdatedRows([]); // yeni liste çekilince sonuçları sıfırla
       setSelectedIds([]); // seçimleri de sıfırla
     } catch (error) {
-      console.error(error);
+      console.log(error);
       enqueueSnackbar("Liste yüklenemedi.", { variant: "error" });
     } finally {
       setLoading(false);
@@ -199,7 +199,7 @@ const DenetimDosyaOnayTable: React.FC<Props> = ({
         variant: successCount === selectedIds.length ? "success" : successCount > 0 ? "info" : "error",
       });
     } catch (e) {
-      console.error(e);
+      console.log(e);
       enqueueSnackbar("Toplu işlem sırasında beklenmeyen bir hata oluştu.", { variant: "error" });
     } finally {
       setIsSending(false);
@@ -396,7 +396,7 @@ const DenetimDosyaOnayTable: React.FC<Props> = ({
               SelectProps={{ native: true }}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions as any}
+              ActionsComponent={TablePaginationActions}
               labelRowsPerPage="Sayfa başına satır sayısı:"
               labelDisplayedRows={({ from, to, count }) =>
                 `${from}-${to} arası / ${count !== -1 ? count : `daha fazla`} satır`

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { HotTable } from "@handsontable/react";
@@ -49,7 +49,7 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
             );
             setData(response.stokVerileri || []);
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);
@@ -72,7 +72,7 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
                 enqueueSnackbar(result.message, { variant: "error" });
             }
         } catch (error) {
-            console.error("Oluşturma hatası:", error);
+            console.log("Oluşturma hatası:", error);
             enqueueSnackbar("Veriler oluşturulurken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);
@@ -113,7 +113,7 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
                     enqueueSnackbar(result.message, { variant: "error" });
                 }
             } catch (error) {
-                console.error("Güncelleme hatası:", error);
+                console.log("Güncelleme hatası:", error);
                 enqueueSnackbar("Güncelleme sırasında bir hata oluştu", { variant: "error" });
             }
         }

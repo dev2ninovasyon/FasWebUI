@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -448,7 +448,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, tersMi }) => {
         setFetchedData(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -522,15 +522,15 @@ const Orneklem: React.FC<Props> = ({ dipnot, tersMi }) => {
         <>
           <Grid container>
             <Grid
-              item
-              xs={12}
-              lg={12}
               my={2}
               sx={{
                 display: "flex",
                 justifyContent: "center",
               }}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <Tooltip title={detayTiklandimi ? "Detay Gizle" : "Detay Göster"}>
                 <Fab
                   color="warning"

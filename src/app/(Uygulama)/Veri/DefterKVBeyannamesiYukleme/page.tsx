@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -144,7 +144,7 @@ const Page: React.FC = () => {
           setControl(true);
         }
       } catch (error: any) {
-        console.error("Dosya yüklenirken hata oluştu:", error);
+        console.log("Dosya yüklenirken hata oluştu:", error);
         const errorMessage = error.response?.data?.message || error.response?.data || "Dosya yüklenirken bir hata oluştu.";
         enqueueSnackbar(errorMessage, { variant: "error" });
       } finally {
@@ -204,7 +204,7 @@ const Page: React.FC = () => {
         setFetchedData(null);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -236,16 +236,16 @@ const Page: React.FC = () => {
             }}
           >
             <Grid
-              item
-              xs={12}
-              md={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "flex-end",
               }}
-            >
+              size={{
+                xs: 12,
+                md: 12,
+                lg: 12
+              }}>
               <Button
                 size="medium"
                 variant="outlined"
@@ -269,9 +269,12 @@ const Page: React.FC = () => {
           </Grid>
         </>
       </Breadcrumb>
-
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={5}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 5
+          }}>
           <Box
             sx={{
               height: "550px",
@@ -346,7 +349,12 @@ const Page: React.FC = () => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Grid item sm={12} lg={12} style={{ textAlign: "center" }}>
+                  <Grid
+                    style={{ textAlign: "center" }}
+                    size={{
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Typography>Dosyaları buraya bırakın...</Typography>
                   </Grid>
                 </Grid>
@@ -357,7 +365,12 @@ const Page: React.FC = () => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Grid item sm={12} lg={12} style={{ textAlign: "center" }}>
+                  <Grid
+                    style={{ textAlign: "center" }}
+                    size={{
+                      sm: 12,
+                      lg: 12
+                    }}>
                     {uploading ? (
                       <Stack
                         spacing={2}
@@ -398,7 +411,11 @@ const Page: React.FC = () => {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={12} lg={7}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 7
+          }}>
           <Box
             sx={{
               height: smDown ? "610px" : "550px",
@@ -417,9 +434,18 @@ const Page: React.FC = () => {
           </Box>
         </Grid>
         {fileType === "E-DefterKebir" && (
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={12} lg={12}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 12,
+                  lg: 12
+                }}>
                 <Typography variant="h6" textAlign="left" mb={1}>
                   Yüklenen Defter Sayıları:
                 </Typography>
@@ -433,7 +459,13 @@ const Page: React.FC = () => {
                 ).length;
 
                 return (
-                  <Grid item xs={6} md={3} lg={2} key={index}>
+                  <Grid
+                    key={index}
+                    size={{
+                      xs: 6,
+                      md: 3,
+                      lg: 2
+                    }}>
                     <Paper
                       elevation={2}
                       sx={{

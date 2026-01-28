@@ -1,3 +1,5 @@
+﻿"use client";
+
 // src/app/(Uygulama)/components/CalismaKagitlari/EkBelgeYukleButton.tsx
 
 import React, {
@@ -149,7 +151,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
       setSelectedIds([]);
       setPage(0);
     } catch (error) {
-      console.error("Ek belgeler alınırken hata oluştu:", error);
+      console.log("Ek belgeler alınırken hata oluştu:", error);
       setEkBelgeler([]);
     } finally {
       setIsLoadingList(false);
@@ -303,7 +305,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         }
       }
     } catch (err) {
-      console.error("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
+      console.log("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
       enqueueSnackbar(
         "PNG dosyası PDF'e dönüştürülürken bir hata oluştu. Lütfen tekrar deneyin.",
         {
@@ -367,7 +369,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         );
       }
     } catch (error) {
-      console.error("Ek belge yüklenirken hata oluştu:", error);
+      console.log("Ek belge yüklenirken hata oluştu:", error);
       enqueueSnackbar("Ek belgeler yüklenirken beklenmeyen bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,
@@ -405,7 +407,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Ek belge indirilirken hata:", error);
+      console.log("Ek belge indirilirken hata:", error);
       enqueueSnackbar("Ek belge indirilirken bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,
@@ -444,7 +446,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         window.URL.revokeObjectURL(url);
       }
     } catch (error) {
-      console.error("Ek belge görüntülenirken hata:", error);
+      console.log("Ek belge görüntülenirken hata:", error);
       enqueueSnackbar("Ek belge görüntülenirken bir hata oluştu.", {
         variant: "error",
         autoHideDuration: 5000,
@@ -593,38 +595,17 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
             <Typography textAlign="center">{text}</Typography>
           </MenuItem>
         ) : (
-          <Grid
-            container
-            sx={{
-              width: fullWidth ? "100%" : "auto",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
+          <Button
+            onClick={handleOpen}
+            size="medium"
+            variant={buttonVariant}
+            color={color}
+            sx={{ width: fullWidth ? "100%" : "auto", textTransform: 'none', ...sx }}
           >
-            <Grid
-              onClick={handleOpen}
-              item
-              xs={12}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                size="medium"
-                variant={buttonVariant}
-                color={color}
-                sx={{ width: fullWidth ? "100%" : "auto", textTransform: 'none', ...sx }}
-              >
-                {text}
-              </Button>
-            </Grid>
-          </Grid>
+            {text}
+          </Button>
         )
       )}
-
       {/* gizli input */}
       <input
         ref={inputRef}
@@ -634,7 +615,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         accept=".pdf,.doc,.docx,.xls,.xlsx,.xlsm,.png"
         onChange={handleFileChange}
       />
-
       {/* Ek belgeler popup */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogTitle
@@ -678,7 +658,11 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
         >
           <Grid container spacing={3}>
             {/* Sol: yükleme alanı */}
-            <Grid item xs={12} md={5}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 5
+              }}>
               <Box
                 onClick={handleClickUploadButton}
                 onDragOver={handleDragOver}
@@ -725,7 +709,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Grid item xs={12} style={{ textAlign: "center" }}>
+                    <Grid style={{ textAlign: "center" }} size={12}>
                       <Stack spacing={1.5} alignItems="center">
                         <CloudUploadIcon
                           fontSize="large"
@@ -757,7 +741,11 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
             </Grid>
 
             {/* Sağ: Yüklenmiş Dosya Bilgileri */}
-            <Grid item xs={12} md={7}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 7
+              }}>
               <Paper
                 elevation={0}
                 sx={{
@@ -771,7 +759,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                   flexDirection: "column",
                   height: "100%",
                   minHeight: 285,
-                  maxHeight: 420,          // 🔹 üst sınır, fazlası için scroll
+                  maxHeight: 420,          // ğŸ”¹ üst sınır, fazlası için scroll
                 }}
               >
                 {/* Başlık + arama */}
@@ -801,8 +789,8 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                 <TableContainer
                   sx={{
                     flex: 1,
-                    overflowY: "auto",     // 🔹 dikey scroll
-                    overflowX: "auto",     // 🔹 sadece gerekirse yatay scroll
+                    overflowY: "auto",     // ğŸ”¹ dikey scroll
+                    overflowX: "auto",     // ğŸ”¹ sadece gerekirse yatay scroll
                   }}
                 >
                   <Table size="small" stickyHeader>
@@ -859,7 +847,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
                                   variant="body2"
                                   title={belge.orijinalDosyaAdi}
                                   sx={{
-                                    wordBreak: "break-word",   // 🔹 isim alt satıra insin
+                                    wordBreak: "break-word",   // ğŸ”¹ isim alt satıra insin
                                     whiteSpace: "normal",
                                   }}
                                 >
@@ -942,7 +930,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
           <Button onClick={handleClose}>Kapat</Button>
         </DialogActions>
       </Dialog >
-
       {/* Seçilenleri silme onay popup'ı */}
       <Dialog
         open={deleteConfirmOpen}
@@ -974,7 +961,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* PDF Önizleme popup */}
       <Dialog
         open={previewOpen}

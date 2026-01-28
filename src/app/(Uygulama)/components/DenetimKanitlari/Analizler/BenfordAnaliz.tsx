@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -14,7 +14,7 @@ import { AppState } from "@/store/store";
 import { getBenfordDagilim, getBenfordHesapKodlari, getBenfordBasamakKayitlari } from "@/api/Analizler/Benford";
 import BenfordChart from "./BenfordAnalizChart";
 import { IconRefresh, IconX } from "@tabler/icons-react";
-// import path’ını projendeki BlankCard konumuna göre ayarla:
+// import pathâ€™ını projendeki BlankCard konumuna göre ayarla:
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
 
 export interface DagilimDto {
@@ -132,7 +132,12 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
   return (
     <Grid container mt={1} spacing={2}>
       {/* üst filtre alanı */}
-      <Grid item xs={12} lg={12} sx={{ display: "flex", gap: 2 }}>
+      <Grid
+        sx={{ display: "flex", gap: 2 }}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <FormControl size="small" sx={{ minWidth: 220 }}>
           <InputLabel id="kebir-select">Kebir Kodu</InputLabel>
           <Select
@@ -154,10 +159,13 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
 
 
       </Grid>
-
-      {/* içerik: grafik ya da tablo — ikisi de aynı BlankCard stilinde */}
+      {/* içerik: grafik ya da tablo â€” ikisi de aynı BlankCard stilinde */}
       {showGraph ? (
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <BlankCard>
             {loading ? (
               <Box p={2}>
@@ -174,7 +182,11 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
           </BlankCard>
         </Grid>
       ) : (
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <BlankCard>
             <TableContainer>
               <Table aria-label="benford-table" size="small">
@@ -248,7 +260,6 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
           </BlankCard>
         </Grid>
       )}
-
       {/* Kayıt Detay Popup */}
       <Dialog open={popupOpen} onClose={() => setPopupOpen(false)} fullWidth maxWidth="lg">
         <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

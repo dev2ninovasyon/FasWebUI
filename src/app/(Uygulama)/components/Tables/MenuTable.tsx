@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -96,7 +96,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({
           setKontrolEden(true);
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     };
     fetchData();

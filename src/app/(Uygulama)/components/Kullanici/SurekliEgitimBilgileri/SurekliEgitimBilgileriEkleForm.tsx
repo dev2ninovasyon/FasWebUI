@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -44,17 +44,23 @@ const SurekliEgitimBilgileriEkleForm = () => {
       if (result) {
         router.push("/Kullanici/SurekliEgitimBilgileri");
       } else {
-        console.error("Sürekli Eğitim Bilgileri ekleme başarısız");
+        console.log("Sürekli Eğitim Bilgileri ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="personelAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -62,7 +68,11 @@ const SurekliEgitimBilgileriEkleForm = () => {
             Personel Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <KullaniciBoxAutocomplete
             initialValue={personelAdi}
             onSelectAdi={(selectedPersonelAdi) =>
@@ -73,7 +83,13 @@ const SurekliEgitimBilgileriEkleForm = () => {
             }
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sertifikaAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -81,14 +97,24 @@ const SurekliEgitimBilgileriEkleForm = () => {
             Sertifika Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="sertifikaAdi"
             fullWidth
             onChange={(e: any) => setSertifikaAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimBaslangicTarihi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -96,7 +122,11 @@ const SurekliEgitimBilgileriEkleForm = () => {
             Eğitim Başlangıç Tarihi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="egitimBaslangicTarihi"
             type="date"
@@ -104,7 +134,13 @@ const SurekliEgitimBilgileriEkleForm = () => {
             onChange={(e: any) => setEgitimBaslangicTarihi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimBitisTarihi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -112,7 +148,11 @@ const SurekliEgitimBilgileriEkleForm = () => {
             Eğitim Bitiş Tarihi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="egitimBitisTarihi"
             type="date"
@@ -120,7 +160,13 @@ const SurekliEgitimBilgileriEkleForm = () => {
             onChange={(e: any) => setEgitimBitisTarihi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimSaati"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -128,14 +174,24 @@ const SurekliEgitimBilgileriEkleForm = () => {
             Eğitim Saati
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="egitimSaati"
             fullWidth
             onChange={(e: any) => setEgitimSaati(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="eldeEdilenKredi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -143,14 +199,24 @@ const SurekliEgitimBilgileriEkleForm = () => {
             Elde Edilen Kredi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="eldeEdilenKredi"
             fullWidth
             onChange={(e: any) => setEldeEdilenKredi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimTuru"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -158,15 +224,27 @@ const SurekliEgitimBilgileriEkleForm = () => {
             Eğitim Türü
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="egitimTuru"
             fullWidth
             onChange={(e: any) => setEgitimTuru(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

@@ -1,4 +1,4 @@
- import { apiFetch } from "@/api/apiBase";
+﻿ import { apiFetch } from "@/api/apiBase";
 
 
 export const getDonemDonusumDuzeltmeBelgesiVerisi
@@ -23,10 +23,10 @@ export const getDonemDonusumDuzeltmeBelgesiVerisi
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Fiş İşlemleri verileri getirilemedi");
+      console.log("Fiş İşlemleri verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -52,10 +52,10 @@ export const getDonemDonusumDuzeltmeBelgesiVerisiByFisNo = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Fiş Detayları verileri getirilemedi");
+      console.log("Fiş Detayları verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 

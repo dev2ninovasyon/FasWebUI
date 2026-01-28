@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import {
@@ -211,7 +211,7 @@ const Page = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -243,7 +243,7 @@ const Page = () => {
       });
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -278,16 +278,16 @@ const Page = () => {
             }}
           >
             <Grid
-              item
-              xs={12}
-              md={3.8}
-              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "flex-end",
               }}
-            >
+              size={{
+                xs: 12,
+                md: 3.8,
+                lg: 3.8
+              }}>
               <Button
                 size="medium"
                 variant="outlined"
@@ -311,15 +311,15 @@ const Page = () => {
               </Button>
             </Grid>
             <Grid
-              item
-              xs={12}
-              md={3.8}
-              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
               }}
-            >
+              size={{
+                xs: 12,
+                md: 3.8,
+                lg: 3.8
+              }}>
               <Button
                 size="medium"
                 variant="outlined"
@@ -343,15 +343,15 @@ const Page = () => {
               </Button>
             </Grid>
             <Grid
-              item
-              xs={12}
-              md={3.8}
-              lg={3.8}
               sx={{
                 display: "flex",
                 alignItems: "center",
               }}
-            >
+              size={{
+                xs: 12,
+                md: 3.8,
+                lg: 3.8
+              }}>
               <Button
                 size="medium"
                 variant="outlined"
@@ -382,9 +382,14 @@ const Page = () => {
             justifyContent: "space-between",
           }}
         >
-          <Grid item>
+          <Grid>
             <Grid container spacing={2}>
-              <Grid item xs={3.6} md={3.8} lg={2.2}>
+              <Grid
+                size={{
+                  xs: 3.6,
+                  md: 3.8,
+                  lg: 2.2
+                }}>
                 <CustomFormLabel
                   htmlFor="genelBilgiler"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -393,12 +398,12 @@ const Page = () => {
                 </CustomFormLabel>
               </Grid>
               <Grid
-                item
-                xs={3.9}
-                md={4.3}
-                lg={4.6}
                 sx={{ display: "flex", justifyContent: "center" }}
-              >
+                size={{
+                  xs: 3.9,
+                  md: 4.3,
+                  lg: 4.6
+                }}>
                 <CustomFormLabel
                   htmlFor="tespit"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -409,16 +414,16 @@ const Page = () => {
                 </CustomFormLabel>
               </Grid>
               <Grid
-                item
-                xs={4.5}
-                md={3.9}
-                lg={5.2}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 4.5,
+                  md: 3.9,
+                  lg: 5.2
+                }}>
                 <CustomFormLabel
                   htmlFor="deger"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -436,19 +441,24 @@ const Page = () => {
               {fetchedData.map((data, index) =>
                 data.siraNo < 22 ? (
                   <Grid
-                    item
                     key={data.id}
-                    xs={12}
-                    md={12}
-                    lg={12}
                     sx={{
                       display: "flex",
                       alignContent: "center",
                       justifyContent: "space-between",
                       mb: 2,
                     }}
-                  >
-                    <Grid item xs={12} md={8} lg={2}>
+                    size={{
+                      xs: 12,
+                      md: 12,
+                      lg: 12
+                    }}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 8,
+                        lg: 2
+                      }}>
                       <CustomFormLabel
                         htmlFor={data.genelBilgi}
                         sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -458,7 +468,13 @@ const Page = () => {
                         </Typography>
                       </CustomFormLabel>
                     </Grid>
-                    <Grid item xs={10} md={8} lg={4} sx={{ mr: 6 }}>
+                    <Grid
+                      sx={{ mr: 6 }}
+                      size={{
+                        xs: 10,
+                        md: 8,
+                        lg: 4
+                      }}>
                       <CustomTextAreaAutoSize
                         id={data.tespit}
                         value={data.tespit}
@@ -476,7 +492,12 @@ const Page = () => {
                         fullWidth
                       />
                     </Grid>
-                    <Grid item xs={15} md={8} lg={5}>
+                    <Grid
+                      size={{
+                        xs: 15,
+                        md: 8,
+                        lg: 5
+                      }}>
                       {data.siraNo == 1 ? (
                         <CustomSelect
                           labelId={data.deger?.toString()}
@@ -538,18 +559,23 @@ const Page = () => {
                   </Grid>
                 ) : (
                   <Grid
-                    item
                     key={data.id}
-                    xs={12}
-                    lg={12}
                     sx={{
                       display: "flex",
                       alignContent: "center",
                       justifyContent: "space-between",
                       mb: 2,
                     }}
-                  >
-                    <Grid item xs={5} md={5.6} lg={2}>
+                    size={{
+                      xs: 12,
+                      lg: 12
+                    }}>
+                    <Grid
+                      size={{
+                        xs: 5,
+                        md: 5.6,
+                        lg: 2
+                      }}>
                       <CustomFormLabel
                         htmlFor={data.genelBilgi}
                         sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -560,7 +586,12 @@ const Page = () => {
                       </CustomFormLabel>
                     </Grid>
 
-                    <Grid item xs={12} md={12} lg={9.67}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 12,
+                        lg: 9.67
+                      }}>
                       <CustomTextField
                         id={data.deger.toString()}
                         type="number"
@@ -611,21 +642,39 @@ const Page = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   hazirlayan="Denetçi - Yardımcı Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   onaylayan="Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -643,7 +692,12 @@ const Page = () => {
               gap: 1,
             }}
           >
-            <Grid item xs={12} lg={12} mt={5}>
+            <Grid
+              mt={5}
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <IslemlerCard controller={controller} />
             </Grid>
           </Grid>

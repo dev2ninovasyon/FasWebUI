@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Grid } from "@mui/material";
@@ -34,7 +34,11 @@ const Page = () => {
       >
         <Breadcrumb title="Nakit Akış Tablosu" items={BCrumb} />
         <Grid container>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <NakitAkisTablosu konsolidasyonMu={true} />
           </Grid>
         </Grid>

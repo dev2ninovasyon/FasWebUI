@@ -1,4 +1,4 @@
-import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
+﻿import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { Box, Typography, Button, Stack, useTheme, InputAdornment } from "@mui/material";
 import { useState, useRef } from "react";
@@ -57,7 +57,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
       token = await executeRecaptcha("login");
       console.timeEnd("ReCAPTCHA Doğrulaması");
     } catch (error: any) {
-      console.error("Recaptcha hatası:", error);
+      console.log("Recaptcha hatası:", error);
       let errorMessage = "Güvenlik doğrulaması sırasında bir hata oluştu.";
 
       if (error?.message?.includes("message channel closed")) {
@@ -91,7 +91,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           accept: "*/*",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, captchaToken: token }),
+        body: JSON.stringify({ email, password, CaptchaToken: token }),
       });
       console.timeEnd("Login API İsteği");
 
@@ -206,7 +206,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
       }
     } catch (error) {
       console.timeEnd("Giriş İşlemi Toplam Süre");
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
       setIsLoggedIn(false);
     }
   };

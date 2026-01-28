@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Grid, Button, useTheme } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -51,7 +51,7 @@ const BirlestirilmisMizan = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -66,7 +66,11 @@ const BirlestirilmisMizan = () => {
   return (
     <>
       <Grid container marginTop={3}>
-        <Grid item xs={12} lg={6}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6
+          }}>
           <Grid
             container
             p={1}
@@ -74,7 +78,12 @@ const BirlestirilmisMizan = () => {
             alignItems="center"
             justifyContent={"center"}
           >
-            <Grid item xs={12} md={12} lg={3}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 12,
+                lg: 3
+              }}>
               <Button
                 size="medium"
                 variant="outlined"
@@ -91,7 +100,12 @@ const BirlestirilmisMizan = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} lg={6} padding={1}>
+        <Grid
+          padding={1}
+          size={{
+            xs: 12,
+            lg: 6
+          }}>
           <MizanCard
             type={"BirlestirilmisMizan"}
             mizanOlusturTiklandimi={mizanOlusturTiklandimi}
@@ -100,7 +114,12 @@ const BirlestirilmisMizan = () => {
         </Grid>
       </Grid>
       <Grid container marginTop={3}>
-        <Grid item xs={12} lg={12} padding={1}>
+        <Grid
+          padding={1}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Mizan
             type={"BirlestirilmisMizan"}
             mizanOlusturTiklandimi={mizanOlusturTiklandimi}

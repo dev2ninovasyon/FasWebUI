@@ -1,4 +1,4 @@
-import SimpleBar from "simplebar-react";
+﻿import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import Box from "@mui/material/Box";
 import { SxProps } from "@mui/system";

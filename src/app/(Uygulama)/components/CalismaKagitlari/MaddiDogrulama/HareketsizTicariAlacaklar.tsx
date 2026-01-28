@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -100,7 +100,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                 setVeriler([]);
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             setVeriler([]);
         } finally {
             setLoading(false);
@@ -176,7 +176,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                 return copy;
             });
         } catch (err) {
-            console.error(err);
+            console.log(err);
             showSnackbar("Güncelleme sırasında bir hata oluştu.", "error");
         } finally {
             setSavingRowId(null);
@@ -189,7 +189,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
 
     return (
         <Grid container>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Box px={0} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
                     <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
                         Hareketsiz Ticari Alacaklar
@@ -281,7 +281,6 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
                     </TableContainer>
                 </Box>
             </Grid>
-
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}

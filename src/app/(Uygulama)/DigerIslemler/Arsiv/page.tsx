@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -10,17 +10,17 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Collapse,
 } from "@mui/material";
 import { SvgIconProps } from "@mui/material/SvgIcon";
 import { alpha, styled } from "@mui/material/styles";
-import { TreeView } from "@mui/x-tree-view/TreeView";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import {
   TreeItem,
   TreeItemProps,
   treeItemClasses,
 } from "@mui/x-tree-view/TreeItem";
 import { useSpring, animated } from "react-spring";
-import { Collapse } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
 import {
   IconFileText,
@@ -113,25 +113,19 @@ const Page = () => {
 
   function MinusSquare(props: SvgIconProps) {
     return (
-      <>
-        <IconFolderMinus style={{ width: 22, height: 22 }} {...props} />
-      </>
+      <IconFolderMinus style={{ width: 22, height: 22 }} {...props} />
     );
   }
 
   function PlusSquare(props: SvgIconProps) {
     return (
-      <>
-        <IconFolderPlus style={{ width: 22, height: 22 }} {...props} />
-      </>
+      <IconFolderPlus style={{ width: 22, height: 22 }} {...props} />
     );
   }
 
   function CloseSquare(props: SvgIconProps) {
     return (
-      <>
-        <IconFolder style={{ width: 22, height: 22 }} {...props} />
-      </>
+      <IconFolder style={{ width: 22, height: 22 }} {...props} />
     );
   }
 
@@ -155,18 +149,21 @@ const Page = () => {
   }
 
   const StyledTreeItem = styled((props: TreeItemProps) => (
-    <TreeItem {...props} TransitionComponent={TransitionComponent} />
+    <TreeItem {...props} slots={{ groupTransition: TransitionComponent }} />
   ))(({ theme }) => ({
     [`& .${treeItemClasses.iconContainer}`]: {
       "& .close": {
         opacity: 0.3,
       },
     },
-    [`& .${treeItemClasses.group}`]: {
+    // treeItemClasses.group removed in newer versions, check if this style is needed
+    // or replace with suitable class if indentation is lost.
+    // For now commenting out to avoid build error, as indentation is usually default.
+    /* [`& .${treeItemClasses.group}`]: {
       marginLeft: 15,
       paddingLeft: 18,
       borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
-    },
+    }, */
   }));
 
   const renderTree = (node: Veri, level: number = 0) => {
@@ -175,7 +172,7 @@ const Page = () => {
     return (
       <StyledTreeItem
         key={node.id}
-        nodeId={node.id.toString()}
+        itemId={node.id.toString()}
         label={
           <Typography variant={level === 0 ? "h6" : "body1"}>
             {node.name}
@@ -184,11 +181,9 @@ const Page = () => {
         // Belge ise tıklanmasın
         disabled={isFile}
         // Belge için ikon
-        endIcon={
-          isFile ? (
-            <IconFileText style={{ width: 20, height: 20 }} />
-          ) : undefined
-        }
+        slots={{
+          icon: isFile ? () => <IconFileText style={{ width: 20, height: 20 }} /> : undefined
+        }}
         // Klasörse seçim yap
         onClick={isFile ? undefined : () => setSelectedRow(node)}
         sx={{ my: 1, p: 0 }}
@@ -241,7 +236,7 @@ const Page = () => {
       );
       setRows(data);
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 
@@ -262,12 +257,22 @@ const Page = () => {
   return (
     <PageContainer title="Arşiv" description="this is Arşiv">
       <Breadcrumb title="Arşiv" items={BCrumb} />
-
       <Grid container spacing={3}>
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 12,
+            lg: 12
+          }}>
           <WarnBox warn={uyari} noMargin />
         </Grid>
-        <Grid item xs={12} md={12} lg={4} mb={3}>
+        <Grid
+          mb={3}
+          size={{
+            xs: 12,
+            md: 12,
+            lg: 4
+          }}>
           <Box
             sx={{
               padding: 1,
@@ -297,20 +302,27 @@ const Page = () => {
                 overflowY: "auto",
               }}
             >
-              <TreeView
+              <SimpleTreeView
                 aria-label="customized"
-                defaultExpanded={undefined}
-                defaultCollapseIcon={<MinusSquare />}
-                defaultExpandIcon={<PlusSquare />}
-                defaultEndIcon={<CloseSquare />}
+                slots={{
+                  collapseIcon: MinusSquare,
+                  expandIcon: PlusSquare,
+                  endIcon: CloseSquare
+                }}
               >
                 {rows &&
                   filterTree(rows, searchTerm).map((row) => renderTree(row))}
-              </TreeView>
+              </SimpleTreeView>
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={12} md={12} lg={8} mb={3}>
+        <Grid
+          mb={3}
+          size={{
+            xs: 12,
+            md: 12,
+            lg: 8
+          }}>
           {selectedRow ? (
             <Box
               sx={{

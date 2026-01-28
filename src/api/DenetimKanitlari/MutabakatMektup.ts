@@ -1,4 +1,4 @@
-import { apiFetch } from "../apiBase";
+﻿import { apiFetch } from "../apiBase";
 
 // DTOs and Interfaces
 export interface MutabakatMektupBelgeDto {
@@ -119,7 +119,7 @@ export const getMutabakatMektupBelge = async (
     }
 
     if (!response.ok) {
-        console.error("Mektup bilgisi getirilemedi");
+        console.log("Mektup bilgisi getirilemedi");
         return null;
     }
 
@@ -147,7 +147,7 @@ export const getAllMutabakatMektuplar = async (
     );
 
     if (!response.ok) {
-        console.error("Mektup listesi getirilemedi");
+        console.log("Mektup listesi getirilemedi");
         return [];
     }
 
@@ -206,7 +206,7 @@ export const deleteMutabakatMektup = async (
     );
 
     if (!response.ok) {
-        console.error("Mektup silinemedi");
+        console.log("Mektup silinemedi");
         return false;
     }
 
@@ -324,7 +324,7 @@ export const getActiveMutabakatTokens = async (
     );
 
     if (!response.ok) {
-        console.error("Aktif tokenlar getirilemedi");
+        console.log("Aktif tokenlar getirilemedi");
         return [];
     }
 

@@ -1,4 +1,4 @@
-// src/api/MusteriBelgeleri/MusteriBelgeleri.ts
+﻿// src/api/MusteriBelgeleri/MusteriBelgeleri.ts
 import { apiFetch } from "@/api/apiBase";
 
 export interface CalismaKagidiEkBelgeDto {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -212,10 +212,10 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }
   };
@@ -266,7 +266,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
       });
       setVeriler(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -339,7 +339,11 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
         Risk Tespiti
       </Typography>
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Grid
             container
             sx={{
@@ -351,13 +355,13 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
             {veriler.map((veri, index) => (
               <Grid
                 key={index}
-                item
-                xs={12}
-                lg={12}
                 my="20px"
                 onClick={() => !isReport && handleCardClick(veri)}
                 sx={{ cursor: isReport ? "default" : "pointer" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <CalismaKagidiCard
                   title={`${veri.finansalTabloHesaplar} Risk Tespiti`}
                   standartMi={veri.standartMi}
@@ -525,28 +529,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
               </Typography>
               <Box px={1} pt={3}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Tam Olma</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="tamOlma"
                           id="tamOlma"
@@ -567,28 +576,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Doğruluk</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="dogruluk"
                           id="dogruluk"
@@ -609,28 +623,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Var Olma</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="varOlma"
                           id="varOlma"
@@ -651,28 +670,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Değerleme</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="degerleme"
                           id="degerleme"
@@ -693,28 +717,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Dönemsellik</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="donemsellik"
                           id="donemsellik"
@@ -735,28 +764,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Geçerlilik</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="gecerlilik"
                           id="gecerlilik"
@@ -777,28 +811,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Sunum ve Açıklama</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <CustomSelect
                           labelId="sunumVeAciklama"
                           id="sunumVeAciklama"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { useSelector } from "@/store/hooks";
@@ -55,7 +55,7 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
         setRows(newRows);
       }
     } catch (error) {
-      console.error("YearBox fetchData hatası:", error);
+      console.log("YearBox fetchData hatası:", error);
     }
   };
 

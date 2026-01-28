@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+﻿import React, { useEffect, useState, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -161,7 +161,7 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
       setVeriler(res);
       setError(null);
     } catch (err) {
-      console.error("getDonusumMizanKarsilastirma hatası:", err);
+      console.log("getDonusumMizanKarsilastirma hatası:", err);
       setError("Veri alınırken hata oluştu.");
     } finally {
       setLoading(false);
@@ -230,7 +230,6 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
       <Typography variant="h5" gutterBottom>
         Dönüşüm Mizan Karşılaştırma Tablosu
       </Typography>
-
       {Object.keys(groupedData).map((tabloAdi) => {
         const group = groupedData[tabloAdi];
         const mainRow = {
@@ -300,7 +299,13 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
             justifyContent: "space-between",
           }}
         >
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <CardHeader
               title={<Typography variant="h5">Hazırlayan:</Typography>}
               sx={{ p: 0, mb: 1 }}
@@ -311,7 +316,13 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
               hazirlayan="Denetçi - Yardımcı Denetçi"
             />
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <CardHeader
               title={<Typography variant="h5">Onaylayan:</Typography>}
               sx={{ p: 0, mb: 1 }}
@@ -322,7 +333,13 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
               onaylayan="Sorumlu Denetçi"
             />
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <CardHeader
               title={<Typography variant="h5">Belge Kontrol:</Typography>}
               sx={{ p: 0, mb: 1 }}

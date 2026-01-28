@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
     fetchAmortismanKontrolleri,
     saveAmortismanKontrolSatir,
@@ -54,7 +54,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
                 enqueueSnackbar(result.message || "Veri alınamadı", { variant: "error" });
             }
         } catch (error) {
-            console.error("Fetch error:", error);
+            console.log("Fetch error:", error);
             enqueueSnackbar("Bir hata oluştu", { variant: "error" });
         }
         setLoading(false);
@@ -93,7 +93,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
                 setData(result.data);
             }
         } catch (error) {
-            console.error("Silent fetch error:", error);
+            console.log("Silent fetch error:", error);
         }
     };
 

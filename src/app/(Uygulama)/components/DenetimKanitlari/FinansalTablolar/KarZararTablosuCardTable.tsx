@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Typography,
   Table,
@@ -119,7 +119,7 @@ const KarZararCardTable = ({ fdtData, kztData }: Props) => {
 
       setKarZararTablosu(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -129,7 +129,12 @@ const KarZararCardTable = ({ fdtData, kztData }: Props) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} sx={{ mb: 2 }}>
+      <Grid
+        sx={{ mb: 2 }}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         {1 && (
           <>
             <Paper

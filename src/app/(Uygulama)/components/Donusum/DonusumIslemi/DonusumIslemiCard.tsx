@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+﻿/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { AppState } from "@/store/store";
@@ -75,7 +75,7 @@ const DonusumIslemiCard: React.FC<Props> = ({
       setAltiliBorcTutari(totalAltiliBorcTutari);
       setAltiliAlacakTutari(totalAltiliAlacakTutari);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

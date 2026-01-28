@@ -1,4 +1,4 @@
-import { Button, Grid, MenuItem, Typography } from "@mui/material";
+﻿import { Button, Grid, MenuItem, Typography } from "@mui/material";
 import React from "react";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -25,14 +25,21 @@ const MutabakatForm: React.FC<Props> = ({
     <div>
       <Grid container spacing={3}>
         <Grid
-          item
-          xs={12}
-          sm={2}
-          lg={2}
           display="flex"
           alignItems="center"
-        ></Grid>
-        <Grid item xs={12} sm={3.5} lg={3.5} display="flex" alignItems="center">
+          size={{
+            xs: 12,
+            sm: 2,
+            lg: 2
+          }}></Grid>
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3.5,
+            lg: 3.5
+          }}>
           <CustomFormLabel
             htmlFor="grupKodu"
             sx={{
@@ -67,7 +74,14 @@ const MutabakatForm: React.FC<Props> = ({
             <MenuItem value={"AlinanAvanslar"}>Alınan Avanslar</MenuItem>
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} sm={3.5} lg={3.5} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3.5,
+            lg: 3.5
+          }}>
           <CustomFormLabel
             htmlFor="hesapAdi"
             sx={{
@@ -91,7 +105,12 @@ const MutabakatForm: React.FC<Props> = ({
             onChange={(e: any) => setHesapAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={1.5} lg={1.5}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 1.5,
+            lg: 1.5
+          }}>
           <Button
             size="medium"
             variant="outlined"
@@ -104,7 +123,12 @@ const MutabakatForm: React.FC<Props> = ({
             <Typography variant="subtitle1">Verileri Getir</Typography>
           </Button>
         </Grid>
-        <Grid item xs={12} sm={1.5} lg={1.5}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 1.5,
+            lg: 1.5
+          }}>
           <Button
             size="medium"
             variant="outlined"

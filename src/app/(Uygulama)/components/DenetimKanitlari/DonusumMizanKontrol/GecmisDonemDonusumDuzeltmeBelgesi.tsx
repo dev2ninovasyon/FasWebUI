@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
@@ -334,7 +334,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -342,7 +342,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
     fetchData();
   }, []);
 
-  // Alternatif renderer’i set et
+  // Alternatif rendererâ€™i set et
   useEffect(() => {
     if (!hotTableComponent.current) return;
 
@@ -401,7 +401,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
         saveAs(blob, "GecmisDonemDonusumDuzeltmeBelgesi.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
 
@@ -436,7 +436,12 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} mb={2}>
+      <Grid
+        mb={2}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <HotTable
           style={{
             height: "100%",
@@ -476,8 +481,6 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
           copyPaste={false}
         />
       </Grid>
-
-      
       {roluVarMi && (
         <Grid
           container
@@ -487,31 +490,52 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
             justifyContent: "space-between",
           }}
         >
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             
             <BelgeKontrolCard controller={controller} fetch={fetchData} hazirlayan="Denetçi - Yardımcı Denetçi"/>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             
             <BelgeKontrolCard controller={controller} fetch={fetchData} onaylayan="Sorumlu Denetçi"/>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             
             <BelgeKontrolCard controller={controller} fetch={fetchData} kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"/>
           </Grid>
         </Grid>
       )}
-
       {/* Excel butonu */}
-      <Grid item xs={12} lg={10}></Grid>
       <Grid
-        item
-        xs={12}
-        lg={2}
+        size={{
+          xs: 12,
+          lg: 10
+        }}></Grid>
+      <Grid
         display={"flex"}
         alignItems={"end"}
         sx={{ py: 2, pl: { lg: 2 } }}
-      >
+        size={{
+          xs: 12,
+          lg: 2
+        }}>
         <Button
           size="medium"
           variant="outlined"

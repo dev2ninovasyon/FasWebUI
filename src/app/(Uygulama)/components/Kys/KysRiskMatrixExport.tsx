@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -76,7 +76,7 @@ const KysRiskMatrixExport: React.FC = () => {
                         docsData[doc.formKodu] = data;
                     }
                 } catch (e) {
-                    console.error(`Error fetching doc ${doc.formKodu}:`, e);
+                    console.log(`Error fetching doc ${doc.formKodu}:`, e);
                 }
             }));
 

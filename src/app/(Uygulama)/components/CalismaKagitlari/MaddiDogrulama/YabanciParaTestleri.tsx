@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
     Box,
     Table,
@@ -72,7 +72,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                 user.denetciId || 0,
                 user.yil || 0, // ✅ yil
                 user.denetlenenId || 0, // ✅ denetlenenId
-                resolvedDipnotNo,
+                dipnotNo,
                 modelAdi
             );
 
@@ -92,7 +92,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
             console.log("GetByDenetlenen raw res =", res);
 
         } catch (error) {
-            console.error("fetchData error:", error);
+            console.log("fetchData error:", error);
             setVeriler([]);
         } finally {
             setLoading(false);

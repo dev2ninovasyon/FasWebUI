@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -120,7 +120,7 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
       setKalemData2(kalemList2);
       setHesapData2(hesapList2);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -571,7 +571,12 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
   return (
     <Grid container>
       {showGraph ? (
-        <Grid item xs={12} lg={12} mt={3}>
+        <Grid
+          mt={3}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <DikeyAnalizChart
             kalemData={kalemData}
             tabloAdi={kalemData[0].tabloAdi}
@@ -579,7 +584,12 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
           />
         </Grid>
       ) : (
-        <Grid item xs={12} lg={12} mt={1}>
+        <Grid
+          mt={1}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TableContainer
             sx={{
               maxHeight: "684px",
@@ -641,9 +651,13 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
           </TableContainer>
         </Grid>
       )}
-
       {showGraph ? (
-        <Grid item xs={12} lg={12} mt={3}>
+        <Grid
+          mt={3}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <DikeyAnalizChart
             kalemData={kalemData2}
             tabloAdi={kalemData2[0].tabloAdi}
@@ -651,7 +665,12 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
           />
         </Grid>
       ) : (
-        <Grid item xs={12} lg={12} mt={5}>
+        <Grid
+          mt={5}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TableContainer
             sx={{
               maxHeight: "684px",

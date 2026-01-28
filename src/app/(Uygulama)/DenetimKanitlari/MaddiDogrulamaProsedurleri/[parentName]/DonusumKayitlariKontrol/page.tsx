@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import {
     getMaddiDogrulama,
     getDipnotNoByDipnotAdi,
@@ -89,7 +89,7 @@ const Page = () => {
                 }
             });
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log("An error occurred:", error);
         }
     };
 
@@ -107,7 +107,7 @@ const Page = () => {
             console.log("dipnotNo", dipnotNo);
             setDipnotNo(dipnotNo);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log("An error occurred:", error);
         }
     };
 

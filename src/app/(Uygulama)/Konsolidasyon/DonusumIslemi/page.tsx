@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import DonusumIslemiStepper from "@/app/(Uygulama)/components/Donusum/DonusumIslemi/DonusumIslemiStepper";
@@ -29,7 +29,11 @@ const Page: React.FC = () => {
       >
         <Breadcrumb title="Dönüşüm İşlemi" items={BCrumb} />
         <Grid container>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <DonusumIslemiStepper konsolidasyonMu={true} />
           </Grid>
         </Grid>

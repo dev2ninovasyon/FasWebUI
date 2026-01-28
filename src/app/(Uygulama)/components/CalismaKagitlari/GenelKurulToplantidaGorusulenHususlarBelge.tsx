@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+﻿import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Divider,
@@ -91,10 +91,10 @@ const GenelKurulToplantidaGorusulenHususlarBelge: React.FC<
           handleClosePopUp();
           setIsNew(false);
         } else {
-          console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+          console.log("Çalışma Kağıdı Verisi ekleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     };
 
@@ -123,10 +123,10 @@ const GenelKurulToplantidaGorusulenHususlarBelge: React.FC<
             fetchData();
             handleClosePopUp();
           } else {
-            console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+            console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
           }
         } catch (error) {
-          console.error("Bir hata oluştu:", error);
+          console.log("Bir hata oluştu:", error);
         }
       }
     };
@@ -142,10 +142,10 @@ const GenelKurulToplantidaGorusulenHususlarBelge: React.FC<
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi silme başarısız");
+          console.log("Çalışma Kağıdı Verisi silme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     };
 
@@ -189,7 +189,7 @@ const GenelKurulToplantidaGorusulenHususlarBelge: React.FC<
         setToplam(toplam.length);
         setTamamlanan(tamamlanan.length);
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, setToplam, setTamamlanan]);
 
@@ -205,10 +205,10 @@ const GenelKurulToplantidaGorusulenHususlarBelge: React.FC<
         if (result) {
           fetchData();
         } else {
-          console.error("Çalışma Kağıdı Verileri silme başarısız");
+          console.log("Çalışma Kağıdı Verileri silme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
@@ -281,12 +281,12 @@ const GenelKurulToplantidaGorusulenHususlarBelge: React.FC<
             {veriler.map((veri, index) => (
               <Grid
                 key={index}
-                item
-                xs={12}
-                lg={12}
                 mt="20px"
                 onClick={() => handleCardClick(veri)}
-              >
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <CalismaKagidiCard
                   title={`${index + 1}. ${veri.aciklamaIstenenHususlar} ${veri.aciklamaTalepEdenler
                     }`}
@@ -305,15 +305,15 @@ const GenelKurulToplantidaGorusulenHususlarBelge: React.FC<
             }}
           >
             <Grid
-              item
-              xs={12}
-              lg={1.5}
               my={2}
               sx={{
                 display: "flex",
                 justifyContent: "end",
               }}
-            >
+              size={{
+                xs: 12,
+                lg: 1.5
+              }}>
               <Button
                 size="medium"
                 variant="outlined"

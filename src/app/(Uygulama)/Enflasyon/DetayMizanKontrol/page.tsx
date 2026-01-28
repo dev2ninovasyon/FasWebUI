@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -7,6 +7,7 @@ import { Grid } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import ProtectedPage from "@/app/ProtectedPage";
+import { ENFLASYON_BASE_URL } from "@/config/enflasyonConfig";
 
 const BCrumb = [
   {
@@ -30,9 +31,14 @@ const Page: React.FC = () => {
       >
         <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb} />
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <iframe
-              src={`https://enflasyon.fas-audit.com.tr//EnflasyonDuzeltmesi/DetayMizanKontrol?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
+              src={`${ENFLASYON_BASE_URL}/EnflasyonDuzeltmesi/DetayMizanKontrol?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
               style={{
                 border: "0px",
                 width: "100%",

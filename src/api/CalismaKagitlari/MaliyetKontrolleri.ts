@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 export interface MaliyetKontrolleriResponseDto {
     hesapNo: string;
@@ -30,11 +30,11 @@ export const getMaliyetKontrolleri = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Maliyet Kontrolleri verileri alınırken hata oluştu:", response.status);
+            console.log("Maliyet Kontrolleri verileri alınırken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Maliyet Kontrolleri verileri alınırken hata oluştu:", error);
+        console.log("Maliyet Kontrolleri verileri alınırken hata oluştu:", error);
         throw error;
     }
 };

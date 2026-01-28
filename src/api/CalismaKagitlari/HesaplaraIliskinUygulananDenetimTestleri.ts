@@ -1,4 +1,4 @@
-// src/api/CalismaKagitlari/HesaplaraIliskinUygulananDenetimTestleri.ts
+﻿// src/api/CalismaKagitlari/HesaplaraIliskinUygulananDenetimTestleri.ts
 
 import { apiFetch } from "@/api/apiBase";
 export interface Denetlenen {
@@ -73,11 +73,11 @@ export const getHesapTestleriByDenetlenen = async (
       console.log(response);
       return response.json();
     } else {
-      console.error("Hesap testleri verileri getirilemedi, Status:", response.status);
+      console.log("Hesap testleri verileri getirilemedi, Status:", response.status);
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -105,11 +105,11 @@ export const updateHesapTestRow = async (
     if (response.ok) {
       return response.json(); // BaseApiController result dönüyorsa
     } else {
-      console.error("Hesap testi güncellenemedi");
+      console.log("Hesap testi güncellenemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -143,11 +143,11 @@ export const varsayilanaDon = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Varsayılana dönme işlemi başarısız");
+      console.log("Varsayılana dönme işlemi başarısız");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };

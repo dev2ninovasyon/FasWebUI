@@ -1,4 +1,4 @@
-// app/(Uygulama)/components/Veri/Fatura/YevmiyeFaturaDialog.tsx
+﻿// app/(Uygulama)/components/Veri/Fatura/YevmiyeFaturaDialog.tsx
 "use client";
 
 import React from "react";
@@ -32,8 +32,8 @@ const handleSave = async () => {
   }
   try {
     setSaving(true);
-    // her satıra tip’i yaz
-    const payload = rows.map(r => ({ ...r, tip }));   // 🔑
+    // her satıra tipâ€™i yaz
+    const payload = rows.map(r => ({ ...r, tip }));   // ğŸ”‘
     await saveInvoiceYevmiyeMatches(user, payload);
     enqueueSnackbar("Eşleştirmeler kaydedildi.", { variant: "success" });
     onClose();
@@ -46,10 +46,10 @@ const handleSave = async () => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xl">
-      <DialogTitle>Fatura ↔︎ Yevmiye</DialogTitle>
+      <DialogTitle>Fatura â†”ï¸ Yevmiye</DialogTitle>
       <DialogContent dividers>
         <Box mb={1}>
-          <Typography variant="body2">Tip: <b>{tip}</b> • VKN: <b>{vkn}</b></Typography>
+          <Typography variant="body2">Tip: <b>{tip}</b> â€¢ VKN: <b>{vkn}</b></Typography>
         </Box>
 
         <Table size="small">

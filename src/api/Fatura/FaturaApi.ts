@@ -1,4 +1,4 @@
-import axios, { AxiosProgressEvent } from "axios";
+﻿import axios, { AxiosProgressEvent } from "axios";
 
 import { apiFetch, url } from "@/api/apiBase";
 
@@ -139,7 +139,7 @@ export const previewFaturaHtmlNewTab = async (
   dosyaId: string
 ): Promise<Blob> => {
   const res = await axios.get(`${url}/Invoices/PreviewHtml/${dosyaId}`, {
-    responseType: "blob", // ✅ Sunucudan gelen HTML'i Blob olarak alıyoruz
+    responseType: "blob", // âœ… Sunucudan gelen HTML'i Blob olarak alıyoruz
     headers: { Authorization: `Bearer ${user.token}` },
   });
 

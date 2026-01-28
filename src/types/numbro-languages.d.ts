@@ -1,1 +1,2 @@
-declare module "numbro/languages/tr-TR";
+﻿declare module "numbro/languages/tr-TR";
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -87,7 +87,7 @@ export default function SetupWizardModal({
                 }
             }
         } catch (error) {
-            console.error("Progress yüklenirken hata:", error);
+            console.log("Progress yüklenirken hata:", error);
         } finally {
             setIsLoadingProgress(false);
         }
@@ -114,7 +114,7 @@ export default function SetupWizardModal({
 
 
         } catch (error) {
-            console.error("Progress kaydedilirken hata:", error);
+            console.log("Progress kaydedilirken hata:", error);
         }
     };
 

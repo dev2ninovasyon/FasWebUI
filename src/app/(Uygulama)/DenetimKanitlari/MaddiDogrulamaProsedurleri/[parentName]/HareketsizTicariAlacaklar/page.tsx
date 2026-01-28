@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import {
     getMaddiDogrulama,
     getDipnotNoByDipnotAdi,
@@ -56,7 +56,7 @@ const Page = () => {
             const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
             if (found?.name) setDip(found.name);
         } catch (error) {
-            console.error("fetchDipTitle error:", error);
+            console.log("fetchDipTitle error:", error);
         }
     };
 
@@ -82,7 +82,7 @@ const Page = () => {
 
             setDipnotNo(dipnotNo);
         } catch (error) {
-            console.error("An error occurred:", error);
+            console.log("An error occurred:", error);
         }
     };
 

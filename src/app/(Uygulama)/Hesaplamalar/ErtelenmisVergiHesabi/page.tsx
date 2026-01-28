@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -100,7 +100,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -120,9 +120,6 @@ const Page: React.FC = () => {
       <Breadcrumb title="Ertelenmiş Vergi Hesabı" items={BCrumb} />
       <Grid container>
         <Grid
-          item
-          xs={12}
-          lg={12}
           sx={{
             display: "flex",
             flexDirection: smDown ? "column" : "row",
@@ -131,17 +128,20 @@ const Page: React.FC = () => {
             mb: 2,
             gap: 1,
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Grid container spacing={3}>
             <Grid
-              item
-              xs={12}
-              sm={3.5}
-              lg={3.5}
               display="flex"
               alignItems="center"
               justifyContent={"flex-end"}
-            >
+              size={{
+                xs: 12,
+                sm: 3.5,
+                lg: 3.5
+              }}>
               <CustomFormLabel
                 htmlFor="vergiOrani"
                 sx={{
@@ -162,13 +162,13 @@ const Page: React.FC = () => {
               />
             </Grid>
             <Grid
-              item
-              xs={12}
-              sm={3.5}
-              lg={3.5}
               display="flex"
               alignItems="center"
-            >
+              size={{
+                xs: 12,
+                sm: 3.5,
+                lg: 3.5
+              }}>
               <CustomFormLabel
                 htmlFor="mali"
                 sx={{
@@ -193,13 +193,13 @@ const Page: React.FC = () => {
               />
             </Grid>
             <Grid
-              item
-              xs={12}
-              sm={3.5}
-              lg={3.5}
               display="flex"
               alignItems="center"
-            >
+              size={{
+                xs: 12,
+                sm: 3.5,
+                lg: 3.5
+              }}>
               <CustomFormLabel
                 htmlFor="vergi"
                 sx={{
@@ -223,7 +223,12 @@ const Page: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={1.5} lg={1.5}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 1.5,
+                lg: 1.5
+              }}>
               <Button
                 size="medium"
                 disabled={hesaplaTiklandimi}
@@ -240,13 +245,27 @@ const Page: React.FC = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} lg={12} mb={2}>
+        <Grid
+          mb={2}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <VergiVarlik hesaplaTiklandimi={hesaplaTiklandimi} />
         </Grid>
-        <Grid item xs={12} lg={12} mb={2}>
+        <Grid
+          mb={2}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <VergiYukumluluk hesaplaTiklandimi={hesaplaTiklandimi} />
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <ErtelenmisVergiHesabiCard hesaplaTiklandimi={hesaplaTiklandimi} />
         </Grid>
         <FloatingButtonFisler

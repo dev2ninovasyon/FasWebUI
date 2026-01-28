@@ -1,4 +1,4 @@
-import { Grid, Button, MenuItem } from "@mui/material";
+﻿import { Grid, Button, MenuItem } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -93,10 +93,10 @@ const MusteriDuzenleForm = () => {
       if (result) {
         router.push("/Musteri/MusteriIslemleri");
       } else {
-        console.error("Müşteri düzenleme başarısız");
+        console.log("Müşteri düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -117,7 +117,7 @@ const MusteriDuzenleForm = () => {
 
       setSektor1Id(sektor1.id);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -147,7 +147,7 @@ const MusteriDuzenleForm = () => {
       setSektor2Id(musteriVerileri.sektor2Id);
       setSektor3Id(musteriVerileri.sektor3Id);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -164,7 +164,7 @@ const MusteriDuzenleForm = () => {
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -185,7 +185,7 @@ const MusteriDuzenleForm = () => {
         setSektor3List(newRows.filter((item: Veri2) => item.kirilim === 3));
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -206,7 +206,13 @@ const MusteriDuzenleForm = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="firmaAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -214,7 +220,11 @@ const MusteriDuzenleForm = () => {
             Firma Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="firmaAdi"
             value={firmaAdi}
@@ -222,7 +232,13 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setFirmaAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="yetkili"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -230,7 +246,11 @@ const MusteriDuzenleForm = () => {
             Yetkili
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="yetkili"
             value={yetkili}
@@ -238,7 +258,13 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setYetkili(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="tel"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -246,7 +272,11 @@ const MusteriDuzenleForm = () => {
             Tel
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="tel"
             value={tel}
@@ -254,7 +284,13 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setTel(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="adres"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -262,7 +298,11 @@ const MusteriDuzenleForm = () => {
             Adres
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="adres"
             value={adres}
@@ -270,7 +310,13 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setAdres(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="email"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -278,7 +324,11 @@ const MusteriDuzenleForm = () => {
             Email
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="email"
             value={email}
@@ -286,7 +336,13 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setEmail(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="webAdresi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -294,7 +350,11 @@ const MusteriDuzenleForm = () => {
             Web Adresi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="webAdresi"
             value={webAdresi}
@@ -303,7 +363,13 @@ const MusteriDuzenleForm = () => {
             inputRef={textFieldRef}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="ticaretSicilNo"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -311,7 +377,11 @@ const MusteriDuzenleForm = () => {
             Ticaret Sicil No
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="ticaretSicilNo"
             value={ticaretSicilNo}
@@ -319,7 +389,13 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setTicaretSicilNo(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="vergiDairesi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -327,7 +403,11 @@ const MusteriDuzenleForm = () => {
             Vergi Dairesi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="vergiDairesi"
             value={vergiDairesi}
@@ -335,7 +415,13 @@ const MusteriDuzenleForm = () => {
             onChange={(e: any) => setVergiDairesi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="kosolideMi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -343,7 +429,11 @@ const MusteriDuzenleForm = () => {
             Konsolide Mi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomSelect
             labelId="konsolideMi"
             id="konsolideMi"
@@ -368,7 +458,13 @@ const MusteriDuzenleForm = () => {
         </Grid>
         {konsolideMi === "Evet" && (
           <>
-            <Grid item xs={12} sm={3} display="flex" alignItems="center">
+            <Grid
+              display="flex"
+              alignItems="center"
+              size={{
+                xs: 12,
+                sm: 3
+              }}>
               <CustomFormLabel
                 htmlFor="kosolideTipi"
                 sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -376,7 +472,11 @@ const MusteriDuzenleForm = () => {
                 Konsolide Tipi
               </CustomFormLabel>
             </Grid>
-            <Grid item xs={12} sm={9}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 9
+              }}>
               <CustomSelect
                 labelId="konsolideTipi"
                 id="konsolideTipi"
@@ -406,7 +506,13 @@ const MusteriDuzenleForm = () => {
           (konsolideTipi == "Alt Şirket" ||
             konsolideTipi == "Yavru Şirket") && (
             <>
-              <Grid item xs={12} sm={3} display="flex" alignItems="center">
+              <Grid
+                display="flex"
+                alignItems="center"
+                size={{
+                  xs: 12,
+                  sm: 3
+                }}>
                 <CustomFormLabel
                   htmlFor="konsolideBagliSirketId"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -414,7 +520,11 @@ const MusteriDuzenleForm = () => {
                   Konsolide Bağlı Olduğu Şirket
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} sm={9}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 9
+                }}>
                 <CustomSelect
                   labelId="konsolideBagliSirketId"
                   id="konsolideBagliSirketId"
@@ -442,7 +552,13 @@ const MusteriDuzenleForm = () => {
               </Grid>
             </>
           )}
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sektor1Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -450,7 +566,11 @@ const MusteriDuzenleForm = () => {
             Sektör 1
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomSelect
             labelId="sektor1Id"
             id="sektor1Id"
@@ -478,7 +598,13 @@ const MusteriDuzenleForm = () => {
             ))}
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sektor2Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -486,7 +612,11 @@ const MusteriDuzenleForm = () => {
             Sektör 2
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomSelect
             labelId="sektor2Id"
             id="sektor2Id"
@@ -514,7 +644,13 @@ const MusteriDuzenleForm = () => {
             ))}
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sektor3Id"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -522,7 +658,11 @@ const MusteriDuzenleForm = () => {
             Sektör 3
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomSelect
             labelId="sektor3Id"
             id="sektor3Id"
@@ -551,8 +691,16 @@ const MusteriDuzenleForm = () => {
             ))}
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

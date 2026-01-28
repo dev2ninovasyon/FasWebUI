@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import {
   getMaddiDogrulama,
   getUygulananDenetimProsedurleri,
@@ -89,7 +89,7 @@ const Page = () => {
         }
       });
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 
@@ -110,7 +110,7 @@ const Page = () => {
         }
       });
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 
@@ -144,10 +144,21 @@ const Page = () => {
         />
       </Breadcrumb>
       <Grid container>
-        <Grid item xs={12} sm={12} lg={12} mb={3}>
+        <Grid
+          mb={3}
+          size={{
+            xs: 12,
+            sm: 12,
+            lg: 12
+          }}>
           <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
         </Grid>
-        <Grid item xs={12} sm={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 12,
+            lg: 12
+          }}>
           {dipnotNo != "" ? <Orneklem dipnot={dipnotNo} /> : <></>}
         </Grid>
       </Grid>

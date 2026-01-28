@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -103,7 +103,7 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -145,7 +145,7 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -253,13 +253,13 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
         <>
           <Grid container minHeight={425} marginY={3}>
             <Grid
-              item
-              xs={12}
-              lg={12}
               display={"flex"}
               justifyContent={"center"}
               alignItems={"center"}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <Typography
                 sx={{
                   height: "36.5px",
@@ -283,14 +283,14 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
             <>
               <Grid container minHeight={428} marginY={3}>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   sx={{ p: 1 }}
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Button
                     size="medium"
                     variant="outlined"
@@ -308,14 +308,14 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                   </Button>
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   padding={1}
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <DonusumIslemiCard
                     konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
@@ -324,7 +324,13 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} mt={1} padding={1}>
+                <Grid
+                  mt={1}
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <DonusumMizanKontrolCardTable
                     konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
@@ -333,7 +339,12 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <DonusumMizanKontrol
                     konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
@@ -348,25 +359,25 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
             <>
               <Grid container minHeight={428} marginY={3}>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   px={1}
                   sx={{ p: 1 }}
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Grid container>
                     <Grid
-                      item
-                      xs={12}
-                      lg={12}
                       mb={2}
                       display={"flex"}
                       justifyContent={"center"}
                       alignItems={"center"}
-                    >
+                      size={{
+                        xs: 12,
+                        lg: 12
+                      }}>
                       <CustomSelect
                         labelId="nakitAkis"
                         id="nakitAkis"
@@ -384,13 +395,13 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                       </CustomSelect>
                     </Grid>
                     <Grid
-                      item
-                      xs={12}
-                      lg={12}
                       display={"flex"}
                       justifyContent={"center"}
                       alignItems={"center"}
-                    >
+                      size={{
+                        xs: 12,
+                        lg: 12
+                      }}>
                       <Button
                         size="medium"
                         variant="outlined"
@@ -413,14 +424,14 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                   </Grid>
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  lg={12}
                   padding={1}
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <DonusumIslemiCard
                     konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
@@ -429,7 +440,13 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} mt={1} padding={1}>
+                <Grid
+                  mt={1}
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <DonusumMizanKontrolCardTable
                     konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}
@@ -438,7 +455,12 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <DonusumMizanKontrol
                     konsolidasyonMu={konsolidasyonMu}
                     donusumIslemiYapTiklandiMi={donusumIslemiYapTiklandiMi}

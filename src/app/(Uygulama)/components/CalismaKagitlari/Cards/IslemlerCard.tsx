@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Button, Dialog, DialogContent, Grid } from "@mui/material";
@@ -39,7 +39,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       document.body.appendChild(link);
       link.click();
     } catch (error) {
-      console.error("İndirme hatası:", error);
+      console.log("İndirme hatası:", error);
     } finally {
       setOpenCartAlert(false);
     }
@@ -61,7 +61,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       setPdfBlobUrl(pdfBlobUrl);
       setIsOpen(true);
     } catch (error) {
-      console.error("Error fetching PDF:", error);
+      console.log("Error fetching PDF:", error);
     } finally {
       setOpenCartAlert(false);
     }
@@ -69,7 +69,11 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <Card
           sx={{
             width: "100%",
@@ -87,14 +91,14 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={5.75}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 5.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -111,14 +115,14 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
                 </Button>
               </Grid>
               <Grid
-                item
-                xs={12}
-                lg={5.75}
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 5.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"

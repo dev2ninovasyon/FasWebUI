@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getMaddiDogrulama = async (
@@ -25,11 +25,11 @@ export const getMaddiDogrulama = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null; // Hata durumunda null döndürüyoruz
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null; // Hata durumunda null döndürüyoruz
   }
 };
@@ -57,10 +57,10 @@ export const getUygulananDenetimProsedurleri = async (
 
       return response.json();
     } else {
-      console.error("Çalışma kağıdı verileri getirilemedi");
+      console.log("Çalışma kağıdı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export const getDipnotNoByDipnotAdi = async (
@@ -88,7 +88,7 @@ export const getDipnotNoByDipnotAdi = async (
     );
 
     if (!response.ok) {
-      console.error("DipnotNo getirilemedi:", response.status);
+      console.log("DipnotNo getirilemedi:", response.status);
       return "";
     }
     const data = (await response.json()) as { dipnotNo?: string };
@@ -96,7 +96,7 @@ export const getDipnotNoByDipnotAdi = async (
 
     return (data?.dipnotNo ?? "").trim();
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return "";
   }
 };
@@ -122,7 +122,7 @@ export const createCalismaKagidiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -148,7 +148,7 @@ export const updateCalismaKagidiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -168,7 +168,7 @@ export const deleteCalismaKagidiVerisiById = async (token: string, id: any) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -198,6 +198,6 @@ export const deleteAllCalismaKagidiVerileri = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

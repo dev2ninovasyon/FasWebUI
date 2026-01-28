@@ -1,4 +1,4 @@
-// src/api/AuditLogs.ts
+﻿// src/api/AuditLogs.ts
 import { url, apiFetch } from "@/api/apiBase";
 
 
@@ -21,7 +21,7 @@ export interface UserActionDto {
   friendlyTitle?: string;
   friendlyMessage?: string;
 
-  // 🔹 Backend'de eklediğimiz alanlar:
+  // ğŸ”¹ Backend'de eklediğimiz alanlar:
   denetlenenId?: number | null;
   denetlenenUnvani?: string | null;
 }

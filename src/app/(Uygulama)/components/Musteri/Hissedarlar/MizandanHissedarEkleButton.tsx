@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Button, Stack } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
 import { getMizandanHissedarlarByDenetlenenIdYil } from "@/api/Musteri/MusteriIslemleri";
@@ -25,7 +25,7 @@ const MizandanHissedarEkleButton: React.FC<Props> = ({
         setIsClickedMizandanHissedarEkle(true);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

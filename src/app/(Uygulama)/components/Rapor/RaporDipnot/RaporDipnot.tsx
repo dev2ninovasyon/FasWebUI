@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -80,7 +80,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
 
       handleClosePopUp();
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -96,10 +96,10 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
       if (result) {
         fetchData();
       } else {
-        console.error("Dipnot Verileri silme başarısız");
+        console.log("Dipnot Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -152,7 +152,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
         setVeriler(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -190,7 +190,11 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
   return (
     <>
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Grid
             container
             sx={{
@@ -204,12 +208,12 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
               .map((veri) => (
                 <Grid
                   key={veri.id}
-                  item
-                  xs={12}
-                  lg={12}
                   mt="20px"
                   onClick={() => handleCardClick(veri)}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <RaporDipnotCard
                     dipnotKodu={veri.dipnotKodu}
                     title={`${veri.text}`}

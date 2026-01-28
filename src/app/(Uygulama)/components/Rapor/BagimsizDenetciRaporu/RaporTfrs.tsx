@@ -1,4 +1,4 @@
-import "print-friendly";
+﻿import "print-friendly";
 import "print-friendly/index.css";
 import "./print-friendly.css";
 import "./rapor.css";
@@ -327,7 +327,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setSubelerRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -348,7 +348,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setHissedarlarRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -375,7 +375,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setdipnot14AmortismanRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -402,7 +402,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setdipnot17AmortismanRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -429,7 +429,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setdipnot14MaliyetRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -456,7 +456,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setdipnot17MaliyetRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -477,7 +477,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setDipnot39Rows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -504,7 +504,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setDipnot451Rows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -564,7 +564,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setDipnot452Rows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -619,7 +619,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       }));
       setDipnot453Rows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -675,7 +675,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
         setDipnotHesaplarRows(newRows);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

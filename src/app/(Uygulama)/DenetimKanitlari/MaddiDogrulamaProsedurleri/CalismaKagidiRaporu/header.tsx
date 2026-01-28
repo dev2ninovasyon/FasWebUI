@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Box, Typography, Grid, Divider } from "@mui/material";
 import Image from "next/image";
 
@@ -20,7 +20,7 @@ const ReportHeader: React.FC<Props> = ({
     return (
         <Box sx={{ mb: 4 }}>
             <Grid container alignItems="center" spacing={2}>
-                <Grid item xs={2}>
+                <Grid size={2}>
                     <Image
                         src="/images/logos/dark-logo.svg"
                         alt="Logo"
@@ -29,7 +29,7 @@ const ReportHeader: React.FC<Props> = ({
                         priority
                     />
                 </Grid>
-                <Grid item xs={8} textAlign="center">
+                <Grid textAlign="center" size={8}>
                     <Typography variant="h4" sx={{ fontWeight: 700, color: "#2C3E50" }}>
                         {denetlenenName}
                     </Typography>
@@ -37,7 +37,7 @@ const ReportHeader: React.FC<Props> = ({
                         {yil} Yılı Bağımsız Denetim Çalışma Kağıdı
                     </Typography>
                 </Grid>
-                <Grid item xs={2} textAlign="right">
+                <Grid textAlign="right" size={2}>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                         Tarih: {new Date().toLocaleDateString("tr-TR")}
                     </Typography>

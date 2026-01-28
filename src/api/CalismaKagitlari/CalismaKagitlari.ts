@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
@@ -22,10 +22,10 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Çalışma kağıdı verileri getirilemedi");
+      console.log("Çalışma kağıdı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -51,10 +51,10 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Çalışma kağıdı verileri getirilemedi");
+      console.log("Çalışma kağıdı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -80,10 +80,10 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Çalışma kağıdı verileri getirilemedi");
+      console.log("Çalışma kağıdı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -109,10 +109,10 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Çalışma kağıdı verileri getirilemedi");
+      console.log("Çalışma kağıdı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -138,10 +138,10 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Çalışma kağıdı verileri getirilemedi");
+      console.log("Çalışma kağıdı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -167,7 +167,7 @@ export const createCalismaKagidiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -194,7 +194,7 @@ export const updateCalismaKagidiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -220,7 +220,7 @@ export const updateAllCalismaKagidiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -250,7 +250,7 @@ export const updateOtomatikCalismaKagidiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -274,7 +274,7 @@ export const deleteCalismaKagidiVerisiById = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -303,7 +303,7 @@ export const deleteAllCalismaKagidiVerileri = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -333,7 +333,7 @@ export const deleteAllCalismaKagidiVerileriByDipnotNo = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -363,7 +363,7 @@ export const deleteAllCalismaKagidiVerileriByKullanci = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -393,7 +393,7 @@ export const deleteAllCalismaKagidiVerileriByKonu = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -423,7 +423,7 @@ export const deleteAllCalismaKagidiVerileriByUrl = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -448,10 +448,10 @@ export const getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Form Hazırlayan Onaylayan verileri getirilemedi");
+      console.log("Form Hazırlayan Onaylayan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -490,7 +490,7 @@ export const updateFormHazirlayanOnaylayan = async (
       return { message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export async function uploadEkBelge(
@@ -504,7 +504,7 @@ export async function uploadEkBelge(
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // ❗ DİKKAT: Burada "Content-Type" KESİNLİKLE yazılmaz.
+          // â— DİKKAT: Burada "Content-Type" KESİNLİKLE yazılmaz.
           // Çünkü FormData kendi boundary bilgisini oluşturur.
         },
         body: formData,
@@ -522,7 +522,7 @@ export async function uploadEkBelge(
       message: data?.message || "Ek belge yüklenemedi",
     };
   } catch (error) {
-    console.error("uploadEkBelge hata:", error);
+    console.log("uploadEkBelge hata:", error);
     return {
       success: false,
       message: "Sunucuya bağlanırken bir hata oluştu.",

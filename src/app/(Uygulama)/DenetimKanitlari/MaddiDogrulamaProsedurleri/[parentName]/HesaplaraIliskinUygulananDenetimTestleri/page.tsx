@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -76,7 +76,7 @@ const Page = () => {
 
       if (found?.name) setDip(found.name);
     } catch (error) {
-      console.error("fetchDipTitle error:", error);
+      console.log("fetchDipTitle error:", error);
     }
   };
 
@@ -93,7 +93,7 @@ const Page = () => {
 
       setDipnotNo(result || "");
     } catch (error) {
-      console.error("fetchDipnotNo error:", error);
+      console.log("fetchDipnotNo error:", error);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -88,7 +88,7 @@ const MusteriTable = () => {
           autoHideDuration: 3000,
         });
       } else {
-        console.error("Denetlenen silinemedi");
+        console.log("Denetlenen silinemedi");
         setOpenDeleteDialog(false);
         enqueueSnackbar("Şirket silinemedi. Lütfen tekrar deneyin.", {
           variant: "error",
@@ -96,7 +96,7 @@ const MusteriTable = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
       setOpenDeleteDialog(false);
       enqueueSnackbar("Bir hata oluştu. Lütfen tekrar deneyin.", {
         variant: "error",
@@ -151,7 +151,7 @@ const MusteriTable = () => {
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -12,7 +12,12 @@ const Page = () => {
         description="this is Kullanım Kılavuzu"
       >
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <iframe
               src={`/pdfs/Kullanim_Kilavuzu_hesapayarlari_temaayarlari_kullanici.pdf`}
               style={{
@@ -22,7 +27,12 @@ const Page = () => {
               }}
             ></iframe>
           </Grid>
-          <Grid item xs={12} sm={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <iframe
               src={`/pdfs/Kullanim_Kilavuzu_müsteri.pdf`}
               style={{
@@ -32,7 +42,12 @@ const Page = () => {
               }}
             ></iframe>
           </Grid>
-          <Grid item xs={12} sm={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <iframe
               src={`/pdfs/Kullanim_Kilavuzu_sozlesme.pdf`}
               style={{
@@ -42,7 +57,12 @@ const Page = () => {
               }}
             ></iframe>
           </Grid>
-          <Grid item xs={12} sm={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <iframe
               src={`/pdfs/Kullanim_Kilavuzu_veriyukleme.pdf`}
               style={{

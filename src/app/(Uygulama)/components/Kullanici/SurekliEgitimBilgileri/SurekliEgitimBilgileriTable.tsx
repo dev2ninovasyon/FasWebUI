@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -72,10 +72,10 @@ const SurekliEgitimBilgileriTable = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("Sürekli Eğitim Bilgileri silinemedi");
+        console.log("Sürekli Eğitim Bilgileri silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -112,7 +112,7 @@ const SurekliEgitimBilgileriTable = () => {
       );
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

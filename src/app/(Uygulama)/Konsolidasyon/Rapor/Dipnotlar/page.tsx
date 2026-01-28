@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -55,16 +55,16 @@ const Page: React.FC = () => {
               }}
             >
               <Grid
-                item
-                xs={12}
-                md={12}
-                lg={12}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  md: 12,
+                  lg: 12
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -84,7 +84,11 @@ const Page: React.FC = () => {
           </>
         </Breadcrumb>
         <Grid container spacing={3}>
-          <Grid item xs={12} lg={12}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <TabContext value={tip}>
               <TabList
                 onChange={handleChange}
@@ -103,16 +107,16 @@ const Page: React.FC = () => {
               <TabPanel value="BagimsizDenetciRaporu" sx={{ paddingX: 0 }}>
                 <Grid container>
                   <Grid
-                    item
-                    xs={12}
-                    lg={12}
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "flex-end",
                       mb: 2,
                     }}
-                  >
+                    size={{
+                      xs: 12,
+                      lg: 12
+                    }}>
                     <RaporDipnot
                       tip={tip}
                       isClickedVarsayilanaDon={isClickedVarsayilanaDon}
@@ -127,16 +131,16 @@ const Page: React.FC = () => {
               >
                 <Grid container>
                   <Grid
-                    item
-                    xs={12}
-                    lg={12}
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "flex-end",
                       mb: 2,
                     }}
-                  >
+                    size={{
+                      xs: 12,
+                      lg: 12
+                    }}>
                     <RaporDipnot
                       tip={tip}
                       isClickedVarsayilanaDon={isClickedVarsayilanaDon}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import dynamic from "next/dynamic";
 import {
@@ -89,7 +89,7 @@ export default function DenetimSozlesmesiStep({
                 setVeriler(newVeri);
             }
         } catch (error) {
-            console.error("Sözleşme verileri çekilirken hata:", error);
+            console.log("Sözleşme verileri çekilirken hata:", error);
         } finally {
             setLoading(false);
         }
@@ -105,7 +105,7 @@ export default function DenetimSozlesmesiStep({
             );
             setRows(teamData || []);
         } catch (error) {
-            console.error("Ekip verileri çekilirken hata:", error);
+            console.log("Ekip verileri çekilirken hata:", error);
         }
     };
 
@@ -135,10 +135,9 @@ export default function DenetimSozlesmesiStep({
                     </Typography>
                 </Box>
             </Box>
-
             <Paper elevation={0} sx={{ p: 2, border: 1, borderColor: "divider", mb: 2 }}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} display="flex" alignItems="center" justifyContent="center">
+                    <Grid display="flex" alignItems="center" justifyContent="center" size={12}>
                         <CustomFormLabel htmlFor="sozlesmeTarihi" sx={{ mt: 0, mb: 0, mr: 2 }}>
                             Sözleşme Tarihi:
                         </CustomFormLabel>
@@ -158,13 +157,13 @@ export default function DenetimSozlesmesiStep({
                     </Grid>
 
                     {loading ? (
-                        <Grid item xs={12} textAlign="center">
+                        <Grid textAlign="center" size={12}>
                             <CircularProgress />
                         </Grid>
                     ) : (
                         <>
                             {sozlesmeTarihi && veriler.length > 0 && (
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <CustomEditorWVeri
                                         controller={controller}
                                         veri={veriler[0]}
@@ -175,7 +174,7 @@ export default function DenetimSozlesmesiStep({
 
                             {/* Team Tables Replicated from page.tsx */}
                             {rows.filter((row: any) => row.asilYedek === "Asil").length > 0 && (
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Typography variant="h6" textAlign="center" mb={1}>Bağımsız Denetim Ekibi</Typography>
                                     <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : "primary.light" }}>
                                         <Table size="small">
@@ -203,7 +202,7 @@ export default function DenetimSozlesmesiStep({
                             )}
 
                             {rows.filter((row: any) => row.asilYedek === "Yedek").length > 0 && (
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <Typography variant="h6" textAlign="center" mb={1}>Yedek Bağımsız Denetçiler</Typography>
                                     <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : "primary.light" }}>
                                         <Table size="small">
@@ -231,7 +230,7 @@ export default function DenetimSozlesmesiStep({
                             )}
 
                             {sozlesmeTarihi && veriler.length > 1 && (
-                                <Grid item xs={12}>
+                                <Grid size={12}>
                                     <CustomEditorWVeri
                                         controller={controller}
                                         veri={veriler[1]}
@@ -243,8 +242,6 @@ export default function DenetimSozlesmesiStep({
                     )}
                 </Grid>
             </Paper>
-
-
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
                 <Button variant="outlined" onClick={onBack} startIcon={<IconArrowLeft />}>Geri</Button>
                 <Button

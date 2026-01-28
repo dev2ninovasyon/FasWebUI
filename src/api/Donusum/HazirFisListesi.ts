@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getHazirFisListesiVerileri = async (
@@ -19,10 +19,10 @@ export const getHazirFisListesiVerileri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hazır Fişler getirilemedi");
+      console.log("Hazır Fişler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -54,6 +54,6 @@ export const createFisListesineHazirFis = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconButton,
@@ -101,7 +101,7 @@ const MobileSirketPopup = () => {
         console.warn("MobileSirketPopup - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
 
     handleDrawerClose2();

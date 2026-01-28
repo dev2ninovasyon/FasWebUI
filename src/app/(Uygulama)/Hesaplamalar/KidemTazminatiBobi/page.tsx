@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -298,7 +298,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -333,7 +333,7 @@ const Page: React.FC = () => {
         setPersonel2023(kidemEkBilgiVerileri.personel2023);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -432,7 +432,7 @@ const Page: React.FC = () => {
       setFetchedKaydedilecekKullanilmamisIzinKarsiligi(rows9);
       setFetchedKidemTazminatiBobiOrnekFisler(rows10);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -470,7 +470,7 @@ const Page: React.FC = () => {
         setFetchedData(null);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -519,7 +519,7 @@ const Page: React.FC = () => {
     <PageContainer title="Kıdem Tazminatı (Bobi)" description="this is Kıdem Tazminatı (Bobi)">
       <Breadcrumb title="Kıdem Tazminatı (Bobi)" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TabContext value={tip}>
             <TabList onChange={(e, v) => setTip(v)}>
               <Tab label="Veri Yükleme" value="VeriYukleme" />
@@ -539,10 +539,18 @@ const Page: React.FC = () => {
                 <Divider />
                 <DialogContent>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} lg={6}><CustomFormLabel>Bir Önceki Yıl Hesaplanan Karşılık</CustomFormLabel></Grid>
-                    <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesaplananKarsilik} onChange={(val) => setHesaplananKarsilik(val)} /></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><CustomFormLabel>Bir Önceki Yıl Hesaplanan Karşılık</CustomFormLabel></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><NumericInput fullWidth value={hesaplananKarsilik} onChange={(val) => setHesaplananKarsilik(val)} /></Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Stack
                         direction="row"
                         alignItems="center"
@@ -557,37 +565,101 @@ const Page: React.FC = () => {
                       </Stack>
                       <Divider />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Collapse in={openHesapDetay}>
                         <Grid container spacing={2} sx={{ mt: 1 }}>
-                          <Grid item xs={12} lg={6}><CustomFormLabel>620 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap620} onChange={(val) => setHesap620(val)} /></Grid>
-                          <Grid item xs={12} lg={6}><CustomFormLabel>630 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap630} onChange={(val) => setHesap630(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>620 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap620} onChange={(val) => setHesap620(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>630 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap630} onChange={(val) => setHesap630(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>640 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap640} onChange={(val) => setHesap640(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>640 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap640} onChange={(val) => setHesap640(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>650 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap650} onChange={(val) => setHesap650(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>650 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap650} onChange={(val) => setHesap650(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>660 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap660} onChange={(val) => setHesap660(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>660 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap660} onChange={(val) => setHesap660(val)} /></Grid>
 
                         </Grid>
                       </Collapse>
                     </Grid>
 
-                    <Grid item xs={12} lg={6}><CustomFormLabel>1 Yıldan Az Çalışanlar İçin Hesaplansın mı?</CustomFormLabel></Grid>
-                    <Grid item xs={12} lg={6}><CustomSelect fullWidth value={hesaplansinMi} onChange={(e: any) => setHesaplansinMi(e.target.value)}><MenuItem value="Evet">Evet</MenuItem><MenuItem value="Hayır">Hayır</MenuItem></CustomSelect></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><CustomFormLabel>1 Yıldan Az Çalışanlar İçin Hesaplansın mı?</CustomFormLabel></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><CustomSelect fullWidth value={hesaplansinMi} onChange={(e: any) => setHesaplansinMi(e.target.value)}><MenuItem value="Evet">Evet</MenuItem><MenuItem value="Hayır">Hayır</MenuItem></CustomSelect></Grid>
 
-                    <Grid item xs={12} lg={6}><CustomFormLabel>Bir Önceki Yıl İzin Karşılığı</CustomFormLabel></Grid>
-                    <Grid item xs={12} lg={6}><NumericInput fullWidth value={izinKarsiligi} onChange={(val) => setIzinKarsiligi(val)} /></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><CustomFormLabel>Bir Önceki Yıl İzin Karşılığı</CustomFormLabel></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><NumericInput fullWidth value={izinKarsiligi} onChange={(val) => setIzinKarsiligi(val)} /></Grid>
 
-                    <Grid item xs={12} lg={6}><CustomFormLabel>Bir Yıl Kaç Gün?</CustomFormLabel></Grid>
-                    <Grid item xs={12} lg={6}><CustomSelect fullWidth value={kacGun} onChange={(e: any) => setKacGun(Number(e.target.value))}><MenuItem value={365}>365</MenuItem><MenuItem value={360}>360</MenuItem></CustomSelect></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><CustomFormLabel>Bir Yıl Kaç Gün?</CustomFormLabel></Grid>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        lg: 6
+                      }}><CustomSelect fullWidth value={kacGun} onChange={(e: any) => setKacGun(Number(e.target.value))}><MenuItem value={365}>365</MenuItem><MenuItem value={360}>360</MenuItem></CustomSelect></Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Stack
                         direction="row"
                         alignItems="center"
@@ -603,31 +675,79 @@ const Page: React.FC = () => {
                       <Divider />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Collapse in={openOdenenKidem}>
                         <Grid container spacing={2} sx={{ mt: 1 }}>
-                          <Grid item xs={12} lg={6}><CustomFormLabel>720 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap720} onChange={(val) => setHesap720(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>720 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap720} onChange={(val) => setHesap720(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>730 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap730} onChange={(val) => setHesap730(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>730 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap730} onChange={(val) => setHesap730(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>740 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap740} onChange={(val) => setHesap740(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>740 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap740} onChange={(val) => setHesap740(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>750 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap750} onChange={(val) => setHesap750(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>750 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap750} onChange={(val) => setHesap750(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>760 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap760} onChange={(val) => setHesap760(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>760 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap760} onChange={(val) => setHesap760(val)} /></Grid>
 
-                          <Grid item xs={12} lg={6}><CustomFormLabel>760 Hesap</CustomFormLabel></Grid>
-                          <Grid item xs={12} lg={6}><NumericInput fullWidth value={hesap770} onChange={(val) => setHesap770(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>760 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap770} onChange={(val) => setHesap770(val)} /></Grid>
                         </Grid>
                       </Collapse>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Stack
                         direction="row"
                         alignItems="center"
@@ -643,7 +763,7 @@ const Page: React.FC = () => {
                       <Divider />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Collapse in={openTurnover}>
                         <Grid container spacing={2} sx={{ mt: 1 }}>
                           {[2019, 2020, 2021, 2022, 2023].map((yil) => {
@@ -653,10 +773,26 @@ const Page: React.FC = () => {
                             const setYrPersonel = yil === 2019 ? setPersonel2019 : yil === 2020 ? setPersonel2020 : yil === 2021 ? setPersonel2021 : yil === 2022 ? setPersonel2022 : setPersonel2023;
                             return (
                               <React.Fragment key={yil}>
-                                <Grid item xs={12} lg={6}><CustomFormLabel>Tazminatsız Ayrılan Sayısı ({yil})</CustomFormLabel></Grid>
-                                <Grid item xs={12} lg={6}><NumericInput fullWidth value={yrAyrilan} onChange={(val) => setYrAyrilan(val)} /></Grid>
-                                <Grid item xs={12} lg={6}><CustomFormLabel>Ortalama Personel Sayısı ({yil})</CustomFormLabel></Grid>
-                                <Grid item xs={12} lg={6}><NumericInput fullWidth value={yrPersonel} onChange={(val) => setYrPersonel(val)} /></Grid>
+                                <Grid
+                                  size={{
+                                    xs: 12,
+                                    lg: 6
+                                  }}><CustomFormLabel>Tazminatsız Ayrılan Sayısı ({yil})</CustomFormLabel></Grid>
+                                <Grid
+                                  size={{
+                                    xs: 12,
+                                    lg: 6
+                                  }}><NumericInput fullWidth value={yrAyrilan} onChange={(val) => setYrAyrilan(val)} /></Grid>
+                                <Grid
+                                  size={{
+                                    xs: 12,
+                                    lg: 6
+                                  }}><CustomFormLabel>Ortalama Personel Sayısı ({yil})</CustomFormLabel></Grid>
+                                <Grid
+                                  size={{
+                                    xs: 12,
+                                    lg: 6
+                                  }}><NumericInput fullWidth value={yrPersonel} onChange={(val) => setYrPersonel(val)} /></Grid>
                               </React.Fragment>
                             );
                           })}
@@ -675,11 +811,11 @@ const Page: React.FC = () => {
 
             <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
               <Grid container spacing={3}>
-                <Grid item xs={12} display="flex" justifyContent="flex-end">
+                <Grid display="flex" justifyContent="flex-end" size={12}>
                   <Button variant="outlined" onClick={() => { setHesaplaTiklandimi(true); handleHesapla(); }}>Hesapla</Button>
                 </Grid>
-                {fetchedKidemTazminatiCalismasi.length > 0 && <Grid item xs={12}><KidemTazminatiBobiHesaplama data={fetchedKidemTazminatiCalismasi} title="Kıdem Tazminatı Çalışması" /></Grid>}
-                {fetchedHesaplananKidemTazminatiToplami.length > 0 && <Grid item xs={12}><KidemTazminatiBobiHesaplama data={fetchedHesaplananKidemTazminatiToplami} title="Dönem Toplamı" /></Grid>}
+                {fetchedKidemTazminatiCalismasi.length > 0 && <Grid size={12}><KidemTazminatiBobiHesaplama data={fetchedKidemTazminatiCalismasi} title="Kıdem Tazminatı Çalışması" /></Grid>}
+                {fetchedHesaplananKidemTazminatiToplami.length > 0 && <Grid size={12}><KidemTazminatiBobiHesaplama data={fetchedHesaplananKidemTazminatiToplami} title="Dönem Toplamı" /></Grid>}
                 <FloatingButtonFisler handleClick={() => setFloatingButtonTiklandimi(true)} />
               </Grid>
 

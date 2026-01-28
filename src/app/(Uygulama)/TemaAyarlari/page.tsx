@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -140,7 +140,7 @@ const Page = () => {
           </Typography>
           <Grid container spacing={2}>
             {thColors.map((thcolor) => (
-              <Grid item xs={4} key={thcolor.id}>
+              <Grid key={thcolor.id} size={4}>
                 <StyledBox2 onClick={() => dispatch(setTheme(thcolor.disp))}>
                   <Tooltip title={`${thcolor.disp2}`} placement="top">
                     <Box

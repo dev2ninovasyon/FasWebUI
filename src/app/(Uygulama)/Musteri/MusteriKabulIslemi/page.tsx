@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -127,7 +127,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -147,7 +147,7 @@ const Page: React.FC = () => {
         setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
   const [odemeBilgileriBobi, setOdemeBilgileriBobi] = useState(false);
@@ -169,7 +169,7 @@ const Page: React.FC = () => {
         setOdemeBilgileriEnflasyon(response.enflasyonModulu);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -183,9 +183,6 @@ const Page: React.FC = () => {
       <Breadcrumb title="Müşteri Kabul" items={BCrumb} />
       <Grid container spacing={3}>
         <Grid
-          item
-          xs={12}
-          lg={12}
           sx={{
             display: "flex",
             flexDirection: smDown ? "column" : "row",
@@ -194,7 +191,10 @@ const Page: React.FC = () => {
             mb: 2,
             gap: 1,
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Box
             sx={{
               display: "flex",

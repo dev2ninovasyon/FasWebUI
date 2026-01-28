@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getKullanicilar = async (token: string) => {
@@ -13,10 +13,10 @@ export const getKullanicilar = async (token: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kullanıcılar getirilemedi");
+      console.log("Kullanıcılar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -32,10 +32,10 @@ export const getKullaniciById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kullanici getirilemedi");
+      console.log("Kullanici getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -54,10 +54,10 @@ export const getKullaniciByDenetciId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kullanicilar getirilemedi");
+      console.log("Kullanicilar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -81,10 +81,10 @@ export const getKullaniciByDenetlenenYilRol = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kullanicilar getirilemedi");
+      console.log("Kullanicilar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -106,7 +106,7 @@ export const createKullanici = async (token: string, createdKullanici: any) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return false;
   }
 };
@@ -133,7 +133,7 @@ export const updateKullanici = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return false;
   }
 };
@@ -160,7 +160,7 @@ export const updatekullaniciSifre = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return false;
   }
 };
@@ -181,7 +181,7 @@ export const deleteKullaniciById = async (token: string, id: number) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return false;
   }
 };

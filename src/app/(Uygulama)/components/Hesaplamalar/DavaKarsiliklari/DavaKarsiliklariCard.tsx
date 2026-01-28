@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
@@ -45,7 +45,7 @@ const DavaKarsiliklariCard: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       );
       setDavaKarsiliklariVerileri(davaKarsiliklariVerileri);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

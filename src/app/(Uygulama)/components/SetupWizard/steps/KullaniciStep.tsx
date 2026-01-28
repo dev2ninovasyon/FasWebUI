@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Box, Button, Typography, IconButton, Divider, List, ListItem, ListItemText, ListItemSecondaryAction, Paper, Grid, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Menu, MenuItem, ListItemIcon, Chip, Snackbar, Alert, CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -50,7 +50,7 @@ export default function KullaniciStep({
                     onDataChange(result);
                 }
             } catch (error) {
-                console.error("Kullanıcılar getirilemedi:", error);
+                console.log("Kullanıcılar getirilemedi:", error);
                 showSnackbar("Kullanıcılar yüklenirken bir hata oluştu", "error");
             }
         }
@@ -115,7 +115,7 @@ export default function KullaniciStep({
                 showSnackbar("İşlem başarısız oldu", "error");
             }
         } catch (error) {
-            console.error("İşlem sırasında hata:", error);
+            console.log("İşlem sırasında hata:", error);
             showSnackbar("Bir hata oluştu", "error");
         }
     };
@@ -131,7 +131,7 @@ export default function KullaniciStep({
                     showSnackbar("Silme işlemi başarısız", "error");
                 }
             } catch (error) {
-                console.error("Silme hatası:", error);
+                console.log("Silme hatası:", error);
                 showSnackbar("Silme işlemi sırasında hata oluştu", "error");
             }
         }
@@ -462,9 +462,12 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
             <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
                 {initialData ? "Kullanıcı Düzenle" : "Yeni Kullanıcı Bilgileri"}
             </Typography>
-
             <Grid container spacing={{ xs: 1.5, sm: 2 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        sm: 6
+                    }}>
                     <CustomFormLabel htmlFor="bd-sicilNo" sx={{ mt: 0, mb: 1 }}>
                         B. D. Sicil No
                     </CustomFormLabel>
@@ -477,7 +480,11 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                     />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        sm: 6
+                    }}>
                     <CustomFormLabel htmlFor="personelAdi" sx={{ mt: 0, mb: 1 }}>
                         Personel Adı *
                     </CustomFormLabel>
@@ -498,7 +505,11 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                     />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        sm: 6
+                    }}>
                     <CustomFormLabel htmlFor="unvani" sx={{ mt: 0, mb: 1 }}>
                         Ünvanı
                     </CustomFormLabel>
@@ -509,7 +520,11 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                     />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        sm: 6
+                    }}>
                     <CustomFormLabel htmlFor="email" sx={{ mt: 0, mb: 1 }}>
                         Email *
                     </CustomFormLabel>
@@ -530,7 +545,11 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                     />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        sm: 6
+                    }}>
                     <CustomFormLabel htmlFor="tel" sx={{ mt: 0, mb: 1 }}>
                         Tel
                     </CustomFormLabel>
@@ -551,7 +570,11 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                     />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        sm: 6
+                    }}>
                     <CustomFormLabel htmlFor="gsm" sx={{ mt: 0, mb: 1 }}>
                         Gsm
                     </CustomFormLabel>
@@ -573,7 +596,11 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                 </Grid>
 
                 {!initialData && (
-                    <Grid item xs={12} sm={12}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            sm: 12
+                        }}>
                         <CustomFormLabel htmlFor="sifre" sx={{ mt: 0, mb: 1 }}>
                             Şifre *
                         </CustomFormLabel>
@@ -611,7 +638,7 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                     </Grid>
                 )}
 
-                <Grid item xs={12} sx={{ mt: 1 }}>
+                <Grid sx={{ mt: 1 }} size={12}>
                     <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: "flex-end" }}>
                         <Button
                             variant="outlined"

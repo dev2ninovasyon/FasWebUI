@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 // Find all page.tsx files
@@ -67,7 +67,7 @@ function refactorPage(filePath) {
         return { status: 'success' };
 
     } catch (error) {
-        console.error(`❌ ${path.relative(process.cwd(), filePath)}: ${error.message}`);
+        console.log(`❌ ${path.relative(process.cwd(), filePath)}: ${error.message}`);
         return { status: 'error', message: error.message };
     }
 }

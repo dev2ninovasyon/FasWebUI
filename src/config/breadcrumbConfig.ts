@@ -1,4 +1,4 @@
-export const breadcrumbConfig: Record<string, string> = {
+﻿export const breadcrumbConfig: Record<string, string> = {
     "/Anasayfa": "Ana Sayfa",
     "/Kullanici": "Kullanıcı İşlemleri",
     "/Musteri": "Müşteri İşlemleri",

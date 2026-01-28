@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
@@ -25,7 +25,7 @@ const Page = () => {
         description="this is Kullanıcı Sözleşme Saatleri"
       >
         <Grid container>
-          <Grid item xs={12} mb={3}>
+          <Grid mb={3} size={12}>
             <KullaniciBoxAutocomplete
               initialValue={user.kullaniciAdi}
               onSelectAdi={(selectedPersonelAdi) =>
@@ -40,7 +40,7 @@ const Page = () => {
         </Grid>
         <ParentCard title={`${personelAdi} Sözleşme Saatleri`}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <KullaniciSozlesmeSaatleriTable personelId={personelId || 0} />
             </Grid>
           </Grid>

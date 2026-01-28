@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -15,7 +15,7 @@ const Page = () => {
   const [refreshKey, setRefreshKey] = React.useState(0);
   const fetchData = React.useCallback(() => setRefreshKey((k) => k + 1), []);
 
-  // ✅ Seçilen kimlikler burada tutulacak:
+  // âœ… Seçilen kimlikler burada tutulacak:
   const [hazirlayanId, setHazirlayanId] = React.useState<number | undefined>();
   const [onaylayanId, setOnaylayanId] = React.useState<number | undefined>();
   const [kaliteKontrolId, setKaliteKontrolId] = React.useState<number | undefined>();
@@ -37,9 +37,14 @@ const Page = () => {
     <PageContainer title="Denetim Dosya Yazdır" description="this is Denetim Dosya Yazdır">
       <Breadcrumb title="Denetim Dosya Onay" items={BCrumb} />
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={4} lg={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+                lg: 4
+              }}>
               <BelgeKontrolCardTopluOnay
                 fetch={fetchData}
                 hazirlayan="Denetçi - Yardımcı Denetçi"
@@ -47,7 +52,12 @@ const Page = () => {
                 onChangeSelectedId={handleChangeSelectedId}
               />
             </Grid>
-            <Grid item xs={12} md={4} lg={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+                lg: 4
+              }}>
               <BelgeKontrolCardTopluOnay
                 fetch={fetchData}
                 onaylayan="Sorumlu Denetçi"
@@ -55,7 +65,12 @@ const Page = () => {
                 onChangeSelectedId={handleChangeSelectedId}
               />
             </Grid>
-            <Grid item xs={12} md={4} lg={4}>
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+                lg: 4
+              }}>
               <BelgeKontrolCardTopluOnay
                 fetch={fetchData}
                 kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -66,8 +81,8 @@ const Page = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12}>
-          {/* ✅ ID’ler tabloya prop olarak gidiyor */}
+        <Grid size={12}>
+          {/* âœ… IDâ€™ler tabloya prop olarak gidiyor */}
           <DenetimDosyaOnayTable
             hazirlayanId={hazirlayanId}
             onaylayanId={onaylayanId}

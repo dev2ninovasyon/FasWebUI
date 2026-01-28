@@ -1,10 +1,12 @@
-﻿import React from "react";
+﻿"use client";
+
+import React from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 import dynamic from "next/dynamic";
-const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 import { Box, Typography } from "@mui/material";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 const BCrumb = [
     { to: "/Kys", title: "KYS" },

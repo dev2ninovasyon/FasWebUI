@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getSurekliEgitimBilgileriById = async (token: string, id: any) => {
@@ -16,10 +16,10 @@ export const getSurekliEgitimBilgileriById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Sürekli Eğitim Bilgileri getirilemedi");
+      console.log("Sürekli Eğitim Bilgileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -41,10 +41,10 @@ export const getSurekliEgitimBilgileriByDenetciId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kullanicilar getirilemedi");
+      console.log("Kullanicilar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -69,7 +69,7 @@ export const createSurekliEgitimBilgileri = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -98,7 +98,7 @@ export const updateSurekliEgitimBilgileri = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -124,6 +124,6 @@ export const deleteSurekliEgitimBilgileriById = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

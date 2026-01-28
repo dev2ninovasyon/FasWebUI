@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   IconButton,
   Box,
   Badge,
-  Menu,
   MenuItem,
+  Popover,
   Avatar,
   Typography,
   Chip,
@@ -56,7 +56,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         await updateBildirimlerOkundumu(user.token || "", ids);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -87,7 +87,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         setFetchedData(rowsAll);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -110,62 +110,70 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   return (
     <Box>
       <Tooltip title="Bildirimler">
-        <IconButton
-          size="large"
-          aria-label="show new notifications"
-          color="inherit"
-          aria-controls="msgs-menu"
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          {fetchedData.filter((item) => !item.okundumu).length > 0 ? (
-            <Badge variant="dot" color="primary">
-              <IconBellRinging size="20" />
-            </Badge>
-          ) : (
-            <IconBell size="20" />
-          )}
-        </IconButton>
+        <span style={{ display: "inline-flex" }}>
+          <IconButton
+            size="large"
+            aria-label="show new notifications"
+            color="inherit"
+            aria-controls="msgs-menu"
+            aria-haspopup="true"
+            onClick={handleClick}
+          >
+            {fetchedData.filter((item) => !item.okundumu).length > 0 ? (
+              <Badge variant="dot" color="primary">
+                <IconBellRinging size="20" />
+              </Badge>
+            ) : (
+              <IconBell size="20" />
+            )}
+          </IconButton>
+        </span>
       </Tooltip>
 
-      <Menu
+      <Popover
         id="msgs-menu"
         anchorEl={anchorEl}
-        keepMounted
+        keepMounted={false}
         open={Boolean(anchorEl)}
         onClose={handleClose}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
-        sx={{
-          "& .MuiMenu-paper": {
-            width: "360px",
+        TransitionComponent={Box as any}
+        slotProps={{
+          paper: {
+            sx: {
+              width: "360px",
+            },
           },
         }}
       >
-        <Stack
-          direction="row"
-          p={2}
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="h6">Bildirimler</Typography>
-          {fetchedData.filter((item) => !item.okundumu).length > 0 && (
-            <Chip
-              label={`${fetchedData.filter((item) => !item.okundumu).length
-                } Yeni`}
-              color="primary"
-            />
-          )}
-        </Stack>
-        <Scrollbar sx={{ height: "385px" }}>
-          {fetchedData.length === 0 ? (
-            <Typography variant="subtitle1" color="textSecondary" p={2}>
-              Henüz Hiç Bildirim Yok
-            </Typography>
-          ) : (
-            fetchedData.map((notification, index) => (
-              <Box key={index}>
+        <div style={{ outline: "none" }}>
+          <Stack
+            direction="row"
+            p={2}
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="h6">Bildirimler</Typography>
+            {fetchedData.filter((item) => !item.okundumu).length > 0 && (
+              <Chip
+                label={`${fetchedData.filter((item) => !item.okundumu).length
+                  } Yeni`}
+                color="primary"
+              />
+            )}
+          </Stack>
+          <Scrollbar sx={{ height: "385px" }}>
+            {fetchedData.length === 0 ? (
+              <MenuItem sx={{ pointerEvents: "none" }}>
+                <Typography variant="subtitle1" color="textSecondary" p={2}>
+                  Henüz Hiç Bildirim Yok
+                </Typography>
+              </MenuItem>
+            ) : (
+              fetchedData.map((notification, index) => (
                 <MenuItem
+                  key={notification.id}
                   sx={{
                     p: 2,
                     pointerEvents: "none",
@@ -221,11 +229,11 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
                     </Box>
                   </Stack>
                 </MenuItem>
-              </Box>
-            ))
-          )}
-        </Scrollbar>
-      </Menu>
+              ))
+            )}
+          </Scrollbar>
+        </div>
+      </Popover>
     </Box>
   );
 };

@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import dynamic from "next/dynamic";
 import {
+  Box,
   Button,
   Fab,
   Grid,
@@ -80,10 +81,10 @@ const Page = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        console.log("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -115,7 +116,7 @@ const Page = () => {
         console.warn("No data found");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -136,7 +137,7 @@ const Page = () => {
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -155,50 +156,22 @@ const Page = () => {
   return (
     <>
       <Breadcrumb title="Bağımsız Denetim Sözleşmesi" items={BCrumb}>
-        <>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <EkBelgeYukleButton
+            formKodu={controller}
+            fullWidth={false}
+            text="Belge Yükle"
+          />
+          <Button
+            size="medium"
+            variant="outlined"
+            color="primary"
+            disabled={isClickedVarsayilanaDon}
+            onClick={() => setIsClickedVarsayilanaDon(true)}
           >
-            <Grid
-              item
-              xs={12}
-              md={12}
-              lg={12}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                disabled={isClickedVarsayilanaDon}
-                onClick={() => setIsClickedVarsayilanaDon(true)}
-                sx={{ width: "100%" }}
-              >
-                <EkBelgeYukleButton
-                  formKodu={controller}
-                  fullWidth={false}           // sağda küçük buton
-                  text="Belge Yükle"
-                />
-                <Typography
-                  variant="body1"
-                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                >
-                  Varsayılana Dön
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
-        </>
+            Varsayılana Dön
+          </Button>
+        </Box>
       </Breadcrumb>
       <PageContainer
         title="Bağımsız Denetim Sözleşmesi"
@@ -206,14 +179,14 @@ const Page = () => {
       >
         <Grid container spacing={3}>
           <Grid
-            item
-            xs={12}
-            sm={12}
-            lg={12}
             display="flex"
             alignItems="center"
             justifyContent="center"
-          >
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <CustomFormLabel
               htmlFor="sozlesmeTarihi"
               sx={{
@@ -239,7 +212,12 @@ const Page = () => {
             </Tooltip>
           </Grid>
           {sozlesmeTarihi.length > 0 && (
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <CustomEditorWVeri
                 controller={controller}
                 veri={veriler[0]}
@@ -248,7 +226,12 @@ const Page = () => {
             </Grid>
           )}
           {rows.filter((row: any) => row.asilYedek == "Asil").length > 0 && (
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <Typography variant="h5" textAlign="center" mb={2}>
                 Bağımsız Denetim Ekibi
               </Typography>
@@ -348,7 +331,12 @@ const Page = () => {
             </Grid>
           )}
           {rows.filter((row: any) => row.asilYedek == "Yedek").length > 0 && (
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <Typography variant="h5" textAlign="center" mb={2}>
                 Yedek Bağımsız Denetçiler
               </Typography>
@@ -448,7 +436,12 @@ const Page = () => {
             </Grid>
           )}
           {sozlesmeTarihi.length > 0 && (
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <CustomEditorWVeri
                 controller={controller}
                 veri={veriler[1]}
@@ -470,21 +463,39 @@ const Page = () => {
             justifyContent: "space-between",
           }}
         >
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <BelgeKontrolCard
               fetch={() => { }}
               hazirlayan="Denetçi - Yardımcı Denetçi"
               controller={controller}
             ></BelgeKontrolCard>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <BelgeKontrolCard
               fetch={() => { }}
               onaylayan="Sorumlu Denetçi"
               controller={controller}
             ></BelgeKontrolCard>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <BelgeKontrolCard
               fetch={() => { }}
               kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -504,7 +515,12 @@ const Page = () => {
           gap: 1,
         }}
       >
-        <Grid item xs={12} lg={12} mt={5}>
+        <Grid
+          mt={5}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <IslemlerCard controller={controller} />
         </Grid>
       </Grid>

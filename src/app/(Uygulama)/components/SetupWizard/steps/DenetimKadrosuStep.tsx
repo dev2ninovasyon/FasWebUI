@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
     Box,
@@ -101,7 +101,7 @@ export default function DenetimKadrosuStep({
             );
             setRows(res || []);
         } catch (error) {
-            console.error("Kadrosu verileri çekilirken hata:", error);
+            console.log("Kadrosu verileri çekilirken hata:", error);
         } finally {
             setLoading(false);
         }
@@ -130,7 +130,7 @@ export default function DenetimKadrosuStep({
                 fetchData();
             }
         } catch (error) {
-            console.error("Silme hatası:", error);
+            console.log("Silme hatası:", error);
         } finally {
             handleMenuClose();
         }
@@ -172,7 +172,7 @@ export default function DenetimKadrosuStep({
                 enqueueSnackbar("Atama yapılamadı.", { variant: "error" });
             }
         } catch (error) {
-            console.error("Atama hatası:", error);
+            console.log("Atama hatası:", error);
         } finally {
             setSavingMember(false);
         }
@@ -252,7 +252,7 @@ export default function DenetimKadrosuStep({
                                                 <TableCell align="center"><Typography variant="body2">{row.unvanAdi}</Typography></TableCell>
                                                 <TableCell align="center"><Typography variant="body2">{row.asilYedek}</Typography></TableCell>
                                                 <TableCell align="center">
-                                                    <Typography variant="body2">{row.calismaSaati} Saat / {row.saatBasiUcreti} ₺</Typography>
+                                                    <Typography variant="body2">{row.calismaSaati} Saat / {row.saatBasiUcreti} â‚º</Typography>
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <Chip
@@ -284,31 +284,42 @@ export default function DenetimKadrosuStep({
                     </Menu>
                 </Box>
             </ParentCard>
-
             {/* Add Member Dialog */}
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
                 <DialogTitle>Yeni Ekip Üyesi Atama</DialogTitle>
                 <DialogContent dividers>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <CustomFormLabel>Personel Seçimi *</CustomFormLabel>
                             <KullaniciBoxAutocomplete
                                 onSelectAdi={() => { }}
                                 onSelectId={(id) => setKullaniciId(id)}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 6
+                            }}>
                             <CustomFormLabel>Ünvanı *</CustomFormLabel>
                             <UnvanBoxAutocomplete
                                 onSelect={() => { }}
                                 onSelectId={(id) => setUnvanId(id)}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 6
+                            }}>
                             <CustomFormLabel>Asil / Yedek *</CustomFormLabel>
                             <AsilYedekBoxAutocomplete onSelect={(val) => setAsilYedek(val)} />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 4
+                            }}>
                             <CustomFormLabel>Çalışma Saati</CustomFormLabel>
                             <CustomTextField
                                 type="number"
@@ -318,7 +329,11 @@ export default function DenetimKadrosuStep({
                                 onChange={(e: any) => setCalismaSaati(e.target.value)}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 4
+                            }}>
                             <CustomFormLabel>Saat Ücreti</CustomFormLabel>
                             <CustomTextField
                                 type="number"
@@ -328,7 +343,11 @@ export default function DenetimKadrosuStep({
                                 onChange={(e: any) => setSaatBasiUcreti(e.target.value)}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={4}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                sm: 4
+                            }}>
                             <CustomFormLabel>Durum</CustomFormLabel>
                             <AktifPasifBoxAutocomplete
                                 onSelect={(val) => setAktifPasif(val === "Aktif")}
@@ -348,7 +367,6 @@ export default function DenetimKadrosuStep({
                     </Button>
                 </DialogActions>
             </Dialog>
-
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
                 <Button variant="outlined" onClick={onBack} startIcon={<IconArrowLeft />}>Geri</Button>
                 <Button variant="contained" color="primary" onClick={handleComplete} endIcon={<IconArrowRight />}>

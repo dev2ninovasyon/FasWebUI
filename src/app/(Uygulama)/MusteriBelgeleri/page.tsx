@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -150,7 +150,7 @@ const Page = () => {
       setRows(list);
       setSelectedIds([]);
     } catch (error) {
-      console.error("Müşteri belgeleri listesi alınırken hata:", error);
+      console.log("Müşteri belgeleri listesi alınırken hata:", error);
       enqueueSnackbar("Yüklenmiş belgeler alınırken hata oluştu.", {
         variant: "error",
       });
@@ -225,7 +225,7 @@ const Page = () => {
 
         await loadEkBelgeler();
       } catch (error) {
-        console.error("Dosya yüklenirken hata oluştu:", error);
+        console.log("Dosya yüklenirken hata oluştu:", error);
         enqueueSnackbar("Dosya yüklenirken bir hata oluştu.", {
           variant: "error",
         });
@@ -270,7 +270,7 @@ const Page = () => {
       }
       // ToplantıTutanakları için ilerde fetch eklenebilir
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 
@@ -347,7 +347,7 @@ const Page = () => {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Belge indirilirken hata:", error);
+      console.log("Belge indirilirken hata:", error);
       enqueueSnackbar("Belge indirilirken bir hata oluştu.", {
         variant: "error",
       });
@@ -377,7 +377,7 @@ const Page = () => {
 
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Belge görüntülenirken hata:", error);
+      console.log("Belge görüntülenirken hata:", error);
       enqueueSnackbar("Belge görüntülenirken bir hata oluştu.", {
         variant: "error",
       });
@@ -439,7 +439,7 @@ const Page = () => {
         });
       }
     } catch (error) {
-      console.error("Seçilen belgeler silinirken hata:", error);
+      console.log("Seçilen belgeler silinirken hata:", error);
       enqueueSnackbar(
         "Seçilen belgeler silinirken beklenmeyen bir hata oluştu.",
         {
@@ -460,7 +460,11 @@ const Page = () => {
       <Breadcrumb title="Müşteri Belgeleri" items={BCrumb} />
       <Grid container spacing={3}>
         {/* SOL: Dosya yükleme alanı */}
-        <Grid item xs={12} lg={5}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 5
+          }}>
           <Box
             sx={{
               height: "550px",
@@ -499,7 +503,11 @@ const Page = () => {
             {/* Cari dosya alt tür */}
             {fileType === "CariDosya" && (
               <Grid container mt={1} padding={"16px"}>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CustomSelect
                     labelId="cariDosya"
                     id="cariDosya"
@@ -529,7 +537,11 @@ const Page = () => {
             {/* Sürekli dosya alt tür */}
             {fileType === "SürekliDosya" && (
               <Grid container mt={1} padding={"16px"}>
-                <Grid item xs={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CustomSelect
                     labelId="surekliDosya"
                     id="surekliDosya"
@@ -579,7 +591,12 @@ const Page = () => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Grid item sm={12} lg={12} style={{ textAlign: "center" }}>
+                  <Grid
+                    style={{ textAlign: "center" }}
+                    size={{
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Typography>Dosyaları buraya bırakın...</Typography>
                   </Grid>
                 </Grid>
@@ -590,7 +607,12 @@ const Page = () => {
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <Grid item sm={12} lg={12} style={{ textAlign: "center" }}>
+                  <Grid
+                    style={{ textAlign: "center" }}
+                    size={{
+                      sm: 12,
+                      lg: 12
+                    }}>
                     {uploading ? (
                       <Stack
                         spacing={2}
@@ -628,7 +650,11 @@ const Page = () => {
         </Grid>
 
         {/* SAĞ: Yüklenmiş dosya listesi */}
-        <Grid item xs={12} lg={7}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 7
+          }}>
           <Box
             sx={{
               height: smDown ? "610px" : "550px",
@@ -821,7 +847,6 @@ const Page = () => {
           </Box>
         </Grid>
       </Grid>
-
       {/* Silme onayı popup'ı */}
       <Dialog open={confirmOpen} onClose={handleCloseConfirm}>
         <DialogTitle>Silme Onayı</DialogTitle>

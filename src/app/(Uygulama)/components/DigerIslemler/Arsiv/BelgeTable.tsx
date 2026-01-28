@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+﻿import React, { useRef, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -20,7 +20,7 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import { Stack, useTheme } from "@mui/system";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
@@ -225,7 +225,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       setSelected([]);
       handleIsConfirm();
     } catch (error: any) {
-      console.error("Silme hatası:", error);
+      console.log("Silme hatası:", error);
     }
   };
 
@@ -266,7 +266,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       setSelected([]);
       handleIsConfirm();
     } catch (error: any) {
-      console.error("Silme hatası:", error);
+      console.log("Silme hatası:", error);
     }
   };
 
@@ -288,7 +288,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       document.body.appendChild(link);
       link.click();
     } catch (error) {
-      console.error("İndirme hatası:", error);
+      console.log("İndirme hatası:", error);
     }
   };
 
@@ -325,7 +325,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       document.body.appendChild(link);
       link.click();
     } catch (error) {
-      console.error("İndirme hatası:", error);
+      console.log("İndirme hatası:", error);
     }
   };
 

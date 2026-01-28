@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -126,7 +126,7 @@ const Page = () => {
         console.warn("No data found");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -141,7 +141,7 @@ const Page = () => {
       );
       setMektupBelge(belge);
     } catch (error) {
-      console.error("Mektup bilgisi alınamadı:", error);
+      console.log("Mektup bilgisi alınamadı:", error);
     }
   };
 
@@ -156,7 +156,7 @@ const Page = () => {
       );
       setActiveTokens(tokens);
     } catch (error) {
-      console.error("Aktif tokenlar alınamadı:", error);
+      console.log("Aktif tokenlar alınamadı:", error);
     }
   };
 
@@ -452,7 +452,6 @@ const Page = () => {
   }, []);
 
   return (
-
     <>
       <Breadcrumb title="Mutabakat Doğrulama Mektubu" items={BCrumb}>
         <Grid
@@ -466,17 +465,17 @@ const Page = () => {
           }}
         >
           <Grid
-            item
-            xs={12}
-            md={10}
-            lg={8}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-end",
               gap: 2,
             }}
-          >
+            size={{
+              xs: 12,
+              md: 10,
+              lg: 8
+            }}>
             <Button
               variant="outlined"
               onClick={() => setUploadDialogOpen(true)}
@@ -596,7 +595,11 @@ const Page = () => {
 
           {/* Editor */}
           {veriler && (
-            <Grid item xs={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CustomEditorWVeri controller={controller} veri={veriler} />
             </Grid>
           )}

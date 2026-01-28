@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -424,7 +424,7 @@ const AmortismanCari: React.FC<Props> = ({
         setRowCount(rowsAll.length);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -483,7 +483,7 @@ const AmortismanCari: React.FC<Props> = ({
         saveAs(blob, "Amortisman.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -542,16 +542,20 @@ const AmortismanCari: React.FC<Props> = ({
         beforeChange={handleBeforeChange} // Add beforeChange hook
       />
       <Grid container marginTop={2}>
-        <Grid item xs={12} lg={10}></Grid>
         <Grid
-          item
-          xs={12}
-          lg={2}
+          size={{
+            xs: 12,
+            lg: 10
+          }}></Grid>
+        <Grid
           sx={{
             display: "flex",
             justifyContent: "flex-end",
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>

@@ -1,4 +1,4 @@
-import { Grid, Button } from "@mui/material";
+﻿import { Grid, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -41,10 +41,10 @@ const HissedarDuzenleForm = () => {
       if (result) {
         router.push("/Musteri/Hissedarlar");
       } else {
-        console.error("Hissedar düzenleme başarısız");
+        console.log("Hissedar düzenleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -59,7 +59,7 @@ const HissedarDuzenleForm = () => {
       setPaySayisi(hissedarlarVerileri.paySayisi);
       setHisseOrani(hissedarlarVerileri.hisseOrani);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -70,7 +70,13 @@ const HissedarDuzenleForm = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="hissedarAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -78,7 +84,11 @@ const HissedarDuzenleForm = () => {
             Hissedar Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="hissedarAdi"
             value={hissedarAdi}
@@ -86,7 +96,13 @@ const HissedarDuzenleForm = () => {
             onChange={(e: any) => setHissedarAdi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="hisseTutari"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -94,7 +110,11 @@ const HissedarDuzenleForm = () => {
             Hisse Tutarı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="hisseTutari"
             type="number"
@@ -103,7 +123,13 @@ const HissedarDuzenleForm = () => {
             onChange={(e: any) => setHisseTutari(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="paySayisi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -111,7 +137,11 @@ const HissedarDuzenleForm = () => {
             Pay Sayısı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="paySayisi"
             type="number"
@@ -120,7 +150,13 @@ const HissedarDuzenleForm = () => {
             onChange={(e: any) => setPaySayisi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="hisseOrani"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -128,7 +164,11 @@ const HissedarDuzenleForm = () => {
             Hisse Oranı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <CustomTextField
             id="hisseOrani"
             type="number"
@@ -137,8 +177,16 @@ const HissedarDuzenleForm = () => {
             onChange={(e: any) => setHisseOrani(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3}></Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Button
             variant="contained"
             color="primary"

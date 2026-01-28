@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Box, Skeleton, Stack, Grid } from "@mui/material";
 
 export default function Loading() {
@@ -11,10 +11,10 @@ export default function Loading() {
                 </Box>
 
                 <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Skeleton variant="rounded" width="100%" height={60} />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Skeleton variant="rounded" width="100%" height={300} sx={{ opacity: 0.6 }} />
                     </Grid>
                 </Grid>

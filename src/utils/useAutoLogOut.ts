@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from "@/store/hooks";
-import { resetToNull, setToken, setRefreshToken } from "@/store/user/UserSlice";  // ✅ setRefreshToken import
+﻿import { useDispatch, useSelector } from "@/store/hooks";
+import { resetToNull, setToken, setRefreshToken } from "@/store/user/UserSlice";  // âœ… setRefreshToken import
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useCallback } from "react";
 import { AppState } from "@/store/store";
@@ -17,7 +17,7 @@ export default function useAutoLogout(
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ⬇⬇⬇ YENİ: geri sayım log’u için interval
+  // â¬‡â¬‡â¬‡ YENİ: geri sayım logâ€™u için interval
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const refreshCountdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -44,7 +44,7 @@ export default function useAutoLogout(
 
   // idle timer reset
   const resetIdleTimer = useCallback(() => {
-    // test log’ları
+    // test logâ€™ları
     //console.log("idleTimeout (ms):", idleTimeout);
     //console.log("idleTimeout (dk):", idleTimeout / 60000);
 
@@ -59,11 +59,11 @@ export default function useAutoLogout(
       logout();
     }, idleTimeout);
 
-    // ⬇⬇⬇ Kalan süreyi sürekli konsola yazan interval (test için yorum satırı)
+    // â¬‡â¬‡â¬‡ Kalan süreyi sürekli konsola yazan interval (test için yorum satırı)
     countdownTimerRef.current = setInterval(() => {
       const remaining = expiry - Date.now();
       if (remaining <= 0) {
-        // console.log("⏰ Kalan süre: 0 sn - LOGOUT!");
+        // console.log("â° Kalan süre: 0 sn - LOGOUT!");
         clearInterval(countdownTimerRef.current!);
         countdownTimerRef.current = null;
         return;
@@ -72,13 +72,13 @@ export default function useAutoLogout(
       const remainingSeconds = Math.ceil(remaining / 1000);
       const minutes = Math.floor(remainingSeconds / 60);
       const seconds = remainingSeconds % 60;
-      // console.log(`⏰ Idle timeout'a kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
+      // console.log(`â° Idle timeout'a kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
     }, 1000);
   }, [idleTimeout, logout]);
 
   // refresh token
   const refreshToken = useCallback(async () => {
-    if (!user?.refreshToken) {  // ✅ refreshToken kontrolü
+    if (!user?.refreshToken) {  // âœ… refreshToken kontrolü
       console.warn("Refresh token bulunamadı, logout yapılıyor");
       logout();
       return;
@@ -93,21 +93,21 @@ export default function useAutoLogout(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          RefreshToken: user.refreshToken  // ✅ Backend PascalCase bekliyor
+          RefreshToken: user.refreshToken  // âœ… Backend PascalCase bekliyor
         }),
       });
 
       if (!response.ok) {
-        console.error("Refresh token yenilenemedi, response.ok=false");
-        console.error("HTTP Status:", response.status);
-        console.error("Status Text:", response.statusText);
+        console.log("Refresh token yenilenemedi, response.ok=false");
+        console.log("HTTP Status:", response.status);
+        console.log("Status Text:", response.statusText);
 
         // Backend'den gelen hata mesajını göster
         try {
           const errorData = await response.json();
-          console.error("Backend Error:", errorData);
+          console.log("Backend Error:", errorData);
         } catch (e) {
-          console.error("Response body okunamadı");
+          console.log("Response body okunamadı");
         }
 
         logout();
@@ -116,12 +116,12 @@ export default function useAutoLogout(
 
       const data = await response.json();
       dispatch(setToken(data.token));  // Yeni access token
-      if (data.refreshToken) {  // ✅ Yeni refresh token varsa kaydet
+      if (data.refreshToken) {  // âœ… Yeni refresh token varsa kaydet
         dispatch(setRefreshToken(data.refreshToken));
       }
-      // console.log("✅ Token başarıyla yenilendi!");
+      // console.log("âœ… Token başarıyla yenilendi!");
     } catch (err) {
-      console.error("Refresh token yenilenemedi (catch):", err);
+      console.log("Refresh token yenilenemedi (catch):", err);
       logout();
     }
   }, [user?.token, user?.refreshToken, dispatch, logout]);
@@ -159,7 +159,7 @@ export default function useAutoLogout(
         const remainingSeconds = Math.ceil(remaining / 1000);
         const minutes = Math.floor(remainingSeconds / 60);
         const seconds = remainingSeconds % 60;
-        // console.log(`🔄 Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
+        // console.log(`ğŸ”„ Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
       }, 1000);
     }, refreshInterval);
 
@@ -173,7 +173,7 @@ export default function useAutoLogout(
       const remainingSeconds = Math.ceil(remaining / 1000);
       const minutes = Math.floor(remainingSeconds / 60);
       const seconds = remainingSeconds % 60;
-      // console.log(`🔄 Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
+      // console.log(`ğŸ”„ Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
     }, 1000);
 
     return () => {

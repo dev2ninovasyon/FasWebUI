@@ -1,4 +1,4 @@
-import {
+﻿import {
   createBaglantiBilgileri,
   deleteBaglantiBilgileriById,
   getBaglantiBilgileri,
@@ -105,7 +105,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -146,7 +146,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -216,7 +216,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -284,7 +284,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
             fetchedDatas?.map((fetchedData, index) => (
               <Box px={3} key={index}>
                 <Grid container spacing={2} mb={3}>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <Typography variant="h6" p={1}>
                       {fetchedData.tip == "CekSenetReeskont"
                         ? "Çek Senet Reeskont"
@@ -297,19 +297,24 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
                         : fetchedData.tip}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Typography variant="body1" p={1}>
                       Bağlantı:
                     </Typography>
                   </Grid>
                   <Grid
-                    item
-                    xs={12}
-                    sm={8}
-                    lg={8}
                     display="flex"
                     alignItems="center"
-                  >
+                    size={{
+                      xs: 12,
+                      sm: 8,
+                      lg: 8
+                    }}>
                     <Typography
                       variant="body1"
                       p={1}
@@ -326,22 +331,42 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
                       </IconButton>
                     </Tooltip>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Typography variant="body1" p={1}>
                       Bağlantı Oluşturulma Zamanı:
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={8} lg={8}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 8,
+                      lg: 8
+                    }}>
                     <Typography variant="body1" p={1}>
                       {fetchedData.baslangicTarihi}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Typography variant="body1" p={1}>
                       Bağlantı Erişimi Bitiş Zamanı:
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={8} lg={8}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 8,
+                      lg: 8
+                    }}>
                     <Typography variant="body1" p={1}>
                       {fetchedData.bitisTarihi}
                     </Typography>
@@ -381,19 +406,24 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
             <>
               <Box px={3}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Typography variant="body1" p={1}>
                       Bağlantı:
                     </Typography>
                   </Grid>
                   <Grid
-                    item
-                    xs={12}
-                    sm={8}
-                    lg={8}
                     display="flex"
                     alignItems="center"
-                  >
+                    size={{
+                      xs: 12,
+                      sm: 8,
+                      lg: 8
+                    }}>
                     <Typography
                       variant="body1"
                       p={1}
@@ -412,27 +442,52 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
                       </IconButton>
                     </Tooltip>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Typography variant="body1" p={1}>
                       Bağlantı Oluşturulma Zamanı:
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={8} lg={8}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 8,
+                      lg: 8
+                    }}>
                     <Typography variant="body1" p={1}>
                       {fetchedData.baslangicTarihi}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Typography variant="body1" p={1}>
                       Bağlantı Erişimi Bitiş Zamanı:
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={8} lg={8}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 8,
+                      lg: 8
+                    }}>
                     <Typography variant="body1" p={1}>
                       {fetchedData.bitisTarihi}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={12} lg={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      lg: 12
+                    }}>
                     <Typography variant="body1" p={1}>
                       Sistem üzerinden veri girişi yapmanız için bağlantıyı
                       kaldırmalısınız.

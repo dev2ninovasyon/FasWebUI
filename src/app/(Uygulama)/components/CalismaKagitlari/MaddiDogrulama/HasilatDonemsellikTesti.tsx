@@ -1,11 +1,11 @@
-"use client";
-
+﻿"use client";
 import React, { useEffect, useState, useRef } from "react";
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import "handsontable/dist/handsontable.full.min.css";
 import "@/utils/languages/handsontable.tr-TR";
-import { Box, Button, Typography, useTheme, TextField, Grid } from "@mui/material";
+import { Box, Button, Typography, useTheme, TextField } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
@@ -80,7 +80,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                 enqueueSnackbar("Veri bulunamadı", { variant: "info" });
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             setData([]);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
@@ -111,7 +111,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
             await saveHasilatDonemsellikTesti(listToSave, true);
             enqueueSnackbar("Veriler başarıyla kaydedildi", { variant: "success" });
         } catch (error) {
-            console.error("Kaydetme hatası:", error);
+            console.log("Kaydetme hatası:", error);
             enqueueSnackbar("Kaydetme sırasında bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);
@@ -152,7 +152,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
             </Typography>
             {!isReport && (
                 <Grid container spacing={2} mb={3} alignItems="flex-end">
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        item={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Başlangıç Tarihi"
@@ -163,7 +167,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             InputLabelProps={{ shrink: true }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        item={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Bitiş Tarihi"
@@ -174,7 +182,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             InputLabelProps={{ shrink: true }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        item={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Hesaplar"
@@ -184,7 +196,11 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             placeholder="600,601,602"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid
+                        item={{
+                            xs: 12,
+                            sm: 3
+                        }}>
                         <TextField
                             fullWidth
                             label="Tutardan Fazla"
@@ -194,7 +210,7 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                             onChange={handleFilterChange}
                         />
                     </Grid>
-                    <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <Grid display="flex" justifyContent="flex-end" gap={2} size={12}>
                         <Button
                             variant="contained"
                             color="primary"
@@ -214,7 +230,6 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
                     </Grid>
                 </Grid>
             )}
-
             <Box
                 sx={{
                     width: "100%",

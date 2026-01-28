@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import { Box, Typography, CircularProgress, Paper } from "@mui/material";
 import { useSelector } from "@/store/hooks";
@@ -44,7 +44,7 @@ const KysEditorShow: React.FC<KysEditorShowProps> = ({ formKodu, alanAdi }) => {
                 setEditorData(result.metin);
             }
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         } finally {
             setLoading(false);
         }

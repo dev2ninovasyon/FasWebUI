@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -47,7 +47,7 @@ const KysCalismaKagidiShow: React.FC<KysCalismaKagidiShowProps> = ({
             );
             setVeriler(result);
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         } finally {
             setLoading(false);
         }

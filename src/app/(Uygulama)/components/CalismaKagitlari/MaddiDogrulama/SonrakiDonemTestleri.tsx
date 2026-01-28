@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { HotTable } from "@handsontable/react";
@@ -92,7 +92,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                 tarih: item.tarih ? moment(item.tarih).format("DD.MM.YYYY") : ""
             })));
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);
@@ -124,7 +124,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                 enqueueSnackbar(result.message, { variant: "error" });
             }
         } catch (error) {
-            console.error("Ekleme hatası:", error);
+            console.log("Ekleme hatası:", error);
             enqueueSnackbar("Satır eklenirken bir hata oluştu", { variant: "error" });
         }
     };
@@ -145,7 +145,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                 enqueueSnackbar(result.message, { variant: "error" });
             }
         } catch (error) {
-            console.error("Toplu silme hatası:", error);
+            console.log("Toplu silme hatası:", error);
             enqueueSnackbar("Seçili satırlar silinirken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);
@@ -190,7 +190,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                     enqueueSnackbar(result.message, { variant: "error" });
                 }
             } catch (error) {
-                console.error("Güncelleme hatası:", error);
+                console.log("Güncelleme hatası:", error);
                 enqueueSnackbar("Güncelleme sırasında bir hata oluştu", { variant: "error" });
             }
         }

@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getDenetimDosya = async (token: string, denetimTuru: string) => {
@@ -20,11 +20,11 @@ export const getDenetimDosya = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -49,11 +49,11 @@ export const getDenetimDosyaByFormKodu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -77,11 +77,11 @@ export const getCariDosya = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -105,11 +105,11 @@ export const getSurekliDosya = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -133,11 +133,11 @@ export const getHile = async (token: string, denetimTuru: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -164,11 +164,11 @@ export const getDenetimDosyaTransfer = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Verileri getirilemedi");
+      console.log("Verileri getirilemedi");
       return null;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
     return null;
   }
 };
@@ -211,7 +211,7 @@ export const denetimDosyaTransfer = async (
       return { message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export async function createBirlesikPdfByFormat(
@@ -278,14 +278,14 @@ export async function createAndFetchBirlesikPdf(
     return { createUrl: "", last: null };
   }
 
-  // 2) En son PDF’i çek (gerekirse kısa retry ile)
+  // 2) En son PDFâ€™i çek (gerekirse kısa retry ile)
   let last: { blobUrl: string; fileName: string } | null = null;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       last = await getLastBirlesikPdf(token, denetciId, denetlenenId, yil);
       if (last) break; // bulundu
     } catch {
-      // sessiz geç → tekrar dene
+      // sessiz geç â†’ tekrar dene
     }
     if (attempt < maxRetries) {
       await sleep(retryDelayMs);

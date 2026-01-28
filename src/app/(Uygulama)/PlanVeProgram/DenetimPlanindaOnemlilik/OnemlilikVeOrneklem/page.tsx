@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { Grid, useTheme } from "@mui/material";
@@ -82,7 +82,7 @@ const Page = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -101,7 +101,12 @@ const Page = () => {
     >
       <Breadcrumb title="Önemlilik Ve Örneklem" items={BCrumb} />
       <Grid container>
-        <Grid item xs={12} lg={12} mb={3}>
+        <Grid
+          mb={3}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <OnemlilikVeOrneklemForm
             guvenilirlikDuzeyi={guvenilirlikDuzeyi}
             hataPayi={hataPayi}
@@ -111,22 +116,38 @@ const Page = () => {
             handleHesapla={handleHesapla}
           />
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <OnemlilikVeOrneklemSeviyesi
             hesaplaTiklandimi={hesaplaTiklandimi2}
             setHesaplaTiklandimi={setHesaplaTiklandimi2}
           />
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <OnemlilikVeOrneklemHesaplamaBazi
             hesaplaTiklandimi={hesaplaTiklandimi2}
             setHesaplaTiklandimi={setHesaplaTiklandimi2}
           />
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <OnemlilikVeOrneklem hesaplaTiklandimi={hesaplaTiklandimi} />
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
           user.rol?.includes("SorumluDenetci") ||
           user.rol?.includes("Denetci") ||
@@ -139,21 +160,39 @@ const Page = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   hazirlayan="Denetçi - Yardımcı Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   onaylayan="Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -173,7 +212,12 @@ const Page = () => {
               gap: 1,
             }}
           >
-            <Grid item xs={12} lg={12} mt={5}>
+            <Grid
+              mt={5}
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <IslemlerCard controller={controller} />
             </Grid>
           </Grid>

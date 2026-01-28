@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState } from "react";
 import {
   Grid,
@@ -60,7 +60,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
       alignItems="center"
       sx={{
         backgroundColor: "primary.light",
-        borderRadius: (theme: Theme) => theme.shape.borderRadius / 4,
+        borderRadius: (theme: Theme) => (theme.shape.borderRadius as number) / 4,
         p: "15px 25px",
         marginBottom: "15px",
         position: "relative",
@@ -90,9 +90,13 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
           </ListItemIcon>
         </Box>
       )}
-
       {/* 2. SOL TARAF: Yazılar (zIndex: 1 ile ikonun üstünde) */}
-      <Grid item xs={9} sm={8} sx={{ zIndex: 1 }}>
+      <Grid
+        sx={{ zIndex: 1 }}
+        size={{
+          xs: 9,
+          sm: 8
+        }}>
         <Typography variant="h4">{title}</Typography>
         {items && (
           <Breadcrumbs separator={null} sx={{ alignItems: "center", mt: 0.5 }} aria-label="breadcrumb">
@@ -105,7 +109,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                       sx={{
                         backgroundColor: item.title === subtitle ? "primary.main" : "transparent",
                         px: item.title === subtitle ? 1 : 0,
-                        borderRadius: (theme: Theme) => theme.shape.borderRadius / 4,
+                        borderRadius: (theme: Theme) => (theme.shape.borderRadius as number) / 4,
                         display: "flex", alignItems: "center", fontSize: "0.875rem"
                       }}
                     >
@@ -121,9 +125,16 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
           </Breadcrumbs>
         )}
       </Grid>
-
       {/* 3. SAĞ TARAF: Aksiyonlar (zIndex: 1) */}
-      <Grid item xs={3} sm={4} display="flex" justifyContent="flex-end" alignItems="center" sx={{ zIndex: 1 }}>
+      <Grid
+        display="flex"
+        justifyContent="flex-end"
+        alignItems="center"
+        sx={{ zIndex: 1 }}
+        size={{
+          xs: 3,
+          sm: 4
+        }}>
         {children && (
           <>
             {smDown ? (
@@ -137,35 +148,40 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                   onClose={handleCloseMenu}
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  PaperProps={{
-                    sx: {
-                      p: 2,
-                      minWidth: '200px',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center', // BOX'I ORTALAR
+                  TransitionComponent={Box as any}
+                  slotProps={{
+                    paper: {
+                      sx: {
+                        p: 2,
+                        minWidth: '200px',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center', // BOX'I ORTALAR
+                      }
                     }
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center', // İÇİNDEKİLERİ ORTALAR
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      width: '100%',
-                      gap: 2
-                    }}
-                  >
-                    {/* Children içinde fragment varsa onları tek tek ele alıp ortalarız */}
-                    {React.Children.map(React.Children.toArray(children), (child) => (
-                      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                        {child}
-                      </Box>
-                    ))}
-                  </Box>
+                  <div style={{ outline: 'none' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center', // İÇİNDEKİLERİ ORTALAR
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        width: '100%',
+                        gap: 2
+                      }}
+                    >
+                      {/* Children içinde fragment varsa onları tek tek ele alıp ortalarız */}
+                      {React.Children.map(React.Children.toArray(children), (child) => (
+                        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                          {child}
+                        </Box>
+                      ))}
+                    </Box>
+                  </div>
                 </Menu>
               </>
             ) : (

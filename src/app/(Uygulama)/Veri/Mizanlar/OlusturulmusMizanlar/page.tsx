@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { Grid, MenuItem, Typography } from "@mui/material";
@@ -32,9 +32,12 @@ const Page: React.FC = () => {
       description="this is Oluşturulmuş Mizanlar"
     >
       <Breadcrumb title="Oluşturulmuş Mizanlar" items={BCrumb} />
-
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={6}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6
+          }}>
           <CustomSelect
             labelId="type1"
             id="type1"
@@ -50,7 +53,11 @@ const Page: React.FC = () => {
             <MenuItem value={"VukMizan"}>Vuk Mizan</MenuItem>
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} lg={6}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6
+          }}>
           <CustomSelect
             labelId="type2"
             id="type2"
@@ -66,15 +73,28 @@ const Page: React.FC = () => {
             <MenuItem value={"DetayHesap"}>Detay Hesap</MenuItem>
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <OlusturulmusMizanlar type1={type1} type2={type2} />
         </Grid>
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 12,
+            lg: 12
+          }}>
           <Typography variant="h6" textAlign="left" mb={1}>
             Program Vuk Mizan:
           </Typography>
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <OlusturulmusProgramVukMizanlar type1={type1} />
         </Grid>
       </Grid>

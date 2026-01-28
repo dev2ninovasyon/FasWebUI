@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -19,7 +19,7 @@ import {
 import { Stack } from "@mui/system";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { getMizanVerileriByHesapNo } from "@/api/Veri/Mizan";
 import { useRouter } from "next/navigation";
 import { createIliskiliTaraflarListe } from "@/api/Musteri/MusteriIslemleri";
@@ -105,7 +105,7 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
       );
       router.push("/Musteri/IliskiliTaraflar");
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -156,7 +156,7 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
 
       setRows(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

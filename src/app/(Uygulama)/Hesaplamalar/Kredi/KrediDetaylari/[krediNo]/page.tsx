@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Box, Button, Grid, Typography, useMediaQuery } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -67,7 +67,7 @@ const Page = () => {
 
       setKrediNo(krediHesaplamaVerisi.alinanKrediNumarasi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -106,7 +106,7 @@ const Page = () => {
         setFetchedData(null);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -124,12 +124,8 @@ const Page = () => {
         title={`${krediNo} Numaralı Kredi Detayları`}
         items={BCrumb}
       />
-
       <Grid container marginTop={3}>
         <Grid
-          item
-          xs={12}
-          lg={12}
           sx={{
             display: "flex",
             flexDirection: smDown ? "column" : "row",
@@ -138,7 +134,10 @@ const Page = () => {
             mb: 2,
             gap: 1,
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           {sonKaydedilmeTarihi && (
             <Typography
               variant="body2"
@@ -171,7 +170,11 @@ const Page = () => {
             </Button>
           </Box>
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <KrediDetayVeriYukleme
             kaydetTiklandimi={kaydetTiklandimi}
             setKaydetTiklandimi={setKaydetTiklandimi}

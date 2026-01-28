@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -382,10 +382,10 @@ const OrneklemFisleri = () => {
         await fetchData();
         console.log("E-Defter İnceleme Verisi güncelleme başarılı");
       } else {
-        console.error("E-Defter İnceleme güncelleme başarısız");
+        console.log("E-Defter İnceleme güncelleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -412,10 +412,10 @@ const OrneklemFisleri = () => {
         console.log("E-Defter İnceleme Verisi güncelleme başarılı");
       } else {
         setSecilenlereTespitAciklamaKaydetTiklandimi(false);
-        console.error("E-Defter İnceleme güncelleme başarısız");
+        console.log("E-Defter İnceleme güncelleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -449,7 +449,7 @@ const OrneklemFisleri = () => {
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -509,7 +509,7 @@ const OrneklemFisleri = () => {
         saveAs(blob, "OrneklemFisleri.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -535,7 +535,11 @@ const OrneklemFisleri = () => {
   return (
     <>
       <Grid container mb={2}>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TespitAciklamaForm
             tespitAciklama={tespitAciklama}
             setTespitAciklama={setTespitAciklama}
@@ -601,16 +605,20 @@ const OrneklemFisleri = () => {
       />
       {fetchedData.length > 0 && (
         <Grid container marginTop={2}>
-          <Grid item xs={12} lg={10}></Grid>
           <Grid
-            item
-            xs={12}
-            lg={2}
+            size={{
+              xs: 12,
+              lg: 10
+            }}></Grid>
+          <Grid
             sx={{
               display: "flex",
               justifyContent: "flex-end",
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 2
+            }}>
             <ExceleAktarButton
               handleDownload={handleDownload}
             ></ExceleAktarButton>

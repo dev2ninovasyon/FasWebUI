@@ -1,3 +1,5 @@
+﻿"use client";
+
 // src/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulamaEkBelgeYukleButton.tsx
 
 import React, {
@@ -149,7 +151,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
             setSelectedIds([]);
             setPage(0);
         } catch (error) {
-            console.error("Ek belgeler alınırken hata oluştu:", error);
+            console.log("Ek belgeler alınırken hata oluştu:", error);
             setEkBelgeler([]);
         } finally {
             setIsLoadingList(false);
@@ -303,7 +305,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                 }
             }
         } catch (err) {
-            console.error("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
+            console.log("PNG dosyası PDF'e dönüştürülürken hata oluştu:", err);
             enqueueSnackbar(
                 "PNG dosyası PDF'e dönüştürülürken bir hata oluştu. Lütfen tekrar deneyin.",
                 {
@@ -368,7 +370,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                 );
             }
         } catch (error) {
-            console.error("Ek belge yüklenirken hata oluştu:", error);
+            console.log("Ek belge yüklenirken hata oluştu:", error);
             enqueueSnackbar("Ek belgeler yüklenirken beklenmeyen bir hata oluştu.", {
                 variant: "error",
                 autoHideDuration: 5000,
@@ -406,7 +408,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
             a.remove();
             window.URL.revokeObjectURL(url);
         } catch (error) {
-            console.error("Ek belge indirilirken hata:", error);
+            console.log("Ek belge indirilirken hata:", error);
             enqueueSnackbar("Ek belge indirilirken bir hata oluştu.", {
                 variant: "error",
                 autoHideDuration: 5000,
@@ -445,7 +447,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                 window.URL.revokeObjectURL(url);
             }
         } catch (error) {
-            console.error("Ek belge görüntülenirken hata:", error);
+            console.log("Ek belge görüntülenirken hata:", error);
             enqueueSnackbar("Ek belge görüntülenirken bir hata oluştu.", {
                 variant: "error",
                 autoHideDuration: 5000,
@@ -594,36 +596,24 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                         <Typography textAlign="center">{text}</Typography>
                     </MenuItem>
                 ) : (
-                    <Box
+                    <Button
+                        size="medium"
+                        variant={buttonVariant}
+                        color={color}
+                        onClick={handleOpen}
                         sx={{
                             width: fullWidth ? "100%" : "auto",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "100%",
+                            textTransform: 'none',
+                            whiteSpace: 'normal',
+                            textAlign: 'center',
+                            lineHeight: 1.2,
                             ...sx
                         }}
                     >
-                        <Button
-                            size="medium"
-                            variant={buttonVariant}
-                            color={color}
-                            onClick={handleOpen}
-                            sx={{
-                                width: "100%",
-                                height: "100%",
-                                textTransform: 'none',
-                                whiteSpace: 'normal',
-                                textAlign: 'center',
-                                lineHeight: 1.2
-                            }}
-                        >
-                            {text}
-                        </Button>
-                    </Box>
+                        {text}
+                    </Button>
                 )
             )}
-
             {/* gizli input */}
             <input
                 ref={inputRef}
@@ -633,7 +623,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.xlsm,.png"
                 onChange={handleFileChange}
             />
-
             {/* Ek belgeler popup */}
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
                 <DialogTitle
@@ -677,7 +666,11 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                 >
                     <Grid container spacing={3}>
                         {/* Sol: yükleme alanı */}
-                        <Grid item xs={12} md={5}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 5
+                            }}>
                             <Box
                                 onClick={handleClickUploadButton}
                                 onDragOver={handleDragOver}
@@ -724,7 +717,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                                         alignItems="center"
                                         justifyContent="center"
                                     >
-                                        <Grid item xs={12} style={{ textAlign: "center" }}>
+                                        <Grid style={{ textAlign: "center" }} size={12}>
                                             <Stack spacing={1.5} alignItems="center">
                                                 <CloudUploadIcon
                                                     fontSize="large"
@@ -756,7 +749,11 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                         </Grid>
 
                         {/* Sağ: Yüklenmiş Dosya Bilgileri */}
-                        <Grid item xs={12} md={7}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 7
+                            }}>
                             <Paper
                                 elevation={0}
                                 sx={{
@@ -941,7 +938,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                     <Button onClick={handleClose}>Kapat</Button>
                 </DialogActions>
             </Dialog >
-
             {/* Seçilenleri silme onay popup'ı */}
             <Dialog
                 open={deleteConfirmOpen}
@@ -973,7 +969,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
                     </Button>
                 </DialogActions>
             </Dialog>
-
             {/* PDF Önizleme popup */}
             <Dialog
                 open={previewOpen}

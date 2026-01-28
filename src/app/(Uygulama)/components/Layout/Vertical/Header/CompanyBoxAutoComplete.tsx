@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -92,7 +92,7 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
         }
       }
     } catch (error) {
-      console.error("CompanyBox fetchData hatası:", error);
+      console.log("CompanyBox fetchData hatası:", error);
     }
   };
 

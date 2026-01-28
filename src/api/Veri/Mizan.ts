@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getMizanVerileri = async (
@@ -22,10 +22,10 @@ export const getMizanVerileri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("E Defter Mizan verileri getirilemedi");
+      console.log("E Defter Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -51,10 +51,10 @@ export const getMizanVerileriByHesapNo = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Mizan verileri getirilemedi");
+      console.log("Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -79,10 +79,10 @@ export const getKurumlarVergisiBeyannamesiKarsilastirma = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("E Defter Mizan verileri getirilemedi");
+      console.log("E Defter Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -107,10 +107,10 @@ export const getKurumlarVergisiBeyannamesiKarsilastirmaHaric = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("E Defter Mizan verileri getirilemedi");
+      console.log("E Defter Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -135,10 +135,10 @@ export const getProgramVukMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Program Vuk Mizan verileri getirilemedi");
+      console.log("Program Vuk Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -154,10 +154,10 @@ export const getGenelHesapPlani = async (token: string, tip: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Genel Hesap Planı verileri getirilemedi");
+      console.log("Genel Hesap Planı verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -181,10 +181,10 @@ export const getProgramVukMizanWithoutType = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Program Vuk Mizan verileri getirilemedi");
+      console.log("Program Vuk Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -209,10 +209,10 @@ export const getProgramVukMizanControl = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Program Vuk Mizan Kontrol getirilemedi");
+      console.log("Program Vuk Mizan Kontrol getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -238,10 +238,10 @@ export const createAnaHesapMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Ana Hesap Mizan oluşturulamadı");
+      console.log("Ana Hesap Mizan oluşturulamadı");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -267,10 +267,10 @@ export const createAnaHesapMizanHaric = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Ana Hesap Mizan oluşturulamadı");
+      console.log("Ana Hesap Mizan oluşturulamadı");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -296,10 +296,10 @@ export const createDetayHesapMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Detay Hesap Mizan oluşturulamadı");
+      console.log("Detay Hesap Mizan oluşturulamadı");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -325,10 +325,10 @@ export const createDetayHesapMizanHaric = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Detay Hesap Mizan oluşturulamadı");
+      console.log("Detay Hesap Mizan oluşturulamadı");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -354,10 +354,10 @@ export const createVukMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Vuk Mizan oluşturulamadı");
+      console.log("Vuk Mizan oluşturulamadı");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -382,10 +382,10 @@ export const createProgramVukMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Program Vuk Mizan oluşturulamadı");
+      console.log("Program Vuk Mizan oluşturulamadı");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -410,10 +410,10 @@ export const getMizanBilgileri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Mizan Bilgileri getirilemedi");
+      console.log("Mizan Bilgileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -438,6 +438,6 @@ export const deleteMizanBilgisiMultiple = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

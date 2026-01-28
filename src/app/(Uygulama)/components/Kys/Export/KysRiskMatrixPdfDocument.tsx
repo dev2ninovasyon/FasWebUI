@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
 import { KysRiskMatrisi, RiskMatrixData } from '@/api/Kys/KysRiskMatrisi';
 import { riskMatrixSections, documentMapping } from '@/api/Kys/KysRiskMatrixConstants';
@@ -299,7 +299,7 @@ const KysRiskMatrixPdfDocument: React.FC<KysRiskMatrixPdfDocumentProps> = ({ dat
                     if (tagName === "li") {
                         return (
                             <View style={styles.htmlLi}>
-                                <Text style={styles.htmlBullet}>•</Text>
+                                <Text style={styles.htmlBullet}>â€¢</Text>
                                 <View style={{ flex: 1 }}>{content}</View>
                             </View>
                         );
@@ -494,7 +494,7 @@ const KysRiskMatrixPdfDocument: React.FC<KysRiskMatrixPdfDocumentProps> = ({ dat
                 try {
                     matrixData = JSON.parse(matrix.matrisJson);
                 } catch (e) {
-                    console.error("JSON parse error for PDF", e);
+                    console.log("JSON parse error for PDF", e);
                 }
 
                 return (
@@ -527,17 +527,17 @@ const KysRiskMatrixPdfDocument: React.FC<KysRiskMatrixPdfDocumentProps> = ({ dat
                                             <View style={[styles.tableCell, styles.column1]}>
                                                 <Text style={styles.bold}>({row.objective.letter}) {row.objective.title}</Text>
                                                 {row.objective.items?.map((objItem, objIdx) => (
-                                                    <Text key={objIdx} style={[styles.item, { marginLeft: 10 }]}>• {objItem}</Text>
+                                                    <Text key={objIdx} style={[styles.item, { marginLeft: 10 }]}>â€¢ {objItem}</Text>
                                                 ))}
                                             </View>
                                             <View style={[styles.tableCell, styles.column2]}>
                                                 {row.risks.map((risk, riskIdx) => (
-                                                    <Text key={riskIdx} style={styles.item}>• {risk.text}</Text>
+                                                    <Text key={riskIdx} style={styles.item}>â€¢ {risk.text}</Text>
                                                 ))}
                                             </View>
                                             <View style={[styles.tableCell, styles.column3, { borderRight: 0 }]}>
                                                 {(row.risks.flatMap(r => r.actions || [])).map((action, actionIdx) => (
-                                                    <Text key={actionIdx} style={styles.item}>• {action.text}</Text>
+                                                    <Text key={actionIdx} style={styles.item}>â€¢ {action.text}</Text>
                                                 ))}
                                             </View>
                                         </View>
@@ -628,7 +628,7 @@ const KysRiskMatrixPdfDocument: React.FC<KysRiskMatrixPdfDocumentProps> = ({ dat
 
                         <Text
                             style={styles.footerLabel}
-                            render={({ pageNumber, totalPages }) => `KYS Risk Analiz Raporu • Sayfa ${pageNumber} / ${totalPages}`}
+                            render={({ pageNumber, totalPages }) => `KYS Risk Analiz Raporu â€¢ Sayfa ${pageNumber} / ${totalPages}`}
                             fixed
                         />
                     </Page>

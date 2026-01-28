@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+﻿/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -48,7 +48,7 @@ export function SonIslemlerKartlari() {
           user.id || 0,
           user.denetlenenId || 0,
           user.yil || 0,
-          30 // server max 30 log dönsün, ekranda biz 6–8 gösteriyoruz
+          30 // server max 30 log dönsün, ekranda biz 6â€“8 gösteriyoruz
         );
         console.timeEnd("API: SonIslemler");
         setActions(data || []);
@@ -151,14 +151,13 @@ export function SonIslemlerKartlari() {
       <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
         Son çalıştığınız ekranlar. Kartlara tıklayarak ilgili sayfayı yeniden açabilirsiniz.
       </Typography>
-
       {/* 5 sütunlu grid: md ve üstü için 5 kart yan yana */}
       <Grid
         container
         spacing={2}
-        columns={{ xs: 1, sm: 2, md: 6 }} // 🔹 md ve üstü için 5 sütun
+        columns={{ xs: 1, sm: 2, md: 6 }} // ğŸ”¹ md ve üstü için 5 sütun
       >
-        {actions.slice(0, 6).map((action, index) => { // 🔹 Sadece 5 kart
+        {actions.slice(0, 6).map((action, index) => { // ğŸ”¹ Sadece 5 kart
           const { bg, text } = getCardPalette(index);
           const created = new Date(action.createdAt);
           const createdText = created.toLocaleString("tr-TR");
@@ -179,13 +178,13 @@ export function SonIslemlerKartlari() {
           const isClickable = !!action.clientUrl;
 
           return (
-            <Grid item xs={1} key={action.id}>
+            <Grid key={action.id} size={1}>
               <ButtonBase
                 onClick={handleOpenPage}
                 disabled={!isClickable}
                 sx={{
                   width: "100%",
-                  height: "100%",        // 🔹 Grid hücresini tamamen doldur
+                  height: "100%",        // ğŸ”¹ Grid hücresini tamamen doldur
                   borderRadius: 3,
                   textAlign: "left",
                 }}
@@ -193,13 +192,13 @@ export function SonIslemlerKartlari() {
                 <Card
                   sx={{
                     width: "100%",
-                    height: "100%",       // 🔹 Tüm kartlar aynı yükseklikte
+                    height: "100%",       // ğŸ”¹ Tüm kartlar aynı yükseklikte
                     borderRadius: 3,
                     backgroundColor: bg,
                     boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
                     transition: "all 0.2s ease",
                     display: "flex",
-                    flexDirection: "column", // 🔹 İçeriği dikeyde esnetebilmek için
+                    flexDirection: "column", // ğŸ”¹ İçeriği dikeyde esnetebilmek için
                     "&:hover": isClickable
                       ? {
                         transform: "translateY(-3px)",
@@ -282,7 +281,6 @@ export function SonIslemlerKartlari() {
           );
         })}
       </Grid>
-
     </Box>
   );
 

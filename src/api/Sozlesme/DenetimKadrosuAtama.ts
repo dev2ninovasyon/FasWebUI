@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getGorevAtamalariByKullaniciId = async (
@@ -19,10 +19,10 @@ export const getGorevAtamalariByKullaniciId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Görev Atamaları getirilemedi");
+      console.log("Görev Atamaları getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -45,10 +45,10 @@ export const getGorevAtamalariByDenetlenenIdYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Görev Atamaları getirilemedi");
+      console.log("Görev Atamaları getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -64,10 +64,10 @@ export const getGorevAtamalariById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Görev Atamaları getirilemedi");
+      console.log("Görev Atamaları getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -101,7 +101,7 @@ export const createGorevAtamalari = async (
       return { message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -136,7 +136,7 @@ export const updateGorevAtamalari = async (
       return { message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -156,7 +156,7 @@ export const deleteGorevAtamalariById = async (token: string, id: number) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -172,10 +172,10 @@ export const getAllUnvanlar = async (token: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Ünvan getirilemedi");
+      console.log("Ünvan getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -199,10 +199,10 @@ export const getRol = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Rol getirilemedi");
+      console.log("Rol getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -225,9 +225,9 @@ export const getKullaniciRol = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kullanıcı Rol getirilemedi");
+      console.log("Kullanıcı Rol getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

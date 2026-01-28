@@ -1,4 +1,4 @@
-import ExcelJS from "exceljs";
+﻿import ExcelJS from "exceljs";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
@@ -311,7 +311,7 @@ export const downloadPowerBIExport = async (
         const fileName = `Karsilastirmali_Analiz_PowerBI_${options.year}_${new Date().getTime()}.zip`;
         saveAs(zipBlob, fileName);
     } catch (error) {
-        console.error("PowerBI export error:", error);
+        console.log("PowerBI export error:", error);
         throw error;
     }
 };

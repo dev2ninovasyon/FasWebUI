@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getDonusturulmusMizanVerileriByDenetciDenetlenenYil = async (
@@ -21,10 +21,10 @@ export const getDonusturulmusMizanVerileriByDenetciDenetlenenYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dönüştürülmüş Mizan verileri getirilemedi");
+      console.log("Dönüştürülmüş Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -49,7 +49,7 @@ export const createDonusturulmusMizanVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -78,6 +78,6 @@ export const deleteDonusturulmusMizanVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

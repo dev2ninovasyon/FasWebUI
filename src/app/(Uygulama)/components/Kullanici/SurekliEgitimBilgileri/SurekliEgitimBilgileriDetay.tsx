@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+﻿import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
@@ -48,7 +48,7 @@ const SurekliEgitimBilgileriDetay = () => {
       setEldeEdilenKredi(surekliEgitimBilgileriVerileri.eldeEdilenKredi);
       setEgitimTuru(surekliEgitimBilgileriVerileri.egitimTuru);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -59,7 +59,13 @@ const SurekliEgitimBilgileriDetay = () => {
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="personelAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -67,12 +73,22 @@ const SurekliEgitimBilgileriDetay = () => {
             Personel Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {personelAdi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="sertifikaAdi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -80,12 +96,22 @@ const SurekliEgitimBilgileriDetay = () => {
             Sertifika Adı
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {sertifikaAdi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimBaslangicTarihi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -93,12 +119,22 @@ const SurekliEgitimBilgileriDetay = () => {
             Eğitim Başlangıç Tarihi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {egitimBaslangicTarihi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimBitisTarihi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -106,12 +142,22 @@ const SurekliEgitimBilgileriDetay = () => {
             Eğitim Bitiş Tarihi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {egitimBitisTarihi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimSaati"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -119,12 +165,22 @@ const SurekliEgitimBilgileriDetay = () => {
             Eğitim Saati
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {egitimSaati}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="eldeEdilenKredi"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -132,12 +188,22 @@ const SurekliEgitimBilgileriDetay = () => {
             Elde Edilen Kredi
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {eldeEdilenKredi}
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3
+          }}>
           <CustomFormLabel
             htmlFor="egitimTuru"
             sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}
@@ -145,13 +211,21 @@ const SurekliEgitimBilgileriDetay = () => {
             Eğitim Türü
           </CustomFormLabel>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 9
+          }}>
           <Typography textAlign="left" variant="h6">
             {egitimTuru}
           </Typography>
         </Grid>
 
-        <Grid item xs={12} sm={3}></Grid>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 3
+          }}></Grid>
       </Grid>
     </div>
   );

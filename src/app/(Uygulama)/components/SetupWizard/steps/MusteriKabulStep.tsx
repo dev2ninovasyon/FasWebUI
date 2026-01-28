@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
     Box,
@@ -80,7 +80,7 @@ export default function MusteriKabulStep({
                 setEnflasyon(denetlenenVerileri.enflasyonMu ? "Evet" : "Hayır");
             }
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
         }
     };
 
@@ -97,7 +97,7 @@ export default function MusteriKabulStep({
                 setOdemeBilgileriEnflasyon(response.enflasyonModulu);
             }
         } catch (error) {
-            console.error("Ödeme bilgileri hatası:", error);
+            console.log("Ödeme bilgileri hatası:", error);
         }
     };
 
@@ -146,7 +146,7 @@ export default function MusteriKabulStep({
                 enqueueSnackbar((result as any)?.message || "Bir hata oluştu", { variant: "error" });
             }
         } catch (error) {
-            console.error("Kabul işlemi hatası:", error);
+            console.log("Kabul işlemi hatası:", error);
         } finally {
             setLoading(false);
         }
@@ -161,11 +161,8 @@ export default function MusteriKabulStep({
             <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 3, fontStyle: "italic" }}>
                 * Denetim türü ve yıl tercihlerini daha sonra 'Müşteri İşlemleri {">"} Müşteri Detay' sayfasından değiştirebilirsiniz.
             </Typography>
-
             <Grid container spacing={2}>
                 <Grid
-                    item
-                    xs={12}
                     sx={{
                         display: "flex",
                         flexDirection: smDown ? "column" : "row",
@@ -173,7 +170,7 @@ export default function MusteriKabulStep({
                         justifyContent: "center",
                         gap: 1.5,
                     }}
-                >
+                    size={12}>
                     <Box
                         sx={{
                             display: "flex",
@@ -284,7 +281,6 @@ export default function MusteriKabulStep({
                     </Box>
                 </Grid>
             </Grid>
-
             <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-start" }}>
                 <Button
                     variant="text"

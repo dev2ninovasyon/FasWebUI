@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getYevmiyeFisNo = async (
@@ -21,10 +21,10 @@ export const getYevmiyeFisNo = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Yevmiye Fiş No getirilemedi");
+      console.log("Yevmiye Fiş No getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -48,10 +48,10 @@ export const getStandartYevmiyeFisNo = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Standart Yevmiye Fiş No getirilemedi");
+      console.log("Standart Yevmiye Fiş No getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -75,10 +75,10 @@ export const getStandartYevmiyeFisNoHaric = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Standart Yevmiye Fiş No getirilemedi");
+      console.log("Standart Yevmiye Fiş No getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -115,10 +115,10 @@ export const getFisListesi = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Yevmiye Fiş No getirilemedi");
+      console.log("Yevmiye Fiş No getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -155,10 +155,10 @@ export const getFisListesiHaric = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Yevmiye Fiş No getirilemedi");
+      console.log("Yevmiye Fiş No getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -185,10 +185,10 @@ export const saveHaricFisListesi = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hariç Fiş Listesi kaydedilemedi");
+      console.log("Hariç Fiş Listesi kaydedilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -215,9 +215,9 @@ export const saveHaricFisListesiHaric = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hariç Fiş Listesi kaydedilemedi");
+      console.log("Hariç Fiş Listesi kaydedilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

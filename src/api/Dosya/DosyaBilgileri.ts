@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getDosyaBilgileri = async (
@@ -22,10 +22,10 @@ export const getDosyaBilgileri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dosya Bilgileri getirilemedi");
+      console.log("Dosya Bilgileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -45,7 +45,7 @@ export const deleteDosyaBilgisiById = async (token: string, id: number) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -70,7 +70,7 @@ export const deleteDosyaBilgisiMultiple = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -86,9 +86,9 @@ export const getDefterYuklemeLoglari = async (token: string, id: number) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Defter Yükleme Logları getirilemedi");
+      console.log("Defter Yükleme Logları getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useCallback } from "react";
+﻿import React, { useEffect, useCallback } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -157,7 +155,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       }
     } catch (error) {
       setIsClickedUpdate(false);
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -205,7 +203,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
       }
     } catch (error) {
       setIsClickedUpdate(false);
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -307,7 +305,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
         }
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [
     user.token,
@@ -349,7 +347,11 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <Card
           sx={{
             width: "100%",

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
   Table,
   TableBody,
@@ -36,7 +36,12 @@ const ErtelenmisVergiHesabiCardTable: React.FC<CardTableProps> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} sx={{ mb: { xs: 2, lg: 0 } }}>
+      <Grid
+        sx={{ mb: { xs: 2, lg: 0 } }}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <Paper
           elevation={2}
           sx={{

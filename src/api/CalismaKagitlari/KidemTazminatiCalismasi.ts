@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 export interface KidemTazminatiHesaplamaSonuclari {
     id: number;
@@ -39,11 +39,11 @@ export const getKidemTazminatiCalismasi = async (
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Kıdem Tazminatı verileri alınırken hata oluştu:", response.status);
+            console.log("Kıdem Tazminatı verileri alınırken hata oluştu:", response.status);
             throw new Error(`API Error: ${response.status}`);
         }
     } catch (error) {
-        console.error("Kıdem Tazminatı verileri alınırken hata oluştu:", error);
+        console.log("Kıdem Tazminatı verileri alınırken hata oluştu:", error);
         throw error;
     }
 };

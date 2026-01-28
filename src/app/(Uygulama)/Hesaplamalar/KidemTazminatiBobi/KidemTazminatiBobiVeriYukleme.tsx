@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
@@ -321,8 +321,8 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         "16-Sözleşme sona ermeden sigortalının aynı işverene ait diğer işyerine nakli",
         "17-İşyerinin kapanması",
         "18-İşin sona ermesi",
-        "19-Mevsim bitimi (İş akdinin askıya alınması halinde kullanılır. Tekrar başlatılmayacaksa '4' nolu  kod kullanılır)",
-        "20-Kampanya bitimi (İş akdinin askıya alınması halinde kullanılır. Tekrar başlatılmayacaksa '4' nolu  kod kullanılır)",
+        "19-Mevsim bitimi (İş akdinin askıya alınması halinde kullanılır. Tekrar başlatılmayacaksa '4' noluÂ  kod kullanılır)",
+        "20-Kampanya bitimi (İş akdinin askıya alınması halinde kullanılır. Tekrar başlatılmayacaksa '4' nolu Â kod kullanılır)",
         "21-Statü değişikliği",
         "22-Diğer nedenler",
         "23-İşçi tarafından zorunlu nedenle fesih",
@@ -332,17 +332,17 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         "27-İşveren tarafından zorunlu nedenlerle ve tutukluluk nedeniyle fesih",
         "28-İşveren tarafından sağlık nedeni ile fesih",
         "29-İşveren tarafından işçinin ahlak ve iyi niyet kurallarına aykırı davranışı nedeni ile fesih",
-        "30-Vize süresinin bitimi ( İş akdinin askıya alınması halinde kullanılır.  Tekrar başlatılmayacaksa '4' nolu  kod kullanılır)",
+        "30-Vize süresinin bitimi ( İş akdinin askıya alınması halinde kullanılır.Â  Tekrar başlatılmayacaksa '4' noluÂ  kod kullanılır)",
         "31-Borçlar Kanunu, Sendikalar Kanunu, Grev ve Lokavt Kanunu kapsamında kendi istek ve kusuru dışında fesih",
         "32-4046 sayılı Kanunun 21. maddesine göre özelleştirme nedeni ile fesih",
         "33-Gazeteci tarafından sözleşmenin feshi",
         "34-İşyerinin devri, işin veya işyerinin niteliğinin değişmesi nedeniyle fesih",
         "36-KHK ile işyerinin kapanması",
-        "37-KHK ile kamu görevinden çıkarma ",
+        "37-KHK ile kamu görevinden çıkarmaÂ ",
         "38-Doğum nedeniyle ayrılma",
         "39-696 KHK ile kamu işçiliğine geçiş",
         "40-696 KHK ile kamu işçiliğine geçilmemesi sebebiyle çıkış",
-        "41-Re’sen işten ayrılış bildirgesi düzenlenenler",
+        "41-Reâ€™sen işten ayrılış bildirgesi düzenlenenler",
       ],
       className: "htLeft",
     }, // Sgk İşten Ayrılış Nedeni Kodu
@@ -736,7 +736,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -775,7 +775,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -856,7 +856,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -868,7 +868,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       );
       setRowCount(format.satirSayisi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -931,7 +931,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         saveAs(blob, "KidemTazminatiBobiFormati.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -1030,7 +1030,6 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
           </Button>
         </Box>
       </Box>
-
       <HotTable
         style={{
           height: "100%",
@@ -1090,16 +1089,20 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
         ]}
       />
       <Grid container marginTop={2}>
-        <Grid item xs={12} lg={10}></Grid>
         <Grid
-          item
-          xs={12}
-          lg={2}
+          size={{
+            xs: 12,
+            lg: 10
+          }}></Grid>
+        <Grid
           sx={{
             display: "flex",
             justifyContent: "flex-end",
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>

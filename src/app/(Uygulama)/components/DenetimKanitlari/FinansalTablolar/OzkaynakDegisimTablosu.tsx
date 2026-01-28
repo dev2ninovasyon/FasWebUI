@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -118,7 +118,7 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
       setOzkaynakData(ozkaynakData);
       setRenkliKalemIds(renkli);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -128,7 +128,11 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12}>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <TableContainer
           sx={{
             maxHeight: "684px",

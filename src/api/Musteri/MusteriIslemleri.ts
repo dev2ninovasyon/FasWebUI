@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const createDenetlenen = async (token: string, createdMusteri: any) => {
@@ -27,7 +27,7 @@ export const createDenetlenen = async (token: string, createdMusteri: any) => {
       return { success: false, message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -73,7 +73,7 @@ export const uploadAndParseKurumlarBeyannamesi = async (
       return { success: false, message: message };
     }
   } catch (error) {
-    console.error("Dosya yüklenirken hata oluştu:", error);
+    console.log("Dosya yüklenirken hata oluştu:", error);
     return { success: false, message: "Beklenmedik bir hata oluştu." };
   }
 };
@@ -90,10 +90,10 @@ export const getDenetlenenById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Denetlenen getirilemedi");
+      console.log("Denetlenen getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -112,11 +112,11 @@ export const getDenetlenenByDenetciId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(`Denetlenenler getirilemedi (${denetciId}). Durum: ${response.status} ${response.statusText}`);
+      console.log(`Denetlenenler getirilemedi (${denetciId}). Durum: ${response.status} ${response.statusText}`);
       return [];
     }
   } catch (error: any) {
-    console.error("getDenetlenenByDenetciId hatası:", error);
+    console.log("getDenetlenenByDenetciId hatası:", error);
     return [];
   }
 };
@@ -139,10 +139,10 @@ export const getDenetlenenKonsolideAnaSirketByDenetciId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Denetlenenler getirilemedi");
+      console.log("Denetlenenler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -167,11 +167,11 @@ export const getDenetlenenByRol = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(`Denetlenenler (Rol bazlı) getirilemedi. Durum: ${response.status} ${response.statusText}`);
+      console.log(`Denetlenenler (Rol bazlı) getirilemedi. Durum: ${response.status} ${response.statusText}`);
       return [];
     }
   } catch (error: any) {
-    console.error("getDenetlenenByRol hatası:", error);
+    console.log("getDenetlenenByRol hatası:", error);
     return [];
   }
 };
@@ -198,7 +198,7 @@ export const updateDenetlenen = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -236,7 +236,7 @@ export const updateDenetlenenDenetimTuru = async (
       return { message };
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -257,7 +257,7 @@ export const deleteDenetlenenById = async (token: string, id: number) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -273,10 +273,10 @@ export const getSektorKodlari = async (token: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Sektör Kodları getirilemedi");
+      console.log("Sektör Kodları getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -301,7 +301,7 @@ export const createSirketYonetimKadrosu = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -320,10 +320,10 @@ export const getSirketYonetimKadrosuById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Şirket Yönetim Kadrosu getirilemedi");
+      console.log("Şirket Yönetim Kadrosu getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -345,10 +345,10 @@ export const getSirketYonetimKadrosuByDenetlenenId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Şirket Yönetim Kadrosu getirilemedi");
+      console.log("Şirket Yönetim Kadrosu getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -377,7 +377,7 @@ export const updateSirketYonetimKadrosu = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -403,7 +403,7 @@ export const deleteSirketYonetimKadrosuById = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -425,7 +425,7 @@ export const createSubeler = async (token: string, createdSubeler: any) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -441,10 +441,10 @@ export const getSubelerById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Şube getirilemedi");
+      console.log("Şube getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -466,10 +466,10 @@ export const getSubelerByDenetlenenId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Şubeler getirilemedi");
+      console.log("Şubeler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -495,7 +495,7 @@ export const updateSubeler = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -515,7 +515,7 @@ export const deleteSubelerById = async (token: string, id: number) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -540,7 +540,7 @@ export const createHissedarlar = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -556,10 +556,10 @@ export const getHissedarlarById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hissedarlar getirilemedi");
+      console.log("Hissedarlar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -582,10 +582,10 @@ export const getHissedarlarByDenetlenenIdYil = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Hissedarlar getirilemedi");
+      console.log("Hissedarlar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -611,7 +611,7 @@ export const getMizandanHissedarlarByDenetlenenIdYil = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -637,7 +637,7 @@ export const updateHissedarlar = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -657,7 +657,7 @@ export const deleteHissedarlarById = async (token: string, id: number) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -682,7 +682,7 @@ export const createIliskiliTaraflar = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -698,10 +698,10 @@ export const getIliskiliTaraflarById = async (token: string, id: any) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İlişkili Taraf getirilemedi");
+      console.log("İlişkili Taraf getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -723,10 +723,10 @@ export const getIliskiliTaraflarByDenetlenenId = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İlişkili Taraflar getirilemedi");
+      console.log("İlişkili Taraflar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -752,7 +752,7 @@ export const updateIliskiliTaraflar = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -772,7 +772,7 @@ export const deleteIliskiliTaraflarById = async (token: string, id: number) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -799,10 +799,10 @@ export const createIliskiliTaraflarListe = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İliskili Taraflar Listesi kaydedilemedi");
+      console.log("İliskili Taraflar Listesi kaydedilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -826,10 +826,10 @@ export const getMusteriTanimaSayisalBilgiler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Sayısal Bilgiler getirilemedi");
+      console.log("Sayısal Bilgiler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -857,7 +857,7 @@ export const updateMusteriTanimaSayisalBilgiler = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -881,10 +881,10 @@ export const getMusteriTanimaStatikBilgiler = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Statik Bilgiler getirilemedi");
+      console.log("Statik Bilgiler getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -912,7 +912,7 @@ export const updateMusteriTanimaStatikBilgiler = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -936,10 +936,10 @@ export const getTeklifHesaplama = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Teklif Hesaplama verileri getirilemedi");
+      console.log("Teklif Hesaplama verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -964,7 +964,7 @@ export const updateTeklifHesaplama = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -993,7 +993,7 @@ export const TeklifHesapla = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -1021,6 +1021,6 @@ export const deleteTeklifHesaplama = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

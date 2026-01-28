@@ -1,4 +1,4 @@
-import { Button, Grid, MenuItem, Typography } from "@mui/material";
+﻿import { Button, Grid, MenuItem, Typography } from "@mui/material";
 import React from "react";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -28,7 +28,14 @@ const OrneklemForm: React.FC<Props> = ({
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={3.5} lg={3.5} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3.5,
+            lg: 3.5
+          }}>
           <CustomFormLabel
             htmlFor="guvenilirlikDuzeyi"
             sx={{
@@ -67,7 +74,14 @@ const OrneklemForm: React.FC<Props> = ({
             <MenuItem value={99}>99</MenuItem>
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} sm={3.5} lg={3.5} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3.5,
+            lg: 3.5
+          }}>
           <CustomFormLabel
             htmlFor="hataPayi"
             sx={{
@@ -92,7 +106,14 @@ const OrneklemForm: React.FC<Props> = ({
             onChange={(e: any) => setHataPayi(e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={3.5} lg={3.5} display="flex" alignItems="center">
+        <Grid
+          display="flex"
+          alignItems="center"
+          size={{
+            xs: 12,
+            sm: 3.5,
+            lg: 3.5
+          }}>
           <CustomFormLabel
             htmlFor="listelemeTuru"
             sx={{
@@ -122,7 +143,12 @@ const OrneklemForm: React.FC<Props> = ({
             <MenuItem value={"Rastgele"}>Rastgele</MenuItem>
           </CustomSelect>
         </Grid>
-        <Grid item xs={12} sm={1.5} lg={1.5}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 1.5,
+            lg: 1.5
+          }}>
           <Button
             size="medium"
             variant="outlined"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -130,7 +130,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       setYevmiyeFisNo(standartfisListesi);
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -170,7 +170,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -211,7 +211,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -250,7 +250,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -265,7 +265,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 
       setYevmiyeFisNo(fisListesi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -305,7 +305,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         setTip(programVukMizanControl);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -323,7 +323,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         setActiveStep(1);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -453,7 +453,12 @@ const EDefterMizanEnflasyonHaricStepper = () => {
           {activeStep == 0 ? (
             <>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <HaricFisListesiForm
                     hesapNo={hesapNo}
                     yevmiyeFisNo={yevmiyeFisNo}
@@ -468,7 +473,12 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                 </Grid>
               </Grid>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <HaricFisListesiEnflasyonHaricTable
                     hesapNo={hesapNo}
                     yevmiyeFisNo={yevmiyeFisNo}
@@ -494,17 +504,16 @@ const EDefterMizanEnflasyonHaricStepper = () => {
           ) : activeStep == 1 ? (
             <>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={6} display="flex">
+                <Grid
+                  display="flex"
+                  size={{
+                    xs: 12,
+                    lg: 6
+                  }}>
                   {lgDown ? (
                     <>
                       <Grid container p={1}>
-                        <Grid
-                          item
-                          xs={12}
-                          display="flex"
-                          justifyContent={"space-between"}
-                          mb={1}
-                        >
+                        <Grid display="flex" justifyContent={"space-between"} mb={1} size={12}>
                           <CustomFormLabel
                             htmlFor="mizanBaslangicTarihi"
                             sx={{
@@ -527,13 +536,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                             }
                           />
                         </Grid>
-                        <Grid
-                          item
-                          xs={12}
-                          display="flex"
-                          justifyContent={"space-between"}
-                          mb={1}
-                        >
+                        <Grid display="flex" justifyContent={"space-between"} mb={1} size={12}>
                           <CustomFormLabel
                             htmlFor="mizanBitisTarihi"
                             sx={{
@@ -556,7 +559,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                             }
                           />
                         </Grid>
-                        <Grid item xs={12} mb={1}>
+                        <Grid mb={1} size={12}>
                           <Button
                             size="medium"
                             variant="outlined"
@@ -571,7 +574,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                             Mizan
                           </Button>
                         </Grid>
-                        <Grid item xs={12} mb={2}>
+                        <Grid mb={2} size={12}>
                           <Button
                             size="medium"
                             variant="outlined"
@@ -587,15 +590,13 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                           </Button>
                         </Grid>
                         <Grid
-                          item
-                          xs={12}
                           paddingX={1}
                           sx={{
                             display: "flex",
                             justifyContent: "end",
                             alignItems: "center",
                           }}
-                        >
+                          size={12}>
                           <Tooltip title="Mizan Oluşturma Kayıtları">
                             <Fab
                               color="warning"
@@ -612,13 +613,13 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                     <>
                       <Grid container>
                         <Grid
-                          item
-                          lg={12}
                           display="flex"
                           justifyContent={"space-between"}
                           height={"30%"}
                           padding={1}
-                        >
+                          size={{
+                            lg: 12
+                          }}>
                           <CustomFormLabel
                             htmlFor="mizanBaslangicTarihi"
                             sx={{
@@ -689,16 +690,16 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                           </Button>
                         </Grid>
                         <Grid
-                          item
-                          xs={12}
-                          lg={12}
                           paddingX={1}
                           sx={{
                             display: "flex",
                             justifyContent: "end",
                             alignItems: "center",
                           }}
-                        >
+                          size={{
+                            xs: 12,
+                            lg: 12
+                          }}>
                           <Tooltip title="Mizan Oluşturma Kayıtları">
                             <Fab
                               color="warning"
@@ -713,7 +714,12 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                     </>
                   )}
                 </Grid>
-                <Grid item xs={12} lg={6} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 6
+                  }}>
                   <MizanCard
                     type={"E-DefterHaric"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
@@ -722,7 +728,12 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                 </Grid>
               </Grid>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Mizan
                     type={"E-DefterHaric"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
@@ -733,7 +744,12 @@ const EDefterMizanEnflasyonHaricStepper = () => {
             </>
           ) : activeStep == 2 ? (
             <Grid container marginTop={3}>
-              <Grid item xs={12} lg={12} padding={1}>
+              <Grid
+                padding={1}
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <KurumlarVergisiBeyannamesiKarsilastirmaEnflasyonHaric
                   type={"E-DefterHaric"}
                 />
@@ -743,14 +759,14 @@ const EDefterMizanEnflasyonHaricStepper = () => {
             <>
               <Grid container marginTop={3}>
                 <Grid
-                  item
-                  xs={12}
-                  lg={1.75}
                   sx={{ pl: { xs: 1, lg: 1 }, pr: { xs: 1, lg: 0 }, py: 1 }}
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 1.75
+                  }}>
                   <Button
                     size="medium"
                     variant="outlined"
@@ -764,14 +780,14 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                   </Button>
                 </Grid>
                 <Grid
-                  item
-                  xs={12}
-                  lg={10.25}
                   padding={1}
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 10.25
+                  }}>
                   <ProgramFormatiCard
                     type={"E-DefterHaric"}
                     programFormatinaDonusturTiklandimi={
@@ -784,7 +800,12 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                 </Grid>
               </Grid>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <ProgramVukMizan
                     type={"E-DefterHaric"}
                     programFormatinaDonusturTiklandimi={

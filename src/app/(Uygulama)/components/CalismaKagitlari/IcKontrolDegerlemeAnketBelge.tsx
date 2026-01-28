@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -104,10 +104,10 @@ const IcKontrolDegerlemeAnketBelge: React.FC<CalismaKagidiProps> = ({
         handleClosePopUp();
         setIsNew(false);
       } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -142,10 +142,10 @@ const IcKontrolDegerlemeAnketBelge: React.FC<CalismaKagidiProps> = ({
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }
   };
@@ -161,10 +161,10 @@ const IcKontrolDegerlemeAnketBelge: React.FC<CalismaKagidiProps> = ({
         fetchData();
         handleClosePopUp();
       } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
+        console.log("Çalışma Kağıdı Verisi silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -180,10 +180,10 @@ const IcKontrolDegerlemeAnketBelge: React.FC<CalismaKagidiProps> = ({
       if (result) {
         fetchData();
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        console.log("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -229,7 +229,7 @@ const IcKontrolDegerlemeAnketBelge: React.FC<CalismaKagidiProps> = ({
       setToplam(toplam.length);
       setTamamlanan(tamamlanan.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -322,12 +322,12 @@ const IcKontrolDegerlemeAnketBelge: React.FC<CalismaKagidiProps> = ({
           {veriler.map((veri, index) => (
             <Grid
               key={index}
-              item
-              xs={12}
-              lg={12}
               mt="20px"
               onClick={() => handleCardClick(veri)}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CalismaKagidiCard
                 title={`${index + 1}. ${veri.aciklama}`}
                 standartMi={veri.standartMi}
@@ -344,15 +344,15 @@ const IcKontrolDegerlemeAnketBelge: React.FC<CalismaKagidiProps> = ({
           }}
         >
           <Grid
-            item
-            xs={12}
-            lg={1.5}
             my={2}
             sx={{
               display: "flex",
               justifyContent: "end",
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 1.5
+            }}>
             <Button
               size="medium"
               variant="outlined"

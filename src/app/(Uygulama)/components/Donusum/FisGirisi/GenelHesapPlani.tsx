@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -264,7 +264,7 @@ const GenelHesapPlani: React.FC<Props> = ({ data }) => {
         saveAs(blob, "GenelHesapPlani.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -289,7 +289,12 @@ const GenelHesapPlani: React.FC<Props> = ({ data }) => {
 
   return (
     <Grid container>
-      <Grid item xs={12} lg={12} mb={2}>
+      <Grid
+        mb={2}
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
         <HotTable
           style={{
             height: "100%",
@@ -328,15 +333,19 @@ const GenelHesapPlani: React.FC<Props> = ({ data }) => {
           contextMenu={["alignment", "copy"]}
         />
       </Grid>
-      <Grid item xs={12} lg={10}></Grid>
       <Grid
-        item
-        xs={12}
-        lg={2}
+        size={{
+          xs: 12,
+          lg: 10
+        }}></Grid>
+      <Grid
         display={"flex"}
         alignItems={"end"}
         sx={{ py: 2, pl: { lg: 2 } }}
-      >
+        size={{
+          xs: 12,
+          lg: 2
+        }}>
         <Button
           size="medium"
           variant="outlined"

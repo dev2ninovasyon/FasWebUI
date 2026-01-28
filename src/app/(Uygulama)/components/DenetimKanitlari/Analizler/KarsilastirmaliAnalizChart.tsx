@@ -1,4 +1,4 @@
-import { Button, Grid, useTheme } from "@mui/material";
+﻿import { Button, Grid, useTheme } from "@mui/material";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 import { AppState } from "@/store/store";
@@ -569,7 +569,7 @@ const KarsilastirmaliAnalizChart: React.FC<Props> = ({
   return (
     <ParentCard title={title}>
       <Grid container>
-        <Grid item xs={12} mt={2} sx={{ minHeight: 300, maxHeight: 300 }}>
+        <Grid mt={2} sx={{ minHeight: 300, maxHeight: 300 }} size={12}>
           <Chart
             options={chartOptions}
             series={chartData.series}
@@ -579,7 +579,7 @@ const KarsilastirmaliAnalizChart: React.FC<Props> = ({
           />
         </Grid>
         {activeChart !== "Ana" && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Button
               type="button"
               size="medium"

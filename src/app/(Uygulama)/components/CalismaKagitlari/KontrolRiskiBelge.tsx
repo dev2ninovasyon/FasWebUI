@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+﻿import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Box,
   Card,
@@ -119,10 +119,10 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
         handleClosePopUp();
         setIsNew(false);
       } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -152,10 +152,10 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }
   };
@@ -181,10 +181,10 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
         if (result) {
           fetchData();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }
   };
@@ -200,10 +200,10 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
         fetchData();
         handleClosePopUp();
       } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
+        console.log("Çalışma Kağıdı Verisi silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -230,10 +230,10 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
         fetchData();
         setOpenGroupIndex(null);
       } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
+        console.log("Çalışma Kağıdı Verisi silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -296,7 +296,7 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
       setToplam(toplam.length);
       setTamamlanan(tamamlanan.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, grupluMu, setToplam, setTamamlanan]);
 
@@ -312,10 +312,10 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
       if (result) {
         fetchData();
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        console.log("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
 
@@ -412,7 +412,11 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
                     justifyContent: "center",
                   }}
                 >
-                  <Grid item lg={12} xs={12}>
+                  <Grid
+                    size={{
+                      lg: 12,
+                      xs: 12
+                    }}>
                     <Card
                       sx={{
                         padding: 0,
@@ -467,14 +471,14 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
                               .map((veriWithBaslikId: any, index: any) => (
                                 <Grid
                                   key={index}
-                                  item
-                                  xs={12}
-                                  lg={12}
                                   mb={3}
                                   onClick={() => {
                                     handleCardClick(veriWithBaslikId);
                                   }}
-                                >
+                                  size={{
+                                    xs: 12,
+                                    lg: 12
+                                  }}>
                                   <CalismaKagidiCard
                                     title={`${index + 1}. ${veriWithBaslikId.konu
                                       }`}
@@ -492,14 +496,14 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
                               }}
                             >
                               <Grid
-                                item
-                                xs={12}
-                                lg={1.5}
                                 sx={{
                                   display: "flex",
                                   justifyContent: "start",
                                 }}
-                              >
+                                size={{
+                                  xs: 12,
+                                  lg: 1.5
+                                }}>
                                 <Button
                                   size="medium"
                                   variant="outlined"
@@ -521,14 +525,14 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
                                 </Button>
                               </Grid>
                               <Grid
-                                item
-                                xs={12}
-                                lg={1.5}
                                 sx={{
                                   display: "flex",
                                   justifyContent: "end",
                                 }}
-                              >
+                                size={{
+                                  xs: 12,
+                                  lg: 1.5
+                                }}>
                                 <Button
                                   size="medium"
                                   variant="outlined"
@@ -572,12 +576,12 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
               {veriler.map((veri, index) => (
                 <Grid
                   key={index}
-                  item
-                  xs={12}
-                  lg={12}
                   mt="20px"
                   onClick={() => handleCardClick(veri)}
-                >
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <CalismaKagidiCard
                     title={`${index + 1}. ${veri.konu}`}
                     content={veri.islem}
@@ -595,15 +599,15 @@ const KontrolRiskiBelge: React.FC<CalismaKagidiProps> = ({
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={1.5}
                 my={2}
                 sx={{
                   display: "flex",
                   justifyContent: "end",
                 }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 1.5
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"

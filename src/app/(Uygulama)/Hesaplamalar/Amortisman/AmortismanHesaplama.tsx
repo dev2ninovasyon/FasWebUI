@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -379,7 +379,7 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -440,7 +440,7 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         saveAs(blob, "AmortismanHesaplama.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -500,16 +500,20 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         contextMenu={["alignment", "copy"]}
       />
       <Grid container marginTop={2} marginBottom={1}>
-        <Grid item xs={12} lg={10}></Grid>
         <Grid
-          item
-          xs={12}
-          lg={2}
+          size={{
+            xs: 12,
+            lg: 10
+          }}></Grid>
+        <Grid
           sx={{
             display: "flex",
             justifyContent: "flex-end",
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>

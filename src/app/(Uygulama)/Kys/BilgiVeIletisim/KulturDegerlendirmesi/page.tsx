@@ -1,8 +1,10 @@
-﻿import dynamic from "next/dynamic";
-const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
+﻿"use client";
+
+import dynamic from "next/dynamic";
 import { Box } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 const BCrumb = [
     { to: "/Kys", title: "KYS" },

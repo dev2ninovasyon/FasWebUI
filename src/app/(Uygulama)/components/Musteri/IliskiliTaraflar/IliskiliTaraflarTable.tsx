@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -57,10 +57,10 @@ const IliskiliTaraflarTable = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("İlişkili Taraf silinemedi");
+        console.log("İlişkili Taraf silinemedi");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -78,7 +78,7 @@ const IliskiliTaraflarTable = () => {
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 export interface DonusumKayitlariKontrolSatirDto {
     kebirKodu: string;
@@ -50,11 +50,11 @@ export async function getDonusumKayitlari(
         if (response.ok) {
             return response.json();
         } else {
-            console.error("Veriler getirilemedi");
+            console.log("Veriler getirilemedi");
             return null;
         }
     } catch (error) {
-        console.error("Error fetching data:", error);
+        console.log("Error fetching data:", error);
         return null;
     }
 }

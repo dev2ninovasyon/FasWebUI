@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
@@ -16,7 +16,7 @@ const Page = () => {
       >
         <ParentCard title="Müşteriler">
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <MusteriEkleButton />
               <Box>
                 <MusteriTable />

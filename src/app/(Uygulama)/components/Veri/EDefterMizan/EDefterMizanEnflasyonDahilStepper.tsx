@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -106,7 +106,7 @@ const EDefterMizanEnflasyonStepper = () => {
       setYevmiyeFisNo(standartfisListesi);
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -146,7 +146,7 @@ const EDefterMizanEnflasyonStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -187,7 +187,7 @@ const EDefterMizanEnflasyonStepper = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -202,7 +202,7 @@ const EDefterMizanEnflasyonStepper = () => {
 
       setYevmiyeFisNo(fisListesi);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -225,7 +225,7 @@ const EDefterMizanEnflasyonStepper = () => {
         setActiveStep(1);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -355,7 +355,12 @@ const EDefterMizanEnflasyonStepper = () => {
           {activeStep == 0 ? (
             <>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <HaricFisListesiForm
                     hesapNo={hesapNo}
                     yevmiyeFisNo={yevmiyeFisNo}
@@ -370,7 +375,12 @@ const EDefterMizanEnflasyonStepper = () => {
                 </Grid>
               </Grid>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <HaricFisListesiTable
                     hesapNo={hesapNo}
                     yevmiyeFisNo={yevmiyeFisNo}
@@ -396,17 +406,16 @@ const EDefterMizanEnflasyonStepper = () => {
           ) : activeStep == 1 ? (
             <>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={6} display="flex">
+                <Grid
+                  display="flex"
+                  size={{
+                    xs: 12,
+                    lg: 6
+                  }}>
                   {lgDown ? (
                     <>
                       <Grid container p={1}>
-                        <Grid
-                          item
-                          xs={12}
-                          display="flex"
-                          justifyContent={"space-between"}
-                          mb={1}
-                        >
+                        <Grid display="flex" justifyContent={"space-between"} mb={1} size={12}>
                           <CustomFormLabel
                             htmlFor="mizanBaslangicTarihi"
                             sx={{
@@ -429,13 +438,7 @@ const EDefterMizanEnflasyonStepper = () => {
                             }
                           />
                         </Grid>
-                        <Grid
-                          item
-                          xs={12}
-                          display="flex"
-                          justifyContent={"space-between"}
-                          mb={1}
-                        >
+                        <Grid display="flex" justifyContent={"space-between"} mb={1} size={12}>
                           <CustomFormLabel
                             htmlFor="mizanBitisTarihi"
                             sx={{
@@ -458,7 +461,7 @@ const EDefterMizanEnflasyonStepper = () => {
                             }
                           />
                         </Grid>
-                        <Grid item xs={12} mb={1}>
+                        <Grid mb={1} size={12}>
                           <Button
                             size="medium"
                             variant="outlined"
@@ -473,7 +476,7 @@ const EDefterMizanEnflasyonStepper = () => {
                             Mizan
                           </Button>
                         </Grid>
-                        <Grid item xs={12} mb={2}>
+                        <Grid mb={2} size={12}>
                           <Button
                             size="medium"
                             variant="outlined"
@@ -489,15 +492,13 @@ const EDefterMizanEnflasyonStepper = () => {
                           </Button>
                         </Grid>
                         <Grid
-                          item
-                          xs={12}
                           paddingX={1}
                           sx={{
                             display: "flex",
                             justifyContent: "end",
                             alignItems: "center",
                           }}
-                        >
+                          size={12}>
                           <Tooltip title="Mizan Oluşturma Kayıtları">
                             <Fab
                               color="warning"
@@ -514,13 +515,13 @@ const EDefterMizanEnflasyonStepper = () => {
                     <>
                       <Grid container>
                         <Grid
-                          item
-                          lg={12}
                           display="flex"
                           justifyContent={"space-between"}
                           height={"30%"}
                           padding={1}
-                        >
+                          size={{
+                            lg: 12
+                          }}>
                           <CustomFormLabel
                             htmlFor="mizanBaslangicTarihi"
                             sx={{
@@ -591,16 +592,16 @@ const EDefterMizanEnflasyonStepper = () => {
                           </Button>
                         </Grid>
                         <Grid
-                          item
-                          xs={12}
-                          lg={12}
                           paddingX={1}
                           sx={{
                             display: "flex",
                             justifyContent: "end",
                             alignItems: "center",
                           }}
-                        >
+                          size={{
+                            xs: 12,
+                            lg: 12
+                          }}>
                           <Tooltip title="Mizan Oluşturma Kayıtları">
                             <Fab
                               color="warning"
@@ -615,7 +616,12 @@ const EDefterMizanEnflasyonStepper = () => {
                     </>
                   )}
                 </Grid>
-                <Grid item xs={12} lg={6} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 6
+                  }}>
                   <MizanCard
                     type={"E-Defter"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
@@ -624,7 +630,12 @@ const EDefterMizanEnflasyonStepper = () => {
                 </Grid>
               </Grid>
               <Grid container marginTop={3}>
-                <Grid item xs={12} lg={12} padding={1}>
+                <Grid
+                  padding={1}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
                   <Mizan
                     type={"E-Defter"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
@@ -635,7 +646,12 @@ const EDefterMizanEnflasyonStepper = () => {
             </>
           ) : (
             <Grid container marginTop={3}>
-              <Grid item xs={12} lg={12} padding={1}>
+              <Grid
+                padding={1}
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <KurumlarVergisiBeyannamesiKarsilastirma type={"E-Defter"} />
               </Grid>
             </Grid>

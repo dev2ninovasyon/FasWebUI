@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -143,7 +143,7 @@ const Page: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -183,7 +183,7 @@ const Page: React.FC = () => {
           setDigerBilgiler(musteriTanimaStatikBilgiler.digerBilgiler);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -195,9 +195,6 @@ const Page: React.FC = () => {
       <Breadcrumb title="Müşteri Tanıma" items={BCrumb} />
       <Grid container>
         <Grid
-          item
-          xs={12}
-          lg={12}
           sx={{
             display: "flex",
             flexDirection: smDown ? "column" : "row",
@@ -206,7 +203,10 @@ const Page: React.FC = () => {
             mb: 2,
             gap: 1,
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Box
             sx={{
               display: "flex",
@@ -239,13 +239,21 @@ const Page: React.FC = () => {
             </Button>
           </Box>
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <MusteriTanima
             kaydetTiklandimi={kaydetTiklandimi}
             setKaydetTiklandimi={setKaydetTiklandimi}
           />
         </Grid>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
             user.rol?.includes("SorumluDenetci") ||
             user.rol?.includes("Denetci") ||
@@ -258,21 +266,39 @@ const Page: React.FC = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   hazirlayan="Denetçi - Yardımcı Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   onaylayan="Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
               </Grid>
-              <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+              <Grid
+                mt={3}
+                size={{
+                  xs: 12,
+                  md: 3.9,
+                  lg: 3.9
+                }}>
                 <BelgeKontrolCard
                   fetch={() => {}}
                   kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -290,7 +316,12 @@ const Page: React.FC = () => {
               gap: 1,
             }}
           >
-            <Grid item xs={12} lg={12} mt={5}>
+            <Grid
+              mt={5}
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <IslemlerCard controller={controller} />
             </Grid>
           </Grid>
@@ -320,16 +351,16 @@ const Page: React.FC = () => {
         <DialogContent>
           <Grid container>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mb: 2,
               }}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CustomSelect
                 labelId="tur"
                 id="tur"
@@ -352,7 +383,11 @@ const Page: React.FC = () => {
                 </MenuItem>
               </CustomSelect>
             </Grid>
-            <Grid item xs={12} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                lg: 6
+              }}>
               <FormControlLabel
                 control={
                   <CustomSwitch
@@ -366,7 +401,11 @@ const Page: React.FC = () => {
                 sx={{ ml: 1 }}
               />
             </Grid>
-            <Grid item xs={12} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                lg: 6
+              }}>
               <FormControlLabel
                 control={
                   <CustomSwitch
@@ -382,17 +421,21 @@ const Page: React.FC = () => {
             </Grid>
             {uzmanTalebi ? (
               <Grid
-                item
-                xs={12}
-                lg={12}
                 sx={{
                   display: "flex",
                   alignContent: "center",
                   justifyContent: "space-between",
                   mt: 2,
                 }}
-              >
-                <Grid item xs={12} lg={6}>
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    lg: 6
+                  }}>
                   <CustomFormLabel
                     htmlFor="uzmanUcreti"
                     sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -402,7 +445,11 @@ const Page: React.FC = () => {
                     </Typography>
                   </CustomFormLabel>
                 </Grid>
-                <Grid item xs={14} lg={6}>
+                <Grid
+                  size={{
+                    xs: 14,
+                    lg: 6
+                  }}>
                   <CustomTextField
                     id="uzmanUcreti"
                     type="number"
@@ -416,17 +463,22 @@ const Page: React.FC = () => {
               <></>
             )}
             <Grid
-              item
-              xs={11}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "flex-start",
                 mt: 2,
               }}
-            >
-              <Grid item xs={12} md={6} lg={6}>
+              size={{
+                xs: 11,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6,
+                  lg: 6
+                }}>
                 <CustomFormLabel
                   htmlFor="dahaOncekiDenetimRaporu"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -436,7 +488,12 @@ const Page: React.FC = () => {
                   </Typography>
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} md={5.6} lg={5.6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 5.6,
+                  lg: 5.6
+                }}>
                 <CustomTextAreaAutoSize
                   id="dahaOncekiDenetimRaporu"
                   value={dahaOncekiDenetimRaporu}
@@ -448,17 +505,22 @@ const Page: React.FC = () => {
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={11}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "flex-start",
                 mt: 2,
               }}
-            >
-              <Grid item xs={12} md={6} lg={6}>
+              size={{
+                xs: 11,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6,
+                  lg: 6
+                }}>
                 <CustomFormLabel
                   htmlFor="oncekiDenetimRaporlarinaIliskinTespitler"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -468,7 +530,12 @@ const Page: React.FC = () => {
                   </Typography>
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} md={5.6} lg={5.6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 5.6,
+                  lg: 5.6
+                }}>
                 <CustomTextAreaAutoSize
                   id="oncekiDenetimRaporlarinaIliskinTespitler"
                   value={oncekiDenetimRaporlarinaIliskinTespitler}
@@ -480,17 +547,22 @@ const Page: React.FC = () => {
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={11}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "flex-start",
                 mt: 2,
               }}
-            >
-              <Grid item xs={12} md={6} lg={6}>
+              size={{
+                xs: 11,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6,
+                  lg: 6
+                }}>
                 <CustomFormLabel
                   htmlFor="webBasinYayinEldeEdilenBilgiler"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -500,7 +572,12 @@ const Page: React.FC = () => {
                   </Typography>
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} md={5.6} lg={5.6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 5.6,
+                  lg: 5.6
+                }}>
                 <CustomTextAreaAutoSize
                   id="webBasinYayinEldeEdilenBilgiler"
                   value={webBasinYayinEldeEdilenBilgiler}
@@ -512,17 +589,22 @@ const Page: React.FC = () => {
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={11}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "flex-start",
                 mt: 2,
               }}
-            >
-              <Grid item xs={12} md={6} lg={6}>
+              size={{
+                xs: 11,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6,
+                  lg: 6
+                }}>
                 <CustomFormLabel
                   htmlFor="digerBilgiler"
                   sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2 }}
@@ -532,7 +614,12 @@ const Page: React.FC = () => {
                   </Typography>
                 </CustomFormLabel>
               </Grid>
-              <Grid item xs={12} md={5.6} lg={5.6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 5.6,
+                  lg: 5.6
+                }}>
                 <CustomTextAreaAutoSize
                   id="digerBilgiler"
                   value={digerBilgiler}

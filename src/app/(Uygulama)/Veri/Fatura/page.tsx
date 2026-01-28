@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -25,7 +25,7 @@ type YuklemeSatiri = {
   adi: string;
   olusturulmaTarihi: string;
   tip?: string;
-  // sunucu alanları (esnek map’liyoruz):
+  // sunucu alanları (esnek mapâ€™liyoruz):
   inProgress: boolean;
   total: number;
   processed: number;
@@ -63,7 +63,7 @@ const Page: React.FC = () => {
     items.some(r => r.inProgress || (r.total > 0 && r.processed < r.total));
 
   const openProcessingSnack = () => {
-    enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyor…", {
+    enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyorâ€¦", {
       key: PROCESS_SNACK_KEY,
       variant: "info",
       persist: true,
@@ -134,7 +134,7 @@ const Page: React.FC = () => {
         }
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
       toast("Kayıtlar çekilemedi.", "error");
     } finally {
       if (opts?.initial) setInitialLoading(false);
@@ -168,10 +168,10 @@ const Page: React.FC = () => {
       // upload biter bitmez 1 kez durum çek
       void fetchRows({ tryCloseSnack: true });
 
-      // mini bir “tek-sefer kontrol” daha (ör. 15sn sonra)
+      // mini bir â€œtek-sefer kontrolâ€ daha (ör. 15sn sonra)
       setTimeout(() => { void fetchRows({ tryCloseSnack: true }); }, 15000);
     } catch (e) {
-      console.error(e);
+      console.log(e);
       toast("Yükleme sırasında hata oluştu.", "error");
     } finally {
       setUploading(false);
@@ -186,9 +186,12 @@ const Page: React.FC = () => {
   return (
     <PageContainer title="Fatura Yükleme" description="Fatura yükleme ve izleme">
       <Breadcrumb title="Fatura Yükleme" items={BCrumb} />
-
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={5}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 5
+          }}>
           <Box sx={{ height: 560, border: `1px solid ${borderColor}`, borderRadius: `${borderRadius}/5` }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="h5" p={2}>Dosya Yükle</Typography>
@@ -209,11 +212,11 @@ const Page: React.FC = () => {
               <input {...getInputProps()} />
               {isDragActive ? (
                 <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">
-                  <Typography>Dosyaları buraya bırakın…</Typography>
+                  <Typography>Dosyaları buraya bırakınâ€¦</Typography>
                 </Grid>
               ) : (
                 <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">
-                  <Grid item xs={12} textAlign="center">
+                  <Grid textAlign="center" size={12}>
                     {uploading ? (
                       <Stack spacing={2} p={2} maxHeight={260} overflow="auto">
                         {progressInfos.map((i, idx) => (
@@ -236,7 +239,11 @@ const Page: React.FC = () => {
           </Box>
         </Grid>
 
-        <Grid item xs={12} lg={7}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 7
+          }}>
           <Box sx={{ height: smDown ? 610 : 560, border: `1px solid ${borderColor}`, borderRadius: `${borderRadius}/5` }}>
             <DosyaTable
               rows={rows}

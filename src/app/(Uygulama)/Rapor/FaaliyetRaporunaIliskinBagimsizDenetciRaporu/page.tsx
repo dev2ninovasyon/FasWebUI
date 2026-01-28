@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import dynamic from "next/dynamic";
@@ -80,10 +80,10 @@ const Page = () => {
       if (result) {
         fetchData();
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        console.log("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -116,7 +116,7 @@ console.log(newVeri)
         console.warn("No data found");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -137,7 +137,7 @@ console.log(newVeri)
       }));
       setRows(newRows);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -168,16 +168,16 @@ console.log(newVeri)
             }}
           >
             <Grid
-              item
-              xs={12}
-              md={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
-            >
+              size={{
+                xs: 12,
+                md: 12,
+                lg: 12
+              }}>
                  <Button
                 size="medium"
                 variant="outlined"
@@ -203,14 +203,14 @@ console.log(newVeri)
       >
         <Grid container spacing={3}>
           <Grid
-            item
-            xs={12}
-            sm={12}
-            lg={12}
             display="flex"
             alignItems="center"
             justifyContent="center"
-          >
+            size={{
+              xs: 12,
+              sm: 12,
+              lg: 12
+            }}>
             <CustomFormLabel
               htmlFor="sozlesmeTarihi"
               sx={{
@@ -236,7 +236,12 @@ console.log(newVeri)
             </Tooltip>
           </Grid>
     
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <CustomEditorWVeri
                 controller={controller}
                 veri={veriler[0]}
@@ -259,21 +264,39 @@ console.log(newVeri)
             justifyContent: "space-between",
           }}
         >
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <BelgeKontrolCard
               fetch={() => {}}
               hazirlayan="Denetçi - Yardımcı Denetçi"
               controller={controller}
             ></BelgeKontrolCard>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <BelgeKontrolCard
               fetch={() => {}}
               onaylayan="Sorumlu Denetçi"
               controller={controller}
             ></BelgeKontrolCard>
           </Grid>
-          <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
+          <Grid
+            mt={3}
+            size={{
+              xs: 12,
+              md: 3.9,
+              lg: 3.9
+            }}>
             <BelgeKontrolCard
               fetch={() => {}}
               kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -293,7 +316,12 @@ console.log(newVeri)
           gap: 1,
         }}
       >
-        <Grid item xs={12} lg={12} mt={5}>
+        <Grid
+          mt={5}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <IslemlerCard controller={controller} />
         </Grid>
       </Grid>

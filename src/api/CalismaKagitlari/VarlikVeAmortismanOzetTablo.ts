@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 export interface VarlikVeAmortismanOzetTabloData {
     id: number;
@@ -38,11 +38,11 @@ export async function fetchVarlikVeAmortismanOzetTablo(token: string, denetlenen
             return data;
         } else {
             const errorText = await response.text();
-            console.error("API Error Response:", errorText);
+            console.log("API Error Response:", errorText);
             return { success: false, message: `Sunucu hatası: ${response.status}`, data: [] };
         }
     } catch (error) {
-        console.error("Fetch error:", error);
+        console.log("Fetch error:", error);
         return { success: false, message: "Bağlantı hatası oluştu.", data: [] };
     }
 }

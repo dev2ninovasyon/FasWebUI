@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
   TableContainer,
   Table,
@@ -195,7 +195,7 @@ const DosyaTable: React.FC<{
 
         setFetchedFiles(prev => ({ ...prev, [id]: mapped }));
       } catch (error) {
-        console.error(error);
+        console.log(error);
         toast("Dosyalar yüklenemedi", "error");
       } finally {
         setLoadingFiles(prev => ({ ...prev, [id]: false }));
@@ -255,7 +255,7 @@ const DosyaTable: React.FC<{
 
   return (
     <>
-      {/* Üst bar — HER ZAMAN gerçek kontroller */}
+      {/* Üst bar â€” HER ZAMAN gerçek kontroller */}
       <Box p={2} display="flex" gap={2} alignItems="center">
         <Typography variant="h5" sx={{ flexShrink: 0 }}>
           Yükleme İşlemleri
@@ -470,7 +470,7 @@ const DosyaTable: React.FC<{
                                             setPreviewUrl(blobUrl);
                                             setPreviewOpen(true);
                                           } catch (err) {
-                                            console.error(err);
+                                            console.log(err);
                                             setPreviewErr("Önizleme açılamadı.");
                                           } finally {
                                             setPreviewLoading(false);
@@ -591,7 +591,7 @@ const DosyaTable: React.FC<{
             />
           ) : (
             <Box p={3} display="flex" alignItems="center" gap={1}>
-              <CircularProgress size={18} /> Yükleniyor…
+              <CircularProgress size={18} /> Yükleniyorâ€¦
             </Box>
           )}
         </DialogContent>

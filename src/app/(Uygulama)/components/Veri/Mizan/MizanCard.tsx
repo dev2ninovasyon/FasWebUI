@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
@@ -46,7 +46,7 @@ const MizanCard: React.FC<Props> = ({
       setBorcTutari(totalBorcTutari);
       setAlacakTutari(totalAlacakTutari);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

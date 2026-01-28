@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Box, Divider, Paper, Typography, useTheme } from "@mui/material";
 import { enhanceTextMsuteriEkle } from "@/utils/gemini";
 import { useSelector } from "@/store/hooks";
@@ -13,7 +13,7 @@ interface FloatingButtonProps {
   setIsHovered: (b: boolean) => void;
   handleClick: () => void;
   onJson?: (data: any) => void;
-  onClear?: () => void;        // <— eklendi
+  onClear?: () => void;        // <â€” eklendi
 }
 
 
@@ -26,7 +26,7 @@ const messages = {
 // Boş olmayan string kontrolü
 const nonEmpty = (v: any) => typeof v === "string" && v.trim().length > 0;
 
-// JSON’da doldurulabilir alan var mı? (temel alanları say)
+// JSONâ€™da doldurulabilir alan var mı? (temel alanları say)
 const countFoundFields = (p: any) => {
   if (!p || typeof p !== "object") return 0;
   const i = p?.iletisim ?? {};
@@ -135,7 +135,7 @@ Eğer sağlanan URL'ye erişilemediyse veya içerik okunamadıysa (teknik bir ha
   const stripBOM = (s: string) => s.replace(/^\uFEFF/, "");
 
   const fixSmartQuotes = (s: string) =>
-    s.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+    s.replace(/[â€œâ€]/g, '"').replace(/[â€˜â€™]/g, "'");
 
   // Basit trailing comma temizleyici: } , ] öncesi virgülleri temizler
   const stripTrailingCommas = (s: string) =>
@@ -212,7 +212,7 @@ Eğer sağlanan URL'ye erişilemediyse veya içerik okunamadıysa (teknik bir ha
       try {
         parsed = safeParseJson(out);
       } catch (e) {
-        console.error("JSON parse failed:", e, "Sample:", out.slice(0, 200));
+        console.log("JSON parse failed:", e, "Sample:", out.slice(0, 200));
         setControl2(false);
         setMessage("Çıktı JSON formatında değil, metin gösterildi.");
         return;
@@ -230,7 +230,7 @@ Eğer sağlanan URL'ye erişilemediyse veya içerik okunamadıysa (teknik bir ha
         setMessage(messages.done);
       }
     } catch (err) {
-      console.error("Gemini fetch/parse error:", err);
+      console.log("Gemini fetch/parse error:", err);
       setControl2(false);
       setMessage("Çıktı JSON formatında değil, metin gösterildi.");
     }

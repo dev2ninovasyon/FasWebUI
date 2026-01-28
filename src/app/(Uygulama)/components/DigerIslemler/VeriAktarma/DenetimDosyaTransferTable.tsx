@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -24,7 +24,7 @@ import {
   denetimDosyaTransfer,
   getDenetimDosyaTransfer,
 } from "@/api/DenetimDosya/DenetimDosya";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
@@ -183,7 +183,7 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -197,7 +197,7 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
       setRows(data);
       setLoading(false);
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.log("An error occurred:", error);
     }
   };
 

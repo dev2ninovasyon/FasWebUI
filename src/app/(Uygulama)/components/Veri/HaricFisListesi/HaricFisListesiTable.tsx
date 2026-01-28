@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -19,7 +19,7 @@ import {
 import { Stack } from "@mui/system";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import TablePaginationActions from "@/components/shared/TablePaginationActions";
 import { getFisListesi, saveHaricFisListesi } from "@/api/Veri/HaricFisListesi";
 import { enqueueSnackbar } from "notistack";
 
@@ -137,7 +137,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
         },
       });
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -180,7 +180,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
       setSelected(selectedIds);
       setLoading(false);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 

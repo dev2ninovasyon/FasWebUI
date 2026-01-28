@@ -93,7 +93,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                     setDonusumFisleri(res.donusumFisler);
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.log("Error fetching data:", error);
             } finally {
                 setLoading(false);
             }
@@ -197,7 +197,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 
     return (
         <Grid container>
-            <Grid item xs={12}>
+            <Grid size={12}>
                 <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
                         Dönüşüm Kayıtları Kontrol

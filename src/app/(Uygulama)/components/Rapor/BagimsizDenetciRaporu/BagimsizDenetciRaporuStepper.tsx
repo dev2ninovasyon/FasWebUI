@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -296,7 +296,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
       handleClosePopUp();
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -387,7 +387,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
       setVeriler(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -636,7 +636,7 @@ const BagimsizDenetciRaporuStepper = () => {
       setOzkYatayDataOnceki(filteredYatayDataOnceki);
       setOzkDataOnceki(filteredOzkaynakDataOnceki);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -676,7 +676,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
       setDipnotVeriler(groupedArray); // Grup verilerini duruma aktar
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -924,7 +924,7 @@ clonedElement.querySelectorAll("h2").forEach(el => {
   (el as HTMLElement).style.fontSize = "18pt";
   (el as HTMLElement).style.lineHeight = "22pt";
 });
-// h3–h6 için de aynı şekilde…
+// h3â€“h6 için de aynı şekildeâ€¦
 
 // Tablo
 clonedElement.querySelectorAll("table.data-table").forEach(tbl => {
@@ -954,7 +954,7 @@ const wordDocument = `
 
 
     if (!window.htmlDocx || typeof window.htmlDocx.asBlob !== "function") {
-      console.error("htmlDocx globali bulunamadı.");
+      console.log("htmlDocx globali bulunamadı.");
       enqueueSnackbar("DOCX kütüphanesi yüklenemedi.", { /* ... */ });
       return;
     }
@@ -979,7 +979,7 @@ formData.append("save", "true");
 
     enqueueSnackbar("Rapor arşive kaydedildi.", { /* success style */ });
   } catch (error) {
-    console.error("Arşive kaydetme hatası:", error);
+    console.log("Arşive kaydetme hatası:", error);
     enqueueSnackbar("Rapor arşive kaydedilirken hata oluştu.", { /* error style */ });
   }
 }
@@ -987,15 +987,14 @@ formData.append("save", "true");
 
 
   return (
-  
     <Box>
-         <Script
-        src="/libs/html-docx.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          console.log("html-docx.js yüklendi, window.htmlDocx:", window.htmlDocx);
-        }}
-      />
+      <Script
+     src="/libs/html-docx.js"
+     strategy="afterInteractive"
+     onLoad={() => {
+       console.log("html-docx.js yüklendi, window.htmlDocx:", window.htmlDocx);
+     }}
+   />
       <Stepper
         activeStep={activeStep}
         sx={{
@@ -1039,7 +1038,12 @@ formData.append("save", "true");
       <>
         {activeStep == 0 && (
           <Grid container mb={3}>
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <Box bgcolor={"warning.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -1050,7 +1054,13 @@ formData.append("save", "true");
                   }}
                 >
                   <Grid container>
-                    <Grid item xs={12} md={4} lg={4} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 12,
+                        md: 4,
+                        lg: 4
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -1061,7 +1071,12 @@ formData.append("save", "true");
                         Lütfen Bir Görüş Belirtin:
                       </Typography>
                     </Grid>
-                    <Grid item xs={12} md={8} lg={8}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 8,
+                        lg: 8
+                      }}>
                       <CustomSelect
                         labelId="raporGorusu"
                         id="raporGorusu"
@@ -1087,14 +1102,29 @@ formData.append("save", "true");
                 </CardContent>
               </Box>
               {raporGorusu == "OlumluGorus" && (
-                <Grid item xs={12} sm={12} lg={12}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: 12,
+                    lg: 12
+                  }}>
                   <Grid container spacing={3} marginY={3}>
-                    <Grid item xs={12} sm={12} lg={12}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 12,
+                        lg: 12
+                      }}>
                       <Typography variant="h6" px={"8px"}>
                         Kilit Denetim Konuları
                       </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"info.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1119,7 +1149,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"success.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1144,7 +1179,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"error.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1169,7 +1209,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"warning.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1194,7 +1239,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"info.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1219,7 +1269,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"success.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1244,7 +1299,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"error.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1269,7 +1329,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"warning.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1294,7 +1359,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"info.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1319,7 +1389,12 @@ formData.append("save", "true");
                         </CardContent>
                       </Box>
                     </Grid>
-                    <Grid item xs={12} sm={2.4} lg={2.4}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 2.4,
+                        lg: 2.4
+                      }}>
                       <Box bgcolor={"success.light"} textAlign="center">
                         <CardContent
                           style={{
@@ -1351,12 +1426,12 @@ formData.append("save", "true");
             {veriler.map((veri) => (
               <Grid
                 key={veri.id}
-                item
-                xs={12}
-                lg={12}
                 mt="20px"
                 onClick={() => handleCardClick(veri)}
-              >
+                size={{
+                  xs: 12,
+                  lg: 12
+                }}>
                 <RaporGorusCard title={`${veri.baslik}`} />
               </Grid>
             ))}
@@ -1364,7 +1439,12 @@ formData.append("save", "true");
         )}
         {activeStep == 1 && (
           <Grid container spacing={3} mb={3} justifyContent={"center"}>
-            <Grid item xs={12} sm={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               <Box bgcolor={"success.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -1393,7 +1473,12 @@ formData.append("save", "true");
         )}
         {activeStep == 2 && (
           <Grid container spacing={3} mb={3} wrap="wrap">
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"warning.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -1404,7 +1489,13 @@ formData.append("save", "true");
                   }}
                 >
                   <Grid container>
-                    <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 12,
+                        md: 6,
+                        lg: 6
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -1415,7 +1506,12 @@ formData.append("save", "true");
                         Kapak İçin Arka Plan Resmi Yükle
                       </Typography>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 3,
+                        lg: 3
+                      }}>
                       <CustomSelect
                         labelId="resim"
                         id="resim"
@@ -1431,7 +1527,12 @@ formData.append("save", "true");
                         <MenuItem value={"Resim3"}>Resim 3</MenuItem>
                       </CustomSelect>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 3,
+                        lg: 3
+                      }}>
                       <input
                         accept="image/*"
                         style={{ display: "none" }}
@@ -1454,7 +1555,12 @@ formData.append("save", "true");
                 </CardContent>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"warning.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -1465,7 +1571,13 @@ formData.append("save", "true");
                   }}
                 >
                   <Grid container>
-                    <Grid item xs={4} md={4} lg={4} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 4,
+                        md: 4,
+                        lg: 4
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -1477,14 +1589,14 @@ formData.append("save", "true");
                       </Typography>
                     </Grid>
                     <Grid
-                      item
-                      xs={8}
-                      md={8}
-                      lg={8}
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
-                    >
+                      size={{
+                        xs: 8,
+                        md: 8,
+                        lg: 8
+                      }}>
                       {kapakImage && (
                         <Box
                           sx={{
@@ -1516,7 +1628,12 @@ formData.append("save", "true");
                 </CardContent>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"info.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -1527,7 +1644,13 @@ formData.append("save", "true");
                   }}
                 >
                   <Grid container justifyContent={"space-between"}>
-                    <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 12,
+                        md: 6,
+                        lg: 6
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -1538,7 +1661,12 @@ formData.append("save", "true");
                         Kapak İçin Firma Logosu Yükle
                       </Typography>
                     </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 3,
+                        lg: 3
+                      }}>
                       <input
                         accept="image/*"
                         style={{ display: "none" }}
@@ -1561,7 +1689,12 @@ formData.append("save", "true");
                 </CardContent>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} lg={6}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                lg: 6
+              }}>
               <Box bgcolor={"info.light"} textAlign="center">
                 <CardContent
                   style={{
@@ -1572,7 +1705,13 @@ formData.append("save", "true");
                   }}
                 >
                   <Grid container>
-                    <Grid item xs={4} md={4} lg={4} mb={mdDown ? 3 : 0}>
+                    <Grid
+                      mb={mdDown ? 3 : 0}
+                      size={{
+                        xs: 4,
+                        md: 4,
+                        lg: 4
+                      }}>
                       <Typography
                         variant="subtitle1"
                         height={"100%"}
@@ -1584,14 +1723,14 @@ formData.append("save", "true");
                       </Typography>
                     </Grid>
                     <Grid
-                      item
-                      xs={8}
-                      md={8}
-                      lg={8}
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
-                    >
+                      size={{
+                        xs: 8,
+                        md: 8,
+                        lg: 8
+                      }}>
                       {firmaLogoImage && (
                         <Box
                           sx={{
@@ -1625,7 +1764,12 @@ formData.append("save", "true");
             </Grid>
             {firmaLogoImage && (
               <>
-                <Grid item xs={12} sm={6} lg={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    lg: 6
+                  }}>
                   <Box bgcolor={"info.light"} textAlign="center">
                     <CardContent
                       style={{
@@ -1636,7 +1780,13 @@ formData.append("save", "true");
                       }}
                     >
                       <Grid container justifyContent={"space-between"}>
-                        <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                        <Grid
+                          mb={mdDown ? 3 : 0}
+                          size={{
+                            xs: 12,
+                            md: 6,
+                            lg: 6
+                          }}>
                           <Typography
                             variant="subtitle1"
                             height={"100%"}
@@ -1647,7 +1797,12 @@ formData.append("save", "true");
                             Firma Logosu Dikey Konum
                           </Typography>
                         </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            md: 3,
+                            lg: 3
+                          }}>
                           <CustomSelect
                             labelId="dikeyKonum"
                             id="dikeyKonum"
@@ -1665,7 +1820,12 @@ formData.append("save", "true");
                     </CardContent>
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={6} lg={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    sm: 6,
+                    lg: 6
+                  }}>
                   <Box bgcolor={"info.light"} textAlign="center">
                     <CardContent
                       style={{
@@ -1676,7 +1836,13 @@ formData.append("save", "true");
                       }}
                     >
                       <Grid container justifyContent={"space-between"}>
-                        <Grid item xs={12} md={6} lg={6} mb={mdDown ? 3 : 0}>
+                        <Grid
+                          mb={mdDown ? 3 : 0}
+                          size={{
+                            xs: 12,
+                            md: 6,
+                            lg: 6
+                          }}>
                           <Typography
                             variant="subtitle1"
                             height={"100%"}
@@ -1687,7 +1853,12 @@ formData.append("save", "true");
                             Firma Logosu Yatay Konum
                           </Typography>
                         </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
+                        <Grid
+                          size={{
+                            xs: 12,
+                            md: 3,
+                            lg: 3
+                          }}>
                           <CustomSelect
                             labelId="yatayKonum"
                             id="yatayKonum"
@@ -1712,7 +1883,11 @@ formData.append("save", "true");
         )}
         {activeStep == 3 && !smDown && (
           <Grid container spacing={3} mb={3} wrap="wrap">
-            <Grid item xs={12} lg={12}>
+            <Grid
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
         <Card sx={{ width: "100%", bgcolor: "primary.light" }}>
           <CardContent sx={{ bgcolor: "primary.light" }}>
             <Grid
@@ -1725,11 +1900,11 @@ formData.append("save", "true");
               }}
             >
               <Grid
-                item
-                xs={12}
-                lg={3.75}
                 sx={{ display: "flex", justifyContent: "center" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 3.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -1743,11 +1918,11 @@ formData.append("save", "true");
               </Grid>
 
               <Grid
-                item
-                xs={12}
-                lg={3.75}
                 sx={{ display: "flex", justifyContent: "center" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 3.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -1761,11 +1936,11 @@ formData.append("save", "true");
               </Grid>
 
               <Grid
-                item
-                xs={12}
-                lg={3.75}
                 sx={{ display: "flex", justifyContent: "center" }}
-              >
+                size={{
+                  xs: 12,
+                  lg: 3.75
+                }}>
                 <Button
                   size="medium"
                   variant="outlined"
@@ -1782,14 +1957,14 @@ formData.append("save", "true");
         </Card>
       </Grid>
             <Grid
-              item
-              xs={12}
-              sm={12}
-              lg={12}
               display={"flex"}
               alignItems={"center"}
               justifyContent={"center"}
-            >
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }}>
               {user.denetimTuru == "Bobi" ? (
                 <Rapor
                   kapakImage={kapakImage || ""}

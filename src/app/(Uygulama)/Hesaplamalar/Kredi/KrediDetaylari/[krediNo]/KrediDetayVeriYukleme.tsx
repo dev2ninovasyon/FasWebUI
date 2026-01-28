@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import type { ColumnSettings } from "handsontable/settings"; // Handsontable'dan ColumnSettings tipi
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
@@ -592,7 +592,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -632,7 +632,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -652,7 +652,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         setTur(krediHesaplama.tur);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -705,7 +705,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         setSonKaydedilmeTarihi(kaydedilmeTarihiFormatted);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -718,7 +718,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         setRowCount(1);
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -783,7 +783,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         saveAs(blob, "KrediHesaplamaDetayFormati.xlsx");
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -867,16 +867,20 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
         }
       />
       <Grid container marginTop={2}>
-        <Grid item xs={12} lg={10}></Grid>
         <Grid
-          item
-          xs={12}
-          lg={2}
+          size={{
+            xs: 12,
+            lg: 10
+          }}></Grid>
+        <Grid
           sx={{
             display: "flex",
             justifyContent: "flex-end",
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>

@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const createFisGirisiVerisi = async (
@@ -26,7 +26,7 @@ export const createFisGirisiVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -51,9 +51,9 @@ export const getFisNo = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Fiş No getirilemedi");
+      console.log("Fiş No getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

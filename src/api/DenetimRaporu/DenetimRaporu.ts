@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getRaporDipnot = async (
@@ -22,10 +22,10 @@ export const getRaporDipnot = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot verileri getirilemedi");
+      console.log("Dipnot verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -50,10 +50,10 @@ export const getFaaliyetRaporDipnot = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot verileri getirilemedi");
+      console.log("Dipnot verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -78,7 +78,7 @@ export const updateRaporDipnot = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -104,10 +104,10 @@ export const getRaporGorus = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Görüş verileri getirilemedi");
+      console.log("Görüş verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -132,7 +132,7 @@ export const updateRaporGorus = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -161,7 +161,7 @@ export const deleteAllRaporDipnotVerileri = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -185,10 +185,10 @@ export const getDipnot15Amortisman = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot 15 getirilemedi");
+      console.log("Dipnot 15 getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -212,10 +212,10 @@ export const getDipnot16Amortisman = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot 15 getirilemedi");
+      console.log("Dipnot 15 getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -239,10 +239,10 @@ export const getDipnot15Maliyet = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot 15 getirilemedi");
+      console.log("Dipnot 15 getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -266,10 +266,10 @@ export const getDipnot16Maliyet = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot 16 getirilemedi");
+      console.log("Dipnot 16 getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -294,7 +294,7 @@ export const updateDipnotMaliyet = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -319,7 +319,7 @@ export const updateDipnotAmortisman = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -343,10 +343,10 @@ export const getDipnot25 = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot 25 getirilemedi");
+      console.log("Dipnot 25 getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -370,10 +370,10 @@ export const getDipnot34 = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot 34 getirilemedi");
+      console.log("Dipnot 34 getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -397,10 +397,10 @@ export const getKrediRiski = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kredi Riski getirilemedi");
+      console.log("Kredi Riski getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -425,7 +425,7 @@ export const updateKrediRiski = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -449,10 +449,10 @@ export const getDovizKuruRiski = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Döviz Kuru Riski getirilemedi");
+      console.log("Döviz Kuru Riski getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -477,7 +477,7 @@ export const updateDovizKuruRiski = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -501,10 +501,10 @@ export const getDovizKuruRiskiDuyarlilikAnalizi = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Döviz Kuru Riski Duyarlılık Analizi getirilemedi");
+      console.log("Döviz Kuru Riski Duyarlılık Analizi getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -529,9 +529,9 @@ export const getDipnotAnaHesaplar = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dipnot Ana Hesaplar getirilemedi");
+      console.log("Dipnot Ana Hesaplar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

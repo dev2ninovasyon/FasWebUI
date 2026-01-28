@@ -1,4 +1,4 @@
-import { HotTable } from "@handsontable/react";
+﻿import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -334,7 +334,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -384,7 +384,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -431,7 +431,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -492,7 +492,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         saveAs(blob, `VadeliBankaMevduatiOtomatikSiniflamaHesaplama.xlsx`);
         console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
-        console.error("Excel dosyası oluşturulurken bir hata oluştu:", error);
+        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
     }
     createExcelFile();
@@ -576,16 +576,20 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         }}
       />
       <Grid container marginTop={2}>
-        <Grid item xs={12} lg={10}></Grid>
         <Grid
-          item
-          xs={12}
-          lg={2}
+          size={{
+            xs: 12,
+            lg: 10
+          }}></Grid>
+        <Grid
           sx={{
             display: "flex",
             justifyContent: "flex-end",
           }}
-        >
+          size={{
+            xs: 12,
+            lg: 2
+          }}>
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>
@@ -615,22 +619,30 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
         <DialogContent>
           <Grid container>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mt: 2,
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <Typography variant="h6" p={1}>
                   Kebir Kodu
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomTextField
                   id="kebirKodu"
                   type="number"
@@ -641,22 +653,30 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mt: 1,
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <Typography variant="h6" p={1}>
                   Detay Kodu
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomTextField
                   id="detayKodu"
                   type="text"
@@ -667,22 +687,30 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mt: 2,
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <Typography variant="h6" p={1}>
                   Hesap Adı
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomTextField
                   id="hesapAdi"
                   type="text"
@@ -693,22 +721,30 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mt: 1,
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <Typography variant="h6" p={1}>
                   Borç
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomTextField
                   id="borcTutari"
                   type="number"
@@ -719,22 +755,30 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mt: 2,
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <Typography variant="h6" p={1}>
                   Alacak
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomTextField
                   id="alacakTutari"
                   type="number"
@@ -747,22 +791,30 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mt: 1,
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <Typography variant="h6" p={1}>
                   Bakiye
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomTextField
                   id="personel2021"
                   type="number"
@@ -773,22 +825,30 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
               </Grid>
             </Grid>
             <Grid
-              item
-              xs={12}
-              lg={12}
               sx={{
                 display: "flex",
                 alignContent: "center",
                 justifyContent: "space-between",
                 mt: 1,
               }}
-            >
-              <Grid item xs={12} lg={6}>
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <Typography variant="h6" p={1}>
                   Para Birimi
                 </Typography>
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 6
+                }}>
                 <CustomSelect
                   labelId="kacGun"
                   id="kacGun"

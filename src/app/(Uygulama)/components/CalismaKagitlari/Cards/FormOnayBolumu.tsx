@@ -1,4 +1,4 @@
-// örn: src/app/(Uygulama)/components/CalismaKagitlari/FormOnayBolumu.tsx
+﻿// örn: src/app/(Uygulama)/components/CalismaKagitlari/FormOnayBolumu.tsx
 
 import React from "react";
 import { Grid } from "@mui/material";
@@ -27,7 +27,11 @@ const FormOnayBolumu: React.FC<FormOnayBolumuProps> = ({
   return (
     <Grid container spacing={2} mt={2}>
       {showHazirlayan && (
-        <Grid item xs={12} md={4}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 4
+          }}>
           <BelgeKontrolCard
             controller={controller}
             hazirlayan="Hazırlayan"
@@ -35,9 +39,12 @@ const FormOnayBolumu: React.FC<FormOnayBolumuProps> = ({
           />
         </Grid>
       )}
-
       {showOnaylayan && (
-        <Grid item xs={12} md={4}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 4
+          }}>
           <BelgeKontrolCard
             controller={controller}
             onaylayan="Onaylayan"
@@ -45,9 +52,12 @@ const FormOnayBolumu: React.FC<FormOnayBolumuProps> = ({
           />
         </Grid>
       )}
-
       {showKaliteKontrol && (
-        <Grid item xs={12} md={4}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 4
+          }}>
           <BelgeKontrolCard
             controller={controller}
             kaliteKontrol="KaliteKontrol"

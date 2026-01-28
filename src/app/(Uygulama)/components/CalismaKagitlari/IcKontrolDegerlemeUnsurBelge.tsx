@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -101,10 +101,10 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
         handleClosePopUp();
         setIsNew(false);
       } else {
-        console.error("Çalışma Kağıdı Verisi ekleme başarısız");
+        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -138,10 +138,10 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
           fetchData();
           handleClosePopUp();
         } else {
-          console.error("Çalışma Kağıdı Verisi düzenleme başarısız");
+          console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
         }
       } catch (error) {
-        console.error("Bir hata oluştu:", error);
+        console.log("Bir hata oluştu:", error);
       }
     }
   };
@@ -157,10 +157,10 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
         fetchData();
         handleClosePopUp();
       } else {
-        console.error("Çalışma Kağıdı Verisi silme başarısız");
+        console.log("Çalışma Kağıdı Verisi silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -176,10 +176,10 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
       if (result) {
         fetchData();
       } else {
-        console.error("Çalışma Kağıdı Verileri silme başarısız");
+        console.log("Çalışma Kağıdı Verileri silme başarısız");
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -224,7 +224,7 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
       setToplam(toplam.length);
       setTamamlanan(tamamlanan.length);
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -311,12 +311,12 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
           {veriler.map((veri, index) => (
             <Grid
               key={index}
-              item
-              xs={12}
-              lg={12}
               mt="20px"
               onClick={() => handleCardClick(veri)}
-            >
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <CalismaKagidiCard
                 title={`${index + 1}. ${veri.soru}`}
                 standartMi={veri.standartMi}
@@ -333,15 +333,15 @@ const IcKontrolDegerlemeUnsur: React.FC<CalismaKagidiProps> = ({
           }}
         >
           <Grid
-            item
-            xs={12}
-            lg={1.5}
             my={2}
             sx={{
               display: "flex",
               justifyContent: "end",
             }}
-          >
+            size={{
+              xs: 12,
+              lg: 1.5
+            }}>
             <Button
               size="medium"
               variant="outlined"
@@ -524,28 +524,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
             {tur == "Oylama" && (
               <Box px={4} pt={4}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">İyi</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"left"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={iyi}
                           color="primary"
@@ -556,28 +561,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Orta</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={orta}
                           color="primary"
@@ -588,28 +598,33 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4} lg={4}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 4,
+                      lg: 4
+                    }}>
                     <Grid container>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"right"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Typography variant="h6">Kotu</Typography>
                       </Grid>
                       <Grid
-                        item
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"right"}
-                        xs={6}
-                        sm={6}
-                        lg={6}
-                      >
+                        size={{
+                          xs: 6,
+                          sm: 6,
+                          lg: 6
+                        }}>
                         <Checkbox
                           checked={kotu}
                           color="primary"

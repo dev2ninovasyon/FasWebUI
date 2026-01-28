@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 import { DonusumMizanKarsilastirmaItem } from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/VukMizanDonusumMizanKarsilastirma";
 
@@ -26,7 +26,7 @@ export const DonusumIslemiYap = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -50,10 +50,10 @@ export const getDonusumMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Donusum Mizan verileri getirilemedi");
+      console.log("Donusum Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export const getOzetDonusumMizan = async (
@@ -76,10 +76,10 @@ export const getOzetDonusumMizan = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Donusum Mizan verileri getirilemedi");
+      console.log("Donusum Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -104,10 +104,10 @@ export const getDonusumMizanKarsilastirma =  async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Donusum Mizan verileri getirilemedi");
+      console.log("Donusum Mizan verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
   
@@ -132,10 +132,10 @@ export const getTersBakiyeVerenProgramVukMizanHesaplari = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Ters bakiye veren hesaplar getirilemedi");
+      console.log("Ters bakiye veren hesaplar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -159,9 +159,9 @@ export const getTersBakiyeVerenDonusumMizanHesaplari = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Ters bakiye veren hesaplar getirilemedi");
+      console.log("Ters bakiye veren hesaplar getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

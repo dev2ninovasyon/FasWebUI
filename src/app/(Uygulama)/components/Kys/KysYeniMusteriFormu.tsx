@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -184,14 +184,11 @@ const KysYeniMusteriFormu: React.FC = () => {
 
     return (
         <Paper elevation={0} sx={{ p: 4, border: "1px solid #e0e0e0" }}>
-
-
             <Divider sx={{ mb: 3 }} />
-
             {/* 1. Müşteri Bilgileri */}
             <Typography variant="h6" color="primary" mb={2}>1. Müşteri Bilgileri</Typography>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <TextField
                         fullWidth
                         label="Ticari Unvan"
@@ -199,7 +196,11 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("unvan", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 6
+                    }}>
                     <TextField
                         fullWidth
                         label="Vergi Dairesi"
@@ -207,7 +208,11 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("vergiDairesi", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 6
+                    }}>
                     <TextField
                         fullWidth
                         label="Vergi No"
@@ -215,7 +220,7 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("vergiNo", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <TextField
                         fullWidth
                         label="Adres"
@@ -225,7 +230,11 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("adres", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 4
+                    }}>
                     <TextField
                         fullWidth
                         label="Telefon"
@@ -233,7 +242,11 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("telefon", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 4
+                    }}>
                     <TextField
                         fullWidth
                         label="E-Posta"
@@ -241,7 +254,11 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("eposta", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 4
+                    }}>
                     <TextField
                         fullWidth
                         label="Web Sitesi"
@@ -249,7 +266,7 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("webSitesi", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <TextField
                         fullWidth
                         label="Faaliyet Konusu"
@@ -259,7 +276,11 @@ const KysYeniMusteriFormu: React.FC = () => {
                         onChange={(e) => handleChange("faaliyetKonusu", e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 6
+                    }}>
                     <TextField
                         fullWidth
                         label="Sermaye"
@@ -269,7 +290,6 @@ const KysYeniMusteriFormu: React.FC = () => {
                     />
                 </Grid>
             </Grid>
-
             {/* 2. Ortaklık Yapısı */}
             {renderTable<OrtakDto>(
                 "2. Ortaklık Yapısı",
@@ -282,7 +302,6 @@ const KysYeniMusteriFormu: React.FC = () => {
                 (newData) => handleChange("ortaklar", newData),
                 { adSoyad: "", payOrani: 0, payTutari: 0 }
             )}
-
             {/* 3. Yönetim Kurulu */}
             {renderTable<YonetimKuruluDto>(
                 "3. Yönetim Kurulu",
@@ -294,7 +313,6 @@ const KysYeniMusteriFormu: React.FC = () => {
                 (newData) => handleChange("yonetimKurulu", newData),
                 { adSoyad: "", gorevi: "" }
             )}
-
             {/* 4. Şubeler */}
             {renderTable<SubeDto>(
                 "4. Şubeler",
@@ -306,7 +324,6 @@ const KysYeniMusteriFormu: React.FC = () => {
                 (newData) => handleChange("subeler", newData),
                 { ad: "", adres: "" }
             )}
-
             {/* 5. Grup Şirketleri */}
             {renderTable<GrupSirketiDto>(
                 "5. Grup Şirketleri",
@@ -332,7 +349,11 @@ const KysYeniMusteriFormu: React.FC = () => {
             </Box>
             <Box mt={4} p={2} bgcolor="#f9f9f9" borderRadius={1} border="1px solid #eee">
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6
+                        }}>
                         <TextField
                             fullWidth
                             label="Hazırlayan"
@@ -340,7 +361,11 @@ const KysYeniMusteriFormu: React.FC = () => {
                             onChange={(e) => handleChange("hazirlayanAdSoyad", e.target.value)}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid
+                        size={{
+                            xs: 12,
+                            md: 6
+                        }}>
                         <TextField
                             fullWidth
                             label="Onaylayan"

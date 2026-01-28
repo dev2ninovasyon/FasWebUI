@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const createKarsilastirmaliAnaliz = async (
@@ -26,7 +26,7 @@ export const createKarsilastirmaliAnaliz = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -50,10 +50,10 @@ export const getKarsilastirmaliAnaliz = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Karşılaştırmalı Analiz Tablosu verileri getirilemedi");
+      console.log("Karşılaştırmalı Analiz Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -82,7 +82,7 @@ export const createDikeyAnaliz = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -106,10 +106,10 @@ export const getDikeyAnaliz = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Dikey Analiz Tablosu verileri getirilemedi");
+      console.log("Dikey Analiz Tablosu verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export const getDikeyAnalizFinansalDurum = async (
@@ -132,10 +132,10 @@ export const getDikeyAnalizFinansalDurum = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Finansal Durum verileri getirilemedi");
+      console.log("Finansal Durum verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 export const getDikeyAnalizTablosuKarZarar = async (
@@ -158,9 +158,9 @@ export const getDikeyAnalizTablosuKarZarar = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Kar-Zarar verileri getirilemedi");
+      console.log("Kar-Zarar verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

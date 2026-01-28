@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getFisIslemSayilari = async (
@@ -21,10 +21,10 @@ export const getFisIslemSayilari = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Fiş İşlem Sayıları getirilemedi");
+      console.log("Fiş İşlem Sayıları getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -56,7 +56,7 @@ export const createOrneklem = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -80,10 +80,10 @@ export const getOrneklem = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Örneklem getirilemedi");
+      console.log("Örneklem getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -108,10 +108,10 @@ export const getOrneklemByDipnot = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Örneklem getirilemedi");
+      console.log("Örneklem getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -136,10 +136,10 @@ export const getOrneklemByDipnotTers = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Örneklem getirilemedi");
+      console.log("Örneklem getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -161,7 +161,7 @@ export const updateOrneklem = async (token: string, json: any) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -186,10 +186,10 @@ export const getOrneklemFisleri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Örneklem Fişleri getirilemedi");
+      console.log("Örneklem Fişleri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -216,10 +216,10 @@ export const getOrneklemFisleriByList = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Örneklem Fişleri getirilemedi");
+      console.log("Örneklem Fişleri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -244,10 +244,10 @@ export const getOrneklemFisleriDetay = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Örneklem Fişleri Detay getirilemedi");
+      console.log("Örneklem Fişleri Detay getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -271,10 +271,10 @@ export const getOnemlilikSeviyesi = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Önemlilik Seviyesi getirilemedi");
+      console.log("Önemlilik Seviyesi getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -303,7 +303,7 @@ export const createOnemlilik = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -327,10 +327,10 @@ export const getOnemlilik = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Önemlilik getirilemedi");
+      console.log("Önemlilik getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -355,10 +355,10 @@ export const getOnemlilikByDipnot = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Önemlilik getirilemedi");
+      console.log("Önemlilik getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -390,7 +390,7 @@ export const updateOnemlilik = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -421,7 +421,7 @@ export const createOnemlilikHesaplamaBazi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -445,10 +445,10 @@ export const getOnemlilikHesaplamaBazi = async (
     if (response.status == 200) {
       return response.json();
     } else {
-      console.error("Önemlilik Hesaplama Bazı getirilemedi");
+      console.log("Önemlilik Hesaplama Bazı getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -476,7 +476,7 @@ export const updateOnemlilikHesaplamaBazi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -502,10 +502,10 @@ export const getMutabakat = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Mutabakat getirilemedi");
+      console.log("Mutabakat getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -530,10 +530,10 @@ export const getMutabakatByDipnot = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Mutabakat getirilemedi");
+      console.log("Mutabakat getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -555,7 +555,7 @@ export const updateMutabakat = async (token: string, json: any) => {
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -584,7 +584,7 @@ export const deleteMutabakat = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -609,10 +609,10 @@ export const getMutabakatDogrulamaMektubu = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Mutabakat Dogrulama Mektubu getirilemedi");
+      console.log("Mutabakat Dogrulama Mektubu getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -636,9 +636,9 @@ export const getIliskiliTarafIncelemeHesaplari = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("İlişkili Taraf İnceleme Hesapları getirilemedi");
+      console.log("İlişkili Taraf İnceleme Hesapları getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

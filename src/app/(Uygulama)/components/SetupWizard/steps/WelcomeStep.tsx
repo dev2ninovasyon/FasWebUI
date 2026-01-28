@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Box, Typography, Button, List, ListItem, ListItemIcon, ListItemText, Grid, Divider } from "@mui/material";
 import { IconUserPlus, IconBuilding, IconUsers, IconFileText, IconChecklist } from "@tabler/icons-react";
@@ -41,7 +41,11 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
         <Box sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <Grid container spacing={6} alignItems="center">
                 {/* Sol Taraf - Hoş Geldiniz Mesajı */}
-                <Grid item xs={12} md={5}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 5
+                    }}>
                     <Box sx={{ p: 2, pb: 8 }}>
                         <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
                             <Logo />
@@ -65,12 +69,21 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
                 </Grid>
 
                 {/* Orta - Ayırıcı Çizgi */}
-                <Grid item xs={12} md={1} sx={{ display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
+                <Grid
+                    sx={{ display: { xs: "none", md: "flex" }, justifyContent: "center" }}
+                    size={{
+                        xs: 12,
+                        md: 1
+                    }}>
                     <Divider orientation="vertical" flexItem sx={{ height: "100%", borderColor: "divider" }} />
                 </Grid>
 
                 {/* Sağ Taraf - Kurulum Adımları ve Buton */}
-                <Grid item xs={12} md={6}>
+                <Grid
+                    size={{
+                        xs: 12,
+                        md: 6
+                    }}>
                     <Box sx={{ p: 2 }}>
                         <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 3, color: "text.primary" }}>
                             Kurulum Adımları

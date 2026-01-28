@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { Grid, Paper, Typography } from "@mui/material";
 
 interface Props {
@@ -10,7 +10,11 @@ const WarnBox = ({ warn, noMargin = false }: Props) => {
   return (
     <React.Fragment>
       <Grid container>
-        <Grid item xs={12} lg={12}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <Paper
             elevation={2}
             sx={{

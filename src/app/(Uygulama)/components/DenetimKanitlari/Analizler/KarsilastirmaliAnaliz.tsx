@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -134,7 +134,7 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
         });
       }
     } catch (error) {
-      console.error("Bir hata oluştu:", error);
+      console.log("Bir hata oluştu:", error);
     }
   };
 
@@ -480,7 +480,12 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
   return (
     <Grid container>
       {showGraph ? (
-        <Grid item xs={12} lg={12} mt={3}>
+        <Grid
+          mt={3}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <KarsilastirmaliAnalizChart
             kalemData={kalemData}
             tabloAdi={kalemData[0].tabloAdi}
@@ -488,7 +493,12 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
           />
         </Grid>
       ) : (
-        <Grid item xs={12} lg={12} mt={1}>
+        <Grid
+          mt={1}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TableContainer
             sx={{
               maxHeight: "684px",
@@ -546,7 +556,12 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
         </Grid>
       )}
       {showGraph ? (
-        <Grid item xs={12} lg={12} mt={5}>
+        <Grid
+          mt={5}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <KarsilastirmaliAnalizChart
             kalemData={kalemData2}
             tabloAdi={kalemData2[0].tabloAdi}
@@ -554,7 +569,12 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
           />
         </Grid>
       ) : (
-        <Grid item xs={12} lg={12} mt={5}>
+        <Grid
+          mt={5}
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           <TableContainer
             sx={{
               maxHeight: "684px",

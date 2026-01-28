@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+﻿import { Grid, Typography } from "@mui/material";
 import React, { useState } from "react";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CompanyBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/CompanyBoxAutoComplete";
@@ -53,7 +53,13 @@ const DenetimDosyaTransferForm: React.FC<Props> = ({
   return (
     <div>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={4} lg={4} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 4,
+            lg: 4
+          }}>
           <CustomFormLabel
             htmlFor="kaynakId"
             sx={{
@@ -81,7 +87,13 @@ const DenetimDosyaTransferForm: React.FC<Props> = ({
             }
           />
         </Grid>
-        <Grid item xs={12} sm={4} lg={4} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 4,
+            lg: 4
+          }}>
           <CustomFormLabel
             htmlFor="hedefId"
             sx={{
@@ -109,7 +121,13 @@ const DenetimDosyaTransferForm: React.FC<Props> = ({
             }
           />
         </Grid>
-        <Grid item xs={12} sm={2} lg={2} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 2,
+            lg: 2
+          }}>
           <CustomFormLabel
             //htmlFor="kaynakYil"
             sx={{
@@ -127,7 +145,13 @@ const DenetimDosyaTransferForm: React.FC<Props> = ({
             selectedDenetlenenId={kaynakId}
           />
         </Grid>
-        <Grid item xs={12} sm={2} lg={2} display="flex">
+        <Grid
+          display="flex"
+          size={{
+            xs: 12,
+            sm: 2,
+            lg: 2
+          }}>
           <CustomFormLabel
             //htmlFor="hedefYil"
             sx={{

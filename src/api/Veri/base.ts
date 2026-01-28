@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getFormat = async (token: string, name: string) => {
@@ -13,9 +13,9 @@ export const getFormat = async (token: string, name: string) => {
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Format verileri getirilemedi");
+      console.log("Format verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

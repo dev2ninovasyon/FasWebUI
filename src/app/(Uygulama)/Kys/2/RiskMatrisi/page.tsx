@@ -4,9 +4,9 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Typography, Box, Divider } from "@mui/material";
 import dynamic from "next/dynamic";
+import { KYS_PATH_TO_FORM_KODU } from "@/api/Kys/KysRiskMatrixConstants";
 const KysRiskMatrixEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysRiskMatrixEditor"), { ssr: false });
 const KysRelatedDocumentsPopup = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysRelatedDocumentsPopup"), { ssr: false });
-import { KYS_PATH_TO_FORM_KODU } from "@/api/Kys/KysRiskMatrixConstants";
 
 
 const BCrumb = [

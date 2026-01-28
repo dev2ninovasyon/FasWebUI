@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 const controller = "KysBelgelerEditorText";
 
@@ -25,7 +25,7 @@ export const getKysBelgelerEditorText = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("KysBelgelerEditorText getirme hatası:", error);
+        console.log("KysBelgelerEditorText getirme hatası:", error);
         throw error;
     }
 };
@@ -53,7 +53,7 @@ export const saveKysBelgelerEditorText = async (
         }
         return await response.json();
     } catch (error) {
-        console.error("KysBelgelerEditorText kaydetme hatası:", error);
+        console.log("KysBelgelerEditorText kaydetme hatası:", error);
         throw error;
     }
 };

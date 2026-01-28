@@ -1,4 +1,4 @@
-// src/app/(Uygulama)/Veri/FaturaInceleme/page.tsx
+﻿// src/app/(Uygulama)/Veri/FaturaInceleme/page.tsx
 "use client";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";

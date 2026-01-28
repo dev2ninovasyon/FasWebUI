@@ -1,4 +1,4 @@
-import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch } from "@/api/apiBase";
 
 
 export const getEDefterIncelemeVerileri = async (
@@ -24,10 +24,10 @@ export const getEDefterIncelemeVerileri = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("E-Defter İnceleme verileri getirilemedi");
+      console.log("E-Defter İnceleme verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -59,7 +59,7 @@ export const updateEDefterIncelemeVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -91,7 +91,7 @@ export const updateEDefterIncelemeListeVerisi = async (
       return false;
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };
 
@@ -116,9 +116,9 @@ export const getEDefterIncelemeVerileriByFisNo = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error("Fiş Detayları verileri getirilemedi");
+      console.log("Fiş Detayları verileri getirilemedi");
     }
   } catch (error) {
-    console.error("Bir hata oluştu:", error);
+    console.log("Bir hata oluştu:", error);
   }
 };

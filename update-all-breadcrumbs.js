@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 // Read the template file that has the correct responsive pattern
@@ -48,7 +48,7 @@ const filesToUpdate = [
 const responsiveSection = extractChildrenSection(templateContent);
 
 if (!responsiveSection) {
-    console.error('Failed to extract responsive section from template');
+    console.log('Failed to extract responsive section from template');
     process.exit(1);
 }
 
@@ -106,7 +106,7 @@ filesToUpdate.forEach(relPath => {
         successCount++;
 
     } catch (error) {
-        console.error(`✗ Error processing ${relPath}:`, error.message);
+        console.log(`✗ Error processing ${relPath}:`, error.message);
         errorCount++;
     }
 });

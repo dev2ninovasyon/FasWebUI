@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -85,7 +85,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             );
             setVeriler(result);
         } catch (error) {
-            console.error("Veri getirme hatası:", error);
+            console.log("Veri getirme hatası:", error);
         }
     };
 
@@ -106,7 +106,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             handleClosePopUp();
             showSnackbar("Kayıt başarıyla oluşturuldu.", "success");
         } catch (error) {
-            console.error("Ekleme hatası:", error);
+            console.log("Ekleme hatası:", error);
             setSaving(false);
             showSnackbar("Kayıt oluşturulurken bir hata oluştu.", "error");
         }
@@ -127,7 +127,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             handleClosePopUp();
             showSnackbar("Kayıt başarıyla güncellendi.", "success");
         } catch (error) {
-            console.error("Güncelleme hatası:", error);
+            console.log("Güncelleme hatası:", error);
             setSaving(false);
             showSnackbar("Kayıt güncellenirken bir hata oluştu. Kayıt bulunamamış olabilir.", "error");
         }
@@ -142,7 +142,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             handleClosePopUp();
             showSnackbar("Kayıt başarıyla silindi.", "success");
         } catch (error) {
-            console.error("Silme hatası:", error);
+            console.log("Silme hatası:", error);
             setDeleting(false);
             showSnackbar("Kayıt silinirken bir hata oluştu.", "error");
         }
@@ -188,12 +188,12 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     {veriler.map((veri, index) => (
                         <Grid
                             key={index}
-                            item
-                            xs={12}
-                            lg={12}
                             mt="20px"
                             onClick={() => handleRowClick(veri)}
-                        >
+                            size={{
+                                xs: 12,
+                                lg: 12
+                            }}>
                             <CalismaKagidiCard
                                 title={`${index + 1}. ${veri.konu}`}
                                 standartMi={veri.standartMi}
@@ -210,15 +210,15 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     }}
                 >
                     <Grid
-                        item
-                        xs={12}
-                        lg={1.5}
                         my={2}
                         sx={{
                             display: "flex",
                             justifyContent: "end",
                         }}
-                    >
+                        size={{
+                            xs: 12,
+                            lg: 1.5
+                        }}>
                         <Button
                             size="medium"
                             variant="outlined"
@@ -241,7 +241,6 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     </Grid>
                 </Grid>
             </Grid>
-
             {isPopUpOpen && (
                 <PopUpComponent
                     konu={selectedKonu}
@@ -258,7 +257,6 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
                     handleUpdate={handleUpdate}
                 />
             )}
-
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}

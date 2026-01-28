@@ -6,6 +6,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { Typography, Box, Divider, Tabs, Tab } from "@mui/material";
 import dynamic from "next/dynamic";
 
+import { documentMapping, riskMatrixSections as sections, KYS_PATH_TO_FORM_KODU } from "@/api/Kys/KysRiskMatrixConstants";
 const KysRiskMatrixEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysRiskMatrixEditor"), { ssr: false });
 const KysBelgeShow = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysBelgeShow"), { ssr: false });
 const KysCalismaKagidiShow = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysCalismaKagidiShow"), { ssr: false });
@@ -40,7 +41,6 @@ function CustomTabPanel(props: TabPanelProps) {
     );
 }
 
-import { documentMapping, riskMatrixSections as sections, KYS_PATH_TO_FORM_KODU } from "@/api/Kys/KysRiskMatrixConstants";
 
 const BCrumb = [
     {

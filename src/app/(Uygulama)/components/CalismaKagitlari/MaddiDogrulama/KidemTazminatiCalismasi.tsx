@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useRef } from "react";
 import { HotTable } from "@handsontable/react";
@@ -79,7 +79,7 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
             setDataBobi(response.kidemVerileriBobi || []);
             setDataOncekiBobi(response.kidemVerileriOncekiYilBobi || []);
         } catch (error) {
-            console.error("Veri çekme hatası:", error);
+            console.log("Veri çekme hatası:", error);
             enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
         } finally {
             setLoading(false);

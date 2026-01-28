@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -185,12 +185,16 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
-                Sözleşme Testleri
-            </Typography>
+            {!isReport && (
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Typography variant="h5" sx={{ fontWeight: "600", color: "#333" }}>
+                        Sözleşme Testleri
+                    </Typography>
+                </Box>
+            )}
 
             <Grid container>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <TableContainer component={Paper} elevation={3} sx={{ borderRadius: "8px", overflow: "hidden" }}>
                         <Table size="small">
                             <TableHead>
@@ -273,7 +277,6 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
                     </TableContainer>
                 </Grid>
             </Grid>
-
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={3000}
