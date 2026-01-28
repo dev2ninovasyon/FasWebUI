@@ -156,7 +156,39 @@ const theme = {
   },
   quote: "editor-quote",
   code: "editor-code",
-  codeHighlight: "editor-code-highlight",
+  codeHighlight: {
+    aml: "editor-code-highlight-aml",
+    atom: "editor-code-highlight-atom",
+    attribute: "editor-code-highlight-attribute",
+    boolean: "editor-code-highlight-boolean",
+    builtin: "editor-code-highlight-builtin",
+    cdata: "editor-code-highlight-cdata",
+    char: "editor-code-highlight-char",
+    class: "editor-code-highlight-class",
+    cm: "editor-code-highlight-cm",
+    comment: "editor-code-highlight-comment",
+    constant: "editor-code-highlight-constant",
+    deletion: "editor-code-highlight-deletion",
+    doctype: "editor-code-highlight-doctype",
+    entity: "editor-code-highlight-entity",
+    error: "editor-code-highlight-error",
+    function: "editor-code-highlight-function",
+    important: "editor-code-highlight-important",
+    insertion: "editor-code-highlight-insertion",
+    keyword: "editor-code-highlight-keyword",
+    namespace: "editor-code-highlight-namespace",
+    number: "editor-code-highlight-number",
+    operator: "editor-code-highlight-operator",
+    prolog: "editor-code-highlight-prolog",
+    property: "editor-code-highlight-property",
+    punctuation: "editor-code-highlight-punctuation",
+    regex: "editor-code-highlight-regex",
+    selector: "editor-code-highlight-selector",
+    string: "editor-code-highlight-string",
+    tag: "editor-code-highlight-tag",
+    unit: "editor-code-highlight-unit",
+    variable: "editor-code-highlight-variable",
+  },
   link: "editor-link",
   paragraph: "editor-paragraph",
   table: "editor-table",
@@ -341,7 +373,7 @@ const ToolbarPlugin = () => {
   };
 
   const insertTable = (rows: number, cols: number) => {
-    editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows, columns: cols });
+    editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows: String(rows), columns: String(cols) });
     setTableAnchorEl(null);
   };
 
@@ -1090,7 +1122,7 @@ const HtmlPlugin = ({
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
-        const html = $generateHtmlFromNodes(editor, null);
+        const html = $generateHtmlFromNodes(editor, undefined);
         if (onChange) {
           onChange(html);
         }
@@ -1190,14 +1222,6 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({
         <TablePlugin />
         <TabIndentationPlugin />
         <MarkdownShortcutPlugin />
-        <OnChangePlugin onChange={(state: EditorState) => {
-          state.read(() => {
-            const html = $generateHtmlFromNodes(null, null);
-            if (onChange) {
-              onChange(html);
-            }
-          });
-        }} />
         <HtmlPlugin initialValue={initialValue} onChange={onChange} />
       </Box>
     </LexicalComposer>
