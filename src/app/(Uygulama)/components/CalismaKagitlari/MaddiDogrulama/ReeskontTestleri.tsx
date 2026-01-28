@@ -31,9 +31,37 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
 
     const user = useSelector((state: AppState) => state.userReducer);
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && modelAdi) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        modelAdi,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, modelAdi, user]);
+
     useEffect(() => {
         const fetchData = async () => {
-            if (user.token && user.denetciId !== undefined && user.yil !== undefined && user.denetlenenId !== undefined) {
+            if (user.token && user.denetciId !== undefined && user.yil !== undefined && user.denetlenenId !== undefined && resolvedDipnotNo) {
                 try {
                     const result = await getReeskontTestleri(
                         "ReeskontTestleri",
@@ -41,7 +69,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                         user.denetciId,
                         user.yil,
                         user.denetlenenId,
-                        dipnotNo,
+                        resolvedDipnotNo,
                         modelAdi
                     );
                     if (result) {
@@ -52,10 +80,12 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                 } finally {
                     setLoading(false);
                 }
+            } else {
+                if (resolvedDipnotNo === "") setLoading(false);
             }
         };
         fetchData();
-    }, [user, dipnotNo, modelAdi]);
+    }, [user, resolvedDipnotNo, modelAdi]);
 
     const fmt = (n: any) =>
         Number(n ?? 0).toLocaleString("tr-TR", {
@@ -112,13 +142,20 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
         backgroundColor: "#f9f9f9"
     };
 
+    const hasData = data && (
+        (data.degerlerKayitlari && data.degerlerKayitlari.length > 0) ||
+        (data.farklarKayitlari && data.farklarKayitlari.length > 0)
+    );
+
+    if (isReport && !loading && !hasData) {
+        return null;
+    }
+
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            {!isReport && (
-                <Typography variant="h4" gutterBottom>
-                    {data?.dipnotAdi || modelAdi} - Reeskont Testleri
-                </Typography>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Reeskont Testleri
+            </Typography>
 
             {loading && <Typography sx={{ mb: 2 }}>Veriler yükleniyor...</Typography>}
 

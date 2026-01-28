@@ -35,7 +35,8 @@ const StokDonemsellikTesti: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<StokDonemsellikTestiData[]>([]);
     const hotTableComponent = useRef<any>(null);
 
@@ -114,8 +115,13 @@ const StokDonemsellikTesti: React.FC<Props> = ({
         { data: "tespit", title: "Tespit" },
     ];
 
+    if (isReport && !loading && data.length === 0) return null;
+
     return (
-        <Box>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Stok Dönemsellik Testi
+            </Typography>
             {!isReport && (
                 <Box display="flex" justifyContent="flex-end" mb={2}>
                     <Button
@@ -128,7 +134,6 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                     </Button>
                 </Box>
             )}
-
             <Box
                 sx={{
                     width: "100%",

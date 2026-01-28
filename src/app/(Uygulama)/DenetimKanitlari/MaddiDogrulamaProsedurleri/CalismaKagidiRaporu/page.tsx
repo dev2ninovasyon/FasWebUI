@@ -521,6 +521,15 @@ const CalismaKagidiRaporu = () => {
                         if (d.type === "CekSenetTablosu") return true;
                         if (d.type === "FaturaTestleri") return true;
                         if (d.type === "SonrakiDonemTestleri") return true;
+                        if (d.type === "StoklarNetGerceklesebilirDeger") return true;
+                        if (d.type === "HareketsizStoklar") return true;
+                        if (d.type === "HareketsizTicariAlacaklar") return true;
+                        if (d.type === "StokDonemsellikTesti") return true;
+                        if (d.type === "HasilatDonemsellikTesti") return true;
+                        if (d.type === "EnvanterKontrolleri") return true;
+                        if (d.type === "MaliyetKontrolleri") return true;
+                        if (d.type === "KidemTazminatiCalismasi") return true;
+                        if (d.type === "MaddiDogrulamaYorumComponent") return true;
                         if (d.data === null || d.data === undefined) return false;
                         if (Array.isArray(d.data)) return d.data.length > 0;
                         return true;
@@ -731,7 +740,7 @@ const CalismaKagidiRaporu = () => {
                 />;
             case "HesaplaraIliskinUygulananDenetimTestleri":
                 return <HesaplaraIliskinUygulananDenetimTestleri
-                    controller={currentChildName}
+                    controller="HesaplaraIliskinUygulananDenetimTestleri"
                     dipnotAdi={currentTitle}
                     dipnotNo={currentDipnotNo}
                     modelAdi={currentParentName}
@@ -989,7 +998,7 @@ const CalismaKagidiRaporu = () => {
                                     mb: 3,
                                     boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
                                 }}>
-                                    {detail.documentName}
+                                    {/* {detail.documentName} */}
                                 </Typography>
 
                                 <Box sx={{ mb: 2 }}>

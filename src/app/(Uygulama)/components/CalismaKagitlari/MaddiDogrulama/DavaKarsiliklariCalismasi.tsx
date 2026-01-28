@@ -141,8 +141,13 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
 
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
 
+    if (isReport && !loading && data.length === 0) return null;
+
     return (
         <Box sx={{ width: "100%", p: 0 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Dava Karşılıkları Çalışması
+            </Typography>
             {/* Arka plansız Düz Metin Başlık */}
             <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: TITLE_TEXT_COLOR }}>
                 Dava Karşılıkları Özeti

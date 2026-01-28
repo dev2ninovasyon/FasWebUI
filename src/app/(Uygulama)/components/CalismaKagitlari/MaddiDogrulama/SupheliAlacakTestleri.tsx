@@ -30,6 +30,7 @@ interface Props {
 
 const SupheliAlacakTestleri: React.FC<Props> = ({
     dipnotNo,
+    modelAdi,
     isClickedVarsayilanaDon,
     setIsClickedVarsayilanaDon,
     isReport
@@ -41,19 +42,49 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
     const user = useSelector((state: AppState) => state.userReducer);
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" as "success" | "error" });
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && modelAdi) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        modelAdi,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, modelAdi, user]);
+
     const fetchData = useCallback(async () => {
-        if (user.token && user.denetciId && user.yil && user.denetlenenId && dipnotNo) {
+        if (user.token && user.denetciId && user.yil && user.denetlenenId && resolvedDipnotNo) {
             setLoading(true);
             try {
-                const result = await getSupheliAlacakTestleri(user.token, user.denetciId, user.yil, user.denetlenenId, dipnotNo);
+                const result = await getSupheliAlacakTestleri(user.token, user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
                 setVeriler(result || []);
             } catch (error) {
                 showSnackbar("Veriler yüklenirken hata oluştu.", "error");
             } finally {
                 setLoading(false);
             }
+        } else {
+            if (resolvedDipnotNo === "") setLoading(false);
         }
-    }, [user.token, user.denetciId, user.yil, user.denetlenenId, dipnotNo]);
+    }, [user.token, user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo]);
 
     useEffect(() => {
         const handleVarsayilanaDon = async () => {
@@ -154,11 +185,17 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
         );
     }
 
+    if (isReport && !loading && veriler.length === 0) {
+        return null;
+    }
+
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Şüpheli Alacak Testleri
+            </Typography>
             {!isReport && (
-                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="h5">Şüpheli Alacak Testleri</Typography>
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -179,7 +216,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                 backgroundColor: '#fff',
                 overflow: 'hidden',
                 "& .handsontable th": {
-                    backgroundColor: theme.palette.primary.main,
+                    backgroundColor: "#2C3E50",
                     color: "white",
                     fontWeight: 'bold',
                 },

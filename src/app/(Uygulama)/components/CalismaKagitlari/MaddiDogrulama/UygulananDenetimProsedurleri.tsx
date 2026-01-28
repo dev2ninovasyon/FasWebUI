@@ -26,6 +26,8 @@ import { getUygulananDenetimProsedurleri } from "@/api/MaddiDogrulama/MaddiDogru
 import Autocomplete from "@mui/material/Autocomplete";
 import dynamic from "next/dynamic";
 import { FloatingButtonCalismaKagitlari } from "@/app/(Uygulama)/components/CalismaKagitlari/FloatingButtonCalismaKagitlari";
+import { useTheme } from "@mui/material/styles";
+
 const MaddiDogrulamaKonuEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/MaddiDogrulamaKonuEditor"),
   { ssr: false }
@@ -73,6 +75,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
   setDip,
   isReport,
 }) => {
+  const theme = useTheme();
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
 
@@ -273,7 +276,10 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
   }, [isClickedVarsayilanaDon]);
 
   return (
-    <>
+    <Box>
+      <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+        Uygulanan Denetim Prosedürleri
+      </Typography>
       <Grid container>
         <Grid item xs={12} lg={12}>
           <Grid
@@ -347,58 +353,6 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
           )}
 
         </Grid>
-        {/*
-        (user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi")) && (
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                hazirlayan="Denetçi - Yardımcı Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                onaylayan="Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-            <Grid item xs={12} md={3.9} lg={3.9} mt={3}>
-              <BelgeKontrolCard
-                fetch={fetchData}
-                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                controller={controller}
-              ></BelgeKontrolCard>
-            </Grid>
-          </Grid>
-        )
-        */}
-        {/*
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-              gap: 1,
-            }}
-          >
-            <Grid item xs={12} lg={12} mt={5}>
-              <IslemlerCard controller={controller} />
-            </Grid>
-          </Grid>
-        */}
       </Grid>
       {isPopUpOpen && (
         <PopUpComponent
@@ -420,7 +374,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
           isNew={isNew}
         />
       )}
-    </>
+    </Box>
   );
 };
 

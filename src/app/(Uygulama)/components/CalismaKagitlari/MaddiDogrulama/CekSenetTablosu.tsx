@@ -82,11 +82,15 @@ const CekSenetTablosu: React.FC<Props> = ({
         );
     }
 
+    if (isReport && !loading && veriler.length === 0) return null;
+
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Çek Senet Tablosu
+            </Typography>
             {!isReport && (
-                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="h5">Çek Senet Tablosu</Typography>
+                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                     <Button
                         variant="contained"
                         color="primary"

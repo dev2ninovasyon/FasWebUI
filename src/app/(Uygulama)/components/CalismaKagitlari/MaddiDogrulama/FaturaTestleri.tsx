@@ -23,10 +23,26 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
 
     const TITLE_TEXT_COLOR = "#FFFFFF";
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo) {
+                // Fatura Testleri usually doesn't have a specific model name passed, but let's try if needed or skip
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo]);
+
     const fetchData = async () => {
+        if (!resolvedDipnotNo) return;
         setLoading(true);
         try {
-            const res = await getFaturaTestleri(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
+            const res = await getFaturaTestleri(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, resolvedDipnotNo);
             if (Array.isArray(res)) {
                 setData(res.map((item: any) => ({
                     ...item,
@@ -43,7 +59,7 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
 
     useEffect(() => {
         fetchData();
-    }, [user.denetlenenId, user.yil, dipnotNo]);
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
 
     const handleAfterChange = async (changes: any) => {
         if (!changes) return;
@@ -61,19 +77,19 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
 
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
 
+    if (isReport && !loading && data.length === 0) return null;
+
     return (
         <Box sx={{ width: "100%", p: isReport ? 0 : 0 }}>
-            {!isReport && (
-                <Typography variant="h5" fontWeight={700} mb={2} sx={{ color: TITLE_TEXT_COLOR }}>
-                    Fatura Testleri Listesi
-                </Typography>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Fatura Testleri
+            </Typography>
 
             <Box
                 sx={{
-                    border: `1px solid ${theme.palette.primary.main}`,
+                    border: `1px solid #2C3E50`,
                     borderRadius: "8px",
-                    overflow: "hidden", // Dış kutu taşmaları engeller
+                    overflow: "hidden",
                     "& .handsontable": {
                         fontFamily: "inherit",
                     },
@@ -87,19 +103,18 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
                         padding: "8px 4px !important",
                         verticalAlign: "middle !important",
                         height: "45px !important",
-                        zIndex: 100 // Başlıkları sabitlemek için
+                        zIndex: 100
                     },
                     "& .handsontable td": {
                         fontSize: "13px",
                         verticalAlign: "middle"
                     },
-                    // Scroll barların MUI temasına uygun görünmesi için (isteğe bağlı)
                     "& ::-webkit-scrollbar": { width: "8px", height: "8px" },
                     "& ::-webkit-scrollbar-thumb": { backgroundColor: "#ccc", borderRadius: "4px" }
                 }}
             >
                 <HotTable
-                    data={data.length > 0 ? data : [{}, {}, {}]} // Veri yoksa boş satırlarla başlıkları göster
+                    data={data.length > 0 ? data : [{}, {}, {}]}
                     afterChange={handleAfterChange}
                     colHeaders={[
                         "Yevmiye Tarihi", "Yevmiye No", "Fatura No", "Fatura Tarih",
@@ -124,18 +139,18 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
                         { data: "tespitAciklama", width: 200 }
                     ]}
                     rowHeaders={true}
-                    width="100%" // Sağa-sola scroll için genişlik
-                    height="auto" // Aşağı-yukarı scrollu kaldır
-                    stretchH="none" // Verilere göre genişliği korumak için 'none' yapıldı
+                    width="100%"
+                    height="auto"
+                    stretchH="none"
                     autoColumnSize={true}
-                    manualColumnResize={!isReport} // Kullanıcı sütun genişliğini ayarlayabilir
+                    manualColumnResize={!isReport}
                     filters={!isReport}
                     columnSorting={!isReport}
                     dropdownMenu={!isReport}
                     language={dictionary.languageCode}
                     licenseKey="non-commercial-and-evaluation"
-                    fixedColumnsLeft={2} // Soldaki 2 sütunu sabitler
-                    fixedRowsTop={0} // Başlıklar zaten otomatik sabitlenir
+                    fixedColumnsLeft={2}
+                    fixedRowsTop={0}
                     className={customizer.activeMode === "dark" ? "htDark" : ""}
                     readOnly={isReport}
                     contextMenu={isReport ? false : true}

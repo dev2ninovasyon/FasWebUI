@@ -14,7 +14,6 @@ import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitlari/ConfirmPopUp";
-import dynamic from "next/dynamic";
 import {
   createCalismaKagidiVerisi,
   deleteAllCalismaKagidiVerileriByDipnotNo,
@@ -22,8 +21,7 @@ import {
   getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo,
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
-
-
+import { useTheme } from "@mui/material/styles";
 
 interface Veri {
   id: number;
@@ -51,6 +49,7 @@ const UygulananDenetimTeknikleri: React.FC<CalismaKagidiProps> = ({
   dipnotNo,
   isReport,
 }) => {
+  const theme = useTheme();
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
 
@@ -236,7 +235,10 @@ const UygulananDenetimTeknikleri: React.FC<CalismaKagidiProps> = ({
   }, [isClickedVarsayilanaDon]);
 
   return (
-    <>
+    <Box>
+      <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+        Uygulanan Denetim Teknikleri
+      </Typography>
       <Grid container>
         <Grid item xs={12} lg={12}>
           <Grid
@@ -323,7 +325,7 @@ const UygulananDenetimTeknikleri: React.FC<CalismaKagidiProps> = ({
           isNew={isNew}
         />
       )}
-    </>
+    </Box>
   );
 };
 

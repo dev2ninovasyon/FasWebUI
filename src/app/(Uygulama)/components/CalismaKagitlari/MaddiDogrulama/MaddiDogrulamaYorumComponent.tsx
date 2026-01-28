@@ -1,7 +1,7 @@
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid } from "@mui/material";
 
 const YorumEditor = dynamic(
@@ -21,11 +21,13 @@ const MaddiDogrulamaYorumComponent: React.FC<
     MaddiDogrulamaYorumComponentProps
 > = ({ parentName, childName, isReport }) => {
     const user = useSelector((state: AppState) => state.userReducer);
-
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState<any[]>([]);
     // belgeAdi oluşturma mantığı:
     // İsteğe göre burası özelleştirilebilir.
     // Kullanıcı "MaddiDogrulamaProsedurleri/${parentName}/${childName}" formatını istemişti.
     const belgeAdi = `MaddiDogrulamaProsedurleri/${parentName}/${childName}`;
+    if (isReport && !loading && !data.length) return null;
 
     return (
         <Box sx={{ width: "100%", marginY: 3 }}>

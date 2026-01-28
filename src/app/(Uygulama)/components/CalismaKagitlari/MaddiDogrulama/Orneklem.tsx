@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { useTheme, Box, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getOrneklemByDipnot } from "@/api/DenetimKanitlari/DenetimKanitlari";
@@ -386,8 +386,8 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
           veri.kalanBakiye,
           veri.toplamIslemSayisi,
           veri.orneklemSayisi,
-          veri.borcOrneklemSayisi,
-          veri.alacakOrneklemSayisi,
+          veri.borcOrnekSayisi,
+          veri.alacakOrnekSayisi,
           veri.listelemeTuru,
           veri.guvenilirlikDuzeyi,
         ];
@@ -427,7 +427,10 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
   }, [customizer.isCollapse]);
 
   return (
-    <>
+    <Box>
+      <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+        Örneklem
+      </Typography>
       <HotTable
         style={{
           height: "100%",
@@ -468,7 +471,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
         contextMenu={isReport ? false : ["alignment", "copy"]}
         readOnly={isReport}
       />
-    </>
+    </Box>
   );
 };
 

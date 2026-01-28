@@ -28,26 +28,55 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
 
     const [data, setData] = useState<any[]>([]);
 
     const hotTableComponent = useRef<any>(null);
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && parentName) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, parentName, user]);
+
     const fetchData = async () => {
-        if (!dipnotNo || dipnotNo === "") {
+        if (!resolvedDipnotNo || resolvedDipnotNo === "") {
             console.warn("DipnotNo boş, veri çekilemiyor");
             return;
         }
 
-        console.log("Veri çekiliyor - dipnotNo:", dipnotNo, "denetlenenId:", user.denetlenenId, "yil:", user.yil);
+        console.log("Veri çekiliyor - dipnotNo:", resolvedDipnotNo, "denetlenenId:", user.denetlenenId, "yil:", user.yil);
         setLoading(true);
         try {
             const response = await fetchVarlikVeAmortismanOzetTablo(
                 user.token || "",
                 user.denetlenenId || 0,
                 user.yil || 0,
-                dipnotNo
+                resolvedDipnotNo
             );
 
             console.log("API Yanıtı alındı:", response);
@@ -87,7 +116,9 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
     useEffect(() => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user.denetlenenId, user.yil, dipnotNo]);
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+    if (isReport && !loading && data.length === 0) return null;
 
     const columns = useMemo(() => {
         return [
@@ -137,13 +168,9 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            {!isReport && (
-                <Box sx={{ mb: 2 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        Varlık ve Amortisman Özet Tablo
-                    </Typography>
-                </Box>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Varlık ve Amortisman Özet Tablo
+            </Typography>
 
             <Box
                 sx={{

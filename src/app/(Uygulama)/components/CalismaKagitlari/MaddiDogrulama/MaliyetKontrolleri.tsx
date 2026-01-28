@@ -33,16 +33,45 @@ const MaliyetKontrolleri: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<MaliyetKontrolleriResponseDto[]>([]);
     const hotTableComponent = useRef<any>(null);
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && parentName) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, parentName, user]);
+
     const fetchData = async () => {
-        if (!user.denetlenenId || !user.yil || !dipnotNo) {
+        if (!user.denetlenenId || !user.yil || !resolvedDipnotNo) {
             console.warn("Parametreler eksik, istek atılmıyor:", {
                 denetlenenId: user.denetlenenId,
                 yil: user.yil,
-                dipnotNo
+                dipnotNo: resolvedDipnotNo
             });
             return;
         }
@@ -51,7 +80,7 @@ const MaliyetKontrolleri: React.FC<Props> = ({
             const response = await getMaliyetKontrolleri(
                 user.denetlenenId,
                 user.yil,
-                dipnotNo
+                resolvedDipnotNo
             );
             if (Array.isArray(response)) {
                 console.log("Veri geldi, satır sayısı:", response.length);
@@ -70,8 +99,14 @@ const MaliyetKontrolleri: React.FC<Props> = ({
     };
 
     useEffect(() => {
-        fetchData();
-    }, [user.denetlenenId, user.yil, dipnotNo]);
+        if (resolvedDipnotNo) {
+            fetchData();
+        }
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+    if (isReport && !loading && (!Array.isArray(data) || data.length === 0)) {
+        return null;
+    }
 
     const columns = [
         { data: "hesapNo", title: "Hesap No", readOnly: true },
@@ -84,6 +119,9 @@ const MaliyetKontrolleri: React.FC<Props> = ({
 
     return (
         <Box>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Maliyet Kontrolleri
+            </Typography>
             <Box
                 sx={{
                     width: "100%",

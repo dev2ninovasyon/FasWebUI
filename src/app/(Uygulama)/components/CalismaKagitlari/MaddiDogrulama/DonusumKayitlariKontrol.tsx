@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
     Box,
     Grid,
@@ -47,8 +47,37 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
     const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
     const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && controller) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        controller,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, controller, user]);
+
     useEffect(() => {
         const fetchData = async () => {
+            if (!resolvedDipnotNo) return;
             setLoading(true);
             try {
                 const res = await getDonusumKayitlari(
@@ -57,7 +86,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                     user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
-                    dipnotNo
+                    resolvedDipnotNo
                 );
                 if (res) {
                     setAnaHesaplar(res.kayitlar);
@@ -71,7 +100,15 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
         };
 
         fetchData();
-    }, [controller, dipnotNo, user.token, user.denetciId, user.denetlenenId, user.yil]);
+    }, [controller, resolvedDipnotNo, user.token, user.denetciId, user.denetlenenId, user.yil]);
+
+    const hasData = useMemo(() => {
+        const hasAna = anaHesaplar.some(row => (row.vukBakiye ?? 0) !== 0 || (row.donusumBakiye ?? 0) !== 0 || (row.fark ?? 0) !== 0);
+        const hasFis = donusumFisleri.some(row => (row.borc ?? 0) !== 0 || (row.alacak ?? 0) !== 0);
+        return hasAna || hasFis;
+    }, [anaHesaplar, donusumFisleri]);
+
+    if (!loading && !hasData && isReport) return null;
 
     const renderAnaHesaplarTable = () => {
 
@@ -162,6 +199,9 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
         <Grid container>
             <Grid item xs={12}>
                 <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
+                    <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                        Dönüşüm Kayıtları Kontrol
+                    </Typography>
                     {renderAnaHesaplarTable()}
                     {renderDonusumFisleriTable()}
                 </Box>

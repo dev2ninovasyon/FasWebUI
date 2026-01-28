@@ -8,7 +8,6 @@ import {
     TableHead,
     TableRow,
     Paper,
-    IconButton,
     Snackbar,
     Alert,
     TextField,
@@ -16,7 +15,6 @@ import {
     CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { IconPencil, IconFileText } from "@tabler/icons-react";
 
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
@@ -74,7 +72,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                 user.denetciId || 0,
                 user.yil || 0, // ✅ yil
                 user.denetlenenId || 0, // ✅ denetlenenId
-                dipnotNo,
+                resolvedDipnotNo,
                 modelAdi
             );
 
@@ -101,12 +99,40 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
         }
     };
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
     useEffect(() => {
-        if (dipnotNo) {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && modelAdi) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        modelAdi,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, modelAdi, user]);
+
+    useEffect(() => {
+        if (resolvedDipnotNo) {
             fetchData();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dipnotNo, controller, modelAdi, user.denetlenenId, user.yil, user.denetciId]);
+    }, [resolvedDipnotNo, controller, modelAdi, user.denetlenenId, user.yil, user.denetciId]);
 
     const handleInputChange = (id: number, val: string) => {
         setEditValues((prev) => ({ ...prev, [id]: val }));
@@ -182,8 +208,15 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
         );
     }
 
+    if (!loading && veriler.length === 0 && isReport) {
+        return null;
+    }
+
     return (
-        <Box sx={{ mt: isReport ? 0 : 2, mb: 4, width: "100%" }}>
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Yabancı Para Testleri
+            </Typography>
             <TableContainer
                 component={Paper}
                 elevation={0}
@@ -195,7 +228,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
             >
                 <Table size="small" sx={{ minWidth: 650 }}>
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                        <TableRow sx={{ backgroundColor: "#2C3E50" }}>
                             <TableCell
                                 sx={{
                                     fontWeight: 700,

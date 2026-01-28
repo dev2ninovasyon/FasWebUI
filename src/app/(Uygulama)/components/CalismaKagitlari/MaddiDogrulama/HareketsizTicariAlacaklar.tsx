@@ -117,8 +117,6 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
             const handleHesapla = async () => {
                 try {
                     setLoading(true);
-                    // Varsayılan olarak açılış fiş no 1 kabul ediliyor. 
-                    // İleride gerekirse kullanıcıdan alınabilir.
                     await calculateHareketsizTicariAlacaklar(
                         user.token || "",
                         user.denetciId || 0,
@@ -187,16 +185,16 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
 
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
 
+    if (isReport && !loading && veriler.length === 0) return null;
+
     return (
         <Grid container>
             <Grid item xs={12}>
                 <Box px={0} pt={3} pb={5} sx={{ width: "100%", margin: "0 auto" }}>
-                    <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1, mb: 2 }}>
-                        <Typography variant="subtitle1" fontWeight={700}>
-                            Hareketsiz Ticari Alacaklar
-                        </Typography>
-                    </Box>
-                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${theme.palette.divider}` }}>
+                    <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                        Hareketsiz Ticari Alacaklar
+                    </Typography>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid #2C3E50` }}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>

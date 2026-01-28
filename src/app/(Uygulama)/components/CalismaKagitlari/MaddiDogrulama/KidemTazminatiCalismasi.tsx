@@ -33,19 +33,48 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [dataBobi, setDataBobi] = useState<KidemTazminatiHesaplamaSonuclari[]>([]);
     const [dataOncekiBobi, setDataOncekiBobi] = useState<KidemTazminatiHesaplamaSonuclari[]>([]);
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && parentName) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, parentName, user]);
+
     const fetchData = async () => {
-        if (!user.denetlenenId || !user.yil || !dipnotNo) return;
+        if (!user.denetlenenId || !user.yil || !resolvedDipnotNo) return;
         setLoading(true);
         try {
             const response = await getKidemTazminatiCalismasi(
                 user.denetciId || 0,
                 user.denetlenenId,
                 user.yil,
-                dipnotNo
+                resolvedDipnotNo
             );
             setDataBobi(response.kidemVerileriBobi || []);
             setDataOncekiBobi(response.kidemVerileriOncekiYilBobi || []);
@@ -59,7 +88,9 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
 
     useEffect(() => {
         fetchData();
-    }, [user.denetlenenId, user.yil, dipnotNo]);
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+    if (isReport && !loading && dataBobi.length === 0 && dataOncekiBobi.length === 0) return null;
 
     const columns = [
         { data: "tcKimlikNo", title: "TC Kimlik No", readOnly: true },
@@ -71,12 +102,13 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: isReport ? 2 : 4 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Kıdem Tazminatı Çalışması
+            </Typography>
             <Box>
-                {!isReport && (
-                    <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                        Cari Dönem Kıdem Tazminatı Çalışması ({user.yil || ""})
-                    </Typography>
-                )}
+                <Typography variant="subtitle1" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+                    Cari Dönem Kıdem Tazminatı Çalışması ({user.yil || ""})
+                </Typography>
                 <Box
                     sx={{
                         width: "100%",
@@ -120,11 +152,9 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
             <Divider />
 
             <Box>
-                {!isReport && (
-                    <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                        Önceki Dönem Kıdem Tazminatı Çalışması ({(user.yil || 0) - 1})
-                    </Typography>
-                )}
+                <Typography variant="subtitle1" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+                    Önceki Dönem Kıdem Tazminatı Çalışması ({(user.yil || 0) - 1})
+                </Typography>
                 <Box
                     sx={{
                         width: "100%",

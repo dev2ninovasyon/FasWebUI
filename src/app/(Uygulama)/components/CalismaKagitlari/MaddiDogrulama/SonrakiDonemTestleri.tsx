@@ -38,18 +38,53 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<(MaddiDogrulukTahsilatKayitlari & { selected?: boolean })[]>([]);
     const hotTableComponent = useRef<any>(null);
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && parentName) {
+                setLoading(true);
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) {
+                        setResolvedDipnotNo(dNo);
+                    } else {
+                        setLoading(false);
+                    }
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                    setLoading(false);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, parentName, user]);
+
     const fetchData = async () => {
-        if (!user.denetlenenId || !user.yil || !dipnotNo) return;
+        if (!user.denetlenenId || !user.yil || !resolvedDipnotNo) return;
         setLoading(true);
         try {
             const response = await getSonrakiDonemTestleri(
                 user.denetlenenId,
                 user.yil,
-                dipnotNo
+                resolvedDipnotNo
             );
             setData((response.tahsilatKayitlari || []).map((item: any) => ({
                 ...item,
@@ -63,6 +98,10 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchData();
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
 
     const handleSatirEkle = async () => {
         if (!user.denetlenenId || !user.yil) return;
@@ -118,10 +157,6 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
         handleSeciliSatirlariSil
     }));
 
-    useEffect(() => {
-        fetchData();
-    }, [user.denetlenenId, user.yil, dipnotNo]);
-
     const handleAfterChange = async (changes: any) => {
         if (!changes) return;
 
@@ -172,8 +207,13 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
         { data: "bakiye", title: "Bakiye", type: "numeric", numericFormat: { pattern: "0,0.00", culture: "tr-TR" } },
     ];
 
+    if (isReport && !loading && data.length === 0) return null;
+
     return (
         <Box>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Sonraki Dönem Testleri
+            </Typography>
             <Box
                 sx={{
                     width: "100%",

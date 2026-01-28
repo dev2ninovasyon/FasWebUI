@@ -27,10 +27,26 @@ const AmortismanKontrolleri: React.FC<Props> = ({
     const [loading, setLoading] = useState<boolean>(false);
     const { enqueueSnackbar } = useSnackbar();
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo) {
+                // Logic to resolve if needed
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo]);
+
     const fetchData = async () => {
+        if (!resolvedDipnotNo) return;
         setLoading(true);
         try {
-            const result = await fetchAmortismanKontrolleri(token, denetlenenId, yil, dipnotNo);
+            const result = await fetchAmortismanKontrolleri(token, denetlenenId, yil, resolvedDipnotNo);
             // Backend returns { success: true, data: { ... }, message: ... }
             if (result && result.success && result.data) {
                 setData(result.data);
@@ -46,7 +62,9 @@ const AmortismanKontrolleri: React.FC<Props> = ({
 
     useEffect(() => {
         fetchData();
-    }, [denetlenenId, yil, dipnotNo]);
+    }, [denetlenenId, yil, resolvedDipnotNo]);
+
+    if (isReport && !loading && !data) return null;
 
     const handleSaveSatir = async (hesapKodu: string, value: string, id: number) => {
         const numValue = parseFloat(value.replace(",", "."));
@@ -161,6 +179,9 @@ const AmortismanKontrolleri: React.FC<Props> = ({
 
     return (
         <div className={isReport ? "space-y-4" : "p-4 space-y-8"}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Amortisman Kontrolleri
+            </Typography>
             {/* Table 1: Hesap Bakiyeleri */}
             <Card>
                 <CardContent>

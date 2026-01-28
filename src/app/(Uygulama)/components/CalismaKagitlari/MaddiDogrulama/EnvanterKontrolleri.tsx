@@ -36,20 +36,50 @@ const EnvanterKontrolleri: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<EnvanterKontrolleriWrapperDto>({
         envanterMizanList: [],
         stokKartListeList: [],
         listeFaturaList: [],
     });
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && parentName) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, parentName, user]);
+
     const fetchData = async () => {
+        if (!resolvedDipnotNo) return;
         setLoading(true);
         try {
             const response = await getEnvanterKontrolleri(
                 user.denetlenenId || 0,
                 user.yil || 0,
-                dipnotNo
+                resolvedDipnotNo
             );
             if (response && response.debugMessage) {
                 console.log("[EnvanterKontrolleri] Active Code Version:", response.debugMessage);
@@ -76,7 +106,13 @@ const EnvanterKontrolleri: React.FC<Props> = ({
 
     useEffect(() => {
         fetchData();
-    }, [user.denetlenenId, user.yil, dipnotNo]);
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+    const hasData = data.envanterMizanList.length > 0 || data.stokKartListeList.length > 0 || data.listeFaturaList.length > 0;
+
+    if (isReport && !loading && !hasData) {
+        return null;
+    }
 
     const columns1 = [
         { data: "stokKodu", title: "Stok Kodu", readOnly: true },
@@ -109,7 +145,7 @@ const EnvanterKontrolleri: React.FC<Props> = ({
 
     const renderTable = (tableData: any[], columns: any[], title: string) => (
         <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: theme.palette.primary.main }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "#2C3E50" }}>
                 {title}
             </Typography>
             <Box
@@ -171,6 +207,9 @@ const EnvanterKontrolleri: React.FC<Props> = ({
 
     return (
         <Box>
+            <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: "bold", mb: 3 }}>
+                Envanter Kontrolleri
+            </Typography>
             {renderTable(data.envanterMizanList, columns1, "Envanter ve Mizan Kontrolü")}
             {renderTable(data.stokKartListeList, columns2, "Stok Kartı ve Liste Fiyatı Kontrolü")}
             {renderTable(data.listeFaturaList, columns3, "Liste Fiyatı ve Fatura Kontrolü")}

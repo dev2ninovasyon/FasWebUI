@@ -28,7 +28,8 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
 
     const [data, setData] = useState<KrediHesaplamaData[]>([]);
     const [detailData, setDetailData] = useState<any[]>([]);
@@ -36,8 +37,42 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
     const hotTableComponent = useRef<any>(null);
     const detailHotTableComponent = useRef<any>(null);
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && parentName) {
+                setLoading(true);
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) {
+                        setResolvedDipnotNo(dNo);
+                    } else {
+                        setLoading(false);
+                    }
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                    setLoading(false);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, parentName, user]);
+
     const fetchData = async () => {
-        if (!dipnotNo || dipnotNo === "") return;
+        if (!resolvedDipnotNo || resolvedDipnotNo === "") return;
 
         setLoading(true);
         try {
@@ -45,7 +80,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                 user.token || "",
                 user.denetlenenId || 0,
                 user.yil || 0,
-                dipnotNo
+                resolvedDipnotNo
             );
 
             if (response && response.success) {
@@ -93,7 +128,9 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
     useEffect(() => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user.denetlenenId, user.yil, dipnotNo]);
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+    if (isReport && !loading && data.length === 0 && detailData.length === 0) return null;
 
     // ---------------------------
     // ANA TABLO - COLUMNS
@@ -173,13 +210,9 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            {!isReport && (
-                <Box sx={{ mb: 2 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        Kredi Çalışması
-                    </Typography>
-                </Box>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Kredi Çalışması
+            </Typography>
 
             {/* ANA TABLO */}
             <Box

@@ -34,7 +34,8 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<MdStokNetGerceklesebilirDeger[]>([]);
     const hotTableComponent = useRef<any>(null);
 
@@ -129,14 +130,16 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
         { data: "degerDusukluguTutar", title: "Değer Düşüklüğü Tutarı", type: "numeric", numericFormat: { pattern: "0,0.00", culture: "tr-TR" }, readOnly: true },
     ];
 
+    if (isReport && !loading && !data.length) return null;
+
     return (
-        <Box>
-            {/* Buton ve Başlık Bölümü */}
+        <Box sx={{ p: isReport ? 0 : 3 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Stoklar Net Gerçekleşebilir Değer
+            </Typography>
+            {/* Buton Bölümü */}
             {!isReport && (
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                    <Typography variant="h6" sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                        Stoklar Net Gerçekleşebilir Değer
-                    </Typography>
+                <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", mb: 2 }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -148,7 +151,6 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
                     </Button>
                 </Box>
             )}
-
             <Box
                 sx={{
                     width: "100%",
@@ -156,7 +158,7 @@ const StoklarNetGerceklesebilirDeger = forwardRef<any, Props>(({
                     borderRadius: "8px",
                     border: `1px solid ${theme.palette.divider}`,
                     "& .handsontable th": {
-                        backgroundColor: theme.palette.primary.main,
+                        backgroundColor: "#2C3E50",
                         color: "white",
                     }
                 }}

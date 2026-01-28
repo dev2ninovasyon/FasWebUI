@@ -32,17 +32,46 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<any[]>([]);
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && parentName) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        parentName,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, parentName, user]);
+
     const fetchData = async () => {
-        if (!user.denetlenenId || !user.yil || !dipnotNo) return;
+        if (!user.denetlenenId || !user.yil || !resolvedDipnotNo) return;
         setLoading(true);
         try {
             const response = await getDegerlemeveDegerDusukluguKontrolleri(
                 user.denetlenenId,
                 user.yil,
-                dipnotNo
+                resolvedDipnotNo
             );
             setData(response.donusumMizanBobi || []);
         } catch (error) {
@@ -55,7 +84,9 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
 
     useEffect(() => {
         fetchData();
-    }, [user.denetlenenId, user.yil, dipnotNo]);
+    }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+    if (isReport && !loading && data.length === 0) return null;
 
     const columns = [
         { data: "detayKodu", title: "Hesap No", readOnly: true },
@@ -72,11 +103,9 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
 
     return (
         <Box sx={{ p: isReport ? 0 : 0 }}>
-            {!isReport && (
-                <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-                    Değerleme ve Değer Düşüklüğü Kontrolleri
-                </Typography>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Değerleme ve Değer Düşüklüğü Kontrolleri
+            </Typography>
             <Box
                 sx={{
                     width: "100%",

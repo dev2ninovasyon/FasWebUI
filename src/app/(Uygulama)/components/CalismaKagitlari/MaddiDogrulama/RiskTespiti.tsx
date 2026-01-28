@@ -19,6 +19,7 @@ import {
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import dynamic from "next/dynamic";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
+import { useTheme } from "@mui/material/styles";
 
 const YorumEditor = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/YorumEditor"),
@@ -90,6 +91,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
   setDip,
   isReport,
 }) => {
+  const theme = useTheme();
   const user = useSelector((state: AppState) => state.userReducer);
 
   const [selectedId, setSelectedId] = useState(0);
@@ -332,7 +334,10 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
   }, []);
 
   return (
-    <>
+    <Box>
+      <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+        Risk Tespiti
+      </Typography>
       <Grid container>
         <Grid item xs={12} lg={12}>
           <Grid
@@ -400,7 +405,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
           isPopUpOpen={isPopUpOpen}
         />
       )}
-    </>
+    </Box>
   );
 };
 
@@ -816,48 +821,45 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                   </Grid>
                 </Grid>
               </Box>
+              <Box mt={3}>
+                <Divider />
+                <Stack direction="row" spacing={2} mt={2} justifyContent="flex-end">
+                  <Button variant="outlined" color="error" onClick={handleClose}>
+                    Vazgeç
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() =>
+                      handleUpdate(
+                        dipnotNo || "",
+                        finansalTabloHesaplar || "",
+                        cari || false,
+                        onceki || false,
+                        gecmis || false,
+                        tamOlma || "0",
+                        dogruluk || "0",
+                        varOlma || "0",
+                        degerleme || "0",
+                        donemsellik || "0",
+                        gecerlilik || "0",
+                        sunumVeAciklama || "0",
+                        onemsizRisk || false,
+                        ciddiRisk || false,
+                        referans || false,
+                        kontrollerinEtkinligininTestEdilmesi || false,
+                        analitikProsedurler || false,
+                        detayTestler || false,
+                        genelDenetimYaklasimi || false
+                      )
+                    }
+                  >
+                    Güncelle
+                  </Button>
+                </Stack>
+              </Box>
             </Box>
           </DialogContent>
-          <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
-            <Button
-              variant="outlined"
-              color="success"
-              onClick={() =>
-                handleUpdate(
-                  dipnotNo || "",
-                  finansalTabloHesaplar || "",
-                  cari || false,
-                  onceki || false,
-                  gecmis || false,
-                  tamOlma || "0",
-                  dogruluk || "0",
-                  varOlma || "0",
-                  degerleme || "0",
-                  donemsellik || "0",
-                  gecerlilik || "0",
-                  sunumVeAciklama || "0",
-                  onemsizRisk || false,
-                  ciddiRisk || false,
-                  referans || false,
-                  kontrollerinEtkinligininTestEdilmesi || false,
-                  analitikProsedurler || false,
-                  detayTestler || false,
-                  genelDenetimYaklasimi || false
-                )
-              }
-              sx={{ width: "20%" }}
-            >
-              Kaydet
-            </Button>{" "}
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={handleClose}
-              sx={{ width: "20%" }}
-            >
-              Kapat
-            </Button>
-          </DialogActions>
         </>
       )}
     </Dialog>

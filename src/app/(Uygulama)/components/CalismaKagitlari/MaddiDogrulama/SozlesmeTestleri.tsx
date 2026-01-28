@@ -46,11 +46,39 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
         severity: "success" as "success" | "error",
     });
 
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && modelAdi) {
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        modelAdi,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) setResolvedDipnotNo(dNo);
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, modelAdi, user]);
+
     const fetchData = async () => {
-        if (user.token && user.denetciId && user.yil && user.denetlenenId) {
+        if (user.token && user.denetciId && user.yil && user.denetlenenId && resolvedDipnotNo) {
             setLoading(true);
             try {
-                const result = await getSozlesmeTestleri(user.token, user.denetciId, user.yil, user.denetlenenId, dipnotNo);
+                const result = await getSozlesmeTestleri(user.token, user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
                 setVeriler(result || []);
             } catch (error) {
                 showSnackbar("Veriler yüklenirken bir hata oluştu.", "error");
@@ -62,7 +90,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
     useEffect(() => {
         fetchData();
-    }, [user.denetciId, user.yil, user.denetlenenId, dipnotNo]);
+    }, [user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo]);
 
     const showSnackbar = (message: string, severity: "success" | "error") => {
         setSnackbar({ open: true, message, severity });
@@ -132,10 +160,10 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
     };
 
     const handleReset = async () => {
-        if (user.token && user.denetciId && user.yil && user.denetlenenId) {
+        if (user.token && user.denetciId && user.yil && user.denetlenenId && resolvedDipnotNo) {
             setLoading(true);
             try {
-                await varsayilanaDon(user.token, user.denetciId, user.yil, user.denetlenenId, dipnotNo);
+                await varsayilanaDon(user.token, user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
                 showSnackbar("Veriler varsayılana döndürüldü.", "success");
                 await fetchData();
             } catch (error) {
@@ -153,15 +181,13 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
         }
     }, [isClickedVarsayilanaDon]);
 
+    if (isReport && !loading && veriler.length === 0) return null;
+
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            {!isReport && (
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                    <Typography variant="h5" sx={{ fontWeight: "600", color: "#333" }}>
-                        Sözleşme Testleri
-                    </Typography>
-                </Box>
-            )}
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Sözleşme Testleri
+            </Typography>
 
             <Grid container>
                 <Grid item xs={12}>

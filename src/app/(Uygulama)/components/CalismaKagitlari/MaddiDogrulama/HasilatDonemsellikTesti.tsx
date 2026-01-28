@@ -36,7 +36,8 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
-    const { setLoading } = useLoading();
+    const { setLoading: setGlobalLoading } = useLoading();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<HasilatDonemsellikTestiResponseDto[]>([]);
     const hotTableComponent = useRef<any>(null);
 
@@ -142,8 +143,13 @@ const HasilatDonemsellikTesti: React.FC<Props> = ({
         { data: "tespit", title: "Tespit" },
     ];
 
+    if (isReport && !loading && data.length === 0) return null;
+
     return (
         <Box sx={{ p: isReport ? 0 : 0 }}>
+            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+                Hasılat Dönemsellik Testi
+            </Typography>
             {!isReport && (
                 <Grid container spacing={2} mb={3} alignItems="flex-end">
                     <Grid item xs={12} sm={3}>

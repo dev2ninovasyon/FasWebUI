@@ -94,61 +94,109 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
         setSnackbarOpen(true);
     };
 
+    const [loading, setLoading] = useState(false);
+    const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
+
+    useEffect(() => {
+        setResolvedDipnotNo(dipnotNo);
+    }, [dipnotNo]);
+
+    useEffect(() => {
+        const resolveDipnot = async () => {
+            if (!dipnotNo && modelAdi) {
+                setLoading(true);
+                try {
+                    const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
+                    const dNo = await getDipnotNoByDipnotAdi(
+                        user.token || "",
+                        user.denetciId || 0,
+                        user.denetlenenId || 0,
+                        user.yil || 0,
+                        modelAdi,
+                        user.denetimTuru === "Tfrs"
+                    );
+                    if (dNo) {
+                        setResolvedDipnotNo(dNo);
+                    } else {
+                        console.warn("Dipnot no bulunamadı:", modelAdi);
+                        setLoading(false);
+                    }
+                } catch (error) {
+                    console.error("Dipnot no getirilemedi:", error);
+                    setLoading(false);
+                }
+            }
+        };
+        resolveDipnot();
+    }, [dipnotNo, modelAdi, user]);
+
     const fetchData = async () => {
-        const res = await getHesapTestleriByDenetlenen(
-            controller,
-            user.token || "",
-            user.denetciId || 0,
-            user.denetlenenId || 0,
-            user.yil || 0,
-            dipnotNo,
-            modelAdi
-        );
+        if (!resolvedDipnotNo) return;
+        setLoading(true);
+        try {
+            console.log("HesapTestleri Fetching:", { controller, resolvedDipnotNo, modelAdi });
+            const res = await getHesapTestleriByDenetlenen(
+                controller,
+                user.token || "",
+                user.denetciId || 0,
+                user.denetlenenId || 0,
+                user.yil || 0,
+                resolvedDipnotNo,
+                modelAdi
+            );
 
-        if (!res) {
-            setVeriler([]);
-            return;
+            if (!res) {
+                setVeriler([]);
+                return;
+            }
+
+            const rawList = Array.isArray(res) ? res : (res.data ?? []);
+
+            // Flatten mapping - The backend json is already flat
+            const list: HesapTestRow[] = rawList.map((x: any) => ({
+                id: x.id,
+                dipnotNo: x.dipnotNo,
+                baslik: x.baslik,
+                hesapAdi: x.hesapAdi ?? "",
+                kebirKodu: String(x.kebirKodu ?? ""),
+                detayKodu: String(x.detayKodu ?? ""),
+                oncekiDonemBakiye: x.oncekiDonemBakiye,
+                cariDonemBakiye: x.cariDonemBakiye,
+                degisimTl: x.degisimTl,
+                degisimYuzde: x.degisimYuzde,
+                onemlilik: String(x.onemlilik ?? "0"),
+                dipnot: x.dipnot ?? "",
+                paraBirimi: x.paraBirimi ?? "",
+                denetlenen: x.denetlenen,
+                modelAdi: x.modelAdi
+            }));
+
+            // Filter by dipnotAdi if necessary, though backend should have done it or returns relevant set.
+            // User's previous code filtered by `hesapAdi` vs `dipnotAdi`.
+            // Let's trust the backend result but apply the normalize filter if needed.
+            // Backend `getHesapTestleriByDenetlenen` uses `dipnotNo`.
+            // If the result is just for that dipnot, we can use it all.
+            // But `hesapAdi` needs to be set for the Page Title via `setDip`.
+            // Let's find the first One that matches parentName/dipnotAdi just to be safe or update title.
+            const titleRow = list.find((r: any) => normalizeString(r.hesapAdi) === normalizeString(dipnotAdi));
+            if (titleRow?.hesapAdi) setDip(titleRow.hesapAdi);
+
+            // Use all data returned
+            setVeriler(list);
+        } catch (error) {
+            console.error("Veri çekme hatası:", error);
+            showSnackbar("Veriler yüklenirken bir hata oluştu", "error");
+        } finally {
+            setLoading(false);
         }
-
-        const rawList = Array.isArray(res) ? res : (res.data ?? []);
-
-        // Flatten mapping - The backend json is already flat
-        const list: HesapTestRow[] = rawList.map((x: any) => ({
-            id: x.id,
-            dipnotNo: x.dipnotNo,
-            baslik: x.baslik,
-            hesapAdi: x.hesapAdi ?? "",
-            kebirKodu: String(x.kebirKodu ?? ""),
-            detayKodu: String(x.detayKodu ?? ""),
-            oncekiDonemBakiye: x.oncekiDonemBakiye,
-            cariDonemBakiye: x.cariDonemBakiye,
-            degisimTl: x.degisimTl,
-            degisimYuzde: x.degisimYuzde,
-            onemlilik: String(x.onemlilik ?? "0"),
-            dipnot: x.dipnot ?? "",
-            paraBirimi: x.paraBirimi ?? "",
-            denetlenen: x.denetlenen,
-            modelAdi: x.modelAdi
-        }));
-
-        // Filter by dipnotAdi if necessary, though backend should have done it or returns relevant set.
-        // User's previous code filtered by `hesapAdi` vs `dipnotAdi`.
-        // Let's trust the backend result but apply the normalize filter if needed.
-        // Backend `getHesapTestleriByDenetlenen` uses `dipnotNo`.
-        // If the result is just for that dipnot, we can use it all.
-        // But `hesapAdi` needs to be set for the Page Title via `setDip`.
-        // Let's find the first One that matches parentName/dipnotAdi just to be safe or update title.
-        const titleRow = list.find((r: any) => normalizeString(r.hesapAdi) === normalizeString(dipnotAdi));
-        if (titleRow?.hesapAdi) setDip(titleRow.hesapAdi);
-
-        // Use all data returned
-        setVeriler(list);
     };
 
     useEffect(() => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [resolvedDipnotNo]);
+
+    if (isReport && !loading && veriler.length === 0) return null;
 
     // Split Data
     const anaHesaplar = useMemo(() => {
@@ -259,15 +307,15 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 
         return (
             <Box mb={4}>
-                <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1 }}>
-                    <Typography variant="subtitle1" fontWeight={700}>
+                <Box sx={{ backgroundColor: "#2C3E50", px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700} color="white">
                         Ana Hesaplar
                     </Typography>
                 </Box>
                 <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0 }}>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                            <TableRow sx={{ backgroundColor: "#2C3E50" }}>
                                 <TableCell sx={{ fontWeight: 700, width: "10%", color: "white" }}>Hesap No</TableCell>
                                 <TableCell sx={{ fontWeight: 700, width: "35%", color: "white" }}>Hesap Açıklaması</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700, width: "11%", color: "white" }}>Önceki Dönem Bakiye</TableCell>
@@ -295,7 +343,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                                 </TableRow>
                             ))}
                             {/* Grand Total Row */}
-                            <TableRow sx={{ backgroundColor: BG_PAPER, borderTop: `2px solid ${theme.palette.divider}` }}>
+                            <TableRow sx={{ backgroundColor: BG_PAPER, borderTop: `2px solid #2C3E50` }}>
                                 <TableCell colSpan={2} sx={{ fontWeight: 800 }}>Toplam</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tOnceki)}</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 800 }}>{fmt(tCari)}</TableCell>
@@ -320,8 +368,8 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 
         return (
             <Box mb={4} key={kebirKodu}>
-                <Box sx={{ backgroundColor: HEADER_GRAY, px: 2, py: 1 }}>
-                    <Typography variant="subtitle1" fontWeight={700}>
+                <Box sx={{ backgroundColor: "#2C3E50", px: 2, py: 1 }}>
+                    <Typography variant="subtitle1" fontWeight={700} color="white">
                         {title}
                     </Typography>
                 </Box>
