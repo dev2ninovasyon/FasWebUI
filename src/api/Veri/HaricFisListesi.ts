@@ -8,7 +8,7 @@ export const getYevmiyeFisNo = async (
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/EDefter/HaricYevmiyeNolar?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
       {
         method: "GET",
@@ -35,7 +35,7 @@ export const getStandartYevmiyeFisNo = async (
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/EDefter/StandartFisleriGetir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
       {
         method: "GET",
@@ -62,7 +62,7 @@ export const getStandartYevmiyeFisNoHaric = async (
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/EDefter/StandartFisleriGetirHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
       {
         method: "GET",
@@ -90,10 +90,13 @@ export const getFisListesi = async (
   hesapNo: string,
   yevmiyeFisNo: string,
   baslangicTarihi: string,
-  bitisTarihi: string
+  bitisTarihi: string,
+  page?: number,
+  pageSize?: number,
+  searchTerm?: string
 ) => {
   try {
-    const response =await apiFetch(`/EDefter/HaricFisleriGoster`, {
+    const response = await apiFetch(`/EDefter/HaricFisleriGoster`, {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -110,6 +113,9 @@ export const getFisListesi = async (
         yevmiyeFisNo,
         baslangicTarihi,
         bitisTarihi,
+        page: page ?? 0,
+        pageSize: pageSize ?? 20,
+        searchTerm,
       }),
     });
     if (response.ok) {
@@ -130,10 +136,13 @@ export const getFisListesiHaric = async (
   hesapNo: string,
   yevmiyeFisNo: string,
   baslangicTarihi: string,
-  bitisTarihi: string
+  bitisTarihi: string,
+  page?: number,
+  pageSize?: number,
+  searchTerm?: string
 ) => {
   try {
-    const response =await apiFetch(`/EDefter/HaricFisleriGosterHaric`, {
+    const response = await apiFetch(`/EDefter/HaricFisleriGosterHaric`, {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -150,6 +159,9 @@ export const getFisListesiHaric = async (
         yevmiyeFisNo,
         baslangicTarihi,
         bitisTarihi,
+        page: page ?? 0,
+        pageSize: pageSize ?? 20,
+        searchTerm,
       }),
     });
     if (response.ok) {
@@ -170,7 +182,7 @@ export const saveHaricFisListesi = async (
   haricFisListe: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/EDefter/HaricFisKaydet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",
@@ -200,7 +212,7 @@ export const saveHaricFisListesiHaric = async (
   haricFisListe: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/EDefter/HaricFisKaydetHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",

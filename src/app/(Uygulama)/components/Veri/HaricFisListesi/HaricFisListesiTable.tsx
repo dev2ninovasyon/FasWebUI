@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   TableContainer,
   Table,
@@ -15,6 +15,7 @@ import {
   Checkbox,
   Button,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useSelector } from "@/store/hooks";
@@ -64,17 +65,28 @@ const HaricFisListesiTable: React.FC<Props> = ({
   handleGetStandartYevmiyeFisNo,
 }) => {
   const [rows, setRows] = useState<Veri[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
 
   const [selected, setSelected] = useState<string[]>([]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+      setPage(0); // Reset to first page on search
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
@@ -115,7 +127,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
     return selectedRows;
   };
 
-  const handleSaveHaricFisListesi = async () => {
+  const handleSaveHaricFisListesi = useCallback(async () => {
     try {
       const selectedRows = createSelectedRows();
       await saveHaricFisListesi(
@@ -139,12 +151,12 @@ const HaricFisListesiTable: React.FC<Props> = ({
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
-  };
+  }, [rows, selected, user.token, user.denetciId, user.denetlenenId, user.yil, customizer.activeMode, theme.palette.success]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async (isStandartFisReset = false) => {
     try {
       setLoading(true);
-      const fisListesi = await getFisListesi(
+      const data = await getFisListesi(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -152,16 +164,21 @@ const HaricFisListesiTable: React.FC<Props> = ({
         hesapNo,
         yevmiyeFisNo,
         baslangicTarihi,
-        bitisTarihi
+        bitisTarihi,
+        page,
+        rowsPerPage,
+        debouncedSearchTerm
       );
-      const newRows = fisListesi.map((veri: Veri) => ({
+
+      const fisListesi = data.items || [];
+      const total = data.totalCount || 0;
+
+      const newRows = fisListesi.map((veri: any) => ({
         id: veri.id,
         yevmiyeNo: veri.yevmiyeNo,
         yevmiyeTarih: veri.yevmiyeTarih
-          .split("T")[0]
-          .split("-")
-          .reverse()
-          .join("."),
+          ? veri.yevmiyeTarih.split("T")[0].split("-").reverse().join(".")
+          : "",
         kebirKodu: veri.kebirKodu,
         detayKodu: veri.detayKodu,
         kebirAdi: veri.kebirAdi,
@@ -172,79 +189,93 @@ const HaricFisListesiTable: React.FC<Props> = ({
         haricMi: veri.haricMi,
       }));
 
-      const selectedIds = fisListesi
-        .filter((veri: Veri) => veri.haricMi)
-        .map((veri: Veri) => veri.id);
-
       setRows(newRows);
-      setSelected(selectedIds);
+      setTotalCount(total);
+
+      // If it's a fresh load or standart fis reset, we might want to sync 'selected'
+      // But usually 'selected' is what the user manually clicks OR what's already saved.
+      // The backend returns 'haricMi' status.
+      if (isStandartFisReset) {
+        const selectedIds = fisListesi
+          .filter((veri: any) => veri.haricMi)
+          .map((veri: any) => veri.id);
+        setSelected(selectedIds);
+      }
+
       setLoading(false);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+      setLoading(false);
     }
-  };
+  }, [user.token, user.denetciId, user.denetlenenId, user.yil, hesapNo, yevmiyeFisNo, baslangicTarihi, bitisTarihi, page, rowsPerPage, debouncedSearchTerm, setLoading]);
+
+  useEffect(() => {
+    fetchData();
+  }, [page, rowsPerPage, debouncedSearchTerm]);
 
   useEffect(() => {
     if (fisleriGosterTiklandimi) {
+      setPage(0);
       fetchData();
       setFisleriGosterTiklandimi(false);
     }
-  }, [fisleriGosterTiklandimi]);
+  }, [fisleriGosterTiklandimi, fetchData]);
 
   useEffect(() => {
     if (standartfisleriGosterTiklandimi) {
       setSelected([]);
-      fetchData();
+      setPage(0);
+      fetchData(true);
       setStandartFisleriGosterTiklandimi(false);
     }
-  }, [standartfisleriGosterTiklandimi]);
+  }, [standartfisleriGosterTiklandimi, fetchData]);
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const handleChangePage = (event: any, newPage: any) => {
+  const handleChangePage = useCallback((event: any, newPage: any) => {
     setPage(newPage);
-  };
+  }, []);
 
-  const handleChangeRowsPerPage = (event: any) => {
+  const handleChangeRowsPerPage = useCallback((event: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const filteredRows = rows.filter((row) =>
-    normalizeString(row.aciklama).includes(normalizeString(searchTerm))
-  );
+  }, []);
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAllClick = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = filteredRows.map((row) => row.id);
+      // Select ALL records from the entire dataset
+      const newSelecteds = rows.map((row) => row.id);
       setSelected(newSelecteds);
       return;
     }
+    // Deselect all
     setSelected([]);
-  };
+  }, [rows]);
 
-  const handleClickRow = (id: string) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: string[] = [];
+  const handleClickRow = useCallback((id: string) => {
+    setSelected((prevSelected) => {
+      const selectedIndex = prevSelected.indexOf(id);
+      let newSelected: string[] = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(prevSelected, id);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(prevSelected.slice(1));
+      } else if (selectedIndex === prevSelected.length - 1) {
+        newSelected = newSelected.concat(prevSelected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          prevSelected.slice(0, selectedIndex),
+          prevSelected.slice(selectedIndex + 1)
+        );
+      }
 
-    setSelected(newSelected);
-  };
+      return newSelected;
+    });
+  }, []);
 
   return (
     <>
@@ -273,14 +304,14 @@ const HaricFisListesiTable: React.FC<Props> = ({
               <TableCell padding="checkbox">
                 <Checkbox
                   indeterminate={
-                    selected.length > 0 && selected.length < filteredRows.length
+                    selected.length > 0 && selected.length < totalCount
                   }
                   checked={
-                    filteredRows.length > 0 &&
-                    selected.length === filteredRows.length
+                    rows.length > 0 &&
+                    rows.every(r => selected.includes(r.id))
                   }
                   onChange={handleSelectAllClick}
-                  inputProps={{ "aria-label": "select all desserts" }}
+                  inputProps={{ "aria-label": "select all" }}
                 />
               </TableCell>
               <TableCell>
@@ -346,18 +377,17 @@ const HaricFisListesiTable: React.FC<Props> = ({
                       minHeight: "454px",
                     }}
                   >
-                    <Typography variant="body1">Yükleniyor...</Typography>
+                    <Stack direction="column" spacing={2} alignItems="center">
+                      <CircularProgress size={40} />
+                      <Typography variant="body1" color="textSecondary">
+                        Veriler hazırlanıyor...
+                      </Typography>
+                    </Stack>
                   </Stack>
                 </TableCell>
               </TableRow>
             ) : (
-              (rowsPerPage > 0
-                ? filteredRows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                : filteredRows
-              ).map((row, index) => {
+              rows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -377,8 +407,8 @@ const HaricFisListesiTable: React.FC<Props> = ({
                             ? "#10141c"
                             : "#cccccc"
                           : customizer.activeMode === "dark"
-                          ? theme.palette.background.default
-                          : theme.palette.common.white,
+                            ? theme.palette.background.default
+                            : theme.palette.common.white,
                     }}
                   >
                     <TableCell padding="checkbox">
@@ -519,8 +549,8 @@ const HaricFisListesiTable: React.FC<Props> = ({
         >
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[20, 100, 500, { label: "Hepsi", value: -1 }]}
-              count={filteredRows.length}
+              rowsPerPageOptions={[20, 100, 500]}
+              count={totalCount}
               rowsPerPage={rowsPerPage}
               page={page}
               SelectProps={{
@@ -531,8 +561,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
               ActionsComponent={TablePaginationActions}
               labelRowsPerPage="Sayfa başına satır sayısı:"
               labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} arası / ${
-                  count !== -1 ? count : `daha fazla`
+                `${from}-${to} arası / ${count !== -1 ? count : `daha fazla`
                 } satır`
               }
               sx={{ mt: 0.5, border: 0 }}
@@ -544,4 +573,4 @@ const HaricFisListesiTable: React.FC<Props> = ({
   );
 };
 
-export default HaricFisListesiTable;
+export default React.memo(HaricFisListesiTable);

@@ -5,7 +5,7 @@ export async function apiFetch(
   path: string,
   options: RequestInit & { timeout?: number; ignoreCustomHeaders?: boolean } = {}
 ) {
-  const { headers, timeout = 30000000, ignoreCustomHeaders = false, ...rest } = options;
+  const { headers, timeout = 120000, ignoreCustomHeaders = false, ...rest } = options;
 
   const clientUrl =
     typeof window !== "undefined"

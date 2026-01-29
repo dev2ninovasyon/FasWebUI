@@ -37,12 +37,14 @@ interface Props {
   type: string;
   mizanOlusturTiklandimi: boolean;
   setMizanOlusturTiklandimi: (bool: boolean) => void;
+  sharedData?: any[]; // New prop for data drilling from parent
 }
 
 const Mizan: React.FC<Props> = ({
   type,
   mizanOlusturTiklandimi,
   setMizanOlusturTiklandimi,
+  sharedData,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -267,7 +269,8 @@ const Mizan: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const mizanVerileri = await getMizanVerileri(
+      // Kullan shared data varsa, yoksa API'dan çek
+      const mizanVerileri = sharedData || await getMizanVerileri(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -315,7 +318,7 @@ const Mizan: React.FC<Props> = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [sharedData]);
 
   useEffect(() => {
     if (mizanOlusturTiklandimi) {
@@ -325,7 +328,7 @@ const Mizan: React.FC<Props> = ({
       fetchData();
       setMizanOlusturTiklandimi(false);
     }
-  }, [mizanOlusturTiklandimi]);
+  }, [mizanOlusturTiklandimi, sharedData]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;

@@ -15,6 +15,7 @@ import {
   Checkbox,
   Button,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useSelector } from "@/store/hooks";
@@ -222,7 +223,8 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = filteredRows.map((row) => row.id);
+      // Select ALL records from the entire dataset, not just filtered rows
+      const newSelecteds = rows.map((row) => row.id);
       setSelected(newSelecteds);
       return;
     }
@@ -276,11 +278,11 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
               <TableCell padding="checkbox">
                 <Checkbox
                   indeterminate={
-                    selected.length > 0 && selected.length < filteredRows.length
+                    selected.length > 0 && selected.length < rows.length
                   }
                   checked={
-                    filteredRows.length > 0 &&
-                    selected.length === filteredRows.length
+                    rows.length > 0 &&
+                    selected.length === rows.length
                   }
                   onChange={handleSelectAllClick}
                   inputProps={{ "aria-label": "select all desserts" }}
@@ -349,16 +351,21 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
                       minHeight: "454px",
                     }}
                   >
-                    <Typography variant="body1">Yükleniyor...</Typography>
+                    <Stack direction="column" spacing={2} alignItems="center">
+                      <CircularProgress size={40} />
+                      <Typography variant="body1" color="textSecondary">
+                        Veriler hazırlanıyor...
+                      </Typography>
+                    </Stack>
                   </Stack>
                 </TableCell>
               </TableRow>
             ) : (
               (rowsPerPage > 0
                 ? filteredRows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
                 : filteredRows
               ).map((row, index) => {
                 const isItemSelected = isSelected(row.id);
@@ -380,8 +387,8 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
                             ? "#10141c"
                             : "#cccccc"
                           : customizer.activeMode === "dark"
-                          ? theme.palette.background.default
-                          : theme.palette.common.white,
+                            ? theme.palette.background.default
+                            : theme.palette.common.white,
                     }}
                   >
                     <TableCell padding="checkbox">
@@ -534,8 +541,7 @@ const HaricFisListesiEnflasyonHaricTable: React.FC<Props> = ({
               ActionsComponent={TablePaginationActions}
               labelRowsPerPage="Sayfa başına satır sayısı:"
               labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} arası / ${
-                  count !== -1 ? count : `daha fazla`
+                `${from}-${to} arası / ${count !== -1 ? count : `daha fazla`
                 } satır`
               }
               sx={{ mt: 0.5, border: 0 }}

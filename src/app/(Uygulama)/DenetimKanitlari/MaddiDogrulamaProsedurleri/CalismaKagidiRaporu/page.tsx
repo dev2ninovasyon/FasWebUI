@@ -22,7 +22,7 @@ import {
     IconButton,
     useTheme,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+// LoadingButton import removed
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconLayoutGrid } from "@tabler/icons-react";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";

@@ -76,6 +76,7 @@ const EDefterMizanStepper = () => {
   const [mizanBitisTarihi, setMizanBitisTarihi] = useState(`${user.yil}-12-31`);
 
   const [loading, setLoading] = useState(false);
+  const [sharedMizanData, setSharedMizanData] = useState<any[]>([]); // Shared data state for optimization
 
   const [mizanOlusturTiklandimi, setMizanOlusturTiklandimi] = useState(false);
 
@@ -108,6 +109,7 @@ const EDefterMizanStepper = () => {
     if (mizanOlusturTiklandimi || programFormatinaDonusturTiklandimi) {
       setIsAlertOpen(true);
       setOpenCartAlert(true);
+      setSharedMizanData([]); // Reset shared data when operation starts
     } else {
       setIsAlertOpen(false);
       setOpenCartAlert(false);
@@ -134,6 +136,8 @@ const EDefterMizanStepper = () => {
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -259,6 +263,7 @@ const EDefterMizanStepper = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const fisListesi = await getYevmiyeFisNo(
         user.token || "",
         user.denetciId || 0,
@@ -269,13 +274,26 @@ const EDefterMizanStepper = () => {
       setYevmiyeFisNo(fisListesi);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-    fetchControl();
-    fetchMizanControl();
+    // Paralel API çağrılarını Promise.all ile optimize et
+    const initializeData = async () => {
+      try {
+        await Promise.all([
+          fetchData(),
+          fetchControl(),
+          fetchMizanControl()
+        ]);
+      } catch (error) {
+        console.error("Veri yükleme hatası:", error);
+      }
+    };
+
+    initializeData();
   }, []);
 
   const handleContinue = async () => {
@@ -322,6 +340,7 @@ const EDefterMizanStepper = () => {
         user.yil || 0,
         type
       );
+      setSharedMizanData(mizanVerileri); // Store data for shared use
       if (mizanVerileri.length > 0) {
         setActiveStep(1);
       }
@@ -467,6 +486,7 @@ const EDefterMizanStepper = () => {
                     yevmiyeFisNo={yevmiyeFisNo}
                     baslangicTarihi={baslangicTarihi}
                     bitisTarihi={bitisTarihi}
+                    loading={loading}
                     setHesapNo={setHesapNo}
                     setYevmiyeFisNo={setYevmiyeFisNo}
                     setBaslangicTarihi={setBaslangicTarihi}
@@ -727,6 +747,7 @@ const EDefterMizanStepper = () => {
                     type={"E-Defter"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
                     setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+                    fetchedData={sharedMizanData}
                   />
                 </Grid>
               </Grid>

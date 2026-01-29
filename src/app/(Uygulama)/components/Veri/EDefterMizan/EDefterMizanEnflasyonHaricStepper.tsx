@@ -131,6 +131,8 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -256,6 +258,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const fisListesi = await getStandartYevmiyeFisNoHaric(
         user.token || "",
         user.denetciId || 0,
@@ -266,13 +269,26 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       setYevmiyeFisNo(fisListesi);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-    fetchControl();
-    fetchMizanControl();
+    // Paralel API çağrılarını Promise.all ile optimize et
+    const initializeData = async () => {
+      try {
+        await Promise.all([
+          fetchData(),
+          fetchControl(),
+          fetchMizanControl()
+        ]);
+      } catch (error) {
+        console.error("Veri yükleme hatası:", error);
+      }
+    };
+
+    initializeData();
   }, []);
 
   const handleContinue = async () => {
@@ -464,6 +480,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                     yevmiyeFisNo={yevmiyeFisNo}
                     baslangicTarihi={baslangicTarihi}
                     bitisTarihi={bitisTarihi}
+                    loading={loading}
                     setHesapNo={setHesapNo}
                     setYevmiyeFisNo={setYevmiyeFisNo}
                     setBaslangicTarihi={setBaslangicTarihi}

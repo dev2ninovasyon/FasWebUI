@@ -5,7 +5,8 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, useTheme, Box, Pagination, Typography, IconButton, Paper, CircularProgress, Backdrop } from "@mui/material";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
@@ -14,6 +15,7 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
   getEDefterIncelemeVerileri,
+  getEDefterIncelemeVerileriPaged,
   updateEDefterIncelemeVerisi,
 } from "@/api/Veri/EDefterInceleme";
 import { useRouter } from "next/navigation";
@@ -66,6 +68,13 @@ const EDefterInceleme: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -359,47 +368,77 @@ const EDefterInceleme: React.FC<Props> = ({
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (pageNum: number = 1) => {
     try {
-      const eDefterIncelemeVerileri = await getEDefterIncelemeVerileri(
+      setIsLoading(true);
+      const response = await getEDefterIncelemeVerileriPaged(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         hesapNo,
         baslangicTarihi,
-        bitisTarihi
+        bitisTarihi,
+        pageNum,
+        pageSize
       );
+
+      // Handle the response format
+      let pagedData;
+      if (response.data && response.data.items) {
+        // If the API returns wrapped response format { data: { items: [...], totalCount: X } }
+        pagedData = response.data;
+      } else if (response.items) {
+        // If the API returns direct PagedResult format { items: [...], totalCount: X }
+        pagedData = response;
+      } else {
+        // Fallback for backward compatibility
+        pagedData = response;
+      }
+
       const rowsAll: any = [];
-      eDefterIncelemeVerileri.forEach((veri: any) => {
-        const newRow: any = [
-          veri.id,
-          veri.yevmiyeNo,
-          veri.yevmiyeTarih.split("T")[0].split("-").reverse().join("."),
-          veri.detayKodu,
-          veri.hesapAdi,
-          veri.aciklama,
-          veri.faturaNo,
-          veri.muhasebeFisNo,
-          veri.borc,
-          veri.alacak,
-          veri.tespitAciklama,
-        ];
-        rowsAll.push(newRow);
-      });
+      if (Array.isArray(pagedData.items)) {
+        pagedData.items.forEach((veri: any) => {
+          const newRow: any = [
+            veri.id,
+            veri.yevmiyeNo,
+            veri.yevmiyeTarih.split("T")[0].split("-").reverse().join("."),
+            veri.detayKodu,
+            veri.hesapAdi,
+            veri.aciklama,
+            veri.faturaNo,
+            veri.muhasebeFisNo,
+            veri.borc,
+            veri.alacak,
+            veri.tespitAciklama,
+          ];
+          rowsAll.push(newRow);
+        });
+      }
+
       rowsAll.sort((a: any, b: any) => (a[1] > b[1] ? 1 : -1));
 
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
+      setTotalCount(pagedData.totalCount || 0);
+      setTotalPages(
+        Math.ceil((pagedData.totalCount || 0) / pageSize)
+      );
+      setCurrentPage(pageNum);
+      setIsLoading(false);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+      enqueueSnackbar("Veriler yüklenirken bir hata oluştu", {
+        variant: "error",
+      });
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     const fetchDataAsync = async () => {
       if (verileriGetirTiklandimi) {
-        await fetchData();
+        await fetchData(1); // Reset to first page when filters change
         setVerileriGetirTiklandimi(false);
       }
     };
@@ -480,17 +519,31 @@ const EDefterInceleme: React.FC<Props> = ({
 
   return (
     <>
-      <HotTable
-        style={{
-          height: "100%",
-          width: "100%",
-          maxHeight: 684,
-          maxWidth: "100%",
-        }}
-        language={dictionary.languageCode}
-        ref={hotTableComponent}
-        data={fetchedData}
-        height={684}
+      <Box sx={{ position: "relative" }}>
+        <Backdrop
+          sx={{
+            position: "absolute",
+            zIndex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            backdropFilter: "blur(2px)",
+          }}
+          open={isLoading}
+        >
+          <CircularProgress color="primary" size={50} />
+        </Backdrop>
+        <HotTable
+          style={{
+            height: "100%",
+            width: "100%",
+            maxHeight: 450,
+            maxWidth: "100%",
+            opacity: isLoading ? 0.5 : 1,
+            transition: "opacity 0.2s ease",
+          }}
+          language={dictionary.languageCode}
+          ref={hotTableComponent}
+          data={fetchedData}
+          height={450}
         colHeaders={colHeaders}
         columns={columns}
         colWidths={[0, 60, 60, 100, 150, 180, 100, 100, 120, 120, 120]}
@@ -529,27 +582,123 @@ const EDefterInceleme: React.FC<Props> = ({
         }}
         copyPaste={false}
       />
+      </Box>
       {fetchedData.length > 0 && (
-        <Grid container marginTop={2}>
-          <Grid
-            size={{
-              xs: 12,
-              lg: 10
-            }}></Grid>
-          <Grid
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-            size={{
-              xs: 12,
-              lg: 2
-            }}>
-            <ExceleAktarButton
-              handleDownload={handleDownload}
-            ></ExceleAktarButton>
+        <Paper
+          elevation={0}
+          sx={{
+            marginTop: 2,
+            padding: 2,
+            backgroundColor: "transparent",
+          }}
+        >
+          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+            {/* Left side - Page info and navigation */}
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 4,
+              }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography variant="body2" color="textSecondary" sx={{ whiteSpace: "nowrap" }}>
+                Toplam: <strong>{totalCount}</strong> kayıt
+              </Typography>
+              {totalPages > 1 && (
+                <>
+                  <Typography variant="body2" color="textSecondary">|</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Sayfa: <strong>{currentPage}/{totalPages}</strong>
+                  </Typography>
+                </>
+              )}
+            </Grid>
+
+            {/* Center - Pagination controls */}
+            <Grid
+              size={{
+                xs: 12,
+                sm: 6,
+                md: 4,
+              }}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              {totalPages > 1 && (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  {/* Previous button */}
+                  <IconButton
+                    size="small"
+                    disabled={currentPage === 1}
+                    onClick={() => fetchData(currentPage - 1)}
+                    sx={{
+                      color: currentPage === 1 ? "action.disabled" : "primary.main",
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
+                    title="Önceki sayfa"
+                  >
+                    <ChevronLeft fontSize="small" />
+                  </IconButton>
+
+                  {/* Pagination component */}
+                  <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={(event, value) => {
+                      fetchData(value);
+                    }}
+                    color="primary"
+                    size="small"
+                    variant="outlined"
+                    shape="rounded"
+                  />
+
+                  {/* Next button */}
+                  <IconButton
+                    size="small"
+                    disabled={currentPage === totalPages}
+                    onClick={() => fetchData(currentPage + 1)}
+                    sx={{
+                      color: currentPage === totalPages ? "action.disabled" : "primary.main",
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
+                    title="Sonraki sayfa"
+                  >
+                    <ChevronRight fontSize="small" />
+                  </IconButton>
+                </Box>
+              )}
+            </Grid>
+
+            {/* Right side - Export button */}
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                md: 4,
+              }}
+              sx={{
+                display: "flex",
+                justifyContent: { xs: "flex-start", md: "flex-end" },
+              }}
+            >
+              <ExceleAktarButton handleDownload={handleDownload} />
+            </Grid>
           </Grid>
-        </Grid>
+        </Paper>
       )}
     </>
   );

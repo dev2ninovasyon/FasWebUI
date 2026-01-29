@@ -27,7 +27,7 @@ import {
   Tooltip,
   useMediaQuery,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+// LoadingButton import removed
 import {
   IconDotsVertical,
   IconEye,
@@ -543,7 +543,7 @@ const DosyaTable: React.FC<{
 
       {selected.length !== 0 && (
         <Box mt={1} ml={1}>
-          <LoadingButton
+          <Button
             variant="outlined"
             color="error"
             size="small"
@@ -555,7 +555,7 @@ const DosyaTable: React.FC<{
             }}
           >
             {selected.length} Kayıt Sil
-          </LoadingButton>
+          </Button>
         </Box>
       )}
 

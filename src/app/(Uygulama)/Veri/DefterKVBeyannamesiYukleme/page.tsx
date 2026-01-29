@@ -105,49 +105,94 @@ const Page: React.FC = () => {
       const _progressInfos = acceptedFiles.map((file) => ({
         fileName: file.name,
         percentage: 0,
+        status: "Yükleniyor...",
       }));
 
       setProgressInfos(_progressInfos);
 
       try {
-        const formData = new FormData();
-        acceptedFiles.forEach((file) => {
+        setDosyaYuklendiMi(false);
+
+        const uploadPromises = acceptedFiles.map(async (file, index) => {
+          const formData = new FormData();
           formData.append("files", file);
+
+          try {
+            await axios.post(
+              `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
+              formData,
+              {
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (event) => {
+                  const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
+                  setProgressInfos((prev) => {
+                    const next = [...prev];
+                    next[index] = { ...next[index], percentage: Math.round(progress * 0.2), status: "Yükleniyor..." }; // Upload is 20%
+                    return next;
+                  });
+                },
+              }
+            );
+
+            setProgressInfos((prev) => {
+              const next = [...prev];
+              next[index] = { ...next[index], status: "Yüklendi", percentage: 20 };
+              return next;
+            });
+          } catch (error) {
+            setProgressInfos((prev) => {
+              const next = [...prev];
+              next[index] = { ...next[index], status: "Hata!", percentage: 0 };
+              return next;
+            });
+          }
         });
 
-        setDosyaYuklendiMi(false);
-        const response = await axios.post(
-          `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-            onUploadProgress: (event) => {
-              const progress = event.total
-                ? Math.round((100 * event.loaded) / event.total)
-                : 1;
+        await Promise.all(uploadPromises);
 
-              const updatedProgressInfos = _progressInfos.map((info) => {
-                return {
-                  ...info,
-                  percentage: progress,
-                };
+        // Polling for processing status
+        const interval = setInterval(async () => {
+          try {
+            const res = await axios.get(`${url}/Veri/DosyaDurumlari?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`);
+            const data = res.data;
+
+            setProgressInfos((prev) => {
+              return prev.map((info) => {
+                const serverFile = data.find((d: any) => d.adi === info.fileName);
+                if (serverFile) {
+                  const serverProgress = serverFile.progress || 0;
+                  const totalProgress = 20 + Math.round(serverProgress * 0.8);
+                  return {
+                    ...info,
+                    percentage: Math.min(totalProgress, 100),
+                    status: serverFile.durum,
+                  };
+                }
+                return info;
               });
-              setProgressInfos(updatedProgressInfos);
-            },
+            });
+
+            // Check if all files are processed based on the fetched data
+            const allDone = acceptedFiles.every((file) => {
+              const serverFile = data.find((d: any) => d.adi === file.name);
+              return serverFile && (serverFile.durum === "Tamamlandı" || serverFile.durum === "Hata Oluştu");
+            });
+
+            if (allDone) {
+              clearInterval(interval);
+              setUploading(false);
+              setDosyaYuklendiMi(true);
+              enqueueSnackbar("Tüm dosyalar işlendi.", { variant: "success" });
+              setControl(true);
+            }
+          } catch (error) {
+            console.error("Polling error:", error);
           }
-        );
-        if (response.status >= 200 && response.status < 300) {
-          setDosyaYuklendiMi(true);
-          enqueueSnackbar("Dosya başarıyla yüklendi.", { variant: "success" });
-          setControl(true);
-        }
+        }, 2000);
+
       } catch (error: any) {
         console.log("Dosya yüklenirken hata oluştu:", error);
-        const errorMessage = error.response?.data?.message || error.response?.data || "Dosya yüklenirken bir hata oluştu.";
-        enqueueSnackbar(errorMessage, { variant: "error" });
-      } finally {
+        enqueueSnackbar("İşlem sırasında bir hata oluştu.", { variant: "error" });
         setUploading(false);
       }
     },
@@ -158,8 +203,8 @@ const Page: React.FC = () => {
     onDrop,
     accept: {
       [`application/${fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
-          ? "xml"
-          : "pdf"
+        ? "xml"
+        : "pdf"
         }`]: [
           `.${fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
             ? "xml"
@@ -380,13 +425,38 @@ const Page: React.FC = () => {
                         maxHeight={"240px"} // Dikey sınır, gerekirse değiştirebilirsiniz
                       >
                         {progressInfos.map((info, index) => (
-                          <Box key={index}>
-                            <Typography>{info.fileName}</Typography>
+                          <Box key={index} sx={{ mb: 2, textAlign: "left" }}>
+                            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
+                              <Typography variant="body2" sx={{ fontWeight: 600, color: "text.primary", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>
+                                {info.fileName}
+                              </Typography>
+                              <Typography variant="caption" sx={{
+                                fontWeight: 700,
+                                color: info.status === "Tamamlandı" ? "success.main" :
+                                  info.status === "Hata!" || info.status === "Hata Oluştu" ? "error.main" :
+                                    "primary.main"
+                              }}>
+                                {info.status}
+                              </Typography>
+                            </Stack>
                             <LinearProgress
                               variant="determinate"
                               value={info.percentage}
+                              sx={{
+                                height: 8,
+                                borderRadius: 5,
+                                backgroundColor: theme.palette.grey[200],
+                                "& .MuiLinearProgress-bar": {
+                                  borderRadius: 5,
+                                  backgroundColor: info.status === "Tamamlandı" ? "success.main" :
+                                    info.status === "Hata!" || info.status === "Hata Oluştu" ? "error.main" :
+                                      "primary.main",
+                                }
+                              }}
                             />
-                            <Typography>{info.percentage}%</Typography>
+                            <Typography variant="caption" sx={{ display: "block", textAlign: "right", mt: 0.5, color: "text.secondary" }}>
+                              %{info.percentage}
+                            </Typography>
                           </Box>
                         ))}
                       </Stack>

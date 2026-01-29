@@ -6,7 +6,7 @@
   Stack,
   Typography,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+// LoadingButton import removed
 
 interface ConfirmPopUpProps {
   isConfirmPopUp: boolean;
@@ -39,7 +39,7 @@ export const ConfirmPopUpComponent: React.FC<ConfirmPopUpProps> = ({
           </DialogContent>
           <DialogContent>
             <Box py={1}>
-              <LoadingButton
+              <Button
                 variant="outlined"
                 color="error"
                 loading={isLoading}
@@ -49,7 +49,7 @@ export const ConfirmPopUpComponent: React.FC<ConfirmPopUpProps> = ({
                 sx={{ width: "100%", mb: 1 }}
               >
                 Evet, Sil
-              </LoadingButton>
+              </Button>
               <Button
                 variant="outlined"
                 color="success"

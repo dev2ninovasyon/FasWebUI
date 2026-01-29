@@ -1,4 +1,4 @@
-﻿import { Button, Grid, Typography } from "@mui/material";
+﻿import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
 import React from "react";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
@@ -9,6 +9,7 @@ interface Props {
   yevmiyeFisNo: string;
   baslangicTarihi: string;
   bitisTarihi: string;
+  loading?: boolean;
   setHesapNo: (str: string) => void;
   setYevmiyeFisNo: (str: string) => void;
   setBaslangicTarihi: (str: string) => void;
@@ -22,6 +23,7 @@ const HaricFisListesiForm: React.FC<Props> = ({
   yevmiyeFisNo,
   baslangicTarihi,
   bitisTarihi,
+  loading,
   setHesapNo,
   setYevmiyeFisNo,
   setBaslangicTarihi,
@@ -37,8 +39,9 @@ const HaricFisListesiForm: React.FC<Props> = ({
           size={{
             xs: 12,
             sm: 2,
-            lg: 2
-          }}>
+            lg: 2,
+          }}
+        >
           <CustomFormLabel
             htmlFor="baslangicTarihi"
             sx={{
@@ -63,8 +66,9 @@ const HaricFisListesiForm: React.FC<Props> = ({
           size={{
             xs: 12,
             sm: 2,
-            lg: 2
-          }}>
+            lg: 2,
+          }}
+        >
           <CustomFormLabel
             htmlFor="bitisTarihi"
             sx={{
@@ -89,8 +93,9 @@ const HaricFisListesiForm: React.FC<Props> = ({
           size={{
             xs: 12,
             sm: 2.5,
-            lg: 2.5
-          }}>
+            lg: 2.5,
+          }}
+        >
           <CustomFormLabel
             //htmlFor="hesapNo"
             sx={{
@@ -115,8 +120,9 @@ const HaricFisListesiForm: React.FC<Props> = ({
           size={{
             xs: 12,
             sm: 4,
-            lg: 4
-          }}>
+            lg: 4,
+          }}
+        >
           <CustomFormLabel
             //htmlFor="YevmiyeFisNo"
             sx={{
@@ -128,13 +134,34 @@ const HaricFisListesiForm: React.FC<Props> = ({
           >
             <Typography variant="subtitle1">Yevmiye / Fiş No:</Typography>
           </CustomFormLabel>
-          <CustomTextAreaAutoSize
-            id="yevmiyeFisNo"
-            value={yevmiyeFisNo}
-            fullWidth
-            placeholder="Yükleniyor..."
-            onChange={(e: any) => setYevmiyeFisNo(e.target.value)}
-          />
+          <Box sx={{ width: "100%", position: "relative" }}>
+            <CustomTextAreaAutoSize
+              id="yevmiyeFisNo"
+              value={yevmiyeFisNo}
+              fullWidth
+              placeholder={
+                loading
+                  ? "Standart fişler tespit ediliyor..."
+                  : "Yevmiye / Fiş numaraları"
+              }
+              onChange={(e: any) => setYevmiyeFisNo(e.target.value)}
+              disabled={loading}
+            />
+            {loading && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 8,
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress size={20} />
+              </Box>
+            )}
+          </Box>
         </Grid>
         <Grid
           size={{
