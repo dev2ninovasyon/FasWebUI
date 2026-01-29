@@ -136,18 +136,31 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
                 overflowWrap: "break-word",
               }}
             >
-              <Box sx={{ width: "100%", margin: "0 auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
+              <Box
+                sx={{ width: "100%", margin: "0 auto" }}
+                className="lexical-editor-container"
+                data-mode={customizer.activeMode === "dark" ? "dark" : "light"}
+              >
                 {isReport ? (
                   <Box
                     sx={{
                       width: "100%",
                       p: 2,
-                      border: "1px solid #ddd",
+                      border: "none !important",
                       borderRadius: 1,
-                      backgroundColor: customizer.activeMode === "dark" ? "rgba(255,255,255,0.05)" : "#f9f9f9"
+                      backgroundColor:
+                        customizer.activeMode === "dark"
+                          ? "rgba(255,255,255,0.05)"
+                          : "#f9f9f9",
                     }}
-                    dangerouslySetInnerHTML={{ __html: editorData || "Yorum bulunmamaktadır." }}
-                  />
+                  >
+                    <div
+                      className="lexical-editor-input"
+                      dangerouslySetInnerHTML={{
+                        __html: editorData || "Yorum bulunmamaktadır.",
+                      }}
+                    />
+                  </Box>
                 ) : (
                   <LexicalEditor
                     initialValue={editorData}

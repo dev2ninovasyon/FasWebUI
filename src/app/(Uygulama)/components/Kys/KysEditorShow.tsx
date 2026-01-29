@@ -4,7 +4,7 @@ import { Box, Typography, CircularProgress, Paper } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getKysBelgelerEditorText } from "@/api/Kys/KysBelgelerEditorApi";
-import "@/app/(Uygulama)/components/Editor/custom.css";
+import "@/app/(Uygulama)/components/Editor/lexical.css";
 
 interface KysEditorShowProps {
     formKodu: string;
@@ -16,17 +16,6 @@ const KysEditorShow: React.FC<KysEditorShowProps> = ({ formKodu, alanAdi }) => {
     const customizer = useSelector((state: AppState) => state.customizer);
     const [editorData, setEditorData] = useState("");
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const loadStyles = async () => {
-            if (customizer.activeMode === "dark") {
-                await import("@/app/(Uygulama)/components/Editor/custom.css");
-            } else {
-                await import("@/app/(Uygulama)/components/Editor/light.css");
-            }
-        };
-        loadStyles();
-    }, [customizer.activeMode]);
 
     const fetchData = async () => {
         try {
@@ -63,8 +52,25 @@ const KysEditorShow: React.FC<KysEditorShowProps> = ({ formKodu, alanAdi }) => {
     }
 
     return (
-        <Paper elevation={0} sx={{ p: 2, border: "1px solid #e0e0e0", borderRadius: 1, bgcolor: "background.paper" }}>
-            <div className="ck-content" dangerouslySetInnerHTML={{ __html: editorData }} />
+        <Paper
+            elevation={0}
+            sx={{
+                p: 2,
+                border: "1px solid #e0e0e0",
+                borderRadius: 1,
+                bgcolor: "background.paper",
+            }}
+        >
+            <Box
+                className="lexical-editor-container"
+                data-mode={customizer.activeMode === "dark" ? "dark" : "light"}
+                sx={{ border: "none !important" }}
+            >
+                <div
+                    className="lexical-editor-input"
+                    dangerouslySetInnerHTML={{ __html: editorData }}
+                />
+            </Box>
             {!editorData && (
                 <Typography variant="body2" color="textSecondary">
                     İçerik bulunamadı.

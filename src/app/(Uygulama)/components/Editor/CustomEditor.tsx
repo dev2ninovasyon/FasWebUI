@@ -177,9 +177,8 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
     >
       <Box
         sx={{ width: "95%", margin: "auto" }}
-        className={
-          customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"
-        }
+        className="lexical-editor-container"
+        data-mode={customizer.activeMode === "dark" ? "dark" : "light"}
       >
         <LexicalEditor
           initialValue={editorData}

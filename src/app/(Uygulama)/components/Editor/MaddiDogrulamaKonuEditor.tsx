@@ -52,7 +52,7 @@ const MaddiDogrulamaKonuEditor: React.FC<MaddiDogrulamaKonuEditorProps> = ({
           : {}
       }
     >
-      <Box sx={{ width: "100%", margin: "auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
+      <Box sx={{ width: "100%", margin: "auto" }}>
         <LexicalEditor
           initialValue={editorData}
           onChange={handleChange}

@@ -63,7 +63,7 @@ const MaddiDogrulamaAciklamaEditor: React.FC<
             : {}
         }
       >
-        <Box sx={{ width: "100%", margin: "auto" }} className={customizer.activeMode === "dark" ? "ck-editor-dark" : "ck-editor-light"}>
+        <Box sx={{ width: "100%", margin: "auto" }}>
           <LexicalEditor
             initialValue={control1 || control2 ? editorDataTemp : editorData}
             onChange={handleChange}
