@@ -8,7 +8,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 interface FloatingButtonProps {
   control?: boolean;
   text?: string;
-  isCkEditor?: boolean;
+  isLexical?: boolean;
   isHovered?: boolean;
   setIsHovered: (b: boolean) => void;
   handleClick: () => void;
@@ -43,7 +43,7 @@ const messages = {
 export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
   control,
   text,
-  isCkEditor,
+  isLexical,
   isHovered,
   setIsHovered,
   handleClick,
@@ -228,7 +228,7 @@ export const FloatingButtonCalismaKagitlari: React.FC<FloatingButtonProps> = ({
                         : theme.palette.success.main
                     }
                     onClick={() => {
-                      if (isCkEditor) {
+                      if (isLexical) {
                         handleSetSelectedText(aiText.replace(/\n/g, "<br />"));
                       } else {
                         handleSetSelectedText(aiText);
