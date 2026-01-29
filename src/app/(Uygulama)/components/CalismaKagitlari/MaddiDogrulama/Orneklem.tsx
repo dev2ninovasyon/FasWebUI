@@ -270,9 +270,8 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
     //color
     TH.style.color = "white";
     TH.style.backgroundColor = theme.palette.primary.main;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
 
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
+    TH.style.borderColor = theme.palette.mode === 'dark' ? theme.palette.grey[700] : "#e0e0e0";
 
     // Create span for the header text
     let span = div.querySelector("span");
@@ -312,11 +311,10 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
     TH.style.lineHeight = "1.334rem";
 
     //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
+    TH.style.color = theme.palette.text.primary;
+    TH.style.backgroundColor = theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.primary.light;
 
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
+    TH.style.borderColor = theme.palette.mode === 'dark' ? theme.palette.grey[700] : "#e0e0e0";
   };
 
   const afterRenderer = (
@@ -335,20 +333,18 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
     //TD.style.textAlign = "left";
 
     //color
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
+    TD.style.color = theme.palette.text.primary;
+
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
 
     if (row % 2 === 0) {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
+      TD.style.backgroundColor = BG_PAPER;
+      TD.style.borderColor = BORDER_COLOR;
     } else {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderRightColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
+      TD.style.backgroundColor = ZEBRA_ROW;
+      TD.style.borderColor = BORDER_COLOR;
     }
   };
 
@@ -433,15 +429,15 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
       </Typography>
       <HotTable
         style={{
-          height: "100%",
+          height: isReport ? "auto" : "100%",
           width: "100%",
-          maxHeight: 432,
+          maxHeight: isReport ? "none" : 432,
           maxWidth: "100%",
         }}
         language={dictionary.languageCode}
         ref={hotTableComponent}
         data={fetchedData}
-        height={432}
+        height={isReport ? "auto" : 432}
         colHeaders={colHeaders}
         columns={columns}
         colWidths={[

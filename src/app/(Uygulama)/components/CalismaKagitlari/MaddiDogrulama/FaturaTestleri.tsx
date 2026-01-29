@@ -87,8 +87,9 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
 
             <Box
                 sx={{
-                    border: `1px solid #2C3E50`,
-                    borderRadius: "8px",
+                    width: "100%",
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                    borderRadius: "0px",
                     overflow: "hidden",
                     "& .handsontable": {
                         fontFamily: "inherit",
@@ -103,11 +104,18 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
                         padding: "8px 4px !important",
                         verticalAlign: "middle !important",
                         height: "45px !important",
-                        zIndex: 100
+                        zIndex: 100,
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
                     },
                     "& .handsontable td": {
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
                         fontSize: "13px",
-                        verticalAlign: "middle"
+                        verticalAlign: "middle",
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
+                    },
+                    "& .handsontable tr:nth-of-type(even) td": {
+                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
                     },
                     "& ::-webkit-scrollbar": { width: "8px", height: "8px" },
                     "& ::-webkit-scrollbar-thumb": { backgroundColor: "#ccc", borderRadius: "4px" }

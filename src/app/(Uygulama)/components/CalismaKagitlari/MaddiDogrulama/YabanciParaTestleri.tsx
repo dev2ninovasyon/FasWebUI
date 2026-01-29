@@ -49,9 +49,11 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
 
-    const HEADER_BG = "#D6DBDF";
-    const ZEBRA_ROW = "#F4F6F7";
-    const BG_PAPER = "#FFFFFF";
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
 
     const [veriler, setVeriler] = useState<YabanciParaTestleriRow[]>([]);
     const [loading, setLoading] = useState(false);
@@ -214,21 +216,21 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Yabancı Para Testleri
             </Typography>
             <TableContainer
                 component={Paper}
                 elevation={0}
                 sx={{
-                    border: "1px solid #d5d8dc",
-                    borderRadius: "4px",
+                    border: `1px solid ${BORDER_COLOR}`,
+                    borderRadius: "0px",
                     width: "100%",
                 }}
             >
                 <Table size="small" sx={{ minWidth: 650 }}>
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: "#2C3E50" }}>
+                        <TableRow sx={{ backgroundColor: HEADER_BG }}>
                             <TableCell
                                 sx={{
                                     fontWeight: 700,
@@ -338,11 +340,11 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                     >
                                         <TableCell
                                             align="center"
-                                            sx={{ fontWeight: 500, color: "#2c3e50" }}
+                                            sx={{ fontWeight: 500, color: TEXT_COLOR }}
                                         >
                                             {row.detayKodu}
                                         </TableCell>
-                                        <TableCell sx={{ color: "#2c3e50" }}>
+                                        <TableCell sx={{ color: TEXT_COLOR }}>
                                             {row.hesapAdi}
                                         </TableCell>
 
@@ -363,8 +365,9 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                                             padding: "4px 8px",
                                                             fontSize: "0.875rem",
                                                             fontWeight: 500,
+                                                            color: TEXT_COLOR,
                                                         },
-                                                        backgroundColor: "#fff",
+                                                        backgroundColor: theme.palette.background.paper,
                                                         width: "130px",
                                                     }}
                                                 />
@@ -373,28 +376,28 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
 
                                         <TableCell
                                             align="center"
-                                            sx={{ fontWeight: 500, color: "#2c3e50" }}
+                                            sx={{ fontWeight: 500, color: TEXT_COLOR }}
                                         >
                                             {row.paraBirimi}
                                         </TableCell>
 
                                         <TableCell
                                             align="center"
-                                            sx={{ fontWeight: 500, color: "#2c3e50" }}
+                                            sx={{ fontWeight: 500, color: TEXT_COLOR }}
                                         >
                                             {fmt(row.kur)}
                                         </TableCell>
 
                                         <TableCell
                                             align="right"
-                                            sx={{ fontWeight: 500, color: "#2c3e50" }}
+                                            sx={{ fontWeight: 500, color: TEXT_COLOR }}
                                         >
                                             {fmt(row.hesaplananBakiye)}
                                         </TableCell>
 
                                         <TableCell
                                             align="right"
-                                            sx={{ fontWeight: 500, color: "#2c3e50" }}
+                                            sx={{ fontWeight: 500, color: TEXT_COLOR }}
                                         >
                                             {fmt(row.mizanBakiye)}
                                         </TableCell>
@@ -402,7 +405,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
                                         <TableCell
                                             align="right"
                                             sx={{
-                                                color: fark !== 0 ? "#e74c3c" : "#2c3e50",
+                                                color: fark !== 0 ? theme.palette.error.main : TEXT_COLOR,
                                                 fontWeight: fark !== 0 ? 700 : 500,
                                             }}
                                         >

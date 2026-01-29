@@ -19,8 +19,13 @@ import {
     Grid,
     Breadcrumbs,
     Link,
+    IconButton,
+    useTheme,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { IconLayoutGrid } from "@tabler/icons-react";
+import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getMaddiDogrulama, getUygulananDenetimProsedurleri } from "@/api/MaddiDogrulama/MaddiDogrulama";
@@ -35,7 +40,7 @@ import ReportHeader from "./header";
 import ReportFooter from "./footer";
 import FormOnayBolumu from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/FormOnayBolumu";
 import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import { getKullaniciById } from "@/api/Kullanici/KullaniciIslemleri";
+import { getKullaniciById, getKullaniciByDenetlenenYilRol } from "@/api/Kullanici/KullaniciIslemleri";
 
 // Component Imports
 import Onemlilik from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Onemlilik";
@@ -87,81 +92,106 @@ interface DetailData {
 }
 
 const SignatureTable = ({ data, denetlenen, yil }: { data: any, denetlenen: string, yil: number }) => {
-    if (!data) return null;
+    const theme = useTheme();
     const formatDate = (dateStr: string) => dateStr ? new Date(dateStr).toLocaleDateString("tr-TR") : "";
 
+    const h = data?.hazirlayan;
+    const o = data?.onaylayan;
+    const k = data?.kalite;
+
+    const tableStyle: React.CSSProperties = {
+        width: "100%",
+        borderCollapse: "collapse",
+        marginBottom: "20px",
+        border: `1px solid ${theme.palette.divider}`,
+        fontSize: "12px",
+        fontFamily: "Arial, sans-serif",
+        color: theme.palette.text.primary,
+    };
+
+    const cellStyle: React.CSSProperties = {
+        border: `1px solid ${theme.palette.divider}`,
+        padding: "5px",
+    };
+
+    const headerCellStyle: React.CSSProperties = {
+        ...cellStyle,
+        fontWeight: "bold",
+        backgroundColor: theme.palette.action.hover,
+    };
+
     return (
-        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px", border: "1px solid black", fontSize: "12px", fontFamily: "Arial, sans-serif" }}>
+        <table style={tableStyle} className="report-table">
             <tbody>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px", fontWeight: "bold", width: "200px" }}>Denetlenen Şirketin Unvanı</td>
-                    <td style={{ border: "1px solid black", padding: "5px", width: "10px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{denetlenen}</td>
+                    <td style={{ ...cellStyle, fontWeight: "bold", width: "200px" }}>Denetlenen Şirketin Unvanı</td>
+                    <td style={{ ...cellStyle, width: "10px" }}>:</td>
+                    <td style={cellStyle} colSpan={2}>{denetlenen}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px", fontWeight: "bold" }}>Denetim Dönemi</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{yil}</td>
+                    <td style={{ ...cellStyle, fontWeight: "bold" }}>Denetim Dönemi</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle} colSpan={2}>{yil}</td>
                 </tr>
                 {/* HAZIRLAYAN */}
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px", fontWeight: "bold", backgroundColor: "#f0f0f0" }} colSpan={4}>HAZIRLAYAN</td>
+                    <td style={headerCellStyle} colSpan={4}>HAZIRLAYAN</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Unvanı</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{data.hazirlayan?.unvan}</td>
+                    <td style={cellStyle}>Unvanı</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle} colSpan={2}>{h?.unvan}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Adı Soyadı</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{data.hazirlayan?.adSoyad}</td>
+                    <td style={cellStyle}>Adı Soyadı</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle} colSpan={2}>{h?.adSoyad}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Tarih</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>{formatDate(data.hazirlayan?.tarih)}</td>
-                    <td style={{ border: "1px solid black", padding: "5px", textAlign: "right" }}>İMZA: __________________</td>
+                    <td style={cellStyle}>Tarih</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle}>{formatDate(h?.tarih)}</td>
+                    <td style={{ ...cellStyle, textAlign: "right" }}>İMZA: __________________</td>
                 </tr>
                 {/* ONAYLAYAN */}
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px", fontWeight: "bold", backgroundColor: "#f0f0f0" }} colSpan={4}>ONAYLAYAN</td>
+                    <td style={headerCellStyle} colSpan={4}>ONAYLAYAN</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Unvanı</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{data.onaylayan?.unvan}</td>
+                    <td style={cellStyle}>Unvanı</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle} colSpan={2}>{o?.unvan}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Adı Soyadı</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{data.onaylayan?.adSoyad}</td>
+                    <td style={cellStyle}>Adı Soyadı</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle} colSpan={2}>{o?.adSoyad}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Tarih</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>{formatDate(data.onaylayan?.tarih)}</td>
-                    <td style={{ border: "1px solid black", padding: "5px", textAlign: "right" }}>İMZA: __________________</td>
+                    <td style={cellStyle}>Tarih</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle}>{formatDate(o?.tarih)}</td>
+                    <td style={{ ...cellStyle, textAlign: "right" }}>İMZA: __________________</td>
                 </tr>
                 {/* KALİTE KONTROL */}
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px", fontWeight: "bold", backgroundColor: "#f0f0f0" }} colSpan={4}>KALİTE KONTROL</td>
+                    <td style={headerCellStyle} colSpan={4}>KALİTE KONTROL</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Unvanı</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{data.kalite?.unvan}</td>
+                    <td style={cellStyle}>Unvanı</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle} colSpan={2}>{k?.unvan}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Adı Soyadı</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }} colSpan={2}>{data.kalite?.adSoyad}</td>
+                    <td style={cellStyle}>Adı Soyadı</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle} colSpan={2}>{k?.adSoyad}</td>
                 </tr>
                 <tr>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>Tarih</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>:</td>
-                    <td style={{ border: "1px solid black", padding: "5px" }}>{formatDate(data.kalite?.tarih)}</td>
-                    <td style={{ border: "1px solid black", padding: "5px", textAlign: "right" }}>İMZA: __________________</td>
+                    <td style={cellStyle}>Tarih</td>
+                    <td style={cellStyle}>:</td>
+                    <td style={cellStyle}>{formatDate(k?.tarih)}</td>
+                    <td style={{ ...cellStyle, textAlign: "right" }}>İMZA: __________________</td>
                 </tr>
             </tbody>
         </table>
@@ -170,12 +200,23 @@ const SignatureTable = ({ data, denetlenen, yil }: { data: any, denetlenen: stri
 
 const steps = ["Görüş Düzenleme", "Bağımsız Denetçi Raporu"];
 
+const removeTurkishChars = (str: string | undefined | null) => {
+    if (!str) return "";
+    return str
+        .replace(/\s/g, "")
+        .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ü/g, "u")
+        .replace(/ş/g, "s").replace(/ğ/g, "g").replace(/ç/g, "c")
+        .replace(/İ/g, "I").replace(/Ö/g, "O").replace(/Ü/g, "U")
+        .replace(/Ş/g, "S").replace(/Ğ/g, "G").replace(/Ç/g, "C");
+};
+
 const CalismaKagidiRaporu = () => {
     const searchParams = useSearchParams();
     const parentName = searchParams.get("parentName");
     const router = useRouter();
 
     const user = useSelector((state: AppState) => state.userReducer);
+    const theme = useTheme();
     const [reportData, setReportData] = useState<DetailData[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeStep, setActiveStep] = useState(0);
@@ -267,7 +308,6 @@ const CalismaKagidiRaporu = () => {
             } else if (normalizedItemName.includes("uygulanandenetimteknikleri")) {
                 type = "Teknik";
                 try {
-                    // Requires dipnotNo
                     if (dipnotNo) {
                         data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo(
                             "UygulananDenetimTeknikleri",
@@ -280,7 +320,6 @@ const CalismaKagidiRaporu = () => {
                     }
                 } catch (e) { console.log("Teknik fetch error", e) }
             }
-            // Add other types here if they also fetch data directly
             else if (normalizedItemName.includes("reeskonttestleri")) {
                 type = "ReeskontTestleri";
                 if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("ReeskontTestleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
@@ -366,20 +405,9 @@ const CalismaKagidiRaporu = () => {
                 type = "YabanciParaTestleri";
                 data = [];
             }
-            else if (normalizedItemName.includes("risktespiti")) {
-                type = "RiskTespiti";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("RiskTespiti", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
-            }
             else if (normalizedItemName.includes("davakarsiliklari")) {
                 type = "DavaKarsiliklariCalismasi";
                 if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("DavaKarsiliklariCalismasi", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
-            }
-            else if (normalizedItemName.includes("uygulanandenetimprosedurleri")) {
-                type = "UygulananDenetimProsedurleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("UygulananDenetimProsedurleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
-            }
-            else if (normalizedItemName.includes("uygulanandenetimteknikleri")) {
-                type = "UygulananDenetimTeknikleri";
             }
             else if (normalizedItemName.includes("maddidogrulamayorum")) {
                 type = "MaddiDogrulamaYorumComponent";
@@ -417,23 +445,53 @@ const CalismaKagidiRaporu = () => {
                 formKodu
             );
 
-            console.log("formData:", formData);
+            // Fallback people from roles
+            const [fallbackHazirlayanlar, fallbackOnaylayanlar, fallbackKaliteler] = await Promise.all([
+                getKullaniciByDenetlenenYilRol(user.token, user.denetlenenId || 0, user.yil || 0, "Hazırlayan"),
+                getKullaniciByDenetlenenYilRol(user.token, user.denetlenenId || 0, user.yil || 0, "Onaylayan"),
+                getKullaniciByDenetlenenYilRol(user.token, user.denetlenenId || 0, user.yil || 0, "Kalite Kontrol"),
+            ]);
 
-            if (!formData) {
-                setSignatureData(null);
-                return;
+            // Fetch task assignments for specific preparer fallback
+            const gorevAtamalari = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+                "MaddiDogrulukGorevAtamalari",
+                user.token,
+                user.denetciId || 0,
+                user.denetlenenId || 0,
+                user.yil || 0
+            );
+
+            const matchingGorev = gorevAtamalari?.find(
+                (g: any) => normalizeString(g?.maddiDogruluk ?? "") === normalizeString(formKodu)
+            );
+
+            let assignedHazirlayan = null;
+            if (matchingGorev?.gorevliId) {
+                assignedHazirlayan = await getKullaniciById(user.token, matchingGorev.gorevliId);
             }
 
             const [hazirlayan, onaylayan, kalite] = await Promise.all([
-                formData.hazirlayanId ? getKullaniciById(user.token, formData.hazirlayanId) : Promise.resolve(null),
-                formData.onaylayanId ? getKullaniciById(user.token, formData.onaylayanId) : Promise.resolve(null),
-                formData.kontrolEdenId ? getKullaniciById(user.token, formData.kontrolEdenId) : Promise.resolve(null),
+                formData?.hazirlayanId ? getKullaniciById(user.token, formData.hazirlayanId) : Promise.resolve(assignedHazirlayan || (fallbackHazirlayanlar?.[0] || null)),
+                formData?.onaylayanId ? getKullaniciById(user.token, formData.onaylayanId) : Promise.resolve(fallbackOnaylayanlar?.[0] || null),
+                formData?.kontrolEdenId ? getKullaniciById(user.token, formData.kontrolEdenId) : Promise.resolve(fallbackKaliteler?.[0] || null),
             ]);
 
             setSignatureData({
-                hazirlayan: hazirlayan ? { adSoyad: hazirlayan.personelAdi, unvan: hazirlayan.unvan, tarih: formData.hazirlanmaTarihi } : null,
-                onaylayan: onaylayan ? { adSoyad: onaylayan.personelAdi, unvan: onaylayan.unvan, tarih: formData.onaylanmaTarihi } : null,
-                kalite: kalite ? { adSoyad: kalite.personelAdi, unvan: kalite.unvan, tarih: formData.kontrolTarihi } : null,
+                hazirlayan: hazirlayan ? {
+                    adSoyad: hazirlayan.personelAdi,
+                    unvan: hazirlayan.unvan,
+                    tarih: formData?.hazirlanmaTarihi || matchingGorev?.bitisTarihi
+                } : null,
+                onaylayan: onaylayan ? {
+                    adSoyad: onaylayan.personelAdi,
+                    unvan: onaylayan.unvan,
+                    tarih: formData?.onaylanmaTarihi
+                } : null,
+                kalite: kalite ? {
+                    adSoyad: kalite.personelAdi,
+                    unvan: kalite.unvan,
+                    tarih: formData?.kontrolTarihi
+                } : null,
             });
         } catch (e) {
             console.log("fetchSignatureData error:", e);
@@ -530,6 +588,9 @@ const CalismaKagidiRaporu = () => {
                         if (d.type === "MaliyetKontrolleri") return true;
                         if (d.type === "KidemTazminatiCalismasi") return true;
                         if (d.type === "MaddiDogrulamaYorumComponent") return true;
+                        if (d.type === "Risk") return true;
+                        if (d.type === "Prosedur") return true;
+                        if (d.type === "Teknik") return true;
                         if (d.data === null || d.data === undefined) return false;
                         if (Array.isArray(d.data)) return d.data.length > 0;
                         return true;
@@ -812,37 +873,42 @@ const CalismaKagidiRaporu = () => {
             case "Risk": // Keep existing Risk rendering if no dedicated component
                 if (!detail.data || detail.data.length === 0) return <Typography variant="body2" color="textSecondary">Veri yok</Typography>;
                 return (
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                                <TableCell>Risk Alanı</TableCell>
-                                <TableCell>Tam Olma</TableCell>
-                                <TableCell>Doğruluk</TableCell>
-                                <TableCell>Var Olma</TableCell>
-                                <TableCell>Değerleme</TableCell>
-                                <TableCell>Dönem.</TableCell>
-                                <TableCell>Geçer.</TableCell>
-                                <TableCell>Sunum</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {detail.data.map((row: any, i: number) => {
-                                const level = (val: string) => val === "3" ? "Yüksek" : val === "2" ? "Orta" : val === "1" ? "Önemsiz" : "Yok";
-                                return (
-                                    <TableRow key={row.id || i}>
-                                        <TableCell>{row.finansalTabloHesaplar}</TableCell>
-                                        <TableCell>{level(row.tamOlma)}</TableCell>
-                                        <TableCell>{level(row.dogruluk)}</TableCell>
-                                        <TableCell>{level(row.varOlma)}</TableCell>
-                                        <TableCell>{level(row.degerleme)}</TableCell>
-                                        <TableCell>{level(row.donemsellik)}</TableCell>
-                                        <TableCell>{level(row.gecerlilik)}</TableCell>
-                                        <TableCell>{level(row.sunumVeAciklama)}</TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
+                    <Box>
+                        <Typography variant="h6" sx={{ color: theme.palette.text.primary, fontWeight: "bold", mb: 2 }}>
+                            {detail.documentName}
+                        </Typography>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow sx={{ bgcolor: theme.palette.action.hover }}>
+                                    <TableCell>Risk Alanı</TableCell>
+                                    <TableCell>Tam Olma</TableCell>
+                                    <TableCell>Doğruluk</TableCell>
+                                    <TableCell>Var Olma</TableCell>
+                                    <TableCell>Değerleme</TableCell>
+                                    <TableCell>Dönem.</TableCell>
+                                    <TableCell>Geçer.</TableCell>
+                                    <TableCell>Sunum</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {detail.data.map((row: any, i: number) => {
+                                    const level = (val: string) => val === "3" ? "Yüksek" : val === "2" ? "Orta" : val === "1" ? "Önemsiz" : "Yok";
+                                    return (
+                                        <TableRow key={row.id || i}>
+                                            <TableCell>{row.finansalTabloHesaplar}</TableCell>
+                                            <TableCell>{level(row.tamOlma)}</TableCell>
+                                            <TableCell>{level(row.dogruluk)}</TableCell>
+                                            <TableCell>{level(row.varOlma)}</TableCell>
+                                            <TableCell>{level(row.degerleme)}</TableCell>
+                                            <TableCell>{level(row.donemsellik)}</TableCell>
+                                            <TableCell>{level(row.gecerlilik)}</TableCell>
+                                            <TableCell>{level(row.sunumVeAciklama)}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </Box>
                 );
             case "Prosedur":
                 if (!detail.data || detail.data.length === 0) return <Typography variant="body2" color="textSecondary">Veri yok</Typography>;
@@ -856,105 +922,125 @@ const CalismaKagidiRaporu = () => {
                 });
 
                 return (
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow sx={{ bgcolor: "white" }}>
-                                <TableCell sx={{ color: "#2C3E50", fontWeight: "bold" }}>Kategori</TableCell>
-                                <TableCell sx={{ color: "#2C3E50", fontWeight: "bold" }}>Konu</TableCell>
-                                <TableCell sx={{ color: "#2C3E50", fontWeight: "bold" }}>Açıklama</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {Object.keys(groupedData).map((category) => (
-                                groupedData[category].map((row: any, index: number) => (
-                                    <TableRow key={row.id || `${category}-${index}`}>
-                                        {index === 0 && (
-                                            <TableCell rowSpan={groupedData[category].length} sx={{ verticalAlign: 'top', fontWeight: 'bold' }}>
-                                                {category}
-                                            </TableCell>
-                                        )}
-                                        <TableCell>{stripHtml(row.konu)}</TableCell>
-                                        <TableCell>{stripHtml(row.aciklama)}</TableCell>
-                                    </TableRow>
-                                ))
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <Box>
+                        <Typography variant="h6" sx={{ color: theme.palette.text.primary, fontWeight: "bold", mb: 2 }}>
+                            {detail.documentName}
+                        </Typography>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow sx={{ bgcolor: theme.palette.background.paper }}>
+                                    <TableCell sx={{ color: theme.palette.text.primary, fontWeight: "bold" }}>Kategori</TableCell>
+                                    <TableCell sx={{ color: theme.palette.text.primary, fontWeight: "bold" }}>Konu</TableCell>
+                                    <TableCell sx={{ color: theme.palette.text.primary, fontWeight: "bold" }}>Açıklama</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {Object.keys(groupedData).map((category) => (
+                                    groupedData[category].map((row: any, index: number) => (
+                                        <TableRow key={row.id || `${category}-${index}`}>
+                                            {index === 0 && (
+                                                <TableCell rowSpan={groupedData[category].length} sx={{ verticalAlign: 'top', fontWeight: 'bold' }}>
+                                                    {category}
+                                                </TableCell>
+                                            )}
+                                            <TableCell>{stripHtml(row.konu)}</TableCell>
+                                            <TableCell>{stripHtml(row.aciklama)}</TableCell>
+                                        </TableRow>
+                                    ))
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Box>
                 );
             case "Teknik": // Keep existing Teknik rendering if no dedicated component
                 if (!detail.data || detail.data.length === 0) return <Typography variant="body2" color="textSecondary">Veri yok</Typography>;
                 return (
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow sx={{ bgcolor: "#f5f5f5" }}>
-                                <TableCell>Başlık</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {detail.data.map((row: any, i: number) => (
-                                <TableRow key={row.id || i}>
-                                    <TableCell>{stripHtml(row.baslik)}</TableCell>
+                    <Box>
+                        <Typography variant="h6" sx={{ color: theme.palette.text.primary, fontWeight: "bold", mb: 2 }}>
+                            {detail.documentName}
+                        </Typography>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow sx={{ bgcolor: theme.palette.action.hover }}>
+                                    <TableCell>Başlık</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHead>
+                            <TableBody>
+                                {detail.data.map((row: any, i: number) => (
+                                    <TableRow key={row.id || i}>
+                                        <TableCell>{stripHtml(row.baslik)}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Box>
                 );
             default:
                 return <Typography variant="caption">Detay gösterimi desteklenmiyor.</Typography>;
         }
     };
 
-    if (loading) return <Box p={3}>Yükleniyor...</Box>;
+    if (loading) return <Box p={3}>Çalışma Kağıdı Oluşturuluyor...</Box>;
 
     return (
         <Box p={3}>
-            {/* Breadcrumb Navigation */}
             <Box className="no-print" sx={{ mb: 3 }}>
-                <Breadcrumbs aria-label="breadcrumb">
-                    <Link
-                        underline="hover"
-                        color="inherit"
-                        href="/DenetimKanitlari/MaddiDogrulamaProsedurleri"
-                        sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+                <Breadcrumb
+                    title={`${parentName} - Çalışma Kağıdı`}
+                    items={[
+                        {
+                            to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri",
+                            title: "Maddi Doğrulama Prosedürleri",
+                        },
+                        {
+                            to: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(parentName)}?title=${encodeURIComponent(parentName || "")}`,
+                            title: parentName || "",
+                        },
+                    ]}
+                >
+                    <IconButton
+                        color="primary"
+                        onClick={() => router.push(`/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(parentName)}?title=${encodeURIComponent(parentName || "")}`)}
+                        sx={{
+                            backgroundColor: "primary.light",
+                            borderRadius: "8px",
+                            "&:hover": {
+                                backgroundColor: "primary.main",
+                                color: "white",
+                            },
+                        }}
                     >
-                        <ArrowBackIcon sx={{ mr: 0.5, fontSize: 20 }} />
-                        Maddi Doğrulama Prosedürleri
-                    </Link>
-                    <Typography color="text.primary">{parentName}</Typography>
-                </Breadcrumbs>
+                        <IconLayoutGrid size={20} />
+                    </IconButton>
+                </Breadcrumb>
             </Box>
-            <Stepper
-                activeStep={activeStep}
-                sx={{
-                    flexWrap: { xs: "wrap", sm: "nowrap" },
-                    width: "100%",
-                    justifyContent: "center",
-                    mb: 3,
-                }} className="no-print">
-                {steps.map((label, index) => (
-                    <Step key={label}>
-                        <StepLabel onClick={() => handleStepClick(index)} sx={{ cursor: "pointer" }}>
-                            {label}
-                        </StepLabel>
-                    </Step>
-                ))}
-            </Stepper>
+
+            <Box className="no-print" sx={{ mb: 4, mt: 2 }}>
+                <Stepper
+                    activeStep={activeStep}
+                    sx={{
+                        flexWrap: { xs: "wrap", sm: "nowrap" },
+                        width: "100%",
+                        justifyContent: "center",
+                    }}>
+                    {steps.map((label, index) => (
+                        <Step key={label}>
+                            <StepLabel onClick={() => handleStepClick(index)} sx={{ cursor: "pointer" }}>
+                                {label}
+                            </StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
+            </Box>
 
             {activeStep === 0 && (
                 <Box>
-                    <Typography variant="h4" gutterBottom>{parentName} - Çalışma Kağıdı Oluştur</Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Lütfen raporu oluşturmadan önce aşağıdaki onay formunu doldurunuz.
-                    </Typography>
-
                     <FormOnayBolumu
                         controller={parentName || ""}
                         showHazirlayan={true}
                         showOnaylayan={true}
                         showKaliteKontrol={true}
                     />
-
-
                 </Box>
             )}
 
@@ -973,13 +1059,13 @@ const CalismaKagidiRaporu = () => {
                         </Box>
                     </Box>
 
-                    <Box id="printable-area" sx={{ bgcolor: "white", p: 4 }}>
+                    <Box id="printable-area" sx={{ bgcolor: theme.palette.background.paper, p: 4 }}>
                         <ReportHeader
                             denetlenenId={user.denetlenenId || 0}
                             yil={user.yil || 0}
                             denetciName={""}
                             denetlenenName={""}
-                            reportName={`${parentName} - Detaylı Çalışma Kağıdı Raporu`}
+                            reportName={`${parentName} - Çalışma Kağıdı `}
                         />
 
                         <SignatureTable
@@ -991,12 +1077,12 @@ const CalismaKagidiRaporu = () => {
                         {reportData.map((detail, index) => (
                             <Box key={index} mb={3} sx={{ breakInside: "avoid", pageBreakAfter: "always" }}>
                                 <Typography variant="h6" gutterBottom sx={{
-                                    bgcolor: "white",
-                                    color: "2C3E50",
+                                    bgcolor: theme.palette.background.paper,
+                                    color: theme.palette.text.primary,
                                     p: 1.5,
                                     borderRadius: 1,
                                     mb: 3,
-                                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                                    boxShadow: theme.palette.mode === 'dark' ? "0 2px 4px rgba(255,255,255,0.1)" : "0 2px 4px rgba(0,0,0,0.1)"
                                 }}>
                                     {/* {detail.documentName} */}
                                 </Typography>
@@ -1008,7 +1094,7 @@ const CalismaKagidiRaporu = () => {
                         ))}
 
                         {reportData.length === 0 && (
-                            <Typography align="center" sx={{ py: 10, bgcolor: "#f9f9f9", borderRadius: 2 }}>
+                            <Typography align="center" sx={{ py: 10, bgcolor: theme.palette.action.hover, borderRadius: 2 }}>
                                 Bu grupta belge bulunamadı.
                             </Typography>
                         )}
@@ -1042,7 +1128,7 @@ const CalismaKagidiRaporu = () => {
                     size="large"
                     onClick={handleGenerateReport}
                     sx={{
-                        width: 110,
+                        width: 130,
                         fontSize: 13,
                         px: 0.25,
                         py: 0.25,
@@ -1060,22 +1146,57 @@ const CalismaKagidiRaporu = () => {
             display: none !important;
           }
           body {
-          visibility: hidden;
-          }
-
-          #printable-area, 
-          #printable-area {
-          visibility: visible !important;
+            visibility: hidden;
+            height: auto !important;
+            overflow: visible !important;
           }
           #printable-area {
+            visibility: visible !important;
             position: absolute;
             left: 0;
             top: 0;
             width: 100%;
-            background: white;
+            height: auto !important;
+            overflow: visible !important;
+            background: white !important;
+            color: black !important;
+          }
+          #printable-area * {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            color: black !important;
+            background-color: transparent !important;
+            border-color: black !important;
+          }
+          .report-table, .report-table td, .report-table th {
+            border: 1px solid black !important;
+            color: black !important;
+          }
+          table {
+            width: 100% !important;
+            table-layout: auto !important;
+          }
+          .MuiTableContainer-root {
+            overflow: visible !important;
+            height: auto !important;
+            width: 100% !important;
+          }
+          .handsontable {
+            height: auto !important;
+            overflow: visible !important;
+          }
+          .ht_master, .ht_clone_left, .ht_clone_top, .ht_clone_bottom, .ht_clone_top_left_corner {
+            overflow: visible !important;
+          }
+          .wtHolder {
+            height: auto !important;
+            width: 100% !important;
+            overflow: visible !important;
           }
           @page {
             margin: 1cm;
+            size: auto;
           }
           tr {
             break-inside: avoid;

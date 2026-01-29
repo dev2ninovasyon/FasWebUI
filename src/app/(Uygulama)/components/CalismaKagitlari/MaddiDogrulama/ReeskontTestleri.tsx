@@ -121,25 +121,33 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
         verilenNetBugunku: mergedRows.reduce((s, r) => s + r.verilenNetBugunku, 0),
     };
 
+    const HEADER_BG = theme.palette.primary.main;
+    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
+    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
+    const TEXT_COLOR = theme.palette.mode === 'dark' ? "#FFFFFF" : "#000000";
+    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
+
     const tableHeaderStyle = {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: HEADER_BG,
         color: "white",
         fontWeight: "bold",
         textAlign: "center",
-        border: "1px solid #e0e0e0",
+        border: `1px solid ${BORDER_COLOR}`,
         verticalAlign: "middle"
     };
 
     const tableCellStyle = {
         textAlign: "right",
-        border: "1px solid #e0e0e0",
+        border: `1px solid ${BORDER_COLOR}`,
+        color: TEXT_COLOR
     };
 
     const firstColStyle = {
         textAlign: "left",
         fontWeight: "bold",
-        border: "1px solid #e0e0e0",
-        backgroundColor: "#f9f9f9"
+        border: `1px solid ${BORDER_COLOR}`,
+        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : "#f9f9f9",
+        color: TEXT_COLOR
     };
 
     const hasData = data && (
@@ -153,7 +161,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
 
     return (
         <Box sx={{ p: isReport ? 0 : 3 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Reeskont Testleri
             </Typography>
 
@@ -161,11 +169,11 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
 
             <Grid container spacing={3}>
                 <Grid size={12}>
-                    <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: "bold" }}>
+                    <Typography variant="h6" align="center" sx={{ mb: 1, fontWeight: "bold", color: TEXT_COLOR }}>
                         Reeskont Hesaplama
                     </Typography>
-                    <TableContainer component={Paper} elevation={0}>
-                        <Table size="small" sx={{ border: "1px solid #e0e0e0" }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
+                        <Table size="small">
                             <TableHead>
                                 <TableRow>
                                     <TableCell rowSpan={2} sx={tableHeaderStyle}>Para Birimi</TableCell>
@@ -184,7 +192,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                             </TableHead>
                             <TableBody>
                                 {mergedRows.map((row, index) => (
-                                    <TableRow key={index} hover>
+                                    <TableRow key={index} sx={{ backgroundColor: index % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
                                         <TableCell sx={firstColStyle}>{row.paraBirimi}</TableCell>
                                         <TableCell sx={tableCellStyle}>{fmt(row.alinanNominal)}</TableCell>
                                         <TableCell sx={tableCellStyle}>{fmt(row.verilenNominal)}</TableCell>
@@ -194,7 +202,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                                         <TableCell sx={tableCellStyle}>{fmt(row.verilenNetBugunku)}</TableCell>
                                     </TableRow>
                                 ))}
-                                <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                                <TableRow sx={{ backgroundColor: BG_PAPER, borderTop: `2px solid ${HEADER_BG}` }}>
                                     <TableCell sx={firstColStyle}>{totalRow.paraBirimi}</TableCell>
                                     <TableCell sx={{ ...tableCellStyle, fontWeight: "bold" }}>{fmt(totalRow.alinanNominal)}</TableCell>
                                     <TableCell sx={{ ...tableCellStyle, fontWeight: "bold" }}>{fmt(totalRow.verilenNominal)}</TableCell>
@@ -209,11 +217,11 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                 </Grid>
 
                 <Grid size={12}>
-                    <Typography variant="h6" align="center" sx={{ mb: 1, mt: 2, fontWeight: "bold" }}>
+                    <Typography variant="h6" align="center" sx={{ mb: 1, mt: 2, fontWeight: "bold", color: TEXT_COLOR }}>
                         Reeskont Düzeltme Farkları
                     </Typography>
-                    <TableContainer component={Paper} elevation={0}>
-                        <Table size="small" sx={{ border: "1px solid #e0e0e0" }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
+                        <Table size="small">
                             <TableHead>
                                 <TableRow>
                                     <TableCell rowSpan={2} sx={tableHeaderStyle}>Düzeltme Farkları</TableCell>
@@ -232,12 +240,12 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                                 {(data?.farklarKayitlari || []).map((row, index) => {
                                     const isTotal = row.duzeltmeFarklari === "Toplam";
                                     return (
-                                        <TableRow key={index} sx={isTotal ? { backgroundColor: "#f5f5f5" } : {}}>
+                                        <TableRow key={index} sx={{ backgroundColor: isTotal ? BG_PAPER : (index % 2 === 0 ? BG_PAPER : ZEBRA_ROW), borderTop: isTotal ? `2px solid ${HEADER_BG}` : 'none' }}>
                                             <TableCell sx={{
                                                 ...tableCellStyle,
                                                 textAlign: "left",
                                                 fontWeight: "bold",
-                                                backgroundColor: isTotal ? "transparent" : "#f9f9f9"
+                                                backgroundColor: isTotal ? "transparent" : (theme.palette.mode === 'dark' ? theme.palette.grey[800] : "#f9f9f9")
                                             }}>
                                                 {row.duzeltmeFarklari}
                                             </TableCell>
@@ -261,11 +269,11 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                 </Grid>
 
                 <Grid size={12}>
-                    <Typography variant="h6" align="center" sx={{ mb: 1, mt: 2, fontWeight: "bold" }}>
+                    <Typography variant="h6" align="center" sx={{ mb: 1, mt: 2, fontWeight: "bold", color: TEXT_COLOR }}>
                         Reeskont Hesaplamada Kullanılan Değerler
                     </Typography>
-                    <TableContainer component={Paper} elevation={0}>
-                        <Table size="small" sx={{ border: "1px solid #e0e0e0" }}>
+                    <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
+                        <Table size="small">
                             <TableHead>
                                 <TableRow>
                                     <TableCell sx={tableHeaderStyle}>Vadeye Kalan Gün</TableCell>
@@ -280,7 +288,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                             </TableHead>
                             <TableBody>
                                 {(data?.referansTablosuListesi || []).map((row, index) => (
-                                    <TableRow key={index}>
+                                    <TableRow key={index} sx={{ backgroundColor: index % 2 === 0 ? BG_PAPER : ZEBRA_ROW }}>
                                         <TableCell sx={{ ...tableCellStyle, fontWeight: "bold", textAlign: "center" }}>{row.vadeyeKalanGun}</TableCell>
                                         <TableCell sx={tableCellStyle}>{fmt(row.usdLibor)}</TableCell>
                                         <TableCell sx={tableCellStyle}>{fmt(row.usdKur)}</TableCell>

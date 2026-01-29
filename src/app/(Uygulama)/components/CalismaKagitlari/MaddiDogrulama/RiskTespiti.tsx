@@ -34,24 +34,27 @@ const YorumBolumu = ({
   belgeAdi: string;
   denetlenenId: number;
   yil: number;
-}) => (
-  <Box sx={{ mt: 2, mb: 3 }}>
-    <Divider sx={{ mb: 1 }} />
-    <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-      Yorum
-    </Typography>
-    <Box
-      sx={{
-        border: "1px solid #e0e0e0",
-        borderRadius: 1,
-        p: 1,
-        backgroundColor: "#fafafa",
-      }}
-    >
-      <YorumEditor denetlenenId={denetlenenId} yil={yil} belgeAdi={belgeAdi} />
+}) => {
+  const theme = useTheme();
+  return (
+    <Box sx={{ mt: 2, mb: 3 }}>
+      <Divider sx={{ mb: 1 }} />
+      <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+        Yorum
+      </Typography>
+      <Box
+        sx={{
+          border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0'}`,
+          borderRadius: 0,
+          p: 1,
+          backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#fafafa",
+        }}
+      >
+        <YorumEditor denetlenenId={denetlenenId} yil={yil} belgeAdi={belgeAdi} />
+      </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 
 interface Veri {
@@ -335,7 +338,7 @@ const RiskTespiti: React.FC<CalismaKagidiProps> = ({
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+      <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
         Risk Tespiti
       </Typography>
       <Grid container>

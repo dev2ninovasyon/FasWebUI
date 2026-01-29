@@ -102,7 +102,7 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: isReport ? 2 : 4 }}>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Kıdem Tazminatı Çalışması
             </Typography>
             <Box>
@@ -113,11 +113,22 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
                     sx={{
                         width: "100%",
                         overflow: "hidden",
-                        borderRadius: "8px",
-                        border: `1px solid ${theme.palette.divider}`,
+                        borderRadius: "0px",
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                        backgroundColor: theme.palette.background.paper,
                         "& .handsontable th": {
                             backgroundColor: theme.palette.primary.main,
                             color: "white",
+                            fontWeight: 'bold',
+                            border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                        },
+                        "& .handsontable td": {
+                            backgroundColor: theme.palette.background.paper,
+                            color: theme.palette.text.primary,
+                            border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                        },
+                        "& .handsontable tr:nth-of-type(even) td": {
+                            backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
                         }
                     }}
                 >

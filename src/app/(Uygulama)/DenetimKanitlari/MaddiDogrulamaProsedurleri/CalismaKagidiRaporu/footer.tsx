@@ -1,11 +1,13 @@
 ﻿import React from "react";
-import { Box, Typography, Divider } from "@mui/material";
+import { Box, Typography, Divider, useTheme } from "@mui/material";
 
 const ReportFooter: React.FC = () => {
+    const theme = useTheme();
+
     return (
         <Box sx={{ mt: 6, pt: 2 }}>
             <Divider sx={{ mb: 2 }} />
-            <Box sx={{ display: "flex", justifyContent: "space-between", color: "#7F8C8D" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", color: theme.palette.text.secondary }}>
                 <Typography variant="caption">
                     Bu belge Fas Bağımsız Denetim Sistemi tarafından otomatik olarak oluşturulmuştur.
                 </Typography>

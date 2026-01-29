@@ -211,18 +211,29 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
 
     return (
         <Box>
-            <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
+            <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
                 Sonraki Dönem Testleri
             </Typography>
             <Box
                 sx={{
                     width: "100%",
                     overflow: "hidden",
-                    borderRadius: "8px",
-                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: "0px",
+                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                    backgroundColor: theme.palette.background.paper,
                     "& .handsontable th": {
                         backgroundColor: theme.palette.primary.main,
                         color: "white",
+                        fontWeight: 'bold',
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                    },
+                    "& .handsontable td": {
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
+                    },
+                    "& .handsontable tr:nth-of-type(even) td": {
+                        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
                     }
                 }}
             >
@@ -234,7 +245,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                     rowHeaders={false}
                     stretchH="all"
                     width="100%"
-                    height={data.length > 15 ? "calc(100vh - 300px)" : "auto"}
+                    height={isReport ? "auto" : (data.length > 15 ? "calc(100vh - 300px)" : "auto")}
                     autoWrapRow={true}
                     autoWrapCol={true}
                     language="tr-TR"
