@@ -65,7 +65,7 @@ const Page = () => {
             { to: "/DenetimKanitlari", title: "Denetim Kanıtları" },
             { to: "/DenetimKanitlari/MaddiDogrulamaProsedurleri", title: "Maddi Doğrulama Prosedürleri" },
             { to: basePath || "/DenetimKanitlari/MaddiDogrulamaProsedurleri", title: dip || parentName },
-            { to: currentPath, title: "Hareketsiz Ticari Alacaklar Çalışması" },
+            { to: currentPath, title: "Hareketsiz Ticari Alacaklar" },
         ];
     }, [basePath, currentPath, dip, parentName]);
 

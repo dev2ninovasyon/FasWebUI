@@ -17,8 +17,12 @@ export interface FaturaTestleriSatir {
     tespitFark: number;
     tespitAciklama: string;
 }
-
+const withAuth = (token: string) => ({
+    accept: "application/json",
+    Authorization: `Bearer ${token}`,
+});
 export const getFaturaTestleri = async (
+    token: string,
     denetciId: number,
     denetlenenId: number,
     yil: number,
@@ -28,7 +32,7 @@ export const getFaturaTestleri = async (
         `/FaturaTestleri/GetByDenetlenen?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${dipnotNo}`,
         {
             method: "GET",
-            headers: { accept: "application/json" },
+            headers: withAuth(token),
         }
     );
     return response.json();

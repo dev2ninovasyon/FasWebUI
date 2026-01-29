@@ -38,7 +38,6 @@ export const getHareketsizTicariAlacaklarByDenetlenen = async (
         `?denetciId=${denetciId}` +
         `&yil=${yil}` +
         `&denetlenenId=${denetlenenId}`;
-
     const res = await apiFetch(url, {
         method: "GET",
         headers: withAuth(token),

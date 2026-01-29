@@ -36,6 +36,9 @@
     border-bottom: 1px solid #ccc;
     gap: 4px;
     background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .lexical-editor-container[data-mode="dark"] .lexical-toolbar {

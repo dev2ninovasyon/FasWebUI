@@ -151,7 +151,7 @@ const Page = () => {
             sm: 12,
             lg: 12
           }}>
-          <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
+          {dipnotNo != "" ? <Orneklem dipnot={dipnotNo} /> : <></>}
         </Grid>
         <Grid
           size={{
@@ -159,7 +159,7 @@ const Page = () => {
             sm: 12,
             lg: 12
           }}>
-          {dipnotNo != "" ? <Orneklem dipnot={dipnotNo} /> : <></>}
+          <MaddiDogrulamaYorumComponent parentName={parentName} childName={childName} />
         </Grid>
       </Grid>
     </PageContainer>
