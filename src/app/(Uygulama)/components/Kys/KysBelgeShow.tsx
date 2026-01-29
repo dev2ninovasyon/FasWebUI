@@ -16,6 +16,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getKysBelge, KysBelgeVeri } from "@/api/Kys/KysBelge";
 import { IconCheck, IconMinus } from "@tabler/icons-react";
+import "@/app/(Uygulama)/components/Editor/lexical.css";
 
 interface KysBelgeShowProps {
     formKodu: string;
@@ -23,6 +24,7 @@ interface KysBelgeShowProps {
 
 const KysBelgeShow: React.FC<KysBelgeShowProps> = ({ formKodu }) => {
     const user = useSelector((state: AppState) => state.userReducer);
+    const customizer = useSelector((state: AppState) => state.customizer);
     const [belgeVeri, setBelgeVeri] = useState<KysBelgeVeri | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -65,7 +67,16 @@ const KysBelgeShow: React.FC<KysBelgeShowProps> = ({ formKodu }) => {
         <Box sx={{ width: "100%" }}>
             {belgeVeri.icerik && (
                 <Paper elevation={0} sx={{ p: 2, mb: 3, border: "1px solid #e0e0e0", borderRadius: 1, bgcolor: "background.paper" }}>
-                    <div className="ck-content" dangerouslySetInnerHTML={{ __html: belgeVeri.icerik }} />
+                    <Box
+                        className="lexical-editor-container"
+                        data-mode={customizer.activeMode === "dark" ? "dark" : "light"}
+                        sx={{ border: "none !important" }}
+                    >
+                        <div
+                            className="lexical-editor-input"
+                            dangerouslySetInnerHTML={{ __html: belgeVeri.icerik }}
+                        />
+                    </Box>
                 </Paper>
             )}
 

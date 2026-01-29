@@ -6,6 +6,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import dynamic from "next/dynamic";
 import { getKysBelge, updateKysBelgeChecklist, KysBelgeVeri, ChecklistItem } from "@/api/Kys/KysBelge";
+import "@/app/(Uygulama)/components/Editor/lexical.css";
 
 const CustomEditorWVeri = dynamic(
     () => import("@/app/(Uygulama)/components/Editor/CustomEditorWVeri"),
@@ -20,6 +21,7 @@ interface KysBelgeEditorProps {
 
 const KysBelgeEditor: React.FC<KysBelgeEditorProps> = ({ formKodu, baslik, readOnly = false }) => {
     const user = useSelector((state: AppState) => state.userReducer);
+    const customizer = useSelector((state: AppState) => state.customizer);
     const [belgeVeri, setBelgeVeri] = useState<KysBelgeVeri | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -78,8 +80,15 @@ const KysBelgeEditor: React.FC<KysBelgeEditorProps> = ({ formKodu, baslik, readO
             )}
 
             {readOnly ? (
-                <Box sx={{ p: 2, border: "1px solid #e0e0e0", borderRadius: 1, bgcolor: "#f9f9f9" }}>
-                    <div dangerouslySetInnerHTML={{ __html: belgeVeri.icerik }} />
+                <Box
+                    className="lexical-editor-container"
+                    data-mode={customizer.activeMode === "dark" ? "dark" : "light"}
+                    sx={{ p: 2, border: "1px solid #e0e0e0", borderRadius: 1, bgcolor: "background.paper" }}
+                >
+                    <div
+                        className="lexical-editor-input"
+                        dangerouslySetInnerHTML={{ __html: belgeVeri.icerik }}
+                    />
                 </Box>
             ) : (
                 <CustomEditorWVeri
