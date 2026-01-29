@@ -42,7 +42,7 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
         if (!resolvedDipnotNo) return;
         setLoading(true);
         try {
-            const res = await getFaturaTestleri(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, resolvedDipnotNo);
+            const res = await getFaturaTestleri(user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, resolvedDipnotNo);
             if (Array.isArray(res)) {
                 setData(res.map((item: any) => ({
                     ...item,

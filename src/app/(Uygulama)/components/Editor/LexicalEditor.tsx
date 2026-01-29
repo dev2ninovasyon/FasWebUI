@@ -241,8 +241,8 @@ const ToolbarPlugin = () => {
       setIsSuperscript(selection.hasFormat("superscript"));
 
       const anchorNode = selection.anchor.getNode();
-      const element = anchorNode.getKey() === "root" 
-        ? anchorNode 
+      const element = anchorNode.getKey() === "root"
+        ? anchorNode
         : anchorNode.getTopLevelElementOrThrow();
 
       if ($getNearestNodeOfType(anchorNode, HeadingNode)) {
@@ -862,7 +862,7 @@ const ToolbarPlugin = () => {
           <HorizontalRule fontSize="small" sx={{ mr: 1 }} />
           Yatay Çizgi
         </MenuItem>
-        
+
         <MenuItem onClick={(e) => setTableAnchorEl(e.currentTarget)}>
           <TableChart fontSize="small" sx={{ mr: 1 }} />
           Tablo
@@ -951,7 +951,7 @@ const ToolbarPlugin = () => {
 
         {/* Sticky Note */}
         <MenuItem onClick={() => {
-          const note = prompt("Not yazınız:")  ;
+          const note = prompt("Not yazınız:");
           if (note) {
             const html = `<div style="background: #ffeb3b; padding: 16px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); max-width: 250px; font-family: Arial; font-size: 14px; color: #333;">${note}</div>`;
             insertIframe(html);
@@ -1179,7 +1179,8 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({
         <Box
           sx={{
             borderTop: "1px solid #ddd",
-            minHeight: "300px",
+            maxHeight: "300px",
+            overflow: "auto",
             padding: "16px",
             backgroundColor: mode === "dark" ? "#2d2d2d" : "#fafafa",
           }}
@@ -1189,7 +1190,7 @@ const LexicalEditor: React.FC<LexicalEditorProps> = ({
               <ContentEditable
                 className="lexical-editor-input"
                 style={{
-                  minHeight: "300px",
+                  minHeight: "200px",
                   outline: "none",
                   padding: "0",
                   color: mode === "dark" ? "#fff" : "#000",

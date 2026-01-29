@@ -123,7 +123,7 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
               }}
             />
           )}
-          <CardContent sx={{ padding: "24px", maxHeight: "300px", overflow: "auto" }}>
+          <CardContent sx={{ padding: "24px" }}>
             <Box
               sx={{
                 display: "flex",

@@ -41,6 +41,7 @@ import ReportFooter from "./footer";
 import FormOnayBolumu from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/FormOnayBolumu";
 import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { getKullaniciById, getKullaniciByDenetlenenYilRol } from "@/api/Kullanici/KullaniciIslemleri";
+import { getHareketsizTicariAlacaklarByDenetlenen } from "@/api/CalismaKagitlari/HareketsizTicariAlacaklar"
 
 // Component Imports
 import Onemlilik from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Onemlilik";
@@ -322,76 +323,58 @@ const CalismaKagidiRaporu = () => {
             }
             else if (normalizedItemName.includes("reeskonttestleri")) {
                 type = "ReeskontTestleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("ReeskontTestleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("suphelialacaktestleri")) {
                 type = "SupheliAlacakTestleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("SupheliAlacakTestleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("hareketsizstoklar")) {
                 type = "HareketsizStoklar";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("HareketsizStoklar", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("hareketsizticari")) {
                 type = "HareketsizTicariAlacaklar";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("HareketsizTicariAlacaklar", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("hasilatdonemselliktesti")) {
                 type = "HasilatDonemsellikTesti";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("HasilatDonemsellikTesti", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("stokdonemselliktesti")) {
                 type = "StokDonemsellikTesti";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("StokDonemsellikTesti", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("envanterkontrolleri")) {
                 type = "EnvanterKontrolleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("EnvanterKontrolleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("degerlemevedeger")) {
                 type = "DegerlemeveDegerDusukluguKontrolleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("DegerlemeveDegerDusukluguKontrolleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("donusumkayitlari")) {
                 type = "DonusumKayitlariKontrol";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("DegerlemeveDegerDusukluguKontrolleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
 
             }
             else if (normalizedItemName.includes("maliyetkontrolleri")) {
                 type = "MaliyetKontrolleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("MaliyetKontrolleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("kidemtazminati")) {
                 type = "KidemTazminatiCalismasi";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("KidemTazminatiCalismasi", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("varlikveamortisman")) {
                 type = "VarlikVeAmortismanOzetTablo";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("VarlikVeAmortismanOzetTablo", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("ceksenettablosu")) {
-                type = "CekSenetTablosu";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("CekSenetTablosu", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
+                type = "CeksenetTablosu";
             }
             else if (normalizedItemName.includes("faturatestleri")) {
                 type = "FaturaTestleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("FaturaTestleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("amortismankontrolleri")) {
                 type = "AmortismanKontrolleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("AmortismanKontrolleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("kredicalismasi")) {
                 type = "KrediCalismasi";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("KrediCalismasi", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("sozlesmetestleri")) {
                 type = "SozlesmeTestleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("SozlesmeTestleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("stoklarnetgerceklesebilirdeger")) {
                 type = "StoklarNetGerceklesebilirDeger";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("StoklarNetGerceklesebilirDegerleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("hesaplara")) {
                 type = "HesaplaraIliskinUygulananDenetimTestleri";
@@ -399,7 +382,6 @@ const CalismaKagidiRaporu = () => {
             }
             else if (normalizedItemName.includes("sonrakidonemtestleri")) {
                 type = "SonrakiDonemTestleri";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("SonrakiDonemTestleri", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("yabanciparatestleri")) {
                 type = "YabanciParaTestleri";
@@ -407,11 +389,9 @@ const CalismaKagidiRaporu = () => {
             }
             else if (normalizedItemName.includes("davakarsiliklari")) {
                 type = "DavaKarsiliklariCalismasi";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("DavaKarsiliklariCalismasi", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
             else if (normalizedItemName.includes("maddidogrulamayorum")) {
                 type = "MaddiDogrulamaYorumComponent";
-                if (dipnotNo) data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo("MaddiDogrulamaYorum", user.token || "", user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, dipnotNo);
             }
 
 
@@ -591,6 +571,7 @@ const CalismaKagidiRaporu = () => {
                         if (d.type === "Risk") return true;
                         if (d.type === "Prosedur") return true;
                         if (d.type === "Teknik") return true;
+                        if (d.type === "Mutabakat") return true;
                         if (d.data === null || d.data === undefined) return false;
                         if (Array.isArray(d.data)) return d.data.length > 0;
                         return true;
@@ -697,7 +678,7 @@ const CalismaKagidiRaporu = () => {
                 />;
             case "HareketsizTicariAlacaklar":
                 return <HareketsizTicariAlacaklar
-                    controller={currentChildName}
+                    controller="DonusumKayitlariKontrol"
                     dipnotAdi={currentTitle}
                     dipnotNo={currentDipnotNo}
                     modelAdi={currentParentName}
