@@ -21,10 +21,14 @@ import {
     Link,
     IconButton,
     useTheme,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { IconLayoutGrid } from "@tabler/icons-react";
+import { IconLayoutGrid, IconFileTypeDocx, IconFileTypePdf, IconArchive, IconEye, IconDownload, IconChevronDown } from "@tabler/icons-react";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -42,6 +46,14 @@ import FormOnayBolumu from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/F
 import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { getKullaniciById, getKullaniciByDenetlenenYilRol } from "@/api/Kullanici/KullaniciIslemleri";
 import { getHareketsizTicariAlacaklarByDenetlenen } from "@/api/CalismaKagitlari/HareketsizTicariAlacaklar"
+
+import axios from "axios";
+import { enqueueSnackbar } from "notistack";
+import jsPDF from "jspdf";
+import Script from "next/script";
+import { base64FontBold, base64FontRegular } from "@/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/Roboto";
+import { Card, CardContent, Divider, Stack } from "@mui/material";
+import { url } from "@/api/apiBase";
 
 // Component Imports
 import Onemlilik from "@/app/(Uygulama)/components/CalismaKagitlari/MaddiDogrulama/Onemlilik";
@@ -222,6 +234,16 @@ const CalismaKagidiRaporu = () => {
     const [loading, setLoading] = useState(true);
     const [activeStep, setActiveStep] = useState(0);
     const [signatureData, setSignatureData] = useState<any>(null);
+
+    const [downloadMenuAnchor, setDownloadMenuAnchor] = useState<null | HTMLElement>(null);
+    const isDownloadMenuOpen = Boolean(downloadMenuAnchor);
+
+    const handleDownloadClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setDownloadMenuAnchor(event.currentTarget);
+    };
+    const handleDownloadClose = () => {
+        setDownloadMenuAnchor(null);
+    };
 
     function normalizeString(str: string): string {
         const turkishChars: { [key: string]: string } = {
@@ -644,214 +666,295 @@ const CalismaKagidiRaporu = () => {
         window.print();
     };
 
+    async function createPDF() {
+        const reportElement = document.querySelector("#printable-area") as HTMLElement;
+        if (!reportElement) return;
+
+        const pdf = new jsPDF({
+            orientation: "p",
+            unit: "px",
+            format: "a4",
+        });
+
+        pdf.addFileToVFS("Roboto-Regular.ttf", base64FontRegular);
+        pdf.addFileToVFS("Roboto-Bold.ttf", base64FontBold);
+        pdf.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+        pdf.addFont("Roboto-Bold.ttf", "Roboto", "bold");
+
+        pdf.setFont("Roboto", "normal");
+
+        pdf.html(reportElement, {
+            callback: function (pdf) {
+                pdf.save(`FAS-Calisma-Kagidi-${parentName}.pdf`);
+            },
+            width: reportElement.offsetWidth,
+            windowWidth: reportElement.offsetWidth,
+            html2canvas: {
+                scale: 0.46,
+                useCORS: true,
+            },
+            margin: [50, 40, 50, 40],
+            autoPaging: "text",
+        });
+    }
+
+    async function createWord() {
+        const reportElement = document.querySelector("#printable-area");
+        if (!reportElement) return;
+
+        const clonedElement = reportElement.cloneNode(true) as Element;
+        clonedElement.querySelectorAll("img").forEach((img) => img.remove());
+
+        const htmlContent = clonedElement.outerHTML;
+
+        const wordDocument = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office'
+            xmlns:w='urn:schemas-microsoft-com:office:word'
+            xmlns='http://www.w3.org/TR/REC-html40'>
+      <head>
+        <meta charset='utf-8'>
+        <title>FAS Çalışma Kağıdı</title>
+        <style>
+          body { font-family: 'Roboto', sans-serif; font-size: 12px; }
+          .report-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          .report-table th, .report-table td { border: 1px solid #ddd; padding: 5px; }
+        </style>
+      </head>
+      <body>
+        ${htmlContent}
+      </body>
+      </html>`;
+
+        const blob = new Blob(["\ufeff", wordDocument], {
+            type: "application/msword",
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `FAS-Calisma-Kagidi-${parentName}.doc`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    async function handleArchiveWord() {
+        try {
+            const reportElement = document.querySelector("#printable-area") as HTMLElement | null;
+            if (!reportElement) {
+                enqueueSnackbar("#printable-area elementi bulunamadı.", { variant: "warning" });
+                return;
+            }
+
+            const clonedElement = reportElement.cloneNode(true) as HTMLElement;
+            clonedElement.querySelectorAll("table").forEach(tbl => {
+                tbl.style.width = "100%";
+                tbl.style.borderCollapse = "collapse";
+            });
+            clonedElement.querySelectorAll("th, td").forEach(cell => {
+                const h = cell as HTMLElement;
+                h.style.padding = "3pt";
+                h.style.border = "0.5pt solid #555555";
+            });
+
+            const htmlContent = clonedElement.outerHTML;
+
+            const wordDocument = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <title>FAS Çalışma Kağıdı</title>
+</head>
+<body>
+  ${htmlContent}
+</body>
+</html>`;
+
+            if (!(window as any).htmlDocx || typeof (window as any).htmlDocx.asBlob !== "function") {
+                enqueueSnackbar("DOCX kütüphanesi yüklenemedi.", { variant: "error" });
+                return;
+            }
+
+            const fileBlob = (window as any).htmlDocx.asBlob(wordDocument);
+
+            const formData = new FormData();
+            formData.append("html", htmlContent);
+            formData.append("denetciId", String(user.denetciId ?? 0));
+            formData.append("yil", String(user.yil ?? 0));
+            formData.append("denetlenenId", String(user.denetlenenId ?? 0));
+            formData.append("title", `${parentName} - Calisma Kagidi`);
+            formData.append("modelAdi", "CalismaKagidi");
+            formData.append("save", "true");
+
+            await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
+                headers: {
+                    Authorization: `Bearer ${user.token || ""}`,
+                },
+            });
+
+            enqueueSnackbar("Çalışma kağıdı arşive kaydedildi.", { variant: "success" });
+        } catch (error) {
+            console.log("Arşive kaydetme hatası:", error);
+            enqueueSnackbar("Arşive kaydedilirken hata oluştu.", { variant: "error" });
+        }
+    }
+
     const renderContent = (detail: DetailData) => {
+
         const currentDipnotNo = detail.dipnotNo || (detail.data && detail.data.length > 0 && detail.data[0].dipnotNo ? detail.data[0].dipnotNo : "");
         const currentParentName = detail.parentName || parentName || "";
-        const currentChildName = detail.childName || "";
         const currentTitle = decodeURIComponent(detail.title || "");
+
+        const withComment = (component: React.ReactNode, fixedChildName: string) => (
+            <Box>
+                {component}
+
+                <MaddiDogrulamaYorumComponent
+                    parentName={currentParentName}
+                    childName={fixedChildName}
+                    isReport={true}
+                />
+            </Box>
+        );
 
         switch (detail.type) {
             case "Mutabakat":
-                return <Mutabakat dipnot={currentDipnotNo} isReport={true} />;
+                return withComment(<Mutabakat dipnot={currentDipnotNo} isReport={true} />, "Mutabakat");
+
             case "Onemlilik":
-                return <Onemlilik dipnot={currentDipnotNo} isReport={true} />;
+                return withComment(<Onemlilik dipnot={currentDipnotNo} isReport={true} />, "Onemlilik");
+
             case "Orneklem":
-                return <Orneklem dipnot={currentDipnotNo} isReport={true} />;
+                return withComment(<Orneklem dipnot={currentDipnotNo} isReport={true} />, "Orneklem");
+
             case "ReeskontTestleri":
-                return <ReeskontTestleri dipnotNo={currentDipnotNo} modelAdi={currentParentName} isReport={true} />;
+                return withComment(<ReeskontTestleri dipnotNo={currentDipnotNo} modelAdi={currentParentName} isReport={true} />, "ReeskontTestleri");
+
             case "SupheliAlacakTestleri":
-                return <SupheliAlacakTestleri
+                return withComment(<SupheliAlacakTestleri
                     dipnotNo={currentDipnotNo}
                     modelAdi={currentParentName}
+                    isReport={true}
                     isClickedVarsayilanaDon={false}
                     setIsClickedVarsayilanaDon={() => { }}
-                    isReport={true}
-                />;
+                />, "SupheliAlacakTestleri");
+
             case "HareketsizStoklar":
-                return <HareketsizStoklar
-                    controller={currentChildName}
+                return withComment(<HareketsizStoklar
+                    controller="HareketsizStoklar"
                     dipnotAdi={currentTitle}
                     dipnotNo={currentDipnotNo}
                     modelAdi={currentParentName}
                     setDip={() => { }}
                     isReport={true}
-                />;
+                />, "HareketsizStoklar");
+
             case "HareketsizTicariAlacaklar":
-                return <HareketsizTicariAlacaklar
-                    controller="DonusumKayitlariKontrol"
+                return withComment(<HareketsizTicariAlacaklar
+                    controller="HareketsizTicariAlacaklar"
                     dipnotAdi={currentTitle}
                     dipnotNo={currentDipnotNo}
                     modelAdi={currentParentName}
                     setDip={() => { }}
                     isReport={true}
-                />;
+                />, "HareketsizTicariAlacaklar");
+
             case "HasilatDonemsellikTesti":
-                return <HasilatDonemsellikTesti
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<HasilatDonemsellikTesti parentName={currentParentName} childName="HasilatDonemsellikTesti" dipnotNo={currentDipnotNo} isReport={true} />, "HasilatDonemsellikTesti");
+
             case "StokDonemsellikTesti":
-                return <StokDonemsellikTesti
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<StokDonemsellikTesti parentName={currentParentName} childName="StokDonemsellikTesti" dipnotNo={currentDipnotNo} isReport={true} />, "StokDonemsellikTesti");
+
             case "EnvanterKontrolleri":
-                return <EnvanterKontrolleri
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<EnvanterKontrolleri parentName={currentParentName} childName="EnvanterKontrolleri" dipnotNo={currentDipnotNo} isReport={true} />, "EnvanterKontrolleri");
+
             case "DegerlemeveDegerDusukluguKontrolleri":
-                return <DegerlemeveDegerDusukluguKontrolleri
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<DegerlemeveDegerDusukluguKontrolleri parentName={currentParentName} childName="DegerlemeveDegerDusukluguKontrolleri" dipnotNo={currentDipnotNo} isReport={true} />, "DegerlemeveDegerDusukluguKontrolleri");
 
             case "DonusumKayitlariKontrol":
-                return <DonusumKayitlariKontrol
-                    controller="DonusumKayitlariKontrol"
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<DonusumKayitlariKontrol controller="DonusumKayitlariKontrol" dipnotNo={currentDipnotNo} isReport={true} />, "DonusumKayitlariKontrol");
+
             case "MaliyetKontrolleri":
-                return <MaliyetKontrolleri
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<MaliyetKontrolleri parentName={currentParentName} childName="MaliyetKontrolleri" dipnotNo={currentDipnotNo} isReport={true} />, "MaliyetKontrolleri");
+
             case "KidemTazminatiCalismasi":
-                return <KidemTazminatiCalismasi
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<KidemTazminatiCalismasi parentName={currentParentName} childName="KidemTazminatiCalismasi" dipnotNo={currentDipnotNo} isReport={true} />, "KidemTazminatiCalismasi");
+
             case "VarlikVeAmortismanOzetTablo":
-                return <VarlikVeAmortismanOzetTablo
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<VarlikVeAmortismanOzetTablo parentName={currentParentName} childName="VarlikVeAmortismanOzetTablo" dipnotNo={currentDipnotNo} isReport={true} />, "VarlikVeAmortismanOzetTablo");
+
             case "CekSenetTablosu":
-                return <CekSenetTablosu
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<CekSenetTablosu dipnotNo={currentDipnotNo} isReport={true} />, "CekSenetTablosu");
+
             case "FaturaTestleri":
-                return <FaturaTestleriTablo
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<FaturaTestleriTablo dipnotNo={currentDipnotNo} isReport={true} />, "FaturaTestleri");
+
             case "AmortismanKontrolleri":
-                return <AmortismanKontrolleri
-                    token={user.token || ""}
-                    denetlenenId={user.denetlenenId || 0}
-                    yil={user.yil || 0}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<AmortismanKontrolleri token={user.token || ""} denetlenenId={user.denetlenenId || 0} yil={user.yil || 0} dipnotNo={currentDipnotNo} isReport={true} />, "AmortismanKontrolleri");
+
             case "KrediCalismasi":
-                return <KrediCalismasi
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<KrediCalismasi parentName={currentParentName} childName="KrediCalismasi" dipnotNo={currentDipnotNo} isReport={true} />, "KrediCalismasi");
+
             case "SozlesmeTestleri":
-                return <SozlesmeTestleri
-                    dipnotNo={currentDipnotNo}
-                    modelAdi={currentParentName}
-                    isClickedVarsayilanaDon={false}
-                    setIsClickedVarsayilanaDon={() => { }}
-                    isReport={true}
-                />;
+                return withComment(<SozlesmeTestleri dipnotNo={currentDipnotNo} modelAdi={currentParentName} isReport={true} isClickedVarsayilanaDon={false} setIsClickedVarsayilanaDon={() => { }} />, "SozlesmeTestleri");
+
             case "StoklarNetGerceklesebilirDeger":
-                return <StoklarNetGerceklesebilirDeger
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    isReport={true}
-                />;
+                return withComment(<StoklarNetGerceklesebilirDeger parentName={currentParentName} childName="StoklarNetGerceklesebilirDeger" isReport={true} />, "StoklarNetGerceklesebilirDeger");
+
             case "HesaplaraIliskinUygulananDenetimTestleri":
-                return <HesaplaraIliskinUygulananDenetimTestleri
-                    controller="HesaplaraIliskinUygulananDenetimTestleri"
-                    dipnotAdi={currentTitle}
-                    dipnotNo={currentDipnotNo}
-                    modelAdi={currentParentName}
-                    setDip={() => { }}
-                    isReport={true}
-                />;
+                return withComment(<HesaplaraIliskinUygulananDenetimTestleri controller="HesaplaraIliskinUygulananDenetimTestleri" dipnotAdi={currentTitle} dipnotNo={currentDipnotNo} modelAdi={currentParentName} setDip={() => { }} isReport={true} />, "HesaplaraIliskinUygulananDenetimTestleri");
+
             case "SonrakiDonemTestleri":
-                return <SonrakiDonemTestleri
-                    parentName={currentParentName}
-                    childName={currentChildName}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<SonrakiDonemTestleri parentName={currentParentName} childName="SonrakiDonemTestleri" dipnotNo={currentDipnotNo} isReport={true} />, "SonrakiDonemTestleri");
+
             case "YabanciParaTestleri":
-                console.log("DEBUG - Rapor Parametreleri:", {
-                    dipnotNo: currentDipnotNo,
-                    parent: currentParentName
-                });
-                return <YabanciParaTestleri
+                return withComment(<YabanciParaTestleri
                     controller="YabanciParaTestleri"
                     dipnotNo={currentDipnotNo}
                     dipnotAdi={currentTitle}
                     modelAdi={currentParentName}
                     setDip={() => { }}
                     isReport={true}
-                />;
+                />, "YabanciParaTestleri");
+
             case "RiskTespiti":
-                return <RiskTespiti
-                    controller={currentChildName}
-                    dipnotAdi={currentTitle}
-                    setDip={() => { }}
-                    isReport={true}
-                />;
+                return withComment(<RiskTespiti controller="RiskTespiti" dipnotAdi={currentTitle} setDip={() => { }} isReport={true} />, "RiskTespiti");
+
             case "DavaKarsiliklariCalismasi":
-                return <DavaKarsiliklariCalismasi
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                return withComment(<DavaKarsiliklariCalismasi dipnotNo={currentDipnotNo} isReport={true} />, "DavaKarsiliklariCalismasi");
+
             case "UygulananDenetimProsedurleri":
-                return <UygulananDenetimProsedurleri
-                    controller={currentChildName}
-                    alanAdi1=""
-                    alanAdi2=""
-                    alanAdi3=""
+                return withComment(<UygulananDenetimProsedurleri
+                    controller="UygulananDenetimProsedurleri"
+                    isReport={true}
                     isClickedVarsayilanaDon={false}
                     setIsClickedVarsayilanaDon={() => { }}
                     setTamamlanan={() => { }}
                     setToplam={() => { }}
                     dipnotAdi={currentTitle}
                     setDip={() => { }}
-                    isReport={true}
-                />;
+                    alanAdi1="" alanAdi2="" alanAdi3=""
+                />, "UygulananDenetimProsedurleri");
+
             case "UygulananDenetimTeknikleri":
-                return <UygulananDenetimTeknikleri
-                    controller={currentChildName}
+                return withComment(<UygulananDenetimTeknikleri
+                    controller="UygulananDenetimTeknikleri"
+                    dipnotNo={currentDipnotNo}
+                    isReport={true}
                     isClickedVarsayilanaDon={false}
                     setIsClickedVarsayilanaDon={() => { }}
                     setTamamlanan={() => { }}
                     setToplam={() => { }}
-                    dipnotNo={currentDipnotNo}
-                    isReport={true}
-                />;
+                />, "UygulananDenetimTeknikleri");
+
             case "MaddiDogrulamaYorumComponent":
-                return <MaddiDogrulamaYorumComponent
-                    parentName={currentParentName}
-                    childName={currentChildName}
+                return withComment(<MaddiDogrulamaYorumComponent
+                    parentName={currentParentName || ""}
+                    childName="Genel Yorum"
                     isReport={true}
-                />;
-            case "Risk": // Keep existing Risk rendering if no dedicated component
+                />, "MaddiDogrulamaYorumComponent");
+
+            case "Risk":
                 if (!detail.data || detail.data.length === 0) return <Typography variant="body2" color="textSecondary">Veri yok</Typography>;
                 return (
                     <Box>
@@ -891,17 +994,15 @@ const CalismaKagidiRaporu = () => {
                         </Table>
                     </Box>
                 );
+
             case "Prosedur":
                 if (!detail.data || detail.data.length === 0) return <Typography variant="body2" color="textSecondary">Veri yok</Typography>;
-
-                // Group by category
                 const groupedData: { [key: string]: any[] } = {};
                 detail.data.forEach((row: any) => {
                     const cat = row.kategori || "Diğer";
                     if (!groupedData[cat]) groupedData[cat] = [];
                     groupedData[cat].push(row);
                 });
-
                 return (
                     <Box>
                         <Typography variant="h6" sx={{ color: theme.palette.text.primary, fontWeight: "bold", mb: 2 }}>
@@ -920,12 +1021,13 @@ const CalismaKagidiRaporu = () => {
                                     groupedData[category].map((row: any, index: number) => (
                                         <TableRow key={row.id || `${category}-${index}`}>
                                             {index === 0 && (
-                                                <TableCell rowSpan={groupedData[category].length} sx={{ verticalAlign: 'top', fontWeight: 'bold' }}>
+                                                <TableCell rowSpan={groupedData[category].length}
+                                                    sx={{ verticalAlign: 'top', fontWeight: 'bold', textAlign: 'left' }}>
                                                     {category}
                                                 </TableCell>
                                             )}
-                                            <TableCell>{stripHtml(row.konu)}</TableCell>
-                                            <TableCell>{stripHtml(row.aciklama)}</TableCell>
+                                            <TableCell sx={{ textAlign: "justify", textJustify: "inter-word" }}>{stripHtml(row.konu)}</TableCell>
+                                            <TableCell sx={{ textAlign: "justify", textJustify: "inter-word" }}>{stripHtml(row.aciklama)}</TableCell>
                                         </TableRow>
                                     ))
                                 ))}
@@ -933,7 +1035,8 @@ const CalismaKagidiRaporu = () => {
                         </Table>
                     </Box>
                 );
-            case "Teknik": // Keep existing Teknik rendering if no dedicated component
+
+            case "Teknik":
                 if (!detail.data || detail.data.length === 0) return <Typography variant="body2" color="textSecondary">Veri yok</Typography>;
                 return (
                     <Box>
@@ -956,6 +1059,7 @@ const CalismaKagidiRaporu = () => {
                         </Table>
                     </Box>
                 );
+
             default:
                 return <Typography variant="caption">Detay gösterimi desteklenmiyor.</Typography>;
         }
@@ -965,6 +1069,10 @@ const CalismaKagidiRaporu = () => {
 
     return (
         <Box p={3}>
+            <Script
+                src="/libs/html-docx.js"
+                strategy="afterInteractive"
+            />
             <Box className="no-print" sx={{ mb: 3 }}>
                 <Breadcrumb
                     title={`${parentName} - Çalışma Kağıdı`}
@@ -1029,16 +1137,102 @@ const CalismaKagidiRaporu = () => {
                 <Box>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} className="no-print">
                         <Typography variant="h4">{parentName} - Çalışma Kağıdı</Typography>
-                        <Box>
-                            <Button
-                                variant="contained"
-                                startIcon={<PrintIcon />}
-                                onClick={handlePrint}
-                            >
-                                Yazdır
-                            </Button>
-                        </Box>
                     </Box>
+
+                    <Card sx={{ width: "100%", bgcolor: "primary.light", mb: 3 }} className="no-print">
+                        <CardContent sx={{ bgcolor: "primary.light" }}>
+                            <Grid
+                                container
+                                sx={{
+                                    width: "100%",
+                                    margin: "0 auto",
+                                    justifyContent: "space-between",
+                                    gap: 1,
+                                }}
+                            >
+                                <Grid
+                                    sx={{ display: "flex", justifyContent: "center" }}
+                                    size={{
+                                        xs: 12,
+                                        lg: 3.75
+                                    }}>
+                                    <Button
+                                        size="medium"
+                                        variant="outlined"
+                                        color="primary"
+                                        startIcon={<IconEye width={18} />}
+                                        onClick={handlePrint}
+                                        sx={{ width: "100%" }}
+                                    >
+                                        Önizle
+                                    </Button>
+                                </Grid>
+
+                                <Grid
+                                    sx={{ display: "flex", justifyContent: "center" }}
+                                    size={{
+                                        xs: 12,
+                                        lg: 3.75
+                                    }}>
+                                    <Button
+                                        size="medium"
+                                        variant="outlined"
+                                        color="primary"
+                                        startIcon={<IconDownload width={18} />}
+                                        endIcon={<IconChevronDown width={18} />}
+                                        onClick={handleDownloadClick}
+                                        sx={{ width: "100%" }}
+                                    >
+                                        İndir
+                                    </Button>
+                                    <Menu
+                                        anchorEl={downloadMenuAnchor}
+                                        open={isDownloadMenuOpen}
+                                        onClose={handleDownloadClose}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'center',
+                                        }}
+                                    >
+                                        <MenuItem onClick={() => { createPDF(); handleDownloadClose(); }}>
+                                            <ListItemIcon>
+                                                <IconFileTypePdf width={18} />
+                                            </ListItemIcon>
+                                            <ListItemText>Pdf</ListItemText>
+                                        </MenuItem>
+                                        <MenuItem onClick={() => { createWord(); handleDownloadClose(); }}>
+                                            <ListItemIcon>
+                                                <IconFileTypeDocx width={18} />
+                                            </ListItemIcon>
+                                            <ListItemText>Word</ListItemText>
+                                        </MenuItem>
+                                    </Menu>
+                                </Grid>
+
+                                <Grid
+                                    sx={{ display: "flex", justifyContent: "center" }}
+                                    size={{
+                                        xs: 12,
+                                        lg: 3.75
+                                    }}>
+                                    <Button
+                                        size="medium"
+                                        variant="outlined"
+                                        color="primary"
+                                        startIcon={<IconArchive width={18} />}
+                                        onClick={handleArchiveWord}
+                                        sx={{ width: "100%" }}
+                                    >
+                                        Arşive Kaydet
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
 
                     <Box id="printable-area" sx={{ bgcolor: theme.palette.background.paper, p: 4 }}>
                         <ReportHeader
@@ -1123,6 +1317,14 @@ const CalismaKagidiRaporu = () => {
 
             <style jsx global>{`
         @media print {
+        div:contains("Antigravity"), 
+            .antigravity-message { 
+                display: none !important; 
+            }
+            
+            .MuiBox-root:empty {
+                display: none !important;
+            }
           .no-print {
             display: none !important;
           }
@@ -1174,6 +1376,10 @@ const CalismaKagidiRaporu = () => {
             height: auto !important;
             width: 100% !important;
             overflow: visible !important;
+          }
+          .MuiTableCell-root {
+            text-align: justify;
+            text-justify: inter-word;
           }
           @page {
             margin: 1cm;

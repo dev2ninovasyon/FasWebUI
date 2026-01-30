@@ -166,10 +166,10 @@ const Page: React.FC = () => {
   const [hesaplananKarsilik, setHesaplananKarsilik] = useState<number>(0);
   const [izinKarsiligi, setIzinKarsiligi] = useState<number>(0);
   const [hesap620, setHesap620] = useState<number>(20000);
-  const [hesap630, setHesap630] = useState<number>(20000);
-  const [hesap640, setHesap640] = useState<number>(40000);
-  const [hesap650, setHesap650] = useState<number>(40000);
-  const [hesap660, setHesap660] = useState<number>(40000);
+  const [hesap622, setHesap622] = useState<number>(20000);
+  const [hesap630, setHesap630] = useState<number>(40000);
+  const [hesap631, setHesap631] = useState<number>(40000);
+  const [hesap632, setHesap632] = useState<number>(40000);
   const [hesap720, setHesap720] = useState<number>(20000);
   const [hesap730, setHesap730] = useState<number>(20000);
   const [hesap740, setHesap740] = useState<number>(40000);
@@ -245,10 +245,10 @@ const Page: React.FC = () => {
       kacGun: kacGun,
       izinKarsiligi: izinKarsiligi,
       hesap620: hesap620,
+      hesap622: hesap622,
       hesap630: hesap630,
-      hesap640: hesap640,
-      hesap650: hesap650,
-      hesap660: hesap660,
+      hesap631: hesap631,
+      hesap632: hesap632,
       hesap720: hesap720,
       hesap730: hesap730,
       hesap740: hesap740,
@@ -477,13 +477,13 @@ const Page: React.FC = () => {
   useEffect(() => {
     const toplam =
       Number(hesap620) +
+      Number(hesap622) +
       Number(hesap630) +
-      Number(hesap640) +
-      Number(hesap650) +
-      Number(hesap660);
+      Number(hesap631) +
+      Number(hesap632);
 
     setHesaplananKarsilik(toplam);
-  }, [hesap620, hesap630, hesap640, hesap650, hesap660]);
+  }, [hesap620, hesap622, hesap630, hesap631, hesap632]);
 
   useEffect(() => {
     fetchData();
@@ -582,6 +582,17 @@ const Page: React.FC = () => {
                             size={{
                               xs: 12,
                               lg: 6
+                            }}><CustomFormLabel>622 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap622} onChange={(val) => setHesap630(val)} /></Grid>
+
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
                             }}><CustomFormLabel>630 Hesap</CustomFormLabel></Grid>
                           <Grid
                             size={{
@@ -593,34 +604,23 @@ const Page: React.FC = () => {
                             size={{
                               xs: 12,
                               lg: 6
-                            }}><CustomFormLabel>640 Hesap</CustomFormLabel></Grid>
+                            }}><CustomFormLabel>631 Hesap</CustomFormLabel></Grid>
                           <Grid
                             size={{
                               xs: 12,
                               lg: 6
-                            }}><NumericInput fullWidth value={hesap640} onChange={(val) => setHesap640(val)} /></Grid>
+                            }}><NumericInput fullWidth value={hesap631} onChange={(val) => setHesap631(val)} /></Grid>
 
                           <Grid
                             size={{
                               xs: 12,
                               lg: 6
-                            }}><CustomFormLabel>650 Hesap</CustomFormLabel></Grid>
+                            }}><CustomFormLabel>632 Hesap</CustomFormLabel></Grid>
                           <Grid
                             size={{
                               xs: 12,
                               lg: 6
-                            }}><NumericInput fullWidth value={hesap650} onChange={(val) => setHesap650(val)} /></Grid>
-
-                          <Grid
-                            size={{
-                              xs: 12,
-                              lg: 6
-                            }}><CustomFormLabel>660 Hesap</CustomFormLabel></Grid>
-                          <Grid
-                            size={{
-                              xs: 12,
-                              lg: 6
-                            }}><NumericInput fullWidth value={hesap660} onChange={(val) => setHesap660(val)} /></Grid>
+                            }}><NumericInput fullWidth value={hesap632} onChange={(val) => setHesap632(val)} /></Grid>
 
                         </Grid>
                       </Collapse>
@@ -756,7 +756,7 @@ const Page: React.FC = () => {
                         sx={{ cursor: 'pointer', mt: 2 }}
                       >
                         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                          Personel Turnover Verileri
+                          Personel Verileri
                         </Typography>
                         {openTurnover ? <IconChevronUp size="20" /> : <IconChevronDown size="20" />}
                       </Stack>
