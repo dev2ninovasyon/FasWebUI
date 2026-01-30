@@ -233,3 +233,30 @@ export const saveHaricFisListesiHaric = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+
+export const getYevmiyeFisNoHaric = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/EDefter/HaricYevmiyeNolarHaric?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&araDonemMi=false&donem=1`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("Yevmiye Fiş No getirilemedi");
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};

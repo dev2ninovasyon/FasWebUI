@@ -29,7 +29,7 @@ import {
   getMizanVerileri,
   getProgramVukMizanControl,
 } from "@/api/Veri/Mizan";
-import { getStandartYevmiyeFisNoHaric } from "@/api/Veri/HaricFisListesi";
+import { getStandartYevmiyeFisNoHaric, getYevmiyeFisNoHaric } from "@/api/Veri/HaricFisListesi";
 import HaricFisListesiForm from "@/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListesiForm";
 import HaricFisListesiEnflasyonHaricTable from "@/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListesiEnflasyonHaricTable";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
@@ -259,7 +259,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const fisListesi = await getStandartYevmiyeFisNoHaric(
+      const fisListesi = await getYevmiyeFisNoHaric(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,

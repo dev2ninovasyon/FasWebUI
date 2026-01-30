@@ -1,28 +1,38 @@
-﻿import React, { useEffect, useState, useMemo, useCallback } from "react";
+﻿import React, { useEffect, useState, useRef } from "react";
+import { HotTable } from "@handsontable/react";
+import { registerAllModules } from "handsontable/registry";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import "handsontable/dist/handsontable.full.min.css";
+import { plus } from "@/utils/theme/Typography";
 import {
-  TableContainer,
-  Table,
-  TableRow,
-  TableCell,
-  TableBody,
   Typography,
-  TableHead,
-  TableFooter,
-  TablePagination,
-  TextField,
   Box,
   useMediaQuery,
-  Checkbox,
   Button,
   useTheme,
   CircularProgress,
+  Backdrop,
+  Pagination,
+  Grid,
+  Paper,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import { Stack } from "@mui/system";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import TablePaginationActions from "@/components/shared/TablePaginationActions";
-import { getFisListesi, saveHaricFisListesi } from "@/api/Veri/HaricFisListesi";
+import {
+  getFisListesi,
+  saveHaricFisListesi,
+} from "@/api/Veri/HaricFisListesi";
 import { enqueueSnackbar } from "notistack";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
+
+registerAllModules();
 
 interface Props {
   hesapNo: string;
@@ -36,19 +46,6 @@ interface Props {
   setFisleriGosterTiklandimi: (bool: boolean) => void;
   setStandartFisleriGosterTiklandimi: (bool: boolean) => void;
   handleGetStandartYevmiyeFisNo: () => void;
-}
-interface Veri {
-  id: string;
-  yevmiyeNo: number;
-  yevmiyeTarih: string;
-  kebirKodu: number;
-  detayKodu: string;
-  kebirAdi: string;
-  hesapAdi: string;
-  aciklama: string;
-  borc: number;
-  alacak: number;
-  haricMi: boolean;
 }
 
 const HaricFisListesiTable: React.FC<Props> = ({
@@ -64,96 +61,39 @@ const HaricFisListesiTable: React.FC<Props> = ({
   setStandartFisleriGosterTiklandimi,
   handleGetStandartYevmiyeFisNo,
 }) => {
-  const [rows, setRows] = useState<Veri[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-
+  const hotTableComponent = useRef<any>(null);
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+  const dispatch = useDispatch();
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [fetchedData, setFetchedData] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
-
-  const [selected, setSelected] = useState<string[]>([]);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-      setPage(0); // Reset to first page on search
-    }, 500);
-
-    return () => clearTimeout(handler);
-  }, [searchTerm]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const pendingSelectAll = useRef(false);
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
-  function normalizeString(str: string): string {
-    const turkishChars: { [key: string]: string } = {
-      ç: "c",
-      ğ: "g",
-      ı: "i",
-      ö: "o",
-      ş: "s",
-      ü: "u",
-      Ç: "C",
-      Ğ: "G",
-      İ: "I",
-      Ö: "O",
-      Ş: "S",
-      Ü: "U",
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
     };
+    loadStyles();
+  }, [customizer.activeMode, dispatch]);
 
-    // Türkçe karakterleri değiştir
-    let normalized = str.replace(
-      /[çğıöşüÇĞÖŞÜıİ]/g,
-      (match) => turkishChars[match] || match
-    );
-
-    // Tüm boşluk, tab, satır başı/sonu karakterlerini sil
-    normalized = normalized.replace(/\s+/g, "");
-
-    // Küçük harfe çevir
-    return normalized.toLowerCase();
-  }
-
-  const createSelectedRows = () => {
-    const selectedRows = rows.map((row) => ({
-      id: row.id,
-      haricMi: selected.includes(row.id),
-    }));
-    return selectedRows;
-  };
-
-  const handleSaveHaricFisListesi = useCallback(async () => {
-    try {
-      const selectedRows = createSelectedRows();
-      await saveHaricFisListesi(
-        user.token || "",
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        selectedRows
-      );
-      enqueueSnackbar("Seçili Fişler Hariç Bırakıldı.", {
-        variant: "success",
-        autoHideDuration: 5000,
-        style: {
-          backgroundColor:
-            customizer.activeMode === "dark"
-              ? theme.palette.success.light
-              : theme.palette.success.main,
-          maxWidth: "720px",
-        },
-      });
-    } catch (error) {
-      console.log("Bir hata oluştu:", error);
-    }
-  }, [rows, selected, user.token, user.denetciId, user.denetlenenId, user.yil, customizer.activeMode, theme.palette.success]);
-
-  const fetchData = useCallback(async (isStandartFisReset = false) => {
+  const fetchData = async (pageNum: number = 1, size: number = pageSize) => {
     try {
       setLoading(true);
       const data = await getFisListesi(
@@ -165,412 +105,326 @@ const HaricFisListesiTable: React.FC<Props> = ({
         yevmiyeFisNo,
         baslangicTarihi,
         bitisTarihi,
-        page,
-        rowsPerPage,
-        debouncedSearchTerm
+        pageNum - 1,
+        size
       );
 
-      const fisListesi = data.items || [];
-      const total = data.totalCount || 0;
+      const items = data?.items || [];
+      const total = data?.totalCount || 0;
 
-      const newRows = fisListesi.map((veri: any) => ({
-        id: veri.id,
-        yevmiyeNo: veri.yevmiyeNo,
-        yevmiyeTarih: veri.yevmiyeTarih
+      const rows = items.map((veri: any) => [
+        veri.id,
+        veri.haricMi,
+        veri.yevmiyeNo,
+        veri.yevmiyeTarih
           ? veri.yevmiyeTarih.split("T")[0].split("-").reverse().join(".")
           : "",
-        kebirKodu: veri.kebirKodu,
-        detayKodu: veri.detayKodu,
-        kebirAdi: veri.kebirAdi,
-        hesapAdi: veri.hesapAdi,
-        aciklama: veri.aciklama,
-        borc: veri.borc,
-        alacak: veri.alacak,
-        haricMi: veri.haricMi,
-      }));
+        veri.kebirKodu,
+        veri.detayKodu,
+        veri.kebirAdi,
+        veri.hesapAdi,
+        veri.aciklama,
+        veri.borc,
+        veri.alacak,
+      ]);
 
-      setRows(newRows);
+      setFetchedData(rows);
       setTotalCount(total);
-
-      // If it's a fresh load or standart fis reset, we might want to sync 'selected'
-      // But usually 'selected' is what the user manually clicks OR what's already saved.
-      // The backend returns 'haricMi' status.
-      if (isStandartFisReset) {
-        const selectedIds = fisListesi
-          .filter((veri: any) => veri.haricMi)
-          .map((veri: any) => veri.id);
-        setSelected(selectedIds);
-      }
-
+      setCurrentPage(pageNum);
       setLoading(false);
+
+      if (pendingSelectAll.current) {
+        setTimeout(() => {
+          handleSelectAll(true);
+          pendingSelectAll.current = false;
+        }, 300);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
       setLoading(false);
     }
-  }, [user.token, user.denetciId, user.denetlenenId, user.yil, hesapNo, yevmiyeFisNo, baslangicTarihi, bitisTarihi, page, rowsPerPage, debouncedSearchTerm, setLoading]);
-
-  useEffect(() => {
-    fetchData();
-  }, [page, rowsPerPage, debouncedSearchTerm]);
+  };
 
   useEffect(() => {
     if (fisleriGosterTiklandimi) {
-      setPage(0);
-      fetchData();
+      fetchData(1);
       setFisleriGosterTiklandimi(false);
     }
-  }, [fisleriGosterTiklandimi, fetchData]);
+  }, [fisleriGosterTiklandimi]);
 
   useEffect(() => {
     if (standartfisleriGosterTiklandimi) {
-      setSelected([]);
-      setPage(0);
-      fetchData(true);
+      fetchData(1);
       setStandartFisleriGosterTiklandimi(false);
     }
-  }, [standartfisleriGosterTiklandimi, fetchData]);
+  }, [standartfisleriGosterTiklandimi]);
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const handleSelectAll = (select: boolean) => {
+    if (!hotTableComponent.current) return;
+    const hotInstance = hotTableComponent.current.hotInstance;
+    const countRows = hotInstance.countRows();
+    if (countRows === 0) return;
 
-  const handleChangePage = useCallback((event: any, newPage: any) => {
-    setPage(newPage);
-  }, []);
-
-  const handleChangeRowsPerPage = useCallback((event: any) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  }, []);
-
-  const isSelected = (id: string) => selected.indexOf(id) !== -1;
-
-  const handleSelectAllClick = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      // Select ALL records from the entire dataset
-      const newSelecteds = rows.map((row) => row.id);
-      setSelected(newSelecteds);
-      return;
-    }
-    // Deselect all
-    setSelected([]);
-  }, [rows]);
-
-  const handleClickRow = useCallback((id: string) => {
-    setSelected((prevSelected) => {
-      const selectedIndex = prevSelected.indexOf(id);
-      let newSelected: string[] = [];
-
-      if (selectedIndex === -1) {
-        newSelected = newSelected.concat(prevSelected, id);
-      } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(prevSelected.slice(1));
-      } else if (selectedIndex === prevSelected.length - 1) {
-        newSelected = newSelected.concat(prevSelected.slice(0, -1));
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          prevSelected.slice(0, selectedIndex),
-          prevSelected.slice(selectedIndex + 1)
-        );
+    hotInstance.batch(() => {
+      for (let i = 0; i < countRows; i++) {
+        hotInstance.setDataAtCell(i, 1, select);
       }
-
-      return newSelected;
     });
-  }, []);
+  };
+
+  const handleHeaderClick = (e: any) => {
+    const target = e.target as HTMLInputElement;
+    if (target && target.id === "header-select-all") {
+      const isChecked = target.checked;
+      if (isChecked && pageSize !== -1) {
+        setConfirmOpen(true);
+        target.checked = false;
+      } else {
+        handleSelectAll(isChecked);
+      }
+    }
+  };
+
+  const handleConfirmSelectAll = () => {
+    setConfirmOpen(false);
+    pendingSelectAll.current = true;
+    setPageSize(-1);
+    fetchData(1, -1);
+  };
+
+  const handleSaveHaricFisListesi = async () => {
+    try {
+      if (!hotTableComponent.current) return;
+      const hotInstance = hotTableComponent.current.hotInstance;
+      const allData = hotInstance.getData();
+
+      const selectedRows = allData.map((row: any) => ({
+        id: row[0],
+        haricMi: row[1] === true,
+      }));
+
+      await saveHaricFisListesi(
+        user.token || "",
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        selectedRows
+      );
+
+      enqueueSnackbar("Değişiklikler Kaydedildi.", {
+        variant: "success",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.success.light
+              : theme.palette.success.main,
+        },
+      });
+      fetchData(currentPage);
+    } catch (error) {
+      console.log("Bir hata oluştu:", error);
+    }
+  };
+
+  const colHeaders = [
+    "Id",
+    `Hariç mi?<br/><input type="checkbox" id="header-select-all" style="width: 20px; height: 20px; cursor: pointer;">`,
+    "Yevmiye No",
+    "Yevmiye Tarihi",
+    "Kebir Kodu",
+    "Detay Kodu",
+    "Kebir Adı",
+    "Hesap Adı",
+    "Açıklama",
+    "Borç",
+    "Alacak",
+  ];
+
+  const columns = [
+    { data: 0, type: "text", readOnly: true }, // Id
+    { data: 1, type: "checkbox", className: "htCenter htMiddle" }, // Hariç mi?
+    { data: 2, type: "numeric", readOnly: true, className: "htLeft htMiddle" }, // Yevmiye No
+    { data: 3, type: "text", readOnly: true, className: "htCenter htMiddle" }, // Yevmiye Tarihi
+    { data: 4, type: "numeric", readOnly: true, className: "htCenter htMiddle" }, // Kebir Kodu
+    { data: 5, type: "text", readOnly: true, className: "htLeft htMiddle" }, // Detay Kodu
+    { data: 6, type: "text", readOnly: true, className: "htLeft htMiddle" }, // Kebir Adı
+    { data: 7, type: "text", readOnly: true, className: "htLeft htMiddle" }, // Hesap Adı
+    { data: 8, type: "text", readOnly: true, className: "htLeft htMiddle" }, // Açıklama
+    {
+      data: 9,
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", culture: "tr-TR" },
+      readOnly: true,
+      className: "htRight htMiddle",
+    }, // Borç
+    {
+      data: 10,
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", culture: "tr-TR" },
+      readOnly: true,
+      className: "htRight htMiddle",
+    }, // Alacak
+  ];
+
+  const afterGetColHeader = (col: any, TH: any) => {
+    TH.style.height = "70px";
+    TH.style.fontFamily = plus.style.fontFamily;
+    TH.style.fontWeight = 500;
+    TH.style.fontSize = "0.875rem";
+    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
+    TH.style.backgroundColor = theme.palette.primary.light;
+  };
+
+  const afterRenderer = (TD: any, row: any, col: any, prop: any, value: any) => {
+    TD.style.fontFamily = plus.style.fontFamily;
+    TD.style.fontSize = "0.875rem";
+    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
+    if (row % 2 === 0) {
+      TD.style.backgroundColor =
+        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
+    } else {
+      TD.style.backgroundColor =
+        customizer.activeMode === "dark" ? "#10141c" : "#f5f5f5";
+    }
+  };
 
   return (
     <>
-      <Stack direction="row" alignItems="center" marginBottom={2}>
-        <Box width={"100%"}>
-          <Typography variant="h6">Fiş Listesi</Typography>
-        </Box>
-        <TextField
-          placeholder="Arama"
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          fullWidth
-        />
-      </Stack>
-      <TableContainer
-        sx={{
-          mt: 0.5,
-          maxHeight: "520px",
-          minHeight: "520px",
-        }}
-      >
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={
-                    selected.length > 0 && selected.length < totalCount
-                  }
-                  checked={
-                    rows.length > 0 &&
-                    rows.every(r => selected.includes(r.id))
-                  }
-                  onChange={handleSelectAllClick}
-                  inputProps={{ "aria-label": "select all" }}
-                />
-              </TableCell>
-              <TableCell>
-                <Typography variant="body1">Yevmiye / Fiş No</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Yevmiye Tarih
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Kebir Kodu
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Hesap Kodu
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Kebir Adı
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Hesap Adı
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Açıklama
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Borç
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="body1">
-                  Alacak
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody sx={{ width: "100%" }}>
-            {loading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={11}
-                  align="center"
-                  sx={{ height: "100%", p: 0 }}
-                >
-                  <Stack
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{
-                      height: "100%",
-                      width: "100%",
-                      minHeight: "454px",
-                    }}
-                  >
-                    <Stack direction="column" spacing={2} alignItems="center">
-                      <CircularProgress size={40} />
-                      <Typography variant="body1" color="textSecondary">
-                        Veriler hazırlanıyor...
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </TableCell>
-              </TableRow>
-            ) : (
-              rows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+      <style>{`
+        .htCheckboxRendererInput {
+          width: 20px !important;
+          height: 20px !important;
+          cursor: pointer;
+        }
+      `}</style>
 
-                return (
-                  <TableRow
-                    key={index}
-                    hover
-                    onClick={() => handleClickRow(row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    selected={isItemSelected}
-                    tabIndex={-1}
-                    style={{
-                      backgroundColor:
-                        index % 2 === 0
-                          ? customizer.activeMode === "dark"
-                            ? "#10141c"
-                            : "#cccccc"
-                          : customizer.activeMode === "dark"
-                            ? theme.palette.background.default
-                            : theme.palette.common.white,
-                    }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isItemSelected}
-                        inputProps={{ "aria-labelledby": labelId }}
-                      />
-                    </TableCell>
-                    <TableCell scope="row">
-                      <Typography variant="body1" color="textSecondary">
-                        {row.yevmiyeNo}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"right"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.yevmiyeTarih}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"center"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.kebirKodu}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"center"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.detayKodu}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"center"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.kebirAdi}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"center"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.hesapAdi}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"center"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.aciklama}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"right"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.borc}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        textAlign={"right"}
-                        variant="body1"
-                        color="textSecondary"
-                      >
-                        {row.alacak}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {selected.length !== 0 && (
-        <>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            onClick={() => handleSaveHaricFisListesi()}
-            sx={{
-              position: smDown ? "relative" : "absolute",
-              width: smDown ? "100%" : "auto",
-              marginLeft: smDown ? "" : "10px",
-              marginY: smDown ? "8px" : "12px",
-            }}
-          >
-            {selected.length} Fişi Hariç Bırak
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>Tüm Kayıtları Seç</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tümünü seçmek istiyor musunuz? Şuan{" "}
+            <strong>{fetchedData.length}</strong> kayıt seçildi, onaylarsanız{" "}
+            <strong>{totalCount}</strong> kaydın hepsi seçilecek. Bu işlem satır
+            gösterme alanını "Hepsi" olarak değiştirecektir.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)} color="inherit">
+            Vazgeç
           </Button>
           <Button
-            variant="outlined"
+            onClick={handleConfirmSelectAll}
             color="primary"
-            size="small"
-            onClick={() => handleGetStandartYevmiyeFisNo()}
-            sx={{
-              position: smDown ? "relative" : "absolute",
-              width: smDown ? "100%" : "auto",
-              marginLeft: smDown ? "" : "172px",
-              marginY: smDown ? "8px" : "12px",
-            }}
+            variant="contained"
           >
-            Standart Fişleri Göster
+            Onayla
           </Button>
-        </>
-      )}
-      <Table>
-        <TableFooter
+        </DialogActions>
+      </Dialog>
+
+      <Stack direction="row" alignItems="center" marginBottom={2} spacing={2}>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          Fiş Listesi (Enflasyon Dahil)
+        </Typography>
+      </Stack>
+
+      <Box sx={{ position: "relative", minHeight: "450px" }}>
+        <Backdrop
           sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            border: 0,
+            position: "absolute",
+            zIndex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            backdropFilter: "blur(2px)",
           }}
+          open={loading}
         >
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[20, 100, 500]}
-              count={totalCount}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-              labelRowsPerPage="Sayfa başına satır sayısı:"
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} arası / ${count !== -1 ? count : `daha fazla`
-                } satır`
-              }
-              sx={{ mt: 0.5, border: 0 }}
+          <CircularProgress color="primary" />
+        </Backdrop>
+
+        <div onClick={handleHeaderClick}>
+          <HotTable
+            ref={hotTableComponent}
+            data={fetchedData}
+            colHeaders={colHeaders}
+            columns={columns}
+            colWidths={[0, 100, 100, 120, 100, 120, 150, 200, 250, 120, 120]}
+            stretchH="all"
+            height={450}
+            rowHeaders={true}
+            autoWrapRow={true}
+            manualColumnResize={true}
+            hiddenColumns={{ columns: [0] }}
+            licenseKey="non-commercial-and-evaluation"
+            afterGetColHeader={afterGetColHeader}
+            afterRenderer={afterRenderer}
+            language={dictionary.languageCode}
+            filters={true}
+            dropdownMenu={true}
+          />
+        </div>
+      </Box>
+
+      <Paper elevation={0} sx={{ p: 2, mt: 2, backgroundColor: "transparent" }}>
+        <Grid container alignItems="center" spacing={2}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={handleSaveHaricFisListesi}
+            >
+              Değişiklikleri Kaydet
+            </Button>
+          </Grid>
+
+          <Grid
+            size={{ xs: 12, md: 4 }}
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
+            <Pagination
+              count={Math.ceil(totalCount / pageSize)}
+              page={currentPage}
+              onChange={(e, val) => fetchData(val)}
+              color="primary"
+              size="small"
             />
-          </TableRow>
-        </TableFooter>
-      </Table>
+          </Grid>
+
+          <Grid
+            size={{ xs: 12, md: 4 }}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Typography variant="body2">
+              Toplam: <strong>{totalCount}</strong> kayıt
+            </Typography>
+            <TextField
+              select
+              size="small"
+              label="Satır"
+              value={pageSize}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                setPageSize(val);
+                fetchData(1, val);
+              }}
+              SelectProps={{ native: true }}
+              sx={{ width: 100 }}
+            >
+              <option value={20}>20</option>
+              <option value={100}>100</option>
+              <option value={500}>500</option>
+              <option value={-1}>Hepsi</option>
+            </TextField>
+          </Grid>
+        </Grid>
+      </Paper>
     </>
   );
 };
 
-export default React.memo(HaricFisListesiTable);
+export default HaricFisListesiTable;
