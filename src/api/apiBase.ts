@@ -1,5 +1,5 @@
-﻿//export const url = "https://betaapi.fasmart.app/api";
-export const url = "https://localhost:5001/api";
+﻿export const url = "https://betaapi.fasmart.app/api";
+//export const url = "https://localhost:5001/api";
 
 export async function apiFetch(
   path: string,
@@ -57,9 +57,10 @@ export async function apiFetch(
     if (error.name === 'AbortError') {
       const isTimeout = controller.signal.reason === "timeout";
     } else {
-      //console.log(`âŒ [%cAPI Hata   %c] (${path}):`, 'color: #ef4444; font-weight: bold;', 'color: inherit;', error);
+      //console.log(`❌ [%cAPI Hata   %c] (${path}):`, 'color: #ef4444; font-weight: bold;', 'color: inherit;', error);
     }
     throw error;
   } finally {
   }
 }
+

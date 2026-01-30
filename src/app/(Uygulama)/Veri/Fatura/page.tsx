@@ -25,7 +25,7 @@ type YuklemeSatiri = {
   adi: string;
   olusturulmaTarihi: string;
   tip?: string;
-  // sunucu alanları (esnek mapâ€™liyoruz):
+  // sunucu alanları (esnek map'liyoruz):
   inProgress: boolean;
   total: number;
   processed: number;
@@ -68,7 +68,7 @@ const Page: React.FC = () => {
     if (processingSnackRef.current) {
       closeSnackbar(processingSnackRef.current);
     }
-    processingSnackRef.current = enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyor…", {
+    processingSnackRef.current = enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyor...", {
       variant: "info",
       persist: true,
       action: () => (
@@ -177,7 +177,7 @@ const Page: React.FC = () => {
       // upload biter bitmez 1 kez durum çek
       void fetchRows({ tryCloseSnack: true });
 
-      // mini bir â€œtek-sefer kontrolâ€ daha (ör. 15sn sonra)
+      // mini bir “tek-sefer kontrol” daha (ör. 15sn sonra)
       setTimeout(() => { void fetchRows({ tryCloseSnack: true }); }, 15000);
     } catch (e) {
       console.log(e);
@@ -221,7 +221,7 @@ const Page: React.FC = () => {
               <input {...getInputProps()} />
               {isDragActive ? (
                 <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">
-                  <Typography>Dosyaları buraya bırakınâ€¦</Typography>
+                  <Typography>Dosyaları buraya bırakın...</Typography>
                 </Grid>
               ) : (
                 <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">

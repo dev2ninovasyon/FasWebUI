@@ -139,7 +139,7 @@ export const previewFaturaHtmlNewTab = async (
   dosyaId: string
 ): Promise<Blob> => {
   const res = await axios.get(`${url}/Invoices/PreviewHtml/${dosyaId}`, {
-    responseType: "blob", // âœ… Sunucudan gelen HTML'i Blob olarak alıyoruz
+    responseType: "blob", // ... Sunucudan gelen HTML'i Blob olarak alıyoruz
     headers: { Authorization: `Bearer ${user.token}` },
   });
 
@@ -238,3 +238,4 @@ export async function getReceivedInvoiceMatches(user: any): Promise<ReceivedInvo
   if (!r.ok) throw new Error("Alınan eşleşmeleri alınamadı");
   return r.json();
 }
+
