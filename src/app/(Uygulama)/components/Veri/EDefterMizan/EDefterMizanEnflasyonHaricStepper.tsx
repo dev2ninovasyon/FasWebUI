@@ -29,7 +29,7 @@ import {
   getMizanVerileri,
   getProgramVukMizanControl,
 } from "@/api/Veri/Mizan";
-import { getStandartYevmiyeFisNoHaric } from "@/api/Veri/HaricFisListesi";
+import { getStandartYevmiyeFisNoHaric, getYevmiyeFisNoHaric } from "@/api/Veri/HaricFisListesi";
 import HaricFisListesiForm from "@/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListesiForm";
 import HaricFisListesiEnflasyonHaricTable from "@/app/(Uygulama)/components/Veri/HaricFisListesi/HaricFisListesiEnflasyonHaricTable";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
@@ -131,6 +131,8 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -256,7 +258,8 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 
   const fetchData = async () => {
     try {
-      const fisListesi = await getStandartYevmiyeFisNoHaric(
+      setLoading(true);
+      const fisListesi = await getYevmiyeFisNoHaric(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -266,13 +269,26 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       setYevmiyeFisNo(fisListesi);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-    fetchControl();
-    fetchMizanControl();
+    // Paralel API çağrılarını Promise.all ile optimize et
+    const initializeData = async () => {
+      try {
+        await Promise.all([
+          fetchData(),
+          fetchControl(),
+          fetchMizanControl()
+        ]);
+      } catch (error) {
+        console.error("Veri yükleme hatası:", error);
+      }
+    };
+
+    initializeData();
   }, []);
 
   const handleContinue = async () => {
@@ -464,6 +480,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
                     yevmiyeFisNo={yevmiyeFisNo}
                     baslangicTarihi={baslangicTarihi}
                     bitisTarihi={bitisTarihi}
+                    loading={loading}
                     setHesapNo={setHesapNo}
                     setYevmiyeFisNo={setYevmiyeFisNo}
                     setBaslangicTarihi={setBaslangicTarihi}

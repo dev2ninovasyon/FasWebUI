@@ -3,7 +3,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import { Box, Typography, Button, Stack, useTheme, InputAdornment } from "@mui/material";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { LoadingButton } from "@mui/lab";
+// LoadingButton import removed
 import { IconTrash, IconMail, IconLock } from "@tabler/icons-react";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
@@ -271,7 +271,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
 
         </Stack>
         <Box>
-          <LoadingButton
+          <Button
             type="submit"
             color="primary"
             variant="contained"
@@ -290,7 +290,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
             }}
           >
             {isVerifyingCaptcha ? "Güvenlik Doğrulaması..." : isLoggedIn ? "Giriş Yapılıyor..." : "Giriş Yap"}
-          </LoadingButton>
+          </Button>
         </Box>
       </form>
       {subtitle}

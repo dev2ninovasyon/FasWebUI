@@ -14,6 +14,9 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', '@tabler/icons-react'],
   },
+  images: {
+    qualities: [75, 95],
+  },
 };
 
 module.exports = nextConfig;

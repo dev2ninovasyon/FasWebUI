@@ -23,7 +23,7 @@ import {
   MenuItem,
   ListItemIcon,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+// LoadingButton import removed
 import { useSnackbar } from "notistack";
 import { Stack } from "@mui/system";
 // import TablePaginationActions from "@mui/material/TablePagination";
@@ -696,7 +696,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         </Dialog>
       </TableContainer>
       {selected.length !== 0 && (
-        <LoadingButton
+        <Button
           variant="outlined"
           color="error"
           size="small"
@@ -713,7 +713,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           }}
         >
           {selected.length} Kayıt Sil
-        </LoadingButton>
+        </Button>
       )}
       {/* <Table>
         <TableFooter

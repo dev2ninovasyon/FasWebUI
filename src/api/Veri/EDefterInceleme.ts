@@ -31,6 +31,38 @@ export const getEDefterIncelemeVerileri = async (
   }
 };
 
+export const getEDefterIncelemeVerileriPaged = async (
+  token: string,
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  hesapNo: string,
+  baslangicTarihi: string,
+  bitisTarihi: string,
+  pageNumber: number = 1,
+  pageSize: number = 50
+) => {
+  try {
+    const response = await apiFetch(
+      `/Veri/EDefterIncelemePaged?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("E-Defter İnceleme paginated verileri getirilemedi");
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
 export const updateEDefterIncelemeVerisi = async (
   token: string,
   denetciId: number,

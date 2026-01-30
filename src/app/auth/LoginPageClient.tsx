@@ -189,7 +189,7 @@ export default function LoginPageClient() {
                                     src={slide.image}
                                     alt={slide.title}
                                     fill
-                                    priority={index === 0}
+                                    priority={index === currentSlide}
                                     quality={95}
                                     sizes="70vw"
                                     style={{
