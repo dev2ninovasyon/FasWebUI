@@ -18,9 +18,18 @@ interface YorumEditorProps {
   yil: number;
   belgeAdi: string;
   isReport?: boolean;
+
+  // ✅ EKLE
+  onDataLoad?: (content: string) => void;
 }
 
-const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, isReport }) => {
+const YorumEditor: React.FC<YorumEditorProps> = ({
+  denetlenenId,
+  yil,
+  belgeAdi,
+  isReport,
+  onDataLoad, // ✅ EKLE
+}) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
@@ -32,9 +41,7 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
     try {
       const result = await saveYorum(user.token || "", denetlenenId, yil, belgeAdi, data);
       if (result) {
-        setKayitMesaji(
-          `Kaydedildi - Son kaydedilme: ${new Date().toLocaleTimeString()}`
-        );
+        setKayitMesaji(`Kaydedildi - Son kaydedilme: ${new Date().toLocaleTimeString()}`);
       } else {
         setKayitMesaji("Kaydedilemedi!");
       }
@@ -51,23 +58,28 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
   const fetchData = async () => {
     try {
       const result = await getYorum(user.token || "", denetlenenId, yil, belgeAdi);
-      if (result && result.icerik) {
-        setEditorData(result.icerik);
-      }
+
+      const content = result?.icerik ?? "";
+
+      setEditorData(content);
+
+      onDataLoad?.(content);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+
+      onDataLoad?.("");
     }
   };
 
   useEffect(() => {
+    if (!user.token) return; // token yoksa boş bırakma
     fetchData();
-  }, [denetlenenId, yil, belgeAdi]);
+  }, [user.token, denetlenenId, yil, belgeAdi]); // ✅ token'ı da ekle
 
   useEffect(() => {
     if (isReport) return;
     const timeout = setTimeout(() => {
-      if (editorData)
-        handleUpdate(editorData);
+      if (editorData) handleUpdate(editorData);
     }, 2000);
 
     return () => clearTimeout(timeout);
@@ -82,26 +94,17 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
         justifyContent: "center",
       }}
     >
-      <Grid
-        size={{
-          xs: 12,
-          lg: 12
-        }}>
+      <Grid size={{ xs: 12, lg: 12 }}>
         <Card
           sx={{
             width: "100%",
             borderRadius: 3,
             boxShadow: "none",
-            backgroundColor:
-              customizer.activeMode === "dark" ? "#1A2027" : "#FFFFFF",
-            color:
-              customizer.activeMode === "dark"
-                ? theme.palette.common.white
-                : theme.palette.text.primary,
-            border:
-              customizer.activeMode === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.12)"
-                : "1px solid rgba(0, 0, 0, 0.08)",
+            backgroundColor: customizer.activeMode === "dark" ? "#1A2027" : "#FFFFFF",
+            color: customizer.activeMode === "dark" ? theme.palette.common.white : theme.palette.text.primary,
+            border: customizer.activeMode === "dark"
+              ? "1px solid rgba(255, 255, 255, 0.12)"
+              : "1px solid rgba(0, 0, 0, 0.08)",
             overflow: "visible",
             padding: 0,
           }}
@@ -116,13 +119,13 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
               }}
               sx={{
                 padding: "16px 24px",
-                borderBottom:
-                  customizer.activeMode === "dark"
-                    ? "1px solid rgba(255, 255, 255, 0.12)"
-                    : "1px solid rgba(0, 0, 0, 0.08)",
+                borderBottom: customizer.activeMode === "dark"
+                  ? "1px solid rgba(255, 255, 255, 0.12)"
+                  : "1px solid rgba(0, 0, 0, 0.08)",
               }}
             />
           )}
+
           <CardContent sx={{ padding: "24px" }}>
             <Box
               sx={{
@@ -148,10 +151,9 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
                       p: 2,
                       border: "none !important",
                       borderRadius: 1,
-                      backgroundColor:
-                        customizer.activeMode === "dark"
-                          ? "rgba(255,255,255,0.05)"
-                          : "#f9f9f9",
+                      backgroundColor: customizer.activeMode === "dark"
+                        ? "rgba(255,255,255,0.05)"
+                        : "#f9f9f9",
                     }}
                   >
                     <div
@@ -170,15 +172,11 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
                   />
                 )}
               </Box>
+
               {!isReport && kayitMesaji && (
                 <Typography
                   variant="body2"
-                  sx={{
-                    marginTop: 2,
-                    color: "gray",
-                    textAlign: "right",
-                    width: "100%",
-                  }}
+                  sx={{ marginTop: 2, color: "gray", textAlign: "right", width: "100%" }}
                 >
                   {kayitMesaji}
                 </Typography>
@@ -192,4 +190,3 @@ const YorumEditor: React.FC<YorumEditorProps> = ({ denetlenenId, yil, belgeAdi, 
 };
 
 export default YorumEditor;
-
