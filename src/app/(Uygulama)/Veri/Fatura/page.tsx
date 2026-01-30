@@ -34,7 +34,7 @@ type YuklemeSatiri = {
   faturaDosyalari?: FaturaDosyaRow[];
 };
 
-const PROCESS_SNACK_KEY = "fatura-processing";
+
 
 const Page: React.FC = () => {
   const theme = useTheme();
@@ -54,6 +54,8 @@ const Page: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [progressInfos, setProgressInfos] = useState<{ fileName: string; percentage: number }[]>([]);
 
+  const processingSnackRef = React.useRef<string | number | undefined>(undefined);
+
   const toast = (
     msg: string,
     variant: "success" | "error" | "warning" | "info" = "info"
@@ -63,8 +65,10 @@ const Page: React.FC = () => {
     items.some(r => r.inProgress || (r.total > 0 && r.processed < r.total));
 
   const openProcessingSnack = () => {
-    enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyorâ€¦", {
-      key: PROCESS_SNACK_KEY,
+    if (processingSnackRef.current) {
+      closeSnackbar(processingSnackRef.current);
+    }
+    processingSnackRef.current = enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyor…", {
       variant: "info",
       persist: true,
       action: () => (
@@ -79,7 +83,12 @@ const Page: React.FC = () => {
       }
     });
   };
-  const closeProcessingSnack = () => closeSnackbar(PROCESS_SNACK_KEY);
+  const closeProcessingSnack = () => {
+    if (processingSnackRef.current) {
+      closeSnackbar(processingSnackRef.current);
+      processingSnackRef.current = undefined;
+    }
+  };
 
   const mapYukleme = (x: any): YuklemeSatiri => {
     const processed = Number(

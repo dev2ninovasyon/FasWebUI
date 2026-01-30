@@ -1267,11 +1267,7 @@ export const createHareketsizTicariAlacaklar = async (
       }
     );
 
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
+    return response;
   } catch (error) {
     console.log("Bir hata oluştu:", error);
   }
@@ -1432,11 +1428,7 @@ export const createHareketsizStoklar = async (
       }
     );
 
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
+    return response;
   } catch (error) {
     console.log("Bir hata oluştu:", error);
   }

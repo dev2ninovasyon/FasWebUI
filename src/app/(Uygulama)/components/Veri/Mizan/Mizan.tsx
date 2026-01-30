@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, useTheme, CircularProgress, Box, Pagination, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import ExcelJS from "exceljs";
@@ -54,8 +54,13 @@ const Mizan: React.FC<Props> = ({
   const theme = useTheme();
 
   const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [allData, setAllData] = useState<any[]>([]); // Store all data for the table
+  const [hiddenIndices, setHiddenIndices] = useState<number[]>([]);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -269,8 +274,10 @@ const Mizan: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      // Kullan shared data varsa, yoksa API'dan çek
-      const mizanVerileri = sharedData || await getMizanVerileri(
+      setLoading(true);
+      setPage(0); // Reset to first page when fetching new data
+      // Only use shared data if it has content, otherwise fetch from API
+      const mizanVerileri = (sharedData && sharedData.length > 0) ? sharedData : await getMizanVerileri(
         user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
@@ -309,12 +316,45 @@ const Mizan: React.FC<Props> = ({
         undefined,
         undefined,
       ]);
+
+      // Store all data for pagination
+      setAllData(rowsAll);
+      setFetchedData(rowsAll); // Provide all data to HotTable for global filtering
       setRowCount(rowsAll.length);
-      setFetchedData(rowsAll);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const updatePagination = () => {
+    if (!hotTableComponent.current || !hotTableComponent.current.hotInstance) return;
+    const hotInstance = hotTableComponent.current.hotInstance;
+
+    // countRows() returns the number of visual rows (respecting filters but NOT hiddenRows)
+    const count = hotInstance.countRows();
+
+    // updateRowCount is used for pagination UI labels
+    setRowCount(count);
+
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+
+    const toHide: number[] = [];
+    for (let i = 0; i < count; i++) {
+      if (i < startIndex || i >= endIndex) {
+        // toPhysicalRow converts visual index (non-trimmed) to physical index
+        toHide.push(hotInstance.toPhysicalRow(i));
+      }
+    }
+
+    setHiddenIndices(toHide);
+  };
+
+  useEffect(() => {
+    updatePagination();
+  }, [page, rowsPerPage, allData]);
 
   useEffect(() => {
     fetchData();
@@ -324,6 +364,7 @@ const Mizan: React.FC<Props> = ({
     if (mizanOlusturTiklandimi) {
       setFetchedData([]);
       setRowCount(0);
+      setPage(0);
     } else {
       fetchData();
       setMizanOlusturTiklandimi(false);
@@ -331,20 +372,25 @@ const Mizan: React.FC<Props> = ({
   }, [mizanOlusturTiklandimi, sharedData]);
 
   const handleDownload = () => {
-    const hotTableInstance = hotTableComponent.current.hotInstance;
-    const data = hotTableInstance.getData();
+    if (!hotTableComponent.current || !hotTableComponent.current.hotInstance) return;
+    const hotInstance = hotTableComponent.current.hotInstance;
 
-    const processedData = data.map((row: any) => row.slice(0));
+    // Get all data currently passing the filter
+    const count = hotInstance.countRows();
+    const headers = colHeaders;
+    const rows: any[] = [];
 
-    const headers = hotTableInstance.getColHeader().slice(0);
+    for (let i = 0; i < count; i++) {
+      rows.push(hotInstance.getDataAtRow(i));
+    }
 
-    const fullData = [headers, ...processedData];
+    const fullDataForExcel = [headers, ...rows];
 
     async function createExcelFile() {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sayfa1");
 
-      fullData.forEach((row: any) => {
+      fullDataForExcel.forEach((row: any) => {
         worksheet.addRow(row);
       });
 
@@ -381,64 +427,117 @@ const Mizan: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (hotTableComponent.current) {
-      const diff = customizer.isCollapse
-        ? 0
-        : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+    const handleResize = () => {
+      if (hotTableComponent.current && hotTableComponent.current.hotInstance) {
+        const hotInstance = hotTableComponent.current.hotInstance;
+        const diff = customizer.isCollapse
+          ? 0
+          : customizer.SidebarWidth && customizer.MiniSidebarWidth
+            ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+            : 0;
 
-      hotTableComponent.current.hotInstance.updateSettings({
-        width: customizer.isCollapse
-          ? "100%"
-          : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
-      });
-    }
-  }, [customizer.isCollapse]);
+        hotInstance.updateSettings({
+          width: customizer.isCollapse
+            ? "100%"
+            : hotInstance.rootElement.parentElement.clientWidth - diff,
+          height: window.innerHeight - 450,
+        });
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [customizer.isCollapse, customizer.activeMode]);
 
   return (
     <>
-      <HotTable
-        style={{
-          height: "100%",
-          width: "100%",
-          maxHeight: 684,
-          maxWidth: "100%",
-        }}
-        language={dictionary.languageCode}
-        ref={hotTableComponent}
-        data={fetchedData}
-        height={684}
-        colHeaders={colHeaders}
-        columns={columns}
-        colWidths={[80, 80, 120, 120, 100, 100, 60, 100]}
-        stretchH="all"
-        manualColumnResize={true}
-        rowHeaders={true}
-        rowHeights={35}
-        autoWrapRow={true}
-        minRows={rowCount}
-        minCols={8}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
-          "filter_by_condition",
-          "filter_by_value",
-          "filter_action_bar",
-        ]}
-        licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-        afterGetColHeader={afterGetColHeader}
-        afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
-        contextMenu={["alignment", "copy"]}
-      />
-      <Grid container marginTop={2} marginBottom={1}>
+      <Box sx={{ position: "relative" }}>
+        {loading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: customizer.activeMode === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.7)",
+              zIndex: 1000,
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        <HotTable
+          style={{
+            height: "100%",
+            width: "100%",
+            maxHeight: "calc(100vh - 450px)",
+            maxWidth: "100%",
+          }}
+          language={dictionary.languageCode}
+          ref={hotTableComponent}
+          data={fetchedData}
+          height="calc(100vh - 450px)"
+          colHeaders={colHeaders}
+          columns={columns}
+          colWidths={[80, 80, 120, 120, 100, 100, 60, 100]}
+          stretchH="all"
+          manualColumnResize={true}
+          rowHeaders={true}
+          rowHeights={35}
+          autoWrapRow={true}
+          minRows={rowCount}
+          minCols={8}
+          filters={true}
+          columnSorting={true}
+          dropdownMenu={[
+            "filter_by_condition",
+            "filter_by_value",
+            "filter_action_bar",
+          ]}
+          hiddenRows={{
+            rows: hiddenIndices,
+            indicators: false,
+          }}
+          afterFilter={() => {
+            setPage(0); // Reset to first page on filter change
+            updatePagination();
+          }}
+          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+          afterGetColHeader={afterGetColHeader}
+          afterGetRowHeader={afterGetRowHeader}
+          afterRenderer={afterRenderer}
+          contextMenu={["alignment", "copy"]}
+        />
+      </Box>
+      <Grid container marginTop={2} marginBottom={1} alignItems="center">
         <Grid
           size={{
             xs: 12,
-            lg: 10
-          }}></Grid>
+            lg: 6
+          }}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            gap: 2
+          }}>
+          <Pagination
+            count={Math.ceil(rowCount / rowsPerPage)}
+            page={page + 1}
+            onChange={(event, value) => setPage(value - 1)}
+            color="primary"
+            showFirstButton
+            showLastButton
+          />
+          <Typography variant="body2" color="text.secondary">
+            {rowCount} kayıttan {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, rowCount)} arası gösteriliyor
+          </Typography>
+        </Grid>
         <Grid
           sx={{
             display: "flex",
@@ -446,7 +545,7 @@ const Mizan: React.FC<Props> = ({
           }}
           size={{
             xs: 12,
-            lg: 2
+            lg: 6
           }}>
           <ExceleAktarButton
             handleDownload={handleDownload}

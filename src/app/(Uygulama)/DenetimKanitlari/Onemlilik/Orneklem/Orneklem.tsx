@@ -20,6 +20,9 @@ import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { useRouter } from "next/navigation";
+import { Box, Dialog, DialogContent, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { IconX } from "@tabler/icons-react";
+import OrneklemFisleriTable from "@/app/(Uygulama)/components/DenetimKanitlari/Onemlilik/OrneklemFisleriTable";
 
 // register Handsontable's modules
 registerAllModules();
@@ -72,6 +75,9 @@ const Orneklem: React.FC<Props> = ({
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
+
+  const [isFisleriDialogOpen, setIsFisleriDialogOpen] = useState(false);
+  const [selectedKebirKodu, setSelectedKebirKodu] = useState<number>(0);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -593,14 +599,14 @@ const Orneklem: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -651,9 +657,8 @@ const Orneklem: React.FC<Props> = ({
               name: "Örneklem Fişlerini Göster",
               callback: async function (key, selection) {
                 const row = await handleGetRowData(selection[0].start.row);
-                router.push(
-                  `/DenetimKanitlari/Onemlilik/Orneklem/OrneklemFisleri/${row[1]}`
-                );
+                setSelectedKebirKodu(row[1]);
+                setIsFisleriDialogOpen(true);
               },
             },
           },
@@ -679,6 +684,39 @@ const Orneklem: React.FC<Props> = ({
           ></ExceleAktarButton>
         </Grid>
       </Grid>
+      <Dialog
+        open={isFisleriDialogOpen}
+        onClose={() => setIsFisleriDialogOpen(false)}
+        fullWidth
+        maxWidth={"lg"}
+      >
+        <DialogContent sx={{ overflow: "visible" }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent={"space-between"}
+            alignItems="center"
+          >
+            <Box>
+              <Typography variant="h5" p={1}>
+                Örneklem Fişleri ({selectedKebirKodu})
+              </Typography>
+            </Box>
+            <IconButton
+              size="small"
+              onClick={() => setIsFisleriDialogOpen(false)}
+            >
+              <IconX size="18" />
+            </IconButton>
+          </Stack>
+        </DialogContent>
+        <Divider />
+        <DialogContent>
+          {isFisleriDialogOpen && (
+            <OrneklemFisleriTable kebirKodu={selectedKebirKodu} />
+          )}
+        </DialogContent>
+      </Dialog>
       {openCartAlert && (
         <InfoAlertCart
           openCartAlert={openCartAlert}

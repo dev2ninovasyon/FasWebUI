@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { Box, CircularProgress, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getOnemlilikHesaplamaBazi } from "@/api/DenetimKanitlari/DenetimKanitlari";
@@ -39,6 +39,7 @@ const OnemlilikHesaplamaBazi = () => {
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -242,6 +243,7 @@ const OnemlilikHesaplamaBazi = () => {
   };
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const onemlilikHesaplamaBaziVerileri = await getOnemlilikHesaplamaBazi(
         user.token || "",
@@ -268,6 +270,8 @@ const OnemlilikHesaplamaBazi = () => {
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -280,20 +284,42 @@ const OnemlilikHesaplamaBazi = () => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
 
   return (
-    <>
+    <Box sx={{ position: "relative" }}>
+      {loading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: (theme) =>
+              theme.palette.mode === "dark"
+                ? "rgba(0, 0, 0, 0.7)"
+                : "rgba(255, 255, 255, 0.7)",
+            zIndex: 1,
+            minHeight: "168px",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       {fetchedData.length > 0 && (
         <HotTable
           style={{
@@ -333,7 +359,7 @@ const OnemlilikHesaplamaBazi = () => {
           contextMenu={["alignment", "copy"]}
         />
       )}
-    </>
+    </Box>
   );
 };
 
