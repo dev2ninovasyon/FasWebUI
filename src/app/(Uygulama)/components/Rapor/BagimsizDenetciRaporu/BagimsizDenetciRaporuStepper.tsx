@@ -30,6 +30,7 @@ import {
   useTheme,
   Card,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { url } from "@/api/apiBase";
 import Script from "next/script";
@@ -41,6 +42,7 @@ import {
   getRaporGorus,
   updateRaporGorus,
 } from "@/api/DenetimRaporu/DenetimRaporu";
+import { getLogo } from "@/api/Denetci/Denetci";
 import RaporGorusCard from "@/app/(Uygulama)/components/Rapor/RaporGorus/RaporGorusCard";
 import {
   getFinansalDurumTablosu,
@@ -800,7 +802,10 @@ const BagimsizDenetciRaporuStepper = () => {
   const handleReset = () => {
     setActiveStep(0);
   };
-
+  const handleRemoveKapakImage = () => {
+    setKapakImage(null);
+    setKapak("ResimSec");
+  };
   async function createPDF() {
     const reportElement = document.querySelector("div#report") as HTMLElement;
     const reportPage = document.querySelector(
@@ -1629,8 +1634,28 @@ const BagimsizDenetciRaporuStepper = () => {
                             alignItems: "center",
                             justifyContent: "center",
                             borderRadius: "8px",
+                            position: "relative",
                           }}
                         >
+                          <IconButton
+                            size="small"
+                            onClick={handleRemoveKapakImage}
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              backgroundColor: "error.main",
+                              color: "white",
+                              "&:hover": {
+                                backgroundColor: "error.dark",
+                              },
+                              zIndex: 10,
+                              width: 30,
+                              height: 30,
+                            }}
+                          >
+                            <CloseIcon sx={{ fontSize: 20 }} />
+                          </IconButton>
                           <CardMedia
                             component="img"
                             image={kapakImage}
@@ -1639,8 +1664,6 @@ const BagimsizDenetciRaporuStepper = () => {
                               width: "100%",
                               height: "100%",
                               objectFit: "contain",
-                              backgroundRepeat: "no-repeat",
-                              backgroundPosition: "center",
                             }}
                           />
                         </Box>

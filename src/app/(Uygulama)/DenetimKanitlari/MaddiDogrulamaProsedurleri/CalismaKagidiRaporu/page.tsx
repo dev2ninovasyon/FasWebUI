@@ -211,7 +211,7 @@ const SignatureTable = ({ data, denetlenen, yil }: { data: any, denetlenen: stri
     );
 };
 
-const steps = ["Görüş Düzenleme", "Bağımsız Denetçi Raporu"];
+const steps = ["Onay", "Çalışma Kağıdı"];
 
 const removeTurkishChars = (str: string | undefined | null) => {
     if (!str) return "";

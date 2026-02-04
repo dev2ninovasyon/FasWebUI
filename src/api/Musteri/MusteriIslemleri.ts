@@ -108,6 +108,7 @@ export const getDenetlenenByDenetciId = async (
         accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
+      ignoreCustomHeaders: true,
     });
     if (response.ok) {
       return response.json();

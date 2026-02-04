@@ -30,7 +30,7 @@ import {
   useTheme,
   Card,
 } from "@mui/material";
-
+import CloseIcon from "@mui/icons-material/Close";
 import { url } from "@/api/apiBase";
 import Script from "next/script";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
@@ -449,6 +449,7 @@ const BagimsizDenetciRaporuStepper = () => {
         true
       );
 
+
       const newRowsKzt = karZararTablosu.slice(1).map((veri: VeriFT) => ({
         id: veri.id,
         parentId:
@@ -801,6 +802,11 @@ const BagimsizDenetciRaporuStepper = () => {
     setActiveStep(0);
   };
 
+  const handleRemoveKapakImage = () => {
+    setKapakImage(null);
+    setKapak("ResimSec");
+  };
+
   async function createPDF() {
     const reportElement = document.querySelector("div#report") as HTMLElement;
     const reportPage = document.querySelector(
@@ -958,6 +964,7 @@ const BagimsizDenetciRaporuStepper = () => {
         h.style.textAlign = "left";
       });
       const htmlContent = clonedElement.outerHTML;
+
 
       const wordDocument = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office'
@@ -1629,8 +1636,28 @@ const BagimsizDenetciRaporuStepper = () => {
                             alignItems: "center",
                             justifyContent: "center",
                             borderRadius: "8px",
+                            position: "relative",
                           }}
                         >
+                          <IconButton
+                            size="small"
+                            onClick={handleRemoveKapakImage}
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              backgroundColor: "error.main",
+                              color: "white",
+                              "&:hover": {
+                                backgroundColor: "error.dark",
+                              },
+                              zIndex: 10,
+                              width: 30,
+                              height: 30,
+                            }}
+                          >
+                            <CloseIcon sx={{ fontSize: 20 }} />
+                          </IconButton>
                           <CardMedia
                             component="img"
                             image={kapakImage}

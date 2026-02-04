@@ -17,6 +17,7 @@ import {
   useTheme,
 } from "@mui/material";
 import DosyaTable from "@/app/(Uygulama)/components/Veri/DosyaTable";
+import { getDenetlenenById } from "@/api/Musteri/MusteriIslemleri";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "@/store/hooks";
@@ -93,16 +94,95 @@ const Page: React.FC = () => {
 
   const handleClosePopUp = () => {
     setIsPopUpOpen(false);
+    setControl(true);
   };
 
   const [uploading, setUploading] = useState(false);
   const [dosyaYuklendiMi, setDosyaYuklendiMi] = useState(true);
   const [progressInfos, setProgressInfos] = useState<any[]>([]);
 
+  const [denetlenenVergiNo, setDenetlenenVergiNo] = useState("");
+
+  const fetchDenetlenen = useCallback(async () => {
+    if (!user.denetlenenId || user.denetlenenId === 0) return;
+    try {
+      const denetlenen = await getDenetlenenById(user.token || "", user.denetlenenId);
+      if (denetlenen && denetlenen.vergiNo) {
+        setDenetlenenVergiNo(denetlenen.vergiNo); //mevcut müşteri vergi nosu state'e kaydedildi.
+      }
+    } catch (error) {
+      console.log("Denetlenen bilgileri alınamadı:", error);
+    }
+  }, [user.denetlenenId, user.token]);
+
+  useEffect(() => {
+    fetchDenetlenen();
+  }, [fetchDenetlenen]);
+
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
+
+      if (fetchedData) {
+        enqueueSnackbar(
+          "Paylaşım bağlantınız varken yükleme yapılmamaktadır bağlantıyı kaldırıp yüklemeyi deneyiniz.",
+          { variant: "warning", autoHideDuration: 5000 }
+        );
+        return;
+      }
+
       setUploading(true);
-      const _progressInfos = acceptedFiles.map((file) => ({
+      setDosyaYuklendiMi(false);
+
+      // 2. Vergi Numarası Kontrolü ve Dosya Hazırlığı
+      const validFiles: File[] = [];
+      const invalidFiles: string[] = [];
+
+      for (const file of acceptedFiles) {
+        if (
+          file.name.endsWith(".xml") ||
+          file.name.endsWith(".XML") ||
+          fileType === "E-DefterKebir" ||
+          fileType === "E-DefterYevmiye"
+        ) {
+          if (file.type === "text/xml" || file.name.slice(-4).toLowerCase() === ".xml") {
+            try {
+              const text = await file.text();
+              let dosyaVkn = null;
+
+              // 1. Try standard VKN tag (e.g., <gl-cor:VKN>)
+              const vknMatch = text.match(/<([a-zA-Z0-9]+:)?VKN>(\d+)<\/([a-zA-Z0-9]+:)?VKN>/);
+              if (vknMatch) {
+                dosyaVkn = vknMatch[2];
+              } else {
+                // 2. Try XBRL identifier tag (e.g., <xbrli:identifier ...>)
+                const xbrlMatch = text.match(/<([a-zA-Z0-9]+:)?identifier[^>]*>(\d+)<\/([a-zA-Z0-9]+:)?identifier>/);
+                if (xbrlMatch) {
+                  dosyaVkn = xbrlMatch[2];
+                }
+              }
+
+              if (dosyaVkn && denetlenenVergiNo && dosyaVkn !== denetlenenVergiNo) {
+                enqueueSnackbar(
+                  `Şirket eklenirken girilen vergi numarası (${denetlenenVergiNo}) ve yüklenmeye çalışan edefter vergi numarası (${dosyaVkn}) eşleşmemektedir.`,
+                  { variant: "error", autoHideDuration: 8000 }
+                );
+                invalidFiles.push(file.name);
+                continue; // Bu dosyayı yükleme listesine ekleme
+              }
+            } catch (err) {
+              console.error("Dosya okunurken hata:", err);
+            }
+          }
+        }
+        validFiles.push(file);
+      }
+
+      if (validFiles.length === 0) {
+        setUploading(false);
+        return;
+      }
+
+      const _progressInfos = validFiles.map((file) => ({
         fileName: file.name,
         percentage: 0,
         status: "Yükleniyor...",
@@ -111,9 +191,7 @@ const Page: React.FC = () => {
       setProgressInfos(_progressInfos);
 
       try {
-        setDosyaYuklendiMi(false);
-
-        const uploadPromises = acceptedFiles.map(async (file, index) => {
+        const uploadPromises = validFiles.map(async (file, index) => {
           const formData = new FormData();
           formData.append("files", file);
 
@@ -127,7 +205,9 @@ const Page: React.FC = () => {
                   const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
                   setProgressInfos((prev) => {
                     const next = [...prev];
-                    next[index] = { ...next[index], percentage: Math.round(progress * 0.2), status: "Yükleniyor..." }; // Upload is 20%
+                    if (next[index]) {
+                      next[index] = { ...next[index], percentage: Math.round(progress * 0.2), status: "Yükleniyor..." };
+                    }
                     return next;
                   });
                 },
@@ -136,13 +216,17 @@ const Page: React.FC = () => {
 
             setProgressInfos((prev) => {
               const next = [...prev];
-              next[index] = { ...next[index], status: "Yüklendi", percentage: 20 };
+              if (next[index]) {
+                next[index] = { ...next[index], status: "Yüklendi", percentage: 20 };
+              }
               return next;
             });
           } catch (error) {
             setProgressInfos((prev) => {
               const next = [...prev];
-              next[index] = { ...next[index], status: "Hata!", percentage: 0 };
+              if (next[index]) {
+                next[index] = { ...next[index], status: "Hata!", percentage: 0 };
+              }
               return next;
             });
           }
@@ -173,7 +257,7 @@ const Page: React.FC = () => {
             });
 
             // Check if all files are processed based on the fetched data
-            const allDone = acceptedFiles.every((file) => {
+            const allDone = validFiles.every((file) => {
               const serverFile = data.find((d: any) => d.adi === file.name);
               return serverFile && (serverFile.durum === "Tamamlandı" || serverFile.durum === "Hata Oluştu");
             });
@@ -196,11 +280,11 @@ const Page: React.FC = () => {
         setUploading(false);
       }
     },
-    [user.denetciId, user.yil, user.denetlenenId, fileType]
+    [user.denetciId, user.yil, user.denetlenenId, fileType, fetchedData, denetlenenVergiNo]
   );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
+    noClick: true,
     accept: {
       [`application/${fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
         ? "xml"
@@ -214,6 +298,17 @@ const Page: React.FC = () => {
     },
   });
 
+  const handleDropzoneClick = () => {
+    if (fetchedData) {
+      enqueueSnackbar(
+        "Paylaşım bağlantınız varken yükleme yapılmamaktadır bağlantıyı kaldırıp yüklemeyi deneyiniz.",
+        { variant: "warning", autoHideDuration: 5000 }
+      );
+    } else {
+      open();
+    }
+  };
+
   const fetchData = async () => {
     try {
       const baglantiBilgisi = await getBaglantiBilgileriByTip(
@@ -224,7 +319,7 @@ const Page: React.FC = () => {
         user.yil || 0,
         "DefterKVBeyannamesi"
       );
-      if (baglantiBilgisi != undefined) {
+      if (baglantiBilgisi && baglantiBilgisi.id) {
         // Tarihleri "DD.MM.YYYY HH:mm" formatında ayarla
         const formatDateTime = (dateTimeStr?: string) => {
           if (!dateTimeStr) return "";
@@ -371,17 +466,15 @@ const Page: React.FC = () => {
                 </Typography>
               </Stack>
             )}
-
             <Box
-              {...getRootProps()}
+              {...getRootProps({ onClick: handleDropzoneClick })}
               sx={{
                 border: `2px dashed ${borderColor}`,
                 borderRadius: `${borderRadius}/5`,
                 padding: "20px",
                 margin: "16px",
                 textAlign: "center",
-                cursor: fetchedData != null ? "none" : "pointer",
-                pointerEvents: fetchedData != null ? "none" : "visible",
+                cursor: "pointer",
                 height: "285px",
                 mt: 3,
               }}
@@ -479,8 +572,8 @@ const Page: React.FC = () => {
                 </Grid>
               )}
             </Box>
-          </Box>
-        </Grid>
+          </Box >
+        </Grid >
         <Grid
           size={{
             xs: 12,
@@ -503,71 +596,75 @@ const Page: React.FC = () => {
             />
           </Box>
         </Grid>
-        {fileType === "E-DefterKebir" && (
-          <Grid
-            size={{
-              xs: 12,
-              lg: 12
-            }}>
-            <Grid container spacing={2}>
-              <Grid
-                size={{
-                  xs: 12,
-                  md: 12,
-                  lg: 12
-                }}>
-                <Typography variant="h6" textAlign="left" mb={1}>
-                  Yüklenen Defter Sayıları:
-                </Typography>
-              </Grid>
-              {months.map((month, index) => {
-                const monthPart = (index + 1).toString().padStart(2, "0");
-                const count = rows.filter(
-                  (item: DosyaType) =>
-                    item.adi.split("-")[1]?.slice(-2) === monthPart &&
-                    item.durum === "Tamamlandı"
-                ).length;
+        {
+          fileType === "E-DefterKebir" && (
+            <Grid
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
+              <Grid container spacing={2}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 12,
+                    lg: 12
+                  }}>
+                  <Typography variant="h6" textAlign="left" mb={1}>
+                    Yüklenen Defter Sayıları:
+                  </Typography>
+                </Grid>
+                {months.map((month, index) => {
+                  const monthPart = (index + 1).toString().padStart(2, "0");
+                  const count = rows.filter(
+                    (item: DosyaType) =>
+                      item.adi.split("-")[1]?.slice(-2) === monthPart &&
+                      item.durum === "Tamamlandı"
+                  ).length;
 
-                return (
-                  <Grid
-                    key={index}
-                    size={{
-                      xs: 6,
-                      md: 3,
-                      lg: 2
-                    }}>
-                    <Paper
-                      elevation={2}
-                      sx={{
-                        p: 1,
-                        borderRadius: 1,
-                        backgroundColor: "warning.light",
-                        height: "100%",
-                      }}
-                    >
-                      <Typography
-                        variant="body1"
-                        sx={{ color: "warning.dark" }}
-                        textAlign={"center"}
+                  return (
+                    <Grid
+                      key={index}
+                      size={{
+                        xs: 6,
+                        md: 3,
+                        lg: 2
+                      }}>
+                      <Paper
+                        elevation={2}
+                        sx={{
+                          p: 1,
+                          borderRadius: 1,
+                          backgroundColor: "warning.light",
+                          height: "100%",
+                        }}
                       >
-                        {month}: {count}
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                );
-              })}
+                        <Typography
+                          variant="body1"
+                          sx={{ color: "warning.dark" }}
+                          textAlign={"center"}
+                        >
+                          {month}: {count}
+                        </Typography>
+                      </Paper>
+                    </Grid>
+                  );
+                })}
+              </Grid>
             </Grid>
-          </Grid>
-        )}
-        {isPopUpOpen && (
-          <VeriPaylasimBaglantisiPopUp
-            setControl={setControl}
-            isPopUpOpen={isPopUpOpen}
-            handleClosePopUp={handleClosePopUp}
-          ></VeriPaylasimBaglantisiPopUp>
-        )}
-      </Grid>
-    </PageContainer>
+          )
+        }
+        {
+          isPopUpOpen && (
+            <VeriPaylasimBaglantisiPopUp
+              setControl={setControl}
+              isPopUpOpen={isPopUpOpen}
+              handleClosePopUp={handleClosePopUp}
+            ></VeriPaylasimBaglantisiPopUp>
+          )
+        }
+      </Grid >
+    </PageContainer >
   );
 };
 

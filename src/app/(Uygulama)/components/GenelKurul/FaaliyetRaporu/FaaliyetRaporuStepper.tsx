@@ -25,14 +25,18 @@ import {
   getNakitAkisTablosu,
   getOzkaynakTablosu,
 } from "@/api/FinansalTablolar/FinansalToblolar";
+import { getLogo } from "@/api/Denetci/Denetci";
 import Rapor from "./Rapor";
+// ... (imports remain)
 import jsPDF from "jspdf";
 import { base64FontBold, base64FontRegular } from "./Roboto";
 import { IconFileTypePdf } from "@tabler/icons-react";
 import CalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/CalismaKagidiBelge";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 import { getCalismaKagidiVerileriByDenetciDenetlenenYil } from "@/api/CalismaKagitlari/CalismaKagitlari";
-
+import CloseIcon from "@mui/icons-material/Close";
+import { IconButton } from "@mui/material";
+import zIndex from "@mui/material/styles/zIndex";
 const steps = ["Rapor Düzenleme", "Kapak Tasarımı", "Faaliyet Raporu"];
 
 interface Veri {
@@ -482,10 +486,36 @@ const FaaliyetRaporuStepper = () => {
     }
   }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, grupluMu, setVeriler, setVerilerWithBaslikId, setVerilerWithoutBaslikId, setToplam, setTamamlanan]);
 
+  const fetchLogo = useCallback(async () => {
+    try {
+      const logoData = await getLogo(user.token || "", user.denetciId || 0);
+      if (logoData) {
+        if (typeof logoData === "string") {
+          setFirmaLogoImage(logoData);
+        } else if (logoData.logo) {
+          setFirmaLogoImage(logoData.logo);
+        } else if (logoData.image) {
+          setFirmaLogoImage(logoData.image);
+        } else {
+          // If the API returns the image string directly (e.g. valid Base64 or URL)
+          // We can try to cast it or assume it's usable if not null
+          if (logoData.toString().startsWith("data:image")) {
+            setFirmaLogoImage(logoData.toString());
+          } else {
+            console.log("Logo format not recognized:", logoData);
+          }
+        }
+      }
+    } catch (error) {
+      console.log("Logo getirilemedi:", error);
+    }
+  }, [user.token, user.denetciId]);
+
   useEffect(() => {
     fetchFinansalTablolar();
     fetchFaaliyetRaporu();
-  }, [fetchFinansalTablolar, fetchFaaliyetRaporu]);
+    fetchLogo();
+  }, [fetchFinansalTablolar, fetchFaaliyetRaporu, fetchLogo]);
 
   const isStepOptional = (step: number) => {
     return step == -1;
@@ -546,6 +576,10 @@ const FaaliyetRaporuStepper = () => {
     setActiveStep(0);
   };
 
+  const handleRemoveKapakImage = () => {
+    setKapakImage(null);
+    setKapak("ResimSec");
+  };
   async function createPDF() {
     const reportElement = document.querySelector("div#report") as HTMLElement;
     const reportPage = document.querySelector(
@@ -861,8 +895,28 @@ const FaaliyetRaporuStepper = () => {
                             alignItems: "center",
                             justifyContent: "center",
                             borderRadius: "8px",
+                            position: "relative",
                           }}
                         >
+                          <IconButton
+                            size="small"
+                            onClick={handleRemoveKapakImage}
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              backgroundColor: "error.main",
+                              color: "white",
+                              "&:hover": {
+                                backgroundColor: "error.dark",
+                              },
+                              zIndex: 10,
+                              width: 30,
+                              height: 30,
+                            }}
+                          >
+                            <CloseIcon sx={{ fontSize: 20 }} />
+                          </IconButton>
                           <CardMedia
                             component="img"
                             image={kapakImage}
@@ -871,8 +925,6 @@ const FaaliyetRaporuStepper = () => {
                               width: "100%",
                               height: "100%",
                               objectFit: "contain",
-                              backgroundRepeat: "no-repeat",
-                              backgroundPosition: "center",
                             }}
                           />
                         </Box>

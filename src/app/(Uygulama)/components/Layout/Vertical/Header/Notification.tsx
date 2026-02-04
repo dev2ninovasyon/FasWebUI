@@ -138,7 +138,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         onClose={handleClose}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
-        TransitionComponent={Box as any}
+
         slotProps={{
           paper: {
             sx: {
