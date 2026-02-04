@@ -23,7 +23,6 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
 
         // Intro
         s.push({
-            element: "null",
             popover: {
                 title: `${firmaAdi} için denetim menü rehberi`,
                 description:
@@ -57,7 +56,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Veri"]',
             popover: {
-                title: "VERİ â€“ Veri Girişi Modülü",
+                title: "VERİ – Veri Girişi Modülü",
                 description:
                     "Veri Girişi modülü, denetim sürecinin temelini oluşturan tüm veri toplama ve kayıt işlemlerini kapsar. Mizan, e-defter, fatura ve beyannameler gibi verileri buradan sisteme yüklersiniz.",
                 side: "right",
@@ -99,7 +98,7 @@ const DriverTour: React.FC<DriverTourProps> = ({ run, onClose }) => {
         s.push({
             element: '.sidebarNav [data-tour-id="/Donusum"]',
             popover: {
-                title: "DÖNÜŞÜM â€“ VUKâ€™tan BOBİ/TFRSâ€™ye Geçiş",
+                title: "DÖNÜŞÜM – VUK’tan BOBİ/TFRS’ye Geçiş",
                 description:
                     "Dönüşüm modülü; VUK kayıtlarının BOBİ FRS veya TFRS gibi standartlara dönüştürüldüğü, dönüşüm fişlerinin oluşturulduğu ve kontrol edildiği bölümdür.",
                 side: "right",

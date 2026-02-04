@@ -161,7 +161,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
     );
   };
 
-  // Sağ tık menü â†’ ÖNCE veriyi çek, sonra diyalogu aç
+  // Sağ tık menü → ÖNCE veriyi çek, sonra diyalogu aç
   const openYevmiyeDialogFromRow = async (rowIndex: number) => {
     const faturaId = masterRows[rowIndex]?.[0] as string;
     const fatura = items.find((f) => f.id === faturaId);
@@ -174,7 +174,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
         : (fatura.alici as any)?.vergiNo ?? "";
 
     // Loading snackbar (persist)
-    enqueueSnackbar("Yevmiye eşleşmeleri getiriliyorâ€¦", {
+    enqueueSnackbar("Yevmiye eşleşmeleri getiriliyor...", {
       key: LOADING_SNACK_KEY,
       variant: "info",
       persist: true,
@@ -270,7 +270,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
             Sonraki
           </Button>
           <Button size="small" variant="contained" onClick={handleExportExcel}>
-            Excelâ€™e Aktar
+            Excel'e Aktar
           </Button>
         </Grid>
         <Grid size={12}>
@@ -287,7 +287,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
           />
         </Grid>
       </Grid>
-      {/* Yevmiye eşleşmeleri diyalogu â€” veri hazır olunca açılıyor */}
+      {/* Yevmiye eşleşmeleri diyalogu — veri hazır olunca açılıyor */}
       {ctx && (
         <YevmiyeFaturaDialog
           open={yevOpen}

@@ -70,27 +70,33 @@ const Page: React.FC = () => {
   const handleHesapla = async () => {
     try {
       if (tip == "TicariAlacaklar") {
-        const result = await createHareketsizTicariAlacaklar(
+        const response = await createHareketsizTicariAlacaklar(
           user.token || "",
           user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
-          1
+          acilisFisNo || 1
         );
-        if (result) {
+        if (response && response.ok) {
+          const result = await response.json();
           setHesaplaTiklandimi(false);
-          enqueueSnackbar("Hareketsiz Ticari Alacaklar Hesaplandı", {
-            variant: "success",
+          const isWarning = result.message?.toLowerCase().includes("bulunamadı");
+          enqueueSnackbar(result.message || "Hareketsiz Ticari Alacaklar Hesaplandı", {
+            variant: isWarning ? "warning" : "success",
             autoHideDuration: 5000,
             style: {
-              backgroundColor:
-                customizer.activeMode === "dark"
+              backgroundColor: isWarning
+                ? customizer.activeMode === "dark"
+                  ? theme.palette.warning.light
+                  : theme.palette.warning.main
+                : customizer.activeMode === "dark"
                   ? theme.palette.success.light
                   : theme.palette.success.main,
             },
           });
         } else {
-          enqueueSnackbar("Hareketsiz Ticari Alacaklar Hesaplanamadı", {
+          const result = response ? await response.json() : null;
+          enqueueSnackbar(result?.message || "Hareketsiz Ticari Alacaklar Hesaplanamadı", {
             variant: "error",
             autoHideDuration: 5000,
             style: {
@@ -104,27 +110,33 @@ const Page: React.FC = () => {
         }
       }
       if (tip == "Stoklar") {
-        const result = await createHareketsizStoklar(
+        const response = await createHareketsizStoklar(
           user.token || "",
           user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
-          1
+          acilisFisNo || 1
         );
-        if (result) {
+        if (response && response.ok) {
+          const result = await response.json();
           setHesaplaTiklandimi(false);
-          enqueueSnackbar("Hareketsiz Stoklar Hesaplandı", {
-            variant: "success",
+          const isWarning = result.message?.toLowerCase().includes("bulunamadı");
+          enqueueSnackbar(result.message || "Hareketsiz Stoklar Hesaplandı", {
+            variant: isWarning ? "warning" : "success",
             autoHideDuration: 5000,
             style: {
-              backgroundColor:
-                customizer.activeMode === "dark"
+              backgroundColor: isWarning
+                ? customizer.activeMode === "dark"
+                  ? theme.palette.warning.light
+                  : theme.palette.warning.main
+                : customizer.activeMode === "dark"
                   ? theme.palette.success.light
                   : theme.palette.success.main,
             },
           });
         } else {
-          enqueueSnackbar("Hareketsiz Stoklar Hesaplanamadı", {
+          const result = response ? await response.json() : null;
+          enqueueSnackbar(result?.message || "Hareketsiz Stoklar Hesaplanamadı", {
             variant: "error",
             autoHideDuration: 5000,
             style: {

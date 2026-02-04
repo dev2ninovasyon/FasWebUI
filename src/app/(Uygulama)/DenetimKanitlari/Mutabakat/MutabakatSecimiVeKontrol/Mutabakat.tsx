@@ -6,6 +6,8 @@ import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
+  Box,
+  CircularProgress,
   Grid,
   Paper,
   Table,
@@ -15,7 +17,7 @@ import {
   TableRow,
   useTheme,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
@@ -80,6 +82,7 @@ const Mutabakat: React.FC<Props> = ({
 
   const [fetchedData, setFetchedData] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
   const [openCartAlert2, setOpenCartAlert2] = useState(false);
@@ -540,7 +543,7 @@ const Mutabakat: React.FC<Props> = ({
 
     setToplamIncelenen(
       fetchedData.filter((row: any) => row[7] > 0).length +
-        fetchedData.filter((row: any) => row[8] > 0).length
+      fetchedData.filter((row: any) => row[8] > 0).length
     );
 
     let bakiyeFark = 0;
@@ -586,6 +589,7 @@ const Mutabakat: React.FC<Props> = ({
   };
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const mutabakatVerileri = await getMutabakat(
         user.token || "",
@@ -620,6 +624,8 @@ const Mutabakat: React.FC<Props> = ({
       setRowCount(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -761,20 +767,42 @@ const Mutabakat: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
 
   return (
-    <>
+    <Box sx={{ position: "relative" }}>
+      {loading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: (theme) =>
+              theme.palette.mode === "dark"
+                ? "rgba(0, 0, 0, 0.7)"
+                : "rgba(255, 255, 255, 0.7)",
+            zIndex: 1,
+            minHeight: "200px",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       {fetchedData.length > 0 && (
         <Paper
           elevation={2}
@@ -791,7 +819,7 @@ const Mutabakat: React.FC<Props> = ({
                 {groupedRows.map((group, index) => (
                   <TableRow key={index}>
                     {group.map((item, i) => (
-                      <>
+                      <React.Fragment key={i}>
                         <TableCell
                           sx={{
                             fontWeight: 600,
@@ -807,7 +835,7 @@ const Mutabakat: React.FC<Props> = ({
                         >
                           {item?.value}
                         </TableCell>
-                      </>
+                      </React.Fragment>
                     ))}
                   </TableRow>
                 ))}
@@ -914,7 +942,7 @@ const Mutabakat: React.FC<Props> = ({
           setOpenCartAlert={setOpenCartAlert2}
         ></InfoAlertCart>
       )}
-    </>
+    </Box>
   );
 };
 

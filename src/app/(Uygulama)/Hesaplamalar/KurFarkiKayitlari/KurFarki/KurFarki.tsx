@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Box, CircularProgress, Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
@@ -43,6 +43,7 @@ const KurFarki = () => {
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -267,6 +268,7 @@ const KurFarki = () => {
   };
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const kurFarkiVerileri = await getKurFarki(
         user.token || "",
@@ -293,6 +295,8 @@ const KurFarki = () => {
       setFetchedData(rowsAll);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -355,54 +359,74 @@ const KurFarki = () => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
 
   return (
     <>
-      <HotTable
-        style={{
-          height: "100%",
-          width: "100%",
-          maxHeight: 684,
-          maxWidth: "100%",
-        }}
-        language={dictionary.languageCode}
-        ref={hotTableComponent}
-        data={fetchedData}
-        height={684}
-        colHeaders={colHeaders}
-        columns={columns}
-        colWidths={[60, 120, 40, 80, 80, 80, 80, 80]}
-        stretchH="all"
-        manualColumnResize={true}
-        rowHeaders={true}
-        rowHeights={35}
-        autoWrapRow={true}
-        minRows={rowCount}
-        minCols={8}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
-          "filter_by_condition",
-          "filter_by_value",
-          "filter_action_bar",
-        ]}
-        licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-        afterGetColHeader={afterGetColHeader}
-        afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
-        contextMenu={["alignment", "copy"]}
-      />
+      <Box sx={{ position: "relative" }}>
+        {loading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: customizer.activeMode === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.7)",
+              zIndex: 1000,
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        <HotTable
+          style={{
+            height: "100%",
+            width: "100%",
+            maxHeight: 684,
+            maxWidth: "100%",
+          }}
+          language={dictionary.languageCode}
+          ref={hotTableComponent}
+          data={fetchedData}
+          height={684}
+          colHeaders={colHeaders}
+          columns={columns}
+          colWidths={[60, 120, 40, 80, 80, 80, 80, 80]}
+          stretchH="all"
+          manualColumnResize={true}
+          rowHeaders={true}
+          rowHeights={35}
+          autoWrapRow={true}
+          minRows={rowCount}
+          minCols={8}
+          filters={true}
+          columnSorting={true}
+          dropdownMenu={[
+            "filter_by_condition",
+            "filter_by_value",
+            "filter_action_bar",
+          ]}
+          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+          afterGetColHeader={afterGetColHeader}
+          afterGetRowHeader={afterGetRowHeader}
+          afterRenderer={afterRenderer}
+          contextMenu={["alignment", "copy"]}
+        />
+      </Box>
       <Grid container marginTop={2} marginBottom={1}>
         <Grid
           size={{

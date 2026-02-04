@@ -6,7 +6,10 @@ import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
+  Alert,
+  Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -34,6 +37,7 @@ import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/Custom
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
+import { useRouter } from "next/navigation";
 
 // register Handsontable's modules
 registerAllModules();
@@ -87,6 +91,8 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -389,6 +395,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
   };
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const vadeliBankaMevduatiVerileri =
         await getVadeliBankaMevduatiOtomatikSiniflama(
@@ -432,6 +439,8 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
       setFetchedData(rowsAll);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -503,78 +512,119 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
 
   return (
     <>
-      <HotTable
-        style={{
-          height: "100%",
-          width: "100%",
-          maxHeight: 684,
-          maxWidth: "100%",
-        }}
-        language={dictionary.languageCode}
-        ref={hotTableComponent}
-        data={fetchedData}
-        height={684}
-        colHeaders={colHeaders}
-        columns={columns}
-        colWidths={[60, 60, 80, 100, 80, 80, 80, 80]}
-        stretchH="all"
-        manualColumnResize={true}
-        rowHeaders={true}
-        rowHeights={35}
-        autoWrapRow={true}
-        minRows={rowCount}
-        minCols={8}
-        hiddenColumns={{
-          columns: [0],
-        }}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
-          "filter_by_condition",
-          "filter_by_value",
-          "filter_action_bar",
-        ]}
-        licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-        afterGetColHeader={afterGetColHeader}
-        afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
-        contextMenu={{
-          items: {
-            kayitEkle: {
-              name: "Satır Ekle",
-              callback: async function (key, selection) {
-                const hotInstance = hotTableComponent.current.hotInstance;
-                setShowDrawer(true);
+      <Box sx={{ position: "relative" }}>
+        {loading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: customizer.activeMode === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.7)",
+              zIndex: 1000,
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        {!loading && fetchedData.length <= 1 && (
+          <Alert
+            severity="info"
+            sx={{ mb: 2 }}
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                onClick={() =>
+                  router.push(
+                    "/Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama"
+                  )
+                }
+              >
+                Manuel Sınıflamaya Git
+              </Button>
+            }
+          >
+            Otomatik sınıflandırma yapılamadı.
+          </Alert>
+        )}
+        <HotTable
+          style={{
+            height: "100%",
+            width: "100%",
+            maxHeight: 684,
+            maxWidth: "100%",
+          }}
+          language={dictionary.languageCode}
+          ref={hotTableComponent}
+          data={fetchedData}
+          height={684}
+          colHeaders={colHeaders}
+          columns={columns}
+          colWidths={[60, 60, 80, 100, 80, 80, 80, 80]}
+          stretchH="all"
+          manualColumnResize={true}
+          rowHeaders={true}
+          rowHeights={35}
+          autoWrapRow={true}
+          minRows={rowCount}
+          minCols={8}
+          hiddenColumns={{
+            columns: [0],
+          }}
+          filters={true}
+          columnSorting={true}
+          dropdownMenu={[
+            "filter_by_condition",
+            "filter_by_value",
+            "filter_action_bar",
+          ]}
+          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+          afterGetColHeader={afterGetColHeader}
+          afterGetRowHeader={afterGetRowHeader}
+          afterRenderer={afterRenderer}
+          contextMenu={{
+            items: {
+              kayitEkle: {
+                name: "Satır Ekle",
+                callback: async function (key, selection) {
+                  const hotInstance = hotTableComponent.current.hotInstance;
+                  setShowDrawer(true);
+                },
+              },
+              copy: {},
+              alignment: {},
+              kayitSil: {
+                name: "Satır Sil",
+                callback: async function (key, selection) {
+                  const hotInstance = hotTableComponent.current.hotInstance;
+                  handleDeleteById(
+                    hotInstance.getDataAtRow(selection[0].start.row)[0]
+                  );
+                },
               },
             },
-            copy: {},
-            alignment: {},
-            kayitSil: {
-              name: "Satır Sil",
-              callback: async function (key, selection) {
-                const hotInstance = hotTableComponent.current.hotInstance;
-                handleDeleteById(
-                  hotInstance.getDataAtRow(selection[0].start.row)[0]
-                );
-              },
-            },
-          },
-        }}
-      />
+          }}
+        />
+      </Box>
       <Grid container marginTop={2}>
         <Grid
           size={{

@@ -25,31 +25,31 @@ const YevmiyeFaturaDialog: React.FC<Props> = ({ open, onClose, tip, vkn, rows })
   const user = useSelector((s: AppState) => s.userReducer);
   const [saving, setSaving] = React.useState(false);
 
-const handleSave = async () => {
-  if (!rows || rows.length === 0) {
-    enqueueSnackbar("Kaydedilecek kayıt yok.", { variant: "warning" });
-    return;
-  }
-  try {
-    setSaving(true);
-    // her satıra tipâ€™i yaz
-    const payload = rows.map(r => ({ ...r, tip }));   // ğŸ”‘
-    await saveInvoiceYevmiyeMatches(user, payload);
-    enqueueSnackbar("Eşleştirmeler kaydedildi.", { variant: "success" });
-    onClose();
-  } catch (e:any) {
-    enqueueSnackbar(e?.message || "Kayıt sırasında hata oluştu.", { variant: "error" });
-  } finally {
-    setSaving(false);
-  }
-};
+  const handleSave = async () => {
+    if (!rows || rows.length === 0) {
+      enqueueSnackbar("Kaydedilecek kayıt yok.", { variant: "warning" });
+      return;
+    }
+    try {
+      setSaving(true);
+      // her satıra tip'i yaz
+      const payload = rows.map(r => ({ ...r, tip }));   // ğŸ”‘
+      await saveInvoiceYevmiyeMatches(user, payload);
+      enqueueSnackbar("Eşleştirmeler kaydedildi.", { variant: "success" });
+      onClose();
+    } catch (e: any) {
+      enqueueSnackbar(e?.message || "Kayıt sırasında hata oluştu.", { variant: "error" });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xl">
-      <DialogTitle>Fatura â†”ï¸ Yevmiye</DialogTitle>
+      <DialogTitle>Fatura ↔︎ Yevmiye</DialogTitle>
       <DialogContent dividers>
         <Box mb={1}>
-          <Typography variant="body2">Tip: <b>{tip}</b> â€¢ VKN: <b>{vkn}</b></Typography>
+          <Typography variant="body2">Tip: <b>{tip}</b> • VKN: <b>{vkn}</b></Typography>
         </Box>
 
         <Table size="small">

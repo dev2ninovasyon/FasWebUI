@@ -3,7 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useState } from "react";
-import { Box, Button, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { enqueueSnackbar } from "notistack";
@@ -48,7 +48,6 @@ const Page = () => {
         user.denetlenenId || 0
       );
       if (result) {
-        setHesaplaTiklandimi(false);
         enqueueSnackbar("Önemlilik Hesaplandı", {
           variant: "success",
           autoHideDuration: 5000,
@@ -74,6 +73,8 @@ const Page = () => {
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setHesaplaTiklandimi(false);
     }
   };
 
@@ -118,8 +119,13 @@ const Page = () => {
                 setHesaplaTiklandimi(true);
                 handleHesapla();
               }}
+              startIcon={
+                hesaplaTiklandimi ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : null
+              }
             >
-              Hesapla
+              {hesaplaTiklandimi ? "Hesaplanıyor..." : "Hesapla"}
             </Button>
           </Box>
         </Grid>
@@ -149,9 +155,9 @@ const Page = () => {
             lg: 12
           }}>
           {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi") ? (
+            user.rol?.includes("SorumluDenetci") ||
+            user.rol?.includes("Denetci") ||
+            user.rol?.includes("DenetciYardimcisi") ? (
             <Grid
               container
               sx={{
@@ -168,7 +174,7 @@ const Page = () => {
                   lg: 3.9
                 }}>
                 <BelgeKontrolCard
-                  fetch={() => {}}
+                  fetch={() => { }}
                   hazirlayan="Denetçi - Yardımcı Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
@@ -181,7 +187,7 @@ const Page = () => {
                   lg: 3.9
                 }}>
                 <BelgeKontrolCard
-                  fetch={() => {}}
+                  fetch={() => { }}
                   onaylayan="Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
@@ -194,7 +200,7 @@ const Page = () => {
                   lg: 3.9
                 }}>
                 <BelgeKontrolCard
-                  fetch={() => {}}
+                  fetch={() => { }}
                   kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
                   controller={controller}
                 ></BelgeKontrolCard>
@@ -223,7 +229,7 @@ const Page = () => {
           </Grid>
         </Grid>
       </Grid>
-    </PageContainer>
+    </PageContainer >
   );
 };
 

@@ -58,7 +58,7 @@ const Page: React.FC = () => {
       <Breadcrumb title="Kur Farkı" items={BCrumb} />
       <Grid container>
         <Grid
-          mb={3}
+          mb={1}
           size={{
             xs: 12,
             lg: 12
@@ -75,7 +75,7 @@ const Page: React.FC = () => {
             xs: 12,
             lg: 12
           }}>
-          <Typography variant="h6" paddingRight={"16px"} paddingY={"16px"}>
+          <Typography variant="h6" paddingRight={"16px"} paddingY={"8px"}>
             Kur Bilgileri
           </Typography>
         </Grid>

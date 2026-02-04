@@ -25,7 +25,7 @@ type YuklemeSatiri = {
   adi: string;
   olusturulmaTarihi: string;
   tip?: string;
-  // sunucu alanları (esnek mapâ€™liyoruz):
+  // sunucu alanları (esnek map'liyoruz):
   inProgress: boolean;
   total: number;
   processed: number;
@@ -34,7 +34,7 @@ type YuklemeSatiri = {
   faturaDosyalari?: FaturaDosyaRow[];
 };
 
-const PROCESS_SNACK_KEY = "fatura-processing";
+
 
 const Page: React.FC = () => {
   const theme = useTheme();
@@ -54,6 +54,8 @@ const Page: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [progressInfos, setProgressInfos] = useState<{ fileName: string; percentage: number }[]>([]);
 
+  const processingSnackRef = React.useRef<string | number | undefined>(undefined);
+
   const toast = (
     msg: string,
     variant: "success" | "error" | "warning" | "info" = "info"
@@ -63,8 +65,10 @@ const Page: React.FC = () => {
     items.some(r => r.inProgress || (r.total > 0 && r.processed < r.total));
 
   const openProcessingSnack = () => {
-    enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyorâ€¦", {
-      key: PROCESS_SNACK_KEY,
+    if (processingSnackRef.current) {
+      closeSnackbar(processingSnackRef.current);
+    }
+    processingSnackRef.current = enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyor...", {
       variant: "info",
       persist: true,
       action: () => (
@@ -79,7 +83,12 @@ const Page: React.FC = () => {
       }
     });
   };
-  const closeProcessingSnack = () => closeSnackbar(PROCESS_SNACK_KEY);
+  const closeProcessingSnack = () => {
+    if (processingSnackRef.current) {
+      closeSnackbar(processingSnackRef.current);
+      processingSnackRef.current = undefined;
+    }
+  };
 
   const mapYukleme = (x: any): YuklemeSatiri => {
     const processed = Number(
@@ -168,7 +177,7 @@ const Page: React.FC = () => {
       // upload biter bitmez 1 kez durum çek
       void fetchRows({ tryCloseSnack: true });
 
-      // mini bir â€œtek-sefer kontrolâ€ daha (ör. 15sn sonra)
+      // mini bir “tek-sefer kontrol” daha (ör. 15sn sonra)
       setTimeout(() => { void fetchRows({ tryCloseSnack: true }); }, 15000);
     } catch (e) {
       console.log(e);
@@ -212,7 +221,7 @@ const Page: React.FC = () => {
               <input {...getInputProps()} />
               {isDragActive ? (
                 <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">
-                  <Typography>Dosyaları buraya bırakınâ€¦</Typography>
+                  <Typography>Dosyaları buraya bırakın...</Typography>
                 </Grid>
               ) : (
                 <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">

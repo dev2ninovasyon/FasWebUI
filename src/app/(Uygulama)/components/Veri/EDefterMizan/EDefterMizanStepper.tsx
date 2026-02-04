@@ -762,6 +762,7 @@ const EDefterMizanStepper = () => {
                     type={"E-Defter"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
                     setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+                    sharedData={sharedMizanData}
                   />
                 </Grid>
               </Grid>
