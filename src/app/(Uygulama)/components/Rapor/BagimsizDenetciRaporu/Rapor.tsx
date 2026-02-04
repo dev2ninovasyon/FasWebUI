@@ -206,6 +206,7 @@ interface RaporProps {
   dipnotVeriler: VeriDipnot[];
   gorusVeriler: VeriGorus[];
   detayHesaplar: boolean;
+  konsolide?: boolean;
 }
 
 const Rapor: React.FC<RaporProps> = ({
@@ -225,6 +226,7 @@ const Rapor: React.FC<RaporProps> = ({
   dipnotVeriler,
   gorusVeriler,
   detayHesaplar,
+  konsolide,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -870,7 +872,7 @@ const Rapor: React.FC<RaporProps> = ({
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
-          user.denetimTuru || ""
+          (konsolide && user.denetimTuru === "Bobi") ? "BobiKonsolide" : user.denetimTuru || ""
         );
 
         const newRows = dipnotVerileri.map((veri: any) => ({
@@ -966,7 +968,7 @@ const Rapor: React.FC<RaporProps> = ({
             1 Ocak {user.yil} - 31 Aralık {user.yil}
           </h2>
           <h2>
-            HESAP DÖNEMİNE AİT FİNANSAL TABLOLAR VE BAĞIMSIZ DENETÇİ RAPORU
+            {konsolide ? "KONSOLİDE " : ""}HESAP DÖNEMİNE AİT FİNANSAL TABLOLAR VE BAĞIMSIZ DENETÇİ RAPORU
           </h2>
         </div>
       </div>
@@ -980,7 +982,7 @@ const Rapor: React.FC<RaporProps> = ({
         }}
       >
         <div className="text-center">
-          <h2>Bağımsız Denetim Raporu</h2>
+          <h2>{konsolide ? "Konsolide " : ""}Bağımsız Denetim Raporu</h2>
           <h2>{user.denetlenenFirmaAdi}</h2>
           <h2>Ortak Kurulu&apos;na</h2>
         </div>
@@ -1031,15 +1033,15 @@ const Rapor: React.FC<RaporProps> = ({
                     {row.tutarYil1 > 0
                       ? formatNumber(row.tutarYil1)
                       : row.tutarYil1 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
                   </td>
                   <td className="text-right">
                     {row.tutarYil2 > 0
                       ? formatNumber(row.tutarYil2)
                       : row.tutarYil2 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
                   </td>
                 </tr>
               ))}
@@ -1070,15 +1072,15 @@ const Rapor: React.FC<RaporProps> = ({
                     {row.tutarYil1 > 0
                       ? formatNumber(row.tutarYil1)
                       : row.tutarYil1 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
                   </td>
                   <td className="text-right">
                     {row.tutarYil2 > 0
                       ? formatNumber(row.tutarYil2)
                       : row.tutarYil2 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
                   </td>
                 </tr>
               ))}
@@ -1109,15 +1111,15 @@ const Rapor: React.FC<RaporProps> = ({
                     {row.tutarYil1 > 0
                       ? formatNumber(row.tutarYil1)
                       : row.tutarYil1 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
                   </td>
                   <td className="text-right">
                     {row.tutarYil2 > 0
                       ? formatNumber(row.tutarYil2)
                       : row.tutarYil2 == 0
-                      ? "-"
-                      : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                        ? "-"
+                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
                   </td>
                 </tr>
               ))}
@@ -1159,8 +1161,8 @@ const Rapor: React.FC<RaporProps> = ({
                           ? ilgiliVeri.tutar > 0
                             ? formatNumber(ilgiliVeri.tutar)
                             : ilgiliVeri.tutar == 0
-                            ? "-"
-                            : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
+                              ? "-"
+                              : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
                           : "-"}
                       </td>
                     );
@@ -1201,8 +1203,8 @@ const Rapor: React.FC<RaporProps> = ({
                           ? ilgiliVeri.tutar > 0
                             ? formatNumber(ilgiliVeri.tutar)
                             : ilgiliVeri.tutar == 0
-                            ? "-"
-                            : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
+                              ? "-"
+                              : `(${formatNumber(Math.abs(ilgiliVeri.tutar))})`
                           : "-"}
                       </td>
                     );
@@ -1426,88 +1428,88 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).some((item) => item.detayKodu?.startsWith("1")) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Finansal Varlık Ve Yatırımlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 4,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "1",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Finansal Varlık Ve Yatırımlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 4,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "1",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 4,
               tabloNo: 1,
               yil: user.yil || 0,
               formatNumber,
             }).some((item) => item.detayKodu?.startsWith("2")) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Finansal Varlık Ve Yatırımlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 4,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "2",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Finansal Varlık Ve Yatırımlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 4,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "2",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -1533,12 +1535,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 5,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 5,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 5)
@@ -1562,45 +1564,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Ticari Alacaklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 5,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Ticari Alacaklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 5,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 5,
               tabloNo: 1,
@@ -1611,45 +1613,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Ticari Alacaklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 5,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Ticari Alacaklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 5,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 5,
               tabloNo: 2,
@@ -1660,45 +1662,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Ticari Borçlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 5,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Ticari Borçlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 5,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 5,
               tabloNo: 2,
@@ -1709,45 +1711,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Ticari Borçlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 5,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Ticari Borçlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 5,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -1773,12 +1775,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 6,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 6,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 6)
@@ -1802,45 +1804,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Diğer Alacaklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 6,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Diğer Alacaklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 6,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 6,
               tabloNo: 1,
@@ -1851,45 +1853,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Diğer Alacaklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 6,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Diğer Alacaklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 6,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 6,
               tabloNo: 2,
@@ -1900,45 +1902,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Diğer Borçlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 6,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Diğer Borçlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 6,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 6,
               tabloNo: 2,
@@ -1949,45 +1951,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Diğer Borçlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 6,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Diğer Borçlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 6,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -2013,12 +2015,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 7,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 7,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 7)
@@ -2041,70 +2043,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Stoklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 7,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Stoklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 7,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 7,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>İlişkili Olmayan Taraflardan Stoklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 7,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>İlişkili Olmayan Taraflardan Stoklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 7,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 7)
               ?.veriler.slice(1)
@@ -2146,12 +2148,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 8,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 8,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 8)
@@ -2171,70 +2173,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Canlı Varlıklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 8,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Canlı Varlıklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 8,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 8,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>İlişkili Olmayan Taraflardan Stoklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 8,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>İlişkili Olmayan Taraflardan Stoklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 8,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -2260,12 +2262,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 9,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 9,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 9)
@@ -2285,70 +2287,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Peşin Ödenmiş Giderler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 9,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Peşin Ödenmiş Giderler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 9,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 9,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Alınan Avanslar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 9,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Alınan Avanslar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 9,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -2374,12 +2376,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 10,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 10,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 10)
@@ -2399,70 +2401,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Peşin Ödenmiş Vergi ve Benzerleri</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 10,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Peşin Ödenmiş Vergi ve Benzerleri</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 10,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 10,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Peşin Ödenen Vergiler Ve Fonlar(U.V)</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 10,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Peşin Ödenen Vergiler Ve Fonlar(U.V)</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 10,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -2488,12 +2490,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 11,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 11,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 11)
@@ -2513,70 +2515,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Canlı Varlıklar(Dönen)</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 11,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Canlı Varlıklar(Dönen)</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 11,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 11,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Canlı Varlıklar(Duran)</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 11,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Canlı Varlıklar(Duran)</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 11,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -2602,12 +2604,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 12,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 12,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 12)
@@ -2631,45 +2633,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli - Diğer Dönen Duran Varlıklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 12,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli - Diğer Dönen Duran Varlıklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 12,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 12,
               tabloNo: 1,
@@ -2680,45 +2682,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli - Diğer Dönen Duran Varlıklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 12,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli - Diğer Dönen Duran Varlıklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 12,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 12,
               tabloNo: 2,
@@ -2729,45 +2731,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli -</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 12,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli -</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 12,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 12,
               tabloNo: 2,
@@ -2778,45 +2780,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli -</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 12,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli -</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 12,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -2842,12 +2844,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 13,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 13,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 13)
@@ -2867,71 +2869,71 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Satış Amacıyla Elde Tutulan Varlıklar Girişi</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 13,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Satış Amacıyla Elde Tutulan Varlıklar Girişi</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 13,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 13,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Satış Amacıyla Elde Tutulan Varlıklar Çıkışı</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 13,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Satış Amacıyla Elde Tutulan Varlıklar Çıkışı</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 13,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -2957,12 +2959,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 14,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 14,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 14)
@@ -2982,70 +2984,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Yatırım Amaçlı Gayrimenkuller</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 14,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Yatırım Amaçlı Gayrimenkuller</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 14,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 14,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 14,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 14,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -3081,157 +3083,157 @@ const Rapor: React.FC<RaporProps> = ({
               ))}
             {dipnot15MaliyetRows.filter((veri) => veri.yil == user.yil).length >
               0 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th colSpan={7} style={{ textAlign: "center" }}>
-                        {user.yil}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th>Maliyet</th>
-                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
-                      <th style={{ textAlign: "center" }}>Girişler</th>
-                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
-                      <th style={{ textAlign: "center" }}>Değerleme</th>
-                      <th style={{ textAlign: "center" }}>Transfer</th>
-                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dipnot15MaliyetRows
-                      .filter((x) => x.yil == user.yil)
-                      .map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{row.baslik}</td>
-                          <td className="text-right">
-                            {row.donemBasi != 0
-                              ? row.donemBasi < 0
-                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
-                                : formatNumber(row.donemBasi)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.girisler != 0
-                              ? row.girisler < 0
-                                ? `(${formatNumber(Math.abs(row.girisler))})`
-                                : formatNumber(row.girisler)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.cikislar != 0
-                              ? row.cikislar < 0
-                                ? `(${formatNumber(Math.abs(row.cikislar))})`
-                                : formatNumber(row.cikislar)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.degerleme != 0
-                              ? row.degerleme < 0
-                                ? `(${formatNumber(Math.abs(row.degerleme))})`
-                                : formatNumber(row.degerleme)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.transfer != 0
-                              ? row.transfer < 0
-                                ? `(${formatNumber(Math.abs(row.transfer))})`
-                                : formatNumber(row.transfer)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.donemSonu != 0
-                              ? row.donemSonu < 0
-                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
-                                : formatNumber(row.donemSonu)
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th colSpan={7} style={{ textAlign: "center" }}>
+                          {user.yil}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>Maliyet</th>
+                        <th style={{ textAlign: "center" }}>Dönem Başı</th>
+                        <th style={{ textAlign: "center" }}>Girişler</th>
+                        <th style={{ textAlign: "center" }}>Çıkışlar</th>
+                        <th style={{ textAlign: "center" }}>Değerleme</th>
+                        <th style={{ textAlign: "center" }}>Transfer</th>
+                        <th style={{ textAlign: "center" }}>Dönem Sonu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dipnot15MaliyetRows
+                        .filter((x) => x.yil == user.yil)
+                        .map((row, rowIndex) => (
+                          <tr key={rowIndex}>
+                            <td>{row.baslik}</td>
+                            <td className="text-right">
+                              {row.donemBasi != 0
+                                ? row.donemBasi < 0
+                                  ? `(${formatNumber(Math.abs(row.donemBasi))})`
+                                  : formatNumber(row.donemBasi)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.girisler != 0
+                                ? row.girisler < 0
+                                  ? `(${formatNumber(Math.abs(row.girisler))})`
+                                  : formatNumber(row.girisler)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.cikislar != 0
+                                ? row.cikislar < 0
+                                  ? `(${formatNumber(Math.abs(row.cikislar))})`
+                                  : formatNumber(row.cikislar)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.degerleme != 0
+                                ? row.degerleme < 0
+                                  ? `(${formatNumber(Math.abs(row.degerleme))})`
+                                  : formatNumber(row.degerleme)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.transfer != 0
+                                ? row.transfer < 0
+                                  ? `(${formatNumber(Math.abs(row.transfer))})`
+                                  : formatNumber(row.transfer)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.donemSonu != 0
+                                ? row.donemSonu < 0
+                                  ? `(${formatNumber(Math.abs(row.donemSonu))})`
+                                  : formatNumber(row.donemSonu)
+                                : "-"}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {dipnot15MaliyetRows.filter(
               (veri) => veri.yil == (user.yil ? user.yil - 1 : 0)
             ).length > 0 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th colSpan={7} style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th>Maliyet</th>
-                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
-                      <th style={{ textAlign: "center" }}>Girişler</th>
-                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
-                      <th style={{ textAlign: "center" }}>Değerleme</th>
-                      <th style={{ textAlign: "center" }}>Transfer</th>
-                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dipnot15MaliyetRows
-                      .filter(
-                        (x) => user.yil !== undefined && x.yil == user.yil - 1
-                      )
-                      .map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{row.baslik}</td>
-                          <td className="text-right">
-                            {row.donemBasi != 0
-                              ? row.donemBasi < 0
-                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
-                                : formatNumber(row.donemBasi)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.girisler != 0
-                              ? row.girisler < 0
-                                ? `(${formatNumber(Math.abs(row.girisler))})`
-                                : formatNumber(row.girisler)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.cikislar != 0
-                              ? row.cikislar < 0
-                                ? `(${formatNumber(Math.abs(row.cikislar))})`
-                                : formatNumber(row.cikislar)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.degerleme != 0
-                              ? row.degerleme < 0
-                                ? `(${formatNumber(Math.abs(row.degerleme))})`
-                                : formatNumber(row.degerleme)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.transfer != 0
-                              ? row.transfer < 0
-                                ? `(${formatNumber(Math.abs(row.transfer))})`
-                                : formatNumber(row.transfer)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.donemSonu != 0
-                              ? row.donemSonu < 0
-                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
-                                : formatNumber(row.donemSonu)
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th colSpan={7} style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>Maliyet</th>
+                        <th style={{ textAlign: "center" }}>Dönem Başı</th>
+                        <th style={{ textAlign: "center" }}>Girişler</th>
+                        <th style={{ textAlign: "center" }}>Çıkışlar</th>
+                        <th style={{ textAlign: "center" }}>Değerleme</th>
+                        <th style={{ textAlign: "center" }}>Transfer</th>
+                        <th style={{ textAlign: "center" }}>Dönem Sonu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dipnot15MaliyetRows
+                        .filter(
+                          (x) => user.yil !== undefined && x.yil == user.yil - 1
+                        )
+                        .map((row, rowIndex) => (
+                          <tr key={rowIndex}>
+                            <td>{row.baslik}</td>
+                            <td className="text-right">
+                              {row.donemBasi != 0
+                                ? row.donemBasi < 0
+                                  ? `(${formatNumber(Math.abs(row.donemBasi))})`
+                                  : formatNumber(row.donemBasi)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.girisler != 0
+                                ? row.girisler < 0
+                                  ? `(${formatNumber(Math.abs(row.girisler))})`
+                                  : formatNumber(row.girisler)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.cikislar != 0
+                                ? row.cikislar < 0
+                                  ? `(${formatNumber(Math.abs(row.cikislar))})`
+                                  : formatNumber(row.cikislar)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.degerleme != 0
+                                ? row.degerleme < 0
+                                  ? `(${formatNumber(Math.abs(row.degerleme))})`
+                                  : formatNumber(row.degerleme)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.transfer != 0
+                                ? row.transfer < 0
+                                  ? `(${formatNumber(Math.abs(row.transfer))})`
+                                  : formatNumber(row.transfer)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.donemSonu != 0
+                                ? row.donemSonu < 0
+                                  ? `(${formatNumber(Math.abs(row.donemSonu))})`
+                                  : formatNumber(row.donemSonu)
+                                : "-"}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {dipnot15AmortismanRows.length > 0 && (
               <>
                 <table className="data-table">
@@ -3341,157 +3343,157 @@ const Rapor: React.FC<RaporProps> = ({
               ))}
             {dipnot16MaliyetRows.filter((veri) => veri.yil == user.yil).length >
               0 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th colSpan={7} style={{ textAlign: "center" }}>
-                        {user.yil}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th>Maliyet</th>
-                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
-                      <th style={{ textAlign: "center" }}>Girişler</th>
-                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
-                      <th style={{ textAlign: "center" }}>Değerleme</th>
-                      <th style={{ textAlign: "center" }}>Transfer</th>
-                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dipnot16MaliyetRows
-                      .filter((x) => x.yil == user.yil)
-                      .map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{row.baslik}</td>
-                          <td className="text-right">
-                            {row.donemBasi != 0
-                              ? row.donemBasi < 0
-                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
-                                : formatNumber(row.donemBasi)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.girisler != 0
-                              ? row.girisler < 0
-                                ? `(${formatNumber(Math.abs(row.girisler))})`
-                                : formatNumber(row.girisler)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.cikislar != 0
-                              ? row.cikislar < 0
-                                ? `(${formatNumber(Math.abs(row.cikislar))})`
-                                : formatNumber(row.cikislar)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.degerleme != 0
-                              ? row.degerleme < 0
-                                ? `(${formatNumber(Math.abs(row.degerleme))})`
-                                : formatNumber(row.degerleme)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.transfer != 0
-                              ? row.transfer < 0
-                                ? `(${formatNumber(Math.abs(row.transfer))})`
-                                : formatNumber(row.transfer)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.donemSonu != 0
-                              ? row.donemSonu < 0
-                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
-                                : formatNumber(row.donemSonu)
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th colSpan={7} style={{ textAlign: "center" }}>
+                          {user.yil}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>Maliyet</th>
+                        <th style={{ textAlign: "center" }}>Dönem Başı</th>
+                        <th style={{ textAlign: "center" }}>Girişler</th>
+                        <th style={{ textAlign: "center" }}>Çıkışlar</th>
+                        <th style={{ textAlign: "center" }}>Değerleme</th>
+                        <th style={{ textAlign: "center" }}>Transfer</th>
+                        <th style={{ textAlign: "center" }}>Dönem Sonu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dipnot16MaliyetRows
+                        .filter((x) => x.yil == user.yil)
+                        .map((row, rowIndex) => (
+                          <tr key={rowIndex}>
+                            <td>{row.baslik}</td>
+                            <td className="text-right">
+                              {row.donemBasi != 0
+                                ? row.donemBasi < 0
+                                  ? `(${formatNumber(Math.abs(row.donemBasi))})`
+                                  : formatNumber(row.donemBasi)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.girisler != 0
+                                ? row.girisler < 0
+                                  ? `(${formatNumber(Math.abs(row.girisler))})`
+                                  : formatNumber(row.girisler)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.cikislar != 0
+                                ? row.cikislar < 0
+                                  ? `(${formatNumber(Math.abs(row.cikislar))})`
+                                  : formatNumber(row.cikislar)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.degerleme != 0
+                                ? row.degerleme < 0
+                                  ? `(${formatNumber(Math.abs(row.degerleme))})`
+                                  : formatNumber(row.degerleme)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.transfer != 0
+                                ? row.transfer < 0
+                                  ? `(${formatNumber(Math.abs(row.transfer))})`
+                                  : formatNumber(row.transfer)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.donemSonu != 0
+                                ? row.donemSonu < 0
+                                  ? `(${formatNumber(Math.abs(row.donemSonu))})`
+                                  : formatNumber(row.donemSonu)
+                                : "-"}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {dipnot16MaliyetRows.filter(
               (veri) => veri.yil == (user.yil ? user.yil - 1 : 0)
             ).length > 0 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th colSpan={7} style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                    <tr>
-                      <th>Maliyet</th>
-                      <th style={{ textAlign: "center" }}>Dönem Başı</th>
-                      <th style={{ textAlign: "center" }}>Girişler</th>
-                      <th style={{ textAlign: "center" }}>Çıkışlar</th>
-                      <th style={{ textAlign: "center" }}>Değerleme</th>
-                      <th style={{ textAlign: "center" }}>Transfer</th>
-                      <th style={{ textAlign: "center" }}>Dönem Sonu</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dipnot16MaliyetRows
-                      .filter(
-                        (x) => user.yil !== undefined && x.yil == user.yil - 1
-                      )
-                      .map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{row.baslik}</td>
-                          <td className="text-right">
-                            {row.donemBasi != 0
-                              ? row.donemBasi < 0
-                                ? `(${formatNumber(Math.abs(row.donemBasi))})`
-                                : formatNumber(row.donemBasi)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.girisler != 0
-                              ? row.girisler < 0
-                                ? `(${formatNumber(Math.abs(row.girisler))})`
-                                : formatNumber(row.girisler)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.cikislar != 0
-                              ? row.cikislar < 0
-                                ? `(${formatNumber(Math.abs(row.cikislar))})`
-                                : formatNumber(row.cikislar)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.degerleme != 0
-                              ? row.degerleme < 0
-                                ? `(${formatNumber(Math.abs(row.degerleme))})`
-                                : formatNumber(row.degerleme)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.transfer != 0
-                              ? row.transfer < 0
-                                ? `(${formatNumber(Math.abs(row.transfer))})`
-                                : formatNumber(row.transfer)
-                              : "-"}
-                          </td>
-                          <td className="text-right">
-                            {row.donemSonu != 0
-                              ? row.donemSonu < 0
-                                ? `(${formatNumber(Math.abs(row.donemSonu))})`
-                                : formatNumber(row.donemSonu)
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th colSpan={7} style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>Maliyet</th>
+                        <th style={{ textAlign: "center" }}>Dönem Başı</th>
+                        <th style={{ textAlign: "center" }}>Girişler</th>
+                        <th style={{ textAlign: "center" }}>Çıkışlar</th>
+                        <th style={{ textAlign: "center" }}>Değerleme</th>
+                        <th style={{ textAlign: "center" }}>Transfer</th>
+                        <th style={{ textAlign: "center" }}>Dönem Sonu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dipnot16MaliyetRows
+                        .filter(
+                          (x) => user.yil !== undefined && x.yil == user.yil - 1
+                        )
+                        .map((row, rowIndex) => (
+                          <tr key={rowIndex}>
+                            <td>{row.baslik}</td>
+                            <td className="text-right">
+                              {row.donemBasi != 0
+                                ? row.donemBasi < 0
+                                  ? `(${formatNumber(Math.abs(row.donemBasi))})`
+                                  : formatNumber(row.donemBasi)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.girisler != 0
+                                ? row.girisler < 0
+                                  ? `(${formatNumber(Math.abs(row.girisler))})`
+                                  : formatNumber(row.girisler)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.cikislar != 0
+                                ? row.cikislar < 0
+                                  ? `(${formatNumber(Math.abs(row.cikislar))})`
+                                  : formatNumber(row.cikislar)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.degerleme != 0
+                                ? row.degerleme < 0
+                                  ? `(${formatNumber(Math.abs(row.degerleme))})`
+                                  : formatNumber(row.degerleme)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.transfer != 0
+                                ? row.transfer < 0
+                                  ? `(${formatNumber(Math.abs(row.transfer))})`
+                                  : formatNumber(row.transfer)
+                                : "-"}
+                            </td>
+                            <td className="text-right">
+                              {row.donemSonu != 0
+                                ? row.donemSonu < 0
+                                  ? `(${formatNumber(Math.abs(row.donemSonu))})`
+                                  : formatNumber(row.donemSonu)
+                                : "-"}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {dipnot16AmortismanRows.length > 0 && (
               <>
                 <table className="data-table">
@@ -3591,12 +3593,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 17,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 17,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 17)
@@ -3616,70 +3618,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Özkaynak Yöntemiyle Değerlenen Yatırımlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 17,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Özkaynak Yöntemiyle Değerlenen Yatırımlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 17,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 17,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 17,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 17,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -3825,12 +3827,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 19,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 19,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 19)
@@ -3854,45 +3856,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Finansal Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 19,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Finansal Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 19,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 19,
               tabloNo: 1,
@@ -3903,45 +3905,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Finansal Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 19,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Finansal Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 19,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 19,
               tabloNo: 2,
@@ -3952,45 +3954,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Finansal Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 19,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Finansal Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 19,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 19,
               tabloNo: 2,
@@ -4001,45 +4003,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Finansal Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 19,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Finansal Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 19,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -4065,12 +4067,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 20,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 20,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 20)
@@ -4090,70 +4092,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Devam Eden İnşa Sözleşmelerinden Borçlar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 20,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Devam Eden İnşa Sözleşmelerinden Borçlar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 20,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 20,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 20,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 20,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -4179,12 +4181,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 21,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 21,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 21)
@@ -4208,45 +4210,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Alınan Avanslar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 21,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Alınan Avanslar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 21,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 21,
               tabloNo: 1,
@@ -4257,45 +4259,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Alınan Avanslar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 21,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Alınan Avanslar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 21,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 21,
               tabloNo: 2,
@@ -4306,45 +4308,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Alınan Avanslar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 21,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Alınan Avanslar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 21,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 21,
               tabloNo: 2,
@@ -4355,45 +4357,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Alınan Avanslar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 21,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Alınan Avanslar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 21,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -4419,12 +4421,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 22,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 22,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 22)
@@ -4448,48 +4450,48 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        Kısa Vadeli Çalışanlara Sağlanan Faydalar Kapsamında
-                        Borçlar
-                      </th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 22,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          Kısa Vadeli Çalışanlara Sağlanan Faydalar Kapsamında
+                          Borçlar
+                        </th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 22,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 22,
               tabloNo: 1,
@@ -4500,48 +4502,48 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        Uzun Vadeli Çalışanlara Sağlanan Faydalar Kapsamında
-                        Borçlar
-                      </th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 22,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          Uzun Vadeli Çalışanlara Sağlanan Faydalar Kapsamında
+                          Borçlar
+                        </th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 22,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 22,
               tabloNo: 2,
@@ -4552,45 +4554,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 22,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 22,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 22,
               tabloNo: 2,
@@ -4601,45 +4603,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 22,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 22,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -4665,12 +4667,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 23,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 23,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 23)
@@ -4697,45 +4699,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Karşılıklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 23,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Karşılıklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 23,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 23,
               tabloNo: 1,
@@ -4746,45 +4748,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Karşılıklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 23,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Karşılıklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 23,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 23,
               tabloNo: 2,
@@ -4795,45 +4797,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Kısa Vadeli Karşılıklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 23,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Kısa Vadeli Karşılıklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 23,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 23,
               tabloNo: 2,
@@ -4844,45 +4846,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Uzun Vadeli Karşılıklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 23,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Uzun Vadeli Karşılıklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 23,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 23)
               ?.veriler.slice(1)
@@ -4923,12 +4925,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 24,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 24,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 24)
@@ -4948,72 +4950,72 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        Çalışanlara Sağlanan Faydalara İlişkin Karşılıklar
-                      </th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 24,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          Çalışanlara Sağlanan Faydalara İlişkin Karşılıklar
+                        </th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 24,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 24,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 24,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 24,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -5074,7 +5076,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından açılan ve halen devam eden davalar" &&
+                          "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
                       )[0].adet
                     }
@@ -5084,7 +5086,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından açılan ve halen devam eden davalar" &&
+                          "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
                       )[0].tutar
                     )}
@@ -5094,7 +5096,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından açılan ve halen devam eden davalar" &&
+                          "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].adet
                     }
@@ -5104,7 +5106,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından açılan ve halen devam eden davalar" &&
+                          "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].tutar
                     )}
@@ -5117,7 +5119,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından yürütülen icra takipleri" &&
+                          "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == user.yil
                       )[0].adet
                     }
@@ -5127,7 +5129,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından yürütülen icra takipleri" &&
+                          "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == user.yil
                       )[0].tutar
                     )}
@@ -5137,7 +5139,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından yürütülen icra takipleri" &&
+                          "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].adet
                     }
@@ -5147,7 +5149,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket tarafından yürütülen icra takipleri" &&
+                          "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].tutar
                     )}
@@ -5160,7 +5162,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine açılan ve halen devam eden davalar" &&
+                          "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
                       )[0].adet
                     }
@@ -5170,7 +5172,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine açılan ve halen devam eden davalar" &&
+                          "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
                       )[0].tutar
                     )}
@@ -5180,7 +5182,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine açılan ve halen devam eden davalar" &&
+                          "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].adet
                     }
@@ -5190,7 +5192,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine açılan ve halen devam eden davalar" &&
+                          "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].tutar
                     )}
@@ -5203,7 +5205,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine yürütülen icra takipleri" &&
+                          "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == user.yil
                       )[0].adet
                     }
@@ -5213,7 +5215,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine yürütülen icra takipleri" &&
+                          "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == user.yil
                       )[0].tutar
                     )}
@@ -5223,7 +5225,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine yürütülen icra takipleri" &&
+                          "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].adet
                     }
@@ -5233,7 +5235,7 @@ const Rapor: React.FC<RaporProps> = ({
                       dipnot25Rows.filter(
                         (x) =>
                           x.baslik ==
-                            "Şirket aleyhine yürütülen icra takipleri" &&
+                          "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
                       )[0].tutar
                     )}
@@ -5267,12 +5269,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 26,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 26,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 26)
@@ -5296,45 +5298,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Diğer Kısa Vadeli Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 26,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Diğer Kısa Vadeli Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 26,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 26,
               tabloNo: 1,
@@ -5345,45 +5347,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Diğer Uzun Vadeli Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 26,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Diğer Uzun Vadeli Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 26,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 26,
               tabloNo: 2,
@@ -5394,45 +5396,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("1") ||
                 item.detayKodu?.startsWith("3")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Diğer Kısa Vadeli Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 26,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "1",
-                      sw2: "3",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("1") ||
-                          detayKodu.startsWith("3") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Diğer Kısa Vadeli Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 26,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "1",
+                        sw2: "3",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("1") ||
+                            detayKodu.startsWith("3") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 26,
               tabloNo: 2,
@@ -5443,45 +5445,45 @@ const Rapor: React.FC<RaporProps> = ({
                 item.detayKodu?.startsWith("2") ||
                 item.detayKodu?.startsWith("4")
             ) && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Diğer Uzun Vadeli Yükümlülükler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 26,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                      sw1: "2",
-                      sw2: "4",
-                    }).map(
-                      (
-                        { detayKodu, detayHesapAdi, cariYil, oncekiYil },
-                        index
-                      ) =>
-                        (detayKodu.startsWith("2") ||
-                          detayKodu.startsWith("4") ||
-                          detayHesapAdi == "Toplam") && (
-                          <tr key={index}>
-                            <td>{detayHesapAdi}</td>
-                            <td style={{ textAlign: "right" }}>{cariYil}</td>
-                            <td style={{ textAlign: "right" }}>{oncekiYil}</td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Diğer Uzun Vadeli Yükümlülükler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 26,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                        sw1: "2",
+                        sw2: "4",
+                      }).map(
+                        (
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          index
+                        ) =>
+                          (detayKodu.startsWith("2") ||
+                            detayKodu.startsWith("4") ||
+                            detayHesapAdi == "Toplam") && (
+                            <tr key={index}>
+                              <td>{detayHesapAdi}</td>
+                              <td style={{ textAlign: "right" }}>{cariYil}</td>
+                              <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                            </tr>
+                          )
+                      )}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -5507,12 +5509,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 27,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 27,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 27)
@@ -5535,35 +5537,35 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Sermaye</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 27,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Sermaye</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 27,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 27)
               ?.veriler.slice(1)
@@ -5638,35 +5640,35 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Yedekler ve Diğer Özkaynaklar</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 27,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Yedekler ve Diğer Özkaynaklar</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 27,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -5692,12 +5694,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 28,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 28,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 28)
@@ -5717,70 +5719,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Hasılat</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 28,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Hasılat</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 28,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 28,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Satışların Maliyeti (-)</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 28,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Satışların Maliyeti (-)</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 28,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -5825,35 +5827,35 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Faaliyet Giderleri</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 29,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Faaliyet Giderleri</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 29,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -5879,12 +5881,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 30,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 30,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 30)
@@ -5904,70 +5906,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Esas Faaliyetlerden Diğer Gelirler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 30,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Esas Faaliyetlerden Diğer Gelirler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 30,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 30,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Esas Faaliyetlerden Diğer Giderler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 30,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Esas Faaliyetlerden Diğer Giderler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 30,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -5993,12 +5995,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 31,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 31,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 31)
@@ -6018,70 +6020,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Yatırım Faaliyetlerinden Gelirler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 31,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Yatırım Faaliyetlerinden Gelirler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 31,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 31,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Yatırım Faaliyetlerinden Giderler</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 31,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Yatırım Faaliyetlerinden Giderler</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 31,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -6107,12 +6109,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 32,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 32,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 32)
@@ -6132,70 +6134,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Finansman Gelirleri</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 32,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Finansman Gelirleri</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 32,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 32,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Finansman Giderleri</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 32,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Finansman Giderleri</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 32,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -6221,12 +6223,12 @@ const Rapor: React.FC<RaporProps> = ({
           yil: user.yil || 0,
           formatNumber,
         }).length > 1 ||
-        TransformDipnotHesaplar(dipnotHesaplarRows, {
-          dipnotNo: 33,
-          tabloNo: 2,
-          yil: user.yil || 0,
-          formatNumber,
-        }).length > 1 ? (
+          TransformDipnotHesaplar(dipnotHesaplarRows, {
+            dipnotNo: 33,
+            tabloNo: 2,
+            yil: user.yil || 0,
+            formatNumber,
+          }).length > 1 ? (
           <>
             {dipnotVeriler
               .find((veri: any) => veri.dipnotKodu == 33)
@@ -6246,70 +6248,70 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Vergi Geliri</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 33,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Vergi Geliri</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 33,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
             {TransformDipnotHesaplar(dipnotHesaplarRows, {
               dipnotNo: 33,
               tabloNo: 2,
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Vergi Gideri</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 33,
-                      tabloNo: 2,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Vergi Gideri</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 33,
+                        tabloNo: 2,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -6480,38 +6482,38 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        Kâr veya Zarar Olarak Yeniden Sınıflandırılmayacak Gelir
-                        / Giderler
-                      </th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 35,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          Kâr veya Zarar Olarak Yeniden Sınıflandırılmayacak Gelir
+                          / Giderler
+                        </th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 35,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -6556,35 +6558,35 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 36,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 36,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -6629,35 +6631,35 @@ const Rapor: React.FC<RaporProps> = ({
               yil: user.yil || 0,
               formatNumber,
             }).length > 1 && (
-              <>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>İlişkili Taraf Varlık / Yükümlülükleri</th>
-                      <th style={{ textAlign: "center" }}>{user.yil}</th>
-                      <th style={{ textAlign: "center" }}>
-                        {user.yil ? user.yil - 1 : 0}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TransformDipnotHesaplar(dipnotHesaplarRows, {
-                      dipnotNo: 37,
-                      tabloNo: 1,
-                      yil: user.yil || 0,
-                      formatNumber,
-                    }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                      <tr key={index}>
-                        <td>{detayHesapAdi}</td>
-                        <td style={{ textAlign: "right" }}>{cariYil}</td>
-                        <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                <>
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>İlişkili Taraf Varlık / Yükümlülükleri</th>
+                        <th style={{ textAlign: "center" }}>{user.yil}</th>
+                        <th style={{ textAlign: "center" }}>
+                          {user.yil ? user.yil - 1 : 0}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div className="seperator24"></div>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {TransformDipnotHesaplar(dipnotHesaplarRows, {
+                        dipnotNo: 37,
+                        tabloNo: 1,
+                        yil: user.yil || 0,
+                        formatNumber,
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
+                        <tr key={index}>
+                          <td>{detayHesapAdi}</td>
+                          <td style={{ textAlign: "right" }}>{cariYil}</td>
+                          <td style={{ textAlign: "right" }}>{oncekiYil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="seperator24"></div>
+                </>
+              )}
           </>
         ) : (
           <>
@@ -6755,8 +6757,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.ticariAlacaklarIliskiliTaraf > 0
                         ? formatNumber(row.cari.ticariAlacaklarIliskiliTaraf)
                         : row.cari.ticariAlacaklarIliskiliTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.cari.ticariAlacaklarIliskiliTaraf)
                           )})`}
                     </td>
@@ -6764,8 +6766,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.ticariAlacaklarDigerTaraf > 0
                         ? formatNumber(row.cari.ticariAlacaklarDigerTaraf)
                         : row.cari.ticariAlacaklarDigerTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.cari.ticariAlacaklarDigerTaraf)
                           )})`}
                     </td>
@@ -6773,8 +6775,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.digerAlacaklarIliskiliTaraf > 0
                         ? formatNumber(row.cari.digerAlacaklarIliskiliTaraf)
                         : row.cari.digerAlacaklarIliskiliTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.cari.digerAlacaklarIliskiliTaraf)
                           )})`}
                     </td>
@@ -6782,8 +6784,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.digerAlacaklarDigerTaraf > 0
                         ? formatNumber(row.cari.digerAlacaklarDigerTaraf)
                         : row.cari.digerAlacaklarDigerTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.cari.digerAlacaklarDigerTaraf)
                           )})`}
                     </td>
@@ -6791,8 +6793,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.finansalYatirimlar > 0
                         ? formatNumber(row.cari.finansalYatirimlar)
                         : row.cari.finansalYatirimlar == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.cari.finansalYatirimlar)
                           )})`}
                     </td>
@@ -6800,8 +6802,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.nakitVeNakitBenzeleri > 0
                         ? formatNumber(row.cari.nakitVeNakitBenzeleri)
                         : row.cari.nakitVeNakitBenzeleri == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.cari.nakitVeNakitBenzeleri)
                           )})`}
                     </td>
@@ -6809,8 +6811,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.toplam > 0
                         ? formatNumber(row.cari.toplam)
                         : row.cari.toplam == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.cari.toplam))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.cari.toplam))})`}
                     </td>
                   </tr>
                 ))}
@@ -6861,8 +6863,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.ticariAlacaklarIliskiliTaraf > 0
                         ? formatNumber(row.onceki.ticariAlacaklarIliskiliTaraf)
                         : row.onceki.ticariAlacaklarIliskiliTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.onceki.ticariAlacaklarIliskiliTaraf)
                           )})`}
                     </td>
@@ -6870,8 +6872,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.ticariAlacaklarDigerTaraf > 0
                         ? formatNumber(row.onceki.ticariAlacaklarDigerTaraf)
                         : row.onceki.ticariAlacaklarDigerTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.onceki.ticariAlacaklarDigerTaraf)
                           )})`}
                     </td>
@@ -6879,8 +6881,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.digerAlacaklarIliskiliTaraf > 0
                         ? formatNumber(row.onceki.digerAlacaklarIliskiliTaraf)
                         : row.onceki.digerAlacaklarIliskiliTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.onceki.digerAlacaklarIliskiliTaraf)
                           )})`}
                     </td>
@@ -6888,8 +6890,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.digerAlacaklarDigerTaraf > 0
                         ? formatNumber(row.onceki.digerAlacaklarDigerTaraf)
                         : row.onceki.digerAlacaklarDigerTaraf == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.onceki.digerAlacaklarDigerTaraf)
                           )})`}
                     </td>
@@ -6897,8 +6899,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.finansalYatirimlar > 0
                         ? formatNumber(row.onceki.finansalYatirimlar)
                         : row.onceki.finansalYatirimlar == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.onceki.finansalYatirimlar)
                           )})`}
                     </td>
@@ -6906,8 +6908,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.nakitVeNakitBenzeleri > 0
                         ? formatNumber(row.onceki.nakitVeNakitBenzeleri)
                         : row.onceki.nakitVeNakitBenzeleri == 0
-                        ? "-"
-                        : `(${formatNumber(
+                          ? "-"
+                          : `(${formatNumber(
                             Math.abs(row.onceki.nakitVeNakitBenzeleri)
                           )})`}
                     </td>
@@ -6915,8 +6917,8 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.toplam > 0
                         ? formatNumber(row.onceki.toplam)
                         : row.onceki.toplam == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.onceki.toplam))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.onceki.toplam))})`}
                     </td>
                   </tr>
                 ))}
@@ -6994,36 +6996,36 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.cari.tlKarsiligi > 0
                         ? formatNumber(row.cari.tlKarsiligi)
                         : row.cari.tlKarsiligi == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.cari.tlKarsiligi))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.cari.tlKarsiligi))})`}
                     </td>
                     <td className="text-right">
                       {row.cari.usd > 0
                         ? formatNumber(row.cari.usd)
                         : row.cari.usd == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.cari.usd))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.cari.usd))})`}
                     </td>
                     <td className="text-right">
                       {row.cari.euro > 0
                         ? formatNumber(row.cari.euro)
                         : row.cari.euro == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.cari.euro))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.cari.euro))})`}
                     </td>
                     <td className="text-right">
                       {row.cari.gbp > 0
                         ? formatNumber(row.cari.gbp)
                         : row.cari.gbp == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.cari.gbp))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.cari.gbp))})`}
                     </td>
                     <td className="text-right">
                       {row.cari.diger > 0
                         ? formatNumber(row.cari.diger)
                         : row.cari.diger == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.cari.diger))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.cari.diger))})`}
                     </td>
                   </tr>
                 ))}
@@ -7053,36 +7055,36 @@ const Rapor: React.FC<RaporProps> = ({
                       {row.onceki.tlKarsiligi > 0
                         ? formatNumber(row.onceki.tlKarsiligi)
                         : row.onceki.tlKarsiligi == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.onceki.tlKarsiligi))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.onceki.tlKarsiligi))})`}
                     </td>
                     <td className="text-right">
                       {row.onceki.usd > 0
                         ? formatNumber(row.onceki.usd)
                         : row.onceki.usd == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.onceki.usd))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.onceki.usd))})`}
                     </td>
                     <td className="text-right">
                       {row.onceki.euro > 0
                         ? formatNumber(row.onceki.euro)
                         : row.onceki.euro == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.onceki.euro))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.onceki.euro))})`}
                     </td>
                     <td className="text-right">
                       {row.onceki.gbp > 0
                         ? formatNumber(row.onceki.gbp)
                         : row.onceki.gbp == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.onceki.gbp))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.onceki.gbp))})`}
                     </td>
                     <td className="text-right">
                       {row.onceki.diger > 0
                         ? formatNumber(row.onceki.diger)
                         : row.onceki.diger == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.onceki.diger))})`}
+                          ? "-"
+                          : `(${formatNumber(Math.abs(row.onceki.diger))})`}
                     </td>
                   </tr>
                 ))}
@@ -7159,8 +7161,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.cari.karZararDegerKazanmasi > 0
                           ? formatNumber(row.cari.karZararDegerKazanmasi)
                           : row.cari.karZararDegerKazanmasi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.cari.karZararDegerKazanmasi)
                             )})`}
                       </td>
@@ -7168,8 +7170,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.cari.karZararDegerKaybetmesi > 0
                           ? formatNumber(row.cari.karZararDegerKaybetmesi)
                           : row.cari.karZararDegerKaybetmesi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.cari.karZararDegerKaybetmesi)
                             )})`}
                       </td>
@@ -7177,8 +7179,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.cari.ozKaynakDegerKazanmasi > 0
                           ? formatNumber(row.cari.ozKaynakDegerKazanmasi)
                           : row.cari.ozKaynakDegerKazanmasi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.cari.ozKaynakDegerKazanmasi)
                             )})`}
                       </td>
@@ -7186,8 +7188,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.cari.ozKaynakDegerKaybetmesi > 0
                           ? formatNumber(row.cari.ozKaynakDegerKaybetmesi)
                           : row.cari.ozKaynakDegerKaybetmesi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.cari.ozKaynakDegerKaybetmesi)
                             )})`}
                       </td>
@@ -7246,8 +7248,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.onceki.karZararDegerKazanmasi > 0
                           ? formatNumber(row.onceki.karZararDegerKazanmasi)
                           : row.onceki.karZararDegerKazanmasi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.onceki.karZararDegerKazanmasi)
                             )})`}
                       </td>
@@ -7255,8 +7257,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.onceki.karZararDegerKaybetmesi > 0
                           ? formatNumber(row.onceki.karZararDegerKaybetmesi)
                           : row.onceki.karZararDegerKaybetmesi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.onceki.karZararDegerKaybetmesi)
                             )})`}
                       </td>
@@ -7264,8 +7266,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.onceki.ozKaynakDegerKazanmasi > 0
                           ? formatNumber(row.onceki.ozKaynakDegerKazanmasi)
                           : row.onceki.ozKaynakDegerKazanmasi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.onceki.ozKaynakDegerKazanmasi)
                             )})`}
                       </td>
@@ -7273,8 +7275,8 @@ const Rapor: React.FC<RaporProps> = ({
                         {row.onceki.ozKaynakDegerKaybetmesi > 0
                           ? formatNumber(row.onceki.ozKaynakDegerKaybetmesi)
                           : row.onceki.ozKaynakDegerKaybetmesi == 0
-                          ? "-"
-                          : `(${formatNumber(
+                            ? "-"
+                            : `(${formatNumber(
                               Math.abs(row.onceki.ozKaynakDegerKaybetmesi)
                             )})`}
                       </td>

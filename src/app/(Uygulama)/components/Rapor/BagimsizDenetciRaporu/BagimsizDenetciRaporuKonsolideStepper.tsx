@@ -325,9 +325,9 @@ const BagimsizDenetciRaporuStepper = () => {
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        user.denetimTuru || "",
+        user.denetimTuru === "Bobi" ? "BobiKonsolide" : user.denetimTuru === "Tfrs" ? "TfrsKonsolide" : user.denetimTuru || "",
         raporGorusu,
-        false
+        true
       );
 
       const rowsAll: any = [];
@@ -417,7 +417,7 @@ const BagimsizDenetciRaporuStepper = () => {
         user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
-        false
+        true
       );
       const newRowsFdt = finansalDurumTablosu.slice(1).map((veri: VeriFT) => ({
         id: veri.id,
@@ -446,7 +446,7 @@ const BagimsizDenetciRaporuStepper = () => {
         user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
-        false
+        true
       );
 
       const newRowsKzt = karZararTablosu.slice(1).map((veri: VeriFT) => ({
@@ -476,7 +476,7 @@ const BagimsizDenetciRaporuStepper = () => {
         user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
-        false
+        true
       );
 
       const newRowsNat = nakitAkisTablosu.slice(1).map((veri: VeriFT) => ({
@@ -506,7 +506,7 @@ const BagimsizDenetciRaporuStepper = () => {
         user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
-        false
+        true
       );
 
       const ozkaynakDataCari: VeriFT2[] = [];
@@ -583,7 +583,7 @@ const BagimsizDenetciRaporuStepper = () => {
         user.denetciId || 0,
         user.yil ? user.yil - 1 : 0,
         user.denetlenenId || 0,
-        false
+        true
       );
 
       const ozkaynakDataOnceki: VeriFT2[] = [];
@@ -666,8 +666,8 @@ const BagimsizDenetciRaporuStepper = () => {
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        user.denetimTuru || "",
-        false
+        user.denetimTuru === "Bobi" ? "BobiKonsolide" : user.denetimTuru === "Tfrs" ? "TfrsKonsolide" : user.denetimTuru || "",
+        true
       );
 
       const groupedData: Record<string, VeriDipnot[]> = {}; // Dipnot kodlarına göre gruplama için nesne
@@ -2033,6 +2033,7 @@ const BagimsizDenetciRaporuStepper = () => {
                   dipnotVeriler={dipnotVeriler}
                   gorusVeriler={veriler}
                   detayHesaplar={detayHesaplar}
+                  konsolide={true}
                 />
               ) : user.denetimTuru == "Tfrs" ? (
                 <RaporTfrs
@@ -2052,6 +2053,7 @@ const BagimsizDenetciRaporuStepper = () => {
                   dipnotVeriler={dipnotVeriler}
                   gorusVeriler={veriler}
                   detayHesaplar={detayHesaplar}
+                  konsolide={true}
                 />
               ) : (
                 <></>

@@ -6,10 +6,10 @@ export const getFinansalDurumTablosu = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  konsolidasyonMu: boolean
+  konsolidasyonMu: boolean = false
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/FinansalDurumTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
@@ -34,10 +34,10 @@ export const getKarZararTablosu = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  konsolidasyonMu: boolean
+  konsolidasyonMu: boolean = false
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/KarZararTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
@@ -62,10 +62,10 @@ export const getNakitAkisTablosu = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  konsolidasyonMu: boolean
+  konsolidasyonMu: boolean = false
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/NakitAkisTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
@@ -90,10 +90,10 @@ export const getOzkaynakTablosu = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  konsolidasyonMu: boolean
+  konsolidasyonMu: boolean = false
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/OzkaynakTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
@@ -119,10 +119,10 @@ export const FinansalTabloOlustur = async (
   denetlenenId: number,
   yil: number,
   nakitAkisType: string,
-  konsolidasyonMu: boolean
+  konsolidasyonMu: boolean = false
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/FinansalTablolariOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&nakitAkisYontemi=${nakitAkisType}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "Post",

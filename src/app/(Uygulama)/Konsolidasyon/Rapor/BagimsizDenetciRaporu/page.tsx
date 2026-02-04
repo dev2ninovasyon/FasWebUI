@@ -6,8 +6,8 @@ import React from "react";
 import { Grid, useTheme } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
-import BagimsizDenetciRaporuStepper from "@/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/BagimsizDenetciRaporuStepper";
 import ProtectedPage from "@/app/ProtectedPage";
+import BagimsizDenetciRaporuKonsolideStepper from "@/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/BagimsizDenetciRaporuKonsolideStepper";
 
 const BCrumb = [
   {
@@ -26,7 +26,7 @@ const Page: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <ProtectedPage allowed={user?.konsolidemi || false}>
+    <ProtectedPage allowed={user?.konsolidemi || true}>
       <PageContainer
         title="Bağımsız Denetçi Raporu"
         description="this is Bağımsız Denetçi Raporu"
@@ -39,7 +39,7 @@ const Page: React.FC = () => {
               sm: 12,
               lg: 12
             }}>
-            <BagimsizDenetciRaporuStepper />
+            <BagimsizDenetciRaporuKonsolideStepper />
           </Grid>
         </Grid>
       </PageContainer>

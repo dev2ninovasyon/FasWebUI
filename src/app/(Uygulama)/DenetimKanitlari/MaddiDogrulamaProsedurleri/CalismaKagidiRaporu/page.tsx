@@ -1317,7 +1317,19 @@ const CalismaKagidiRaporu = () => {
 
             <style jsx global>{`
         @media print {
-        div:contains("Antigravity"), 
+            .no-print,
+            header, 
+            footer, 
+            nav, 
+            aside, 
+            .MuiDrawer-root,
+            .MuiAppBar-root,
+            .left-sidebar,
+            .topbar,
+            .breadcrumb,
+            .MuiBreadcrumbs-root,
+            h4:not(#printable-area *),
+            h5:not(#printable-area *),
             .antigravity-message { 
                 display: none !important; 
             }
@@ -1325,24 +1337,24 @@ const CalismaKagidiRaporu = () => {
             .MuiBox-root:empty {
                 display: none !important;
             }
-          .no-print {
-            display: none !important;
-          }
+
           body {
+            background-color: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
             visibility: hidden;
-            height: auto !important;
-            overflow: visible !important;
           }
           #printable-area {
             visibility: visible !important;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
             height: auto !important;
             overflow: visible !important;
             background: white !important;
             color: black !important;
+            display: block !important;
           }
           #printable-area * {
             overflow: visible !important;
@@ -1382,11 +1394,15 @@ const CalismaKagidiRaporu = () => {
             text-justify: inter-word;
           }
           @page {
-            margin: 1cm;
-            size: auto;
+            size: A4;
+            margin: 2cm 1.5cm;
           }
           tr {
             break-inside: avoid;
+          }
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
         }
       `}</style>

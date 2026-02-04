@@ -832,11 +832,12 @@ export const getVergiVarligi = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VergiVarligi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VergiVarligi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -859,11 +860,12 @@ export const getVergiYukumlulugu = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VergiYukumlulugu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VergiYukumlulugu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -941,11 +943,12 @@ export const getIliskiliTarafSiniflama = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  hesap: number
+  hesap: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/IliskiliTarafSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}`,
+      `/Hesaplamalar/IliskiliTarafSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -970,11 +973,12 @@ export const getIliskiliTarafSiniflamaOrnekFisler = async (
   yil: number,
   denetlenenId: number,
   json: any,
-  kebirKodu: number
+  kebirKodu: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/IliskiliTarafSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&kebirKodu=${kebirKodu}`,
+      `/Hesaplamalar/IliskiliTarafSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&kebirKodu=${kebirKodu}&konsolide=${konsolide}`,
       {
         method: "POST",
         headers: {
@@ -999,11 +1003,12 @@ export const createVadeliBankaMevduatiOtomatikSiniflama = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflamaHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflamaHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "POST",
         headers: {
@@ -1026,11 +1031,12 @@ export const createVadeliBankaMevduatiOtomatikSiniflama = async (
 
 export const createVadeliBankaMevduatOtomatikSiniflama = async (
   token: string,
-  createdVadeliBankaMevduat: any
+  createdVadeliBankaMevduat: any,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatOtomatikSiniflama`,
+      `/Hesaplamalar/VadeliBankaMevduatOtomatikSiniflama?konsolide=${konsolide}`,
       {
         method: "POST",
         headers: {
@@ -1056,11 +1062,12 @@ export const getVadeliBankaMevduatiOtomatikSiniflama = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1083,11 +1090,12 @@ export const getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1108,11 +1116,12 @@ export const getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler = async (
 
 export const deleteVadeliBankaMevduatiOtomatikSiniflamaById = async (
   token: string,
-  id: number
+  id: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflama?id=${id}`,
+      `/Hesaplamalar/VadeliBankaMevduatiOtomatikSiniflama?id=${id}&konsolide=${konsolide}`,
       {
         method: "DELETE",
         headers: {
@@ -1135,11 +1144,12 @@ export const getVadeliBankaMevduatiManuelSiniflama = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiManuelSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VadeliBankaMevduatiManuelSiniflama?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1163,11 +1173,12 @@ export const getVadeliBankaMevduatiManuelSiniflamaOrnekFisler = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  json: any
+  json: any,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiManuelSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VadeliBankaMevduatiManuelSiniflamaOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "POST",
         headers: {
@@ -1193,11 +1204,12 @@ export const createVadeliBankaMevduatiFaizTahakkuk = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  json: any
+  json: any,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiFaizTahakkukHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VadeliBankaMevduatiFaizTahakkukHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "POST",
         headers: {
@@ -1222,11 +1234,12 @@ export const getVadeliBankaMevduatiFaizTahakkuk = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/VadeliBankaMevduatiFaizTahakkuk?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/VadeliBankaMevduatiFaizTahakkuk?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1306,11 +1319,12 @@ export const getHareketsizTicariAlacaklar = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizTicariAlacaklar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/HareketsizTicariAlacaklar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1335,11 +1349,12 @@ export const getHareketsizTicariAlacaklarOzet = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizTicariAlacaklarOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/HareketsizTicariAlacaklarOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1364,11 +1379,12 @@ export const getHareketsizTicariAlacaklarOrnekFisler = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizTicariAlacaklarOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/HareketsizTicariAlacaklarOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1389,11 +1405,12 @@ export const getHareketsizTicariAlacaklarOrnekFisler = async (
 
 export const deleteHareketsizTicariAlacaklarById = async (
   token: string,
-  id: number
+  id: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizTicariAlacaklar?id=${id}`,
+      `/Hesaplamalar/HareketsizTicariAlacaklar?id=${id}&konsolide=${konsolide}`,
       {
         method: "DELETE",
         headers: {
@@ -1417,11 +1434,12 @@ export const createHareketsizStoklar = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  acilisFisNo: number
+  acilisFisNo: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizStoklarHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&acilisFisNo=${acilisFisNo}`,
+      `/Hesaplamalar/HareketsizStoklarHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&acilisFisNo=${acilisFisNo}&konsolide=${konsolide}`,
       {
         method: "POST",
         headers: {
@@ -1444,18 +1462,22 @@ export const createHareketsizStoklar = async (
 
 export const createHareketsizStok = async (
   token: string,
-  createdHareketsizStok: any
+  createdHareketsizStok: any,
+  konsolide: boolean = false
 ) => {
   try {
-    const response = await apiFetch(`/Hesaplamalar/HareketsizStok`, {
-      method: "POST",
-      headers: {
-        accept: "*/*",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(createdHareketsizStok),
-    });
+    const response = await apiFetch(
+      `/Hesaplamalar/HareketsizStok?konsolide=${konsolide}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(createdHareketsizStok),
+      }
+    );
 
     if (response.ok) {
       return true;
@@ -1471,11 +1493,12 @@ export const getHareketsizStoklar = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizStoklar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/HareketsizStoklar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1498,11 +1521,12 @@ export const getHareketsizStoklarOzet = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizStoklarOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/HareketsizStoklarOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1525,11 +1549,12 @@ export const getHareketsizStoklarOrnekFisler = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizStoklarOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/HareketsizStoklarOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=${konsolide}`,
       {
         method: "GET",
         headers: {
@@ -1550,11 +1575,12 @@ export const getHareketsizStoklarOrnekFisler = async (
 
 export const deleteHareketsizStoklarById = async (
   token: string,
-  id: number
+  id: number,
+  konsolide: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/HareketsizStoklar?id=${id}`,
+      `/Hesaplamalar/HareketsizStoklar?id=${id}&konsolide=${konsolide}`,
       {
         method: "DELETE",
         headers: {
@@ -1610,7 +1636,7 @@ export const getGecmisYilKarZararKontrolOrnekFisler = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/GecmisYilKarZararKontrolOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/GecmisYilKarZararKontrolOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=true`,
       {
         method: "GET",
         headers: {
@@ -1668,7 +1694,7 @@ export const getKurFarkiKontrolleriOzet = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/KurFarkiKontrolleriOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
+      `/Hesaplamalar/KurFarkiKontrolleriOzet?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}&konsolide=true`,
       {
         method: "GET",
         headers: {
@@ -1699,7 +1725,7 @@ export const getKurFarkiKontrolleriFisler = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/KurFarkiKontrolleriFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
+      `/Hesaplamalar/KurFarkiKontrolleriFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&hesap=${hesap}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}&konsolide=true`,
       {
         method: "GET",
         headers: {
@@ -1726,7 +1752,7 @@ export const getKurFarkiOrnekFisler = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/KurFarkiOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/KurFarkiOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&konsolide=true`,
       {
         method: "GET",
         headers: {
