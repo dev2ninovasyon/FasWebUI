@@ -16,6 +16,8 @@ const BirlestirilmisMizan = () => {
   const [mizanOlusturTiklandimi, setMizanOlusturTiklandimi] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
+  const [mizanBaslangicTarihi, setMizanBaslangicTarihi] = useState<any>(null);
+  const [mizanBitisTarihi, setMizanBitisTarihi] = useState<any>(null);
 
   const handleBirlestirilmisMizan = async () => {
     try {
@@ -23,7 +25,9 @@ const BirlestirilmisMizan = () => {
         user.token || "",
         user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        mizanBaslangicTarihi,
+        mizanBitisTarihi
       );
       if (result) {
         setMizanOlusturTiklandimi(false);
@@ -110,6 +114,11 @@ const BirlestirilmisMizan = () => {
             type={"BirlestirilmisMizan"}
             mizanOlusturTiklandimi={mizanOlusturTiklandimi}
             setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+            handleBirlestirilmisMizan={handleBirlestirilmisMizan}
+            mizanBaslangicTarihi={mizanBaslangicTarihi}
+            setMizanBaslangicTarihi={setMizanBaslangicTarihi}
+            mizanBitisTarihi={mizanBitisTarihi}
+            setMizanBitisTarihi={setMizanBitisTarihi}
           />
         </Grid>
       </Grid>
@@ -124,6 +133,11 @@ const BirlestirilmisMizan = () => {
             type={"BirlestirilmisMizan"}
             mizanOlusturTiklandimi={mizanOlusturTiklandimi}
             setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+            handleBirlestirilmisMizan={handleBirlestirilmisMizan}
+            mizanBaslangicTarihi={mizanBaslangicTarihi}
+            setMizanBaslangicTarihi={setMizanBaslangicTarihi}
+            mizanBitisTarihi={mizanBitisTarihi}
+            setMizanBitisTarihi={setMizanBitisTarihi}
           />
         </Grid>
       </Grid>

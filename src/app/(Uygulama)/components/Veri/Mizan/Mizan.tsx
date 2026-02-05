@@ -42,12 +42,13 @@ interface Props {
   type: string;
   mizanOlusturTiklandimi: boolean;
   setMizanOlusturTiklandimi: (bool: boolean) => void;
-  handleAnaHesapMizan: () => Promise<void>;
-  handleDetayHesapMizan: () => Promise<void>;
-  mizanBaslangicTarihi: string;
-  setMizanBaslangicTarihi: (date: string) => void;
-  mizanBitisTarihi: string;
-  setMizanBitisTarihi: (date: string) => void;
+  handleAnaHesapMizan?: () => Promise<void>;
+  handleDetayHesapMizan?: () => Promise<void>;
+  handleBirlestirilmisMizan?: () => Promise<void>;
+  mizanBaslangicTarihi?: any;
+  setMizanBaslangicTarihi?: (date: any) => void;
+  mizanBitisTarihi?: any;
+  setMizanBitisTarihi?: (date: any) => void;
   sharedData?: any[];
 }
 
@@ -57,6 +58,7 @@ const Mizan: React.FC<Props> = ({
   setMizanOlusturTiklandimi,
   handleAnaHesapMizan,
   handleDetayHesapMizan,
+  handleBirlestirilmisMizan,
   mizanBaslangicTarihi,
   setMizanBaslangicTarihi,
   mizanBitisTarihi,
@@ -530,7 +532,7 @@ const Mizan: React.FC<Props> = ({
                     type="date"
                     value={mizanBaslangicTarihi}
                     onChange={(e: any) =>
-                      setMizanBaslangicTarihi(e.target.value)
+                      setMizanBaslangicTarihi && setMizanBaslangicTarihi(e.target.value)
                     }
                   />
                 </Grid>
@@ -555,7 +557,7 @@ const Mizan: React.FC<Props> = ({
                     type="date"
                     value={mizanBitisTarihi}
                     onChange={(e: any) =>
-                      setMizanBitisTarihi(e.target.value)
+                      setMizanBitisTarihi && setMizanBitisTarihi(e.target.value)
                     }
                   />
                 </Grid>
@@ -567,7 +569,11 @@ const Mizan: React.FC<Props> = ({
                     disabled={mizanOlusturTiklandimi}
                     onClick={() => {
                       setMizanOlusturTiklandimi(true);
-                      handleAnaHesapMizan();
+                      if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
+                        handleBirlestirilmisMizan();
+                      } else if (handleAnaHesapMizan) {
+                        handleAnaHesapMizan();
+                      }
                     }}
                     sx={{
                       backgroundColor: isDataEmpty ? theme.palette.warning.light : 'inherit',
@@ -604,7 +610,11 @@ const Mizan: React.FC<Props> = ({
                     disabled={mizanOlusturTiklandimi}
                     onClick={() => {
                       setMizanOlusturTiklandimi(true);
-                      handleDetayHesapMizan();
+                      if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
+                        handleBirlestirilmisMizan();
+                      } else if (handleDetayHesapMizan) {
+                        handleDetayHesapMizan();
+                      }
                     }}
                     sx={{
                       backgroundColor: isDataEmpty ? theme.palette.warning.light : 'inherit',

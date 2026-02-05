@@ -8,7 +8,7 @@ export const getTanimlamalar = async (
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Konsolidasyon/Tanimlamalar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
@@ -30,7 +30,7 @@ export const getTanimlamalar = async (
 
 export const getTanimlamalarById = async (token: string, id: any) => {
   try {
-    const response =await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
+    const response = await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -53,7 +53,7 @@ export const updateTanimlamalar = async (
   updatedTanimlamalar: any
 ) => {
   try {
-    const response =await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
+    const response = await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
@@ -77,18 +77,22 @@ export const createBirlestirilmisMizan = async (
   token: string,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  baslangicTarihi?: any,
+  bitisTarihi?: any
 ) => {
   try {
-    const response =await apiFetch(
-      `/Konsolidasyon/MizanBirlestir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
-      {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    let urlString = `/Konsolidasyon/MizanBirlestir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`;
+    if (baslangicTarihi) urlString += `&baslangicTarihi=${baslangicTarihi}`;
+    if (bitisTarihi) urlString += `&bitisTarihi=${bitisTarihi}`;
+
+    const response = await apiFetch(urlString, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
     );
     if (response.ok) {
       return response.json();

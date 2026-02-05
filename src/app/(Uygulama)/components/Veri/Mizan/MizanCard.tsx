@@ -10,6 +10,11 @@ interface Props {
   mizanOlusturTiklandimi: boolean;
   setMizanOlusturTiklandimi: (bool: boolean) => void;
   fetchedData?: any[]; // New prop for data drilling
+  handleBirlestirilmisMizan?: () => Promise<void>;
+  mizanBaslangicTarihi?: any;
+  setMizanBaslangicTarihi?: (date: any) => void;
+  mizanBitisTarihi?: any;
+  setMizanBitisTarihi?: (date: any) => void;
 }
 
 const MizanCard: React.FC<Props> = ({
