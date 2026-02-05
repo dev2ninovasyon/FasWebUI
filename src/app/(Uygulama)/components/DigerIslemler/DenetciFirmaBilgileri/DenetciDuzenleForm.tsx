@@ -1,5 +1,6 @@
 ﻿import { Grid, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { enqueueSnackbar } from "notistack";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { useRouter } from "next/navigation";
@@ -40,6 +41,7 @@ const DenetciDuzenleForm = () => {
       ticaretSicilNo,
       aktifmi,
     };
+    enqueueSnackbar("denetçi düzenleniyor..", { variant: "info" });
     try {
       const result = await updateDenetci(
         user.token || "",
@@ -47,11 +49,14 @@ const DenetciDuzenleForm = () => {
         updatedDenetci
       );
       if (result) {
-        router.push("/DenetciFirmaIslemleri");
+        enqueueSnackbar("denetci düzenlendi.", { variant: "success" });
+        fetchData();
+        // router.push("/DigerIslemler/DenetciFirmaBilgileri");
       } else {
-        console.log("Denetçi düzenleme başarısız");
+        enqueueSnackbar("Denetçi düzenleme başarısız", { variant: "error" });
       }
     } catch (error) {
+      enqueueSnackbar("Bir hata oluştu", { variant: "error" });
       console.log("Bir hata oluştu:", error);
     }
   };
@@ -108,7 +113,9 @@ const DenetciDuzenleForm = () => {
           id="firmaAdi"
           value={firmaAdi}
           fullWidth
-          onChange={(e: any) => setFirmaAdi(e.target.value)}
+          disabled
+          inputProps={{ readOnly: true }}
+        //onChange={(e: any) => setFirmaAdi(e.target.value)}
         />
       </Grid>
       <Grid
@@ -134,7 +141,9 @@ const DenetciDuzenleForm = () => {
           id="firmaUnvani"
           value={firmaUnvani}
           fullWidth
-          onChange={(e: any) => setFirmaUnvani(e.target.value)}
+          disabled
+          inputProps={{ readOnly: true }}
+        // onChange={(e: any) => setFirmaUnvani(e.target.value)}
         />
       </Grid>
       <Grid

@@ -8,6 +8,7 @@ interface Props {
     denetciName: string;
     denetlenenName: string;
     reportName: string;
+    logo?: string | null;
 }
 
 const ReportHeader: React.FC<Props> = ({
@@ -16,6 +17,7 @@ const ReportHeader: React.FC<Props> = ({
     denetciName,
     denetlenenName,
     reportName,
+    logo,
 }) => {
     const theme = useTheme();
 
@@ -23,13 +25,24 @@ const ReportHeader: React.FC<Props> = ({
         <Box sx={{ mb: 4 }}>
             <Grid container alignItems="center" spacing={2}>
                 <Grid size={2}>
-                    <Image
-                        src={theme.palette.mode === 'dark' ? "/images/logos/light-logo.svg" : "/images/logos/dark-logo.svg"}
-                        alt="Logo"
-                        width={120}
-                        height={40}
-                        priority
-                    />
+                    {logo ? (
+                        <Image
+                            src={logo}
+                            alt="Logo"
+                            width={120}
+                            height={40}
+                            style={{ objectFit: 'contain' }}
+                            priority
+                        />
+                    ) : (
+                        <Image
+                            src={theme.palette.mode === 'dark' ? "/images/logos/light-logo.svg" : "/images/logos/dark-logo.svg"}
+                            alt="Logo"
+                            width={120}
+                            height={40}
+                            priority
+                        />
+                    )}
                 </Grid>
                 <Grid textAlign="center" size={8}>
                     <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>

@@ -148,15 +148,7 @@ const FaaliyetRaporuStepper = () => {
 
   const [firmaLogoImage, setFirmaLogoImage] = useState<string | null>(null);
 
-  const handleFirmaLogoImageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const objectURL = URL.createObjectURL(file);
-      setFirmaLogoImage(objectURL);
-    }
-  };
+
 
   const [dikeyKonum, setDikeyKonum] = useState("Ust");
   const handleChangeDikeyKonum = (
@@ -492,6 +484,8 @@ const FaaliyetRaporuStepper = () => {
       if (logoData) {
         if (typeof logoData === "string") {
           setFirmaLogoImage(logoData);
+        } else if (logoData.logoBase64) {
+          setFirmaLogoImage(logoData.logoBase64);
         } else if (logoData.logo) {
           setFirmaLogoImage(logoData.logo);
         } else if (logoData.image) {
@@ -940,133 +934,7 @@ const FaaliyetRaporuStepper = () => {
                 sm: 6,
                 lg: 6
               }}>
-              <Box bgcolor={"info.light"} textAlign="center">
-                <CardContent
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "180px",
-                  }}
-                >
-                  <Grid container justifyContent={"space-between"}>
-                    <Grid
-                      mb={mdDown ? 3 : 0}
-                      size={{
-                        xs: 12,
-                        md: 6,
-                        lg: 6
-                      }}>
-                      <Typography
-                        variant="subtitle1"
-                        height={"100%"}
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={mdDown ? "center" : "start"}
-                      >
-                        Kapak İçin Firma Logosu Yükle
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      size={{
-                        xs: 12,
-                        md: 3,
-                        lg: 3
-                      }}>
-                      <input
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        id="upload-button2"
-                        type="file"
-                        onChange={handleFirmaLogoImageChange}
-                      />
-                      <label htmlFor="upload-button2">
-                        <Button
-                          size="medium"
-                          variant="outlined"
-                          color="primary"
-                          component="span"
-                        >
-                          Logo Seç
-                        </Button>
-                      </label>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Box>
-            </Grid>
-            <Grid
-              size={{
-                xs: 12,
-                sm: 6,
-                lg: 6
-              }}>
-              <Box bgcolor={"info.light"} textAlign="center">
-                <CardContent
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "180px",
-                  }}
-                >
-                  <Grid container>
-                    <Grid
-                      mb={mdDown ? 3 : 0}
-                      size={{
-                        xs: 4,
-                        md: 4,
-                        lg: 4
-                      }}>
-                      <Typography
-                        variant="subtitle1"
-                        height={"100%"}
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={mdDown ? "center" : "start"}
-                      >
-                        Seçilen Logo:
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      size={{
-                        xs: 8,
-                        md: 8,
-                        lg: 8
-                      }}>
-                      {firmaLogoImage && (
-                        <Box
-                          sx={{
-                            width: "174px",
-                            height: "100px",
-                            overflow: "hidden",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: "8px",
-                          }}
-                        >
-                          <CardMedia
-                            component="img"
-                            image={firmaLogoImage}
-                            alt="Logo"
-                            sx={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "contain",
-                              backgroundRepeat: "no-repeat",
-                              backgroundPosition: "center",
-                            }}
-                          />
-                        </Box>
-                      )}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Box>
+
             </Grid>
             {firmaLogoImage && (
               <>

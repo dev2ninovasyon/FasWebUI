@@ -46,6 +46,7 @@ import FormOnayBolumu from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/F
 import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { getKullaniciById, getKullaniciByDenetlenenYilRol } from "@/api/Kullanici/KullaniciIslemleri";
 import { getHareketsizTicariAlacaklarByDenetlenen } from "@/api/CalismaKagitlari/HareketsizTicariAlacaklar"
+import { getLogo } from "@/api/Denetci/Denetci";
 
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
@@ -233,7 +234,9 @@ const CalismaKagidiRaporu = () => {
     const [reportData, setReportData] = useState<DetailData[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeStep, setActiveStep] = useState(0);
+
     const [signatureData, setSignatureData] = useState<any>(null);
+    const [logo, setLogo] = useState<string | null>(null);
 
     const [downloadMenuAnchor, setDownloadMenuAnchor] = useState<null | HTMLElement>(null);
     const isDownloadMenuOpen = Boolean(downloadMenuAnchor);
@@ -500,11 +503,39 @@ const CalismaKagidiRaporu = () => {
         }
     };
 
+    const fetchLogo = async () => {
+        try {
+            const logoData = await getLogo(user.token || "", user.denetciId || 0);
+            if (logoData) {
+                if (typeof logoData === "string") {
+                    setLogo(logoData);
+                } else if (logoData.logoBase64) {
+                    setLogo(logoData.logoBase64);
+                } else if (logoData.logo) {
+                    setLogo(logoData.logo);
+                } else if (logoData.image) {
+                    setLogo(logoData.image);
+                } else {
+                    if (logoData.toString().startsWith("data:image")) {
+                        setLogo(logoData.toString());
+                    }
+                }
+            }
+        } catch (error) {
+            console.log("Logo getirilemedi:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchLogo();
+    }, []);
+
+
     const handleGenerateReport = async () => {
         setLoading(true);
         try {
             await fetchSignatureData();
-
+            await fetchLogo();
             await fetchData();
 
             setActiveStep(1);
@@ -1240,7 +1271,9 @@ const CalismaKagidiRaporu = () => {
                             yil={user.yil || 0}
                             denetciName={""}
                             denetlenenName={""}
+
                             reportName={`${parentName} - Çalışma Kağıdı `}
+                            logo={logo}
                         />
 
                         <SignatureTable

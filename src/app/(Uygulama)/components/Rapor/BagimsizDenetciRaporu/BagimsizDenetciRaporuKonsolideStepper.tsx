@@ -41,6 +41,7 @@ import {
   getRaporGorus,
   updateRaporGorus,
 } from "@/api/DenetimRaporu/DenetimRaporu";
+import { getLogo } from "@/api/Denetci/Denetci";
 import RaporGorusCard from "@/app/(Uygulama)/components/Rapor/RaporGorus/RaporGorusCard";
 import {
   getFinansalDurumTablosu,
@@ -268,15 +269,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
   const [firmaLogoImage, setFirmaLogoImage] = useState<string | null>(null);
 
-  const handleFirmaLogoImageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const objectURL = URL.createObjectURL(file);
-      setFirmaLogoImage(objectURL);
-    }
-  };
+
 
   const [dikeyKonum, setDikeyKonum] = useState("Ust");
   const handleChangeDikeyKonum = (
@@ -293,6 +286,33 @@ const BagimsizDenetciRaporuStepper = () => {
   };
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const fetchLogo = async () => {
+    try {
+      const logoData = await getLogo(user.token || "", user.denetciId || 0);
+      if (logoData) {
+        if (typeof logoData === "string") {
+          setFirmaLogoImage(logoData);
+        } else if (logoData.logoBase64) {
+          setFirmaLogoImage(logoData.logoBase64);
+        } else if (logoData.logo) {
+          setFirmaLogoImage(logoData.logo);
+        } else if (logoData.image) {
+          setFirmaLogoImage(logoData.image);
+        } else {
+          if (logoData.toString().startsWith("data:image")) {
+            setFirmaLogoImage(logoData.toString());
+          }
+        }
+      }
+    } catch (error) {
+      console.log("Logo getirilemedi:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLogo();
+  }, []);
 
   const handleUpdate = async () => {
     try {
@@ -1692,67 +1712,6 @@ const BagimsizDenetciRaporuStepper = () => {
                     height: "180px",
                   }}
                 >
-                  <Grid container justifyContent={"space-between"}>
-                    <Grid
-                      mb={mdDown ? 3 : 0}
-                      size={{
-                        xs: 12,
-                        md: 6,
-                        lg: 6
-                      }}>
-                      <Typography
-                        variant="subtitle1"
-                        height={"100%"}
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={mdDown ? "center" : "start"}
-                      >
-                        Kapak İçin Firma Logosu Yükle
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      size={{
-                        xs: 12,
-                        md: 3,
-                        lg: 3
-                      }}>
-                      <input
-                        accept="image/*"
-                        style={{ display: "none" }}
-                        id="upload-button2"
-                        type="file"
-                        onChange={handleFirmaLogoImageChange}
-                      />
-                      <label htmlFor="upload-button2">
-                        <Button
-                          size="medium"
-                          variant="outlined"
-                          color="primary"
-                          component="span"
-                        >
-                          Logo Seç
-                        </Button>
-                      </label>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Box>
-            </Grid>
-            <Grid
-              size={{
-                xs: 12,
-                sm: 6,
-                lg: 6
-              }}>
-              <Box bgcolor={"info.light"} textAlign="center">
-                <CardContent
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "180px",
-                  }}
-                >
                   <Grid container>
                     <Grid
                       mb={mdDown ? 3 : 0}
@@ -1761,15 +1720,7 @@ const BagimsizDenetciRaporuStepper = () => {
                         md: 4,
                         lg: 4
                       }}>
-                      <Typography
-                        variant="subtitle1"
-                        height={"100%"}
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={mdDown ? "center" : "start"}
-                      >
-                        Seçilen Logo:
-                      </Typography>
+
                     </Grid>
                     <Grid
                       display="flex"
@@ -1780,7 +1731,7 @@ const BagimsizDenetciRaporuStepper = () => {
                         md: 8,
                         lg: 8
                       }}>
-                      {firmaLogoImage && (
+                      {firmaLogoImage ? (
                         <Box
                           sx={{
                             width: "174px",
@@ -1805,6 +1756,10 @@ const BagimsizDenetciRaporuStepper = () => {
                             }}
                           />
                         </Box>
+                      ) : (
+                        <Typography variant="body2" color="textSecondary">
+                          Logo Yok
+                        </Typography>
                       )}
                     </Grid>
                   </Grid>

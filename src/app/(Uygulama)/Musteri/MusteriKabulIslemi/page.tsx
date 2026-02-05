@@ -21,6 +21,7 @@ import {
   getDenetlenenById,
   updateDenetlenenDenetimTuru,
 } from "@/api/Musteri/MusteriIslemleri";
+import { firmayiKabulEt } from "@/api/CalismaKagitlari/Teklif";
 import { useDispatch } from "@/store/hooks";
 import {
   setBobimi,
@@ -84,11 +85,14 @@ const Page: React.FC = () => {
         return;
       }
 
-      const result = await updateDenetlenenDenetimTuru(
+      const result = await firmayiKabulEt(
         user.token || "",
         user.denetlenenId || 0,
+        user.yil || 0,
         tur,
-        enflasyon
+        false,
+        enflasyon === "Evet",
+        user.denetciId || 0
       );
       if (result == true) {
         fetchData();
@@ -217,7 +221,7 @@ const Page: React.FC = () => {
                 <MenuItem value={"Bobi"}>Denetim Türü: Bobi</MenuItem>
               )}
               {odemeBilgileriBobi && (
-                <MenuItem value={"BobiBüyük"}>
+                <MenuItem value={"BobiBuyuk"}>
                   Denetim Türü: Bobi Büyük
                 </MenuItem>
               )}
@@ -225,14 +229,14 @@ const Page: React.FC = () => {
                 <MenuItem value={"Tfrs"}>Denetim Türü: Tfrs</MenuItem>
               )}
               {odemeBilgileriTfrs && (
-                <MenuItem value={"TfrsDönemsel"}>
+                <MenuItem value={"TfrsDonemsel"}>
                   Denetim Türü: Tfrs Dönemsel
                 </MenuItem>
               )}
               {odemeBilgileriKumi && (
                 <MenuItem value={"Kumi"}>Denetim Türü: Kümi</MenuItem>
               )}
-              <MenuItem value={"ÖzelDenetim"}>
+              <MenuItem value={"OzelDenetim"}>
                 Denetim Türü: Özel Denetim
               </MenuItem>
             </CustomSelect>

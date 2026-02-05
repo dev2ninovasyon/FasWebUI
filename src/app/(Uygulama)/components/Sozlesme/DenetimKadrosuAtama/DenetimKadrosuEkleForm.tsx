@@ -1,5 +1,5 @@
 ﻿import { Grid, Button, useTheme } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -16,9 +16,9 @@ const DenetimKadrosuEkleForm = () => {
   const [kullaniciAdi, setKullaniciAdi] = useState("");
   const [unvanAdi, setUnvanAdi] = useState("");
   const [asilYedek, setAsilYedek] = useState("");
-  const [calismaSaati, setCalismaSaati] = useState(0);
-  const [saatBasiUcreti, setSaatBasiUcreti] = useState(0);
-  const [denetimUcreti, setDenetimUcreti] = useState(0);
+  const [calismaSaati, setCalismaSaati] = useState<any>(0);
+  const [saatBasiUcreti, setSaatBasiUcreti] = useState<any>(0);
+  const [denetimUcreti, setDenetimUcreti] = useState<any>(0);
   const [aktifPasif, setAktifPasif] = useState(true);
 
   const [kullaniciId, setKullaniciId] = useState(0);
@@ -29,6 +29,11 @@ const DenetimKadrosuEkleForm = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
   const router = useRouter();
+
+  useEffect(() => {
+    const calculated = (Number(calismaSaati) || 0) * (Number(saatBasiUcreti) || 0);
+    setDenetimUcreti(Number(calculated.toFixed(2)));
+  }, [calismaSaati, saatBasiUcreti]);
 
   const denetciId = user.denetciId;
   const denetlenenId = user.denetlenenId;
@@ -42,9 +47,9 @@ const DenetimKadrosuEkleForm = () => {
       kullaniciId,
       unvanId,
       asilYedek,
-      calismaSaati,
-      saatBasiUcreti,
-      denetimUcreti,
+      calismaSaati: Number(calismaSaati),
+      saatBasiUcreti: Number(saatBasiUcreti),
+      denetimUcreti: Number(denetimUcreti),
       aktifPasif,
     };
 
@@ -176,26 +181,17 @@ const DenetimKadrosuEkleForm = () => {
           <CustomTextField
             id="calismaSaati"
             type="number"
+            value={calismaSaati}
             fullWidth
-            inputProps={{ step: "1", pattern: "[0-9]*" }}
+            inputProps={{ step: "0.01", pattern: "[0-9]*[.,]?[0-9]*" }}
             onChange={(e: any) => {
               const value = e.target.value;
-              if (/^\d*$/.test(value)) {
-                // Regex to allow only digits
-                setCalismaSaati(value);
-              } else {
-                enqueueSnackbar("Hatalı Sayı Girişi. Tam Sayı Girmelisiniz.", {
-                  variant: "warning",
-                  autoHideDuration: 5000,
-                  style: {
-                    backgroundColor:
-                      customizer.activeMode === "dark"
-                        ? theme.palette.warning.dark
-                        : theme.palette.warning.main,
-                    maxWidth: "720px",
-                  },
-                });
+              if (value === "" || /^\d*[.,]?\d*$/.test(value)) {
+                setCalismaSaati(value.replace(",", "."));
               }
+            }}
+            onBlur={() => {
+              setCalismaSaati(Number(calismaSaati).toFixed(2));
             }}
           />
         </Grid>
@@ -221,29 +217,17 @@ const DenetimKadrosuEkleForm = () => {
           <CustomTextField
             id="saatBasiUcreti"
             type="number"
+            value={saatBasiUcreti}
             fullWidth
-            inputProps={{ step: "1", pattern: "[0-9]*.[0-9]*" }}
+            inputProps={{ step: "0.01", pattern: "[0-9]*[.,]?[0-9]*" }}
             onChange={(e: any) => {
               const value = e.target.value;
-              if (/^[0-9]+(\.[0-9]+)?$/.test(value)) {
-                // Regex to allow numbers
-                setSaatBasiUcreti(value);
-              } else {
-                enqueueSnackbar(
-                  "Hatalı Sayı Girişi. Ondalıklı Sayı Girmelisiniz.",
-                  {
-                    variant: "warning",
-                    autoHideDuration: 5000,
-                    style: {
-                      backgroundColor:
-                        customizer.activeMode === "dark"
-                          ? theme.palette.warning.dark
-                          : theme.palette.warning.main,
-                      maxWidth: "720px",
-                    },
-                  }
-                );
+              if (value === "" || /^\d*[.,]?\d*$/.test(value)) {
+                setSaatBasiUcreti(value.replace(",", "."));
               }
+            }}
+            onBlur={() => {
+              setSaatBasiUcreti(Number(saatBasiUcreti).toFixed(2));
             }}
           />
         </Grid>
@@ -269,29 +253,17 @@ const DenetimKadrosuEkleForm = () => {
           <CustomTextField
             id="denetimUcreti"
             type="number"
+            value={denetimUcreti}
             fullWidth
-            inputProps={{ step: "1", pattern: "[0-9]*.[0-9]*" }}
+            inputProps={{ step: "0.01", readOnly: true }}
             onChange={(e: any) => {
               const value = e.target.value;
-              if (/^[0-9]+(\.[0-9]+)?$/.test(value)) {
-                // Regex to allow only numbers
-                setDenetimUcreti(value);
-              } else {
-                enqueueSnackbar(
-                  "Hatalı Sayı Girişi. Ondalıklı Sayı Girmelisiniz.",
-                  {
-                    variant: "warning",
-                    autoHideDuration: 5000,
-                    style: {
-                      backgroundColor:
-                        customizer.activeMode === "dark"
-                          ? theme.palette.warning.dark
-                          : theme.palette.warning.main,
-                      maxWidth: "720px",
-                    },
-                  }
-                );
+              if (value === "" || /^\d*[.,]?\d*$/.test(value)) {
+                setDenetimUcreti(value.replace(",", "."));
               }
+            }}
+            onBlur={() => {
+              setDenetimUcreti(Number(denetimUcreti).toFixed(2));
             }}
           />
         </Grid>

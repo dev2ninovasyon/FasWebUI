@@ -40,6 +40,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { enqueueSnackbar } from "notistack";
 import { getCariDosya, getSurekliDosya } from "@/api/DenetimDosya/DenetimDosya";
+import { uploadAndParseKurumlarBeyannamesi } from "@/api/Musteri/MusteriIslemleri";
 import {
   EkBelgeDto,
   getMusteriBelgeleriFetch,
@@ -206,13 +207,26 @@ const Page = () => {
       try {
         const formKodu = getSelectedFormKodu();
 
-        await uploadMusteriBelgeFetch(user.token, {
-          denetciId: user.denetciId,
-          denetlenenId: user.denetlenenId,
-          yil: user.yil,
-          formKodu: formKodu || "FormKodu",
-          files: acceptedFiles,
-        });
+        if (formKodu?.toLowerCase().includes("kurumlarvergisi") || fileType2.toLowerCase().includes("kurumlar vergisi")) {
+          // If it's Kurumlar Vergisi Beyannamesi, use the specialized upload and parse API
+          for (const file of acceptedFiles) {
+            await uploadAndParseKurumlarBeyannamesi(
+              user.token,
+              file,
+              user.denetciId,
+              user.yil,
+              user.denetlenenId
+            );
+          }
+        } else {
+          await uploadMusteriBelgeFetch(user.token, {
+            denetciId: user.denetciId,
+            denetlenenId: user.denetlenenId,
+            yil: user.yil,
+            formKodu: formKodu || "FormKodu",
+            files: acceptedFiles,
+          });
+        }
 
         setProgressInfos((prev) =>
           prev.map((p) => ({ ...p, percentage: 100 }))

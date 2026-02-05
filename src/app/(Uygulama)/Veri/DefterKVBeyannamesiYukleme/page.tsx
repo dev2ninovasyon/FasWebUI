@@ -17,7 +17,7 @@ import {
   useTheme,
 } from "@mui/material";
 import DosyaTable from "@/app/(Uygulama)/components/Veri/DosyaTable";
-import { getDenetlenenById } from "@/api/Musteri/MusteriIslemleri";
+import { getDenetlenenById, uploadAndParseKurumlarBeyannamesi } from "@/api/Musteri/MusteriIslemleri";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "@/store/hooks";
@@ -192,47 +192,86 @@ const Page: React.FC = () => {
 
       try {
         const uploadPromises = validFiles.map(async (file, index) => {
-          const formData = new FormData();
-          formData.append("files", file);
+          if (fileType === "KurumlarBeyannamesi") {
+            try {
+              const res = await uploadAndParseKurumlarBeyannamesi(
+                user.token || "",
+                file,
+                user.denetciId || 0,
+                user.yil || 0,
+                user.denetlenenId || 0
+              );
+              if (res.success) {
+                setProgressInfos((prev) => {
+                  const next = [...prev];
+                  if (next[index]) {
+                    next[index] = { ...next[index], status: "Tamamlandı", percentage: 100 };
+                  }
+                  return next;
+                });
+              } else {
+                throw new Error(res.message);
+              }
+            } catch (error: any) {
+              setProgressInfos((prev) => {
+                const next = [...prev];
+                if (next[index]) {
+                  next[index] = { ...next[index], status: "Hata!", percentage: 0 };
+                }
+                return next;
+              });
+              enqueueSnackbar(error.message || "Bilinmeyen bir hata oluştu.", { variant: "error" });
+            }
+          } else {
+            const formData = new FormData();
+            formData.append("files", file);
 
-          try {
-            await axios.post(
-              `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
-              formData,
-              {
-                headers: { "Content-Type": "multipart/form-data" },
-                onUploadProgress: (event) => {
-                  const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
-                  setProgressInfos((prev) => {
-                    const next = [...prev];
-                    if (next[index]) {
-                      next[index] = { ...next[index], percentage: Math.round(progress * 0.2), status: "Yükleniyor..." };
-                    }
-                    return next;
-                  });
-                },
-              }
-            );
+            try {
+              await axios.post(
+                `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
+                formData,
+                {
+                  headers: { "Content-Type": "multipart/form-data" },
+                  onUploadProgress: (event) => {
+                    const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
+                    setProgressInfos((prev) => {
+                      const next = [...prev];
+                      if (next[index]) {
+                        next[index] = { ...next[index], percentage: Math.round(progress * 0.2), status: "Yükleniyor..." };
+                      }
+                      return next;
+                    });
+                  },
+                }
+              );
 
-            setProgressInfos((prev) => {
-              const next = [...prev];
-              if (next[index]) {
-                next[index] = { ...next[index], status: "Yüklendi", percentage: 20 };
-              }
-              return next;
-            });
-          } catch (error) {
-            setProgressInfos((prev) => {
-              const next = [...prev];
-              if (next[index]) {
-                next[index] = { ...next[index], status: "Hata!", percentage: 0 };
-              }
-              return next;
-            });
+              setProgressInfos((prev) => {
+                const next = [...prev];
+                if (next[index]) {
+                  next[index] = { ...next[index], status: "Yüklendi", percentage: 20 };
+                }
+                return next;
+              });
+            } catch (error) {
+              setProgressInfos((prev) => {
+                const next = [...prev];
+                if (next[index]) {
+                  next[index] = { ...next[index], status: "Hata!", percentage: 0 };
+                }
+                return next;
+              });
+            }
           }
         });
 
         await Promise.all(uploadPromises);
+
+        if (fileType === "KurumlarBeyannamesi") {
+          setUploading(false);
+          setDosyaYuklendiMi(true);
+          setControl(true);
+          return;
+        }
 
         // Polling for processing status
         const interval = setInterval(async () => {
