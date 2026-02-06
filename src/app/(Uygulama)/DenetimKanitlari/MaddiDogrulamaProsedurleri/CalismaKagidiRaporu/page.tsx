@@ -91,6 +91,7 @@ import MaddiDogrulamaYorumComponent from "@/app/(Uygulama)/components/CalismaKag
 interface DenetimDosyaBelgeleriDto {
     id: number;
     name: string;
+    reference?: string;
     children?: DenetimDosyaBelgeleriDto[];
 }
 
@@ -237,6 +238,7 @@ const CalismaKagidiRaporu = () => {
 
     const [signatureData, setSignatureData] = useState<any>(null);
     const [logo, setLogo] = useState<string | null>(null);
+    const [referansNo, setReferansNo] = useState<string>("");
 
     const [downloadMenuAnchor, setDownloadMenuAnchor] = useState<null | HTMLElement>(null);
     const isDownloadMenuOpen = Boolean(downloadMenuAnchor);
@@ -569,6 +571,14 @@ const CalismaKagidiRaporu = () => {
                 const group = allData.find(
                     (item: DenetimDosyaBelgeleriDto) => item.name === parentName
                 );
+
+                // Fetch reference number from the matched group
+                if (group && group.reference) {
+                    setReferansNo(group.reference);
+                } else {
+                    // Fallback to generated format if not found
+                    setReferansNo(`CW-${user.denetlenenId}-${user.yil}`);
+                }
 
                 // Need to find the exact dipnotNo from procedures first
                 let dipnotNo = "";
@@ -1274,6 +1284,7 @@ const CalismaKagidiRaporu = () => {
 
                             reportName={`${parentName} - Çalışma Kağıdı `}
                             logo={logo}
+                            referansNo={referansNo}
                         />
 
                         <SignatureTable
