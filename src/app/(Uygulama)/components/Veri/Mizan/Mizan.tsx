@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme, CircularProgress, Box, Pagination, Typography } from "@mui/material";
+import { Grid, useTheme, CircularProgress, Box, Pagination, Typography, Button, Fab, Tooltip } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import ExcelJS from "exceljs";
@@ -15,6 +15,11 @@ import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButto
 import { getMizanVerileri } from "@/api/Veri/Mizan";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
+import { IconHistory } from "@tabler/icons-react";
+import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
+import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import MizanCard from "@/app/(Uygulama)/components/Veri/Mizan/MizanCard";
+import { enqueueSnackbar } from "notistack";
 
 // register Handsontable's modules
 registerAllModules();
@@ -37,13 +42,27 @@ interface Props {
   type: string;
   mizanOlusturTiklandimi: boolean;
   setMizanOlusturTiklandimi: (bool: boolean) => void;
-  sharedData?: any[]; // New prop for data drilling from parent
+  handleAnaHesapMizan?: () => Promise<void>;
+  handleDetayHesapMizan?: () => Promise<void>;
+  handleBirlestirilmisMizan?: () => Promise<void>;
+  mizanBaslangicTarihi?: any;
+  setMizanBaslangicTarihi?: (date: any) => void;
+  mizanBitisTarihi?: any;
+  setMizanBitisTarihi?: (date: any) => void;
+  sharedData?: any[];
 }
 
 const Mizan: React.FC<Props> = ({
   type,
   mizanOlusturTiklandimi,
   setMizanOlusturTiklandimi,
+  handleAnaHesapMizan,
+  handleDetayHesapMizan,
+  handleBirlestirilmisMizan,
+  mizanBaslangicTarihi,
+  setMizanBaslangicTarihi,
+  mizanBitisTarihi,
+  setMizanBitisTarihi,
   sharedData,
 }) => {
   const hotTableComponent = useRef<any>(null);
@@ -57,10 +76,14 @@ const Mizan: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(50);
+  const [showDrawer, setShowDrawer] = useState(false);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
   const [allData, setAllData] = useState<any[]>([]); // Store all data for the table
+  const [rawMizanData, setRawMizanData] = useState<any[]>([]); // Store raw objects for MizanCard
   const [hiddenIndices, setHiddenIndices] = useState<number[]>([]);
+
+  const isDataEmpty = !loading && rowCount === 0;
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -303,18 +326,29 @@ const Mizan: React.FC<Props> = ({
           totalAlacak += veri.alacakTutari;
         }
       });
-      rowsAll.sort((a: any, b: any) => (a[1] > b[1] ? 1 : -1));
-      rowsAll.push([
-        undefined,
-        undefined,
-        undefined,
-        "Toplam",
-        totalBorc,
-        totalAlacak,
-        undefined,
-        undefined,
-      ]);
+      if (rowsAll.length > 0) {
+        rowsAll.sort((a: any, b: any) => (a[1] > b[1] ? 1 : -1));
+        rowsAll.push([
+          undefined,
+          undefined,
+          undefined,
+          "Toplam",
+          totalBorc,
+          totalAlacak,
+          undefined,
+          undefined,
+        ]);
+      } else {
+        enqueueSnackbar("Mizan Oluşturmalısınız.", {
+          variant: "warning",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor: customizer.activeMode === "dark" ? theme.palette.warning.dark : theme.palette.warning.main,
+          }
+        });
+      }
 
+      setRawMizanData(mizanVerileri);
       // Store all data for pagination
       setAllData(rowsAll);
       setFetchedData(rowsAll); // Provide all data to HotTable for global filtering
@@ -448,8 +482,197 @@ const Mizan: React.FC<Props> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, [customizer.isCollapse, customizer.activeMode]);
 
+  const handleShowAnaHesap = () => {
+    const filtered = allData.filter((row: any) => (row[1] && row[1].toString().length === 3) || row[3] === 'Toplam');
+    setFetchedData(filtered);
+    setRowCount(filtered.length);
+    setPage(0);
+  };
+
+  const handleShowDetayHesap = () => {
+    const filtered = allData.filter((row: any) => (row[1] && row[1].toString().length > 3) || row[3] === 'Toplam');
+    setFetchedData(filtered);
+    setRowCount(filtered.length);
+    setPage(0);
+  };
+
   return (
     <>
+      <Grid container spacing={3} mb={3}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6
+          }}
+          sx={{ display: "flex", flexDirection: "column" }}
+        >
+          <Grid container spacing={2} p={1} height="100%" direction="column">
+            <Grid size="auto">
+              <Grid container spacing={2} alignItems="center">
+                <Grid size="auto">
+                  <CustomFormLabel
+                    htmlFor="mizanBaslangicTarihi"
+                    sx={{
+                      mt: 0,
+                      mb: { xs: "-10px", sm: 0 },
+                      mr: 0,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Typography variant="subtitle1">
+                      Başlangıç Tarihi:
+                    </Typography>
+                  </CustomFormLabel>
+                </Grid>
+                <Grid size="auto">
+                  <CustomTextField
+                    id="mizanBaslangicTarihi"
+                    type="date"
+                    value={mizanBaslangicTarihi}
+                    onChange={(e: any) =>
+                      setMizanBaslangicTarihi && setMizanBaslangicTarihi(e.target.value)
+                    }
+                  />
+                </Grid>
+                <Grid size="auto">
+                  <CustomFormLabel
+                    htmlFor="mizanBitisTarihi"
+                    sx={{
+                      mt: 0,
+                      mb: { xs: "-10px", sm: 0 },
+                      mr: 0,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Typography variant="subtitle1">
+                      Bitiş Tarihi:
+                    </Typography>
+                  </CustomFormLabel>
+                </Grid>
+                <Grid size="auto">
+                  <CustomTextField
+                    id="mizanBitisTarihi"
+                    type="date"
+                    value={mizanBitisTarihi}
+                    onChange={(e: any) =>
+                      setMizanBitisTarihi && setMizanBitisTarihi(e.target.value)
+                    }
+                  />
+                </Grid>
+                <Grid size="auto">
+                  <Button
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    disabled={mizanOlusturTiklandimi}
+                    onClick={() => {
+                      setMizanOlusturTiklandimi(true);
+                      if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
+                        handleBirlestirilmisMizan();
+                      } else if (handleAnaHesapMizan) {
+                        handleAnaHesapMizan();
+                      }
+                    }}
+                    sx={{
+                      backgroundColor: isDataEmpty ? theme.palette.warning.light : 'inherit',
+                      borderColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
+                      '&:hover': {
+                        backgroundColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
+                      },
+                      animation: isDataEmpty ? 'pulse 2s infinite' : 'none',
+                    }}
+                  >
+                    Mizan
+                  </Button>
+                  <style>
+                    {`
+                              @keyframes pulse {
+                                0% {
+                                  box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7);
+                                }
+                                70% {
+                                  box-shadow: 0 0 0 10px rgba(255, 165, 0, 0);
+                                }
+                                100% {
+                                  box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);
+                                }
+                              }
+                            `}
+                  </style>
+                </Grid>
+                <Grid size="auto">
+                  <Button
+                    size="medium"
+                    variant="outlined"
+                    color="primary"
+                    disabled={mizanOlusturTiklandimi}
+                    onClick={() => {
+                      setMizanOlusturTiklandimi(true);
+                      if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
+                        handleBirlestirilmisMizan();
+                      } else if (handleDetayHesapMizan) {
+                        handleDetayHesapMizan();
+                      }
+                    }}
+                    sx={{
+                      backgroundColor: isDataEmpty ? theme.palette.warning.light : 'inherit',
+                      borderColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
+                      '&:hover': {
+                        backgroundColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
+                      },
+                      animation: isDataEmpty ? 'pulse 2s infinite' : 'none',
+                    }}
+                  >
+                    Detay Mizan
+                  </Button>
+                </Grid>
+                <Grid size="auto">
+                  <Tooltip title="Mizan Oluşturma Kayıtları">
+                    <Fab
+                      color="warning"
+                      size="small"
+                      onClick={() => setShowDrawer(true)}
+                    >
+                      <IconHistory width={18.25} height={18.25} />
+                    </Fab>
+                  </Tooltip>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Box sx={{ flexGrow: 1 }} />
+            <Grid size="auto" sx={{ display: "flex", gap: 2, pb: 1 }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleShowAnaHesap}
+              >
+                Ana Hesap Göster
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleShowDetayHesap}
+              >
+                Detay Hesap Göster
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6
+          }}
+          sx={{ display: "flex", flexDirection: "column" }}
+        >
+          <MizanCard
+            type={"E-Defter"}
+            mizanOlusturTiklandimi={mizanOlusturTiklandimi}
+            setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+            fetchedData={rawMizanData}
+          />
+        </Grid>
+      </Grid>
       <Box sx={{ position: "relative" }}>
         {loading && (
           <Box
@@ -537,14 +760,16 @@ const Mizan: React.FC<Props> = ({
           </Typography>
         </Grid>
         <Grid
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
           size={{
             xs: 12,
             lg: 6
+          }}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
           }}>
+
           <ExceleAktarButton
             handleDownload={handleDownload}
           ></ExceleAktarButton>

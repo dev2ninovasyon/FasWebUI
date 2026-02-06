@@ -4,6 +4,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getKullaniciRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
+import { getAcceptedYears } from "@/api/CalismaKagitlari/Teklif";
 
 const years = [
   { label: "2025", year: 2025 },
@@ -41,15 +42,30 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
     try {
       if (!selectedDenetlenenId) return;
 
-      const kullaniciRolVerileri = await getKullaniciRol(
-        user.id || 0,
-        selectedDenetlenenId
-      );
-      if (Array.isArray(kullaniciRolVerileri)) {
-        const newRows = kullaniciRolVerileri.map((kullaniciRol: any) => ({
-          year: kullaniciRol.yil,
-          label: kullaniciRol.yil.toString(),
-        }));
+      const [kullaniciRolVerileri, acceptedYears] = await Promise.all([
+        getKullaniciRol(user.token || "", user.id || 0, selectedDenetlenenId),
+        getAcceptedYears(user.token || "", selectedDenetlenenId),
+      ]);
+
+      if (user.yetki === "DenetciAdmin") {
+        const adminRows = years.map((y) => {
+          const isAccepted = acceptedYears?.includes(y.year);
+          return {
+            ...y,
+            label: isAccepted ? `${y.year} - (Kabul Edildi)` : y.year.toString(),
+          };
+        });
+        setRows(adminRows);
+      } else if (Array.isArray(kullaniciRolVerileri)) {
+        const newRows = kullaniciRolVerileri.map((kullaniciRol: any) => {
+          const isAccepted = acceptedYears?.includes(kullaniciRol.yil);
+          return {
+            year: kullaniciRol.yil,
+            label: isAccepted
+              ? `${kullaniciRol.yil} - (Kabul Edildi)`
+              : kullaniciRol.yil.toString(),
+          };
+        });
 
         setRows(newRows);
       }
@@ -64,7 +80,7 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
     }
   }, [selectedDenetlenenId, user.token, user.id]);
 
-  const options = user.yetki == "DenetciAdmin" ? years : rows;
+  const options = rows;
   const selectedValue = options.find(y => y.year === currentYear) || null;
 
   return (

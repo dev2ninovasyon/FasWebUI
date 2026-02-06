@@ -71,7 +71,9 @@ export const updateTanimlamalar = async (
 export const createBirlestirilmisMizan = async (
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  baslangicTarihi?: any,
+  bitisTarihi?: any
 ) => {
   try {
     const response = await apiFetch(

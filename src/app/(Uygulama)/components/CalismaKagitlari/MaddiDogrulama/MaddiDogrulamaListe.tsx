@@ -257,10 +257,10 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
                 lg: 12,
                 xs: 12
               }}>
-              <Card sx={{ padding: 0, width: "100%", maxHeight: 500, overflow: "auto", mt: "20px", bgcolor: theme.palette.background.paper, borderRadius: 0, border: `1px solid ${theme.palette.divider}` }}>
+              <Card sx={{ padding: 0, width: "100%", maxHeight: 500, overflow: "auto", mt: "20px", bgcolor: "primary.light", borderRadius: 0, border: `1px solid ${theme.palette.divider}` }}>
                 <CardHeader
                   title={parent.name}
-                  sx={{ cursor: "pointer", position: "sticky", top: 0, zIndex: "1", bgcolor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#f5f5f5" }}
+                  sx={{ cursor: "pointer", position: "sticky", top: 0, zIndex: "1", bgcolor: "primary.light" }}
                   onClick={() => handleOpenGroup(index)}
                   action={
                     <IconButton aria-label="expand row" size="medium" onClick={(e) => { e.stopPropagation(); handleOpenGroup(index); }}>

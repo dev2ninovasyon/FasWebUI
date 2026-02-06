@@ -101,6 +101,7 @@ export const getDenetlenenByDenetciId = async (
       headers: {
         accept: "application/json",
       },
+      ignoreCustomHeaders: true,
     });
     if (response.ok) {
       return response.json();

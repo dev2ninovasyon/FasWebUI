@@ -61,35 +61,14 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
       sx={{
         backgroundColor: "primary.light",
         borderRadius: (theme: Theme) => (theme.shape.borderRadius as number) / 4,
-        p: "15px 25px",
+        p: "20px 25px",
         marginBottom: "15px",
         position: "relative",
         overflow: "hidden", // Arka plan ikonunun taşmaması için
-        minHeight: "80px",
+        minHeight: "90px",
       }}
     >
-      {/* 1. ARKA PLAN İKONU (En altta kalması için zIndex: 0) */}
-      {!mdDown && itemIcon && (
-        <Box
-          sx={{
-            position: "absolute",
-            right: "2%",
-            top: 0,
-            bottom: 0,
-            height: "100%",
-            width: "100px",
-            opacity: 0.1,
-            zIndex: 0,
-            display: "flex",
-            alignItems: "center",
-            pointerEvents: "none", // Tıklamayı engellemez
-          }}
-        >
-          <ListItemIcon sx={{ color: "inherit", height: "80%", width: "100%" }}>
-            {itemIcon}
-          </ListItemIcon>
-        </Box>
-      )}
+
       {/* 2. SOL TARAF: Yazılar (zIndex: 1 ile ikonun üstünde) */}
       <Grid
         sx={{ zIndex: 1 }}

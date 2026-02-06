@@ -26,6 +26,7 @@ import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getIliskiliTarafSiniflama } from "@/api/Hesaplamalar/Hesaplamalar";
+import { getIliskiliTaraflarByDenetlenenId } from "@/api/Musteri/MusteriIslemleri";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import IliskiliTarafSiniflamaOrnekFisler from "./IliskiliTarafSiniflamaOrnekFisler";
@@ -362,14 +363,24 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
         hesap
       );
 
+      const iliskiliTaraflar = await getIliskiliTaraflarByDenetlenenId(
+        user.token || "",
+        user.denetlenenId || 0
+      );
+
       let totalBorc = 0;
       let totalAlacak = 0;
       let totalBakiye = 0;
       const rowsAll: any = [];
       iliskiliTarafSiniflamaVerileri.forEach((veri: any) => {
+        // Pre-selection logic: check if calculation name contains any related party name
+        const isRelated = iliskiliTaraflar?.some((it: any) =>
+          veri.hesapAdi?.toLowerCase().includes(it.adi?.toLowerCase())
+        ) || false;
+
         const newRow: any = [
           veri.id,
-          false,
+          isRelated || veri.secim || false,
           veri.kebirKodu,
           veri.detayKodu,
           veri.hesapAdi,

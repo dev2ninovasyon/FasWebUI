@@ -554,6 +554,10 @@ const VukMizanStepper = () => {
                     type={"VukMizan"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
                     setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+                    mizanBaslangicTarihi={mizanBaslangicTarihi}
+                    setMizanBaslangicTarihi={setMizanBaslangicTarihi}
+                    mizanBitisTarihi={mizanBitisTarihi}
+                    setMizanBitisTarihi={setMizanBitisTarihi}
                   />
                 </Grid>
               </Grid>

@@ -135,10 +135,10 @@ const MusteriDuzenleForm = () => {
         musteriVerileri.konsolideAnaSirketmi
           ? "Ana Şirket"
           : musteriVerileri.konsolideAltSirketmi
-          ? "Alt Şirket"
-          : musteriVerileri.konsolideYavruSirketmi
-          ? "Yavru Şirket"
-          : "Ana Şirket"
+            ? "Alt Şirket"
+            : musteriVerileri.konsolideYavruSirketmi
+              ? "Yavru Şirket"
+              : "Ana Şirket"
       );
       setKonsolideBagliSirketId(musteriVerileri.konsolideBagliSirketId);
       setSektor1Id(musteriVerileri.sektor1Id);
@@ -702,7 +702,7 @@ const MusteriDuzenleForm = () => {
             color="primary"
             onClick={handleButtonClick}
           >
-            Müşteri Düzenle
+            Değişiklikleri Kaydet
           </Button>
         </Grid>
         <FloatingButtonMusteriIslemleri
