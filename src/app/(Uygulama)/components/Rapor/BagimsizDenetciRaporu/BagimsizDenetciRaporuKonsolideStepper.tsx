@@ -289,7 +289,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
   const fetchLogo = async () => {
     try {
-      const logoData = await getLogo(user.token || "", user.denetciId || 0);
+      const logoData = await getLogo(user.denetciId || 0);
       if (logoData) {
         if (typeof logoData === "string") {
           setFirmaLogoImage(logoData);

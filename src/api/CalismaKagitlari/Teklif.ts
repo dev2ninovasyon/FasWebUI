@@ -1,12 +1,11 @@
 import { apiFetch } from "@/api/apiBase";
 
-export const getAcceptedYears = async (token: string, denetlenenId: number) => {
+export const getAcceptedYears = async (denetlenenId: number) => {
     try {
         const response = await apiFetch(`/Denetlenen/GetAcceptedYears/${denetlenenId}`, {
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         });
         if (response.ok) {

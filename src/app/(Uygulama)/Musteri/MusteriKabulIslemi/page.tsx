@@ -87,9 +87,7 @@ const Page: React.FC = () => {
 
       const result = await updateDenetlenenDenetimTuru(user.denetlenenId || 0,
         tur,
-        false,
-        enflasyon === "Evet",
-        user.denetciId || 0
+        enflasyon,
       );
       if (result == true) {
         fetchData();

@@ -43,8 +43,8 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
       if (!selectedDenetlenenId) return;
 
       const [kullaniciRolVerileri, acceptedYears] = await Promise.all([
-        getKullaniciRol(user.token || "", user.id || 0, selectedDenetlenenId),
-        getAcceptedYears(user.token || "", selectedDenetlenenId),
+        getKullaniciRol(user.id || 0, selectedDenetlenenId),
+        getAcceptedYears(selectedDenetlenenId),
       ]);
 
       if (user.yetki === "DenetciAdmin") {

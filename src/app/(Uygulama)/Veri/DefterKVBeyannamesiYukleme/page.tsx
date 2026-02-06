@@ -106,7 +106,7 @@ const Page: React.FC = () => {
   const fetchDenetlenen = useCallback(async () => {
     if (!user.denetlenenId || user.denetlenenId === 0) return;
     try {
-      const denetlenen = await getDenetlenenById(user.token || "", user.denetlenenId);
+      const denetlenen = await getDenetlenenById(user.denetlenenId);
       if (denetlenen && denetlenen.vergiNo) {
         setDenetlenenVergiNo(denetlenen.vergiNo); //mevcut müşteri vergi nosu state'e kaydedildi.
       }
@@ -195,7 +195,6 @@ const Page: React.FC = () => {
           if (fileType === "KurumlarBeyannamesi") {
             try {
               const res = await uploadAndParseKurumlarBeyannamesi(
-                user.token || "",
                 file,
                 user.denetciId || 0,
                 user.yil || 0,

@@ -364,7 +364,6 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
       );
 
       const iliskiliTaraflar = await getIliskiliTaraflarByDenetlenenId(
-        user.token || "",
         user.denetlenenId || 0
       );
 

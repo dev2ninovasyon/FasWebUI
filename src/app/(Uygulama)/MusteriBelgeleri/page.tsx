@@ -209,7 +209,6 @@ const Page = () => {
           // If it's Kurumlar Vergisi Beyannamesi, use the specialized upload and parse API
           for (const file of acceptedFiles) {
             await uploadAndParseKurumlarBeyannamesi(
-              user.token,
               file,
               user.denetciId,
               user.yil,
@@ -217,7 +216,7 @@ const Page = () => {
             );
           }
         } else {
-          await uploadMusteriBelgeFetch(user.token, {
+          await uploadMusteriBelgeFetch({
             denetciId: user.denetciId,
             denetlenenId: user.denetlenenId,
             yil: user.yil,
