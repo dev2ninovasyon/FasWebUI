@@ -90,7 +90,6 @@ const HareketsizStoklar: React.FC<Props> = ({
             setLoading(true);
             const res = await getHareketsizStoklarByDenetlenen(
                 controller,
-                user.token || "",
                 user.denetciId || 0,
                 user.denetlenenId || 0,
                 user.yil || 0
@@ -119,9 +118,7 @@ const HareketsizStoklar: React.FC<Props> = ({
             const handleHesapla = async () => {
                 try {
                     setLoading(true);
-                    await calculateHareketsizStoklar(
-                        user.token || "",
-                        user.denetciId || 0,
+                    await calculateHareketsizStoklar(user.denetciId || 0,
                         user.yil || 0,
                         user.denetlenenId || 0,
                         1
@@ -169,7 +166,7 @@ const HareketsizStoklar: React.FC<Props> = ({
             const updatedRow = { ...row, ...payload };
             setVeriler(prev => prev.map(x => x.id === row.id ? updatedRow : x));
 
-            await updateHareketsizStoklarRow(controller, user.token || "", row.id, payload);
+            await updateHareketsizStoklarRow(controller, row.id, payload);
             showSnackbar("Kayıt başarıyla güncellendi.", "success");
 
             setEditValues(prev => {
@@ -298,3 +295,4 @@ const HareketsizStoklar: React.FC<Props> = ({
 };
 
 export default HareketsizStoklar;
+

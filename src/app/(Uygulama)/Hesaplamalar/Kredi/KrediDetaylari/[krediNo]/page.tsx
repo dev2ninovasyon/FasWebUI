@@ -57,9 +57,7 @@ const Page = () => {
   const fetchData = async () => {
     try {
       const krediHesaplamaVerisi =
-        await getKrediHesaplamaVerileriByDenetciDenetlenenYilId(
-          user.token || "",
-          user.denetciId || 0,
+        await getKrediHesaplamaVerileriByDenetciDenetlenenYilId(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           pathId || 0
@@ -73,9 +71,7 @@ const Page = () => {
 
   const fetchDataBaglantibilgileri = async () => {
     try {
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,

@@ -2,7 +2,6 @@
 
 
 export const getBenfordHesapKodlari = async (
-  token: string,
   yil: number,
   denetlenenId: number
 ): Promise<number[] | undefined> => {
@@ -13,7 +12,6 @@ export const getBenfordHesapKodlari = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -28,7 +26,6 @@ export const getBenfordHesapKodlari = async (
 };
 
 export const getBenfordDagilim = async (
-  token: string,
   yil: number,
   denetlenenId: number,
   kebirKodu?: number
@@ -44,7 +41,6 @@ export const getBenfordDagilim = async (
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (!res.ok) return;
@@ -56,7 +52,6 @@ export const getBenfordDagilim = async (
 };
 
 export const getBenfordBasamakKayitlari = async (
-  token: string,
   yil: number,
   denetlenenId: number,
   basamak: number,
@@ -74,7 +69,6 @@ export const getBenfordBasamakKayitlari = async (
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (!res.ok) return;

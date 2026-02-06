@@ -209,9 +209,7 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const vergiVarligiVerileri = await getVergiVarligi(
-        user.token || "",
-        user.denetciId || 0,
+      const vergiVarligiVerileri = await getVergiVarligi(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -374,3 +372,4 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default VergiVarlik;
+

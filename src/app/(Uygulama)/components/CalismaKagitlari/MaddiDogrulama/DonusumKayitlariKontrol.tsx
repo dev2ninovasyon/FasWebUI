@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+﻿import React, { useEffect, useState, useMemo } from "react";
 import {
     Box,
     Grid,
@@ -57,9 +57,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
             if (!dipnotNo && controller) {
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         controller,
@@ -81,7 +79,6 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
             try {
                 const res = await getDonusumKayitlari(
                     controller,
-                    user.token || "",
                     user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
@@ -124,7 +121,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                             <TableRow sx={{ backgroundColor: HEADER_BG }}>
                                 <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap No</TableCell>
                                 <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>VUK Bakiye</TableCell>
-                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Dönüşüm Bakiye</TableCell>
+                                <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>DÃ¶nÃ¼ÅŸÃ¼m Bakiye</TableCell>
                                 <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Fark</TableCell>
                             </TableRow>
                         </TableHead>
@@ -141,7 +138,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                                 ))}
                             {anaHesaplar.filter(row => (row.vukBakiye ?? 0) !== 0 || (row.donusumBakiye ?? 0) !== 0 || (row.fark ?? 0) !== 0).length === 0 && (
                                 <TableRow>
-                                    <TableCell colSpan={4} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadı</TableCell>
+                                    <TableCell colSpan={4} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadÄ±</TableCell>
                                 </TableRow>
                             )}
                         </TableBody>
@@ -155,7 +152,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
         <Box mb={4}>
             <Box sx={{ backgroundColor: HEADER_BG, px: 2, py: 1 }}>
                 <Typography variant="subtitle1" fontWeight={700} color="white">
-                    Dönüşüm Fişleri
+                    DÃ¶nÃ¼ÅŸÃ¼m FiÅŸleri
                 </Typography>
             </Box>
             <TableContainer component={Paper} elevation={0} sx={{ borderRadius: 0, border: `1px solid ${BORDER_COLOR}` }}>
@@ -164,10 +161,10 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                         <TableRow sx={{ backgroundColor: HEADER_BG }}>
                             <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap No</TableCell>
                             <TableCell sx={{ fontWeight: 700, color: "white" }}>Yevmiye No</TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap Adı</TableCell>
-                            <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Borç</TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: "white" }}>Hesap AdÄ±</TableCell>
+                            <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>BorÃ§</TableCell>
                             <TableCell sx={{ fontWeight: 700, textAlign: "right", color: "white" }}>Alacak</TableCell>
-                            <TableCell sx={{ fontWeight: 700, color: "white" }}>Açıklama</TableCell>
+                            <TableCell sx={{ fontWeight: 700, color: "white" }}>AÃ§Ä±klama</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -185,7 +182,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                             ))}
                         {donusumFisleri.filter(row => (row.borc ?? 0) !== 0 || (row.alacak ?? 0) !== 0).length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={6} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadı</TableCell>
+                                <TableCell colSpan={6} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadÄ±</TableCell>
                             </TableRow>
                         )}
                     </TableBody>
@@ -199,7 +196,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
             <Grid size={12}>
                 <Box px={isReport ? 0 : 3} pt={isReport ? 0 : 3} pb={isReport ? 0 : 5} sx={{ width: "100%", margin: "0 auto" }}>
                     <Typography variant="h6" sx={{ color: theme.palette.mode === 'dark' ? "#FFFFFF" : "#2C3E50", fontWeight: "bold", mb: 3 }}>
-                        Dönüşüm Kayıtları Kontrol
+                        DÃ¶nÃ¼ÅŸÃ¼m KayÄ±tlarÄ± Kontrol
                     </Typography>
                     {renderAnaHesaplarTable()}
                     {renderDonusumFisleriTable()}
@@ -210,3 +207,4 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
 };
 
 export default DonusumKayitlariKontrol;
+

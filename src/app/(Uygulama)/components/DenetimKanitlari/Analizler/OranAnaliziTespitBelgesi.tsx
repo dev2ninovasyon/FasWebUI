@@ -63,9 +63,7 @@ const OranAnaliziTespitBelgesi: React.FC<Props> = ({
   
   const fetchData = async () => {
     try {
-      const dikeyAnalizTablosu = await getDikeyAnaliz(
-        user.token || "",
-        user.denetciId || 0,
+      const dikeyAnalizTablosu = await getDikeyAnaliz(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -547,3 +545,4 @@ const OranAnaliziTespitBelgesi: React.FC<Props> = ({
 };
 
 export default OranAnaliziTespitBelgesi;
+

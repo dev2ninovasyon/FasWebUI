@@ -2,7 +2,6 @@
 
 
 export const getYevmiyeFisNo = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -14,7 +13,6 @@ export const getYevmiyeFisNo = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,7 +27,6 @@ export const getYevmiyeFisNo = async (
 };
 
 export const getStandartYevmiyeFisNo = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -41,7 +38,6 @@ export const getStandartYevmiyeFisNo = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -56,7 +52,6 @@ export const getStandartYevmiyeFisNo = async (
 };
 
 export const getStandartYevmiyeFisNoHaric = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -68,7 +63,6 @@ export const getStandartYevmiyeFisNoHaric = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -83,7 +77,6 @@ export const getStandartYevmiyeFisNoHaric = async (
 };
 
 export const getFisListesi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -100,7 +93,6 @@ export const getFisListesi = async (
       method: "POST",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -129,7 +121,6 @@ export const getFisListesi = async (
 };
 
 export const getFisListesiHaric = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -146,7 +137,6 @@ export const getFisListesiHaric = async (
       method: "POST",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -175,7 +165,6 @@ export const getFisListesiHaric = async (
 };
 
 export const saveHaricFisListesi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -188,7 +177,6 @@ export const saveHaricFisListesi = async (
         method: "PUT",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(haricFisListe),
@@ -205,7 +193,6 @@ export const saveHaricFisListesi = async (
 };
 
 export const saveHaricFisListesiHaric = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -218,7 +205,6 @@ export const saveHaricFisListesiHaric = async (
         method: "PUT",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(haricFisListe),
@@ -235,7 +221,6 @@ export const saveHaricFisListesiHaric = async (
 };
 
 export const getYevmiyeFisNoHaric = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -247,7 +232,6 @@ export const getYevmiyeFisNoHaric = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

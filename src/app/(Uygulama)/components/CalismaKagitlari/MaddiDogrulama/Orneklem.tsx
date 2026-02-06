@@ -359,9 +359,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
 
   const fetchData = async () => {
     try {
-      const orneklemVerileri = await getOrneklemByDipnot(
-        user.token || "",
-        user.denetciId || 0,
+      const orneklemVerileri = await getOrneklemByDipnot(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         dipnot
@@ -472,3 +470,4 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
 };
 
 export default Orneklem;
+

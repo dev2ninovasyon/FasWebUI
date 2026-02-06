@@ -1,14 +1,13 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 
-export const createDenetlenen = async (token: string, createdMusteri: any) => {
+export const createDenetlenen = async (createdMusteri: any) => {
   try {
     const response = await apiFetch(`/Denetlenen`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdMusteri),
     });
@@ -32,7 +31,6 @@ export const createDenetlenen = async (token: string, createdMusteri: any) => {
 };
 
 export const uploadAndParseKurumlarBeyannamesi = async (
-  token: string,
   file: File,
   denetciId: number,
   yil: number,
@@ -46,9 +44,7 @@ export const uploadAndParseKurumlarBeyannamesi = async (
       `/Veri/UploadAndParseKurumlarBeyannamesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=KurumlarBeyannamesi`,
       {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: {},
         body: formData,
       }
     );
@@ -78,13 +74,12 @@ export const uploadAndParseKurumlarBeyannamesi = async (
   }
 };
 
-export const getDenetlenenById = async (token: string, id: any) => {
+export const getDenetlenenById = async (id: any) => {
   try {
     const response = await apiFetch(`/Denetlenen/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -98,7 +93,6 @@ export const getDenetlenenById = async (token: string, id: any) => {
 };
 
 export const getDenetlenenByDenetciId = async (
-  token: string,
   denetciId: number
 ) => {
   try {
@@ -106,7 +100,6 @@ export const getDenetlenenByDenetciId = async (
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -122,7 +115,6 @@ export const getDenetlenenByDenetciId = async (
 };
 
 export const getDenetlenenKonsolideAnaSirketByDenetciId = async (
-  token: string,
   denetciId: number
 ) => {
   try {
@@ -132,7 +124,6 @@ export const getDenetlenenKonsolideAnaSirketByDenetciId = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -147,7 +138,6 @@ export const getDenetlenenKonsolideAnaSirketByDenetciId = async (
 };
 
 export const getDenetlenenByRol = async (
-  token: string,
   denetciId: number,
   kullaniciId: number
 ) => {
@@ -158,7 +148,6 @@ export const getDenetlenenByRol = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
         timeout: 60000, // Şirket listesi için 60 saniye
         ignoreCustomHeaders: true, // Listeleme yaparken seçili şirket header'larını gönderme
@@ -177,7 +166,6 @@ export const getDenetlenenByRol = async (
 };
 
 export const updateDenetlenen = async (
-  token: string,
   id: any,
   updatedDenetlenen: any
 ) => {
@@ -187,7 +175,6 @@ export const updateDenetlenen = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedDenetlenen),
     });
@@ -203,7 +190,6 @@ export const updateDenetlenen = async (
 };
 
 export const updateDenetlenenDenetimTuru = async (
-  token: string,
   id: number,
   denetimTuru: string,
   enflasyon: string
@@ -216,7 +202,6 @@ export const updateDenetlenenDenetimTuru = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -240,13 +225,12 @@ export const updateDenetlenenDenetimTuru = async (
   }
 };
 
-export const deleteDenetlenenById = async (token: string, id: number) => {
+export const deleteDenetlenenById = async (id: number) => {
   try {
     const response = await apiFetch(`/Denetlenen/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
       timeout: 300000, // 5 dakika - Cascade delete işlemi uzun sürebilir
     });
@@ -261,13 +245,12 @@ export const deleteDenetlenenById = async (token: string, id: number) => {
   }
 };
 
-export const getSektorKodlari = async (token: string) => {
+export const getSektorKodlari = async () => {
   try {
     const response = await apiFetch(`/Denetlenen/SektorKodlari`, {
       method: "GET",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -281,7 +264,6 @@ export const getSektorKodlari = async (token: string) => {
 };
 
 export const createSirketYonetimKadrosu = async (
-  token: string,
   createdSirketYonetimKadrosu: any
 ) => {
   try {
@@ -290,7 +272,6 @@ export const createSirketYonetimKadrosu = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdSirketYonetimKadrosu),
     });
@@ -305,7 +286,7 @@ export const createSirketYonetimKadrosu = async (
   }
 };
 
-export const getSirketYonetimKadrosuById = async (token: string, id: any) => {
+export const getSirketYonetimKadrosuById = async (id: any) => {
   try {
     const response = await apiFetch(
       `/Denetlenen/SirketYonetimKadrosu/${id}`,
@@ -313,7 +294,6 @@ export const getSirketYonetimKadrosuById = async (token: string, id: any) => {
         method: "GET",
         headers: {
           accept: "*/*",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -328,7 +308,6 @@ export const getSirketYonetimKadrosuById = async (token: string, id: any) => {
 };
 
 export const getSirketYonetimKadrosuByDenetlenenId = async (
-  token: string,
   denetlenenId: number
 ) => {
   try {
@@ -338,7 +317,6 @@ export const getSirketYonetimKadrosuByDenetlenenId = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -353,7 +331,6 @@ export const getSirketYonetimKadrosuByDenetlenenId = async (
 };
 
 export const updateSirketYonetimKadrosu = async (
-  token: string,
   id: any,
   updatedSirketYonetimKadrosu: any
 ) => {
@@ -365,7 +342,6 @@ export const updateSirketYonetimKadrosu = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedSirketYonetimKadrosu),
       }
@@ -382,7 +358,6 @@ export const updateSirketYonetimKadrosu = async (
 };
 
 export const deleteSirketYonetimKadrosuById = async (
-  token: string,
   id: number
 ) => {
   try {
@@ -392,7 +367,6 @@ export const deleteSirketYonetimKadrosuById = async (
         method: "DELETE",
         headers: {
           accept: "*/*",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -407,14 +381,13 @@ export const deleteSirketYonetimKadrosuById = async (
   }
 };
 
-export const createSubeler = async (token: string, createdSubeler: any) => {
+export const createSubeler = async (createdSubeler: any) => {
   try {
     const response = await apiFetch(`/Denetlenen/Subeler`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdSubeler),
     });
@@ -429,13 +402,12 @@ export const createSubeler = async (token: string, createdSubeler: any) => {
   }
 };
 
-export const getSubelerById = async (token: string, id: any) => {
+export const getSubelerById = async (id: any) => {
   try {
     const response = await apiFetch(`/Denetlenen/Subeler/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -449,7 +421,6 @@ export const getSubelerById = async (token: string, id: any) => {
 };
 
 export const getSubelerByDenetlenenId = async (
-  token: string,
   denetlenenId: number
 ) => {
   try {
@@ -459,7 +430,6 @@ export const getSubelerByDenetlenenId = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -474,7 +444,6 @@ export const getSubelerByDenetlenenId = async (
 };
 
 export const updateSubeler = async (
-  token: string,
   id: any,
   updatedSubeler: any
 ) => {
@@ -484,7 +453,6 @@ export const updateSubeler = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedSubeler),
     });
@@ -499,13 +467,12 @@ export const updateSubeler = async (
   }
 };
 
-export const deleteSubelerById = async (token: string, id: number) => {
+export const deleteSubelerById = async (id: number) => {
   try {
     const response = await apiFetch(`/Denetlenen/Subeler/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -520,7 +487,6 @@ export const deleteSubelerById = async (token: string, id: number) => {
 };
 
 export const createHissedarlar = async (
-  token: string,
   createdHissedarlar: any
 ) => {
   try {
@@ -529,7 +495,6 @@ export const createHissedarlar = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdHissedarlar),
     });
@@ -544,13 +509,12 @@ export const createHissedarlar = async (
   }
 };
 
-export const getHissedarlarById = async (token: string, id: any) => {
+export const getHissedarlarById = async (id: any) => {
   try {
     const response = await apiFetch(`/Denetlenen/Hissedarlar/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -564,7 +528,6 @@ export const getHissedarlarById = async (token: string, id: any) => {
 };
 
 export const getHissedarlarByDenetlenenIdYil = async (
-  token: string,
   denetlenenId: number,
   yil: number
 ) => {
@@ -575,7 +538,6 @@ export const getHissedarlarByDenetlenenIdYil = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -590,7 +552,6 @@ export const getHissedarlarByDenetlenenIdYil = async (
 };
 
 export const getMizandanHissedarlarByDenetlenenIdYil = async (
-  token: string,
   denetlenenId: number,
   yil: number
 ) => {
@@ -601,7 +562,6 @@ export const getMizandanHissedarlarByDenetlenenIdYil = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -616,7 +576,6 @@ export const getMizandanHissedarlarByDenetlenenIdYil = async (
 };
 
 export const updateHissedarlar = async (
-  token: string,
   id: any,
   updatedHissedarlar: any
 ) => {
@@ -626,7 +585,6 @@ export const updateHissedarlar = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedHissedarlar),
     });
@@ -641,13 +599,12 @@ export const updateHissedarlar = async (
   }
 };
 
-export const deleteHissedarlarById = async (token: string, id: number) => {
+export const deleteHissedarlarById = async (id: number) => {
   try {
     const response = await apiFetch(`/Denetlenen/Hissedarlar/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -662,7 +619,6 @@ export const deleteHissedarlarById = async (token: string, id: number) => {
 };
 
 export const createIliskiliTaraflar = async (
-  token: string,
   createdIliskiliTaraflar: any
 ) => {
   try {
@@ -671,7 +627,6 @@ export const createIliskiliTaraflar = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdIliskiliTaraflar),
     });
@@ -686,13 +641,12 @@ export const createIliskiliTaraflar = async (
   }
 };
 
-export const getIliskiliTaraflarById = async (token: string, id: any) => {
+export const getIliskiliTaraflarById = async (id: any) => {
   try {
     const response = await apiFetch(`/Denetlenen/IliskiliTaraflar/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -706,7 +660,6 @@ export const getIliskiliTaraflarById = async (token: string, id: any) => {
 };
 
 export const getIliskiliTaraflarByDenetlenenId = async (
-  token: string,
   denetlenenId: number
 ) => {
   try {
@@ -716,7 +669,6 @@ export const getIliskiliTaraflarByDenetlenenId = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -731,7 +683,6 @@ export const getIliskiliTaraflarByDenetlenenId = async (
 };
 
 export const updateIliskiliTaraflar = async (
-  token: string,
   id: any,
   updatedIliskiliTaraflar: any
 ) => {
@@ -741,7 +692,6 @@ export const updateIliskiliTaraflar = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedIliskiliTaraflar),
     });
@@ -756,13 +706,12 @@ export const updateIliskiliTaraflar = async (
   }
 };
 
-export const deleteIliskiliTaraflarById = async (token: string, id: number) => {
+export const deleteIliskiliTaraflarById = async (id: number) => {
   try {
     const response = await apiFetch(`/Denetlenen/IliskiliTaraflar/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -777,7 +726,6 @@ export const deleteIliskiliTaraflarById = async (token: string, id: number) => {
 };
 
 export const createIliskiliTaraflarListe = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -790,7 +738,6 @@ export const createIliskiliTaraflarListe = async (
         method: "POST",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(iliskiliTaraflarListe),
@@ -807,7 +754,6 @@ export const createIliskiliTaraflarListe = async (
 };
 
 export const getMusteriTanimaSayisalBilgiler = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -819,7 +765,6 @@ export const getMusteriTanimaSayisalBilgiler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -834,7 +779,6 @@ export const getMusteriTanimaSayisalBilgiler = async (
 };
 
 export const updateMusteriTanimaSayisalBilgiler = async (
-  token: string,
   updatedMusteriTanimaSayisalBilgiler: any
 ) => {
   try {
@@ -845,7 +789,6 @@ export const updateMusteriTanimaSayisalBilgiler = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedMusteriTanimaSayisalBilgiler),
       }
@@ -862,7 +805,6 @@ export const updateMusteriTanimaSayisalBilgiler = async (
 };
 
 export const getMusteriTanimaStatikBilgiler = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -874,7 +816,6 @@ export const getMusteriTanimaStatikBilgiler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -889,7 +830,6 @@ export const getMusteriTanimaStatikBilgiler = async (
 };
 
 export const updateMusteriTanimaStatikBilgiler = async (
-  token: string,
   updatedMusteriTanimaStatikBilgiler: any
 ) => {
   try {
@@ -900,7 +840,6 @@ export const updateMusteriTanimaStatikBilgiler = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedMusteriTanimaStatikBilgiler),
       }
@@ -917,7 +856,6 @@ export const updateMusteriTanimaStatikBilgiler = async (
 };
 
 export const getTeklifHesaplama = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -929,7 +867,6 @@ export const getTeklifHesaplama = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -944,7 +881,6 @@ export const getTeklifHesaplama = async (
 };
 
 export const updateTeklifHesaplama = async (
-  token: string,
   updatedTeklifHesaplama: any
 ) => {
   try {
@@ -953,7 +889,6 @@ export const updateTeklifHesaplama = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedTeklifHesaplama),
     });
@@ -969,7 +904,6 @@ export const updateTeklifHesaplama = async (
 };
 
 export const TeklifHesapla = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -982,7 +916,6 @@ export const TeklifHesapla = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -998,7 +931,6 @@ export const TeklifHesapla = async (
 };
 
 export const deleteTeklifHesaplama = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -1010,7 +942,6 @@ export const deleteTeklifHesaplama = async (
         method: "DELETE",
         headers: {
           accept: "*/*",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

@@ -31,9 +31,7 @@ const TanimlamaDuzenleForm = () => {
       bagliIstirakOrani,
     };
     try {
-      const result = await updateTanimlamalar(
-        user.token || "",
-        id,
+      const result = await updateTanimlamalar(id,
         updatedTanimlamalar
       );
       if (result) {
@@ -48,9 +46,7 @@ const TanimlamaDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const tanimlamalarVerileri = await getTanimlamalarById(
-        user.token || "",
-        pathId
+      const tanimlamalarVerileri = await getTanimlamalarById(pathId
       );
       setFirmaAdi(tanimlamalarVerileri.firmaAdi);
       setYil(tanimlamalarVerileri.yil);
@@ -171,3 +167,4 @@ const TanimlamaDuzenleForm = () => {
 };
 
 export default TanimlamaDuzenleForm;
+

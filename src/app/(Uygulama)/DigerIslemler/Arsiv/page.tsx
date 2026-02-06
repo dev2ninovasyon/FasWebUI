@@ -166,13 +166,14 @@ const Page = () => {
     }, */
   }));
 
-  const renderTree = (node: Veri, level: number = 0) => {
+  const renderTree = (node: Veri, level: number = 0, parentPath: string = "") => {
     const isFile = hasExtension(node.name);
+    const uniquePath = parentPath ? `${parentPath}-${node.id}` : node.id.toString();
 
     return (
       <StyledTreeItem
-        key={node.id}
-        itemId={node.id.toString()}
+        key={uniquePath}
+        itemId={uniquePath}
         label={
           <Typography variant={level === 0 ? "h6" : "body1"}>
             {node.name}
@@ -192,7 +193,7 @@ const Page = () => {
         {!isFile &&
           Array.isArray(node.children) &&
           node.children.length > 0 &&
-          node.children.map((child) => renderTree(child, level + 1))}
+          node.children.map((child) => renderTree(child, level + 1, uniquePath))}
       </StyledTreeItem>
     );
   };
@@ -228,9 +229,7 @@ const Page = () => {
 
   const fetchData = async () => {
     try {
-      const data = await getArsiv(
-        user.token || "",
-        user.denetciId || 0,
+      const data = await getArsiv(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -311,7 +310,7 @@ const Page = () => {
                 }}
               >
                 {rows &&
-                  filterTree(rows, searchTerm).map((row) => renderTree(row))}
+                  filterTree(rows, searchTerm).map((row, index) => renderTree(row, 0, `root-${index}`))}
               </SimpleTreeView>
             </Box>
           </Box>
@@ -373,3 +372,4 @@ const Page = () => {
 };
 
 export default Page;
+

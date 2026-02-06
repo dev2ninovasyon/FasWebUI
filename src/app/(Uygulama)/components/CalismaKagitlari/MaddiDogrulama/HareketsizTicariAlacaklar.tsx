@@ -90,7 +90,6 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
             setLoading(true);
             const res = await getHareketsizTicariAlacaklarByDenetlenen(
                 controller,
-                user.token || "",
                 user.denetciId || 0,
                 user.denetlenenId || 0,
                 user.yil || 0
@@ -119,9 +118,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
             const handleHesapla = async () => {
                 try {
                     setLoading(true);
-                    await calculateHareketsizTicariAlacaklar(
-                        user.token || "",
-                        user.denetciId || 0,
+                    await calculateHareketsizTicariAlacaklar(user.denetciId || 0,
                         user.yil || 0,
                         user.denetlenenId || 0,
                         1
@@ -169,7 +166,7 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
             const updatedRow = { ...row, ...payload };
             setVeriler(prev => prev.map(x => x.id === row.id ? updatedRow : x));
 
-            await updateHareketsizTicariAlacaklarRow(controller, user.token || "", row.id, payload);
+            await updateHareketsizTicariAlacaklarRow(controller, row.id, payload);
             showSnackbar("Kayıt başarıyla güncellendi.", "success");
 
             setEditValues(prev => {
@@ -298,3 +295,4 @@ const HareketsizTicariAlacaklar: React.FC<Props> = ({
 };
 
 export default HareketsizTicariAlacaklar;
+

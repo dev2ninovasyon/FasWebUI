@@ -15,14 +15,8 @@ export interface ReeskontTestleriData {
     referansTablosuListesi: any[];
 }
 
-const withAuth = (token: string) => ({
-    accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export async function getReeskontTestleri(
     controller: string,
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number,
@@ -36,7 +30,6 @@ export async function getReeskontTestleri(
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );

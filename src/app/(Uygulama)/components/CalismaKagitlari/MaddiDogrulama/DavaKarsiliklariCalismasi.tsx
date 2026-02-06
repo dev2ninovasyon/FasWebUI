@@ -60,7 +60,7 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
         if (!user.token) return;
         setLoading(true);
         try {
-            const result = await getDavaKarsiliklariData(user.token, user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
+            const result = await getDavaKarsiliklariData(user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
             setData(result.liste || []);
             setSummary(result.ozet || null);
         } catch (error) {
@@ -77,7 +77,7 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
             const handleVarsayilanaDon = async () => {
                 try {
                     setLoading(true);
-                    await varsayilanaDonDavaKarsiliklari(user.token || "", user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
+                    await varsayilanaDonDavaKarsiliklari(user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
                     enqueueSnackbar("Veriler başarıyla getirildi.", { variant: "success" });
                     await fetchData();
                 } catch (error) {
@@ -130,10 +130,10 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
             try {
                 // Filter out empty rows before sending
                 const filteredData = updatedData.filter(row => row && row.aleyhteDavacininLehteDavalininUnvani);
-                await updateDavaKarsiliklari(user.token, filteredData);
+                await updateDavaKarsiliklari(filteredData);
                 setData(updatedData);
                 enqueueSnackbar("Güncellendi", { variant: "success" });
-                const refresh = await getDavaKarsiliklariData(user.token, user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
+                const refresh = await getDavaKarsiliklariData(user.denetciId || 0, user.yil || 0, user.denetlenenId || 0);
                 setSummary(refresh.ozet);
             } catch (error) {
                 enqueueSnackbar("Hata oluştu!", { variant: "error" });
@@ -274,3 +274,4 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
 };
 
 export default DavaKarsiliklariCalismasi;
+

@@ -86,7 +86,7 @@ const Page = () => {
 
   const fetchData = async () => {
     try {
-      const hile = await getHile(user.token || "", user.denetimTuru || "");
+      const hile = await getHile(user.denetimTuru || "");
       hile.forEach((veri: any) => {
         if (normalizeString(veri.url).includes(normalizeString(formUrl))) {
           setDip(veri.name);

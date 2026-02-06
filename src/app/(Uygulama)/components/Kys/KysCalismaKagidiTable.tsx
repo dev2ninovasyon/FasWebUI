@@ -78,9 +78,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
 
     const fetchData = async () => {
         try {
-            const result = await getMusteriBirakmaFormu(
-                user.token || "",
-                user.denetlenenId || 0,
+            const result = await getMusteriBirakmaFormu(user.denetlenenId || 0,
                 user.yil || 0
             );
             setVeriler(result);
@@ -100,7 +98,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             standartMi: false,
         };
         try {
-            await createMusteriBirakmaFormu(user.token || "", newData);
+            await createMusteriBirakmaFormu(newData);
             await fetchData();
             setSaving(false);
             handleClosePopUp();
@@ -121,7 +119,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             standartMi: false,
         };
         try {
-            await updateMusteriBirakmaFormu(user.token || "", selectedId, updateData);
+            await updateMusteriBirakmaFormu(selectedId, updateData);
             await fetchData();
             setSaving(false);
             handleClosePopUp();
@@ -136,7 +134,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
     const handleDelete = async () => {
         setDeleting(true);
         try {
-            await deleteMusteriBirakmaFormu(user.token || "", selectedId);
+            await deleteMusteriBirakmaFormu(selectedId);
             await fetchData();
             setDeleting(false);
             handleClosePopUp();
@@ -408,3 +406,4 @@ const PopUpComponent: React.FC<PopUpProps> = ({
         </Dialog>
     );
 };
+

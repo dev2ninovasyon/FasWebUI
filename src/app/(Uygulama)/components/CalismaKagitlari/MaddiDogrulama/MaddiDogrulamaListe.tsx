@@ -183,9 +183,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
 
   const fetchData = async () => {
     try {
-      const data = await getMaddiDogrulama(
-        user.token || "",
-        user.denetimTuru || "",
+      const data = await getMaddiDogrulama(user.denetimTuru || "",
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -350,3 +348,4 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
 };
 
 export default MaddiDogrulamaListe;
+

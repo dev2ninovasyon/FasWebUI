@@ -1,10 +1,10 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
-export const getKullaniciAyarlar = async (token: string, kullaniciId: number) => {
+export const getKullaniciAyarlar = async (kullaniciId: number) => {
     try {
         const response = await apiFetch(`/KullaniciAyarlar/${kullaniciId}`, {
             method: "GET",
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {}
         });
         return response.ok ? await response.json() : null;
     } catch (error) {
@@ -13,13 +13,12 @@ export const getKullaniciAyarlar = async (token: string, kullaniciId: number) =>
     }
 };
 
-export const updateKullaniciAyarlar = async (token: string, kullaniciId: number, data: any) => {
+export const updateKullaniciAyarlar = async (kullaniciId: number, data: any) => {
     try {
         const response = await apiFetch(`/KullaniciAyarlar/${kullaniciId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify(data)
         });
@@ -30,13 +29,12 @@ export const updateKullaniciAyarlar = async (token: string, kullaniciId: number,
     }
 };
 
-export const updateKurulumAyarlari = async (token: string, kullaniciId: number, tamamlandi: boolean, adim: number, progress?: string) => {
+export const updateKurulumAyarlari = async (kullaniciId: number, tamamlandi: boolean, adim: number, progress?: string) => {
     try {
         const response = await apiFetch(`/KullaniciAyarlar/Kurulum/${kullaniciId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 kurulumTamamlandi: tamamlandi,
@@ -51,13 +49,12 @@ export const updateKurulumAyarlari = async (token: string, kullaniciId: number, 
     }
 };
 
-export const updateSonSecilenAyarlari = async (token: string, kullaniciId: number, denetlenenId: number, yil: number) => {
+export const updateSonSecilenAyarlari = async (kullaniciId: number, denetlenenId: number, yil: number) => {
     try {
         const response = await apiFetch(`/KullaniciAyarlar/SonSecilen/${kullaniciId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 denetlenenId,
@@ -77,13 +74,12 @@ export const updateSonSecilenAyarlari = async (token: string, kullaniciId: numbe
     }
 };
 
-export const updateTurTamamlandi = async (token: string, kullaniciId: number, tamamlandi: boolean) => {
+export const updateTurTamamlandi = async (kullaniciId: number, tamamlandi: boolean) => {
     try {
         const response = await apiFetch(`/KullaniciAyarlar/TurTamamlandi/${kullaniciId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 turTamamlandi: tamamlandi

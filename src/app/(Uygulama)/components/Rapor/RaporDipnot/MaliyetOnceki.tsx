@@ -364,7 +364,7 @@ const MaliyetOnceki: React.FC<Props> = ({
 
       return obj;
     });
-    const result = await updateDipnotMaliyet(user.token || "", jsonData);
+    const result = await updateDipnotMaliyet(jsonData);
     if (result) {
       console.log("Dipnot Maliyet Önceki güncellendi.");
     } else {
@@ -375,9 +375,7 @@ const MaliyetOnceki: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       if (dipnotKodu == 14 || dipnotKodu == 15) {
-        const maliyetVerileri = await getDipnot15Maliyet(
-          user.token || "",
-          user.denetciId || 0,
+        const maliyetVerileri = await getDipnot15Maliyet(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -401,9 +399,7 @@ const MaliyetOnceki: React.FC<Props> = ({
         setRowCount(rowsAll.length);
       }
       if (dipnotKodu == 16 || dipnotKodu == 17) {
-        const maliyetVerileri = await getDipnot16Maliyet(
-          user.token || "",
-          user.denetciId || 0,
+        const maliyetVerileri = await getDipnot16Maliyet(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -569,3 +565,4 @@ const MaliyetOnceki: React.FC<Props> = ({
 };
 
 export default MaliyetOnceki;
+

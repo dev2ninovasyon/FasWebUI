@@ -53,9 +53,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
             if (!dipnotNo && modelAdi) {
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         modelAdi,
@@ -74,7 +72,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
         if (user.token && user.denetciId && user.yil && user.denetlenenId && resolvedDipnotNo) {
             setLoading(true);
             try {
-                const result = await getSupheliAlacakTestleri(user.token, user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
+                const result = await getSupheliAlacakTestleri(user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
                 setVeriler(result || []);
             } catch (error) {
                 showSnackbar("Veriler yüklenirken hata oluştu.", "error");
@@ -92,7 +90,6 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                 try {
                     setLoading(true);
                     const success = await varsayilanaDon(
-                        user.token,
                         user.denetciId || 0,
                         user.yil || 0,
                         user.denetlenenId || 0,
@@ -147,7 +144,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
         }));
 
         try {
-            const success = await saveAllSupheliAlacakTestleri(user.token!, dataToSend);
+            const success = await saveAllSupheliAlacakTestleri(dataToSend);
 
             if (success) {
                 showSnackbar("Tüm tablo başarıyla kaydedildi.", "success");
@@ -301,3 +298,4 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
 };
 
 export default SupheliAlacakTestleri;
+

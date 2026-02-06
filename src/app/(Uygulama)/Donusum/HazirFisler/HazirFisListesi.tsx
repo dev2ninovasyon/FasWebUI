@@ -312,9 +312,7 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const fetchData = async () => {
     try {
-      const hazirFisListesiVerileri = await getHazirFisListesiVerileri(
-        user.token || "",
-        user.denetimTuru || ""
+      const hazirFisListesiVerileri = await getHazirFisListesiVerileri(user.denetimTuru || ""
       );
       const rowsAll: any = [];
       hazirFisListesiVerileri.forEach((veri: any) => {
@@ -469,9 +467,7 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
                 callback: async function (key, selection) {
                   const row = await handleGetRowData(selection[0].start.row);
                   try {
-                    const result = await createFisListesineHazirFis(
-                      user.token || "",
-                      user.denetciId || 0,
+                    const result = await createFisListesineHazirFis(user.denetciId || 0,
                       user.denetlenenId || 0,
                       user.yil || 0,
                       user.denetimTuru || "",
@@ -542,3 +538,4 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 };
 
 export default HazirFisListesi;
+

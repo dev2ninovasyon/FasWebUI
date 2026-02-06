@@ -276,9 +276,7 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   const fetchData = async () => {
     try {
       const cekSenetReeskontHesaplamaVerileri =
-        await getCekSenetReeskontHesaplama(
-          user.token || "",
-          user.denetciId || 0,
+        await getCekSenetReeskontHesaplama(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -450,3 +448,4 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default CekSenetReeskontHesaplama;
+

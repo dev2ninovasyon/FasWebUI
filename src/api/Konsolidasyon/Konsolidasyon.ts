@@ -2,19 +2,17 @@
 
 
 export const getTanimlamalar = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Konsolidasyon/Tanimlamalar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -28,13 +26,12 @@ export const getTanimlamalar = async (
   }
 };
 
-export const getTanimlamalarById = async (token: string, id: any) => {
+export const getTanimlamalarById = async (id: any) => {
   try {
-    const response =await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
+    const response = await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -48,17 +45,15 @@ export const getTanimlamalarById = async (token: string, id: any) => {
 };
 
 export const updateTanimlamalar = async (
-  token: string,
   id: any,
   updatedTanimlamalar: any
 ) => {
   try {
-    const response =await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
+    const response = await apiFetch(`/Konsolidasyon/Tanimlamalar/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedTanimlamalar),
     });
@@ -74,19 +69,17 @@ export const updateTanimlamalar = async (
 };
 
 export const createBirlestirilmisMizan = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Konsolidasyon/MizanBirlestir?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "POST",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

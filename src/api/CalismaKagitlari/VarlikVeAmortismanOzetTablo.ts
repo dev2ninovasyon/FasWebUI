@@ -19,7 +19,7 @@ export interface VarlikVeAmortismanOzetTabloData {
     bobiTfrsVukBirikmisAmortismanFarki: number;
 }
 
-export async function fetchVarlikVeAmortismanOzetTablo(token: string, denetlenenId: number, yil: number, dn: string) {
+export async function fetchVarlikVeAmortismanOzetTablo(denetlenenId: number, yil: number, dn: string) {
     try {
         const response = await apiFetch(
             `/VarlikveAmortismanOzetTablo/get-ozet-tablo?denetlenenId=${denetlenenId}&yil=${yil}&dn=${encodeURIComponent(dn)}`,
@@ -27,7 +27,6 @@ export async function fetchVarlikVeAmortismanOzetTablo(token: string, denetlenen
                 method: "GET",
                 headers: {
                     "accept": "application/json",
-                    "Authorization": `Bearer ${token}`,
                 },
             }
         );

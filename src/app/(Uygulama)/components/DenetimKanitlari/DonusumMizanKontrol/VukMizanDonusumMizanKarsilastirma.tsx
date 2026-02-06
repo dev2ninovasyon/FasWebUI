@@ -157,7 +157,7 @@ const VukMizanDonusumMizanKarsilastirma: React.FC = () => {
 
   const fetchVeriler = useCallback(async () => {
     try {
-      const res = await getDonusumMizanKarsilastirma(user.token!, user.denetciId!, user.yil!, user.denetlenenId!, "E-Defter");
+      const res = await getDonusumMizanKarsilastirma(user.denetciId!, user.yil!, user.denetlenenId!, "E-Defter");
       setVeriler(res);
       setError(null);
     } catch (err) {

@@ -19,9 +19,7 @@ const BirlestirilmisMizan = () => {
 
   const handleBirlestirilmisMizan = async () => {
     try {
-      const result = await createBirlestirilmisMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createBirlestirilmisMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -138,3 +136,4 @@ const BirlestirilmisMizan = () => {
 };
 
 export default BirlestirilmisMizan;
+

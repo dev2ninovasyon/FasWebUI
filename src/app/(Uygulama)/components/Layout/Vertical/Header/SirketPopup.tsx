@@ -88,7 +88,6 @@ const SirketPopup = () => {
     localStorage.setItem("fas_yil", selectedYear.toString());
     try {
       const rolVerileri = await getRol(
-        user.token || "",
         user.id || 0,
         selectedId,
         selectedYearNumber
@@ -100,7 +99,7 @@ const SirketPopup = () => {
       // Persist to database
       if (user.token && user.id && user.id !== 0) {
         console.log(`SirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
-        await updateSonSecilenAyarlari(user.token, user.id, selectedId, selectedYearNumber);
+        await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
         console.log("SirketPopup - Persistence update successful.");
       } else {
         console.warn("SirketPopup - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });

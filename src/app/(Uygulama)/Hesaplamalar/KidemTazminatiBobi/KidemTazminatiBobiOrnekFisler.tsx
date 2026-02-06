@@ -94,9 +94,7 @@ const KidemTazminatiBobiOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -569,3 +567,4 @@ const KidemTazminatiBobiOrnekFisler: React.FC<Props> = ({
 };
 
 export default KidemTazminatiBobiOrnekFisler;
+

@@ -43,7 +43,7 @@ const MuhasebeHatalariVeHileTopCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getHile(user.token || "", user.denetimTuru || "");
+        const data = await getHile(user.denetimTuru || "");
 
         // Her karta icon, bgcolor ekle
         const enriched = data.map((item: any, index: number) => ({
@@ -105,3 +105,4 @@ const MuhasebeHatalariVeHileTopCard = () => {
 };
 
 export default MuhasebeHatalariVeHileTopCard;
+

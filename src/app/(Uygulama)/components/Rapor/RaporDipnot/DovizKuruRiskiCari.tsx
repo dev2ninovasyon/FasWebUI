@@ -350,7 +350,7 @@ const DovizKuruRiskiCari: React.FC<Props> = ({
       return obj;
     });
 
-    const result = await updateDovizKuruRiski(user.token || "", jsonData);
+    const result = await updateDovizKuruRiski(jsonData);
     if (result) {
       console.log("Döviz Kuru Riski Cari güncellendi.");
     } else {
@@ -361,9 +361,7 @@ const DovizKuruRiskiCari: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       if (dipnotKodu == 383 || dipnotKodu == 45) {
-        const dovizKuruRiskiVerileri = await getDovizKuruRiski(
-          user.token || "",
-          user.denetciId || 0,
+        const dovizKuruRiskiVerileri = await getDovizKuruRiski(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -529,3 +527,4 @@ const DovizKuruRiskiCari: React.FC<Props> = ({
 };
 
 export default DovizKuruRiskiCari;
+

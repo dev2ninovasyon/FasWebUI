@@ -39,9 +39,9 @@ const KysYeniMusteriFormu: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (user.token && user.denetlenenId && user.yil) {
+            if (user.denetlenenId && user.yil) {
                 setLoading(true);
-                const data = await getYeniMusteriFormu(user.token, user.denetlenenId, user.yil);
+                const data = await getYeniMusteriFormu(user.denetlenenId, user.yil);
                 if (data) {
                     setFormData(data);
                 } else {
@@ -73,12 +73,12 @@ const KysYeniMusteriFormu: React.FC = () => {
             }
         };
         fetchData();
-    }, [user.token, user.denetlenenId, user.yil]);
+    }, [user.denetlenenId, user.yil]);
 
     const handleSave = async () => {
-        if (!formData || !user.token) return;
+        if (!formData) return;
         setSaving(true);
-        const success = await saveYeniMusteriFormu(user.token, formData);
+        const success = await saveYeniMusteriFormu(formData);
         if (success) {
             enqueueSnackbar("Form başarıyla kaydedildi.");
         } else {

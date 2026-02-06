@@ -2,20 +2,18 @@
 
 
 export const createKarsilastirmaliAnaliz = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/KarsilastirmaliAnalizOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -31,19 +29,17 @@ export const createKarsilastirmaliAnaliz = async (
 };
 
 export const getKarsilastirmaliAnaliz = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/KarsilastirmaliAnalizTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -58,20 +54,18 @@ export const getKarsilastirmaliAnaliz = async (
 };
 
 export const createDikeyAnaliz = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/DikeyAnalizOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -87,19 +81,17 @@ export const createDikeyAnaliz = async (
 };
 
 export const getDikeyAnaliz = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/DikeyAnalizTablosu?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -113,19 +105,17 @@ export const getDikeyAnaliz = async (
   }
 };
 export const getDikeyAnalizFinansalDurum = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/DikeyAnalizTablosuFinansalDurum?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -139,19 +129,17 @@ export const getDikeyAnalizFinansalDurum = async (
   }
 };
 export const getDikeyAnalizTablosuKarZarar = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/FinansalTablolar/DikeyAnalizTablosuKarZarar?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

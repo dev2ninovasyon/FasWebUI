@@ -45,7 +45,6 @@ export interface YeniMusteriFormuDto {
 }
 
 export const getYeniMusteriFormu = async (
-    token: string,
     denetlenenId: number,
     yil: number
 ): Promise<YeniMusteriFormuDto | null> => {
@@ -54,7 +53,6 @@ export const getYeniMusteriFormu = async (
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         });
 
@@ -71,7 +69,6 @@ export const getYeniMusteriFormu = async (
 };
 
 export const saveYeniMusteriFormu = async (
-    token: string,
     data: YeniMusteriFormuDto
 ): Promise<boolean> => {
     try {
@@ -80,7 +77,6 @@ export const saveYeniMusteriFormu = async (
             headers: {
                 accept: "*/*",
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(data),
         });

@@ -109,9 +109,7 @@ const Page = () => {
   const fetchData = async () => {
     try {
       const mutabakatDogrulamaMektubuVerileri =
-        await getMutabakatDogrulamaMektubu(
-          user.token || "",
-          user.denetciId || 0,
+        await getMutabakatDogrulamaMektubu(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           pathDetayKodu || ""
@@ -132,9 +130,7 @@ const Page = () => {
 
   const fetchMektupBelge = async () => {
     try {
-      const belge = await getMutabakatMektupBelge(
-        user.token || "",
-        user.denetciId || 0,
+      const belge = await getMutabakatMektupBelge(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         pathDetayKodu || ""
@@ -147,9 +143,7 @@ const Page = () => {
 
   const fetchActiveTokens = async () => {
     try {
-      const tokens = await getActiveMutabakatTokens(
-        user.token || "",
-        user.denetciId || 0,
+      const tokens = await getActiveMutabakatTokens(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         pathDetayKodu || ""
@@ -249,9 +243,7 @@ const Page = () => {
 
     try {
       setIsUploading(true);
-      await uploadMutabakatMektubu(
-        user.token || "",
-        selectedFile,
+      await uploadMutabakatMektubu(selectedFile,
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
@@ -293,9 +285,7 @@ const Page = () => {
     if (!mektupBelge) return;
 
     try {
-      const { blob, fileName } = await downloadMutabakatMektup(
-        user.token || "",
-        mektupBelge.id
+      const { blob, fileName } = await downloadMutabakatMektup(mektupBelge.id
       );
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -318,7 +308,7 @@ const Page = () => {
     if (!confirm("Mektubu silmek istediğinizden emin misiniz?")) return;
 
     try {
-      await deleteMutabakatMektup(user.token || "", mektupBelge.id, user.id || 0);
+      await deleteMutabakatMektup(mektupBelge.id, user.id || 0);
       enqueueSnackbar("Mektup silindi", {
         variant: "success",
         style: {
@@ -346,9 +336,7 @@ const Page = () => {
     if (!mektupBelge) return;
 
     try {
-      const { blob, fileName } = await downloadMutabakatMektup(
-        user.token || "",
-        mektupBelge.id
+      const { blob, fileName } = await downloadMutabakatMektup(mektupBelge.id
       );
       const url = window.URL.createObjectURL(blob);
 
@@ -390,9 +378,7 @@ const Page = () => {
 
   const handleGenerateLink = async () => {
     try {
-      const response = await generateMutabakatUploadLink(
-        user.token || "",
-        user.denetciId || 0,
+      const response = await generateMutabakatUploadLink(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         pathDetayKodu || "",

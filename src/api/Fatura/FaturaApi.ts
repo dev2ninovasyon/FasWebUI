@@ -1,6 +1,7 @@
 ﻿import axios, { AxiosProgressEvent } from "axios";
 
 import { apiFetch, url } from "@/api/apiBase";
+import SecureTokenManager from "@/utils/SecureTokenManager";
 
 export type Taraf = {
   id: string;
@@ -73,7 +74,6 @@ export type PagedResult<T> = {
 
 // TAM grafik dönen endpoint
 export async function fetchPagedFaturalarFull(
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -83,15 +83,17 @@ export async function fetchPagedFaturalarFull(
   filters: Record<string, string[]> = {}
 ): Promise<PagedResult<Fatura>> {
   const apiurl =
-    `${url}/Invoices/FilteredPagedFull` +
+    `/Invoices/FilteredPagedFull` +
     `?denetciId=${denetciId}&yil=${yil}` +
     `&denetlenenId=${denetlenenId}&page=${page}&pageSize=${pageSize}` +
     `&tip=${encodeURIComponent(tip)}`;
 
-  const res = await axios.post(apiurl, filters, {
-    headers: { Authorization: `Bearer ${token}` },
+  const res = await apiFetch(apiurl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(filters),
   });
-  return res.data;
+  return res.json();
 }
 export const uploadFaturaDosyalari = async (
   user: any,
@@ -110,16 +112,16 @@ export const uploadFaturaDosyalari = async (
   return axios.post(`${url}/Invoices/Upload?${qs}`, form, {
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${user.token}`,
     },
-    onUploadProgress, // <-- artık AxiosProgressEvent tipi ile uyumlu
+    withCredentials: true, // ✅ HttpOnly cookies için gerekli
+    onUploadProgress,
   });
 };
 
 export const getYuklemeIslemleri = async (user: any) => {
   const r = await apiFetch(
     `/Invoices/GetYuklemeIslemleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
-    { headers: { accept: "application/json", Authorization: `Bearer ${user.token}` } }
+    { headers: { accept: "application/json" } }
   );
   if (!r.ok) throw new Error("Yükleme işlemleri alınamadı");
   return r.json();
@@ -128,7 +130,7 @@ export const getYuklemeIslemleri = async (user: any) => {
 export const getYuklemeDosyalari = async (user: any, yuklemeId: string) => {
   const r = await apiFetch(
     `/Invoices/GetYuklemeDosyalari?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&yuklemeId=${yuklemeId}`,
-    { headers: { accept: "application/json", Authorization: `Bearer ${user.token}` } }
+    { headers: { accept: "application/json" } }
   );
   if (!r.ok) throw new Error("Dosyalar alınamadı");
   return r.json();
@@ -138,25 +140,22 @@ export const previewFaturaHtmlNewTab = async (
   user: any,
   dosyaId: string
 ): Promise<Blob> => {
-  const res = await axios.get(`${url}/Invoices/PreviewHtml/${dosyaId}`, {
-    responseType: "blob", // ... Sunucudan gelen HTML'i Blob olarak alıyoruz
-    headers: { Authorization: `Bearer ${user.token}` },
+  const res = await apiFetch(`/Invoices/PreviewHtml/${dosyaId}`, {
+    method: "GET",
   });
 
-  // İstersen içerik tipini yine de kontrol edebilirsin:
-  const contentType = res.headers["content-type"] || "";
-  if (!contentType.includes("text/html") && !contentType.includes("application/pdf")) {
+  if (!res.ok) {
     throw new Error("Sunucudan beklenen içerik tipi dönmedi");
   }
 
-  return res.data as Blob;
+  return res.blob();
 };
 
 
 export const deleteYuklemeIslemleri = async (user: any, ids: string[]) => {
   const r = await apiFetch(`/Invoices/DeleteYuklemeIslemleri`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(ids)
   });
   if (!r.ok) throw new Error("Silinemedi");
@@ -179,7 +178,7 @@ export type InvoiceYevmiyeRow = {
 export async function findInvoiceYevmiyeRowsByVkn(user: any, tip: string, vkn: string): Promise<InvoiceYevmiyeRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}&tip=${encodeURIComponent(tip)}&vkn=${encodeURIComponent(vkn)}`;
   const r = await apiFetch(`/Invoices/FindInvoiceYevmiyeRowsByVkn?${qs}`, {
-    headers: { accept: "application/json", Authorization: `Bearer ${user.token}` }
+    headers: { accept: "application/json" }
   });
   if (!r.ok) throw new Error("Satırlar alınamadı");
   return r.json();
@@ -190,7 +189,7 @@ export async function saveInvoiceYevmiyeMatches(user: any, rows: InvoiceYevmiyeR
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
   const r = await apiFetch(`/Invoices/SaveInvoiceYevmiyeMatches?${qs}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(rows)
   });
   if (!r.ok) throw new Error("Eşleştirmeler kaydedilemedi");
@@ -213,7 +212,7 @@ export type SentInvoiceMatchRow = {
 export async function getSentInvoiceMatches(user: any): Promise<SentInvoiceMatchRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
   const r = await apiFetch(`/Invoices/GetSentInvoiceMatches?${qs}`, {
-    headers: { accept: "application/json", Authorization: `Bearer ${user.token}` }
+    headers: { accept: "application/json" }
   });
   if (!r.ok) throw new Error("Eşleşmeler alınamadı");
   return r.json();
@@ -233,7 +232,7 @@ export type ReceivedInvoiceMatchRow = {
 export async function getReceivedInvoiceMatches(user: any): Promise<ReceivedInvoiceMatchRow[]> {
   const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`;
   const r = await apiFetch(`/Invoices/GetReceivedInvoiceMatches?${qs}`, {
-    headers: { accept: "application/json", Authorization: `Bearer ${user.token}` },
+    headers: { accept: "application/json" },
   });
   if (!r.ok) throw new Error("Alınan eşleşmeleri alınamadı");
   return r.json();

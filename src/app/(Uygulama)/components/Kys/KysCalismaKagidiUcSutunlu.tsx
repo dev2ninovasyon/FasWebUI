@@ -86,9 +86,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
 
     const fetchData = async () => {
         try {
-            const result = await getKysBelgeler(
-                user.token || "",
-                formKodu,
+            const result = await getKysBelgeler(formKodu,
                 user.denetlenenId || 0,
                 user.yil || 0
             );
@@ -110,7 +108,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             standartMi: false,
         };
         try {
-            await createKysBelge(user.token || "", newData);
+            await createKysBelge(newData);
             await fetchData();
             setSaving(false);
             handleClosePopUp();
@@ -131,7 +129,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
             standartMi: false,
         };
         try {
-            await updateKysBelge(user.token || "", selectedId, updateData);
+            await updateKysBelge(selectedId, updateData);
             await fetchData();
             setSaving(false);
             handleClosePopUp();
@@ -146,7 +144,7 @@ const KysCalismaKagidiTable: React.FC<KysCalismaKagidiTableProps> = ({
     const handleDelete = async () => {
         setDeleting(true);
         try {
-            await deleteKysBelge(user.token || "", selectedId);
+            await deleteKysBelge(selectedId);
             await fetchData();
             setDeleting(false);
             handleClosePopUp();
@@ -430,3 +428,4 @@ const PopUpComponent: React.FC<PopUpProps> = ({
         </Dialog>
     );
 };
+

@@ -44,7 +44,7 @@ export default function KullaniciStep({
     const fetchData = async () => {
         if (user.token && user.denetciId) {
             try {
-                const result = await getKullaniciByDenetciId(user.token, user.denetciId);
+                const result = await getKullaniciByDenetciId(user.denetciId);
                 if (result) {
                     setKullanicilar(result);
                     onDataChange(result);
@@ -92,14 +92,14 @@ export default function KullaniciStep({
             if (editingIndex !== null && editingId !== null) {
                 // Update
                 const updatedKullanici = { ...kullanici, denetciId: user.denetciId, id: editingId };
-                success = await updateKullanici(user.token, editingId, updatedKullanici);
+                success = await updateKullanici(editingId, updatedKullanici);
                 if (success) {
                     showSnackbar("Kullanıcı başarıyla güncellendi", "success");
                 }
             } else {
                 // Create
                 const newKullanici = { ...kullanici, denetciId: user.denetciId, aktifPasif: true };
-                success = await createKullanici(user.token, newKullanici);
+                success = await createKullanici(newKullanici);
                 if (success) {
                     showSnackbar("Kullanıcı başarıyla eklendi", "success");
                 }
@@ -123,7 +123,7 @@ export default function KullaniciStep({
     const handleRemoveKullanici = async () => {
         if (selectedId !== null && user.token) {
             try {
-                const success = await deleteKullaniciById(user.token, selectedId);
+                const success = await deleteKullaniciById(selectedId);
                 if (success) {
                     showSnackbar("Kullanıcı başarıyla silindi", "success");
                     await fetchData();

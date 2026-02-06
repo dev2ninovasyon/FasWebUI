@@ -227,9 +227,7 @@ const BulguRiskiBelirleme: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const bulguRiskiBelirlemeVerileri = await getBulguRiskiBelirleme(
-        user.token || "",
-        user.denetciId || 0,
+      const bulguRiskiBelirlemeVerileri = await getBulguRiskiBelirleme(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -397,3 +395,4 @@ const BulguRiskiBelirleme: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default BulguRiskiBelirleme;
+

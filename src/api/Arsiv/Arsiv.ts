@@ -2,19 +2,17 @@
 
 
 export const getArsiv = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/ArsivIslemleri/Getir?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -28,14 +26,13 @@ export const getArsiv = async (
   }
 };
 
-export const deleteArsiv = async (token: string, path: string) => {
+export const deleteArsiv = async (path: string) => {
   try {
-    const response =await apiFetch(`/ArsivIslemleri/Sil?path=${path}`, {
+    const response = await apiFetch(`/ArsivIslemleri/Sil?path=${path}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -48,14 +45,13 @@ export const deleteArsiv = async (token: string, path: string) => {
   }
 };
 
-export const deleteAllArsiv = async (token: string, paths: string[]) => {
+export const deleteAllArsiv = async (paths: string[]) => {
   try {
-    const response =await apiFetch(`/ArsivIslemleri/SilToplu?`, {
+    const response = await apiFetch(`/ArsivIslemleri/SilToplu?`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(paths),
     });

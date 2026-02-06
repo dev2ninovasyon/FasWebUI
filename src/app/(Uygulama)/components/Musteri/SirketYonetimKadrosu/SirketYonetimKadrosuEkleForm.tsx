@@ -22,9 +22,7 @@ const SirketYonetimKadrosuEkleForm = () => {
       uyeUnvani,
     };
     try {
-      const result = await createSirketYonetimKadrosu(
-        user.token || "",
-        createdSirketYonetimKadrosu
+      const result = await createSirketYonetimKadrosu(createdSirketYonetimKadrosu
       );
       if (result) {
         router.push("/Musteri/SirketYonetimKadrosu");
@@ -113,3 +111,4 @@ const SirketYonetimKadrosuEkleForm = () => {
 };
 
 export default SirketYonetimKadrosuEkleForm;
+

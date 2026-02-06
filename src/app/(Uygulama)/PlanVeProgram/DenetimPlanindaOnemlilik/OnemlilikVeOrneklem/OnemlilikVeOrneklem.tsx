@@ -366,7 +366,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateOnemlilikVeOrneklem(user.token || "", json);
+      const result = await updateOnemlilikVeOrneklem(json);
       if (result) {
         fetchData();
         setOpenCartAlert(false);
@@ -401,9 +401,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const fisVerileri = await getOnemlilikVeOrneklem(
-        user.token || "",
-        user.denetciId || 0,
+      const fisVerileri = await getOnemlilikVeOrneklem(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -589,3 +587,4 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default OnemlilikVeOrneklem;
+

@@ -30,7 +30,6 @@ export interface DonusumKayitlariResponse {
 
 export async function getDonusumKayitlari(
     controller: string,
-    token: string,
     denetciId: number,
     denetlenenId: number,
     yil: number,
@@ -43,7 +42,6 @@ export async function getDonusumKayitlari(
                 method: "GET",
                 headers: {
                     accept: "application/json",
-                    Authorization: `Bearer ${token}`,
                 },
             }
         );

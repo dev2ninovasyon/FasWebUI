@@ -100,9 +100,7 @@ const HareketsizOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -436,9 +434,7 @@ const HareketsizOrnekFisler: React.FC<Props> = ({
     try {
       if (tip == "TicariAlacaklar") {
         const hareketsizTicariAlacaklarOrnekFisVerileri =
-          await getHareketsizTicariAlacaklarOrnekFisler(
-            user.token || "",
-            user.denetciId || 0,
+          await getHareketsizTicariAlacaklarOrnekFisler(user.denetciId || 0,
             user.yil || 0,
             user.denetlenenId || 0
           );
@@ -465,9 +461,7 @@ const HareketsizOrnekFisler: React.FC<Props> = ({
       }
       if (tip == "Stoklar") {
         const hareketsizStoklarOrnekFisVerileri =
-          await getHareketsizStoklarOrnekFisler(
-            user.token || "",
-            user.denetciId || 0,
+          await getHareketsizStoklarOrnekFisler(user.denetciId || 0,
             user.yil || 0,
             user.denetlenenId || 0
           );
@@ -650,3 +644,4 @@ const HareketsizOrnekFisler: React.FC<Props> = ({
 };
 
 export default HareketsizOrnekFisler;
+

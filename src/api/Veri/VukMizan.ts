@@ -2,19 +2,17 @@
 
 
 export const getVukMizanVerileriByDenetciDenetlenenYil = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/VukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -28,14 +26,13 @@ export const getVukMizanVerileriByDenetciDenetlenenYil = async (
   }
 };
 
-export const createVukMizanVerisi = async (token: string, jsonData: any) => {
+export const createVukMizanVerisi = async (jsonData: any) => {
   try {
-    const response =await apiFetch(`/Veri/VukMizan`, {
+    const response = await apiFetch(`/Veri/VukMizan`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(jsonData),
     });
@@ -51,20 +48,18 @@ export const createVukMizanVerisi = async (token: string, jsonData: any) => {
 };
 
 export const deleteVukMizanVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/VukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

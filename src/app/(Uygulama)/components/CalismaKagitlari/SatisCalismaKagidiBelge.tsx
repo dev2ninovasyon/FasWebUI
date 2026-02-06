@@ -124,7 +124,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await createCalismaKagidiVerisi(
         controller || "",
-        user.token || "",
         createdCalismaKagidiVerisi
       );
       if (result) {
@@ -155,7 +154,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       try {
         const result = await updateCalismaKagidiVerisi(
           controller || "",
-          user.token || "",
           selectedId,
           updatedCalismaKagidiVerisi
         );
@@ -185,7 +183,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       try {
         const result = await updateCalismaKagidiVerisi(
           controller || "",
-          user.token || "",
           selectedGroupId,
           updatedCalismaKagidiVerisi
         );
@@ -204,7 +201,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await deleteCalismaKagidiVerisiById(
         controller || "",
-        user.token || "",
         selectedId
       );
       if (result) {
@@ -225,7 +221,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await deleteCalismaKagidiVerisiById(
         controller || "",
-        user.token || "",
         selectedGroupId
       );
       if (result) {
@@ -234,7 +229,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
             deletedCalismaKagidiGroupVerileri[i];
           deleteCalismaKagidiVerisiById(
             controller || "",
-            user.token || "",
             deletedCalismaKagidiGroupVerileriWithBaslikId.id
           );
         }
@@ -252,7 +246,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await deleteAllCalismaKagidiVerileri(
         controller || "",
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -272,7 +265,6 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       const calismaKagidiVerileri =
         await getCalismaKagidiVerileriByDenetciDenetlenenYil(
           controller || "",
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -975,4 +967,5 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     </Dialog>
   );
 };
+
 

@@ -46,9 +46,7 @@ const Page = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createOrneklem(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createOrneklem(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         guvenilirlikDuzeyi,
@@ -218,3 +216,4 @@ const Page = () => {
 };
 
 export default Page;
+

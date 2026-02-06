@@ -82,9 +82,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const genelHesapPlaniVerileri = await getGenelHesapPlani(
-        user.token || "",
-        user.denetimTuru || ""
+      const genelHesapPlaniVerileri = await getGenelHesapPlani(user.denetimTuru || ""
       );
 
       const rowsAll: Veri[] = [];
@@ -283,3 +281,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

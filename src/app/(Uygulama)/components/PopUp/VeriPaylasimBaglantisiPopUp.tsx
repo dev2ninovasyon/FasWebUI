@@ -56,9 +56,7 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
 
   const handleCreateBaglantiBilgileri = async () => {
     try {
-      const result = await createBaglantiBilgileri(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createBaglantiBilgileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -97,9 +95,7 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
 
   const handleDeleteBaglantiBilgileri = async () => {
     try {
-      const result = await deleteBaglantiBilgileriById(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteBaglantiBilgileriById(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -150,9 +146,7 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
         )}`;
       };
 
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -350,3 +344,4 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
 };
 
 export default VeriPaylasimBaglantisiPopUp;
+

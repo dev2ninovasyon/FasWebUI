@@ -42,9 +42,7 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
             if (!dipnotNo && modelAdi) {
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         modelAdi,
@@ -65,7 +63,6 @@ const ReeskontTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isReport }) => 
                 try {
                     const result = await getReeskontTestleri(
                         "ReeskontTestleri",
-                        user.token,
                         user.denetciId,
                         user.yil,
                         user.denetlenenId,

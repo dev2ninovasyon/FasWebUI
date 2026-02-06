@@ -1,9 +1,10 @@
 ﻿import { useDispatch, useSelector } from "@/store/hooks";
-import { resetToNull, setToken, setRefreshToken } from "@/store/user/UserSlice";  // âœ… setRefreshToken import
+import { resetToNull, setToken, setRefreshToken } from "@/store/user/UserSlice";  // ✅ setRefreshToken import
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useCallback } from "react";
 import { AppState } from "@/store/store";
 import { apiFetch } from "@/api/apiBase";
+import SecureTokenManager from "@/utils/SecureTokenManager";
 
 const STORAGE_KEY = "user";
 const TIMEOUT_KEY = "user_expiry";
@@ -17,21 +18,55 @@ export default function useAutoLogout(
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // â¬‡â¬‡â¬‡ YENİ: geri sayım logâ€™u için interval
+  // ⬇️⬇️⬇️ YENİ: geri sayım logu için interval
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const refreshCountdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
   // console.log("Debug User:", user); // Debug için
 
+  // ✅ YENİ: Backend'e logout notification gönder
+  const notifyBackendLogout = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("fas_token");
+      
+      if (token && typeof SecureTokenManager !== 'undefined') {
+        // Token'ı blacklist'e ekle (JTI ile)
+        SecureTokenManager.blacklistToken(token);
+        
+        // Backend'e logout mesajı gönder
+        await apiFetch('/Auth/logout', {
+          method: 'POST',
+          ignoreCustomHeaders: false,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ tokenId: SecureTokenManager.decodeToken(token)?.jti })
+        }).catch(err => {
+          console.warn('⚠️ Backend logout notification başarısız (normal):', err.message);
+          // Backend'e ulaşılamasa bile continue, client-side cleanup yapılacak
+        });
+      }
+    } catch (error) {
+      console.warn('⚠️ Backend logout notification error:', error);
+    }
+  }, []);
 
   // *** ÇIKIŞ ***
   const logout = useCallback(() => {
+    // ✅ Backend'e logout bildir (JTI revocation için)
+    notifyBackendLogout();
+    
+    // ✅ localStorage'dan tüm verileri temizle
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(TIMEOUT_KEY);
-    // Şirket seçimi bilgilerini de temizle
     localStorage.removeItem("fas_denetlenenId");
     localStorage.removeItem("fas_yil");
+    localStorage.removeItem("fas_token");      // ✅ Token'ı temizle
+    localStorage.removeItem("fas_refreshToken"); // ✅ Refresh token'ı temizle
+    localStorage.removeItem("fas_blacklisted_tokens"); // ✅ Blacklist'i temizle
+    
     dispatch(resetToNull(""));
 
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
@@ -40,7 +75,7 @@ export default function useAutoLogout(
     if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
 
     router.replace("/Login");
-  }, [dispatch, router]);
+  }, [dispatch, router, notifyBackendLogout]);
 
   // idle timer reset
   const resetIdleTimer = useCallback(() => {

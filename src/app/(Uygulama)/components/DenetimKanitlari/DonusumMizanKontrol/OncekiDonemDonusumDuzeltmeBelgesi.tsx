@@ -303,9 +303,7 @@ const OncekiDonemDonusumDuzeltmeBelgesi = () => {
 
   const fetchData = async () => {
     try {
-      const fisListesiVerileri = await getFisListesiVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const fisListesiVerileri = await getFisListesiVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         (user.yil ?? 0) - 1,
         false
@@ -547,3 +545,4 @@ const OncekiDonemDonusumDuzeltmeBelgesi = () => {
 };
 
 export default OncekiDonemDonusumDuzeltmeBelgesi;
+

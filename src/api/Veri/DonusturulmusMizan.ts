@@ -2,19 +2,17 @@
 
 
 export const getDonusturulmusMizanVerileriByDenetciDenetlenenYil = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/DonusturulmusMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,16 +27,14 @@ export const getDonusturulmusMizanVerileriByDenetciDenetlenenYil = async (
 };
 
 export const createDonusturulmusMizanVerisi = async (
-  token: string,
   jsonData: any
 ) => {
   try {
-    const response =await apiFetch(`/Veri/DonusturulmusMizan`, {
+    const response = await apiFetch(`/Veri/DonusturulmusMizan`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(jsonData),
     });
@@ -54,20 +50,18 @@ export const createDonusturulmusMizanVerisi = async (
 };
 
 export const deleteDonusturulmusMizanVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/DonusturulmusMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

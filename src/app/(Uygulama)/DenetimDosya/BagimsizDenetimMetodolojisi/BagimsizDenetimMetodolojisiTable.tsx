@@ -89,9 +89,7 @@ const BagimsizDenetimMetodolojisiTable = () => {
 
   const fetchData = async () => {
     try {
-      const data = await getDenetimDosya(
-        user.token || "",
-        user.denetimTuru || ""
+      const data = await getDenetimDosya(user.denetimTuru || ""
       );
       setRows(data);
       setLoading(false);
@@ -313,3 +311,4 @@ const BagimsizDenetimMetodolojisiTable = () => {
 };
 
 export default BagimsizDenetimMetodolojisiTable;
+

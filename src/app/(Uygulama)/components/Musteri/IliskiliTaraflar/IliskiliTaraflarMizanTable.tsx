@@ -96,9 +96,7 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
   const handleCreateIliskiliTaraflarListesi = async () => {
     try {
       const selectedRows = createSelectedRows();
-      await createIliskiliTaraflarListe(
-        user.token || "",
-        user.denetciId || 0,
+      await createIliskiliTaraflarListe(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         selectedRows
@@ -111,17 +109,13 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const mizanVerileri = await getMizanVerileriByHesapNo(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = await getMizanVerileriByHesapNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         "E-Defter",
         hesapNo
       );
-      const mizanVerileri2 = await getMizanVerileriByHesapNo(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri2 = await getMizanVerileriByHesapNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         "VukMizan",
@@ -382,3 +376,4 @@ const IliskiliTaraflarMizanTable: React.FC<Props> = ({
 };
 
 export default IliskiliTaraflarMizanTable;
+

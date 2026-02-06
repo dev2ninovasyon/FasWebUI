@@ -310,9 +310,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
 
   const handleDeleteById = async (id: number) => {
     try {
-      const result = await deleteVadeliBankaMevduatiOtomatikSiniflamaById(
-        user.token || "",
-        id
+      const result = await deleteVadeliBankaMevduatiOtomatikSiniflamaById(id
       );
       if (result) {
         await fetchData();
@@ -358,9 +356,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
       paraBirimi: paraBirimi,
     };
     try {
-      const result = await createVadeliBankaMevduatOtomatikSiniflama(
-        user.token || "",
-        createdVadeliBankaMevduat
+      const result = await createVadeliBankaMevduatOtomatikSiniflama(createdVadeliBankaMevduat
       );
       if (result) {
         await fetchData();
@@ -398,9 +394,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
     setLoading(true);
     try {
       const vadeliBankaMevduatiVerileri =
-        await getVadeliBankaMevduatiOtomatikSiniflama(
-          user.token || "",
-          user.denetciId || 0,
+        await getVadeliBankaMevduatiOtomatikSiniflama(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -946,3 +940,4 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
 };
 
 export default VadeliBankaMevduatiOtomatikSiniflama;
+

@@ -270,9 +270,7 @@ const KurFarki = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const kurFarkiVerileri = await getKurFarki(
-        user.token || "",
-        user.denetciId || 0,
+      const kurFarkiVerileri = await getKurFarki(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -452,3 +450,4 @@ const KurFarki = () => {
 };
 
 export default KurFarki;
+

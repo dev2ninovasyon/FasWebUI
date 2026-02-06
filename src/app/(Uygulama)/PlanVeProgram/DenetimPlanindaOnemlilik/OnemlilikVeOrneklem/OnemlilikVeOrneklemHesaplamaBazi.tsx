@@ -296,9 +296,7 @@ const OnemlilikVeOrneklemHesaplamaBazi: React.FC<Props> = ({
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateOnemlilikVeOrneklemHesaplamaBazi(
-        user.token || "",
-        json
+      const result = await updateOnemlilikVeOrneklemHesaplamaBazi(json
       );
       if (result) {
         fetchData();
@@ -334,9 +332,7 @@ const OnemlilikVeOrneklemHesaplamaBazi: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const onemlilikHesaplamaBazi = await getOnemlilikVeOrneklemHesaplamaBazi(
-        user.token || "",
-        user.denetciId || 0,
+      const onemlilikHesaplamaBazi = await getOnemlilikVeOrneklemHesaplamaBazi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -448,3 +444,4 @@ const OnemlilikVeOrneklemHesaplamaBazi: React.FC<Props> = ({
 };
 
 export default OnemlilikVeOrneklemHesaplamaBazi;
+

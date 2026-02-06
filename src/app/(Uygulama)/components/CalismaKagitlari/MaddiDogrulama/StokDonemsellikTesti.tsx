@@ -43,9 +43,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await getStokDonemsellikTesti(
-                user.token || "",
-                user.denetlenenId || 0
+            const response = await getStokDonemsellikTesti(user.denetlenenId || 0
             );
             if (response) {
                 setData(response);
@@ -65,9 +63,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
     const handleVarsayilanaDon = async () => {
         setLoading(true);
         try {
-            const success = await varsayilanaDonStokDonemsellik(
-                user.token || "",
-                user.denetciId || 0,
+            const success = await varsayilanaDonStokDonemsellik(user.denetciId || 0,
                 user.yil || 0,
                 user.denetlenenId || 0,
                 dipnotNo
@@ -93,7 +89,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                     const updatedRow = data[row];
                     const updateData = { [prop]: newValue };
                     try {
-                        await updateStokDonemsellikTesti(user.token || "", updatedRow.id, updateData);
+                        await updateStokDonemsellikTesti(updatedRow.id, updateData);
                     } catch (error) {
                         console.log("Güncelleme hatası:", error);
                         enqueueSnackbar("Güncelleme sırasında bir hata oluştu", { variant: "error" });
@@ -202,3 +198,4 @@ const StokDonemsellikTesti: React.FC<Props> = ({
 };
 
 export default StokDonemsellikTesti;
+

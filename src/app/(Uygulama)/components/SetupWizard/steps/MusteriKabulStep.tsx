@@ -70,9 +70,7 @@ export default function MusteriKabulStep({
     const fetchData = async () => {
         if (!sirket?.id) return;
         try {
-            const denetlenenVerileri = await getDenetlenenById(
-                user.token || "",
-                sirket.id
+            const denetlenenVerileri = await getDenetlenenById(sirket.id
             );
             if (denetlenenVerileri && denetlenenVerileri.denetimTuru) {
                 setKabulEdildimi(true);
@@ -86,9 +84,7 @@ export default function MusteriKabulStep({
 
     const fetchOdemeBilgileri = async () => {
         try {
-            const response = await getDenetciOdemeBilgileri(
-                user.token || "",
-                user.denetciId || 0
+            const response = await getDenetciOdemeBilgileri(user.denetciId || 0
             );
             if (response) {
                 setOdemeBilgileriBobi(response.bobiModulu);
@@ -114,9 +110,7 @@ export default function MusteriKabulStep({
 
         try {
             setLoading(true);
-            const result = await updateDenetlenenDenetimTuru(
-                user.token || "",
-                sirket.id,
+            const result = await updateDenetlenenDenetimTuru(sirket.id,
                 tur,
                 enflasyon
             );
@@ -295,3 +289,4 @@ export default function MusteriKabulStep({
         </Box>
     );
 }
+

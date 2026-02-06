@@ -47,9 +47,7 @@ const BelgeKontrolCardTopluOnay: React.FC<CardProps> = ({
   const title = hazirlayan ? "Hazırlayan" : onaylayan ? "Onaylayan" : "Kalite Kontrol";
 
   const fetchData = async () => {
-    const data = await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
-      user.token || "",
-      user.denetciId || 0,
+    const data = await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(user.denetciId || 0,
       user.denetlenenId || 0,
       user.yil || 0,
       controller
@@ -114,3 +112,4 @@ const BelgeKontrolCardTopluOnay: React.FC<CardProps> = ({
 };
 
 export default BelgeKontrolCardTopluOnay;
+

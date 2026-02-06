@@ -41,9 +41,7 @@ const DenetciDuzenleForm = () => {
       aktifmi,
     };
     try {
-      const result = await updateDenetci(
-        user.token || "",
-        user.denetciId,
+      const result = await updateDenetci(user.denetciId,
         updatedDenetci
       );
       if (result) {
@@ -58,9 +56,7 @@ const DenetciDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const denetciVerileri = await getDenetciById(
-        user.token || "",
-        user.denetciId
+      const denetciVerileri = await getDenetciById(user.denetciId
       );
       setFirmaAdi(denetciVerileri.firmaAdi);
       setFirmaUnvani(denetciVerileri.firmaUnvani);
@@ -390,3 +386,4 @@ const DenetciDuzenleForm = () => {
 };
 
 export default DenetciDuzenleForm;
+

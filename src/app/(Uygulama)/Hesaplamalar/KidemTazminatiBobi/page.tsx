@@ -267,9 +267,7 @@ const Page: React.FC = () => {
       personel2023: personel2023,
     };
     try {
-      const result = await createKidemTazminatiBobiEkBilgi(
-        user.token || "",
-        createdKidemEkBilgi
+      const result = await createKidemTazminatiBobiEkBilgi(createdKidemEkBilgi
       );
       if (result) {
         handleDrawerClose();
@@ -304,9 +302,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const kidemEkBilgiVerileri = await getKidemTazminatiBobiEkBilgi(
-        user.token || "",
-        user.denetciId || 0,
+      const kidemEkBilgiVerileri = await getKidemTazminatiBobiEkBilgi(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -339,9 +335,7 @@ const Page: React.FC = () => {
 
   const fetchData2 = async () => {
     try {
-      const kidem = await createKidemTazminatiBobiHesapla(
-        user.token || "",
-        user.denetciId || 0,
+      const kidem = await createKidemTazminatiBobiHesapla(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -438,9 +432,7 @@ const Page: React.FC = () => {
 
   const fetchData3 = async () => {
     try {
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -846,3 +838,4 @@ const Page: React.FC = () => {
   );
 };
 export default Page;
+

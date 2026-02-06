@@ -38,9 +38,7 @@ const Page = () => {
 
   const fetchData = async () => {
     try {
-      const genelHesapPlaniVerileri = await getGenelHesapPlani(
-        user.token || "",
-        user.denetimTuru || ""
+      const genelHesapPlaniVerileri = await getGenelHesapPlani(user.denetimTuru || ""
       );
 
       const rowsAll: Veri[] = [];

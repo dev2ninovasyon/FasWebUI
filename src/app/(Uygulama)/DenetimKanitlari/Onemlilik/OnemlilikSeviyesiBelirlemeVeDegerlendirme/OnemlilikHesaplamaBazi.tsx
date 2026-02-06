@@ -245,9 +245,7 @@ const OnemlilikHesaplamaBazi = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const onemlilikHesaplamaBaziVerileri = await getOnemlilikHesaplamaBazi(
-        user.token || "",
-        user.denetciId || 0,
+      const onemlilikHesaplamaBaziVerileri = await getOnemlilikHesaplamaBazi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -364,3 +362,4 @@ const OnemlilikHesaplamaBazi = () => {
 };
 
 export default OnemlilikHesaplamaBazi;
+

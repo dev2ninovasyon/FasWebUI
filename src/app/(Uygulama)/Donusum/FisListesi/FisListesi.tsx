@@ -329,9 +329,7 @@ const FisListesi = () => {
 
   const handleUpdateFisDurumu = async (fisNo: number) => {
     try {
-      const result = await updateFisDurumu(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await updateFisDurumu(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         fisNo,
@@ -370,9 +368,7 @@ const FisListesi = () => {
 
   const fetchData = async () => {
     try {
-      const fisListesiVerileri = await getFisListesiVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const fisListesiVerileri = await getFisListesiVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         false
@@ -574,3 +570,4 @@ const FisListesi = () => {
 };
 
 export default FisListesi;
+

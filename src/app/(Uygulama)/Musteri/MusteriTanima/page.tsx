@@ -112,9 +112,7 @@ const Page: React.FC = () => {
       digerBilgiler: digerBilgiler,
     };
     try {
-      const result = await updateMusteriTanimaStatikBilgiler(
-        user.token || "",
-        createdMusteriTanimaStatikBilgiler
+      const result = await updateMusteriTanimaStatikBilgiler(createdMusteriTanimaStatikBilgiler
       );
       if (result) {
         handleDrawerClose();
@@ -149,9 +147,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const musteriTanimaStatikBilgiler = await getMusteriTanimaStatikBilgiler(
-        user.token || "",
-        user.denetciId || 0,
+      const musteriTanimaStatikBilgiler = await getMusteriTanimaStatikBilgiler(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -654,3 +650,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

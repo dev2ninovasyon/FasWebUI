@@ -2,19 +2,17 @@
 
 
 export const getOnemlilikVeOrneklemSeviyesi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/OnemlilikVeOrneklemSeviyesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,7 +27,6 @@ export const getOnemlilikVeOrneklemSeviyesi = async (
 };
 
 export const createOnemlilikVeOrneklem = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -37,14 +34,13 @@ export const createOnemlilikVeOrneklem = async (
   hataPayi: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/OnemlilikVeOrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -60,19 +56,17 @@ export const createOnemlilikVeOrneklem = async (
 };
 
 export const getOnemlilikVeOrneklem = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/OnemlilikVeOrneklem?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -87,16 +81,14 @@ export const getOnemlilikVeOrneklem = async (
 };
 
 export const updateOnemlilikVeOrneklem = async (
-  token: string,
   updatedOnemlilikVeOrneklem: any
 ) => {
   try {
-    const response =await apiFetch(`/PlanVeProgram/OnemlilikVeOrneklem`, {
+    const response = await apiFetch(`/PlanVeProgram/OnemlilikVeOrneklem`, {
       method: "PUT",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedOnemlilikVeOrneklem),
     });
@@ -112,21 +104,19 @@ export const updateOnemlilikVeOrneklem = async (
 };
 
 export const createOnemlilikVeOrneklemHesaplamaBazi = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
   json: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
       }
@@ -143,19 +133,17 @@ export const createOnemlilikVeOrneklemHesaplamaBazi = async (
 };
 
 export const getOnemlilikVeOrneklemHesaplamaBazi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -170,18 +158,16 @@ export const getOnemlilikVeOrneklemHesaplamaBazi = async (
 };
 
 export const updateOnemlilikVeOrneklemHesaplamaBazi = async (
-  token: string,
   json: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/OnemlilikVeOrneklemHesaplamaBazi`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
       }
@@ -198,20 +184,18 @@ export const updateOnemlilikVeOrneklemHesaplamaBazi = async (
 };
 
 export const createFinansalTabloKalemlerindeDegisim = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/FinansalTabloKalemlerindeDegisimHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -227,19 +211,17 @@ export const createFinansalTabloKalemlerindeDegisim = async (
 };
 
 export const getFinansalTabloKalemlerindeDegisim = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/FinansalTabloKalemlerindeDegisim?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -254,18 +236,16 @@ export const getFinansalTabloKalemlerindeDegisim = async (
 };
 
 export const updateFinansalTabloKalemlerindeDegisim = async (
-  token: string,
   updatedFinansalTabloKalemlerindeDegisim: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/FinansalTabloKalemlerindeDegisim`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedFinansalTabloKalemlerindeDegisim),
       }
@@ -282,21 +262,19 @@ export const updateFinansalTabloKalemlerindeDegisim = async (
 };
 
 export const createBulguRiskiBelirleme = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
   girilenRisk: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/BulguRiskiBelirlemeHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&girilenRisk=${girilenRisk}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -312,19 +290,17 @@ export const createBulguRiskiBelirleme = async (
 };
 
 export const getBulguRiskiBelirleme = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/BulguRiskiBelirleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -339,20 +315,18 @@ export const getBulguRiskiBelirleme = async (
 };
 
 export const getFisBuyukluguAnaliziYillik = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
-  sadeceVerisiOlanAylar:boolean
+  sadeceVerisiOlanAylar: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/FisBuyukluguAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -366,7 +340,6 @@ export const getFisBuyukluguAnaliziYillik = async (
   }
 };
 export const upsertFisBuyukluguAylikNot = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -374,14 +347,13 @@ export const upsertFisBuyukluguAylikNot = async (
   not: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/PlanVeProgram/UpdateFisBuyukluguAnalizi`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           denetciId,

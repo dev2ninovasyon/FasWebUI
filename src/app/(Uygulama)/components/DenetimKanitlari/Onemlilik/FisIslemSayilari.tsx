@@ -280,9 +280,7 @@ const FisIslemSayilari = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const fisVerileri = await getFisIslemSayilari(
-        user.token || "",
-        user.denetciId || 0,
+      const fisVerileri = await getFisIslemSayilari(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -464,3 +462,4 @@ const FisIslemSayilari = () => {
 };
 
 export default FisIslemSayilari;
+

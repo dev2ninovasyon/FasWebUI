@@ -97,9 +97,7 @@ const IliskiliTarafSiniflamaOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -433,9 +431,7 @@ const IliskiliTarafSiniflamaOrnekFisler: React.FC<Props> = ({
     try {
       if (json) {
         const iliskiliTarafSiniflamaOrnekFisVerileri =
-          await getIliskiliTarafSiniflamaOrnekFisler(
-            user.token || "",
-            user.denetciId || 0,
+          await getIliskiliTarafSiniflamaOrnekFisler(user.denetciId || 0,
             user.yil || 0,
             user.denetlenenId || 0,
             json,
@@ -611,3 +607,4 @@ const IliskiliTarafSiniflamaOrnekFisler: React.FC<Props> = ({
 };
 
 export default IliskiliTarafSiniflamaOrnekFisler;
+

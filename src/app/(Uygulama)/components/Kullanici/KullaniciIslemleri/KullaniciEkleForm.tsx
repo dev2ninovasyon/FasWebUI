@@ -42,7 +42,7 @@ const KullaniciEkleForm = () => {
       aktifPasif,
     };
     try {
-      const result = await createKullanici(user.token || "", createdKullanici);
+      const result = await createKullanici(createdKullanici);
       if (result) {
         router.push("/Kullanici/KullaniciIslemleri");
       } else {

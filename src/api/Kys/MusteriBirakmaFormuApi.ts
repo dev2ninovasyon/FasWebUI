@@ -3,7 +3,6 @@
 const controller = "MusteriBirakmaFormu";
 
 export const getMusteriBirakmaFormu = async (
-    token: string,
     denetlenenId: number,
     yil: number
 ) => {
@@ -11,9 +10,7 @@ export const getMusteriBirakmaFormu = async (
         const response = await apiFetch(
             `/${controller}?denetlenenId=${denetlenenId}&yil=${yil}`,
             {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: {},
             }
         );
         if (!response.ok) {
@@ -27,14 +24,12 @@ export const getMusteriBirakmaFormu = async (
 };
 
 export const createMusteriBirakmaFormu = async (
-    token: string,
     data: any
 ) => {
     try {
         const response = await apiFetch(`/${controller}`, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
@@ -50,7 +45,6 @@ export const createMusteriBirakmaFormu = async (
 };
 
 export const updateMusteriBirakmaFormu = async (
-    token: string,
     id: number,
     data: any
 ) => {
@@ -58,7 +52,6 @@ export const updateMusteriBirakmaFormu = async (
         const response = await apiFetch(`/${controller}/${id}`, {
             method: "PUT",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
@@ -74,15 +67,12 @@ export const updateMusteriBirakmaFormu = async (
 };
 
 export const deleteMusteriBirakmaFormu = async (
-    token: string,
     id: number
 ) => {
     try {
         const response = await apiFetch(`/${controller}/${id}`, {
             method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: {},
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

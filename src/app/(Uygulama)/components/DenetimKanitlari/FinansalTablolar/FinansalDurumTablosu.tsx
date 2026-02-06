@@ -86,9 +86,7 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const fetchData = async () => {
     try {
-      const finansalDurumTablosu = await getFinansalDurumTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const finansalDurumTablosu = await getFinansalDurumTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         konsolidasyonMu
@@ -115,9 +113,7 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
       setFdtData(newRowsFdt);
 
-      const karZararTablosu = await getKarZararTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const karZararTablosu = await getKarZararTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         konsolidasyonMu
@@ -529,3 +525,4 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 };
 
 export default FinansalDurumTablosu;
+

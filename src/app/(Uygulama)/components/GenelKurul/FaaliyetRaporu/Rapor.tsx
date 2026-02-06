@@ -127,9 +127,7 @@ const Rapor: React.FC<RaporProps> = ({
 
   const fetchDataKarsilastirmaliAnaliz = useCallback(async () => {
     try {
-      const karsilastirmaliAnalizTablosu = await getKarsilastirmaliAnaliz(
-        user.token || "",
-        user.denetciId || 0,
+      const karsilastirmaliAnalizTablosu = await getKarsilastirmaliAnaliz(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -286,9 +284,7 @@ const Rapor: React.FC<RaporProps> = ({
 
   const fetchDataDikeyAnaliz = useCallback(async () => {
     try {
-      const karsilastirmaliAnalizTablosu = await getDikeyAnaliz(
-        user.token || "",
-        user.denetciId || 0,
+      const karsilastirmaliAnalizTablosu = await getDikeyAnaliz(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -931,3 +927,4 @@ const Rapor: React.FC<RaporProps> = ({
 };
 
 export default Rapor;
+

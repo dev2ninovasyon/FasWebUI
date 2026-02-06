@@ -115,7 +115,7 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
       const loadMaddiDogrulamaData = async () => {
         try {
           const data = await getMaddiDogrulama(
-            user.token || "",
+
             user.denetimTuru || "",
             user.denetlenenId || 0,
             user.yil || 0

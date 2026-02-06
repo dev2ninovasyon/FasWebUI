@@ -52,9 +52,7 @@ const SirketYonetimKadrosuTable = () => {
   const handleDelete = async () => {
     handleClose();
     try {
-      const result = await deleteSirketYonetimKadrosuById(
-        user.token || "",
-        selectedId || 0
+      const result = await deleteSirketYonetimKadrosuById(selectedId || 0
       );
       if (result) {
         fetchData();
@@ -71,9 +69,7 @@ const SirketYonetimKadrosuTable = () => {
   const fetchData = async () => {
     try {
       const SirketYonetimKadrosuVerileri =
-        await getSirketYonetimKadrosuByDenetlenenId(
-          user.token || "",
-          user.denetlenenId || 0
+        await getSirketYonetimKadrosuByDenetlenenId(user.denetlenenId || 0
         );
       const newRows = SirketYonetimKadrosuVerileri.map(
         (sirketYonetimKadrosu: any) => ({
@@ -170,3 +166,4 @@ const SirketYonetimKadrosuTable = () => {
 };
 
 export default SirketYonetimKadrosuTable;
+

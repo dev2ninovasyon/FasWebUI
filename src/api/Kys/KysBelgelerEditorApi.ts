@@ -3,7 +3,6 @@
 const controller = "KysBelgelerEditorText";
 
 export const getKysBelgelerEditorText = async (
-    token: string,
     formKodu: string,
     denetlenenId: number,
     yil: number
@@ -12,9 +11,7 @@ export const getKysBelgelerEditorText = async (
         const response = await apiFetch(
             `/${controller}/GetByFormKodu?formKodu=${formKodu}&denetlenenId=${denetlenenId}&yil=${yil}`,
             {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: {},
             }
         );
         if (!response.ok) {
@@ -31,7 +28,6 @@ export const getKysBelgelerEditorText = async (
 };
 
 export const saveKysBelgelerEditorText = async (
-    token: string,
     data: {
         formKodu: string;
         denetlenenId: number;
@@ -43,7 +39,6 @@ export const saveKysBelgelerEditorText = async (
         const response = await apiFetch(`/${controller}`, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),

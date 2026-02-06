@@ -46,7 +46,7 @@ const MusteriDetay = () => {
 
   const fetchData = async () => {
     try {
-      const result = await getDenetlenenById(user.token || "", pathId);
+      const result = await getDenetlenenById(pathId);
       setFirmaAdi(result.firmaAdi);
       setYetkili(result.yetkili);
       setTel(result.tel);
@@ -71,9 +71,7 @@ const MusteriDetay = () => {
       setSektor3Id(result.sektor3Id);
 
       if (result.konsolideBagliSirketId != 0) {
-        const result2 = await getDenetlenenById(
-          user.token || "",
-          result.konsolideBagliSirketId
+        const result2 = await getDenetlenenById(result.konsolideBagliSirketId
         );
 
         setKonsolideBagliSirketAdi(result2.firmaAdi);
@@ -85,7 +83,7 @@ const MusteriDetay = () => {
 
   const fetchData2 = async () => {
     try {
-      const sektorKodVerileri = await getSektorKodlari(user.token || "");
+      const sektorKodVerileri = await getSektorKodlari();
 
       const newRows = sektorKodVerileri.map((kod: any) => ({
         id: kod.id,
@@ -479,3 +477,4 @@ const MusteriDetay = () => {
 };
 
 export default MusteriDetay;
+

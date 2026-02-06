@@ -314,9 +314,7 @@ const SonGirilenFisler: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const fisVerileriByFisNo = await getFisListesiVerileriByFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const fisVerileriByFisNo = await getFisListesiVerileriByFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         lastFisNo,
@@ -347,9 +345,7 @@ const SonGirilenFisler: React.FC<Props> = ({
 
   const fetchFisNo = async () => {
     try {
-      const fisNo = await getFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const fisNo = await getFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         konsolidasyonMu
@@ -456,3 +452,4 @@ const SonGirilenFisler: React.FC<Props> = ({
 };
 
 export default SonGirilenFisler;
+

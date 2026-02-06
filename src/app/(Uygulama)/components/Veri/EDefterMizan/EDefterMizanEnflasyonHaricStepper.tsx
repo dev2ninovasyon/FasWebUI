@@ -120,9 +120,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
       setYevmiyeFisNo("");
       setLoading(true);
 
-      const standartfisListesi = await getStandartYevmiyeFisNoHaric(
-        user.token || "",
-        user.denetciId || 0,
+      const standartfisListesi = await getStandartYevmiyeFisNoHaric(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -138,9 +136,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 
   const handleAnaHesapMizan = async () => {
     try {
-      const result = await createAnaHesapMizanHaric(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createAnaHesapMizanHaric(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         mizanBaslangicTarihi,
@@ -178,9 +174,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 
   const handleDetayHesapMizan = async () => {
     try {
-      const result = await createDetayHesapMizanHaric(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createDetayHesapMizanHaric(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         mizanBaslangicTarihi,
@@ -219,9 +213,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 
   const handleProgramVukMizan = async () => {
     try {
-      const result = await createProgramVukMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createProgramVukMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         "E-DefterHaric"
@@ -259,9 +251,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const fisListesi = await getYevmiyeFisNoHaric(
-        user.token || "",
-        user.denetciId || 0,
+      const fisListesi = await getYevmiyeFisNoHaric(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -309,9 +299,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
   const fetchControl = async () => {
     const type = "E-DefterHaric";
     try {
-      const programVukMizanControl = await getProgramVukMizanControl(
-        user.token || "",
-        user.denetciId || 0,
+      const programVukMizanControl = await getProgramVukMizanControl(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -328,9 +316,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
   const fetchMizanControl = async () => {
     const type = "E-DefterHaric";
     try {
-      const mizanVerileri = await getMizanVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -903,3 +889,4 @@ const EDefterMizanEnflasyonHaricStepper = () => {
 };
 
 export default EDefterMizanEnflasyonHaricStepper;
+

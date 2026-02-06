@@ -41,7 +41,6 @@ const KysRiskMatrixExport: React.FC = () => {
 
             // Fetch all risk matrices
             const matrixData = await getAllKysRiskMatrisi(
-                user.token,
                 user.denetciId,
                 user.denetlenenId,
                 user.yil
@@ -64,13 +63,13 @@ const KysRiskMatrixExport: React.FC = () => {
 
                     let data = null;
                     if (doc.type === 1) {
-                        data = await getKysBelgelerType1(token, doc.formKodu, denetlenenId, yil);
+                        data = await getKysBelgelerType1(doc.formKodu, denetlenenId, yil);
                     } else if (doc.type === 2) {
-                        data = await getKysBelgelerType2(token, doc.formKodu, denetlenenId, yil);
+                        data = await getKysBelgelerType2(doc.formKodu, denetlenenId, yil);
                     } else if (doc.type === 3) {
-                        data = await getKysBelgelerType3(token, doc.formKodu, denetlenenId, yil);
+                        data = await getKysBelgelerType3(doc.formKodu, denetlenenId, yil);
                     } else if (doc.type === 4) {
-                        data = await getKysBelgeType4(token, doc.formKodu, denetciId, denetlenenId, yil);
+                        data = await getKysBelgeType4(doc.formKodu, denetciId, denetlenenId, yil);
                     }
                     if (data) {
                         docsData[doc.formKodu] = data;

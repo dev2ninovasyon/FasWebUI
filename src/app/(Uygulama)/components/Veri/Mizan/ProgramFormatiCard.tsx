@@ -29,9 +29,7 @@ const ProgramFormatiCard: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const programVukMizanVerileri = await getProgramVukMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const programVukMizanVerileri = await getProgramVukMizan(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -113,3 +111,4 @@ const ProgramFormatiCard: React.FC<Props> = ({
 };
 
 export default ProgramFormatiCard;
+

@@ -38,7 +38,6 @@ export interface KysRiskMatrisi {
 }
 
 export const getKysRiskMatrisi = async (
-    token: string,
     kategoriKodu: string,
     denetciId?: number,
     denetlenenId?: number,
@@ -56,7 +55,6 @@ export const getKysRiskMatrisi = async (
                 method: "GET",
                 headers: {
                     accept: "application/json",
-                    Authorization: `Bearer ${token}`,
                 },
             }
         );
@@ -74,7 +72,6 @@ export const getKysRiskMatrisi = async (
 };
 
 export const updateKysRiskMatrisi = async (
-    token: string,
     id: number,
     kategoriKodu: string,
     matrisData: RiskMatrixData,
@@ -84,7 +81,6 @@ export const updateKysRiskMatrisi = async (
         const response = await apiFetch(`/KysRiskMatrisi/${id}`, {
             method: "PUT",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -108,7 +104,6 @@ export const updateKysRiskMatrisi = async (
 };
 
 export const createKysRiskMatrisi = async (
-    token: string,
     kategoriKodu: string,
     baslik: string,
     matrisData: RiskMatrixData,
@@ -120,7 +115,6 @@ export const createKysRiskMatrisi = async (
         const response = await apiFetch("/KysRiskMatrisi", {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -146,7 +140,6 @@ export const createKysRiskMatrisi = async (
     }
 };
 export const getAllKysRiskMatrisi = async (
-    token: string,
     denetciId?: number,
     denetlenenId?: number,
     yil?: number
@@ -161,7 +154,6 @@ export const getAllKysRiskMatrisi = async (
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         });
 
@@ -178,7 +170,6 @@ export const getAllKysRiskMatrisi = async (
 };
 
 export const generateKysRiskMatrisiFullData = async (
-    token: string,
     kategoriKodu: string,
     denetciId: number,
     denetlenenId: number,
@@ -195,7 +186,6 @@ export const generateKysRiskMatrisiFullData = async (
         const response = await apiFetch(`/KysRiskMatrisi/Generate?${params}`, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${token}`,
                 accept: "application/json"
             }
         });

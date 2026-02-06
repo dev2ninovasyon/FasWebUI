@@ -318,9 +318,7 @@ const FinansalTabloKalemlerindeDegisim: React.FC<Props> = ({
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateFinansalTabloKalemlerindeDegisim(
-        user.token || "",
-        json
+      const result = await updateFinansalTabloKalemlerindeDegisim(json
       );
       if (result) {
         fetchData();
@@ -357,9 +355,7 @@ const FinansalTabloKalemlerindeDegisim: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const finansalTabloVerilerindeDegisimVerileri =
-        await getFinansalTabloKalemlerindeDegisim(
-          user.token || "",
-          user.denetciId || 0,
+        await getFinansalTabloKalemlerindeDegisim(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -541,3 +537,4 @@ const FinansalTabloKalemlerindeDegisim: React.FC<Props> = ({
 };
 
 export default FinansalTabloKalemlerindeDegisim;
+

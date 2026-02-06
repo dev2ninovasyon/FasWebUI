@@ -16,7 +16,6 @@ export interface SozlesmeTestleriData {
 }
 
 export async function getSozlesmeTestleri(
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number,
@@ -28,7 +27,6 @@ export async function getSozlesmeTestleri(
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );
@@ -37,7 +35,6 @@ export async function getSozlesmeTestleri(
 }
 
 export async function updateSozlesmeTestleri(
-    token: string,
     id: number,
     data: Partial<SozlesmeTestleriData>
 ) {
@@ -45,7 +42,6 @@ export async function updateSozlesmeTestleri(
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
@@ -54,7 +50,6 @@ export async function updateSozlesmeTestleri(
 }
 
 export async function varsayilanaDon(
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number,
@@ -66,7 +61,6 @@ export async function varsayilanaDon(
             method: "POST",
             headers: {
                 accept: "*/*",
-                Authorization: `Bearer ${token}`,
             },
         }
     );

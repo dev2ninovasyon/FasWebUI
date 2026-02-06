@@ -92,9 +92,7 @@ const MizanTable: React.FC<Props> = ({ type }) => {
 
   const fetchData = async () => {
     try {
-      const mizanBilgileri = await getMizanBilgileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanBilgileri = await getMizanBilgileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -184,9 +182,7 @@ const MizanTable: React.FC<Props> = ({ type }) => {
 
   const deleteSelected = async () => {
     try {
-      const result = await deleteMizanBilgisiMultiple(
-        user.token || "",
-        selected || 0
+      const result = await deleteMizanBilgisiMultiple(selected || 0
       );
       if (result) {
         selected.length = 0;
@@ -418,3 +414,4 @@ const MizanTable: React.FC<Props> = ({ type }) => {
 };
 
 export default MizanTable;
+

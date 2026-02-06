@@ -113,9 +113,7 @@ const Page = () => {
       confirmPassword,
     };
     try {
-      const result = await updatekullaniciSifre(
-        user.token || "",
-        user.id,
+      const result = await updatekullaniciSifre(user.id,
         updatedPassword
       );
       if (result) {
@@ -414,3 +412,4 @@ const Page = () => {
 };
 
 export default Page;
+

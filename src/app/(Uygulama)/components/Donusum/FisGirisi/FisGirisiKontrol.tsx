@@ -233,9 +233,7 @@ const FisGirisiKontrol: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       if (konsolidasyonMu) {
-        const birlestirilmisMizanVerileri = await getMizanVerileri(
-          user.token || "",
-          user.denetciId || 0,
+        const birlestirilmisMizanVerileri = await getMizanVerileri(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           "BirlestirilmisMizan"
@@ -251,9 +249,7 @@ const FisGirisiKontrol: React.FC<Props> = ({
         setFetchedData(rowsAll);
         setFilteredData(rowsAll);
       } else {
-        const programVukMizanVerileri = await getProgramVukMizanWithoutType(
-          user.token || "",
-          user.denetciId || 0,
+        const programVukMizanVerileri = await getProgramVukMizanWithoutType(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -381,3 +377,4 @@ const FisGirisiKontrol: React.FC<Props> = ({
 };
 
 export default FisGirisiKontrol;
+

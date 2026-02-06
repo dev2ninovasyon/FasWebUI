@@ -61,9 +61,7 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const dikeyAnalizTablosu = await getDikeyAnaliz(
-        user.token || "",
-        user.denetciId || 0,
+      const dikeyAnalizTablosu = await getDikeyAnaliz(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -737,3 +735,4 @@ const DikeyAnaliz: React.FC<Props> = ({ showGraph, hesaplaTiklandimi }) => {
 };
 
 export default DikeyAnaliz;
+

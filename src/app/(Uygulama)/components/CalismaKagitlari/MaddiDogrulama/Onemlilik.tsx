@@ -270,9 +270,7 @@ const Onemlilik: React.FC<Props> = ({ dipnot, isReport }) => {
 
   const fetchData = async () => {
     try {
-      const onemlilikVerileri = await getOnemlilikByDipnot(
-        user.token || "",
-        user.denetciId || 0,
+      const onemlilikVerileri = await getOnemlilikByDipnot(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         dipnot
@@ -374,3 +372,4 @@ const Onemlilik: React.FC<Props> = ({ dipnot, isReport }) => {
 };
 
 export default Onemlilik;
+

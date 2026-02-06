@@ -297,7 +297,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateOnemlilikHesaplamaBazi(user.token || "", json);
+      const result = await updateOnemlilikHesaplamaBazi(json);
       if (result) {
         fetchData();
         setOpenCartAlert(false);
@@ -332,9 +332,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const onemlilikHesaplamaBaziVerileri = await getOnemlilikHesaplamaBazi(
-        user.token || "",
-        user.denetciId || 0,
+      const onemlilikHesaplamaBaziVerileri = await getOnemlilikHesaplamaBazi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -441,3 +439,4 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
 };
 
 export default OnemlilikHesaplamaBazi;
+

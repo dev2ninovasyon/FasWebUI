@@ -85,9 +85,7 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createDavaKarsiliklariHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createDavaKarsiliklariHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         iskontoOrani
@@ -124,9 +122,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -182,9 +178,7 @@ const Page: React.FC = () => {
 
   const fetchIskontoOrani = async () => {
     try {
-      const iskontoOraniVerisi = await getIskontoOrani(
-        user.token || "",
-        user.yil || 0
+      const iskontoOraniVerisi = await getIskontoOrani(user.yil || 0
       );
 
       if (iskontoOraniVerisi) {
@@ -394,3 +388,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

@@ -2,7 +2,6 @@
 
 
 export const getMaddiDogrulama = async (
-  token: string,
   denetimTuru: string,
   denetlenenId: number,
   yil: number
@@ -17,7 +16,6 @@ export const getMaddiDogrulama = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -35,7 +33,6 @@ export const getMaddiDogrulama = async (
 };
 
 export const getUygulananDenetimProsedurleri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -49,7 +46,6 @@ export const getUygulananDenetimProsedurleri = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -64,7 +60,6 @@ export const getUygulananDenetimProsedurleri = async (
   }
 };
 export const getDipnotNoByDipnotAdi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -82,7 +77,6 @@ export const getDipnotNoByDipnotAdi = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -102,7 +96,6 @@ export const getDipnotNoByDipnotAdi = async (
 };
 
 export const createCalismaKagidiVerisi = async (
-  token: string,
   createdCalismaKagidiVerisi: any
 ) => {
   try {
@@ -111,7 +104,6 @@ export const createCalismaKagidiVerisi = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdCalismaKagidiVerisi),
     });
@@ -127,7 +119,6 @@ export const createCalismaKagidiVerisi = async (
 };
 
 export const updateCalismaKagidiVerisi = async (
-  token: string,
   id: any,
   updatedCalismaKagidiVerisi: any
 ) => {
@@ -137,7 +128,6 @@ export const updateCalismaKagidiVerisi = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedCalismaKagidiVerisi),
     });
@@ -152,13 +142,12 @@ export const updateCalismaKagidiVerisi = async (
   }
 };
 
-export const deleteCalismaKagidiVerisiById = async (token: string, id: any) => {
+export const deleteCalismaKagidiVerisiById = async (id: any) => {
   try {
     const response = await apiFetch(`/UygulananDenetimProsedurleri/${id}`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -173,7 +162,6 @@ export const deleteCalismaKagidiVerisiById = async (token: string, id: any) => {
 };
 
 export const deleteAllCalismaKagidiVerileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -187,7 +175,6 @@ export const deleteAllCalismaKagidiVerileri = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

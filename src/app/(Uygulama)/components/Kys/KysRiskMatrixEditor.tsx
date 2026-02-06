@@ -119,7 +119,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
 
         setLoading(true);
         const data = await getKysRiskMatrisi(
-            user.token,
             kategoriKodu,
             user.denetciId,
             user.denetlenenId,
@@ -155,7 +154,7 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
             // In this specific scenario, we rely on seeded data, so matrisId should exist. 
             // If it doesn't, we might need to handle create, but let's prioritize update for now as user said "seed data exists".
             if (matrisId) {
-                const result = await updateKysRiskMatrisi(user.token, matrisId, kategoriKodu, newData, baslik);
+                const result = await updateKysRiskMatrisi(matrisId, kategoriKodu, newData, baslik);
                 if (result) {
                     enqueueSnackbar("Değişiklikler kaydedildi.", { variant: "success", autoHideDuration: 2000 });
                 } else {
@@ -164,7 +163,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
             } else {
                 // Handle Create Case if needed (though rare with seeding)
                 const result = await import("@/api/Kys/KysRiskMatrisi").then(m => m.createKysRiskMatrisi(
-                    user.token!,
                     kategoriKodu,
                     baslik || "Yeni Risk Matrisi",
                     newData,
@@ -191,7 +189,6 @@ const KysRiskMatrixEditor: React.FC<KysRiskMatrixEditorProps> = ({
         setIsGenerating(true);
         try {
             const result = await generateKysRiskMatrisiFullData(
-                user.token,
                 kategoriKodu,
                 user.denetciId,
                 user.denetlenenId,

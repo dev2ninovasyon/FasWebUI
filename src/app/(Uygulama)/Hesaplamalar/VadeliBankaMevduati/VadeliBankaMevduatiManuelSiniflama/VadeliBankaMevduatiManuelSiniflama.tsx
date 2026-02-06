@@ -353,9 +353,7 @@ const VadeliBankaMevduatiManuelSiniflama = () => {
     setLoading(true);
     try {
       const vadeliBankaMevduatiVerileri =
-        await getVadeliBankaMevduatiManuelSiniflama(
-          user.token || "",
-          user.denetciId || 0,
+        await getVadeliBankaMevduatiManuelSiniflama(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -671,3 +669,4 @@ const VadeliBankaMevduatiManuelSiniflama = () => {
 };
 
 export default VadeliBankaMevduatiManuelSiniflama;
+

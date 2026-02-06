@@ -561,9 +561,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
       });
 
     try {
-      const result = await createKrediHesaplamaDetayVerisi(
-        user.token || "",
-        jsonData
+      const result = await createKrediHesaplamaDetayVerisi(jsonData
       );
       if (result) {
         await fetchData();
@@ -598,9 +596,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
 
   const handleDeleteKrediHesaplamaDetayVerisi = async () => {
     try {
-      const result = await deleteKrediHesaplamaDetayVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteKrediHesaplamaDetayVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         pathKrediId || 0
@@ -640,9 +636,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const krediHesaplama =
-        await getKrediHesaplamaVerileriByDenetciDenetlenenYilId(
-          user.token || "",
-          user.denetciId || 0,
+        await getKrediHesaplamaVerileriByDenetciDenetlenenYilId(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           pathKrediId || 0
@@ -660,9 +654,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const krediHesaplamaDetayVerileri =
-        await getKrediHesaplamaDetayVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getKrediHesaplamaDetayVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           pathKrediId || 0
@@ -712,7 +704,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
   const fetchRowCount = async () => {
     try {
       if (tur == "Taksitli Kredi") {
-        const format = await getFormat(user.token || "", "Kredi Hesaplama");
+        const format = await getFormat("Kredi Hesaplama");
         setRowCount(format.satirSayisi);
       } else {
         setRowCount(1);

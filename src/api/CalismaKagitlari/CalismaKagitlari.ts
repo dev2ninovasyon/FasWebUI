@@ -3,7 +3,6 @@
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -15,7 +14,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -31,7 +29,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYil = async (
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -44,7 +41,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -60,7 +56,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo = async (
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -73,7 +68,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -89,7 +83,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil = async (
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -102,7 +95,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -118,7 +110,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByKonu = async (
 
 export const getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -131,7 +122,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -147,7 +137,6 @@ export const getCalismaKagidiVerileriByDenetciDenetlenenYilByUrl = async (
 
 export const createCalismaKagidiVerisi = async (
   controller: string,
-  token: string,
   createdCalismaKagidiVerisi: any
 ) => {
   try {
@@ -156,7 +145,6 @@ export const createCalismaKagidiVerisi = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdCalismaKagidiVerisi),
     });
@@ -173,7 +161,6 @@ export const createCalismaKagidiVerisi = async (
 
 export const updateCalismaKagidiVerisi = async (
   controller: string,
-  token: string,
   id: any,
   updatedCalismaKagidiVerisi: any
 ) => {
@@ -183,7 +170,6 @@ export const updateCalismaKagidiVerisi = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedCalismaKagidiVerisi),
     });
@@ -200,7 +186,6 @@ export const updateCalismaKagidiVerisi = async (
 
 export const updateAllCalismaKagidiVerisi = async (
   controller: string,
-  token: string,
   updatedAllCalismaKagidiVerisi: any
 ) => {
   try {
@@ -209,7 +194,6 @@ export const updateAllCalismaKagidiVerisi = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedAllCalismaKagidiVerisi),
     });
@@ -226,7 +210,6 @@ export const updateAllCalismaKagidiVerisi = async (
 
 export const updateOtomatikCalismaKagidiVerisi = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -239,7 +222,6 @@ export const updateOtomatikCalismaKagidiVerisi = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -256,7 +238,6 @@ export const updateOtomatikCalismaKagidiVerisi = async (
 
 export const deleteCalismaKagidiVerisiById = async (
   controller: string,
-  token: string,
   id: any
 ) => {
   try {
@@ -264,7 +245,6 @@ export const deleteCalismaKagidiVerisiById = async (
       method: "DELETE",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -280,7 +260,6 @@ export const deleteCalismaKagidiVerisiById = async (
 
 export const deleteAllCalismaKagidiVerileri = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -292,7 +271,6 @@ export const deleteAllCalismaKagidiVerileri = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -309,7 +287,6 @@ export const deleteAllCalismaKagidiVerileri = async (
 
 export const deleteAllCalismaKagidiVerileriByDipnotNo = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -322,7 +299,6 @@ export const deleteAllCalismaKagidiVerileriByDipnotNo = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -339,7 +315,6 @@ export const deleteAllCalismaKagidiVerileriByDipnotNo = async (
 
 export const deleteAllCalismaKagidiVerileriByKullanci = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -352,7 +327,6 @@ export const deleteAllCalismaKagidiVerileriByKullanci = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -369,7 +343,6 @@ export const deleteAllCalismaKagidiVerileriByKullanci = async (
 
 export const deleteAllCalismaKagidiVerileriByKonu = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -382,7 +355,6 @@ export const deleteAllCalismaKagidiVerileriByKonu = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -399,7 +371,6 @@ export const deleteAllCalismaKagidiVerileriByKonu = async (
 
 export const deleteAllCalismaKagidiVerileriByUrl = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -412,7 +383,6 @@ export const deleteAllCalismaKagidiVerileriByUrl = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -428,7 +398,6 @@ export const deleteAllCalismaKagidiVerileriByUrl = async (
 };
 
 export const getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -441,7 +410,6 @@ export const getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -456,7 +424,6 @@ export const getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu = async (
 };
 
 export const updateFormHazirlayanOnaylayan = async (
-  token: string,
   id: any,
   updatedFormHazirlayanOnaylayanVerisi: any,
   control: boolean
@@ -469,7 +436,6 @@ export const updateFormHazirlayanOnaylayan = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedFormHazirlayanOnaylayanVerisi),
       }
@@ -494,7 +460,6 @@ export const updateFormHazirlayanOnaylayan = async (
   }
 };
 export async function uploadEkBelge(
-  token: string,
   formData: FormData
 ): Promise<boolean | { success: boolean; message?: string }> {
   try {
@@ -503,7 +468,8 @@ export async function uploadEkBelge(
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization removed
+
           // â— DİKKAT: Burada "Content-Type" KESİNLİKLE yazılmaz.
           // Çünkü FormData kendi boundary bilgisini oluşturur.
         },

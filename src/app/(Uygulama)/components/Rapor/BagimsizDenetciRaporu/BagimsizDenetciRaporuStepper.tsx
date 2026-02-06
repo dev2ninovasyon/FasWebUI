@@ -310,7 +310,7 @@ const BagimsizDenetciRaporuStepper = () => {
         return obj;
       });
 
-      const result = await updateRaporGorus(user.token || "", jsonData);
+      const result = await updateRaporGorus(jsonData);
 
       handleClosePopUp();
     } catch (error) {
@@ -320,9 +320,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
   const fetchData = async () => {
     try {
-      const gorusVerileri = await getRaporGorus(
-        user.token || "",
-        user.denetciId || 0,
+      const gorusVerileri = await getRaporGorus(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         user.denetimTuru || "",
@@ -412,9 +410,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
   const fetchFinansalTablolar = async () => {
     try {
-      const finansalDurumTablosu = await getFinansalDurumTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const finansalDurumTablosu = await getFinansalDurumTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -441,9 +437,7 @@ const BagimsizDenetciRaporuStepper = () => {
         )
       );
 
-      const karZararTablosu = await getKarZararTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const karZararTablosu = await getKarZararTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -471,9 +465,7 @@ const BagimsizDenetciRaporuStepper = () => {
         )
       );
 
-      const nakitAkisTablosu = await getNakitAkisTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const nakitAkisTablosu = await getNakitAkisTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -501,9 +493,7 @@ const BagimsizDenetciRaporuStepper = () => {
         )
       );
 
-      const ozkaynakTablosuCari = await getOzkaynakTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const ozkaynakTablosuCari = await getOzkaynakTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -578,9 +568,7 @@ const BagimsizDenetciRaporuStepper = () => {
       setOzkYatayDataCari(filteredYatayDataCari);
       setOzkDataCari(filteredOzkaynakDataCari);
 
-      const ozkaynakTablosuOnceki = await getOzkaynakTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const ozkaynakTablosuOnceki = await getOzkaynakTablosu(user.denetciId || 0,
         user.yil ? user.yil - 1 : 0,
         user.denetlenenId || 0,
         false
@@ -661,9 +649,7 @@ const BagimsizDenetciRaporuStepper = () => {
 
   const fetchDipnot = async () => {
     try {
-      const dipnotVerileri = await getRaporDipnot(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnotVerileri = await getRaporDipnot(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         user.denetimTuru || "",
@@ -2257,3 +2243,4 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     </Dialog>
   );
 };
+

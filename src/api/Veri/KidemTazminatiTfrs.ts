@@ -2,19 +2,17 @@
 
 
 export const getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/KidemTazminatiTfrs?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,16 +27,14 @@ export const getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil = async (
 };
 
 export const createKidemTazminatiTfrsVerisi = async (
-  token: string,
   jsonData: any
 ) => {
   try {
-    const response =await apiFetch(`/Veri/KidemTazminatiTfrs`, {
+    const response = await apiFetch(`/Veri/KidemTazminatiTfrs`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(jsonData),
     });
@@ -54,20 +50,18 @@ export const createKidemTazminatiTfrsVerisi = async (
 };
 
 export const deleteKidemTazminatiTfrsVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/KidemTazminatiTfrs?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

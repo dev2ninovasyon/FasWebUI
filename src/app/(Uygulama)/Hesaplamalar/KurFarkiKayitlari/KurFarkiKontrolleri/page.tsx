@@ -74,9 +74,7 @@ const Page: React.FC = () => {
   const handleVerileriGetir = async () => {
     try {
       if (tip == "646 Kambiyo Kârları") {
-        const result = await getKurFarkiKontrolleriOzet(
-          user.token || "",
-          user.denetciId || 0,
+        const result = await getKurFarkiKontrolleriOzet(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
           646,
@@ -99,9 +97,7 @@ const Page: React.FC = () => {
 
         setFetchedDataOzet(rowsAll);
 
-        const resultFis = await getKurFarkiKontrolleriFisler(
-          user.token || "",
-          user.denetciId || 0,
+        const resultFis = await getKurFarkiKontrolleriFisler(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
           646,
@@ -131,9 +127,7 @@ const Page: React.FC = () => {
         setVerileriGetirTiklandimi(false);
       }
       if (tip == "656 Kambiyo Zararları") {
-        const result = await getKurFarkiKontrolleriOzet(
-          user.token || "",
-          user.denetciId || 0,
+        const result = await getKurFarkiKontrolleriOzet(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
           656,
@@ -156,9 +150,7 @@ const Page: React.FC = () => {
 
         setFetchedDataOzet(rowsAll);
 
-        const resultFis = await getKurFarkiKontrolleriFisler(
-          user.token || "",
-          user.denetciId || 0,
+        const resultFis = await getKurFarkiKontrolleriFisler(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
           656,
@@ -342,3 +334,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

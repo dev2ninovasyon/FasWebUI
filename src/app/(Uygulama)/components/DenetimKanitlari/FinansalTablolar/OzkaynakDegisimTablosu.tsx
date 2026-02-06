@@ -57,9 +57,7 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const ozkaynakTablosu = await getOzkaynakTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const ozkaynakTablosu = await getOzkaynakTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         konsolidasyonMu
@@ -272,3 +270,4 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
 };
 
 export default OzkaynakDegisimTablosu;
+

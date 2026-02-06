@@ -203,9 +203,7 @@ const IliskiliTarafInceleme = () => {
   const fetchData = async () => {
     try {
       const iliskiliTarafIncelemeVerileri =
-        await getIliskiliTarafIncelemeHesaplari(
-          user.token || "",
-          user.denetciId || 0,
+        await getIliskiliTarafIncelemeHesaplari(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -287,3 +285,4 @@ const IliskiliTarafInceleme = () => {
 };
 
 export default IliskiliTarafInceleme;
+

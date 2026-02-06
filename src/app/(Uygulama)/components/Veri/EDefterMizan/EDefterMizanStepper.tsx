@@ -125,9 +125,7 @@ const EDefterMizanStepper = () => {
       setYevmiyeFisNo("");
       setLoading(true);
 
-      const standartfisListesi = await getStandartYevmiyeFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const standartfisListesi = await getStandartYevmiyeFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -143,9 +141,7 @@ const EDefterMizanStepper = () => {
 
   const handleAnaHesapMizan = async () => {
     try {
-      const result = await createAnaHesapMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createAnaHesapMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         mizanBaslangicTarihi,
@@ -183,9 +179,7 @@ const EDefterMizanStepper = () => {
 
   const handleDetayHesapMizan = async () => {
     try {
-      const result = await createDetayHesapMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createDetayHesapMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         mizanBaslangicTarihi,
@@ -224,9 +218,7 @@ const EDefterMizanStepper = () => {
 
   const handleProgramVukMizan = async () => {
     try {
-      const result = await createProgramVukMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createProgramVukMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         "E-Defter"
@@ -264,9 +256,7 @@ const EDefterMizanStepper = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const fisListesi = await getYevmiyeFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const fisListesi = await getYevmiyeFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -314,9 +304,7 @@ const EDefterMizanStepper = () => {
   const fetchControl = async () => {
     const type = "E-Defter";
     try {
-      const programVukMizanControl = await getProgramVukMizanControl(
-        user.token || "",
-        user.denetciId || 0,
+      const programVukMizanControl = await getProgramVukMizanControl(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -333,9 +321,7 @@ const EDefterMizanStepper = () => {
   const fetchMizanControl = async () => {
     const type = "E-Defter";
     try {
-      const mizanVerileri = await getMizanVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -909,3 +895,4 @@ const EDefterMizanStepper = () => {
 };
 
 export default EDefterMizanStepper;
+

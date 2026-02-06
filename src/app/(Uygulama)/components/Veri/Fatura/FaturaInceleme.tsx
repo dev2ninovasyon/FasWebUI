@@ -53,7 +53,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
   const loadData = async () => {
     try {
       const data = await fetchPagedFaturalarFull(
-        user.token!, user.denetciId!, user.yil!, user.denetlenenId!,
+        user.denetciId!, user.yil!, user.denetlenenId!,
         page, pageSize, currentTip, filters
       );
       setItems(data.items);

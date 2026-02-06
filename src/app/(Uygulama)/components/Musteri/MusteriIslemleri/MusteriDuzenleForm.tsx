@@ -85,9 +85,7 @@ const MusteriDuzenleForm = () => {
       sektor3Id,
     };
     try {
-      const result = await updateDenetlenen(
-        user.token || "",
-        id,
+      const result = await updateDenetlenen(id,
         updatedMusteri
       );
       if (result) {
@@ -123,7 +121,7 @@ const MusteriDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const musteriVerileri = await getDenetlenenById(user.token || "", pathId);
+      const musteriVerileri = await getDenetlenenById(pathId);
       setFirmaAdi(musteriVerileri.firmaAdi);
       setYetkili(musteriVerileri.yetkili);
       setTel(musteriVerileri.tel);
@@ -154,9 +152,7 @@ const MusteriDuzenleForm = () => {
   const fetchData2 = async () => {
     try {
       const konsolideAnaSirketVerileri =
-        await getDenetlenenKonsolideAnaSirketByDenetciId(
-          user.token || "",
-          user.denetciId || 0
+        await getDenetlenenKonsolideAnaSirketByDenetciId(user.denetciId || 0
         );
       const newRows = konsolideAnaSirketVerileri.map((musteri: any) => ({
         id: musteri.id,
@@ -170,7 +166,7 @@ const MusteriDuzenleForm = () => {
 
   const fetchData3 = async () => {
     try {
-      const sektorKodVerileri = await getSektorKodlari(user.token || "");
+      const sektorKodVerileri = await getSektorKodlari();
 
       const newRows = sektorKodVerileri.map((kod: any) => ({
         id: kod.id,
@@ -722,3 +718,4 @@ const MusteriDuzenleForm = () => {
 };
 
 export default MusteriDuzenleForm;
+

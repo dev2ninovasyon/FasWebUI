@@ -549,9 +549,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
       });
 
     try {
-      const result = await createDavaKarsiliklariVerisi(
-        user.token || "",
-        jsonData
+      const result = await createDavaKarsiliklariVerisi(jsonData
       );
       if (result) {
         await fetchData();
@@ -586,9 +584,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
 
   const handleDeleteDavaKarsiliklariVerisi = async () => {
     try {
-      const result = await deleteDavaKarsiliklariVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteDavaKarsiliklariVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -627,9 +623,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const davaKarsiliklariVerileri =
-        await getDavaKarsiliklariVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getDavaKarsiliklariVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -680,7 +674,7 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Dava Karşılıkları");
+      const format = await getFormat("Dava Karşılıkları");
       setRowCount(format.satirSayisi);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -842,3 +836,4 @@ const DavaKarsiliklariVeriYukleme: React.FC<Props> = ({
 };
 
 export default DavaKarsiliklariVeriYukleme;
+

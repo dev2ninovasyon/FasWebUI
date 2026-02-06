@@ -246,9 +246,7 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
     try {
       if (tip == "TicariAlacaklar") {
         const hareketsizTicariAlacaklarVerileri =
-          await getHareketsizTicariAlacaklarOzet(
-            user.token || "",
-            user.denetciId || 0,
+          await getHareketsizTicariAlacaklarOzet(user.denetciId || 0,
             user.yil || 0,
             user.denetlenenId || 0
           );
@@ -270,9 +268,7 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
         setFetchedData(rowsAll);
       }
       if (tip == "Stoklar") {
-        const hareketsizStoklarVerileri = await getHareketsizStoklarOzet(
-          user.token || "",
-          user.denetciId || 0,
+        const hareketsizStoklarVerileri = await getHareketsizStoklarOzet(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -371,3 +367,4 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
 };
 
 export default HareketsizOzet;
+

@@ -2,17 +2,15 @@
 
 
 export const getHazirFisListesiVerileri = async (
-  token: string,
   denetimTuru: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/HazirFisler/HazirFisler?denetimTuru=${denetimTuru}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -27,7 +25,6 @@ export const getHazirFisListesiVerileri = async (
 };
 
 export const createFisListesineHazirFis = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -36,14 +33,13 @@ export const createFisListesineHazirFis = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/HazirFisler/DonusumFis?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&denetimTuru=${denetimTuru}&hazirFisId=${hazirFisId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

@@ -212,7 +212,7 @@ const DovizKurlariOtuzBirAralik = () => {
   const fetchData = async () => {
     try {
       const dovizKurlariOtuzBirAralik = await getDovizKurlariOtuzBirAralik(
-        user.token || ""
+        
       );
 
       const rowsAll: any = [];
@@ -368,3 +368,4 @@ const DovizKurlariOtuzBirAralik = () => {
 };
 
 export default DovizKurlariOtuzBirAralik;
+

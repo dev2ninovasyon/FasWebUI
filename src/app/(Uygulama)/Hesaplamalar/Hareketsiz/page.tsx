@@ -70,9 +70,7 @@ const Page: React.FC = () => {
   const handleHesapla = async () => {
     try {
       if (tip == "TicariAlacaklar") {
-        const response = await createHareketsizTicariAlacaklar(
-          user.token || "",
-          user.denetciId || 0,
+        const response = await createHareketsizTicariAlacaklar(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
           acilisFisNo || 1
@@ -110,9 +108,7 @@ const Page: React.FC = () => {
         }
       }
       if (tip == "Stoklar") {
-        const response = await createHareketsizStoklar(
-          user.token || "",
-          user.denetciId || 0,
+        const response = await createHareketsizStoklar(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0,
           acilisFisNo || 1
@@ -420,3 +416,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

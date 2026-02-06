@@ -2,20 +2,18 @@
 
 
 export const getKrediHesaplamaDetayVerileriByDenetciDenetlenenYil = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   krediId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/KrediHesaplamaDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&krediId=${krediId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -30,16 +28,14 @@ export const getKrediHesaplamaDetayVerileriByDenetciDenetlenenYil = async (
 };
 
 export const createKrediHesaplamaDetayVerisi = async (
-  token: string,
   jsonData: any
 ) => {
   try {
-    const response =await apiFetch(`/Veri/KrediHesaplamaDetay`, {
+    const response = await apiFetch(`/Veri/KrediHesaplamaDetay`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(jsonData),
     });
@@ -55,21 +51,19 @@ export const createKrediHesaplamaDetayVerisi = async (
 };
 
 export const deleteKrediHesaplamaDetayVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   krediId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/KrediHesaplamaDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&krediId=${krediId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

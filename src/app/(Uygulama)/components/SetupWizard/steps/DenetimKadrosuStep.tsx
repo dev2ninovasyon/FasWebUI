@@ -94,9 +94,7 @@ export default function DenetimKadrosuStep({
         if (!sirket?.id) return;
         try {
             setLoading(true);
-            const res = await getGorevAtamalariByDenetlenenIdYil(
-                user.token || "",
-                sirket.id,
+            const res = await getGorevAtamalariByDenetlenenIdYil(sirket.id,
                 user.yil || new Date().getFullYear()
             );
             setRows(res || []);
@@ -124,7 +122,7 @@ export default function DenetimKadrosuStep({
     const handleDelete = async () => {
         if (!selectedId) return;
         try {
-            const result = await deleteGorevAtamalariById(user.token || "", selectedId);
+            const result = await deleteGorevAtamalariById(selectedId);
             if (result) {
                 enqueueSnackbar("Görev ataması silindi", { variant: "success" });
                 fetchData();
@@ -162,7 +160,7 @@ export default function DenetimKadrosuStep({
 
         try {
             setSavingMember(true);
-            const result = await createGorevAtamalari(user.token || "", payload);
+            const result = await createGorevAtamalari(payload);
             if (result === true) {
                 enqueueSnackbar("Personel başarıyla atandı", { variant: "success" });
                 setOpenDialog(false);
@@ -376,3 +374,4 @@ export default function DenetimKadrosuStep({
         </Box>
     );
 }
+

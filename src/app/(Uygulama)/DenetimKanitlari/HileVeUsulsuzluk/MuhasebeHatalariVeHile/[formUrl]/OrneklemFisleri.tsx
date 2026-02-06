@@ -268,9 +268,7 @@ const OrneklemFisleri: React.FC<Props> = ({ kebirKodu }) => {
 
   const fetchData = async () => {
     try {
-      const orneklemFisleriVerileri = await getOrneklemFisleriByList(
-        user.token || "",
-        user.denetciId || 0,
+      const orneklemFisleriVerileri = await getOrneklemFisleriByList(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         kebirKodu

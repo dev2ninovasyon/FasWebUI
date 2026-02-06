@@ -51,7 +51,7 @@ export function SirketArsivOzetKartlari() {
     const fetchData = async () => {
       try {
         console.time("API: SirketArsivOzet");
-        const result = await getSirketArsivOzet(user.token!, user.denetciId!, user.id!);
+        const result = await getSirketArsivOzet(user.id!, user.denetciId!);
         console.timeEnd("API: SirketArsivOzet");
         setData(result);
       } catch (err: any) {

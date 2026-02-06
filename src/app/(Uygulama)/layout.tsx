@@ -77,9 +77,9 @@ export default function RootLayout({
         try {
           let companies = [];
           if (user.yetki === "DenetciAdmin") {
-            companies = await getDenetlenenByDenetciId(user.token, user.denetciId || 0);
+            companies = await getDenetlenenByDenetciId(user.denetciId || 0);
           } else {
-            companies = await getDenetlenenByRol(user.token, user.denetciId || 0, user.id || 0);
+            companies = await getDenetlenenByRol(user.denetciId || 0, user.id || 0);
           }
 
           const hasCompanies = companies && companies.length > 0;
@@ -134,13 +134,13 @@ export default function RootLayout({
     localStorage.setItem("fas_yil", data.year.toString());
 
     try {
-      const rolVerileri = await getRol(user.token!, user.id!, data.id, data.year);
+      const rolVerileri = await getRol(user.id!, data.id, data.year);
       if (rolVerileri) {
         dispatch(setStoreRol(rolVerileri.rol));
       }
 
       if (user.token && user.id && user.id !== 0) {
-        await updateSonSecilenAyarlari(user.token, user.id, data.id, data.year);
+        await updateSonSecilenAyarlari(user.id, data.id, data.year);
       }
     } catch (e) {
       console.log("Layout - Error during selection processing:", e);

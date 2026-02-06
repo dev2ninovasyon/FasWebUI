@@ -70,9 +70,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
 
   const handleCreateBaglantiBilgileri = async () => {
     try {
-      const result = await createBaglantiBilgileri(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createBaglantiBilgileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -111,9 +109,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
 
   const handleDeleteBaglantiBilgileri = async () => {
     try {
-      const result = await deleteBaglantiBilgileriById(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteBaglantiBilgileriById(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -165,9 +161,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
       };
 
       if (tip == "Hepsi") {
-        const baglantiBilgileri = await getBaglantiBilgileri(
-          user.token || "",
-          user.denetciId || 0,
+        const baglantiBilgileri = await getBaglantiBilgileri(user.denetciId || 0,
           user.denetlenenId || 0,
           user.id || 0,
           user.yil || 0
@@ -193,9 +187,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         }
         setControl(true);
       } else {
-        const baglantiBilgisi = await getBaglantiBilgileriByTip(
-          user.token || "",
-          user.denetciId || 0,
+        const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
           user.denetlenenId || 0,
           user.id || 0,
           user.yil || 0,
@@ -519,3 +511,4 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
 };
 
 export default PaylasimBaglantisiPopUp;
+

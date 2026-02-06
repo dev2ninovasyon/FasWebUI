@@ -95,7 +95,6 @@ const FinansalDurumCardTable = ({
       const donusumMizanlar = await Promise.all(
         yilFarklari.map((yilFarki) =>
           getDonusumMizan(
-            user.token || "",
             user.denetlenenId || 0,
             (user.yil || 0) + yilFarki,
             konsolidasyonMu
@@ -714,3 +713,4 @@ const FinansalDurumCardTable = ({
 };
 
 export default FinansalDurumCardTable;
+

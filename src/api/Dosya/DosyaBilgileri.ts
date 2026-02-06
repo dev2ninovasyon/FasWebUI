@@ -2,20 +2,18 @@
 
 
 export const getDosyaBilgileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   tip: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/DosyaBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,13 +27,12 @@ export const getDosyaBilgileri = async (
   }
 };
 
-export const deleteDosyaBilgisiById = async (token: string, id: number) => {
+export const deleteDosyaBilgisiById = async (id: number) => {
   try {
-    const response =await apiFetch(`/Veri/DosyaBilgisi/${id}`, {
+    const response = await apiFetch(`/Veri/DosyaBilgisi/${id}`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -50,15 +47,13 @@ export const deleteDosyaBilgisiById = async (token: string, id: number) => {
 };
 
 export const deleteDosyaBilgisiMultiple = async (
-  token: string,
   selected: any
 ) => {
   try {
-    const response =await apiFetch(`/Veri/DosyaBilgisiMultiple`, {
+    const response = await apiFetch(`/Veri/DosyaBilgisiMultiple`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(selected),
@@ -74,13 +69,12 @@ export const deleteDosyaBilgisiMultiple = async (
   }
 };
 
-export const getDefterYuklemeLoglari = async (token: string, id: number) => {
+export const getDefterYuklemeLoglari = async (id: number) => {
   try {
-    const response =await apiFetch(`/Veri/EDefterYuklemeLoglari?id=${id}`, {
+    const response = await apiFetch(`/Veri/EDefterYuklemeLoglari?id=${id}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {

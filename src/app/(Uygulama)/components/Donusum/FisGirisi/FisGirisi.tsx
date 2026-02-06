@@ -598,9 +598,7 @@ const FisGirisi: React.FC<Props> = ({
       controlDetayKoduHesapAdi;
     if (control) {
       try {
-        const result = await createFisGirisiVerisi(
-          user.token || "",
-          jsonData,
+        const result = await createFisGirisiVerisi(jsonData,
           konsolidasyonMu
         );
         if (result) {
@@ -687,9 +685,7 @@ const FisGirisi: React.FC<Props> = ({
 
   const fetchFisNo = async () => {
     try {
-      const fisNo = await getFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const fisNo = await getFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         konsolidasyonMu
@@ -908,3 +904,4 @@ const FisGirisi: React.FC<Props> = ({
 };
 
 export default FisGirisi;
+

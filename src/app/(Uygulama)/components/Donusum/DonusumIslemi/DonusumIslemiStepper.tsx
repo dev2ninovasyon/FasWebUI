@@ -68,9 +68,7 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const handleDonusumIslemi = async () => {
     try {
-      const donusumIslemi = await DonusumIslemiYap(
-        user.token || "",
-        user.denetlenenId || 0,
+      const donusumIslemi = await DonusumIslemiYap(user.denetlenenId || 0,
         user.yil || 0,
         user.denetimTuru || "",
         konsolidasyonMu
@@ -109,9 +107,7 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const handleFinansalTabloOlustur = async () => {
     try {
-      const finansalTabloOlustur = await FinansalTabloOlustur(
-        user.token || "",
-        user.denetciId || 0,
+      const finansalTabloOlustur = await FinansalTabloOlustur(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         nakitAkisYontemi || "",
@@ -504,3 +500,4 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 };
 
 export default DonusumIslemiStepper;
+

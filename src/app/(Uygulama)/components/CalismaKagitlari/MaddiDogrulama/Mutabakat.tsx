@@ -295,9 +295,7 @@ const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
 
   const fetchData = async () => {
     try {
-      const mutabakatVerileri = await getMutabakatByDipnot(
-        user.token || "",
-        user.denetciId || 0,
+      const mutabakatVerileri = await getMutabakatByDipnot(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         dipnot
@@ -401,3 +399,4 @@ const Mutabakat: React.FC<Props> = ({ dipnot, isReport }) => {
 };
 
 export default Mutabakat;
+

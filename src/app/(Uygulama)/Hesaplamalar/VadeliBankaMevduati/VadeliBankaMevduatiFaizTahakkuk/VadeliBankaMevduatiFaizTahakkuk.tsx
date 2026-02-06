@@ -488,9 +488,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
     try {
       let json = await handleJson();
 
-      const result = await createVadeliBankaMevduatiFaizTahakkuk(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createVadeliBankaMevduatiFaizTahakkuk(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         json
@@ -529,9 +527,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
   const fetchData = async () => {
     try {
       const vadeliBankaMevduatiFaizTahakkukVerileri =
-        await getVadeliBankaMevduatiFaizTahakkuk(
-          user.token || "",
-          user.denetciId || 0,
+        await getVadeliBankaMevduatiFaizTahakkuk(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -786,3 +782,4 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
 };
 
 export default VadeliBankaMevduatiFaizTahakkuk;
+

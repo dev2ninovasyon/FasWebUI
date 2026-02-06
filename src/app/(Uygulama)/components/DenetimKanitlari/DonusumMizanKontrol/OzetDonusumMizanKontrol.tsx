@@ -321,9 +321,7 @@ const OzetDonusumMizanKontrol: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const donusumMizanVerileri = await getOzetDonusumMizan(
-        user.token || "",
-        user.denetlenenId || 0,
+      const donusumMizanVerileri = await getOzetDonusumMizan(user.denetlenenId || 0,
         user.yil || 0,
         konsolidasyonMu
       );
@@ -573,3 +571,4 @@ const OzetDonusumMizanKontrol: React.FC<Props> = ({
 };
 
 export default OzetDonusumMizanKontrol;
+

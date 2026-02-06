@@ -2,7 +2,6 @@
 
 
 export const getFinansalDurumTablosu = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -15,7 +14,6 @@ export const getFinansalDurumTablosu = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -30,7 +28,6 @@ export const getFinansalDurumTablosu = async (
 };
 
 export const getKarZararTablosu = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -43,7 +40,6 @@ export const getKarZararTablosu = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -58,7 +54,6 @@ export const getKarZararTablosu = async (
 };
 
 export const getNakitAkisTablosu = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -71,7 +66,6 @@ export const getNakitAkisTablosu = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -86,7 +80,6 @@ export const getNakitAkisTablosu = async (
 };
 
 export const getOzkaynakTablosu = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -99,7 +92,6 @@ export const getOzkaynakTablosu = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -114,7 +106,6 @@ export const getOzkaynakTablosu = async (
 };
 
 export const FinansalTabloOlustur = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -128,7 +119,6 @@ export const FinansalTabloOlustur = async (
         method: "Post",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

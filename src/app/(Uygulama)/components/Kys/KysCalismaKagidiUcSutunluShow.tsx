@@ -46,9 +46,7 @@ const KysCalismaKagidiUcSutunluShow: React.FC<KysCalismaKagidiUcSutunluShowProps
     const fetchData = async () => {
         try {
             setLoading(true);
-            const result = await getKysBelgeler(
-                user.token || "",
-                formKodu,
+            const result = await getKysBelgeler(formKodu,
                 user.denetlenenId || 0,
                 user.yil || 0
             );
@@ -109,3 +107,4 @@ const KysCalismaKagidiUcSutunluShow: React.FC<KysCalismaKagidiUcSutunluShowProps
 };
 
 export default KysCalismaKagidiUcSutunluShow;
+

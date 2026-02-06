@@ -84,9 +84,7 @@ const Page: React.FC = () => {
         return;
       }
 
-      const result = await updateDenetlenenDenetimTuru(
-        user.token || "",
-        user.denetlenenId || 0,
+      const result = await updateDenetlenenDenetimTuru(user.denetlenenId || 0,
         tur,
         enflasyon
       );
@@ -133,9 +131,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const denetlenenVerileri = await getDenetlenenById(
-        user.token || "",
-        user.denetlenenId || 0
+      const denetlenenVerileri = await getDenetlenenById(user.denetlenenId || 0
       );
       if (denetlenenVerileri) {
         setKabulEdildimi(true);
@@ -158,9 +154,7 @@ const Page: React.FC = () => {
 
   const fetchData2 = async () => {
     try {
-      const response = await getDenetciOdemeBilgileri(
-        user.token || "",
-        user.denetciId || 0
+      const response = await getDenetciOdemeBilgileri(user.denetciId || 0
       );
       if (response) {
         setOdemeBilgileriBobi(response.bobiModulu);
@@ -294,3 +288,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

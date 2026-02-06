@@ -48,9 +48,7 @@ const TanimlamalarTable = () => {
 
   const fetchData = async () => {
     try {
-      const tanimlamalarVerileri = await getTanimlamalar(
-        user.token || "",
-        user.denetciId || 0,
+      const tanimlamalarVerileri = await getTanimlamalar(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -156,3 +154,4 @@ const TanimlamalarTable = () => {
 };
 
 export default TanimlamalarTable;
+

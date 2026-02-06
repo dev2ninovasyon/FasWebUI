@@ -3,7 +3,6 @@
 const controller = "KysBelgeler";
 
 export const getKysBelgeler = async (
-    token: string,
     formKodu: string,
     denetlenenId: number,
     yil: number
@@ -12,9 +11,7 @@ export const getKysBelgeler = async (
         const response = await apiFetch(
             `/${controller}/GetByFormKodu?formKodu=${formKodu}&denetlenenId=${denetlenenId}&yil=${yil}`,
             {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: {},
             }
         );
         if (!response.ok) {
@@ -28,14 +25,12 @@ export const getKysBelgeler = async (
 };
 
 export const createKysBelge = async (
-    token: string,
     data: any
 ) => {
     try {
         const response = await apiFetch(`/${controller}`, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
@@ -51,7 +46,6 @@ export const createKysBelge = async (
 };
 
 export const updateKysBelge = async (
-    token: string,
     id: number,
     data: any
 ) => {
@@ -59,7 +53,6 @@ export const updateKysBelge = async (
         const response = await apiFetch(`/${controller}/${id}`, {
             method: "PUT",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
@@ -75,15 +68,12 @@ export const updateKysBelge = async (
 };
 
 export const deleteKysBelge = async (
-    token: string,
     id: number
 ) => {
     try {
         const response = await apiFetch(`/${controller}/${id}`, {
             method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: {},
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

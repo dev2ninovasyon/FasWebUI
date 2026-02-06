@@ -67,9 +67,7 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
   const fetchProgramVukMizanHesaplari = async () => {
     try {
       const tersBakiyeVerenHesaplar =
-        await getTersBakiyeVerenProgramVukMizanHesaplari(
-          user.token || "",
-          user.denetlenenId || 0,
+        await getTersBakiyeVerenProgramVukMizanHesaplari(user.denetlenenId || 0,
           user.yil || 0,
           konsolidasyonMu
         );
@@ -95,9 +93,7 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
   const fetchDonusumMizanHesaplari = async () => {
     try {
       const tersBakiyeVerenHesaplar =
-        await getTersBakiyeVerenDonusumMizanHesaplari(
-          user.token || "",
-          user.denetlenenId || 0,
+        await getTersBakiyeVerenDonusumMizanHesaplari(user.denetlenenId || 0,
           user.yil || 0,
           konsolidasyonMu
         );
@@ -369,3 +365,4 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
 };
 
 export default DonusumMizanKontrolCardTable;
+

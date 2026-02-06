@@ -33,15 +33,8 @@ export type YabanciParaTestleriRow = {
   modelAdi?: string | null;
 };
 
-const withAuth = (token: string) => ({
-  accept: "application/json",
-  Authorization: `Bearer ${token}`,
-});
-
-
 export const getYabanciParaTestleriByDenetlenen = async (
   controller: string,
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -58,7 +51,9 @@ export const getYabanciParaTestleriByDenetlenen = async (
 
   const res = await apiFetch(url, {
     method: "GET",
-    headers: withAuth(token),
+    headers: {
+      accept: "application/json",
+    },
   });
 
   if (res.status === 204) return [];
@@ -74,7 +69,6 @@ export const getYabanciParaTestleriByDenetlenen = async (
 
 export const updateYabanciParaTestleriRow = async (
   controller: string,
-  token: string,
   id: number,
   payload: Partial<YabanciParaTestleriRow>
 ) => {
@@ -90,7 +84,7 @@ export const updateYabanciParaTestleriRow = async (
   const res = await apiFetch(`/${controller}/${id}`, {
     method: "PUT",
     headers: {
-      ...withAuth(token),
+      accept: "application/json",
       "Content-Type": "application/json",
     },
     body: JSON.stringify(normalizedPayload),
@@ -106,7 +100,6 @@ export const updateYabanciParaTestleriRow = async (
 
 export const varsayilanaDon = async (
   controller: string,
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -121,7 +114,9 @@ export const varsayilanaDon = async (
 
   const res = await apiFetch(url, {
     method: "GET",
-    headers: withAuth(token),
+    headers: {
+      accept: "application/json",
+    },
   });
 
   if (!res.ok) {

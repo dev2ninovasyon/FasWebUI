@@ -29,9 +29,7 @@ const SirketYonetimKadrosuDuzenleForm = () => {
       uyeUnvani,
     };
     try {
-      const result = await updateSirketYonetimKadrosu(
-        user.token || "",
-        id,
+      const result = await updateSirketYonetimKadrosu(id,
         updatedSirketYonetimKadrosu
       );
       if (result) {
@@ -46,9 +44,7 @@ const SirketYonetimKadrosuDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const sirketYonetimKadrosuVerileri = await getSirketYonetimKadrosuById(
-        user.token || "",
-        pathId
+      const sirketYonetimKadrosuVerileri = await getSirketYonetimKadrosuById(pathId
       );
       setUyeAdiSoyadi(sirketYonetimKadrosuVerileri.uyeAdiSoyadi);
       setUnvani(sirketYonetimKadrosuVerileri.uyeUnvani);
@@ -140,3 +136,4 @@ const SirketYonetimKadrosuDuzenleForm = () => {
 };
 
 export default SirketYonetimKadrosuDuzenleForm;
+

@@ -65,9 +65,7 @@ const HissedarlarTable: React.FC<Props> = ({
   const handleDelete = async () => {
     handleClose();
     try {
-      const result = await deleteHissedarlarById(
-        user.token || "",
-        selectedId || 0
+      const result = await deleteHissedarlarById(selectedId || 0
       );
       if (result) {
         fetchData();
@@ -83,9 +81,7 @@ const HissedarlarTable: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const hissedarlerVerileri = await getHissedarlarByDenetlenenIdYil(
-        user.token || "",
-        user.denetlenenId || 0,
+      const hissedarlerVerileri = await getHissedarlarByDenetlenenIdYil(user.denetlenenId || 0,
         user.yil || 0
       );
       const newRows = hissedarlerVerileri.map((hissedar: any) => ({
@@ -218,3 +214,4 @@ const HissedarlarTable: React.FC<Props> = ({
 };
 
 export default HissedarlarTable;
+

@@ -2,19 +2,17 @@
 
 
 export const createFisGirisiVerisi = async (
-  token: string,
   jsonData: any,
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisleri?konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(jsonData),
       }
@@ -31,20 +29,18 @@ export const createFisGirisiVerisi = async (
 };
 
 export const getFisNo = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

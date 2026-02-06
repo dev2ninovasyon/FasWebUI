@@ -16,9 +16,7 @@ const MizandanHissedarEkleButton: React.FC<Props> = ({
 
   const handleButtonClick = async () => {
     try {
-      const result = await getMizandanHissedarlarByDenetlenenIdYil(
-        user.token || "",
-        user.denetlenenId || 0,
+      const result = await getMizandanHissedarlarByDenetlenenIdYil(user.denetlenenId || 0,
         user.yil || 0
       );
       if (result) {
@@ -41,3 +39,4 @@ const MizandanHissedarEkleButton: React.FC<Props> = ({
 };
 
 export default MizandanHissedarEkleButton;
+

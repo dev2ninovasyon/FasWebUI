@@ -314,7 +314,6 @@ const FisDetaylari = () => {
 
     try {
       const result = await updateEDefterIncelemeVerisi(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
@@ -336,7 +335,6 @@ const FisDetaylari = () => {
     try {
       const eDefterIncelemeVerileriByFisNo =
         await getEDefterIncelemeVerileriByFisNo(
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,

@@ -204,9 +204,7 @@ const KrediHesaplamaDetay: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const krediDetayVerileri = await getKrediHesaplanmisDetay(
-        user.token || "",
-        user.denetciId || 0,
+      const krediDetayVerileri = await getKrediHesaplanmisDetay(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -303,3 +301,4 @@ const KrediHesaplamaDetay: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default KrediHesaplamaDetay;
+

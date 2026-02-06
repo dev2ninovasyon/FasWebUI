@@ -70,7 +70,6 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
         try {
             const res = await getYabanciParaTestleriByDenetlenen(
                 controller,
-                user.token || "",
                 user.denetciId || 0,
                 user.yil || 0, // ✅ yil
                 user.denetlenenId || 0, // ✅ denetlenenId
@@ -112,9 +111,7 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
             if (!dipnotNo && modelAdi) {
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         modelAdi,
@@ -174,7 +171,6 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
 
             const result = await updateYabanciParaTestleriRow(
                 controller,
-                user.token || "",
                 row.id,
                 updatedRow
             );
@@ -443,3 +439,4 @@ const YabanciParaTestleri: React.FC<CalismaKagidiProps> = ({
 };
 
 export default YabanciParaTestleri;
+

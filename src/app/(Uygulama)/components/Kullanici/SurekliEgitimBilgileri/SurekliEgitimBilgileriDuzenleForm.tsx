@@ -42,9 +42,7 @@ const SurekliEgitimBilgileriDuzenleForm = () => {
       egitimTuru,
     };
     try {
-      const result = await updateSurekliEgitimBilgileri(
-        user.token || "",
-        id,
+      const result = await updateSurekliEgitimBilgileri(id,
         updatedSurekliEgitimBilgileri
       );
       if (result) {
@@ -60,7 +58,7 @@ const SurekliEgitimBilgileriDuzenleForm = () => {
   const fetchData = async () => {
     try {
       const surekliEgitimBilgileriVerileri =
-        await getSurekliEgitimBilgileriById(user.token || "", pathId);
+        await getSurekliEgitimBilgileriById(pathId);
       setPersonelId(surekliEgitimBilgileriVerileri.personelId);
       setPersonelAdi(surekliEgitimBilgileriVerileri.personelAdi);
       setSertifikaAdi(surekliEgitimBilgileriVerileri.sertifikaAdi);
@@ -296,3 +294,4 @@ const SurekliEgitimBilgileriDuzenleForm = () => {
 };
 
 export default SurekliEgitimBilgileriDuzenleForm;
+

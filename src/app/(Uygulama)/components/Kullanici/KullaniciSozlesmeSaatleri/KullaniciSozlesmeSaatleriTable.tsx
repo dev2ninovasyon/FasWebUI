@@ -25,9 +25,7 @@ const KullaniciSozlesmeSaatleriTable: React.FC<Props> = ({ personelId }) => {
   const fetchData = async () => {
     try {
       const kullaniciSozlesmeSaatleriVerileri =
-        await getGorevAtamalariByKullaniciId(
-          user.token || "",
-          personelId || user.id || 0
+        await getGorevAtamalariByKullaniciId(personelId || user.id || 0
         );
 
       const newRows = kullaniciSozlesmeSaatleriVerileri.map(
@@ -139,3 +137,4 @@ const KullaniciSozlesmeSaatleriTable: React.FC<Props> = ({ personelId }) => {
 };
 
 export default KullaniciSozlesmeSaatleriTable;
+

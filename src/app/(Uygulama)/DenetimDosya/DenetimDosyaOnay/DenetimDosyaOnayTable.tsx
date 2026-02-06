@@ -102,7 +102,7 @@ const DenetimDosyaOnayTable: React.FC<Props> = ({
   const fetchData = React.useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getDenetimDosyaTransfer(user.token || "", user.denetimTuru || "");
+      const data = await getDenetimDosyaTransfer(user.denetimTuru || "");
       setRows(data || []);
       setUpdatedRows([]); // yeni liste çekilince sonuçları sıfırla
       setSelectedIds([]); // seçimleri de sıfırla
@@ -186,7 +186,7 @@ const DenetimDosyaOnayTable: React.FC<Props> = ({
       };
 
       console.log(payload)
-      const result = await sendBulkOnay(user.token || "", payload);
+      const result = await sendBulkOnay(payload);
       // beklenen response: { results: [{ belgeId, success, message? }]}
       const next: RowResult[] = selectedLeafRows.map((r) => {
         const found = result?.results?.find((x: any) => x.belgeId === r.id);

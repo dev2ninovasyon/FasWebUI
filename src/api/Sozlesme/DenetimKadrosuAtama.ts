@@ -2,7 +2,6 @@
 
 
 export const getGorevAtamalariByKullaniciId = async (
-  token: string,
   kullaniciId: number
 ) => {
   try {
@@ -12,7 +11,6 @@ export const getGorevAtamalariByKullaniciId = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -27,7 +25,6 @@ export const getGorevAtamalariByKullaniciId = async (
 };
 
 export const getGorevAtamalariByDenetlenenIdYil = async (
-  token: string,
   denetlenenId: number,
   yil: number
 ) => {
@@ -38,7 +35,6 @@ export const getGorevAtamalariByDenetlenenIdYil = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -52,13 +48,12 @@ export const getGorevAtamalariByDenetlenenIdYil = async (
   }
 };
 
-export const getGorevAtamalariById = async (token: string, id: any) => {
+export const getGorevAtamalariById = async (id: any) => {
   try {
     const response = await apiFetch(`/GorevAtamalari/${id}`, {
       method: "GET",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -72,16 +67,14 @@ export const getGorevAtamalariById = async (token: string, id: any) => {
 };
 
 export const createGorevAtamalari = async (
-  token: string,
   createdGorevAtamalari: any
 ) => {
   try {
-    const response = await apiFetch(`/GorevAtamalari`, {
+    const response = await apiFetch("/GorevAtamalari", {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdGorevAtamalari),
     });
@@ -106,7 +99,6 @@ export const createGorevAtamalari = async (
 };
 
 export const updateGorevAtamalari = async (
-  token: string,
   id: any,
   updatedGorevAtamalari: any
 ) => {
@@ -116,7 +108,6 @@ export const updateGorevAtamalari = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedGorevAtamalari),
     });
@@ -140,16 +131,14 @@ export const updateGorevAtamalari = async (
   }
 };
 
-export const deleteGorevAtamalariById = async (token: string, id: number) => {
+export const deleteGorevAtamalariById = async (id: number) => {
   try {
     const response = await apiFetch(`/GorevAtamalari/${id}`, {
       method: "DELETE",
       headers: {
         accept: "*/*",
-        Authorization: `Bearer ${token}`,
       },
     });
-
     if (response.ok) {
       return true;
     } else {
@@ -160,13 +149,12 @@ export const deleteGorevAtamalariById = async (token: string, id: number) => {
   }
 };
 
-export const getAllUnvanlar = async (token: string) => {
+export const getAllUnvanlar = async () => {
   try {
     const response = await apiFetch(`/GorevAtamalari/Unvanlar`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -180,19 +168,17 @@ export const getAllUnvanlar = async (token: string) => {
 };
 
 export const getRol = async (
-  token: string,
   kullaniciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
     const response = await apiFetch(
-      `/GorevAtamalari/Roller?kullaniciId=${kullaniciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/GorevAtamalari/Rol/${kullaniciId}/${denetlenenId}/${yil}`,
       {
         method: "GET",
         headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          accept: "*/*",
         },
       }
     );
@@ -207,7 +193,6 @@ export const getRol = async (
 };
 
 export const getKullaniciRol = async (
-  token: string,
   kullaniciId: number,
   denetlenenId: number
 ) => {
@@ -218,7 +203,6 @@ export const getKullaniciRol = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

@@ -33,9 +33,7 @@ const HissedarDuzenleForm = () => {
       hisseOrani,
     };
     try {
-      const result = await updateHissedarlar(
-        user.token || "",
-        id,
+      const result = await updateHissedarlar(id,
         updatedSubeler
       );
       if (result) {
@@ -50,9 +48,7 @@ const HissedarDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const hissedarlarVerileri = await getHissedarlarById(
-        user.token || "",
-        pathId
+      const hissedarlarVerileri = await getHissedarlarById(pathId
       );
       setHissedarAdi(hissedarlarVerileri.hissedarAdi);
       setHisseTutari(hissedarlarVerileri.hisseTutari);
@@ -201,3 +197,4 @@ const HissedarDuzenleForm = () => {
 };
 
 export default HissedarDuzenleForm;
+

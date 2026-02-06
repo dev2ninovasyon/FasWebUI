@@ -428,7 +428,7 @@ const Orneklem: React.FC<Props> = ({
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateOrneklem(user.token || "", json);
+      const result = await updateOrneklem(json);
       if (result) {
         fetchData();
         setOpenCartAlert(false);
@@ -487,9 +487,7 @@ const Orneklem: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const orneklemVerileri = await getOrneklem(
-        user.token || "",
-        user.denetciId || 0,
+      const orneklemVerileri = await getOrneklem(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -728,3 +726,4 @@ const Orneklem: React.FC<Props> = ({
 };
 
 export default Orneklem;
+

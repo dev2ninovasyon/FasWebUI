@@ -96,9 +96,7 @@ const EDefterMizanEnflasyonStepper = () => {
       setYevmiyeFisNo("");
       setLoading(true);
 
-      const standartfisListesi = await getStandartYevmiyeFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const standartfisListesi = await getStandartYevmiyeFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -114,9 +112,7 @@ const EDefterMizanEnflasyonStepper = () => {
 
   const handleAnaHesapMizan = async () => {
     try {
-      const result = await createAnaHesapMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createAnaHesapMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         mizanBaslangicTarihi,
@@ -154,9 +150,7 @@ const EDefterMizanEnflasyonStepper = () => {
 
   const handleDetayHesapMizan = async () => {
     try {
-      const result = await createDetayHesapMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createDetayHesapMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         mizanBaslangicTarihi,
@@ -196,9 +190,7 @@ const EDefterMizanEnflasyonStepper = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const fisListesi = await getYevmiyeFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const fisListesi = await getYevmiyeFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -230,9 +222,7 @@ const EDefterMizanEnflasyonStepper = () => {
   const fetchMizanControl = async () => {
     const type = "E-Defter";
     try {
-      const mizanVerileri = await getMizanVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -732,3 +722,4 @@ const EDefterMizanEnflasyonStepper = () => {
 };
 
 export default EDefterMizanEnflasyonStepper;
+

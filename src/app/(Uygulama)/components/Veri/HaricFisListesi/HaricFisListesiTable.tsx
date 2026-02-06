@@ -96,9 +96,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
   const fetchData = async (pageNum: number = 1, size: number = pageSize) => {
     try {
       setLoading(true);
-      const data = await getFisListesi(
-        user.token || "",
-        user.denetciId || 0,
+      const data = await getFisListesi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         hesapNo,
@@ -203,9 +201,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
         haricMi: row[1] === true,
       }));
 
-      await saveHaricFisListesi(
-        user.token || "",
-        user.denetciId || 0,
+      await saveHaricFisListesi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         selectedRows
@@ -428,3 +424,4 @@ const HaricFisListesiTable: React.FC<Props> = ({
 };
 
 export default HaricFisListesiTable;
+

@@ -26,9 +26,7 @@ const ErtelenmisVergiHesabiCard: React.FC<CardProps> = ({
   const fetchData = async () => {
     try {
       const vergiVarlikVeYukumlulukleriOzetVerileri =
-        await getVergiVarligiVeYukumluluguOzet(
-          user.token || "",
-          user.denetciId || 0,
+        await getVergiVarligiVeYukumluluguOzet(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -88,3 +86,4 @@ const ErtelenmisVergiHesabiCard: React.FC<CardProps> = ({
 };
 
 export default ErtelenmisVergiHesabiCard;
+

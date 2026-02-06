@@ -545,9 +545,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
         return obj;
       });
     try {
-      const result = await createCekSenetReeskontVerisi(
-        user.token || "",
-        jsonData
+      const result = await createCekSenetReeskontVerisi(jsonData
       );
       if (result) {
         await fetchData();
@@ -582,9 +580,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
 
   const handleDeleteCekSenetReeskontVerisi = async () => {
     try {
-      const result = await deleteCekSenetReeskontVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteCekSenetReeskontVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -623,9 +619,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const cekSenetReeskontVerileri =
-        await getCekSenetReeskontVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getCekSenetReeskontVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -689,7 +683,7 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Çek Senet Reeskont");
+      const format = await getFormat("Çek Senet Reeskont");
       setRowCount(format.satirSayisi);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -855,3 +849,4 @@ const CekSenetReeskontVeriYukleme: React.FC<Props> = ({
 };
 
 export default CekSenetReeskontVeriYukleme;
+

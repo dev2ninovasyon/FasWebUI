@@ -350,7 +350,6 @@ const EDefterInceleme: React.FC<Props> = ({
 
     try {
       const result = await updateEDefterIncelemeVerisi(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
@@ -372,7 +371,6 @@ const EDefterInceleme: React.FC<Props> = ({
     try {
       setIsLoading(true);
       const response = await getEDefterIncelemeVerileriPaged(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,

@@ -555,7 +555,7 @@ const Mutabakat: React.FC<Props> = ({
 
   const handleUpdate = async (json: any) => {
     try {
-      const result = await updateMutabakat(user.token || "", json);
+      const result = await updateMutabakat(json);
       if (result) {
         fetchData();
         setKaydetTiklandimi(false);
@@ -591,9 +591,7 @@ const Mutabakat: React.FC<Props> = ({
   const fetchData = async () => {
     setLoading(true);
     try {
-      const mutabakatVerileri = await getMutabakat(
-        user.token || "",
-        user.denetciId || 0,
+      const mutabakatVerileri = await getMutabakat(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         grupKodu,
@@ -947,3 +945,4 @@ const Mutabakat: React.FC<Props> = ({
 };
 
 export default Mutabakat;
+

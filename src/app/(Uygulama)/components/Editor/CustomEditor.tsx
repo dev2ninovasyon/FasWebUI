@@ -43,7 +43,6 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
     try {
       const result = await updateCalismaKagidiVerisi(
         controller,
-        user.token || "",
         veriler[0]?.id,
         updatedData
       );
@@ -65,7 +64,6 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
       if (personelId) {
         const result = await deleteAllCalismaKagidiVerileriByKullanci(
           controller || "",
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           personelId || 0,
@@ -79,7 +77,6 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
       } else {
         const result = await deleteAllCalismaKagidiVerileri(
           controller || "",
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -107,7 +104,6 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
         const data =
           await getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil(
             controller,
-            user.token || "",
             user.denetciId || 0,
             user.denetlenenId || 0,
             personelId || user.id || 0,
@@ -123,7 +119,6 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
       } else {
         const data = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
           controller,
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -205,4 +200,5 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
 };
 
 export default CustomEditor;
+
 

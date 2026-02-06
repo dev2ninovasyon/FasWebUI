@@ -705,9 +705,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
       });
 
     try {
-      const result = await createKidemTazminatiBobiVerisi(
-        user.token || "",
-        jsonData
+      const result = await createKidemTazminatiBobiVerisi(jsonData
       );
       if (result) {
         await fetchData();
@@ -742,9 +740,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
 
   const handleDeleteKidemTazminatiBobiVerisi = async () => {
     try {
-      const result = await deleteKidemTazminatiBobiVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteKidemTazminatiBobiVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -783,9 +779,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const kidemTazminatiBobiVerileri =
-        await getKidemTazminatiBobiVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getKidemTazminatiBobiVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -862,9 +856,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(
-        user.token || "",
-        "Kıdem Tazminatı (Bobi)"
+      const format = await getFormat("Kıdem Tazminatı (Bobi)"
       );
       setRowCount(format.satirSayisi);
     } catch (error) {
@@ -1113,3 +1105,4 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
 };
 
 export default KidemTazminatiBobiVeriYukleme;
+

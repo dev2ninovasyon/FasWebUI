@@ -1,19 +1,17 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 export const getDavaKarsiliklariVerileriByDenetciDenetlenenYil = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/DavaKarsiliklari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -28,16 +26,14 @@ export const getDavaKarsiliklariVerileriByDenetciDenetlenenYil = async (
 };
 
 export const createDavaKarsiliklariVerisi = async (
-  token: string,
   jsonData: any
 ) => {
   try {
-    const response =await apiFetch(`/Veri/DavaKarsiliklari`, {
+    const response = await apiFetch(`/Veri/DavaKarsiliklari`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(jsonData),
     });
@@ -53,20 +49,18 @@ export const createDavaKarsiliklariVerisi = async (
 };
 
 export const deleteDavaKarsiliklariVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/DavaKarsiliklari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

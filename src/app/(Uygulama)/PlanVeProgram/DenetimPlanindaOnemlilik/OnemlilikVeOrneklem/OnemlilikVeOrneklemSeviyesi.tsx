@@ -265,9 +265,7 @@ const OnemlilikVeOrneklemSeviyesi: React.FC<Props> = ({
         maliTablolarIcinGenelOnemlilikSeviyesi: rowData[4],
       };
 
-      const result = await createOnemlilikVeOrneklemHesaplamaBazi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createOnemlilikVeOrneklemHesaplamaBazi(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         json
@@ -307,9 +305,7 @@ const OnemlilikVeOrneklemSeviyesi: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const onemlilik = await getOnemlilikVeOrneklemSeviyesi(
-        user.token || "",
-        user.denetciId || 0,
+      const onemlilik = await getOnemlilikVeOrneklemSeviyesi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -419,3 +415,4 @@ const OnemlilikVeOrneklemSeviyesi: React.FC<Props> = ({
 };
 
 export default OnemlilikVeOrneklemSeviyesi;
+

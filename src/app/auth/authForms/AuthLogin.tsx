@@ -167,12 +167,22 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           localStorage.setItem("fas_yil", sonSecilenYil.toString());
         }
 
+        // ✅ Token'ı localStorage'da kaydet (boşta kaldığında da kullanılabilsin)
+        try {
+          localStorage.setItem("fas_token", userToken);
+          if (userRefreshToken) {
+            localStorage.setItem("fas_refreshToken", userRefreshToken);
+          }
+          console.log("✅ Token localStorage'da kaydedildi");
+        } catch (e) {
+          console.warn("Token localStorage'da kaydedilemedi:", e);
+        }
+
         dispatch(setUserData(userData));
 
         if (bddkmi === undefined) {
           console.time("Ek Bilgi API İsteği (bddkmi)");
           const data2 = await getDenetciOdemeBilgileri(
-            userToken,
             userDenetciId
           );
           if (data2 && data2.bddkmi !== undefined) {
@@ -204,9 +214,22 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           },
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.timeEnd("Giriş İşlemi Toplam Süre");
       console.log("Bir hata oluştu:", error);
+      if (error.message === "Failed to fetch") {
+        enqueueSnackbar("Bağlantı hatası: Sisteme şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyiniz.", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
+      }
       setIsLoggedIn(false);
     }
   };

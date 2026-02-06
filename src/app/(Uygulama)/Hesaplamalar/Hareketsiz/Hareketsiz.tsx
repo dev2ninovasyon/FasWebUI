@@ -307,9 +307,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
   const handleDeleteById = async (id: number) => {
     try {
       if (tip == "TicariAlacaklar") {
-        const result = await deleteHareketsizTicariAlacaklarById(
-          user.token || "",
-          id
+        const result = await deleteHareketsizTicariAlacaklarById(id
         );
         if (result) {
           await fetchData();
@@ -338,7 +336,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
         }
       }
       if (tip == "Stoklar") {
-        const result = await deleteHareketsizStoklarById(user.token || "", id);
+        const result = await deleteHareketsizStoklarById(id);
         if (result) {
           await fetchData();
           enqueueSnackbar("Kayıt Silindi", {
@@ -385,9 +383,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
     };
     try {
       if (tip == "TicariAlacaklar") {
-        const result = await createHareketsizTicariAlacak(
-          user.token || "",
-          createdHareketsiz
+        const result = await createHareketsizTicariAlacak(createdHareketsiz
         );
         if (result) {
           await fetchData();
@@ -418,9 +414,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
         }
       }
       if (tip == "Stoklar") {
-        const result = await createHareketsizStok(
-          user.token || "",
-          createdHareketsiz
+        const result = await createHareketsizStok(createdHareketsiz
         );
         if (result) {
           await fetchData();
@@ -459,9 +453,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
     try {
       if (tip == "TicariAlacaklar") {
         const hareketsizTicariAlacaklarVerileri =
-          await getHareketsizTicariAlacaklar(
-            user.token || "",
-            user.denetciId || 0,
+          await getHareketsizTicariAlacaklar(user.denetciId || 0,
             user.yil || 0,
             user.denetlenenId || 0
           );
@@ -485,9 +477,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
         setFetchedData(rowsAll);
       }
       if (tip == "Stoklar") {
-        const hareketsizStoklarVerileri = await getHareketsizStoklar(
-          user.token || "",
-          user.denetciId || 0,
+        const hareketsizStoklarVerileri = await getHareketsizStoklar(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -980,3 +970,4 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
 };
 
 export default Hareketsiz;
+

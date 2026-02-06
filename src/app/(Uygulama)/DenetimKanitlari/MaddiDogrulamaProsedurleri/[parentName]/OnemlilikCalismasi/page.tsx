@@ -77,9 +77,7 @@ const Page = () => {
 
   const fetchData = async () => {
     try {
-      const maddiDogrulama = await getMaddiDogrulama(
-        user.token || "",
-        user.denetimTuru || "",
+      const maddiDogrulama = await getMaddiDogrulama(user.denetimTuru || "",
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -96,9 +94,7 @@ const Page = () => {
 
   const fetchData2 = async () => {
     try {
-      const uygulananDentimProsedurleri = await getUygulananDenetimProsedurleri(
-        user.token || "",
-        user.denetciId || 0,
+      const uygulananDentimProsedurleri = await getUygulananDenetimProsedurleri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         dip || "",

@@ -94,9 +94,7 @@ const MusteriEkleForm = ({
     setLoading(true);
 
     try {
-      const result = await uploadAndParseKurumlarBeyannamesi(
-        user.token || "",
-        file,
+      const result = await uploadAndParseKurumlarBeyannamesi(file,
         user.denetciId || 0,
         user.yil || 0,
         0 // denetlenenId is 0 for new company
@@ -189,16 +187,14 @@ const MusteriEkleForm = ({
 
     try {
       setLoading(true);
-      const result = await createDenetlenen(user.token || "", createdMusteri);
+      const result = await createDenetlenen(createdMusteri);
       if (result && result.success) {
         const newId = result.data;
 
         // If a PDF was uploaded, save it with the new ID
         if (pdfFile) {
           try {
-            await uploadAndParseKurumlarBeyannamesi(
-              user.token || "",
-              pdfFile,
+            await uploadAndParseKurumlarBeyannamesi(pdfFile,
               user.denetciId || 0,
               pdfYil || user.yil || 0,
               newId
@@ -253,9 +249,7 @@ const MusteriEkleForm = ({
   const fetchData = async () => {
     try {
       const konsolideAnaSirketVerileri =
-        await getDenetlenenKonsolideAnaSirketByDenetciId(
-          user.token || "",
-          user.denetciId || 0
+        await getDenetlenenKonsolideAnaSirketByDenetciId(user.denetciId || 0
         );
       const newRows = konsolideAnaSirketVerileri.map((musteri: any) => ({
         id: musteri.id,
@@ -269,7 +263,7 @@ const MusteriEkleForm = ({
 
   const fetchData2 = async () => {
     try {
-      const sektorKodVerileri = await getSektorKodlari(user.token || "");
+      const sektorKodVerileri = await getSektorKodlari();
       const newRows = sektorKodVerileri.map((kod: any) => ({
         id: kod.id,
         adi: kod.adi,
@@ -838,3 +832,4 @@ const MusteriEkleForm = ({
 };
 
 export default MusteriEkleForm;
+

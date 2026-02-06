@@ -73,7 +73,6 @@ const Page = () => {
     try {
       const result = await deleteAllCalismaKagidiVerileri(
         controller || "",
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -93,7 +92,6 @@ const Page = () => {
       const sozlesmeVerileri =
         await getCalismaKagidiVerileriByDenetciDenetlenenYil(
           controller,
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -123,7 +121,6 @@ const Page = () => {
   const fetchData2 = async () => {
     try {
       const denetimKadrosuVerileri = await getGorevAtamalariByDenetlenenIdYil(
-        user.token || "",
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -529,3 +526,4 @@ const Page = () => {
 };
 
 export default Page;
+

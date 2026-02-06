@@ -21,14 +21,8 @@ export type HareketsizStoklarRow = {
     yil?: number;
 };
 
-const withAuth = (token: string) => ({
-    accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const getHareketsizStoklarByDenetlenen = async (
     controller: string,
-    token: string,
     denetciId: number,
     denetlenenId: number,
     yil: number
@@ -41,7 +35,9 @@ export const getHareketsizStoklarByDenetlenen = async (
 
     const res = await apiFetch(url, {
         method: "GET",
-        headers: withAuth(token),
+        headers: {
+            accept: "application/json",
+        },
     });
 
     if (res.status === 204) return [];
@@ -56,14 +52,13 @@ export const getHareketsizStoklarByDenetlenen = async (
 
 export const updateHareketsizStoklarRow = async (
     controller: string,
-    token: string,
     id: number,
     payload: Partial<HareketsizStoklarRow>
 ) => {
     const res = await apiFetch(`/${controller}/Update?id=${id}`, {
         method: "PUT",
         headers: {
-            ...withAuth(token),
+            accept: "application/json",
             "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
@@ -78,7 +73,6 @@ export const updateHareketsizStoklarRow = async (
 };
 
 export const calculateHareketsizStoklar = async (
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number,
@@ -87,7 +81,9 @@ export const calculateHareketsizStoklar = async (
     const url = `/Hesaplamalar/HareketsizStoklarHesapla?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&acilisFisNo=${acilisFisNo}`;
     const res = await apiFetch(url, {
         method: "POST",
-        headers: withAuth(token),
+        headers: {
+            accept: "application/json",
+        },
     });
 
     if (!res.ok) {

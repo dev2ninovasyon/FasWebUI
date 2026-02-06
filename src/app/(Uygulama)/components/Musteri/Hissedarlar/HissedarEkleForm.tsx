@@ -28,7 +28,7 @@ const HissedarEkleForm = () => {
       hisseOrani,
     };
     try {
-      const result = await createHissedarlar(user.token || "", createdSubeler);
+      const result = await createHissedarlar(createdSubeler);
       if (result) {
         router.push("/Musteri/Hissedarlar");
       } else {
@@ -173,3 +173,4 @@ const HissedarEkleForm = () => {
 };
 
 export default HissedarEkleForm;
+

@@ -1,15 +1,14 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 
-export const getSurekliEgitimBilgileriById = async (token: string, id: any) => {
+export const getSurekliEgitimBilgileriById = async (id: any) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Kullanici/SurekliEgitimBilgileri/${id}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -24,17 +23,15 @@ export const getSurekliEgitimBilgileriById = async (token: string, id: any) => {
 };
 
 export const getSurekliEgitimBilgileriByDenetciId = async (
-  token: string,
   denetciId: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Kullanici/SurekliEgitimBilgileri/Denetci/${denetciId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -49,16 +46,14 @@ export const getSurekliEgitimBilgileriByDenetciId = async (
 };
 
 export const createSurekliEgitimBilgileri = async (
-  token: string,
   createdSurekliEgitimBilgileri: any
 ) => {
   try {
-    const response =await apiFetch(`/Kullanici/SurekliEgitimBilgileri`, {
+    const response = await apiFetch(`/Kullanici/SurekliEgitimBilgileri`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdSurekliEgitimBilgileri),
     });
@@ -74,19 +69,17 @@ export const createSurekliEgitimBilgileri = async (
 };
 
 export const updateSurekliEgitimBilgileri = async (
-  token: string,
   id: any,
   updatedSurekliEgitimBilgileri: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Kullanici/SurekliEgitimBilgileri/${id}`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedSurekliEgitimBilgileri),
       }
@@ -103,17 +96,15 @@ export const updateSurekliEgitimBilgileri = async (
 };
 
 export const deleteSurekliEgitimBilgileriById = async (
-  token: string,
   id: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Kullanici/SurekliEgitimBilgileri/${id}`,
       {
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

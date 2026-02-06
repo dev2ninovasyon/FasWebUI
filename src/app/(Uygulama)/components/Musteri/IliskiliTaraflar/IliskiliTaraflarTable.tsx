@@ -50,9 +50,7 @@ const IliskiliTaraflarTable = () => {
   const handleDelete = async () => {
     handleClose();
     try {
-      const result = await deleteIliskiliTaraflarById(
-        user.token || "",
-        selectedId || 0
+      const result = await deleteIliskiliTaraflarById(selectedId || 0
       );
       if (result) {
         fetchData();
@@ -68,9 +66,7 @@ const IliskiliTaraflarTable = () => {
 
   const fetchData = async () => {
     try {
-      const iliskiliTarafVerileri = await getIliskiliTaraflarByDenetlenenId(
-        user.token || "",
-        user.denetlenenId || 0
+      const iliskiliTarafVerileri = await getIliskiliTaraflarByDenetlenenId(user.denetlenenId || 0
       );
       const newRows = iliskiliTarafVerileri.map((iliskiliTaraf: any) => ({
         id: iliskiliTaraf.id,
@@ -150,3 +146,4 @@ const IliskiliTaraflarTable = () => {
 };
 
 export default IliskiliTaraflarTable;
+

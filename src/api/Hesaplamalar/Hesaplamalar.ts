@@ -2,7 +2,6 @@
 
 
 export const createAmortismanHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -16,7 +15,6 @@ export const createAmortismanHesaplanmis = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -32,7 +30,6 @@ export const createAmortismanHesaplanmis = async (
 };
 
 export const getAmortismanHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -44,7 +41,6 @@ export const getAmortismanHesaplanmis = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -59,7 +55,6 @@ export const getAmortismanHesaplanmis = async (
 };
 
 export const createKrediHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -72,7 +67,6 @@ export const createKrediHesaplanmis = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -88,7 +82,6 @@ export const createKrediHesaplanmis = async (
 };
 
 export const getKrediHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -100,7 +93,6 @@ export const getKrediHesaplanmis = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -115,7 +107,6 @@ export const getKrediHesaplanmis = async (
 };
 
 export const getKrediHesaplanmisDetay = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -127,7 +118,6 @@ export const getKrediHesaplanmisDetay = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -142,7 +132,6 @@ export const getKrediHesaplanmisDetay = async (
 };
 
 export const getKrediHesaplanmisOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -154,7 +143,6 @@ export const getKrediHesaplanmisOrnekFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -169,7 +157,6 @@ export const getKrediHesaplanmisOrnekFisler = async (
 };
 
 export const createDavaKarsiliklariHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -183,7 +170,6 @@ export const createDavaKarsiliklariHesaplanmis = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -199,7 +185,6 @@ export const createDavaKarsiliklariHesaplanmis = async (
 };
 
 export const getDavaKarsiliklariHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -211,7 +196,6 @@ export const getDavaKarsiliklariHesaplanmis = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -226,7 +210,6 @@ export const getDavaKarsiliklariHesaplanmis = async (
 };
 
 export const createYaslandirmaHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -239,7 +222,6 @@ export const createYaslandirmaHesaplanmis = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -255,7 +237,6 @@ export const createYaslandirmaHesaplanmis = async (
 };
 
 export const getYaslandirmaHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -267,7 +248,6 @@ export const getYaslandirmaHesaplanmis = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -282,7 +262,6 @@ export const getYaslandirmaHesaplanmis = async (
 };
 
 export const createKidemTazminatiBobiHesapla = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -294,7 +273,6 @@ export const createKidemTazminatiBobiHesapla = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -309,7 +287,6 @@ export const createKidemTazminatiBobiHesapla = async (
 };
 
 export const createKidemTazminatiTfrsHesapla = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -321,7 +298,6 @@ export const createKidemTazminatiTfrsHesapla = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -336,7 +312,6 @@ export const createKidemTazminatiTfrsHesapla = async (
 };
 
 export const createKidemTazminatiBobiEkBilgi = async (
-  token: string,
   createdKidemTazminatiBobiEkBilgiVerisi: any
 ) => {
   try {
@@ -347,7 +322,6 @@ export const createKidemTazminatiBobiEkBilgi = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(createdKidemTazminatiBobiEkBilgiVerisi),
       }
@@ -364,7 +338,6 @@ export const createKidemTazminatiBobiEkBilgi = async (
 };
 
 export const getKidemTazminatiBobiEkBilgi = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -376,7 +349,6 @@ export const getKidemTazminatiBobiEkBilgi = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -392,7 +364,6 @@ export const getKidemTazminatiBobiEkBilgi = async (
 };
 
 export const createKidemTazminatiTfrsEkBilgi = async (
-  token: string,
   createdKidemTazminatiTfrsEkBilgiVerisi: any
 ) => {
   try {
@@ -403,7 +374,6 @@ export const createKidemTazminatiTfrsEkBilgi = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(createdKidemTazminatiTfrsEkBilgiVerisi),
       }
@@ -420,7 +390,6 @@ export const createKidemTazminatiTfrsEkBilgi = async (
 };
 
 export const getKidemTazminatiTfrsEkBilgi = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -432,7 +401,6 @@ export const getKidemTazminatiTfrsEkBilgi = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -448,7 +416,6 @@ export const getKidemTazminatiTfrsEkBilgi = async (
 };
 
 export const createCekSenetReeskontHesapla = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -460,7 +427,6 @@ export const createCekSenetReeskontHesapla = async (
         method: "POST",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -475,7 +441,6 @@ export const createCekSenetReeskontHesapla = async (
 };
 
 export const createCekSenetReeskontEkBilgi = async (
-  token: string,
   createdCekSenetReeskontEkBilgiVerisi: any
 ) => {
   try {
@@ -486,7 +451,6 @@ export const createCekSenetReeskontEkBilgi = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(createdCekSenetReeskontEkBilgiVerisi),
       }
@@ -503,7 +467,6 @@ export const createCekSenetReeskontEkBilgi = async (
 };
 
 export const getCekSenetReeskontEkBilgi = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -515,7 +478,6 @@ export const getCekSenetReeskontEkBilgi = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -531,7 +493,6 @@ export const getCekSenetReeskontEkBilgi = async (
 };
 
 export const getCekSenetReeskontIskontoOranlari = async (
-  token: string,
   oranAdi: string,
   yil: number
 ) => {
@@ -543,7 +504,6 @@ export const getCekSenetReeskontIskontoOranlari = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -559,7 +519,6 @@ export const getCekSenetReeskontIskontoOranlari = async (
 };
 
 export const getCekSenetReeskontHesaplama = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -571,7 +530,6 @@ export const getCekSenetReeskontHesaplama = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -587,7 +545,6 @@ export const getCekSenetReeskontHesaplama = async (
 };
 
 export const getCekSenetReeskontDuzeltmeFarklari = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -599,7 +556,6 @@ export const getCekSenetReeskontDuzeltmeFarklari = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -617,7 +573,6 @@ export const getCekSenetReeskontDuzeltmeFarklari = async (
 };
 
 export const getCekSenetReeskontHesaplamadaKullanilanDegerler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -629,7 +584,6 @@ export const getCekSenetReeskontHesaplamadaKullanilanDegerler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -647,7 +601,6 @@ export const getCekSenetReeskontHesaplamadaKullanilanDegerler = async (
 };
 
 export const createBeklenenKrediZarariHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -662,7 +615,6 @@ export const createBeklenenKrediZarariHesaplanmis = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -678,7 +630,6 @@ export const createBeklenenKrediZarariHesaplanmis = async (
 };
 
 export const getBeklenenKrediZarariHesaplanmis = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -690,7 +641,6 @@ export const getBeklenenKrediZarariHesaplanmis = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -704,7 +654,7 @@ export const getBeklenenKrediZarariHesaplanmis = async (
   }
 };
 
-export const getEnflasyonOrani = async (token: string, yil: number) => {
+export const getEnflasyonOrani = async (yil: number) => {
   try {
     const response = await apiFetch(
       `/Hesaplamalar/EnflasyonOrani?yil=${yil}`,
@@ -712,7 +662,6 @@ export const getEnflasyonOrani = async (token: string, yil: number) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -726,13 +675,12 @@ export const getEnflasyonOrani = async (token: string, yil: number) => {
   }
 };
 
-export const getFaizOrani = async (token: string, yil: number) => {
+export const getFaizOrani = async (yil: number) => {
   try {
     const response = await apiFetch(`/Hesaplamalar/FaizOrani?yil=${yil}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -745,7 +693,7 @@ export const getFaizOrani = async (token: string, yil: number) => {
   }
 };
 
-export const getIskontoOrani = async (token: string, yil: number) => {
+export const getIskontoOrani = async (yil: number) => {
   try {
     const response = await apiFetch(
       `/Hesaplamalar/IskontoOrani?yil=${yil}`,
@@ -753,7 +701,6 @@ export const getIskontoOrani = async (token: string, yil: number) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -768,7 +715,6 @@ export const getIskontoOrani = async (token: string, yil: number) => {
 };
 
 export const createVergiVarligiVeYukumlulugu = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -784,7 +730,6 @@ export const createVergiVarligiVeYukumlulugu = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -800,7 +745,6 @@ export const createVergiVarligiVeYukumlulugu = async (
 };
 
 export const getVergiVarligiVeYukumluluguOzet = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -812,7 +756,6 @@ export const getVergiVarligiVeYukumluluguOzet = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -829,7 +772,6 @@ export const getVergiVarligiVeYukumluluguOzet = async (
 };
 
 export const getVergiVarligi = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -842,7 +784,6 @@ export const getVergiVarligi = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -857,7 +798,6 @@ export const getVergiVarligi = async (
 };
 
 export const getVergiYukumlulugu = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -870,7 +810,6 @@ export const getVergiYukumlulugu = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -885,7 +824,6 @@ export const getVergiYukumlulugu = async (
 };
 
 export const getVergiVarligiVeYukumluluguOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -897,7 +835,6 @@ export const getVergiVarligiVeYukumluluguOrnekFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -912,7 +849,6 @@ export const getVergiVarligiVeYukumluluguOrnekFisler = async (
 };
 
 export const getIliskiliTarafSiniflamaHesaplar = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -924,7 +860,6 @@ export const getIliskiliTarafSiniflamaHesaplar = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -939,7 +874,6 @@ export const getIliskiliTarafSiniflamaHesaplar = async (
 };
 
 export const getIliskiliTarafSiniflama = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -953,7 +887,6 @@ export const getIliskiliTarafSiniflama = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -968,7 +901,6 @@ export const getIliskiliTarafSiniflama = async (
 };
 
 export const getIliskiliTarafSiniflamaOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -984,7 +916,6 @@ export const getIliskiliTarafSiniflamaOrnekFisler = async (
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
       }
@@ -1000,7 +931,6 @@ export const getIliskiliTarafSiniflamaOrnekFisler = async (
 };
 
 export const createVadeliBankaMevduatiOtomatikSiniflama = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1014,7 +944,6 @@ export const createVadeliBankaMevduatiOtomatikSiniflama = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1030,7 +959,6 @@ export const createVadeliBankaMevduatiOtomatikSiniflama = async (
 };
 
 export const createVadeliBankaMevduatOtomatikSiniflama = async (
-  token: string,
   createdVadeliBankaMevduat: any,
   konsolide: boolean = false
 ) => {
@@ -1042,7 +970,6 @@ export const createVadeliBankaMevduatOtomatikSiniflama = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(createdVadeliBankaMevduat),
       }
@@ -1059,7 +986,6 @@ export const createVadeliBankaMevduatOtomatikSiniflama = async (
 };
 
 export const getVadeliBankaMevduatiOtomatikSiniflama = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1072,7 +998,6 @@ export const getVadeliBankaMevduatiOtomatikSiniflama = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1087,7 +1012,6 @@ export const getVadeliBankaMevduatiOtomatikSiniflama = async (
 };
 
 export const getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1100,7 +1024,6 @@ export const getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1115,7 +1038,6 @@ export const getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler = async (
 };
 
 export const deleteVadeliBankaMevduatiOtomatikSiniflamaById = async (
-  token: string,
   id: number,
   konsolide: boolean = false
 ) => {
@@ -1126,7 +1048,6 @@ export const deleteVadeliBankaMevduatiOtomatikSiniflamaById = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1141,7 +1062,6 @@ export const deleteVadeliBankaMevduatiOtomatikSiniflamaById = async (
 };
 
 export const getVadeliBankaMevduatiManuelSiniflama = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1154,7 +1074,6 @@ export const getVadeliBankaMevduatiManuelSiniflama = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1169,7 +1088,6 @@ export const getVadeliBankaMevduatiManuelSiniflama = async (
 };
 
 export const getVadeliBankaMevduatiManuelSiniflamaOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1184,7 +1102,6 @@ export const getVadeliBankaMevduatiManuelSiniflamaOrnekFisler = async (
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
       }
@@ -1200,7 +1117,6 @@ export const getVadeliBankaMevduatiManuelSiniflamaOrnekFisler = async (
 };
 
 export const createVadeliBankaMevduatiFaizTahakkuk = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1215,7 +1131,6 @@ export const createVadeliBankaMevduatiFaizTahakkuk = async (
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
       }
@@ -1231,7 +1146,6 @@ export const createVadeliBankaMevduatiFaizTahakkuk = async (
 };
 
 export const getVadeliBankaMevduatiFaizTahakkuk = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1244,7 +1158,6 @@ export const getVadeliBankaMevduatiFaizTahakkuk = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1261,7 +1174,6 @@ export const getVadeliBankaMevduatiFaizTahakkuk = async (
 };
 
 export const createHareketsizTicariAlacaklar = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1275,7 +1187,6 @@ export const createHareketsizTicariAlacaklar = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1287,7 +1198,6 @@ export const createHareketsizTicariAlacaklar = async (
 };
 
 export const createHareketsizTicariAlacak = async (
-  token: string,
   createdHareketsizTicariAlacak: any
 ) => {
   try {
@@ -1296,7 +1206,6 @@ export const createHareketsizTicariAlacak = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdHareketsizTicariAlacak),
     });
@@ -1312,7 +1221,6 @@ export const createHareketsizTicariAlacak = async (
 };
 
 export const getHareketsizTicariAlacaklar = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1325,7 +1233,6 @@ export const getHareketsizTicariAlacaklar = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1342,7 +1249,6 @@ export const getHareketsizTicariAlacaklar = async (
 };
 
 export const getHareketsizTicariAlacaklarOzet = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1355,7 +1261,6 @@ export const getHareketsizTicariAlacaklarOzet = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1372,7 +1277,6 @@ export const getHareketsizTicariAlacaklarOzet = async (
 };
 
 export const getHareketsizTicariAlacaklarOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1385,7 +1289,6 @@ export const getHareketsizTicariAlacaklarOrnekFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1400,7 +1303,6 @@ export const getHareketsizTicariAlacaklarOrnekFisler = async (
 };
 
 export const deleteHareketsizTicariAlacaklarById = async (
-  token: string,
   id: number,
   konsolide: boolean = false
 ) => {
@@ -1411,7 +1313,6 @@ export const deleteHareketsizTicariAlacaklarById = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1426,7 +1327,6 @@ export const deleteHareketsizTicariAlacaklarById = async (
 };
 
 export const createHareketsizStoklar = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1441,7 +1341,6 @@ export const createHareketsizStoklar = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1453,7 +1352,6 @@ export const createHareketsizStoklar = async (
 };
 
 export const createHareketsizStok = async (
-  token: string,
   createdHareketsizStok: any,
   konsolide: boolean = false
 ) => {
@@ -1465,7 +1363,6 @@ export const createHareketsizStok = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(createdHareketsizStok),
       }
@@ -1482,7 +1379,6 @@ export const createHareketsizStok = async (
 };
 
 export const getHareketsizStoklar = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1495,7 +1391,6 @@ export const getHareketsizStoklar = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1510,7 +1405,6 @@ export const getHareketsizStoklar = async (
 };
 
 export const getHareketsizStoklarOzet = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1523,7 +1417,6 @@ export const getHareketsizStoklarOzet = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1538,7 +1431,6 @@ export const getHareketsizStoklarOzet = async (
 };
 
 export const getHareketsizStoklarOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1551,7 +1443,6 @@ export const getHareketsizStoklarOrnekFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1566,7 +1457,6 @@ export const getHareketsizStoklarOrnekFisler = async (
 };
 
 export const deleteHareketsizStoklarById = async (
-  token: string,
   id: number,
   konsolide: boolean = false
 ) => {
@@ -1577,7 +1467,6 @@ export const deleteHareketsizStoklarById = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1592,7 +1481,6 @@ export const deleteHareketsizStoklarById = async (
 };
 
 export const getGecmisYilKarZararKontrol = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -1604,7 +1492,6 @@ export const getGecmisYilKarZararKontrol = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1621,7 +1508,6 @@ export const getGecmisYilKarZararKontrol = async (
 };
 
 export const getGecmisYilKarZararKontrolOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -1633,7 +1519,6 @@ export const getGecmisYilKarZararKontrolOrnekFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1648,7 +1533,6 @@ export const getGecmisYilKarZararKontrolOrnekFisler = async (
 };
 
 export const getKurFarki = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -1660,7 +1544,6 @@ export const getKurFarki = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1675,7 +1558,6 @@ export const getKurFarki = async (
 };
 
 export const getKurFarkiKontrolleriOzet = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1691,7 +1573,6 @@ export const getKurFarkiKontrolleriOzet = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1706,7 +1587,6 @@ export const getKurFarkiKontrolleriOzet = async (
 };
 
 export const getKurFarkiKontrolleriFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -1722,7 +1602,6 @@ export const getKurFarkiKontrolleriFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1737,7 +1616,6 @@ export const getKurFarkiKontrolleriFisler = async (
 };
 
 export const getKurFarkiOrnekFisler = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
@@ -1749,7 +1627,6 @@ export const getKurFarkiOrnekFisler = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -1763,13 +1640,12 @@ export const getKurFarkiOrnekFisler = async (
   }
 };
 
-export const getDovizKurlariOtuzBirAralik = async (token: string) => {
+export const getDovizKurlariOtuzBirAralik = async () => {
   try {
     const response = await apiFetch(`/Evds/DovizKurlariOtuzBirAralik`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {

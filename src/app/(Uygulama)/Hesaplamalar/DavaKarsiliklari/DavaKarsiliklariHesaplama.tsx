@@ -301,9 +301,7 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   const fetchData = async () => {
     try {
       const davaKarsiliklariVerileri =
-        await getDavaKarsiliklariVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getDavaKarsiliklariVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -477,3 +475,4 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default DavaKarsiliklariHesaplama;
+

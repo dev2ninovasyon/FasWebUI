@@ -367,9 +367,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
 
   const handleCreateNullFisVerisi = async () => {
     try {
-      const result = await createFisListesiVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createFisListesiVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         pathFisNo,
@@ -401,9 +399,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
     };
 
     try {
-      const result = await updateFisListesiVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await updateFisListesiVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         rowData[0],
@@ -423,9 +419,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
 
   const handleDeleteFisVerisi = async (ids: number[]) => {
     try {
-      const result = await deleteFisListesiVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteFisListesiVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         ids,
@@ -462,9 +456,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
 
   const fetchData = async () => {
     try {
-      const fisVerileriByFisNo = await getFisListesiVerileriByFisNo(
-        user.token || "",
-        user.denetciId || 0,
+      const fisVerileriByFisNo = await getFisListesiVerileriByFisNo(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         pathFisNo,

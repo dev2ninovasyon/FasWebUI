@@ -13,7 +13,6 @@ export interface SupheliAlacakTestleriData {
 }
 
 export async function getSupheliAlacakTestleri(
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number,
@@ -25,7 +24,6 @@ export async function getSupheliAlacakTestleri(
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );
@@ -39,7 +37,6 @@ export async function getSupheliAlacakTestleri(
 }
 
 export async function updateSupheliAlacakTestleri(
-    token: string,
     id: number,
     data: Partial<SupheliAlacakTestleriData>
 ) {
@@ -47,7 +44,6 @@ export async function updateSupheliAlacakTestleri(
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
@@ -56,14 +52,12 @@ export async function updateSupheliAlacakTestleri(
 }
 
 export async function addSupheliAlacakTestleri(
-    token: string,
     data: Partial<SupheliAlacakTestleriData>
 ) {
     const response = await apiFetch(`/SupheliAlacakTestleri`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
@@ -71,11 +65,11 @@ export async function addSupheliAlacakTestleri(
     return response.ok;
 }
 
-export async function deleteSupheliAlacakTestleri(token: string, id: number) {
+export async function deleteSupheliAlacakTestleri(id: number) {
     const response = await apiFetch(`/SupheliAlacakTestleri/${id}`, {
         method: "DELETE",
         headers: {
-            Authorization: `Bearer ${token}`,
+            // Authorization removed
         },
     });
 
@@ -83,7 +77,6 @@ export async function deleteSupheliAlacakTestleri(token: string, id: number) {
 }
 
 export async function varsayilanaDon(
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number,
@@ -94,7 +87,7 @@ export async function varsayilanaDon(
         {
             method: "DELETE",
             headers: {
-                Authorization: `Bearer ${token}`,
+                // Authorization removed
             },
         }
     );
@@ -103,14 +96,12 @@ export async function varsayilanaDon(
 }
 
 export async function saveAllSupheliAlacakTestleri(
-    token: string,
     data: SupheliAlacakTestleriData[]
 ) {
     const response = await apiFetch(`/SupheliAlacakTestleri/SaveAll`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });

@@ -373,9 +373,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, tersMi }) => {
   const fetchData = async () => {
     try {
       if (tersMi) {
-        const orneklemVerileri = await getOrneklemByDipnotTers(
-          user.token || "",
-          user.denetciId || 0,
+        const orneklemVerileri = await getOrneklemByDipnotTers(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           dipnot
@@ -410,9 +408,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, tersMi }) => {
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
       } else {
-        const orneklemVerileri = await getOrneklemByDipnot(
-          user.token || "",
-          user.denetciId || 0,
+        const orneklemVerileri = await getOrneklemByDipnot(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           dipnot

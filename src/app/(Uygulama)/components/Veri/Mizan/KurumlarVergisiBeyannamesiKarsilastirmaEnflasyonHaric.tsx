@@ -272,9 +272,7 @@ const KurumlarVergisiBeyannamesiKarsilastirmaEnflasyonHaric: React.FC<
   const fetchData = async () => {
     try {
       const kurumlarVergisiBeyannamesiKarsilastirmaVerileri =
-        await getKurumlarVergisiBeyannamesiKarsilastirmaHaric(
-          user.token || "",
-          user.denetciId || 0,
+        await getKurumlarVergisiBeyannamesiKarsilastirmaHaric(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           type
@@ -434,3 +432,4 @@ const KurumlarVergisiBeyannamesiKarsilastirmaEnflasyonHaric: React.FC<
 };
 
 export default KurumlarVergisiBeyannamesiKarsilastirmaEnflasyonHaric;
+

@@ -240,9 +240,7 @@ const OlusturulmusProgramVukMizanlar: React.FC<Props> = ({ type1 }) => {
 
   const fetchData = async () => {
     try {
-      const programVukMizanVerileri = await getProgramVukMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const programVukMizanVerileri = await getProgramVukMizan(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type1
@@ -425,3 +423,4 @@ const OlusturulmusProgramVukMizanlar: React.FC<Props> = ({ type1 }) => {
 };
 
 export default OlusturulmusProgramVukMizanlar;
+

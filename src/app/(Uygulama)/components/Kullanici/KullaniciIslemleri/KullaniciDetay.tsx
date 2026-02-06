@@ -24,7 +24,7 @@ const KullaniciDetay = () => {
 
   const fetchData = async () => {
     try {
-      const result = await getKullaniciById(user.token || "", pathId);
+      const result = await getKullaniciById(pathId);
       setPersonelAdi(result.personelAdi);
       setUnvani(result.unvani);
       setEmail(result.email);
@@ -217,3 +217,4 @@ const KullaniciDetay = () => {
 };
 
 export default KullaniciDetay;
+

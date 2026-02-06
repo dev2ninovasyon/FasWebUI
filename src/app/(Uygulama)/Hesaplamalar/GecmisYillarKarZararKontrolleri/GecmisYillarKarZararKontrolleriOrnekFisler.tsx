@@ -94,9 +94,7 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -429,9 +427,7 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const gecmisYilKarZararKontrolOrnekFisVerileri =
-        await getGecmisYilKarZararKontrolOrnekFisler(
-          user.token || "",
-          user.denetciId || 0,
+        await getGecmisYilKarZararKontrolOrnekFisler(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -599,3 +595,4 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
 };
 
 export default GecmisYillarKarZararKontrolleriOrnekFisler;
+

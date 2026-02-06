@@ -320,9 +320,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const donusumMizanVerileri = await getDonusumMizan(
-        user.token || "",
-        user.denetlenenId || 0,
+      const donusumMizanVerileri = await getDonusumMizan(user.denetlenenId || 0,
         user.yil || 0,
         konsolidasyonMu
       );
@@ -561,3 +559,4 @@ const DonusumMizanKontrol: React.FC<Props> = ({
 };
 
 export default DonusumMizanKontrol;
+

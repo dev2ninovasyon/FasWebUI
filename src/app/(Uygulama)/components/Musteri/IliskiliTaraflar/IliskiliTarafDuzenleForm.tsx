@@ -27,9 +27,7 @@ const IliskiliTarafDuzenleForm = () => {
       adi,
     };
     try {
-      const result = await updateIliskiliTaraflar(
-        user.token || "",
-        id,
+      const result = await updateIliskiliTaraflar(id,
         updatedIliskiliTaraflar
       );
       if (result) {
@@ -44,9 +42,7 @@ const IliskiliTarafDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const iliskiliTaraflarVerileri = await getIliskiliTaraflarById(
-        user.token || "",
-        pathId
+      const iliskiliTaraflarVerileri = await getIliskiliTaraflarById(pathId
       );
       setAdi(iliskiliTaraflarVerileri.adi);
     } catch (error) {
@@ -111,3 +107,4 @@ const IliskiliTarafDuzenleForm = () => {
 };
 
 export default IliskiliTarafDuzenleForm;
+

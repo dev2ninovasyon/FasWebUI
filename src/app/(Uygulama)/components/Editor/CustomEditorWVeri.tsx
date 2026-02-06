@@ -38,7 +38,6 @@ const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
     try {
       await updateCalismaKagidiVerisi(
         controller,
-        user.token || "",
         veri?.id,
         updatedData
       );
@@ -123,3 +122,4 @@ const CustomEditorWVeri: React.FC<CustomEditorProps> = ({
 };
 
 export default CustomEditorWVeri;
+

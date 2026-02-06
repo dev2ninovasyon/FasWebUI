@@ -29,7 +29,7 @@ const UnvanBoxAutocomplete: React.FC<UnvanBoxProps> = ({
 
   const fetchData = async () => {
     try {
-      const unvanVerileri = await getAllUnvanlar(user.token || "");
+      const unvanVerileri = await getAllUnvanlar();
 
       const newRows = unvanVerileri.map((veri: any) => ({
         id: veri.id,

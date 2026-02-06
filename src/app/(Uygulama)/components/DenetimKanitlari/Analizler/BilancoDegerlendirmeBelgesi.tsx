@@ -64,9 +64,7 @@ const BilancoDegerlendirmeBelgesi: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const dikeyAnalizTablosu = await getDikeyAnalizFinansalDurum(
-        user.token || "",
-        user.denetciId || 0,
+      const dikeyAnalizTablosu = await getDikeyAnalizFinansalDurum(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -546,3 +544,4 @@ const BilancoDegerlendirmeBelgesi: React.FC<Props> = ({
 };
 
 export default BilancoDegerlendirmeBelgesi;
+

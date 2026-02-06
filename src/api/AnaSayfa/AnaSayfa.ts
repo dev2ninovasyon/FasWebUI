@@ -28,7 +28,6 @@ export interface UserActionDto {
 
 
 export async function getUserRecentActions(
-  token: string,
   userId: number,
   denetlenenId: number,
   yil: number,
@@ -40,7 +39,7 @@ export async function getUserRecentActions(
     {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        // Authorization header removed - handled by apiFetch
       },
       cache: "no-store",
     }
@@ -71,7 +70,6 @@ export interface SirketArsivOzetDto {
 }
 
 export async function getSirketArsivOzet(
-  token: string,
   kullaniciId: number,
   denetciId: number
 ): Promise<SirketArsivOzetDto> {
@@ -79,7 +77,7 @@ export async function getSirketArsivOzet(
     `/Audit/sirket-arsiv-ozet?denetciId=${denetciId}&kullaniciId=${kullaniciId}`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        // Authorization header removed - handled by apiFetch
       },
       next: { revalidate: 0 },
     }

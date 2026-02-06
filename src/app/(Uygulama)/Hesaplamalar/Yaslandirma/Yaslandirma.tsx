@@ -279,9 +279,7 @@ const Yaslandirma: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const yaslandirmaVerileri = await getYaslandirmaHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
+      const yaslandirmaVerileri = await getYaslandirmaHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -453,3 +451,4 @@ const Yaslandirma: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default Yaslandirma;
+

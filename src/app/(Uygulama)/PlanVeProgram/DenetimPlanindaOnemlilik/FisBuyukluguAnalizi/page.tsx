@@ -43,8 +43,7 @@ const [seciliAy, setSeciliAy] = useState<string>("Ocak");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getFisBuyukluguAnaliziYillik(
-          user.token || "", user.denetciId || 0, user.yil || 0, user.denetlenenId || 0, false
+        const result = await getFisBuyukluguAnaliziYillik(user.denetciId || 0, user.yil || 0, user.denetlenenId || 0, false
         );
         setAylar(result || []);
       } catch (err) {
@@ -76,9 +75,7 @@ const saveNoteForMonth = async (ay: string) => {
   const value = current?.not ?? "";
   try {
     setSaveLoading(true);
-    await upsertFisBuyukluguAylikNot(
-      user.token || "",
-      user.denetciId || 0,
+    await upsertFisBuyukluguAylikNot(user.denetciId || 0,
       user.yil || 0,
       user.denetlenenId || 0,
       ayNo,
@@ -353,3 +350,4 @@ const saveNoteForMonth = async (ay: string) => {
 };
 
 export default Page;
+

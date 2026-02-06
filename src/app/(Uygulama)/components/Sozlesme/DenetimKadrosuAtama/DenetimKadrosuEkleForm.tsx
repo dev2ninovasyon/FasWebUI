@@ -50,7 +50,6 @@ const DenetimKadrosuEkleForm = () => {
 
     try {
       const result = await createGorevAtamalari(
-        user.token || "",
         createdGorevAtamalari
       );
       if (result == true) {

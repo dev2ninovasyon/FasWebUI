@@ -139,7 +139,6 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
 
     try {
       const result = await updateFormHazirlayanOnaylayan(
-        user.token || "",
         id,
         updated,
         false
@@ -186,7 +185,6 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
 
     try {
       const result = await updateFormHazirlayanOnaylayan(
-        user.token || "",
         id,
         updated,
         true
@@ -213,7 +211,6 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
 
       const formVeri =
         await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
@@ -247,7 +244,6 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
             const gorevAtamalari =
               await getCalismaKagidiVerileriByDenetciDenetlenenYil(
                 "MaddiDogrulukGorevAtamalari",
-                user.token || "",
                 user.denetciId || 0,
                 user.denetlenenId || 0,
                 user.yil || 0

@@ -82,9 +82,7 @@ const NakitAkisTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const fetchData = async () => {
     try {
-      const nakitAkisTablosu = await getNakitAkisTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const nakitAkisTablosu = await getNakitAkisTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         konsolidasyonMu
@@ -111,9 +109,7 @@ const NakitAkisTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
       setNatData(newRowsNat);
 
-      const finansalDurumTablosu = await getFinansalDurumTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const finansalDurumTablosu = await getFinansalDurumTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         konsolidasyonMu
@@ -515,3 +511,4 @@ const NakitAkisTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 };
 
 export default NakitAkisTablosu;
+

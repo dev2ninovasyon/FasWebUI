@@ -15,14 +15,14 @@ export interface AmortismanKontrolSatirKaydetDto {
     yil: number;
 }
 
-export async function fetchAmortismanKontrolleri(token: string, denetlenenId: number, yil: number, dn: string) {
+export async function fetchAmortismanKontrolleri(denetlenenId: number, yil: number, dn: string) {
     try {
         const response = await apiFetch(
             `/AmortismanKontrolleri/get-amortisman-kontrolleri?denetlenenId=${denetlenenId}&yil=${yil}&dn=${encodeURIComponent(dn)}`,
             {
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    // Authorization header removed
                 },
             }
         );
@@ -45,14 +45,13 @@ export async function fetchAmortismanKontrolleri(token: string, denetlenenId: nu
     }
 }
 
-export async function saveAmortismanKontrolSatir(token: string, dto: AmortismanKontrolSatirKaydetDto) {
+export async function saveAmortismanKontrolSatir(dto: AmortismanKontrolSatirKaydetDto) {
     try {
         const response = await apiFetch(
             `/AmortismanKontrolleri/save-satir`,
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(dto),

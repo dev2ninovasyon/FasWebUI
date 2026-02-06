@@ -55,7 +55,6 @@ export interface MutabakatUploadToken {
  * Mektup yükle
  */
 export const uploadMutabakatMektubu = async (
-    token: string,
     file: File,
     denetciId: number,
     denetlenenId: number,
@@ -77,9 +76,6 @@ export const uploadMutabakatMektubu = async (
 
     const response = await apiFetch("/MutabakatMektup/Upload", {
         method: "POST",
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
         body: formData,
     });
 
@@ -95,7 +91,6 @@ export const uploadMutabakatMektubu = async (
  * Mektup bilgisini getir
  */
 export const getMutabakatMektupBelge = async (
-    token: string,
     denetciId: number,
     denetlenenId: number,
     yil: number,
@@ -109,7 +104,6 @@ export const getMutabakatMektupBelge = async (
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );
@@ -130,7 +124,6 @@ export const getMutabakatMektupBelge = async (
  * Tüm mektupları listele
  */
 export const getAllMutabakatMektuplar = async (
-    token: string,
     denetciId: number,
     denetlenenId: number,
     yil: number
@@ -141,7 +134,6 @@ export const getAllMutabakatMektuplar = async (
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );
@@ -158,13 +150,12 @@ export const getAllMutabakatMektuplar = async (
  * Mektup dosyasını indir
  */
 export const downloadMutabakatMektup = async (
-    token: string,
     id: number
 ): Promise<{ blob: Blob; fileName: string }> => {
     const response = await apiFetch(`/MutabakatMektup/Download/${id}`, {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${token}`,
+            // Authorization removed
         },
     });
 
@@ -190,7 +181,6 @@ export const downloadMutabakatMektup = async (
  * Mektubu sil
  */
 export const deleteMutabakatMektup = async (
-    token: string,
     id: number,
     kullaniciId: number
 ): Promise<boolean> => {
@@ -200,11 +190,9 @@ export const deleteMutabakatMektup = async (
             method: "DELETE",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );
-
     if (!response.ok) {
         console.log("Mektup silinemedi");
         return false;
@@ -217,7 +205,6 @@ export const deleteMutabakatMektup = async (
  * Dış kullanıcılar için yükleme linki oluştur
  */
 export const generateMutabakatUploadLink = async (
-    token: string,
     denetciId: number,
     denetlenenId: number,
     yil: number,
@@ -232,7 +219,6 @@ export const generateMutabakatUploadLink = async (
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
             denetciId,
@@ -304,7 +290,6 @@ export const uploadViaMutabakatToken = async (
  * Belirli bir kayıt için aktif tokenları getir
  */
 export const getActiveMutabakatTokens = async (
-    token: string,
     denetciId: number,
     denetlenenId: number,
     yil: number,
@@ -318,7 +303,6 @@ export const getActiveMutabakatTokens = async (
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );

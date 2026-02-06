@@ -31,9 +31,7 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
 
   const fetchData = async () => {
     try {
-      const kullaniciVerileri = await getKullaniciByDenetciId(
-        user.token || "",
-        user.denetciId || 0
+      const kullaniciVerileri = await getKullaniciByDenetciId(user.denetciId || 0
       );
       const newRows = kullaniciVerileri.map((veri: any) => ({
         id: veri.id,
@@ -87,3 +85,4 @@ const KullaniciBoxAutocomplete: React.FC<KullaniciBoxProps> = ({
 };
 
 export default KullaniciBoxAutocomplete;
+

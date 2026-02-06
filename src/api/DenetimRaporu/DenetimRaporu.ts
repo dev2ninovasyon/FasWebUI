@@ -2,7 +2,6 @@
 
 
 export const getRaporDipnot = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -17,7 +16,6 @@ export const getRaporDipnot = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -32,7 +30,6 @@ export const getRaporDipnot = async (
 };
 
 export const getFaaliyetRaporDipnot = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -45,7 +42,6 @@ export const getFaaliyetRaporDipnot = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -60,7 +56,6 @@ export const getFaaliyetRaporDipnot = async (
 };
 
 export const updateRaporDipnot = async (
-  token: string,
   updatedRaporDipnot: any
 ) => {
   try {
@@ -69,7 +64,6 @@ export const updateRaporDipnot = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedRaporDipnot),
     });
@@ -85,7 +79,6 @@ export const updateRaporDipnot = async (
 };
 
 export const getRaporGorus = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -101,7 +94,6 @@ export const getRaporGorus = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -116,7 +108,6 @@ export const getRaporGorus = async (
 };
 
 export const updateRaporGorus = async (
-  token: string,
   updatedRaporGorus: any
 ) => {
   try {
@@ -125,7 +116,6 @@ export const updateRaporGorus = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedRaporGorus),
     });
@@ -141,7 +131,6 @@ export const updateRaporGorus = async (
 };
 
 export const deleteAllRaporDipnotVerileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -154,7 +143,6 @@ export const deleteAllRaporDipnotVerileri = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -170,7 +158,6 @@ export const deleteAllRaporDipnotVerileri = async (
 };
 
 export const getDipnot15Amortisman = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -183,7 +170,6 @@ export const getDipnot15Amortisman = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -198,7 +184,6 @@ export const getDipnot15Amortisman = async (
 };
 
 export const getDipnot16Amortisman = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -211,7 +196,6 @@ export const getDipnot16Amortisman = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -226,7 +210,6 @@ export const getDipnot16Amortisman = async (
 };
 
 export const getDipnot15Maliyet = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -239,7 +222,6 @@ export const getDipnot15Maliyet = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -254,7 +236,6 @@ export const getDipnot15Maliyet = async (
 };
 
 export const getDipnot16Maliyet = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -267,7 +248,6 @@ export const getDipnot16Maliyet = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -282,7 +262,6 @@ export const getDipnot16Maliyet = async (
 };
 
 export const updateDipnotMaliyet = async (
-  token: string,
   updatedDipnotMaliyet: any
 ) => {
   try {
@@ -291,7 +270,6 @@ export const updateDipnotMaliyet = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedDipnotMaliyet),
     });
@@ -307,7 +285,6 @@ export const updateDipnotMaliyet = async (
 };
 
 export const updateDipnotAmortisman = async (
-  token: string,
   updatedDipnotAmortisman: any
 ) => {
   try {
@@ -316,7 +293,6 @@ export const updateDipnotAmortisman = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedDipnotAmortisman),
     });
@@ -332,7 +308,6 @@ export const updateDipnotAmortisman = async (
 };
 
 export const getDipnot25 = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -345,7 +320,6 @@ export const getDipnot25 = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -360,7 +334,6 @@ export const getDipnot25 = async (
 };
 
 export const getDipnot34 = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -373,7 +346,6 @@ export const getDipnot34 = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -388,7 +360,6 @@ export const getDipnot34 = async (
 };
 
 export const getKrediRiski = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -401,7 +372,6 @@ export const getKrediRiski = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -416,7 +386,6 @@ export const getKrediRiski = async (
 };
 
 export const updateKrediRiski = async (
-  token: string,
   updatedKrediRiski: any
 ) => {
   try {
@@ -425,7 +394,6 @@ export const updateKrediRiski = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedKrediRiski),
     });
@@ -441,7 +409,6 @@ export const updateKrediRiski = async (
 };
 
 export const getDovizKuruRiski = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -454,7 +421,6 @@ export const getDovizKuruRiski = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -469,7 +435,6 @@ export const getDovizKuruRiski = async (
 };
 
 export const updateDovizKuruRiski = async (
-  token: string,
   updatedDovizKuruRiski: any
 ) => {
   try {
@@ -478,7 +443,6 @@ export const updateDovizKuruRiski = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedDovizKuruRiski),
     });
@@ -494,7 +458,6 @@ export const updateDovizKuruRiski = async (
 };
 
 export const getDovizKuruRiskiDuyarlilikAnalizi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -507,7 +470,6 @@ export const getDovizKuruRiskiDuyarlilikAnalizi = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -522,7 +484,6 @@ export const getDovizKuruRiskiDuyarlilikAnalizi = async (
 };
 
 export const getDipnotAnaHesaplar = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -536,7 +497,6 @@ export const getDipnotAnaHesaplar = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

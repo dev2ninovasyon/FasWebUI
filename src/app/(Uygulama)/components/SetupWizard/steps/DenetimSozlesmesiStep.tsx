@@ -71,7 +71,6 @@ export default function DenetimSozlesmesiStep({
             setLoading(true);
             const sozlesmeVerileri = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
                 controller,
-                user.token || "",
                 user.denetciId || 0,
                 sirket.id,
                 user.yil || 0
@@ -98,9 +97,7 @@ export default function DenetimSozlesmesiStep({
     const fetchTeamData = async () => {
         if (!sirket?.id) return;
         try {
-            const teamData = await getGorevAtamalariByDenetlenenIdYil(
-                user.token || "",
-                sirket.id,
+            const teamData = await getGorevAtamalariByDenetlenenIdYil(sirket.id,
                 user.yil || 0
             );
             setRows(teamData || []);
@@ -257,3 +254,4 @@ export default function DenetimSozlesmesiStep({
         </Box>
     );
 }
+

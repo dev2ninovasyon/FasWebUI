@@ -76,7 +76,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
         return obj;
       });
 
-      const result = await updateRaporDipnot(user.token || "", jsonData);
+      const result = await updateRaporDipnot(jsonData);
 
       handleClosePopUp();
     } catch (error) {
@@ -86,9 +86,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
 
   const handleDeleteAll = async () => {
     try {
-      const result = await deleteAllRaporDipnotVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteAllRaporDipnotVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         tip
@@ -106,9 +104,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
   const fetchData = async () => {
     try {
       if (tip == "BagimsizDenetciRaporu") {
-        const dipnotVerileri = await getRaporDipnot(
-          user.token || "",
-          user.denetciId || 0,
+        const dipnotVerileri = await getRaporDipnot(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           user.denetimTuru || ""
@@ -129,9 +125,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
         setVeriler(rowsAll);
       }
       if (tip == "FaaliyetRaporunaIliskinBagimsizDenetciRaporu") {
-        const dipnotVerileri = await getFaaliyetRaporDipnot(
-          user.token || "",
-          user.denetciId || 0,
+        const dipnotVerileri = await getFaaliyetRaporDipnot(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           user.denetimTuru || ""
@@ -424,3 +418,4 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     </Dialog>
   );
 };
+

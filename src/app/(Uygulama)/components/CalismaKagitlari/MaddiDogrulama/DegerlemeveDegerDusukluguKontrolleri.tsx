@@ -47,9 +47,7 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
             if (!dipnotNo && parentName) {
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         parentName,
@@ -164,3 +162,4 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
 };
 
 export default DegerlemeveDegerDusukluguKontrolleri;
+

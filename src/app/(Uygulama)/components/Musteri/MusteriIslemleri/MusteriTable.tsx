@@ -76,9 +76,7 @@ const MusteriTable = () => {
   const confirmDelete = async () => {
     setIsDeleting(true);
     try {
-      const result = await deleteDenetlenenById(
-        user.token || "",
-        selectedId || 0
+      const result = await deleteDenetlenenById(selectedId || 0
       );
       if (result) {
         await fetchData();
@@ -115,9 +113,7 @@ const MusteriTable = () => {
 
   const fetchData = async () => {
     try {
-      const musteriVerileri = await getDenetlenenByDenetciId(
-        user.token || "",
-        user.denetciId || 0
+      const musteriVerileri = await getDenetlenenByDenetciId(user.denetciId || 0
       );
       const newRows = musteriVerileri.map((musteri: any) => ({
         id: musteri.id,
@@ -296,3 +292,4 @@ const MusteriTable = () => {
 };
 
 export default MusteriTable;
+

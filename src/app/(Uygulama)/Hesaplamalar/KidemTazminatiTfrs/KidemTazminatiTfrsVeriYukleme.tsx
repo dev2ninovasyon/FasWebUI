@@ -563,9 +563,7 @@ const KidemTazminatiTfrsVeriYukleme: React.FC<Props> = ({
       });
 
     try {
-      const result = await createKidemTazminatiTfrsVerisi(
-        user.token || "",
-        jsonData
+      const result = await createKidemTazminatiTfrsVerisi(jsonData
       );
       if (result) {
         await fetchData();
@@ -600,9 +598,7 @@ const KidemTazminatiTfrsVeriYukleme: React.FC<Props> = ({
 
   const handleDeleteKidemTazminatiTfrsVerisi = async () => {
     try {
-      const result = await deleteKidemTazminatiTfrsVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteKidemTazminatiTfrsVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -641,9 +637,7 @@ const KidemTazminatiTfrsVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const KidemTazminatiTfrsVerileri =
-        await getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getKidemTazminatiTfrsVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -704,9 +698,7 @@ const KidemTazminatiTfrsVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(
-        user.token || "",
-        "Kıdem Tazminatı (Tfrs)"
+      const format = await getFormat("Kıdem Tazminatı (Tfrs)"
       );
       setRowCount(format.satirSayisi);
     } catch (error) {
@@ -869,3 +861,4 @@ const KidemTazminatiTfrsVeriYukleme: React.FC<Props> = ({
 };
 
 export default KidemTazminatiTfrsVeriYukleme;
+

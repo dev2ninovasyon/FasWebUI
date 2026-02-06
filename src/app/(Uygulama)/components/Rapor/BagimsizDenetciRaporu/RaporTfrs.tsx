@@ -317,9 +317,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   const [subelerRows, setSubelerRows] = useState<VeriSubeler[]>([]);
   const fetchDataSubeler = async () => {
     try {
-      const subelerVerileri = await getSubelerByDenetlenenId(
-        user.token || "",
-        user.denetlenenId || 0
+      const subelerVerileri = await getSubelerByDenetlenenId(user.denetlenenId || 0
       );
       const newRows = subelerVerileri.map((subeler: any) => ({
         id: subeler.id,
@@ -336,9 +334,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   const [hissedarlarRows, setHissedarlarRows] = useState<VeriHissedarlar[]>([]);
   const fetchDataHissedarlar = async () => {
     try {
-      const hissedarlarVerileri = await getHissedarlarByDenetlenenIdYil(
-        user.token || "",
-        user.denetlenenId || 0,
+      const hissedarlarVerileri = await getHissedarlarByDenetlenenIdYil(user.denetlenenId || 0,
         user.yil || 0
       );
       const newRows = hissedarlarVerileri.map((hissedar: any) => ({
@@ -359,9 +355,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   >([]);
   const fetchDataDipnot14Amortisman = async () => {
     try {
-      const dipnot14AmortismanVerileri = await getDipnot15Amortisman(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot14AmortismanVerileri = await getDipnot15Amortisman(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         true
@@ -387,9 +381,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   >([]);
   const fetchDataDipnot17Amortisman = async () => {
     try {
-      const dipnot17AmortismanVerileri = await getDipnot16Amortisman(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot17AmortismanVerileri = await getDipnot16Amortisman(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         true
@@ -415,9 +407,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   >([]);
   const fetchDataDipnot14Maliyet = async () => {
     try {
-      const dipnot14MaliyetVerileri = await getDipnot15Maliyet(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot14MaliyetVerileri = await getDipnot15Maliyet(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -442,9 +432,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   >([]);
   const fetchDataDipnot17Maliyet = async () => {
     try {
-      const dipnot17MaliyetVerileri = await getDipnot16Maliyet(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot17MaliyetVerileri = await getDipnot16Maliyet(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -467,9 +455,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   const [dipnot39Rows, setDipnot39Rows] = useState<VeriDipnot39[]>([]);
   const fetchDataDipnot39 = async () => {
     try {
-      const dipnot34Verileri = await getDipnot34(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot34Verileri = await getDipnot34(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -488,9 +474,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   const [dipnot451Rows, setDipnot451Rows] = useState<VeriDipnot451[]>([]);
   const fetchDataDipnot451 = async () => {
     try {
-      const dipnot451Verileri = await getKrediRiski(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot451Verileri = await getKrediRiski(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -550,9 +534,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   const [dipnot452Rows, setDipnot452Rows] = useState<VeriDipnot452[]>([]);
   const fetchDataDipnot452 = async () => {
     try {
-      const dipnot452Verileri = await getDovizKuruRiski(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot452Verileri = await getDovizKuruRiski(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -606,9 +588,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
   const [dipnot453Rows, setDipnot453Rows] = useState<VeriDipnot453[]>([]);
   const fetchDataDipnot453 = async () => {
     try {
-      const dipnot453Verileri = await getDovizKuruRiskiDuyarlilikAnalizi(
-        user.token || "",
-        user.denetciId || 0,
+      const dipnot453Verileri = await getDovizKuruRiskiDuyarlilikAnalizi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -663,9 +643,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
     try {
       if (detayHesaplar) {
       } else {
-        const dipnotVerileri = await getDipnotAnaHesaplar(
-          user.token || "",
-          user.denetciId || 0,
+        const dipnotVerileri = await getDipnotAnaHesaplar(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           (konsolide && user.denetimTuru === "Tfrs") ? "TfrsKonsolide" : user.denetimTuru || ""
@@ -8672,3 +8650,4 @@ const RaporTfrs: React.FC<RaporProps> = ({
 };
 
 export default RaporTfrs;
+

@@ -44,7 +44,7 @@ export function SonIslemlerKartlari() {
       try {
         console.time("API: SonIslemler");
         const data = await getUserRecentActions(
-          user.token || "",
+
           user.id || 0,
           user.denetlenenId || 0,
           user.yil || 0,

@@ -359,7 +359,7 @@ const AmortismanCari: React.FC<Props> = ({
       return obj;
     });
 
-    const result = await updateDipnotAmortisman(user.token || "", jsonData);
+    const result = await updateDipnotAmortisman(jsonData);
     if (result) {
       console.log("Dipnot Amortisman Cari güncellendi.");
     } else {
@@ -370,9 +370,7 @@ const AmortismanCari: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       if (dipnotKodu == 14 || dipnotKodu == 15) {
-        const amortismanVerileri = await getDipnot15Amortisman(
-          user.token || "",
-          user.denetciId || 0,
+        const amortismanVerileri = await getDipnot15Amortisman(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -397,9 +395,7 @@ const AmortismanCari: React.FC<Props> = ({
         setRowCount(rowsAll.length);
       }
       if (dipnotKodu == 16 || dipnotKodu == 17) {
-        const amortismanVerileri = await getDipnot16Amortisman(
-          user.token || "",
-          user.denetciId || 0,
+        const amortismanVerileri = await getDipnot16Amortisman(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -566,3 +562,4 @@ const AmortismanCari: React.FC<Props> = ({
 };
 
 export default AmortismanCari;
+

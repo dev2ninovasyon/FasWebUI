@@ -611,7 +611,6 @@ const DonusturulmusMizan: React.FC<Props> = ({
 
     try {
       const result = await createDonusturulmusMizanVerisi(
-        user.token || "",
         jsonData
       );
       if (result) {
@@ -648,7 +647,6 @@ const DonusturulmusMizan: React.FC<Props> = ({
   const handleDeleteDonusturulmusMizanVerisi = async () => {
     try {
       const result = await deleteDonusturulmusMizanVerisi(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -690,7 +688,6 @@ const DonusturulmusMizan: React.FC<Props> = ({
     try {
       const donusturulmusMizanVerileri =
         await getDonusturulmusMizanVerileriByDenetciDenetlenenYil(
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -723,8 +720,8 @@ const DonusturulmusMizan: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Dönüştürülmüş Mizan");
-      setRowCount(format.satirSayisi);
+      const format = await getFormat("Dönüştürülmüş Mizan");
+      setRowCount(format.satirSayisi)
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -891,3 +888,4 @@ const DonusturulmusMizan: React.FC<Props> = ({
 };
 
 export default DonusturulmusMizan;
+

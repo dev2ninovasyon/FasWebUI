@@ -217,7 +217,6 @@ const Page: React.FC = () => {
   const fetchData = async () => {
     try {
       const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,

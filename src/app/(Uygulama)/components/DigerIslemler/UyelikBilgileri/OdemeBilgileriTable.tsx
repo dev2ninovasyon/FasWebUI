@@ -275,13 +275,9 @@ const OdemeBilgileriTable = () => {
 
   const fetchData = async () => {
     try {
-      const denetciOdemeBilgileri = await getDenetciOdemeBilgileri(
-        user.token || "",
-        user.denetciId
+      const denetciOdemeBilgileri = await getDenetciOdemeBilgileri(user.denetciId
       );
-      const denetciKotaGecmisi = await getDenetciKotaGecmisi(
-        user.token || "",
-        user.denetciId
+      const denetciKotaGecmisi = await getDenetciKotaGecmisi(user.denetciId
       );
 
       const row = createData(
@@ -583,3 +579,4 @@ const OdemeBilgileriTable = () => {
   );
 };
 export default OdemeBilgileriTable;
+

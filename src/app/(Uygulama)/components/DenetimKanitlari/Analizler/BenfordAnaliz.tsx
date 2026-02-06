@@ -64,7 +64,7 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
 
   const loadKebir = async () => {
     try {
-      const list = await getBenfordHesapKodlari(token, yil, denetlenenId);
+      const list = await getBenfordHesapKodlari(yil, denetlenenId);
       setKebirList(list ?? []);
     } catch {
       toast("Hesap kodları alınamadı", false);
@@ -75,7 +75,7 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
     setLoading(true);
     try {
       const kebirKodu = selectedKebir === "ALL" ? undefined : Number(selectedKebir);
-      const res = await getBenfordDagilim(token, yil, denetlenenId, kebirKodu);
+      const res = await getBenfordDagilim(yil, denetlenenId, kebirKodu);
       setData(res ?? null);
       if (!res || (res.dagilim ?? []).length === 0) toast("Kayıt bulunamadı", false);
     } catch {
@@ -93,7 +93,7 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
     setPopupLoading(true);
     try {
       const kebirKodu = selectedKebir === "ALL" ? undefined : Number(selectedKebir);
-      const res = await getBenfordBasamakKayitlari(token, yil, denetlenenId, basamak, kebirKodu);
+      const res = await getBenfordBasamakKayitlari(yil, denetlenenId, basamak, kebirKodu);
       setPopupRecords(res ?? []);
     } catch {
       toast("Kayıtlar alınamadı", false);

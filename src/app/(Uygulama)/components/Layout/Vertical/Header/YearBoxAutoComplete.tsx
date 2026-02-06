@@ -42,7 +42,6 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
       if (!selectedDenetlenenId) return;
 
       const kullaniciRolVerileri = await getKullaniciRol(
-        user.token || "",
         user.id || 0,
         selectedDenetlenenId
       );

@@ -145,9 +145,7 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
     try {
       const selectedRows = createSelectedRows();
 
-      const result = await denetimDosyaTransfer(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await denetimDosyaTransfer(user.denetciId || 0,
         kaynakId,
         hedefId,
         kaynakYil,
@@ -189,9 +187,7 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const data = await getDenetimDosyaTransfer(
-        user.token || "",
-        kaynakDenetimTuru
+      const data = await getDenetimDosyaTransfer(kaynakDenetimTuru
       );
 
       setRows(data);
@@ -533,3 +529,4 @@ const DenetimDosyaTransferTable: React.FC<Props> = ({
 };
 
 export default DenetimDosyaTransferTable;
+

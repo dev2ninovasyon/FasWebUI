@@ -441,9 +441,7 @@ const MusteriTanima: React.FC<Props> = ({
       return obj;
     });
 
-    const result = await updateMusteriTanimaSayisalBilgiler(
-      user.token || "",
-      jsonData
+    const result = await updateMusteriTanimaSayisalBilgiler(jsonData
     );
     if (result) {
       enqueueSnackbar("Kaydedildi", {
@@ -475,9 +473,7 @@ const MusteriTanima: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const musteriTanimaSayisalBilgileriVerileri =
-        await getMusteriTanimaSayisalBilgiler(
-          user.token || "",
-          user.denetciId || 0,
+        await getMusteriTanimaSayisalBilgiler(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -655,3 +651,4 @@ const MusteriTanima: React.FC<Props> = ({
 };
 
 export default MusteriTanima;
+

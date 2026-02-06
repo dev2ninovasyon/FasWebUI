@@ -2,19 +2,17 @@
 
 
 export const getFisIslemSayilari = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/FisIslemSayilari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,7 +27,6 @@ export const getFisIslemSayilari = async (
 };
 
 export const createOrneklem = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -38,14 +35,13 @@ export const createOrneklem = async (
   listelemeTuru: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OrneklemHesapla?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&guvenilirlikDuzeyi=${guvenilirlikDuzeyi}&hataPayi=${hataPayi}&listelemeTuru=${listelemeTuru}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -61,19 +57,17 @@ export const createOrneklem = async (
 };
 
 export const getOrneklem = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/Orneklem?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -88,20 +82,18 @@ export const getOrneklem = async (
 };
 
 export const getOrneklemByDipnot = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   dipnot: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OrneklemByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -116,20 +108,18 @@ export const getOrneklemByDipnot = async (
 };
 
 export const getOrneklemByDipnotTers = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   dipnot: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OrneklemByDipnotTers?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -143,14 +133,13 @@ export const getOrneklemByDipnotTers = async (
   }
 };
 
-export const updateOrneklem = async (token: string, json: any) => {
+export const updateOrneklem = async (json: any) => {
   try {
-    const response =await apiFetch(`/DenetimKanitlari/Orneklem`, {
+    const response = await apiFetch(`/DenetimKanitlari/Orneklem`, {
       method: "PUT",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(json),
     });
@@ -166,20 +155,18 @@ export const updateOrneklem = async (token: string, json: any) => {
 };
 
 export const getOrneklemFisleri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   kebirKodu: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OrneklemFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kebirKodu=${kebirKodu}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -194,21 +181,19 @@ export const getOrneklemFisleri = async (
 };
 
 export const getOrneklemFisleriByList = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   kebirKodu: number[]
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OrneklemFisleriByList?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "PUT",
         headers: {
           accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(kebirKodu),
       }
@@ -224,20 +209,18 @@ export const getOrneklemFisleriByList = async (
 };
 
 export const getOrneklemFisleriDetay = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   fisNo: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OrneklemFisleriDetay?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -252,19 +235,17 @@ export const getOrneklemFisleriDetay = async (
 };
 
 export const getOnemlilikSeviyesi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OnemlilikSeviyesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -279,20 +260,18 @@ export const getOnemlilikSeviyesi = async (
 };
 
 export const createOnemlilik = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -308,19 +287,17 @@ export const createOnemlilik = async (
 };
 
 export const getOnemlilik = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -335,20 +312,18 @@ export const getOnemlilik = async (
 };
 
 export const getOnemlilikByDipnot = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   dipnot: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OnemlilikByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -363,7 +338,6 @@ export const getOnemlilikByDipnot = async (
 };
 
 export const updateOnemlilik = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -371,14 +345,13 @@ export const updateOnemlilik = async (
   updatedOnemlilik: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/Onemlilik?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedOnemlilik),
       }
@@ -395,21 +368,19 @@ export const updateOnemlilik = async (
 };
 
 export const createOnemlilikHesaplamaBazi = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
   json: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OnemlilikHesaplamaBazi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
       }
@@ -426,19 +397,17 @@ export const createOnemlilikHesaplamaBazi = async (
 };
 
 export const getOnemlilikHesaplamaBazi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OnemlilikHesaplamaBazi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -453,18 +422,16 @@ export const getOnemlilikHesaplamaBazi = async (
 };
 
 export const updateOnemlilikHesaplamaBazi = async (
-  token: string,
   json: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/OnemlilikHesaplamaBazi`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(json),
       }
@@ -481,7 +448,6 @@ export const updateOnemlilikHesaplamaBazi = async (
 };
 
 export const getMutabakat = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
@@ -489,13 +455,12 @@ export const getMutabakat = async (
   hesapAdi: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&grupKodu=${grupKodu}&hesapAdi=${hesapAdi}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -510,20 +475,18 @@ export const getMutabakat = async (
 };
 
 export const getMutabakatByDipnot = async (
-  token: string,
   denetciId: number,
   yil: number,
   denetlenenId: number,
   dipnot: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/MutabakatByDipnot?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnot=${dipnot}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -537,14 +500,13 @@ export const getMutabakatByDipnot = async (
   }
 };
 
-export const updateMutabakat = async (token: string, json: any) => {
+export const updateMutabakat = async (json: any) => {
   try {
-    const response =await apiFetch(`/DenetimKanitlari/Mutabakat`, {
+    const response = await apiFetch(`/DenetimKanitlari/Mutabakat`, {
       method: "PUT",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(json),
     });
@@ -560,20 +522,18 @@ export const updateMutabakat = async (token: string, json: any) => {
 };
 
 export const deleteMutabakat = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/Mutabakat?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -589,20 +549,18 @@ export const deleteMutabakat = async (
 };
 
 export const getMutabakatDogrulamaMektubu = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   detayKodu: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/MutabakatDogrulamaMektubu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&detayKodu=${detayKodu}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -617,19 +575,17 @@ export const getMutabakatDogrulamaMektubu = async (
 };
 
 export const getIliskiliTarafIncelemeHesaplari = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimKanitlari/IliskiliTarafIncelemeHesaplari?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

@@ -1,13 +1,12 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 
-export const getDenetciById = async (token: string, id: any) => {
+export const getDenetciById = async (id: any) => {
   try {
-    const response =await apiFetch(`/Denetci/${id}`, {
+    const response = await apiFetch(`/Denetci/${id}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -21,17 +20,15 @@ export const getDenetciById = async (token: string, id: any) => {
 };
 
 export const updateDenetci = async (
-  token: string,
   id: any,
   updatedDenetci: any
 ) => {
   try {
-    const response =await apiFetch(`/Denetci/${id}`, {
+    const response = await apiFetch(`/Denetci/${id}`, {
       method: "PUT",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedDenetci),
     });
@@ -47,15 +44,13 @@ export const updateDenetci = async (
 };
 
 export const getDenetciOdemeBilgileri = async (
-  token: string,
   denetciId: any
 ) => {
   try {
-    const response =await apiFetch(`/Denetci/OdemeBilgileri/${denetciId}`, {
+    const response = await apiFetch(`/Denetci/OdemeBilgileri/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -68,13 +63,12 @@ export const getDenetciOdemeBilgileri = async (
   }
 };
 
-export const getDenetciKotaGecmisi = async (token: string, denetciId: any) => {
+export const getDenetciKotaGecmisi = async (denetciId: any) => {
   try {
-    const response =await apiFetch(`/Denetci/KotaGecmisi/${denetciId}`, {
+    const response = await apiFetch(`/Denetci/KotaGecmisi/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -87,13 +81,12 @@ export const getDenetciKotaGecmisi = async (token: string, denetciId: any) => {
   }
 };
 
-export const getLogo = async (token: string, denetciId: any) => {
+export const getLogo = async (denetciId: any) => {
   try {
-    const response =await apiFetch(`/Denetci/Logo/${denetciId}`, {
+    const response = await apiFetch(`/Denetci/Logo/${denetciId}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -116,15 +109,14 @@ export const getLogo = async (token: string, denetciId: any) => {
 };
 
 export const createLogo = async (
-  token: string,
   denetciId: number,
   formData: FormData
 ) => {
   try {
-    const response =await apiFetch(`/Denetci/Logo/${denetciId}`, {
+    const response = await apiFetch(`/Denetci/Logo/${denetciId}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
+        // Authorization removed
       },
       body: formData,
     });

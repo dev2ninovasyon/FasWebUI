@@ -36,7 +36,6 @@ export type HesapTestRow = {
  */
 export const getHesapTestleriByDenetlenen = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -47,7 +46,7 @@ export const getHesapTestleriByDenetlenen = async (
     const url = `/${controller}/GetByDenetlenen?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&dipnotNo=${encodeURIComponent(
       dipnotNo
     )}&modelAdi=${encodeURIComponent(modelAdi)}`;
-    console.log(token)
+    // console.log(token) // Token removed
     console.log("=== API CALL DEBUG ===");
     console.log("URL:", url);
     console.log("Params:", { denetciId, yil, denetlenenId, dipnotNo, modelAdi });
@@ -56,7 +55,6 @@ export const getHesapTestleriByDenetlenen = async (
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -87,7 +85,6 @@ export const getHesapTestleriByDenetlenen = async (
  */
 export const updateHesapTestRow = async (
   controller: string,
-  token: string,
   id: number,
   payload: Partial<HesapTestRow>
 ) => {
@@ -97,7 +94,6 @@ export const updateHesapTestRow = async (
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
     });
@@ -120,7 +116,6 @@ export const updateHesapTestRow = async (
  */
 export const varsayilanaDon = async (
   controller: string,
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -135,7 +130,6 @@ export const varsayilanaDon = async (
         method: "DELETE",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

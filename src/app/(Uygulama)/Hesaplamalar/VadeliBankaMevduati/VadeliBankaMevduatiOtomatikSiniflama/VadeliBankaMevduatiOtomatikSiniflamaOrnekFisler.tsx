@@ -95,9 +95,7 @@ const VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -430,9 +428,7 @@ const VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const vadeliBankaMevduatiOtomatikSiniflamaOrnekFisVerileri =
-        await getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler(
-          user.token || "",
-          user.denetciId || 0,
+        await getVadeliBankaMevduatiOtomatikSiniflamaOrnekFisler(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -612,3 +608,4 @@ const VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler: React.FC<Props> = ({
 };
 
 export default VadeliBankaMevduatiOtomatikSiniflamaOrnekFisler;
+

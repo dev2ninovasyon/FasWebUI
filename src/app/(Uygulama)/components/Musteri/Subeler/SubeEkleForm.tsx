@@ -24,7 +24,7 @@ const SubeEkleForm = () => {
       adres,
     };
     try {
-      const result = await createSubeler(user.token || "", createdSubeler);
+      const result = await createSubeler(createdSubeler);
       if (result) {
         router.push("/Musteri/Subeler");
       } else {
@@ -137,3 +137,4 @@ const SubeEkleForm = () => {
 };
 
 export default SubeEkleForm;
+

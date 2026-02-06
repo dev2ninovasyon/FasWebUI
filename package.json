@@ -41,6 +41,7 @@
     "@lexical/rich-text": "^0.39.0",
     "@lexical/selection": "^0.39.0",
     "@lexical/utils": "^0.39.0",
+    "@microsoft/signalr": "^8.0.0",
     "@mui/icons-material": "^7.3.7",
     "@mui/lab": "^7.0.1-beta.21",
     "@mui/material": "^7.3.7",

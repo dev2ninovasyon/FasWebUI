@@ -2,19 +2,17 @@
 
 
 export const getAmortismanVerileriByDenetciDenetlenenYil = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -28,14 +26,13 @@ export const getAmortismanVerileriByDenetciDenetlenenYil = async (
   }
 };
 
-export const createAmortismanVerisi = async (token: string, jsonData: any) => {
+export const createAmortismanVerisi = async (jsonData: any) => {
   try {
-    const response =await apiFetch(`/Veri/Amortisman`, {
+    const response = await apiFetch(`/Veri/Amortisman`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(jsonData),
     });
@@ -51,20 +48,18 @@ export const createAmortismanVerisi = async (token: string, jsonData: any) => {
 };
 
 export const deleteAmortismanVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

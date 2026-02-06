@@ -101,7 +101,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
   // Liste + varsa önceki birleşik PDF'i getir
   const fetchData = async () => {
     try {
-      const data = await getDenetimDosyaTransfer(user.token || "", user.denetimTuru || "");
+      const data = await getDenetimDosyaTransfer(user.denetimTuru || "");
       setRows(data);
     } catch (error) {
       console.log(error);
@@ -113,9 +113,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
 
   const fetchExistingMergedPdf = async () => {
     try {
-      const res = await getLastBirlesikPdf(
-        user.token || "",
-        user.denetciId || 0,
+      const res = await getLastBirlesikPdf(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -219,9 +217,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
     }
     setIsMerging(true);
     try {
-      const { last } = await createAndFetchBirlesikPdf(
-        user.token || "",
-        user.denetciId || 0,
+      const { last } = await createAndFetchBirlesikPdf(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         selections,
@@ -539,3 +535,4 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
 };
 
 export default DenetimDosyaYazdirTable;
+

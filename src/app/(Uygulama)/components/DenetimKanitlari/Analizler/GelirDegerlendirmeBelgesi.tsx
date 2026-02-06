@@ -62,9 +62,7 @@ const controller = "GelirDegerlendirmeBelgesi";
 
   const fetchData = async () => {
     try {
-      const dikeyAnalizTablosu = await getDikeyAnalizTablosuKarZarar(
-        user.token || "",
-        user.denetciId || 0,
+      const dikeyAnalizTablosu = await getDikeyAnalizTablosuKarZarar(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -545,3 +543,4 @@ const controller = "GelirDegerlendirmeBelgesi";
 };
 
 export default GelirDegerlendirmeBelgesi;
+

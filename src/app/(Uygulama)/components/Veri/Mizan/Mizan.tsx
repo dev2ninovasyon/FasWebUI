@@ -277,9 +277,7 @@ const Mizan: React.FC<Props> = ({
       setLoading(true);
       setPage(0); // Reset to first page when fetching new data
       // Only use shared data if it has content, otherwise fetch from API
-      const mizanVerileri = (sharedData && sharedData.length > 0) ? sharedData : await getMizanVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = (sharedData && sharedData.length > 0) ? sharedData : await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -557,3 +555,4 @@ const Mizan: React.FC<Props> = ({
 };
 
 export default Mizan;
+

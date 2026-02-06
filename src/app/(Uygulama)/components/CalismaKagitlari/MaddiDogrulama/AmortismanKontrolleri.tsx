@@ -8,7 +8,6 @@ import { useSnackbar } from "notistack";
 import { CircularProgress, Card, CardContent, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Divider, useTheme } from "@mui/material";
 
 interface Props {
-    token: string;
     denetlenenId: number;
     yil: number;
     dipnotNo: string;
@@ -16,7 +15,6 @@ interface Props {
 }
 
 const AmortismanKontrolleri: React.FC<Props> = ({
-    token,
     denetlenenId,
     yil,
     dipnotNo,
@@ -46,7 +44,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
         if (!resolvedDipnotNo) return;
         setLoading(true);
         try {
-            const result = await fetchAmortismanKontrolleri(token, denetlenenId, yil, resolvedDipnotNo);
+            const result = await fetchAmortismanKontrolleri(denetlenenId, yil, resolvedDipnotNo);
             // Backend returns { success: true, data: { ... }, message: ... }
             if (result && result.success && result.data) {
                 setData(result.data);
@@ -70,7 +68,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
         const numValue = parseFloat(value.replace(",", "."));
         if (isNaN(numValue)) return;
 
-        const result = await saveAmortismanKontrolSatir(token, {
+        const result = await saveAmortismanKontrolSatir({
             id: id || 0,
             hesapKodu: hesapKodu,
             tahminiAmortismanGideri: numValue,
@@ -88,7 +86,7 @@ const AmortismanKontrolleri: React.FC<Props> = ({
 
     const fetchDataSilently = async () => {
         try {
-            const result = await fetchAmortismanKontrolleri(token, denetlenenId, yil, dipnotNo);
+            const result = await fetchAmortismanKontrolleri(denetlenenId, yil, dipnotNo);
             if (result?.success && result.data) {
                 setData(result.data);
             }

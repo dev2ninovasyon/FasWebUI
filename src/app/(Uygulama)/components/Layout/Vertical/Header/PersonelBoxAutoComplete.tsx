@@ -34,9 +34,7 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
 
   const fetchData = async () => {
     try {
-      const personelVerileri = await getKullaniciByDenetlenenYilRol(
-        user.token || "",
-        user.denetlenenId || 0,
+      const personelVerileri = await getKullaniciByDenetlenenYilRol(user.denetlenenId || 0,
         user.yil || 0,
         tip || ""
       );
@@ -110,3 +108,4 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
 };
 
 export default PersonelBoxAutocomplete;
+

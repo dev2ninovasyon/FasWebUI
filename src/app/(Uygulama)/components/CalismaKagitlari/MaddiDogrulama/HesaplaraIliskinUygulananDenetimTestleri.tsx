@@ -108,9 +108,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
                 setLoading(true);
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         modelAdi,
@@ -138,7 +136,6 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
             console.log("HesapTestleri Fetching:", { controller, resolvedDipnotNo, modelAdi });
             const res = await getHesapTestleriByDenetlenen(
                 controller,
-                user.token || "",
                 user.denetciId || 0,
                 user.denetlenenId || 0,
                 user.yil || 0,
@@ -229,7 +226,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
             const row = veriler.find((r) => r.id === id);
             if (row) {
                 // Send update to backend
-                await updateHesapTestRow(controller, user.token || "", id, { ...row, onemlilik: val });
+                await updateHesapTestRow(controller, id, { ...row, onemlilik: val });
                 showSnackbar("Kayıt başarıyla güncellendi.", "success");
             }
         } catch (err) {
@@ -261,7 +258,7 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
             // Update all rows in backend
             await Promise.all(
                 rowsToSave.map((r) =>
-                    updateHesapTestRow(controller, user.token || "", r.id, { ...r, onemlilik: val })
+                    updateHesapTestRow(controller, r.id, { ...r, onemlilik: val })
                 )
             );
             showSnackbar("Tüm kayıtlar başarıyla güncellendi.", "success");
@@ -480,3 +477,4 @@ const HesaplaraIliskinUygulananDenetimTestleri: React.FC<CalismaKagidiProps> = (
 };
 
 export default HesaplaraIliskinUygulananDenetimTestleri;
+

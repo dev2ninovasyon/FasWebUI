@@ -140,9 +140,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
 
         try {
             setIsLoadingList(true);
-            const list = await getMaddiDogrulamaEkBelgeler(
-                user.token || "",
-                user.denetciId || 0,
+            const list = await getMaddiDogrulamaEkBelgeler(user.denetciId || 0,
                 user.denetlenenId || 0,
                 user.yil || 0,
                 belgeAdi
@@ -336,7 +334,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
         try {
             setIsUploading(true);
 
-            const result = await uploadMaddiDogrulamaEkBelge(user.token || "", formData);
+            const result = await uploadMaddiDogrulamaEkBelge(formData);
 
             if (result === true || (typeof result === "object" && result?.success)) {
                 enqueueSnackbar("Ek belge(ler) başarıyla yüklendi.", {
@@ -395,9 +393,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
         if (!user.token) return;
 
         try {
-            const { blob, fileName } = await downloadEkBelge(
-                user.token || "",
-                belge.id
+            const { blob, fileName } = await downloadEkBelge(belge.id
             );
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
@@ -426,7 +422,7 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
         if (!user.token) return;
 
         try {
-            const { blob } = await downloadEkBelge(user.token || "", belge.id);
+            const { blob } = await downloadEkBelge(belge.id);
 
             const isPdf = isPdfBelge(belge);
 
@@ -506,7 +502,6 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
             setIsDeletingSelected(true);
 
             const result = await deleteEkBelgelerSecilenler(
-                user.token!,
                 user.denetciId!,
                 user.denetlenenId!,
                 user.yil!,
@@ -1045,3 +1040,4 @@ const MaddiDogrulamaEkBelgeYukleButton = forwardRef<MaddiDogrulamaEkBelgeYukleBu
 MaddiDogrulamaEkBelgeYukleButton.displayName = "MaddiDogrulamaEkBelgeYukleButton";
 
 export default MaddiDogrulamaEkBelgeYukleButton;
+

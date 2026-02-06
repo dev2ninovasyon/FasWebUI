@@ -507,7 +507,6 @@ const DonusumFisleri: React.FC<Props> = ({
 
     try {
       const result = await createDonusumFisleriVerisi(
-        user.token || "",
         jsonData
       );
       if (result) {
@@ -544,7 +543,6 @@ const DonusumFisleri: React.FC<Props> = ({
   const handleDeleteDonusumFisleriVerisi = async () => {
     try {
       const result = await deleteDonusumFisleriVerisi(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -585,7 +583,6 @@ const DonusumFisleri: React.FC<Props> = ({
     try {
       const donusumFisleriVerileri =
         await getDonusumFisleriVerileriByDenetciDenetlenenYil(
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -613,8 +610,8 @@ const DonusumFisleri: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Dönüşüm Fişleri");
-      setRowCount(format.satirSayisi);
+      const format = await getFormat("Dönüşüm Fişleri");
+      setRowCount(format.satirSayisi)
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -779,3 +776,4 @@ const DonusumFisleri: React.FC<Props> = ({
 };
 
 export default DonusumFisleri;
+

@@ -96,9 +96,7 @@ const VukMizanStepper = () => {
 
   const handleVukMizan = async () => {
     try {
-      const result = await createVukMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createVukMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         mizanBaslangicTarihi,
@@ -136,9 +134,7 @@ const VukMizanStepper = () => {
 
   const handleProgramVukMizan = async () => {
     try {
-      const result = await createProgramVukMizan(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createProgramVukMizan(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         "VukMizan"
@@ -191,9 +187,7 @@ const VukMizanStepper = () => {
   const fetchControl = async () => {
     const type = "VukMizan";
     try {
-      const programVukMizanControl = await getProgramVukMizanControl(
-        user.token || "",
-        user.denetciId || 0,
+      const programVukMizanControl = await getProgramVukMizanControl(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -215,9 +209,7 @@ const VukMizanStepper = () => {
   const fetchMizanControl = async () => {
     const type = "VukMizan";
     try {
-      const mizanVerileri = await getMizanVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -719,3 +711,4 @@ const VukMizanStepper = () => {
 };
 
 export default VukMizanStepper;
+

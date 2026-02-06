@@ -36,7 +36,6 @@ export interface DavaKarsiliklariResponse {
 }
 
 export const getDavaKarsiliklariData = async (
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number
@@ -47,7 +46,6 @@ export const getDavaKarsiliklariData = async (
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`
             }
         }
     );
@@ -59,12 +57,11 @@ export const getDavaKarsiliklariData = async (
     return response.json();
 };
 
-export const updateDavaKarsiliklari = async (token: string, data: DavaKarsiliklariSatir[]) => {
+export const updateDavaKarsiliklari = async (data: DavaKarsiliklariSatir[]) => {
     const response = await apiFetch(`/DavaKarsiliklari`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(data),
     });
@@ -76,11 +73,11 @@ export const updateDavaKarsiliklari = async (token: string, data: DavaKarsilikla
     return response.json();
 };
 
-export const varsayilanaDonDavaKarsiliklari = async (token: string, denetciId: number, yil: number, denetlenenId: number) => {
+export const varsayilanaDonDavaKarsiliklari = async (denetciId: number, yil: number, denetlenenId: number) => {
     const response = await apiFetch(`/DavaKarsiliklari/VarsayilanaDon?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`, {
         method: "DELETE",
         headers: {
-            Authorization: `Bearer ${token}`
+            // Authorization removed
         }
     });
 

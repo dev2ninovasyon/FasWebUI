@@ -41,7 +41,6 @@ const Page: React.FC = () => {
   const fetchData = async () => {
     try {
       const genelHesapPlaniVerileri = await getGenelHesapPlani(
-        user.token || "",
         user.denetimTuru || ""
       );
 

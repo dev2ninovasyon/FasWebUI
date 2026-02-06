@@ -37,7 +37,7 @@ export default function DashboardPage() {
     setRunTour(false);
     if (user.turTamamlandi === false) {
       try {
-        await updateTurTamamlandi(user.token || "", user.id || 0, true);
+        await updateTurTamamlandi(user.id || 0, true);
         dispatch(setTurTamamlandiRedux(true));
       } catch (error) {
         console.log("Tur durumu güncellenirken hata oluştu:", error);

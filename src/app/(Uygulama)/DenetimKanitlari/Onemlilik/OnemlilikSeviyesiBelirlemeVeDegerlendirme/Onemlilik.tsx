@@ -316,9 +316,7 @@ const Onemlilik: React.FC<Props> = ({
     };
 
     try {
-      const result = await updateOnemlilik(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await updateOnemlilik(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         rowData[0],
@@ -338,9 +336,7 @@ const Onemlilik: React.FC<Props> = ({
   const fetchData = async () => {
     setLoading(true);
     try {
-      const onemlilikVerileri = await getOnemlilik(
-        user.token || "",
-        user.denetciId || 0,
+      const onemlilikVerileri = await getOnemlilik(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -536,3 +532,4 @@ const Onemlilik: React.FC<Props> = ({
 };
 
 export default Onemlilik;
+

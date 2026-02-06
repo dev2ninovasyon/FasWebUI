@@ -138,7 +138,6 @@ const Page = () => {
       setIsLoadingList(true);
 
       const list: EkBelgeDto[] = await getMusteriBelgeleriFetch(
-        user.token,
         user.denetciId,
         user.denetlenenId,
         user.yil,
@@ -159,7 +158,6 @@ const Page = () => {
     }
   }, [
     getSelectedFormKodu,
-    user.token,
     user.denetciId,
     user.denetlenenId,
     user.yil,
@@ -206,7 +204,7 @@ const Page = () => {
       try {
         const formKodu = getSelectedFormKodu();
 
-        await uploadMusteriBelgeFetch(user.token, {
+        await uploadMusteriBelgeFetch({
           denetciId: user.denetciId,
           denetlenenId: user.denetlenenId,
           yil: user.yil,
@@ -236,7 +234,6 @@ const Page = () => {
     [
       fileType,
       fileType2,
-      user.token,
       user.denetciId,
       user.denetlenenId,
       user.yil,
@@ -254,7 +251,6 @@ const Page = () => {
     try {
       if (fileType === "CariDosya") {
         const data = await getCariDosya(
-          user.token || "",
           user.denetimTuru || ""
         );
         console.log("CariDosya:", data);
@@ -262,7 +258,6 @@ const Page = () => {
       }
       if (fileType === "SürekliDosya") {
         const data = await getSurekliDosya(
-          user.token || "",
           user.denetimTuru || ""
         );
         console.log("SürekliDosya:", data);
@@ -333,7 +328,7 @@ const Page = () => {
     if (!user.token) return;
 
     try {
-      const { blob, fileName } = await downloadEkBelge(user.token, belge.id);
+      const { blob, fileName } = await downloadEkBelge(belge.id);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -358,7 +353,7 @@ const Page = () => {
     if (!user.token) return;
 
     try {
-      const { blob } = await downloadEkBelge(user.token, belge.id);
+      const { blob } = await downloadEkBelge(belge.id);
       const url = window.URL.createObjectURL(blob);
 
       if (isPdfBelge(belge)) {
@@ -414,7 +409,7 @@ const Page = () => {
       setIsDeletingSelected(true);
 
       const promises = selectedIds.map((id) =>
-        deleteEkBelge(user.token!, id)
+        deleteEkBelge(id)
       );
       const results = await Promise.all(promises);
 

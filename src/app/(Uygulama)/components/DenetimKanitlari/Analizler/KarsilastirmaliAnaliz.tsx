@@ -65,9 +65,7 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const karsilastirmaliAnalizTablosu = await getKarsilastirmaliAnaliz(
-        user.token || "",
-        user.denetciId || 0,
+      const karsilastirmaliAnalizTablosu = await getKarsilastirmaliAnaliz(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -636,3 +634,4 @@ const KarsilastirmaliAnaliz: React.FC<Props> = ({
 };
 
 export default KarsilastirmaliAnaliz;
+

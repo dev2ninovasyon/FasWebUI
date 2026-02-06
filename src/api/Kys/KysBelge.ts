@@ -13,7 +13,6 @@ export interface KysBelgeVeri {
 }
 
 export const getKysBelge = async (
-    token: string,
     formKodu: string,
     denetciId: number,
     denetlenenId: number,
@@ -30,7 +29,6 @@ export const getKysBelge = async (
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         });
 
@@ -67,7 +65,6 @@ export const getKysBelge = async (
 };
 
 export const updateKysBelge = async (
-    token: string,
     id: number,
     denetlenenId: number,
     yil: number,
@@ -83,7 +80,6 @@ export const updateKysBelge = async (
         const response = await apiFetch(`/KysBelge/${id}?${queryParams}`, {
             method: "PUT",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -106,7 +102,6 @@ export const updateKysBelge = async (
 };
 
 export const updateKysBelgeChecklist = async (
-    token: string,
     id: number,
     kontrolListesi: ChecklistItem[]
 ): Promise<boolean> => {
@@ -114,7 +109,6 @@ export const updateKysBelgeChecklist = async (
         const response = await apiFetch(`/KysBelge/${id}/checklist`, {
             method: "PUT",
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(kontrolListesi)

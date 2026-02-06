@@ -1,18 +1,17 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 
-export const getDenetimDosya = async (token: string, denetimTuru: string) => {
+export const getDenetimDosya = async (denetimTuru: string) => {
   try {
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;
     let bobimi = denetimTuru == "Bobi" ? true : false;
 
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimDosyaBelgeleri/DenetimDosyaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -30,18 +29,16 @@ export const getDenetimDosya = async (token: string, denetimTuru: string) => {
 };
 
 export const getDenetimDosyaByFormKodu = async (
-  token: string,
   denetimTuru: string,
   formKodu: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimDosyaBelgeleri/FormKodu?denetimTuru=${denetimTuru}&formKodu=${formKodu}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -58,18 +55,17 @@ export const getDenetimDosyaByFormKodu = async (
   }
 };
 
-export const getCariDosya = async (token: string, denetimTuru: string) => {
+export const getCariDosya = async (denetimTuru: string) => {
   try {
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;
     let bobimi = denetimTuru == "Bobi" ? true : false;
 
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimDosyaBelgeleri/CariDosyaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -86,18 +82,17 @@ export const getCariDosya = async (token: string, denetimTuru: string) => {
   }
 };
 
-export const getSurekliDosya = async (token: string, denetimTuru: string) => {
+export const getSurekliDosya = async (denetimTuru: string) => {
   try {
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;
     let bobimi = denetimTuru == "Bobi" ? true : false;
 
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimDosyaBelgeleri/SurekliDosyaListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -114,18 +109,17 @@ export const getSurekliDosya = async (token: string, denetimTuru: string) => {
   }
 };
 
-export const getHile = async (token: string, denetimTuru: string) => {
+export const getHile = async (denetimTuru: string) => {
   try {
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;
     let bobimi = denetimTuru == "Bobi" ? true : false;
 
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimDosyaBelgeleri/HileListe?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -143,20 +137,18 @@ export const getHile = async (token: string, denetimTuru: string) => {
 };
 
 export const getDenetimDosyaTransfer = async (
-  token: string,
   denetimTuru: string
 ) => {
   try {
     let tfrsmi = denetimTuru == "Tfrs" ? true : false;
     let bobimi = denetimTuru == "Bobi" ? true : false;
 
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimDosyaBelgeleri/DenetimDosyaTransfer?tfrsmi=${tfrsmi}&bobimi=${bobimi}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -174,7 +166,6 @@ export const getDenetimDosyaTransfer = async (
 };
 
 export const denetimDosyaTransfer = async (
-  token: string,
   denetciId: number,
   kaynakId: number,
   hedefId: number,
@@ -183,13 +174,12 @@ export const denetimDosyaTransfer = async (
   obj: any[]
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/DenetimDosyaBelgeleri/TransferYap?denetciId=${denetciId}&kaynakId=${kaynakId}&hedefId=${hedefId}&kaynakYil=${kaynakYil}&hedefYil=${hedefYil}`,
       {
         method: "POST",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(obj),
@@ -215,20 +205,18 @@ export const denetimDosyaTransfer = async (
   }
 };
 export async function createBirlesikPdfByFormat(
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   selections: { id: number; pdf: boolean; word: boolean }[],
   denetimTuru: string
 ): Promise<boolean> {
-  const resp =await apiFetch(
+  const resp = await apiFetch(
     `/DenetimDosyaBelgeleri/BirlesikPdfOlustur?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
         "X-Denetim-Turu": denetimTuru || "",
       },
       body: JSON.stringify({ selections }),
@@ -247,7 +235,6 @@ export async function createBirlesikPdfByFormat(
 const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 export async function createAndFetchBirlesikPdf(
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -266,7 +253,6 @@ export async function createAndFetchBirlesikPdf(
 
   // 1) Oluştur
   const ok = await createBirlesikPdfByFormat(
-    token,
     denetciId,
     denetlenenId,
     yil,
@@ -282,7 +268,7 @@ export async function createAndFetchBirlesikPdf(
   let last: { blobUrl: string; fileName: string } | null = null;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      last = await getLastBirlesikPdf(token, denetciId, denetlenenId, yil);
+      last = await getLastBirlesikPdf(denetciId, denetlenenId, yil);
       if (last) break; // bulundu
     } catch {
       // sessiz geç â†’ tekrar dene
@@ -299,7 +285,6 @@ export async function createAndFetchBirlesikPdf(
 }
 
 export async function getLastBirlesikPdf(
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
@@ -311,10 +296,10 @@ export async function getLastBirlesikPdf(
       yil: String(yil),
     }).toString();
 
-    const resp =await apiFetch(`/DenetimDosyaBelgeleri/EnSonBirlesikPdf?${qs}`, {
+    const resp = await apiFetch(`/DenetimDosyaBelgeleri/EnSonBirlesikPdf?${qs}`, {
       method: "GET",
       headers: {
-        Authorization: token ? `Bearer ${token}` : "",
+        // Authorization removed
       },
     });
 
@@ -345,7 +330,6 @@ export async function getLastBirlesikPdf(
   }
 }
 export async function sendBulkOnay(
-  token: string,
   payload: {
     denetciId: number;
     denetlenenId: number;
@@ -354,15 +338,14 @@ export async function sendBulkOnay(
     hazirlayanId: number | null;
     onaylayanId: number | null;
     kaliteKontrolId: number | null;
-    items: Array<{ belgeId: number; belgeAdi: string ; formKodu: string}>;
+    items: Array<{ belgeId: number; belgeAdi: string; formKodu: string }>;
   }
 ): Promise<{ results: Array<{ belgeId: number; success: boolean; message?: string }> }> {
   console.log("api")
-  const res =await apiFetch(`/FormHazirlayanOnaylayan/TopluOnay`, {
+  const res = await apiFetch(`/FormHazirlayanOnaylayan/TopluOnay`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
   });
@@ -376,4 +359,4 @@ export async function sendBulkOnay(
   // { results: [{ belgeId: 123, success: true }, { belgeId: 456, success: false, message: "..." }] }
   return data ?? { results: [] };
 }
- 
+

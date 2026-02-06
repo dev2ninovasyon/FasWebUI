@@ -296,9 +296,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
   const handlePreview = async (id: number) => {
     try {
-      const defterYuklemeLoglari = await getDefterYuklemeLoglari(
-        user.token || "",
-        id
+      const defterYuklemeLoglari = await getDefterYuklemeLoglari(id
       );
       setDefterLoglari(defterYuklemeLoglari);
       setIsOpen(true);
@@ -350,9 +348,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
   const fetchData = async () => {
     try {
-      const dosyaBilgileri = await getDosyaBilgileri(
-        user.token || "",
-        user.denetciId || 0,
+      const dosyaBilgileri = await getDosyaBilgileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         fileType
@@ -452,9 +448,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const deleteSelected = async () => {
     setIsDeleting(true);
     try {
-      const result = await deleteDosyaBilgisiMultiple(
-        user.token || "",
-        selected || 0
+      const result = await deleteDosyaBilgisiMultiple(selected || 0
       );
       if (result) {
         enqueueSnackbar(`${selected.length} kayıt başarıyla silindi.`, {
@@ -769,3 +763,4 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 };
 
 export default DosyaTable;
+

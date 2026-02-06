@@ -37,9 +37,7 @@ const DavaKarsiliklariCard: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const davaKarsiliklariVerileri = await getDavaKarsiliklariHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
+      const davaKarsiliklariVerileri = await getDavaKarsiliklariHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -80,3 +78,4 @@ const DavaKarsiliklariCard: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default DavaKarsiliklariCard;
+

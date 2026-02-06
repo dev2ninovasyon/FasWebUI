@@ -370,9 +370,7 @@ const FisDetaylari = () => {
     };
 
     try {
-      const result = await updateEDefterIncelemeVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await updateEDefterIncelemeVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         rowData[0],
@@ -399,9 +397,7 @@ const FisDetaylari = () => {
       .map((row: any[]) => row[0]);
 
     try {
-      const result = await updateEDefterIncelemeListeVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await updateEDefterIncelemeListeVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         ids,
@@ -421,9 +417,7 @@ const FisDetaylari = () => {
 
   const fetchData = async () => {
     try {
-      const orneklemFisleriDetayVerileri = await getOrneklemFisleriDetay(
-        user.token || "",
-        user.denetciId || 0,
+      const orneklemFisleriDetayVerileri = await getOrneklemFisleriDetay(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         pathFisNo

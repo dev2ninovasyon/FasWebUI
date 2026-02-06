@@ -101,7 +101,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         const calismaKagidiVerileri =
           await getCalismaKagidiVerileriByDenetciDenetlenenKullaniciYil(
             controller || "",
-            user.token || "",
             user.denetciId || 0,
             user.denetlenenId || 0,
             kullaniciId || 0,
@@ -158,7 +157,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
         const calismaKagidiVerileri =
           await getCalismaKagidiVerileriByDenetciDenetlenenYil(
             controller || "",
-            user.token || "",
             user.denetciId || 0,
             user.denetlenenId || 0,
             user.yil || 0
@@ -233,7 +231,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await createCalismaKagidiVerisi(
         controller || "",
-        user.token || "",
         createdCalismaKagidiVerisi
       );
       if (result) {
@@ -258,7 +255,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       try {
         const result = await updateCalismaKagidiVerisi(
           controller || "",
-          user.token || "",
           selectedId,
           updatedCalismaKagidiVerisi
         );
@@ -287,7 +283,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       try {
         const result = await updateCalismaKagidiVerisi(
           controller || "",
-          user.token || "",
           selectedGroupId,
           updatedCalismaKagidiVerisi
         );
@@ -306,7 +301,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await deleteCalismaKagidiVerisiById(
         controller || "",
-        user.token || "",
         selectedId
       );
       if (result) {
@@ -327,7 +321,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await deleteCalismaKagidiVerisiById(
         controller || "",
-        user.token || "",
         selectedGroupId
       );
       if (result) {
@@ -336,7 +329,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
             deletedCalismaKagidiGroupVerileri[i];
           deleteCalismaKagidiVerisiById(
             controller || "",
-            user.token || "",
             deletedCalismaKagidiGroupVerileriWithBaslikId.id
           );
         }
@@ -355,7 +347,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       if (kullaniciId) {
         const result = await deleteAllCalismaKagidiVerileriByKullanci(
           controller || "",
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           kullaniciId || 0,
@@ -375,7 +366,6 @@ const CalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
       } else {
         const result = await deleteAllCalismaKagidiVerileri(
           controller || "",
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0

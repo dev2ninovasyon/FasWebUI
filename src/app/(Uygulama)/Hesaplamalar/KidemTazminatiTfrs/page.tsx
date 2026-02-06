@@ -270,9 +270,7 @@ const Page: React.FC = () => {
       kullanilmamisIzinKarsiligi770: kullanilmamisIzinKarsiligi770,
     };
     try {
-      const result = await createKidemTazminatiTfrsEkBilgi(
-        user.token || "",
-        createdKidemEkBilgi
+      const result = await createKidemTazminatiTfrsEkBilgi(createdKidemEkBilgi
       );
       if (result) {
         handleDrawerClose();
@@ -307,9 +305,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const kidemEkBilgiVerileri = await getKidemTazminatiTfrsEkBilgi(
-        user.token || "",
-        user.denetciId || 0,
+      const kidemEkBilgiVerileri = await getKidemTazminatiTfrsEkBilgi(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -390,9 +386,7 @@ const Page: React.FC = () => {
 
   const fetchData2 = async () => {
     try {
-      const kidem = await createKidemTazminatiTfrsHesapla(
-        user.token || "",
-        user.denetciId || 0,
+      const kidem = await createKidemTazminatiTfrsHesapla(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -446,9 +440,7 @@ const Page: React.FC = () => {
 
   const fetchData3 = async () => {
     try {
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -485,9 +477,7 @@ const Page: React.FC = () => {
 
   const fetchEnflasyonOrani = async () => {
     try {
-      const enflasyonOraniVerisi = await getEnflasyonOrani(
-        user.token || "",
-        user.yil || 0
+      const enflasyonOraniVerisi = await getEnflasyonOrani(user.yil || 0
       );
 
       if (enflasyonOraniVerisi) {
@@ -500,9 +490,7 @@ const Page: React.FC = () => {
 
   const fetchFaizOrani = async () => {
     try {
-      const faizOraniVerisi = await getFaizOrani(
-        user.token || "",
-        user.yil || 0
+      const faizOraniVerisi = await getFaizOrani(user.yil || 0
       );
 
       if (faizOraniVerisi) {
@@ -2213,3 +2201,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

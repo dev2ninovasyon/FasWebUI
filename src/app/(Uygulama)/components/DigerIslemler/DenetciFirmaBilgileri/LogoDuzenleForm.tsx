@@ -37,9 +37,7 @@ const LogoDuzenleForm = () => {
       formData.append("logo", file);
 
       try {
-        const success = await createLogo(
-          user.token || "",
-          user.denetciId || 0,
+        const success = await createLogo(user.denetciId || 0,
           formData
         );
 
@@ -77,7 +75,7 @@ const LogoDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const denetciLogo = await getLogo(user.token || "", user.denetciId);
+      const denetciLogo = await getLogo(user.denetciId);
       if (!denetciLogo.message) {
         setFirmaLogoImage(denetciLogo.logoBase64);
       } else {
@@ -242,3 +240,4 @@ const LogoDuzenleForm = () => {
 };
 
 export default LogoDuzenleForm;
+

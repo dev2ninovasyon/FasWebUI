@@ -109,7 +109,6 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
       const calismaKagidiVerileri =
         await getCalismaKagidiVerileriByDenetciDenetlenenYil(
           controller || "",
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -150,9 +149,7 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
 
   const fetchData2 = useCallback(async () => {
     try {
-      const denetimKadrosuVerileri = await getGorevAtamalariByDenetlenenIdYil(
-        user.token || "",
-        user.denetlenenId || 0,
+      const denetimKadrosuVerileri = await getGorevAtamalariByDenetlenenIdYil(user.denetlenenId || 0,
         user.yil || 0
       );
       const newRows = denetimKadrosuVerileri.map((veri: any) => ({
@@ -197,7 +194,6 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
         try {
           const result = await updateCalismaKagidiVerisi(
             controller || "",
-            user.token || "",
             selectedId,
             updatedCalismaKagidiVerisi
           );
@@ -234,7 +230,6 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await updateAllCalismaKagidiVerisi(
         controller || "",
-        user.token || "",
         updatedAllCalismaKagidiVerisi
       );
       if (result) {
@@ -253,7 +248,6 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await updateOtomatikCalismaKagidiVerisi(
         controller || "",
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -273,7 +267,6 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await deleteCalismaKagidiVerisiById(
         controller || "",
-        user.token || "",
         selectedId
       );
       if (result) {
@@ -291,7 +284,6 @@ const DenetimProgramiBelge: React.FC<CalismaKagidiProps> = ({
     try {
       const result = await deleteAllCalismaKagidiVerileri(
         controller || "",
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -766,9 +758,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
 
   const fetchData = useCallback(async () => {
     try {
-      const data = await getDenetimDosyaByFormKodu(
-        user.token || "",
-        user.denetimTuru || "",
+      const data = await getDenetimDosyaByFormKodu(user.denetimTuru || "",
         ilgiliFormKodlari || ""
       );
       setBelgeler(data || []); // Store fetched data in state
@@ -948,3 +938,4 @@ const PopUpComponent: React.FC<PopUpProps> = ({
     </Dialog>
   );
 };
+

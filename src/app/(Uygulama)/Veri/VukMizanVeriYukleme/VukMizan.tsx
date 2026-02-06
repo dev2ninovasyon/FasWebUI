@@ -533,7 +533,7 @@ const VukMizan: React.FC<Props> = ({
         return obj;
       });
     try {
-      const result = await createVukMizanVerisi(user.token || "", jsonData);
+      const result = await createVukMizanVerisi(jsonData);
       if (result) {
         await fetchData();
         enqueueSnackbar("Kaydedildi", {
@@ -568,7 +568,6 @@ const VukMizan: React.FC<Props> = ({
   const handleDeleteVukMizanVerisi = async () => {
     try {
       const result = await deleteVukMizanVerisi(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -609,7 +608,6 @@ const VukMizan: React.FC<Props> = ({
 
     try {
       const vukMizanVerileri = await getVukMizanVerileriByDenetciDenetlenenYil(
-        user.token || "",
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
@@ -636,8 +634,8 @@ const VukMizan: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Vuk Mizan");
-      setRowCount(format.satirSayisi);
+      const format = await getFormat("Vuk Mizan");
+      setRowCount(format.satirSayisi)
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -802,3 +800,4 @@ const VukMizan: React.FC<Props> = ({
 };
 
 export default VukMizan;
+

@@ -30,7 +30,6 @@ const KysBelgeEditor: React.FC<KysBelgeEditorProps> = ({ formKodu, baslik, readO
 
         setLoading(true);
         const data = await getKysBelge(
-            user.token,
             formKodu,
             user.denetciId,
             user.denetlenenId,
@@ -38,7 +37,7 @@ const KysBelgeEditor: React.FC<KysBelgeEditorProps> = ({ formKodu, baslik, readO
         );
         setBelgeVeri(data);
         setLoading(false);
-    }, [user.token, user.denetciId, user.denetlenenId, user.yil, formKodu]);
+    }, [user.denetciId, user.denetlenenId, user.yil, formKodu]);
 
     useEffect(() => {
         fetchData();
@@ -52,7 +51,7 @@ const KysBelgeEditor: React.FC<KysBelgeEditorProps> = ({ formKodu, baslik, readO
 
         setBelgeVeri({ ...belgeVeri, kontrolListesi: newList });
 
-        await updateKysBelgeChecklist(user.token || "", belgeVeri.id, newList);
+        await updateKysBelgeChecklist(belgeVeri.id, newList);
     };
 
     if (loading) {
@@ -128,3 +127,4 @@ const KysBelgeEditor: React.FC<KysBelgeEditorProps> = ({ formKodu, baslik, readO
 };
 
 export default KysBelgeEditor;
+

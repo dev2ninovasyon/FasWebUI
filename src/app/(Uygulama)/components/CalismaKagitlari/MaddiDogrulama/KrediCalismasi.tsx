@@ -49,9 +49,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                 setLoading(true);
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         parentName,
@@ -76,9 +74,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
 
         setLoading(true);
         try {
-            const response = await fetchKrediCalismasi(
-                user.token || "",
-                user.denetlenenId || 0,
+            const response = await fetchKrediCalismasi(user.denetlenenId || 0,
                 user.yil || 0,
                 resolvedDipnotNo
             );
@@ -359,3 +355,4 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
 };
 
 export default KrediCalismasi;
+

@@ -10,7 +10,6 @@ export interface EkBelgeDto {
 }
 
 export async function uploadEkBelge(
-  token: string,
   formData: FormData
 ): Promise<boolean | { success: boolean; message?: string }> {
   try {
@@ -19,7 +18,7 @@ export async function uploadEkBelge(
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization removed
         },
         body: formData,
       }
@@ -45,7 +44,6 @@ export async function uploadEkBelge(
 }
 
 export async function getEkBelgeler(
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -62,7 +60,7 @@ export async function getEkBelgeler(
     `/ArsivIslemleri/ek-belge-listesi?${params.toString()}`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        // Authorization removed
       },
     }
   );
@@ -77,13 +75,12 @@ export async function getEkBelgeler(
 }
 
 export async function downloadEkBelge(
-  token: string,
   id: number
 ): Promise<{ blob: Blob; fileName: string | null }> {
   const response = await apiFetch(`/ArsivIslemleri/ek-belge-indir/${id}`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      // Authorization removed
     },
   });
 
@@ -112,7 +109,6 @@ export async function downloadEkBelge(
   return { blob, fileName };
 }
 export async function deleteEkBelge(
-  token: string,
   id: number
 ): Promise<boolean> {
   try {
@@ -121,7 +117,7 @@ export async function deleteEkBelge(
       {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization removed
         },
       }
     );
@@ -133,7 +129,6 @@ export async function deleteEkBelge(
   }
 }
 export async function deleteEkBelgelerSecilenler(
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -145,7 +140,6 @@ export async function deleteEkBelgelerSecilenler(
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ ids }),
     }
@@ -160,7 +154,6 @@ export async function deleteEkBelgelerSecilenler(
 
 // MaddiDogrulama specific functions
 export async function uploadMaddiDogrulamaEkBelge(
-  token: string,
   formData: FormData
 ): Promise<boolean | { success: boolean; message?: string }> {
   try {
@@ -169,7 +162,7 @@ export async function uploadMaddiDogrulamaEkBelge(
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization removed
         },
         body: formData,
       }
@@ -195,7 +188,6 @@ export async function uploadMaddiDogrulamaEkBelge(
 }
 
 export async function getMaddiDogrulamaEkBelgeler(
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -212,7 +204,7 @@ export async function getMaddiDogrulamaEkBelgeler(
     `/ArsivIslemleri/ek-belge-listesi?${params.toString()}`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        // Authorization removed
       },
     }
   );

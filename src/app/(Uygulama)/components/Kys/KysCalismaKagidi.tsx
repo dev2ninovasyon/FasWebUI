@@ -60,9 +60,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
 
     const fetchData = async () => {
         try {
-            const result = await getKysBelgeler(
-                user.token || "",
-                formKodu,
+            const result = await getKysBelgeler(formKodu,
                 user.denetlenenId || 0,
                 user.yil || 0
             );
@@ -82,7 +80,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
             belgeAdi: alanAdi,
         };
         try {
-            await createKysBelge(user.token || "", newData);
+            await createKysBelge(newData);
             fetchData();
             handleClosePopUp();
         } catch (error) {
@@ -96,7 +94,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
             tespit: tespit,
         };
         try {
-            await updateKysBelge(user.token || "", selectedId, updateData);
+            await updateKysBelge(selectedId, updateData);
             fetchData();
             handleClosePopUp();
         } catch (error) {
@@ -106,7 +104,7 @@ const KysCalismaKagidi: React.FC<KysCalismaKagidiProps> = ({
 
     const handleDelete = async () => {
         try {
-            await deleteKysBelge(user.token || "", selectedId);
+            await deleteKysBelge(selectedId);
             fetchData();
             handleClosePopUp();
         } catch (error) {
@@ -336,3 +334,4 @@ const PopUpComponent: React.FC<PopUpProps> = ({
         </Dialog>
     );
 };
+

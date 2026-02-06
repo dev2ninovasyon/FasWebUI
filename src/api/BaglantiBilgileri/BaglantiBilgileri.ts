@@ -1,8 +1,289 @@
 ﻿import { apiFetch } from "@/api/apiBase";
+import SecureTokenManager from "@/utils/SecureTokenManager";
+import { HubConnectionBuilder, HttpTransportType, LogLevel, HubConnectionState } from "@microsoft/signalr";
 
+let hubConnection: any = null;
+let pollingInterval: NodeJS.Timeout | null = null;
+let lastNotificationTime = new Date();
+let notificationCallback: ((bildirim: any) => void) | null = null;
+let listenerRegistered = false;
+let pollingToken: string | null = null;
+let pollingDenetciId: number | null = null;
+
+// API URL'ini apiBase'den al
+const getApiUrl = () => {
+  if (typeof window !== "undefined") {
+    // Statik URL yerine dinamik origin kullanımı (Localhost/Production uyumu)
+    const origin = window.location.origin;
+    if (origin.includes("localhost")) {
+      return "https://localhost:5001";
+    }
+    return origin.replace("3000", "5000").replace("3001", "5001"); // Varsayılan port dönüşümü
+  }
+  return "https://localhost:5001";
+};
+
+// Bağlantı test et (fetch ile HTTPS sorunlarını handle et)
+export const testSignalRConnection = async () => {
+  try {
+    const apiUrl = getApiUrl();
+    const testUrl = `${apiUrl}/api/health`;
+
+    console.log("SignalR bağlantı testi:", testUrl);
+
+    // Timeout ile fetch yapıyoruz
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const response = await fetch(testUrl, {
+      method: "GET",
+      signal: controller.signal,
+    }).catch(e => {
+      console.error("Health check hatası:", e.message);
+      return null;
+    }).finally(() => clearTimeout(timeoutId));
+
+    if (response?.ok) {
+      console.log("✅ Backend erişilebilir:", response.status);
+      return true;
+    } else {
+      console.error("⚠️ Backend yanıt verdi ama hata kodu:", response?.status);
+      // 4xx/5xx dönse de backend'in çalışıyor demektir
+      return response !== null;
+    }
+  } catch (error) {
+    console.error("Test hatası:", error instanceof Error ? error.message : error);
+    return false;
+  }
+};
+
+// Fallback: Polling ile bildirimleri al
+let pollCallback: ((bildirim: any) => void) | null = null;
+
+export const startPollingBildirim = (denetciId: number, callback: (bildirim: any) => void) => {
+  console.log("📡 Polling modu başlatıldı (her 5 saniyede kontrol)");
+
+  pollCallback = callback;
+  // Polling başlarken şu anki zamanı set et, böylece eski bildirimleri göstermez
+  lastNotificationTime = new Date();
+
+  // İlk çalışmayı hemen yap
+  const checkNotifications = async () => {
+    try {
+      const bildirimler = await getBildirimler(denetciId);
+
+      if (bildirimler && Array.isArray(bildirimler)) {
+        console.log(`📊 API'den ${bildirimler.length} bildirim alındı`);
+
+        for (const bildirim of bildirimler) {
+          const bildirimTarihi = new Date(bildirim.tarih || new Date());
+
+          console.log(
+            `  Kontrol: "${bildirim.konu}" | Tarih: ${bildirimTarihi.toISOString()} | Okundu: ${bildirim.okundumu} | Yeni mi: ${bildirimTarihi > lastNotificationTime && !bildirim.okundumu}`
+          );
+
+          // Yalnız son kontrol tarihinden sonra gelen bildirimleri gönder
+          if (bildirimTarihi > lastNotificationTime && !bildirim.okundumu) {
+            console.log("✅ YENİ BİLDİRİM - Callback çağrılıyor:", bildirim.konu);
+            pollCallback?.(bildirim);
+            lastNotificationTime = new Date();
+          }
+        }
+      } else {
+        console.log("⚠️ API bildirim listesi boş veya array değil");
+      }
+    } catch (error) {
+      console.error("❌ Polling hatası:", error);
+    }
+  };
+
+  // İlk kez hemen çalıştır
+  checkNotifications();
+
+  // Sonra her 5 saniyede çalıştır
+  pollingInterval = setInterval(checkNotifications, 5000);
+};
+
+export const stopPollingBildirim = () => {
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+    pollingInterval = null;
+    console.log("📡 Polling modu durduruldu");
+  }
+};
+
+export const startBildirimConnection = async (denetciId: number) => {
+  // Polling için token ve denetciId'yi kaydet (fallback için)
+  pollingToken = SecureTokenManager.getAccessToken() || "";
+  pollingDenetciId = denetciId;
+
+  if (hubConnection && hubConnection.state === HubConnectionState.Connected) {
+    console.log("SignalR zaten bağlı, tekrar bağlanmıyor");
+    return hubConnection;
+  }
+
+  try {
+    const apiUrl = getApiUrl();
+    const hubUrl = `${apiUrl}/bildirim-hub`;
+
+    console.log("🔌 SignalR bağlantısı başlatılıyor:", hubUrl);
+    // console.log("Token:", token?.substring(0, 20) + "...");
+    console.log("DenetçiId:", denetciId);
+
+    hubConnection = new HubConnectionBuilder()
+      .withUrl(hubUrl, {
+        accessTokenFactory: () => SecureTokenManager.getAccessToken() || "",
+        // ⚠️ skipNegotiation: true ve transport: WebSockets zorlaması CORS/Proxy sorunlarına yol açabilir.
+        // SignalR'ın en iyi transportu (WebSockets, Server-Sent Events, Long Polling) otomatik seçmesine izin verin.
+      })
+      .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    // Listener'ı bağlantı kurulmadan ÖNCE kaydet
+    // Bu sayede bağlantı kurulduktan hemen sonra mesajlar alınabilir
+    if (notificationCallback && !listenerRegistered) {
+      console.log("✅ YeniBildirim listener kaydediliyor (bağlantı öncesi)");
+      hubConnection.on("YeniBildirim", notificationCallback);
+      listenerRegistered = true;
+    }
+
+    // Bağlantı olaylarını dinle
+    hubConnection.onreconnecting((error: Error | undefined) => {
+      console.warn("⚠️ SignalR yeniden bağlanmaya çalışıyor...", error);
+    });
+
+    hubConnection.onreconnected((connectionId: string | undefined) => {
+      console.log("✅ SignalR yeniden bağlandı:", connectionId);
+      // Listener zaten kayıtlı olduğundan tekrar kaydetmeye gerek yok
+      // SignalR otomatik olarak listener'ları korur
+    });
+
+    hubConnection.onclose((error: Error | undefined) => {
+      console.warn("❌ SignalR bağlantısı kapandı:", error);
+      hubConnection = null;
+      listenerRegistered = false;
+
+      // Bağlantı kapanınca polling'e geç
+      if (pollingToken && pollingDenetciId && notificationCallback) {
+        console.log("🔄 SignalR bağlantısı koptu, polling'e geçiliyor...");
+        startPollingBildirim(pollingDenetciId, notificationCallback);
+      }
+    });
+
+    console.log("Hub bağlantısı kuruluyor...");
+    await hubConnection.start();
+
+    console.log("Hub bağlantısı başarılı, grup katılımı yapılıyor...");
+    console.log("Connection state:", hubConnection.state);
+    console.log("Connection ID:", hubConnection.connectionId);
+
+    // Bağlantının hazır olması için biraz bekle
+    if (hubConnection.state === HubConnectionState.Connected) {
+      console.log("✅ Bağlantı durumu: Connected");
+      await hubConnection.invoke("JoinDenetciGroup", denetciId);
+      console.log("✅ SignalR bağlantısı başarılı ve gruba katılım yapıldı!");
+    } else {
+      const stateValue = hubConnection.state;
+      const stateMap: { [key: number]: string } = {
+        0: "Disconnected",
+        1: "Connected",
+        2: "Reconnecting",
+      };
+      throw new Error(`Bağlantı durumu hatalı: ${stateMap[stateValue] || `Unknown(${stateValue})`}`);
+    }
+
+    // Polling'i durdur (SignalR aktif oldu)
+    stopPollingBildirim();
+
+    return hubConnection;
+  } catch (error) {
+    console.error("❌ SignalR bağlantı hatası:", error);
+
+    // Detaylı hata bilgisi
+    if (error instanceof Error) {
+      console.error("Hata mesajı:", error.message);
+      console.error("Stack trace ilk satır:", error.stack?.split('\n')[0]);
+    }
+
+    // Hata kodu için bağlantıyı kapat ama null'a setleme
+    try {
+      if (hubConnection) {
+        await hubConnection.stop();
+      }
+    } catch (stopError) {
+      console.error("Bağlantı durdurma hatası:", stopError);
+    }
+
+    hubConnection = null;
+    listenerRegistered = false;
+
+    // SignalR başarısız oldu, polling'i başlat
+    console.warn("⚠️ SignalR başarısız, polling fallback'ine geçiliyor...");
+
+    throw error;
+  }
+};
+
+export const onYeniBildirim = (callback: (bildirim: any) => void, denetciId?: number) => {
+  // Callback'i global değişkene kaydet
+  notificationCallback = callback;
+
+  // Eğer hubConnection oluşturulmuşsa listener'ı ekle
+  if (hubConnection) {
+    // Eski listener'ı temizle (mükerrerliği önlemek için)
+    hubConnection.off("YeniBildirim");
+    hubConnection.on("YeniBildirim", callback);
+    listenerRegistered = true;
+    console.log(`✅ YeniBildirim listener ${hubConnection.state === HubConnectionState.Connected ? 'aktif' : 'bağlantı kurulduğunda aktif olacak'}`);
+  } else {
+    console.warn("⚠️ Hub henüz oluşturulmadı, callback kaydedildi.");
+  }
+
+  // SignalR bağlanana kadar veya hata verirse polling'i hazırla
+  if (denetciId && (!hubConnection || hubConnection.state !== HubConnectionState.Connected)) {
+    console.log("🔄 SignalR henüz aktif değil, polling hazırda bekletiliyor...");
+    startPollingBildirim(denetciId, callback);
+  }
+};
+
+export const stopBildirimConnection = async () => {
+  if (hubConnection) {
+    try {
+      await hubConnection.stop();
+      hubConnection = null;
+      listenerRegistered = false;
+      console.log("SignalR bağlantısı kesildi");
+    } catch (error) {
+      console.log("SignalR kapatma hatası:", error);
+    }
+  }
+};
+
+export const getBildirimConnectionStatus = () => {
+  const stateMap: { [key: number]: string } = {
+    0: "Disconnected",
+    1: "Connected",
+    2: "Reconnecting",
+  };
+
+  const connectionState = hubConnection?.state;
+  const stateName = connectionState !== undefined
+    ? stateMap[connectionState] || `Unknown(${connectionState})`
+    : 'null (no connection)';
+
+  const isPollingActive = pollingInterval !== null;
+
+  return {
+    signalRConnected: hubConnection && hubConnection.state === HubConnectionState.Connected,
+    signalRState: stateName,
+    pollingActive: isPollingActive,
+    listenerRegistered,
+    hasCallback: notificationCallback !== null,
+  };
+};
 
 export const getBaglantiBilgileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -15,7 +296,6 @@ export const getBaglantiBilgileri = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -32,7 +312,6 @@ export const getBaglantiBilgileri = async (
 };
 
 export const getBaglantiBilgileriByTip = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -46,7 +325,6 @@ export const getBaglantiBilgileriByTip = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -63,7 +341,6 @@ export const getBaglantiBilgileriByTip = async (
 };
 
 export const getBaglantiBilgileriByLink = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -77,7 +354,6 @@ export const getBaglantiBilgileriByLink = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -94,7 +370,6 @@ export const getBaglantiBilgileriByLink = async (
 };
 
 export const createBaglantiBilgileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -109,7 +384,6 @@ export const createBaglantiBilgileri = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -125,7 +399,6 @@ export const createBaglantiBilgileri = async (
 };
 
 export const deleteBaglantiBilgileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -139,7 +412,6 @@ export const deleteBaglantiBilgileri = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -155,7 +427,6 @@ export const deleteBaglantiBilgileri = async (
 };
 
 export const deleteBaglantiBilgileriById = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   kullaniciId: number,
@@ -170,7 +441,6 @@ export const deleteBaglantiBilgileriById = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -185,7 +455,7 @@ export const deleteBaglantiBilgileriById = async (
   }
 };
 
-export const getBildirimler = async (token: string, denetciId: number) => {
+export const getBildirimler = async (denetciId: number) => {
   try {
     const response = await apiFetch(
       `/BaglantiBilgileri/Bildirimler?denetciId=${denetciId}`,
@@ -193,7 +463,6 @@ export const getBildirimler = async (token: string, denetciId: number) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -208,7 +477,6 @@ export const getBildirimler = async (token: string, denetciId: number) => {
 };
 
 export const updateBildirimlerOkundumu = async (
-  token: string,
   ids: number[]
 ) => {
   try {
@@ -219,7 +487,6 @@ export const updateBildirimlerOkundumu = async (
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(ids),
       }

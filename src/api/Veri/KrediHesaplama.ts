@@ -2,19 +2,17 @@
 
 
 export const getKrediHesaplamaVerileriByDenetciDenetlenenYil = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/KrediHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -29,20 +27,18 @@ export const getKrediHesaplamaVerileriByDenetciDenetlenenYil = async (
 };
 
 export const getKrediHesaplamaVerileriByDenetciDenetlenenYilId = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   id: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/KrediHesaplamaById?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -57,16 +53,14 @@ export const getKrediHesaplamaVerileriByDenetciDenetlenenYilId = async (
 };
 
 export const createKrediHesaplamaVerisi = async (
-  token: string,
   jsonData: any
 ) => {
   try {
-    const response =await apiFetch(`/Veri/KrediHesaplama`, {
+    const response = await apiFetch(`/Veri/KrediHesaplama`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(jsonData),
     });
@@ -82,20 +76,18 @@ export const createKrediHesaplamaVerisi = async (
 };
 
 export const deleteKrediHesaplamaVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/KrediHesaplama?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

@@ -66,9 +66,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const hesapVerileri = await getIliskiliTarafSiniflamaHesaplar(
-        user.token || "",
-        user.denetciId || 0,
+      const hesapVerileri = await getIliskiliTarafSiniflamaHesaplar(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -235,3 +233,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

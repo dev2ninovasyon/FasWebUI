@@ -1,13 +1,12 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 
-export const getFormat = async (token: string, name: string) => {
+export const getFormat = async (name: string) => {
   try {
-    const response =await apiFetch(`/Format/ByAdi/${name}`, {
+    const response = await apiFetch(`/Format/ByAdi/${name}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {

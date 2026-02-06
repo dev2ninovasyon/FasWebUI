@@ -378,7 +378,7 @@ const KrediRiskiCari: React.FC<Props> = ({
       return obj;
     });
 
-    const result = await updateKrediRiski(user.token || "", jsonData);
+    const result = await updateKrediRiski(jsonData);
     if (result) {
       console.log("Kredi Riski Cari güncellendi.");
     } else {
@@ -389,9 +389,7 @@ const KrediRiskiCari: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       if (dipnotKodu == 381 || dipnotKodu == 45) {
-        const krediRiskiVerileri = await getKrediRiski(
-          user.token || "",
-          user.denetciId || 0,
+        const krediRiskiVerileri = await getKrediRiski(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -559,3 +557,4 @@ const KrediRiskiCari: React.FC<Props> = ({
 };
 
 export default KrediRiskiCari;
+

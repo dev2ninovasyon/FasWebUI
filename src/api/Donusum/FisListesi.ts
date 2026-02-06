@@ -2,20 +2,18 @@
 
 
 export const getFisListesiVerileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -30,7 +28,6 @@ export const getFisListesiVerileri = async (
 };
 
 export const getFisListesiVerileriByFisNo = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -38,13 +35,12 @@ export const getFisListesiVerileriByFisNo = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisleriByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -59,7 +55,6 @@ export const getFisListesiVerileriByFisNo = async (
 };
 
 export const createFisListesiVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -67,14 +62,13 @@ export const createFisListesiVerisi = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisleriNull?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "POST",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -90,7 +84,6 @@ export const createFisListesiVerisi = async (
 };
 
 export const updateFisListesiVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -99,14 +92,13 @@ export const updateFisListesiVerisi = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedFis),
       }
@@ -123,7 +115,6 @@ export const updateFisListesiVerisi = async (
 };
 
 export const updateFisDurumu = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -131,14 +122,13 @@ export const updateFisDurumu = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisDurumu?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -154,7 +144,6 @@ export const updateFisDurumu = async (
 };
 
 export const deleteFisListesiVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -162,14 +151,13 @@ export const deleteFisListesiVerisi = async (
   konsolidasyonMu: boolean
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Donusum/DonusumFisleri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "DELETE",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(ids),
       }

@@ -86,9 +86,7 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createAmortismanHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createAmortismanHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         hesaplamaYontemi
@@ -125,9 +123,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -355,3 +351,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

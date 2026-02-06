@@ -141,7 +141,6 @@ const Page = () => {
     try {
       const result = await createCalismaKagidiVerisi(
         "DogalRisk",
-        user.token || "",
         createdCalismaKagidiGrubu
       );
       if (result) {
@@ -166,7 +165,6 @@ const Page = () => {
     try {
       const result = await createCalismaKagidiVerisi(
         "KontrolRiski",
-        user.token || "",
         createdCalismaKagidiGrubu
       );
       if (result) {
@@ -182,9 +180,7 @@ const Page = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createBulguRiskiBelirleme(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createBulguRiskiBelirleme(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         denetimRiski
@@ -740,3 +736,4 @@ const Page = () => {
 };
 
 export default Page;
+

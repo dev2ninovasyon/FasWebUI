@@ -2,7 +2,6 @@
 
 
 export const getEDefterIncelemeVerileri = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -11,13 +10,12 @@ export const getEDefterIncelemeVerileri = async (
   bitisTarihi: string
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -32,7 +30,6 @@ export const getEDefterIncelemeVerileri = async (
 };
 
 export const getEDefterIncelemeVerileriPaged = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -49,7 +46,6 @@ export const getEDefterIncelemeVerileriPaged = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -64,7 +60,6 @@ export const getEDefterIncelemeVerileriPaged = async (
 };
 
 export const updateEDefterIncelemeVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -72,14 +67,13 @@ export const updateEDefterIncelemeVerisi = async (
   updatedEDefterInceleme: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&id=${id}`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedEDefterInceleme),
       }
@@ -96,7 +90,6 @@ export const updateEDefterIncelemeVerisi = async (
 };
 
 export const updateEDefterIncelemeListeVerisi = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -104,14 +97,13 @@ export const updateEDefterIncelemeListeVerisi = async (
   updatedEDefterInceleme: any
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/EDefterIncelemeListe?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&ids=${ids}`,
       {
         method: "PUT",
         headers: {
           accept: "*/*",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedEDefterInceleme),
       }
@@ -128,20 +120,18 @@ export const updateEDefterIncelemeListeVerisi = async (
 };
 
 export const getEDefterIncelemeVerileriByFisNo = async (
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
   fisNo: number
 ) => {
   try {
-    const response =await apiFetch(
+    const response = await apiFetch(
       `/Veri/EDefterIncelemeByFisNo?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&fisNo=${fisNo}`,
       {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );

@@ -50,7 +50,7 @@ const SubelerTable = () => {
   const handleDelete = async () => {
     handleClose();
     try {
-      const result = await deleteSubelerById(user.token || "", selectedId || 0);
+      const result = await deleteSubelerById(selectedId || 0);
       if (result) {
         fetchData();
       } else {
@@ -65,9 +65,7 @@ const SubelerTable = () => {
 
   const fetchData = async () => {
     try {
-      const subelerVerileri = await getSubelerByDenetlenenId(
-        user.token || "",
-        user.denetlenenId || 0
+      const subelerVerileri = await getSubelerByDenetlenenId(user.denetlenenId || 0
       );
       const newRows = subelerVerileri.map((subeler: any) => ({
         id: subeler.id,
@@ -177,3 +175,4 @@ const SubelerTable = () => {
 };
 
 export default SubelerTable;
+

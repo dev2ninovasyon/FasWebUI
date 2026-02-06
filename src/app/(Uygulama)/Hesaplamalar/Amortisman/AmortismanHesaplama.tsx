@@ -312,9 +312,7 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const amortismanVerileri = await getAmortismanHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
+      const amortismanVerileri = await getAmortismanHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -524,3 +522,4 @@ const AmortismanHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default AmortismanHesaplama;
+

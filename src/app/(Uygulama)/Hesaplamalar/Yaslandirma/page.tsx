@@ -35,9 +35,7 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createYaslandirmaHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createYaslandirmaHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -139,3 +137,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

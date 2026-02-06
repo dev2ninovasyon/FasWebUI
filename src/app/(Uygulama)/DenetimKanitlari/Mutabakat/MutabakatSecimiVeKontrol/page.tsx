@@ -50,9 +50,7 @@ const Page = () => {
 
   const handleDeleteMutabakat = async () => {
     try {
-      const result = await deleteMutabakat(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteMutabakat(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -263,3 +261,4 @@ const Page = () => {
 };
 
 export default Page;
+

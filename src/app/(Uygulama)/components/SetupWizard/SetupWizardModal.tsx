@@ -67,12 +67,12 @@ export default function SetupWizardModal({
         if (open && user.token && user.id) {
             loadWizardProgress();
         }
-    }, [open, user.token, user.id]);
+    }, [open, user.id]);
 
     const loadWizardProgress = async () => {
         try {
             setIsLoadingProgress(true);
-            const ayarlar = await getKullaniciAyarlar(user.token!, user.id!);
+            const ayarlar = await getKullaniciAyarlar(user.id!);
 
             if (ayarlar) {
                 setActiveStep(ayarlar.kurulumAdimi || 0);
@@ -105,7 +105,6 @@ export default function SetupWizardModal({
 
 
             await updateKurulumAyarlari(
-                user.token,
                 user.id,
                 isComplete,
                 step,

@@ -1,13 +1,12 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 
-export const getKullanicilar = async (token: string) => {
+export const getKullanicilar = async () => {
   try {
     const response = await apiFetch(`/Kullanici/Hepsi`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -20,13 +19,12 @@ export const getKullanicilar = async (token: string) => {
   }
 };
 
-export const getKullaniciById = async (token: string, id: any) => {
+export const getKullaniciById = async (id: any) => {
   try {
     const response = await apiFetch(`/Kullanici/${id}`, {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -40,7 +38,6 @@ export const getKullaniciById = async (token: string, id: any) => {
 };
 
 export const getKullaniciByDenetciId = async (
-  token: string,
   denetciId: any
 ) => {
   try {
@@ -48,7 +45,6 @@ export const getKullaniciByDenetciId = async (
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (response.ok) {
@@ -62,7 +58,6 @@ export const getKullaniciByDenetciId = async (
 };
 
 export const getKullaniciByDenetlenenYilRol = async (
-  token: string,
   denetlenenId: number,
   yil: number,
   tip: string
@@ -74,7 +69,6 @@ export const getKullaniciByDenetlenenYilRol = async (
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -88,14 +82,13 @@ export const getKullaniciByDenetlenenYilRol = async (
   }
 };
 
-export const createKullanici = async (token: string, createdKullanici: any) => {
+export const createKullanici = async (createdKullanici: any) => {
   try {
     const response = await apiFetch(`/Kullanici`, {
       method: "POST",
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(createdKullanici),
     });
@@ -112,7 +105,6 @@ export const createKullanici = async (token: string, createdKullanici: any) => {
 };
 
 export const updateKullanici = async (
-  token: string,
   id: any,
   updatedKullanici: any
 ) => {
@@ -122,7 +114,6 @@ export const updateKullanici = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedKullanici),
     });
@@ -139,7 +130,6 @@ export const updateKullanici = async (
 };
 
 export const updatekullaniciSifre = async (
-  token: string,
   id: any,
   updatedPassdord: any
 ) => {
@@ -149,7 +139,6 @@ export const updatekullaniciSifre = async (
       headers: {
         accept: "*/*",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedPassdord),
     });
@@ -165,16 +154,14 @@ export const updatekullaniciSifre = async (
   }
 };
 
-export const deleteKullaniciById = async (token: string, id: number) => {
+export const deleteKullaniciById = async (id: number) => {
   try {
     const response = await apiFetch(`/Kullanici/${id}`, {
       method: "DELETE",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${token}`,
       },
-    });
-
+    })
     if (response.ok) {
       return true;
     } else {

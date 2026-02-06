@@ -37,9 +37,7 @@ const SurekliEgitimBilgileriEkleForm = () => {
     };
 
     try {
-      const result = await createSurekliEgitimBilgileri(
-        user.token || "",
-        createdSurekliEgitimBilgileri
+      const result = await createSurekliEgitimBilgileri(createdSurekliEgitimBilgileri
       );
       if (result) {
         router.push("/Kullanici/SurekliEgitimBilgileri");
@@ -259,3 +257,4 @@ const SurekliEgitimBilgileriEkleForm = () => {
 };
 
 export default SurekliEgitimBilgileriEkleForm;
+

@@ -172,9 +172,7 @@ const FaaliyetRaporuStepper = () => {
 
   const fetchFinansalTablolar = useCallback(async () => {
     try {
-      const finansalDurumTablosu = await getFinansalDurumTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const finansalDurumTablosu = await getFinansalDurumTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -201,9 +199,7 @@ const FaaliyetRaporuStepper = () => {
         )
       );
 
-      const karZararTablosu = await getKarZararTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const karZararTablosu = await getKarZararTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -231,9 +227,7 @@ const FaaliyetRaporuStepper = () => {
         )
       );
 
-      const nakitAkisTablosu = await getNakitAkisTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const nakitAkisTablosu = await getNakitAkisTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -261,9 +255,7 @@ const FaaliyetRaporuStepper = () => {
         )
       );
 
-      const ozkaynakTablosuCari = await getOzkaynakTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const ozkaynakTablosuCari = await getOzkaynakTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         false
@@ -338,9 +330,7 @@ const FaaliyetRaporuStepper = () => {
       setOzkYatayDataCari(filteredYatayDataCari);
       setOzkDataCari(filteredOzkaynakDataCari);
 
-      const ozkaynakTablosuOnceki = await getOzkaynakTablosu(
-        user.token || "",
-        user.denetciId || 0,
+      const ozkaynakTablosuOnceki = await getOzkaynakTablosu(user.denetciId || 0,
         user.yil ? user.yil - 1 : 0,
         user.denetlenenId || 0,
         false
@@ -426,7 +416,6 @@ const FaaliyetRaporuStepper = () => {
       const calismaKagidiVerileri =
         await getCalismaKagidiVerileriByDenetciDenetlenenYil(
           controller || "",
-          user.token || "",
           user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
@@ -1223,3 +1212,4 @@ const FaaliyetRaporuStepper = () => {
 };
 
 export default FaaliyetRaporuStepper;
+

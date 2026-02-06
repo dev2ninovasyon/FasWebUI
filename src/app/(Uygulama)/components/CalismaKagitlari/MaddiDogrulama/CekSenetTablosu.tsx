@@ -39,7 +39,7 @@ const CekSenetTablosu: React.FC<Props> = ({
         if (user.token && user.denetciId && user.yil && user.denetlenenId) {
             setLoading(true);
             try {
-                const result = await getCekSenetReeskontVerileriByDenetciDenetlenenYil(user.token, user.denetciId, user.denetlenenId, user.yil);
+                const result = await getCekSenetReeskontVerileriByDenetciDenetlenenYil(user.denetciId, user.denetlenenId, user.yil);
                 setVeriler(result || []);
             } catch (error) {
                 showSnackbar("Veriler yüklenirken hata oluştu.", "error");
@@ -62,7 +62,7 @@ const CekSenetTablosu: React.FC<Props> = ({
         const data = hotInstance.getSourceData();
 
         try {
-            const success = await createCekSenetReeskontVerisi(user.token!, data);
+            const success = await createCekSenetReeskontVerisi(data);
             if (success) {
                 showSnackbar("Başarıyla kaydedildi.", "success");
                 fetchData();

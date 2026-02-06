@@ -65,9 +65,7 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createVergiVarligiVeYukumlulugu(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createVergiVarligiVeYukumlulugu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         vergiOrani,
@@ -346,3 +344,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

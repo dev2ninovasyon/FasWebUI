@@ -42,9 +42,7 @@ const MizanCard: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const mizanVerileri = await getMizanVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
@@ -83,3 +81,4 @@ const MizanCard: React.FC<Props> = ({
 };
 
 export default MizanCard;
+

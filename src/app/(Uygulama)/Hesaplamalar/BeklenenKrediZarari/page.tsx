@@ -52,9 +52,7 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createBeklenenKrediZarariHesaplanmis(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createBeklenenKrediZarariHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         revizeOrani,
@@ -100,9 +98,7 @@ const Page: React.FC = () => {
 
   const fetchIskontoOrani = async () => {
     try {
-      const iskontoOraniVerisi = await getIskontoOrani(
-        user.token || "",
-        user.yil || 0
+      const iskontoOraniVerisi = await getIskontoOrani(user.yil || 0
       );
 
       if (iskontoOraniVerisi) {
@@ -219,3 +215,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

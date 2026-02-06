@@ -96,9 +96,7 @@ const KrediHesaplamaOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -431,9 +429,7 @@ const KrediHesaplamaOrnekFisler: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const krediHesaplanmisOrnekFisVerileri =
-        await getKrediHesaplanmisOrnekFisler(
-          user.token || "",
-          user.denetciId || 0,
+        await getKrediHesaplanmisOrnekFisler(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -614,3 +610,4 @@ const KrediHesaplamaOrnekFisler: React.FC<Props> = ({
 };
 
 export default KrediHesaplamaOrnekFisler;
+

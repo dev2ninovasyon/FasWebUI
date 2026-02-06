@@ -43,9 +43,7 @@ const Page = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createFinansalTabloKalemlerindeDegisim(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createFinansalTabloKalemlerindeDegisim(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -231,3 +229,4 @@ const Page = () => {
 };
 
 export default Page;
+

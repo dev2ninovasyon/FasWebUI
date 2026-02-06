@@ -57,9 +57,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
             if (!dipnotNo && modelAdi) {
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         modelAdi,
@@ -78,7 +76,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
         if (user.token && user.denetciId && user.yil && user.denetlenenId && resolvedDipnotNo) {
             setLoading(true);
             try {
-                const result = await getSozlesmeTestleri(user.token, user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
+                const result = await getSozlesmeTestleri(user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
                 setVeriler(result || []);
             } catch (error) {
                 showSnackbar("Veriler yüklenirken bir hata oluştu.", "error");
@@ -117,7 +115,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
 
         if (user.token) {
             try {
-                await updateSozlesmeTestleri(user.token, id, updatedItem);
+                await updateSozlesmeTestleri(id, updatedItem);
                 // Başarılı kayıtta kullanıcıyı rahatsız etme (Sessiz kaydet)
             } catch (error) {
                 showSnackbar("Kaydetme sırasında bir hata oluştu.", "error");
@@ -171,7 +169,7 @@ const SozlesmeTestleri: React.FC<Props> = ({ dipnotNo, modelAdi, isClickedVarsay
         if (user.token && user.denetciId && user.yil && user.denetlenenId && resolvedDipnotNo) {
             setLoading(true);
             try {
-                await varsayilanaDon(user.token, user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
+                await varsayilanaDon(user.denetciId, user.yil, user.denetlenenId, resolvedDipnotNo);
                 showSnackbar("Veriler varsayılana döndürüldü.", "success");
                 await fetchData();
             } catch (error) {

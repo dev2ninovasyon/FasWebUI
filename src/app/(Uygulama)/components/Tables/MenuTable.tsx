@@ -78,9 +78,7 @@ const NestedMenuItem: React.FC<NestedMenuItemProps> = ({
       }
       try {
         const formHazirlayanOnaylayanVerileri =
-          await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
-            user.token || "",
-            user.denetciId || 0,
+          await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(user.denetciId || 0,
             user.denetlenenId || 0,
             user.yil || 0,
             item.formKodu
@@ -304,3 +302,4 @@ const FilteredMenu: React.FC<{ title: string; showStatusIcons?: boolean }> = ({
 };
 
 export default FilteredMenu;
+

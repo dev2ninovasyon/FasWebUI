@@ -295,9 +295,7 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const cekSenetReeskontHesaplamaVerileri =
-        await getCekSenetReeskontHesaplamadaKullanilanDegerler(
-          user.token || "",
-          user.denetciId || 0,
+        await getCekSenetReeskontHesaplamadaKullanilanDegerler(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -470,3 +468,4 @@ const CekSenetReeskontHesaplamadaKullanilanDegerler: React.FC<Props> = ({
 };
 
 export default CekSenetReeskontHesaplamadaKullanilanDegerler;
+

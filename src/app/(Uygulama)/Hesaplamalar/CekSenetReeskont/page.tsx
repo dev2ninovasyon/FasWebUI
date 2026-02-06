@@ -118,9 +118,7 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
-      const kidem = await createCekSenetReeskontHesapla(
-        user.token || "",
-        user.denetciId || 0,
+      const kidem = await createCekSenetReeskontHesapla(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -166,9 +164,7 @@ const Page: React.FC = () => {
       iskontoOrani365: iskontoOrani365,
     };
     try {
-      const result = await createCekSenetReeskontEkBilgi(
-        user.token || "",
-        createdCekSenetReeskontEkBilgi
+      const result = await createCekSenetReeskontEkBilgi(createdCekSenetReeskontEkBilgi
       );
       if (result) {
         handleDrawerClose();
@@ -203,9 +199,7 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const cekSenetReeskontEkBilgiVerileri = await getCekSenetReeskontEkBilgi(
-        user.token || "",
-        user.denetciId || 0,
+      const cekSenetReeskontEkBilgiVerileri = await getCekSenetReeskontEkBilgi(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -232,9 +226,7 @@ const Page: React.FC = () => {
   const fetchDataIskontoOranlari = async (oranAdi: string) => {
     try {
       const cekSenetReeskontIskontoOranlariVerileri =
-        await getCekSenetReeskontIskontoOranlari(
-          user.token || "",
-          oranAdi,
+        await getCekSenetReeskontIskontoOranlari(oranAdi,
           user.yil || 0
         );
       if (cekSenetReeskontIskontoOranlariVerileri) {
@@ -261,9 +253,7 @@ const Page: React.FC = () => {
 
   const fetchDataBaglanti = async () => {
     try {
-      const baglantiBilgisi = await getBaglantiBilgileriByTip(
-        user.token || "",
-        user.denetciId || 0,
+      const baglantiBilgisi = await getBaglantiBilgileriByTip(user.denetciId || 0,
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
@@ -937,3 +927,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

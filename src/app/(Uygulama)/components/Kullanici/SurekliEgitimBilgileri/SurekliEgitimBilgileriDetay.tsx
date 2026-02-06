@@ -26,7 +26,7 @@ const SurekliEgitimBilgileriDetay = () => {
   const fetchData = async () => {
     try {
       const surekliEgitimBilgileriVerileri =
-        await getSurekliEgitimBilgileriById(user.token || "", pathId);
+        await getSurekliEgitimBilgileriById(pathId);
       setPersonelId(surekliEgitimBilgileriVerileri.personelId);
       setPersonelAdi(surekliEgitimBilgileriVerileri.personelAdi);
       setSertifikaAdi(surekliEgitimBilgileriVerileri.sertifikaAdi);
@@ -232,3 +232,4 @@ const SurekliEgitimBilgileriDetay = () => {
 };
 
 export default SurekliEgitimBilgileriDetay;
+

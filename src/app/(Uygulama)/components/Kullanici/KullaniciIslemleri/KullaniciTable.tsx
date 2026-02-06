@@ -62,9 +62,7 @@ const KullaniciTable = () => {
   const handleDelete = async () => {
     handleClose();
     try {
-      const result = await deleteKullaniciById(
-        user.token || "",
-        selectedId || 0
+      const result = await deleteKullaniciById(selectedId || 0
       );
       if (result) {
         fetchData();
@@ -80,9 +78,7 @@ const KullaniciTable = () => {
 
   const fetchData = async () => {
     try {
-      const kullaniciVerileri = await getKullaniciByDenetciId(
-        user.token || "",
-        user.denetciId
+      const kullaniciVerileri = await getKullaniciByDenetciId(user.denetciId
       );
       const newRows = kullaniciVerileri.map((kullanici: any) => ({
         id: kullanici.id,
@@ -250,3 +246,4 @@ const KullaniciTable = () => {
 };
 
 export default KullaniciTable;
+

@@ -55,7 +55,6 @@ const DenetimKadrosuTable = () => {
     handleClose();
     try {
       const result = await deleteGorevAtamalariById(
-        user.token || "",
         selectedId || 0
       );
       if (result) {
@@ -70,9 +69,7 @@ const DenetimKadrosuTable = () => {
 
   const fetchData = async () => {
     try {
-      const denetimKadrosuVerileri = await getGorevAtamalariByDenetlenenIdYil(
-        user.token || "",
-        user.denetlenenId || 0,
+      const denetimKadrosuVerileri = await getGorevAtamalariByDenetlenenIdYil(user.denetlenenId || 0,
         user.yil || 0
       );
       const newRows = denetimKadrosuVerileri.map((veri: any) => ({
@@ -252,3 +249,4 @@ const DenetimKadrosuTable = () => {
 };
 
 export default DenetimKadrosuTable;
+

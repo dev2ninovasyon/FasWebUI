@@ -59,9 +59,7 @@ const Page = () => {
 
   const handleHesapla = async () => {
     try {
-      const result = await createVadeliBankaMevduatiOtomatikSiniflama(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await createVadeliBankaMevduatiOtomatikSiniflama(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -237,3 +235,4 @@ const Page = () => {
 };
 
 export default Page;
+

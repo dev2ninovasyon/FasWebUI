@@ -96,9 +96,7 @@ const ErtelenmisVergiHesabiOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -431,9 +429,7 @@ const ErtelenmisVergiHesabiOrnekFisler: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const ertelenmisVergiHesabiOrnekFisVerileri =
-        await getVergiVarligiVeYukumluluguOrnekFisler(
-          user.token || "",
-          user.denetciId || 0,
+        await getVergiVarligiVeYukumluluguOrnekFisler(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -610,3 +606,4 @@ const ErtelenmisVergiHesabiOrnekFisler: React.FC<Props> = ({
 };
 
 export default ErtelenmisVergiHesabiOrnekFisler;
+

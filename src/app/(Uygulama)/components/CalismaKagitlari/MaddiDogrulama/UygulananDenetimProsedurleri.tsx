@@ -105,9 +105,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
       aciklama: aciklama,
     };
     try {
-      const result = await createCalismaKagidiVerisi(
-        user.token || "",
-        createdCalismaKagidiVerisi
+      const result = await createCalismaKagidiVerisi(createdCalismaKagidiVerisi
       );
       if (result) {
         fetchData();
@@ -135,9 +133,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
       updatedCalismaKagidiVerisi.aciklama = aciklama;
 
       try {
-        const result = await updateCalismaKagidiVerisi(
-          user.token || "",
-          selectedId,
+        const result = await updateCalismaKagidiVerisi(selectedId,
           updatedCalismaKagidiVerisi
         );
         if (result) {
@@ -154,9 +150,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
 
   const handleDelete = async () => {
     try {
-      const result = await deleteCalismaKagidiVerisiById(
-        user.token || "",
-        selectedId
+      const result = await deleteCalismaKagidiVerisiById(selectedId
       );
       if (result) {
         fetchData();
@@ -171,9 +165,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
 
   const handleDeleteAll = async () => {
     try {
-      const result = await deleteAllCalismaKagidiVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteAllCalismaKagidiVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         dipnotAdi || "",
@@ -191,9 +183,7 @@ const UygulananDenetimProsedurleri: React.FC<CalismaKagidiProps> = ({
 
   const fetchData = async () => {
     try {
-      const calismaKagidiVerileri = await getUygulananDenetimProsedurleri(
-        user.token || "",
-        user.denetciId || 0,
+      const calismaKagidiVerileri = await getUygulananDenetimProsedurleri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         dipnotAdi || "",
@@ -606,3 +596,4 @@ const KategoriBoxAutocomplete: React.FC<KategoriBoxProps> = ({
     />
   );
 };
+

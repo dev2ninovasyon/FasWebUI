@@ -263,9 +263,7 @@ const CekSenetReeskontDuzeltmeFarklari: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const cekSenetReeskontHesaplamaVerileri =
-        await getCekSenetReeskontDuzeltmeFarklari(
-          user.token || "",
-          user.denetciId || 0,
+        await getCekSenetReeskontDuzeltmeFarklari(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -436,3 +434,4 @@ const CekSenetReeskontDuzeltmeFarklari: React.FC<Props> = ({
 };
 
 export default CekSenetReeskontDuzeltmeFarklari;
+

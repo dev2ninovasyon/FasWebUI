@@ -260,9 +260,7 @@ const FisDetaylari = () => {
   const fetchData = async () => {
     try {
       const eDefterIncelemeVerileriByFisNo =
-        await getEDefterIncelemeVerileriByFisNo(
-          user.token || "",
-          user.denetciId || 0,
+        await getEDefterIncelemeVerileriByFisNo(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           pathFisNo

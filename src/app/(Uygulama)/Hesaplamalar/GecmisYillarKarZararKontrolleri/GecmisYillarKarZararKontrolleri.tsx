@@ -209,9 +209,7 @@ const GecmisYillarKarZararKontrolleri = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const gecmisYilKarZararVerileri = await getGecmisYilKarZararKontrol(
-        user.token || "",
-        user.denetciId || 0,
+      const gecmisYilKarZararVerileri = await getGecmisYilKarZararKontrol(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -395,3 +393,4 @@ const GecmisYillarKarZararKontrolleri = () => {
 };
 
 export default GecmisYillarKarZararKontrolleri;
+

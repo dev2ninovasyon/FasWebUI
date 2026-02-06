@@ -28,7 +28,7 @@ const SubeDuzenleForm = () => {
       adres,
     };
     try {
-      const result = await updateSubeler(user.token || "", id, updatedSubeler);
+      const result = await updateSubeler(id, updatedSubeler);
       if (result) {
         router.push("/Musteri/Subeler");
       } else {
@@ -41,7 +41,7 @@ const SubeDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const subelerVerileri = await getSubelerById(user.token || "", pathId);
+      const subelerVerileri = await getSubelerById(pathId);
       setUnvan(subelerVerileri.unvan);
       setSubeAdi(subelerVerileri.subeAdi);
       setAdres(subelerVerileri.adres);
@@ -159,3 +159,4 @@ const SubeDuzenleForm = () => {
 };
 
 export default SubeDuzenleForm;
+

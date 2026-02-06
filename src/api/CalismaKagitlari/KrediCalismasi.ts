@@ -33,14 +33,13 @@ export interface KrediHesaplamaData {
     krediHesaplamaDetaylari?: KrediHesaplamaDetay[];
 }
 
-export async function fetchKrediCalismasi(token: string, denetlenenId: number, yil: number, dn: string) {
+export async function fetchKrediCalismasi(denetlenenId: number, yil: number, dn: string) {
     const response = await apiFetch(
         `/KrediCalismasi/get-hesaplama?denetlenenId=${denetlenenId}&yil=${yil}&dn=${encodeURIComponent(dn)}`,
         {
             method: "GET",
             headers: {
                 "accept": "application/json",
-                "Authorization": `Bearer ${token}`,
             },
         }
     );

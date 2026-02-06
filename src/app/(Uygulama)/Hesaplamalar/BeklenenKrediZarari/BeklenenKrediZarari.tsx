@@ -290,9 +290,7 @@ const BeklenenKrediZarari: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   const fetchData = async () => {
     try {
       const beklenenKrediZarariVerileri =
-        await getBeklenenKrediZarariHesaplanmis(
-          user.token || "",
-          user.denetciId || 0,
+        await getBeklenenKrediZarariHesaplanmis(user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
@@ -461,3 +459,4 @@ const BeklenenKrediZarari: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 };
 
 export default BeklenenKrediZarari;
+

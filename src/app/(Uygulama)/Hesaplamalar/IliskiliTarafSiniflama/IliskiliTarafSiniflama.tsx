@@ -356,9 +356,7 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const iliskiliTarafSiniflamaVerileri = await getIliskiliTarafSiniflama(
-        user.token || "",
-        user.denetciId || 0,
+      const iliskiliTarafSiniflamaVerileri = await getIliskiliTarafSiniflama(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         hesap
@@ -680,3 +678,4 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
 };
 
 export default IliskiliTarafSiniflama;
+

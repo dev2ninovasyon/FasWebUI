@@ -261,9 +261,7 @@ const OlusturulmusMizanlar: React.FC<Props> = ({ type1, type2 }) => {
 
   const fetchData = async () => {
     try {
-      const mizanVerileri = await getMizanVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const mizanVerileri = await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type1
@@ -454,3 +452,4 @@ const OlusturulmusMizanlar: React.FC<Props> = ({ type1, type2 }) => {
 };
 
 export default OlusturulmusMizanlar;
+

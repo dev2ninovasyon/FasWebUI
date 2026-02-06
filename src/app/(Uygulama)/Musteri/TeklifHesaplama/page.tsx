@@ -112,7 +112,7 @@ const Page = () => {
       return obj;
     });
 
-    const result = await updateTeklifHesaplama(user.token || "", jsonData);
+    const result = await updateTeklifHesaplama(jsonData);
     if (result) {
       enqueueSnackbar("Kaydedildi", {
         variant: "success",
@@ -143,7 +143,6 @@ const Page = () => {
 
   const handleTeklifHesapla = async () => {
     const result = await TeklifHesapla(
-      user.token || "",
       user.denetciId || 0,
       user.denetlenenId || 0,
       user.yil || 0
@@ -178,9 +177,7 @@ const Page = () => {
 
   const handleDeleteTeklifHesaplama = async () => {
     try {
-      const result = await deleteTeklifHesaplama(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteTeklifHesaplama(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -217,9 +214,7 @@ const Page = () => {
 
   const fetchData = async () => {
     try {
-      const teklidHesaplamaVerileri = await getTeklifHesaplama(
-        user.token || "",
-        user.denetciId || 0,
+      const teklidHesaplamaVerileri = await getTeklifHesaplama(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -708,3 +703,4 @@ const Page = () => {
 };
 
 export default Page;
+

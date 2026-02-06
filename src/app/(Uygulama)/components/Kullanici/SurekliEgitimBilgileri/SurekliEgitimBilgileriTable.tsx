@@ -65,9 +65,7 @@ const SurekliEgitimBilgileriTable = () => {
   const handleDelete = async () => {
     handleClose();
     try {
-      const result = await deleteSurekliEgitimBilgileriById(
-        user.token || "",
-        selectedId || 0
+      const result = await deleteSurekliEgitimBilgileriById(selectedId || 0
       );
       if (result) {
         fetchData();
@@ -84,9 +82,7 @@ const SurekliEgitimBilgileriTable = () => {
   const fetchData = async () => {
     try {
       const surekliEgitimBilgileriVerileri =
-        await getSurekliEgitimBilgileriByDenetciId(
-          user.token || "",
-          user.denetciId
+        await getSurekliEgitimBilgileriByDenetciId(user.denetciId
         );
 
       const newRows = surekliEgitimBilgileriVerileri.map(
@@ -247,3 +243,4 @@ const SurekliEgitimBilgileriTable = () => {
 };
 
 export default SurekliEgitimBilgileriTable;
+

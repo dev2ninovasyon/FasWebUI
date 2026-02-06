@@ -1,7 +1,6 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 export const getYorum = async (
-    token: string,
     denetlenenId: number,
     yil: number,
     belgeAdi: string
@@ -13,7 +12,6 @@ export const getYorum = async (
                 method: "GET",
                 headers: {
                     accept: "application/json",
-                    Authorization: `Bearer ${token}`,
                 },
             }
         );
@@ -30,7 +28,6 @@ export const getYorum = async (
 };
 
 export const saveYorum = async (
-    token: string,
     denetlenenId: number,
     yil: number,
     belgeAdi: string,
@@ -41,7 +38,6 @@ export const saveYorum = async (
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
                 denetlenenId,

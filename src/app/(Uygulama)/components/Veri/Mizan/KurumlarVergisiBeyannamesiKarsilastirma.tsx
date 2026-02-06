@@ -257,9 +257,7 @@ const KurumlarVergisiBeyannamesiKarsilastirma: React.FC<Props> = ({ type }) => {
   const fetchData = async () => {
     try {
       const kurumlarVergisiBeyannamesiKarsilastirmaVerileri =
-        await getKurumlarVergisiBeyannamesiKarsilastirma(
-          user.token || "",
-          user.denetciId || 0,
+        await getKurumlarVergisiBeyannamesiKarsilastirma(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0,
           type
@@ -418,3 +416,4 @@ const KurumlarVergisiBeyannamesiKarsilastirma: React.FC<Props> = ({ type }) => {
 };
 
 export default KurumlarVergisiBeyannamesiKarsilastirma;
+

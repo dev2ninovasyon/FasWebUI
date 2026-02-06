@@ -140,9 +140,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
 
     try {
       setIsLoadingList(true);
-      const list = await getEkBelgeler(
-        user.token || "",
-        user.denetciId || 0,
+      const list = await getEkBelgeler(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         formKodu
@@ -335,7 +333,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
     try {
       setIsUploading(true);
 
-      const result = await uploadEkBelge(user.token || "", formData);
+      const result = await uploadEkBelge(formData);
 
       if (result === true || (typeof result === "object" && result?.success)) {
         enqueueSnackbar("Ek belge(ler) başarıyla yüklendi.", {
@@ -394,9 +392,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
     if (!user.token) return;
 
     try {
-      const { blob, fileName } = await downloadEkBelge(
-        user.token || "",
-        belge.id
+      const { blob, fileName } = await downloadEkBelge(belge.id
       );
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -425,7 +421,7 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
     if (!user.token) return;
 
     try {
-      const { blob } = await downloadEkBelge(user.token || "", belge.id);
+      const { blob } = await downloadEkBelge(belge.id);
 
       const isPdf = isPdfBelge(belge);
 
@@ -505,7 +501,6 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
       setIsDeletingSelected(true);
 
       const result = await deleteEkBelgelerSecilenler(
-        user.token!,
         user.denetciId!,
         user.denetlenenId!,
         user.yil!,
@@ -1037,3 +1032,4 @@ const EkBelgeYukleButton = forwardRef<EkBelgeYukleButtonRef, EkBelgeYukleButtonP
 EkBelgeYukleButton.displayName = "EkBelgeYukleButton";
 
 export default EkBelgeYukleButton;
+

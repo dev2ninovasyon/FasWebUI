@@ -19,7 +19,6 @@ export interface StokDonemsellikTestiData {
 }
 
 export async function getStokDonemsellikTesti(
-    token: string,
     denetlenenId: number
 ) {
     const response = await apiFetch(
@@ -28,7 +27,6 @@ export async function getStokDonemsellikTesti(
             method: "GET",
             headers: {
                 accept: "application/json",
-                Authorization: `Bearer ${token}`,
             },
         }
     );
@@ -37,7 +35,6 @@ export async function getStokDonemsellikTesti(
 }
 
 export async function updateStokDonemsellikTesti(
-    token: string,
     id: number,
     data: Partial<StokDonemsellikTestiData>
 ) {
@@ -45,7 +42,6 @@ export async function updateStokDonemsellikTesti(
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
@@ -54,7 +50,6 @@ export async function updateStokDonemsellikTesti(
 }
 
 export async function varsayilanaDonStokDonemsellik(
-    token: string,
     denetciId: number,
     yil: number,
     denetlenenId: number,
@@ -66,7 +61,6 @@ export async function varsayilanaDonStokDonemsellik(
             method: "POST",
             headers: {
                 accept: "*/*",
-                Authorization: `Bearer ${token}`,
             },
         }
     );

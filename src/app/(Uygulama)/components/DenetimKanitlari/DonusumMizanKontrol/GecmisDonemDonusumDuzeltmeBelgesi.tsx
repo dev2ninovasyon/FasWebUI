@@ -308,9 +308,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
 
   const fetchData = async () => {
     try {
-      const fisListesiVerileri = await getFisListesiVerileri(
-        user.token || "",
-        user.denetciId || 0,
+      const fisListesiVerileri = await getFisListesiVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         (user.yil ?? 0) - 2,
         false
@@ -552,3 +550,4 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
 };
 
 export default GecmisDonemDonusumDuzeltmeBelgesi;
+

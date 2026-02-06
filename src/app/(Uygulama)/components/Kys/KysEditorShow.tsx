@@ -20,9 +20,7 @@ const KysEditorShow: React.FC<KysEditorShowProps> = ({ formKodu, alanAdi }) => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const result = await getKysBelgelerEditorText(
-                user.token || "",
-                formKodu,
+            const result = await getKysBelgelerEditorText(formKodu,
                 user.denetlenenId || 0,
                 user.yil || 0
             );
@@ -81,3 +79,4 @@ const KysEditorShow: React.FC<KysEditorShowProps> = ({ formKodu, alanAdi }) => {
 };
 
 export default KysEditorShow;
+

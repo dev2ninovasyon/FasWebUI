@@ -94,9 +94,7 @@ const KurFarkiOrnekFisler: React.FC<Props> = ({
       });
 
     try {
-      const result = await createFisGirisiVerisi(
-        user.token || "",
-        jsonData,
+      const result = await createFisGirisiVerisi(jsonData,
         false
       );
       if (result) {
@@ -428,9 +426,7 @@ const KurFarkiOrnekFisler: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const kurFarkiOrnekFisVerileri = await getKurFarkiOrnekFisler(
-        user.token || "",
-        user.denetciId || 0,
+      const kurFarkiOrnekFisVerileri = await getKurFarkiOrnekFisler(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -598,3 +594,4 @@ const KurFarkiOrnekFisler: React.FC<Props> = ({
 };
 
 export default KurFarkiOrnekFisler;
+

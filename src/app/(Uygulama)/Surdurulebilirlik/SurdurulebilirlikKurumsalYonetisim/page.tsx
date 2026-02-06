@@ -71,7 +71,6 @@ const Page = () => {
     try {
       const result = await createCalismaKagidiVerisi(
         controller || "",
-        user.token || "",
         createdCalismaKagidiGrubu
       );
       if (result) {
@@ -296,6 +295,7 @@ const Page = () => {
 };
 
 export default Page;
+
 
 
 

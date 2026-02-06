@@ -57,7 +57,6 @@ const DenetimKadrosuDuzenleForm = () => {
     };
     try {
       const result = await updateGorevAtamalari(
-        user.token || "",
         id,
         updatedGorevAtamalari
       );
@@ -84,7 +83,6 @@ const DenetimKadrosuDuzenleForm = () => {
   const fetchData = async () => {
     try {
       const görevAtamalariVerileri = await getGorevAtamalariById(
-        user.token || "",
         pathId
       );
       setKullaniciId(görevAtamalariVerileri.kullaniciId);

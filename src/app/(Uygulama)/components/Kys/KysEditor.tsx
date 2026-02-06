@@ -46,9 +46,7 @@ const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent, read
 
     const fetchData = async () => {
         try {
-            const result = await getKysBelgelerEditorText(
-                user.token || "",
-                formKodu,
+            const result = await getKysBelgelerEditorText(formKodu,
                 user.denetlenenId || 0,
                 user.yil || 0
             );
@@ -77,7 +75,7 @@ const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent, read
                 metin: editorData,
             };
 
-            await saveKysBelgelerEditorText(user.token || "", data);
+            await saveKysBelgelerEditorText(data);
 
             const now = new Date();
             setSonGuncelleme(now.toISOString());
@@ -137,3 +135,4 @@ const KysEditor: FC<KysEditorProps> = ({ formKodu, alanAdi, defaultContent, read
 };
 
 export default KysEditor;
+

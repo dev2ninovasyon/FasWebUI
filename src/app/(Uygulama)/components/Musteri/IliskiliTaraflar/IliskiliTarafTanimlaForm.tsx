@@ -22,9 +22,7 @@ const IliskiliTarafTanimlaForm = () => {
       adi,
     };
     try {
-      const result = await createIliskiliTaraflar(
-        user.token || "",
-        createdIliskiliTaraflar
+      const result = await createIliskiliTaraflar(createdIliskiliTaraflar
       );
       if (result) {
         router.push("/Musteri/IliskiliTaraflar");
@@ -88,3 +86,4 @@ const IliskiliTarafTanimlaForm = () => {
 };
 
 export default IliskiliTarafTanimlaForm;
+

@@ -33,8 +33,7 @@ const Page = ({ params }: { params: Promise<{ parentName: string }> }) => {
 
     const fetchDipTitle = async () => {
         try {
-            const maddiDogrulama = await getMaddiDogrulama(
-                user.token || "", user.denetimTuru || "", user.denetlenenId || 0, user.yil || 0
+            const maddiDogrulama = await getMaddiDogrulama(user.denetimTuru || "", user.denetlenenId || 0, user.yil || 0
             );
             const found = maddiDogrulama?.find((veri: any) => normalizeString(veri?.name || "") === normalizeString(parentName));
             if (found?.name) setDip(found.name);

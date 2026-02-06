@@ -58,7 +58,6 @@ const Page = () => {
 
                 // Fetch Parent Title
                 const maddiDogrulama = await getMaddiDogrulama(
-                    user.token,
                     user.denetimTuru || "",
                     user.denetlenenId || 0,
                     user.yil || 0
@@ -75,7 +74,6 @@ const Page = () => {
 
                 // Fetch Dipnot No
                 const dipnotNo = await getDipnotNoByDipnotAdi(
-                    user.token,
                     user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
@@ -144,7 +142,6 @@ const Page = () => {
             ) : dip ? (
                 <>
                     <AmortismanKontrolleri
-                        token={user.token || ""}
                         denetlenenId={user.denetlenenId || 0}
                         yil={user.yil || 0}
                         dipnotNo={dip}

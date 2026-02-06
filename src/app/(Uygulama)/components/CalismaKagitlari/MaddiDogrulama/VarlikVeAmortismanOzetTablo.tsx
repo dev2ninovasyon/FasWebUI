@@ -46,9 +46,7 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
             if (!dipnotNo && parentName) {
                 try {
                     const { getDipnotNoByDipnotAdi } = await import("@/api/MaddiDogrulama/MaddiDogrulama");
-                    const dNo = await getDipnotNoByDipnotAdi(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const dNo = await getDipnotNoByDipnotAdi(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         parentName,
@@ -72,9 +70,7 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
         console.log("Veri çekiliyor - dipnotNo:", resolvedDipnotNo, "denetlenenId:", user.denetlenenId, "yil:", user.yil);
         setLoading(true);
         try {
-            const response = await fetchVarlikVeAmortismanOzetTablo(
-                user.token || "",
-                user.denetlenenId || 0,
+            const response = await fetchVarlikVeAmortismanOzetTablo(user.denetlenenId || 0,
                 user.yil || 0,
                 resolvedDipnotNo
             );
@@ -242,3 +238,4 @@ const VarlikVeAmortismanOzetTablo: React.FC<Props> = ({ parentName, childName, d
 };
 
 export default VarlikVeAmortismanOzetTablo;
+

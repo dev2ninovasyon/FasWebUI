@@ -274,9 +274,7 @@ const CalismaKagidiRaporu = () => {
         try {
             if (normalizedItemName.includes("mutabakat")) {
                 type = "Mutabakat";
-                data = await getMutabakatByDipnot(
-                    user.token || "",
-                    user.denetciId || 0,
+                data = await getMutabakatByDipnot(user.denetciId || 0,
                     user.yil || 0,
                     user.denetlenenId || 0,
                     dipnotNo
@@ -285,9 +283,7 @@ const CalismaKagidiRaporu = () => {
                 type = "Onemlilik";
                 // Uses dipnotNo if available, otherwise fallback to pName (though logic suggests dipnotNo is required)
                 const param = dipnotNo || pName;
-                data = await getOnemlilikByDipnot(
-                    user.token || "",
-                    user.denetciId || 0,
+                data = await getOnemlilikByDipnot(user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
                     dipnotNo
@@ -295,9 +291,7 @@ const CalismaKagidiRaporu = () => {
             } else if (normalizedItemName.includes("orneklem")) {
                 type = "Orneklem";
                 const param = dipnotNo || pName;
-                data = await getOrneklemByDipnot(
-                    user.token || "",
-                    user.denetciId || 0,
+                data = await getOrneklemByDipnot(user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
                     dipnotNo
@@ -306,7 +300,6 @@ const CalismaKagidiRaporu = () => {
                 type = "Risk";
                 const allRiskData = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
                     "FinansalTablolarDenetimRiskiBelirleme",
-                    user.token || "",
                     user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0
@@ -318,9 +311,7 @@ const CalismaKagidiRaporu = () => {
                 normalizedItemName.includes("hesaplarailiskin")
             ) {
                 type = "Prosedur";
-                const allProcs = await getUygulananDenetimProsedurleri(
-                    user.token || "",
-                    user.denetciId || 0,
+                const allProcs = await getUygulananDenetimProsedurleri(user.denetciId || 0,
                     user.denetlenenId || 0,
                     user.yil || 0,
                     pName,
@@ -334,7 +325,6 @@ const CalismaKagidiRaporu = () => {
                     if (dipnotNo) {
                         data = await getCalismaKagidiVerileriByDenetciDenetlenenYilDipnotNo(
                             "UygulananDenetimTeknikleri",
-                            user.token || "",
                             user.denetciId || 0,
                             user.denetlenenId || 0,
                             user.yil || 0,
@@ -434,13 +424,12 @@ const CalismaKagidiRaporu = () => {
     };
 
     const fetchSignatureData = async () => {
-        if (!user.token || !parentName) return;
+        if (!parentName) return;
 
         const formKodu = decodeURIComponent(parentName);
 
         try {
             const formData = await getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
-                user.token,
                 user.denetciId || 0,
                 user.denetlenenId || 0,
                 user.yil || 0,
@@ -449,18 +438,17 @@ const CalismaKagidiRaporu = () => {
 
             // Fallback people from roles
             const [fallbackHazirlayanlar, fallbackOnaylayanlar, fallbackKaliteler] = await Promise.all([
-                getKullaniciByDenetlenenYilRol(user.token, user.denetlenenId || 0, user.yil || 0, "Hazırlayan"),
-                getKullaniciByDenetlenenYilRol(user.token, user.denetlenenId || 0, user.yil || 0, "Onaylayan"),
-                getKullaniciByDenetlenenYilRol(user.token, user.denetlenenId || 0, user.yil || 0, "Kalite Kontrol"),
+                getKullaniciByDenetlenenYilRol(user.denetlenenId || 0, user.yil || 0, "Hazırlayan"),
+                getKullaniciByDenetlenenYilRol(user.denetlenenId || 0, user.yil || 0, "Onaylayan"),
+                getKullaniciByDenetlenenYilRol(user.denetlenenId || 0, user.yil || 0, "Kalite Kontrol"),
             ]);
 
             // Fetch task assignments for specific preparer fallback
             const gorevAtamalari = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
                 "MaddiDogrulukGorevAtamalari",
-                user.token,
                 user.denetciId || 0,
                 user.denetlenenId || 0,
-                user.yil || 0
+                user.yil || 0 // Explicitly 4 arguments
             );
 
             const matchingGorev = gorevAtamalari?.find(
@@ -469,13 +457,13 @@ const CalismaKagidiRaporu = () => {
 
             let assignedHazirlayan = null;
             if (matchingGorev?.gorevliId) {
-                assignedHazirlayan = await getKullaniciById(user.token, matchingGorev.gorevliId);
+                assignedHazirlayan = await getKullaniciById(matchingGorev.gorevliId);
             }
 
             const [hazirlayan, onaylayan, kalite] = await Promise.all([
-                formData?.hazirlayanId ? getKullaniciById(user.token, formData.hazirlayanId) : Promise.resolve(assignedHazirlayan || (fallbackHazirlayanlar?.[0] || null)),
-                formData?.onaylayanId ? getKullaniciById(user.token, formData.onaylayanId) : Promise.resolve(fallbackOnaylayanlar?.[0] || null),
-                formData?.kontrolEdenId ? getKullaniciById(user.token, formData.kontrolEdenId) : Promise.resolve(fallbackKaliteler?.[0] || null),
+                formData?.hazirlayanId ? getKullaniciById(formData.hazirlayanId) : Promise.resolve(assignedHazirlayan || (fallbackHazirlayanlar?.[0] || null)),
+                formData?.onaylayanId ? getKullaniciById(formData.onaylayanId) : Promise.resolve(fallbackOnaylayanlar?.[0] || null),
+                formData?.kontrolEdenId ? getKullaniciById(formData.kontrolEdenId) : Promise.resolve(fallbackKaliteler?.[0] || null),
             ]);
 
             setSignatureData({
@@ -526,9 +514,7 @@ const CalismaKagidiRaporu = () => {
 
     const fetchData = async () => {
         try {
-            if (!user.token) return;
             const allData: DenetimDosyaBelgeleriDto[] = await getMaddiDogrulama(
-                user.token,
                 user.denetimTuru || "",
                 user.denetlenenId || 0,
                 user.yil || 0
@@ -542,9 +528,7 @@ const CalismaKagidiRaporu = () => {
                 // Need to find the exact dipnotNo from procedures first
                 let dipnotNo = "";
                 try {
-                    const allProcs = await getUygulananDenetimProsedurleri(
-                        user.token || "",
-                        user.denetciId || 0,
+                    const allProcs = await getUygulananDenetimProsedurleri(user.denetciId || 0,
                         user.denetlenenId || 0,
                         user.yil || 0,
                         parentName, // Use parent name to search
@@ -607,9 +591,7 @@ const CalismaKagidiRaporu = () => {
 
                 if (!hasOnemlilik && dipnotNo) {
                     try {
-                        const onemlilikData = await getOnemlilikByDipnot(
-                            user.token || "",
-                            user.denetciId || 0,
+                        const onemlilikData = await getOnemlilikByDipnot(user.denetciId || 0,
                             user.denetlenenId || 0,
                             user.yil || 0,
                             dipnotNo
@@ -629,9 +611,7 @@ const CalismaKagidiRaporu = () => {
 
                 if (!hasOrneklem && dipnotNo) {
                     try {
-                        const orneklemData = await getOrneklemByDipnot(
-                            user.token || "",
-                            user.denetciId || 0,
+                        const orneklemData = await getOrneklemByDipnot(user.denetciId || 0,
                             user.denetlenenId || 0,
                             user.yil || 0,
                             dipnotNo
@@ -786,11 +766,7 @@ const CalismaKagidiRaporu = () => {
             formData.append("modelAdi", "CalismaKagidi");
             formData.append("save", "true");
 
-            await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
-                headers: {
-                    Authorization: `Bearer ${user.token || ""}`,
-                },
-            });
+            await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData);
 
             enqueueSnackbar("Çalışma kağıdı arşive kaydedildi.", { variant: "success" });
         } catch (error) {
@@ -890,7 +866,7 @@ const CalismaKagidiRaporu = () => {
                 return withComment(<FaturaTestleriTablo dipnotNo={currentDipnotNo} isReport={true} />, "FaturaTestleri");
 
             case "AmortismanKontrolleri":
-                return withComment(<AmortismanKontrolleri token={user.token || ""} denetlenenId={user.denetlenenId || 0} yil={user.yil || 0} dipnotNo={currentDipnotNo} isReport={true} />, "AmortismanKontrolleri");
+                return withComment(<AmortismanKontrolleri denetlenenId={user.denetlenenId || 0} yil={user.yil || 0} dipnotNo={currentDipnotNo} isReport={true} />, "AmortismanKontrolleri");
 
             case "KrediCalismasi":
                 return withComment(<KrediCalismasi parentName={currentParentName} childName="KrediCalismasi" dipnotNo={currentDipnotNo} isReport={true} />, "KrediCalismasi");
@@ -1411,3 +1387,4 @@ const CalismaKagidiRaporu = () => {
 };
 
 export default CalismaKagidiRaporu;
+

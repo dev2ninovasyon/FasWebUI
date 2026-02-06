@@ -25,11 +25,10 @@ interface UploadMusteriBelgeParams {
 
 // EK BELGE YÜKLE (fetch)
 export async function uploadMusteriBelgeFetch(
-  token: string,
   params: UploadMusteriBelgeParams
 ): Promise<void> {
   const { denetciId, denetlenenId, yil, formKodu, files } = params;
-console.log("de")
+  console.log("de")
   const formData = new FormData();
   formData.append("DenetciId", denetciId.toString());
   formData.append("DenetlenenId", denetlenenId.toString());
@@ -45,7 +44,6 @@ console.log("de")
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`,
         // fetch + FormData'da Content-Type otomatik ayarlanır, elle vermiyoruz.
       },
       body: formData,
@@ -62,7 +60,6 @@ console.log("de")
 
 // EK BELGE LİSTESİ (fetch)
 export async function getMusteriBelgeleriFetch(
-  token: string,
   denetciId: number,
   denetlenenId: number,
   yil: number,
@@ -79,9 +76,7 @@ export async function getMusteriBelgeleriFetch(
     `/ArsivIslemleri/ek-belge-listesi?${params.toString()}`,
     {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: {},
     }
   );
 

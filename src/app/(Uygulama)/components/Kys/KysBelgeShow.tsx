@@ -33,7 +33,6 @@ const KysBelgeShow: React.FC<KysBelgeShowProps> = ({ formKodu }) => {
 
         setLoading(true);
         const data = await getKysBelge(
-            user.token,
             formKodu,
             user.denetciId,
             user.denetlenenId,
@@ -41,7 +40,7 @@ const KysBelgeShow: React.FC<KysBelgeShowProps> = ({ formKodu }) => {
         );
         setBelgeVeri(data);
         setLoading(false);
-    }, [user.token, user.denetciId, user.denetlenenId, user.yil, formKodu]);
+    }, [user.denetciId, user.denetlenenId, user.yil, formKodu]);
 
     useEffect(() => {
         fetchData();

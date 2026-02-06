@@ -652,7 +652,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
       });
 
     try {
-      const result = await createAmortismanVerisi(user.token || "", jsonData);
+      const result = await createAmortismanVerisi(jsonData);
       if (result) {
         await fetchData();
         enqueueSnackbar("Kaydedildi", {
@@ -686,9 +686,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
 
   const handleDeleteAmortismanVerisi = async () => {
     try {
-      const result = await deleteAmortismanVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteAmortismanVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -727,9 +725,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const amortismanVerileri =
-        await getAmortismanVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getAmortismanVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -804,7 +800,7 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Amortisman");
+      const format = await getFormat("Amortisman");
       setRowCount(format.satirSayisi);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -966,3 +962,4 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
 };
 
 export default AmortismanVeriYukleme;
+

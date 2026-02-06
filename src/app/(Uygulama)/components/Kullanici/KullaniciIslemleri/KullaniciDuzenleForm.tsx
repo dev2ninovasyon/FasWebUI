@@ -45,9 +45,7 @@ const KullaniciDuzenleForm = () => {
       aktifPasif,
     };
     try {
-      const result = await updateKullanici(
-        user.token || "",
-        id,
+      const result = await updateKullanici(id,
         updatedKullanici
       );
       if (result) {
@@ -62,9 +60,7 @@ const KullaniciDuzenleForm = () => {
 
   const fetchData = async () => {
     try {
-      const kullaniciVerileri = await getKullaniciById(
-        user.token || "",
-        pathId
+      const kullaniciVerileri = await getKullaniciById(pathId
       );
       setUnvani(kullaniciVerileri.unvani);
       setPersonelAdi(kullaniciVerileri.personelAdi);
@@ -308,3 +304,4 @@ const KullaniciDuzenleForm = () => {
 };
 
 export default KullaniciDuzenleForm;
+

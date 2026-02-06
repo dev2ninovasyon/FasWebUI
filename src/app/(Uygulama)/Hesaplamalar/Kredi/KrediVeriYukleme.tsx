@@ -551,9 +551,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
       });
 
     try {
-      const result = await createKrediHesaplamaVerisi(
-        user.token || "",
-        jsonData
+      const result = await createKrediHesaplamaVerisi(jsonData
       );
       if (result) {
         await fetchData();
@@ -588,9 +586,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
 
   const handleDeleteKrediHesaplamaVerisi = async () => {
     try {
-      const result = await deleteKrediHesaplamaVerisi(
-        user.token || "",
-        user.denetciId || 0,
+      const result = await deleteKrediHesaplamaVerisi(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0
       );
@@ -629,9 +625,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
     setEndRow(-1);
     try {
       const krediHesaplamaVerileri =
-        await getKrediHesaplamaVerileriByDenetciDenetlenenYil(
-          user.token || "",
-          user.denetciId || 0,
+        await getKrediHesaplamaVerileriByDenetciDenetlenenYil(user.denetciId || 0,
           user.denetlenenId || 0,
           user.yil || 0
         );
@@ -683,7 +677,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
 
   const fetchRowCount = async () => {
     try {
-      const format = await getFormat(user.token || "", "Kredi Hesaplama");
+      const format = await getFormat("Kredi Hesaplama");
       setRowCount(format.satirSayisi);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -861,3 +855,4 @@ const KrediVeriYukleme: React.FC<Props> = ({
 };
 
 export default KrediVeriYukleme;
+

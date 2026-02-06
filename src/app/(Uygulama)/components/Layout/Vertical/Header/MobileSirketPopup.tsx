@@ -83,7 +83,6 @@ const MobileSirketPopup = () => {
 
     try {
       const rolVerileri = await getRol(
-        user.token || "",
         user.id || 0,
         selectedId,
         selectedYearNumber
@@ -95,7 +94,7 @@ const MobileSirketPopup = () => {
       // Persist to database
       if (user.token && user.id && user.id !== 0) {
         console.log(`MobileSirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
-        await updateSonSecilenAyarlari(user.token, user.id, selectedId, selectedYearNumber);
+        await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
         console.log("MobileSirketPopup - Persistence update successful.");
       } else {
         console.warn("MobileSirketPopup - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });

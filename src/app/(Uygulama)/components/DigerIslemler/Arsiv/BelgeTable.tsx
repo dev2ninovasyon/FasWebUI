@@ -196,7 +196,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
     try {
       setSilTiklandimi(true);
 
-      const response = await deleteArsiv(user.token || "", veri.url || "");
+      const response = await deleteArsiv(veri.url || "");
       if (response) {
         setSilTiklandimi(false);
         enqueueSnackbar("Dosya Silindi.", {
@@ -237,7 +237,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
         .map((row) => (row?.url?.trim() ? row.url : null))
         .filter((p): p is string => !!p);
 
-      const response = await deleteAllArsiv(user.token || "", paths);
+      const response = await deleteAllArsiv(paths);
       if (response) {
         setSilTiklandimi(false);
         enqueueSnackbar("Dosyalar Silindi.", {
@@ -575,3 +575,4 @@ const BelgeTable: React.FC<MyComponentProps> = ({
 };
 
 export default BelgeTable;
+
