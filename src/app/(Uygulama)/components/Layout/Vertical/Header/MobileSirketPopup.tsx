@@ -24,10 +24,13 @@ import {
   setRol,
   setKonsolidemi,
   setEnflasyonmu,
+  setToken,
+  setRefreshToken,
 } from "@/store/user/UserSlice";
 import { AppState } from "@/store/store";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
+import { url } from "@/api/apiBase";
 
 const MobileSirketPopup = () => {
   // drawer top
@@ -82,25 +85,61 @@ const MobileSirketPopup = () => {
     localStorage.setItem("fas_yil", selectedYear.toString());
 
     try {
-      const rolVerileri = await getRol(
-        user.id || 0,
-        selectedId,
-        selectedYearNumber
-      );
-      if (rolVerileri) {
-        dispatch(setRol(rolVerileri.rol));
-      }
+      if (selectedId && selectedYearNumber) {
+        // Redux ve LocalStorage güncellemeleri zaten yapıldı.
 
-      // Persist to database
-      if (user.token && user.id && user.id !== 0) {
-        console.log(`MobileSirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
-        await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
-        console.log("MobileSirketPopup - Persistence update successful.");
-      } else {
-        console.warn("MobileSirketPopup - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });
+        // 1. Önce DB Persist (Son Seçilen Ayarlar) - BU ÖNEMLİ: 
+        // Backend'deki session/ayarlar güncellenmeli ki refresh token yeni şirketle gelsin.
+        if (user.token && user.id && user.id !== 0) {
+          console.log(`MobileSirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
+          try {
+            await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
+            console.log("MobileSirketPopup - Persistence update successful.");
+
+            // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
+            const refreshToken = localStorage.getItem("fas_refreshToken");
+            if (refreshToken) {
+              try {
+                const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ RefreshToken: refreshToken }),
+                });
+
+                if (refreshResponse.ok) {
+                  const refreshData = await refreshResponse.json();
+                  if (refreshData?.token) {
+                    localStorage.setItem("fas_token", refreshData.token);
+                    localStorage.setItem("fas_refreshToken", refreshData.refreshToken);
+                    dispatch(setToken(refreshData.token));
+                    dispatch(setRefreshToken(refreshData.refreshToken));
+                    console.log("✅ MobileSirketPopup - Token refresh successful.");
+                  }
+                } else {
+                  console.warn("⚠️ MobileSirketPopup - Token refresh başarısız.");
+                }
+              } catch (refreshErr) {
+                console.warn("⚠️ MobileSirketPopup - Token refresh hatası:", refreshErr);
+              }
+            }
+          } catch (err) {
+            console.error("MobileSirketPopup - Persistence update hatası:", err);
+          }
+        }
+
+        // 2. Rol Bilgisi Güncelleme
+        try {
+          const rolVerileri = await getRol(user.id || 0, selectedId, selectedYearNumber);
+          if (rolVerileri) {
+            dispatch(setRol(rolVerileri.rol));
+            console.log("MobileSirketPopup - Rol güncellendi.");
+          }
+        } catch (err) {
+          console.error("MobileSirketPopup - Rol güncelleme hatası:", err);
+        }
       }
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("MobileSirketPopup - Genel hata:", error);
     }
 
     handleDrawerClose2();

@@ -74,7 +74,8 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
-        tip
+        tip,
+        window.location.pathname
       );
       if (result) {
         await fetchData();
@@ -281,12 +282,12 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
                       {fetchedData.tip == "CekSenetReeskont"
                         ? "Çek Senet Reeskont"
                         : fetchedData.tip == "DavaKarsiliklari"
-                        ? "Dava Karşılıkları"
-                        : fetchedData.tip == "KidemTazminatiBobi"
-                        ? "Kıdem Tazminatı (Bobi)"
-                        : fetchedData.tip == "KidemTazminatiTfrs"
-                        ? "Kıdem Tazminatı (Tfrs)"
-                        : fetchedData.tip}
+                          ? "Dava Karşılıkları"
+                          : fetchedData.tip == "KidemTazminatiBobi"
+                            ? "Kıdem Tazminatı (Bobi)"
+                            : fetchedData.tip == "KidemTazminatiTfrs"
+                              ? "Kıdem Tazminatı (Tfrs)"
+                              : fetchedData.tip}
                     </Typography>
                   </Grid>
                   <Grid

@@ -57,6 +57,7 @@ interface Veri {
   denetlenenId?: number;
   yil?: number;
   tip?: string;
+  kaynakUrl?: string;
 }
 
 const styles = `
@@ -189,14 +190,15 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       if (bildirimler && Array.isArray(bildirimler)) {
         bildirimler.forEach((veri: any) => {
           const newRow: Veri = {
-            id: veri.id,
-            konu: veri.konu,
-            aciklama: veri.aciklama,
-            okundumu: veri.okundumu,
-            tarih: veri.tarih || new Date().toISOString(),
-            denetlenenId: veri.denetlenenId,
-            yil: veri.yil,
-            tip: veri.tip
+            id: veri.id || veri.Id,
+            konu: veri.konu || veri.Konu,
+            aciklama: veri.aciklama || veri.Aciklama,
+            okundumu: veri.okundumu !== undefined ? veri.okundumu : veri.Okundumu,
+            tarih: veri.tarih || veri.Tarih || new Date().toISOString(),
+            denetlenenId: veri.denetlenenId || veri.DenetlenenId,
+            yil: veri.yil || veri.Yil,
+            tip: veri.tip || veri.Tip,
+            kaynakUrl: veri.kaynakUrl || veri.KaynakUrl
           };
 
           rowsAll.push(newRow);
@@ -255,11 +257,15 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   // Yeni bildirim handle helper
   const handleNewNotification = (bildirim: any) => {
     const yeniBildirim: Veri = {
-      id: bildirim.id,
-      konu: bildirim.konu,
-      aciklama: bildirim.aciklama,
+      id: bildirim.id || bildirim.Id,
+      konu: bildirim.konu || bildirim.Konu,
+      aciklama: bildirim.aciklama || bildirim.Aciklama,
       okundumu: false,
-      tarih: bildirim.tarih || new Date().toISOString(),
+      tarih: bildirim.tarih || bildirim.Tarih || new Date().toISOString(),
+      denetlenenId: bildirim.denetlenenId || bildirim.DenetlenenId,
+      yil: bildirim.yil || bildirim.Yil,
+      tip: bildirim.tip || bildirim.Tip,
+      kaynakUrl: bildirim.kaynakUrl || bildirim.KaynakUrl
     };
 
     // Sayfa başlığını güncelle
@@ -357,21 +363,28 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     const targetDenetlenenId = bildirim.denetlenenId;
     const targetYil = bildirim.yil;
 
-    // Eğer bildirimde şirket/yıl bilgisi yoksa (eski bildirimler), sadece yönlendirme dene
-    if (!targetDenetlenenId || !targetYil) {
-      navigateByTip(bildirim.tip);
-      return;
-    }
+    console.log("Bildirim tıklandı:", {
+      targetDenetlenenId,
+      targetYil,
+      currentDenetlenenId: user.denetlenenId,
+      currentYil: user.yil,
+      kaynakUrl: bildirim.kaynakUrl,
+      tip: bildirim.tip
+    });
 
-    // Mevcut seçimle karşılaştır
-    const isDifferent =
-      targetDenetlenenId !== user.denetlenenId || targetYil !== user.yil;
+    const isDifferent = !!(targetDenetlenenId && targetYil && (targetDenetlenenId !== user.denetlenenId || targetYil !== user.yil));
 
     if (isDifferent) {
+      console.log("Farklı şirket/yıl algılandı, onay kutusu açılıyor");
       setPendingBildirim(bildirim);
       setConfirmOpen(true);
     } else {
-      navigateByTip(bildirim.tip);
+      console.log("Aynı şirket/yıl, yönlendirme yapılıyor");
+      if (bildirim.kaynakUrl) {
+        router.push(bildirim.kaynakUrl);
+      } else {
+        navigateByTip(bildirim.tip);
+      }
     }
   };
 
@@ -400,23 +413,38 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         localStorage.setItem("fas_denetlenenId", targetId.toString());
         localStorage.setItem("fas_yil", targetYil.toString());
 
-        // Rol ve DB güncellemesi
-        const rolVerileri = await getRol(user.id || 0, targetId, targetYil);
-        if (rolVerileri) {
-          dispatch(setRol(rolVerileri.rol));
-        }
+        // Rol ve DB güncellemesi 
+        try {
+          // 1. Önce DB Persist (Son Seçilen Ayarlar) - KRİTİK SIRALAMA
+          if (user.token && user.id && user.id !== 0) {
+            console.log(`Notification - Persisting selection for user ${user.id}: Company=${targetId}, Year=${targetYil}`);
+            try {
+              await updateSonSecilenAyarlari(user.id, targetId, targetYil);
+              console.log("Notification - Persistence update successful.");
+            } catch (err) {
+              console.error("Notification - Persistence update hatası:", err);
+            }
+          }
 
-        if (user.token && user.id && user.id !== 0) {
-          await updateSonSecilenAyarlari(user.id, targetId, targetYil);
+          // 2. Rol Bilgisi Güncelleme
+          try {
+            const rolVerileri = await getRol(user.id || 0, targetId, targetYil);
+            if (rolVerileri) {
+              dispatch(setRol(rolVerileri.rol));
+              console.log("Notification - Rol güncellendi.");
+            }
+          } catch (err) {
+            console.error("Notification - Rol güncelleme hatası:", err);
+          }
+        } catch (innerError) {
+          console.error("Notification - Şirket detay güncelleme hatası:", innerError);
         }
 
         // Yönlendirme hedefi
-        const path = getPathByTip(pendingBildirim.tip);
+        const path = pendingBildirim.kaynakUrl || getPathByTip(pendingBildirim.tip);
 
-        // Şirket değişimi için sayfanın yenilenmesi gerekebilir (Context vb. temizliği için)
-        // Ancak kullanıcı deneyimi için sadece yönlendirme de denenebilir. 
-        // Mevcut yapıda window.location.reload() kullanılıyor, biz URL ile beraber reload edelim.
-        window.location.href = path;
+        // Şirket değişimi için router.push kullanıyoruz
+        router.push(path);
       }
     } catch (error) {
       console.error("Şirket değiştirme hatası:", error);
@@ -426,8 +454,8 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     }
   };
 
-  const navigateByTip = (tip?: string) => {
-    const path = getPathByTip(tip);
+  const navigateByTip = (tip?: string, kaynakUrl?: string) => {
+    const path = kaynakUrl || getPathByTip(tip);
     router.push(path);
   };
 

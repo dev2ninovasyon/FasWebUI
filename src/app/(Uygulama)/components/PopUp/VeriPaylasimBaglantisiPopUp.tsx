@@ -60,7 +60,8 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
-        "DefterKVBeyannamesi"
+        "DefterKVBeyannamesi",
+        window.location.pathname
       );
       if (result) {
         await fetchData();

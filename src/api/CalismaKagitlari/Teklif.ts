@@ -7,6 +7,7 @@ export const getAcceptedYears = async (denetlenenId: number) => {
             headers: {
                 accept: "application/json",
             },
+            ignoreCustomHeaders: true,
         });
         if (response.ok) {
             return response.json();

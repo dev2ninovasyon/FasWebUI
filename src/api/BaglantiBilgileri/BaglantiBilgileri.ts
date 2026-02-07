@@ -16,11 +16,11 @@ const getApiUrl = () => {
     // Statik URL yerine dinamik origin kullanımı (Localhost/Production uyumu)
     const origin = window.location.origin;
     if (origin.includes("localhost")) {
-      return "https://localhost:5001";
+      return "http://localhost:5000";
     }
-    return origin.replace("3000", "5000").replace("3001", "5001"); // Varsayılan port dönüşümü
+    return origin.replace("3000", "5000").replace("3001", "5000"); // Standardize on 5000
   }
-  return "https://localhost:5001";
+  return "http://localhost:5000";
 };
 
 // Bağlantı test et (fetch ile HTTPS sorunlarını handle et)
@@ -171,12 +171,11 @@ export const startBildirimConnection = async (denetciId: number) => {
       }
     });
 
-    console.log("Hub bağlantısı kuruluyor...");
+    console.log("🔌 SignalR bağlantısı kuruluyor...");
     await hubConnection.start();
 
-    console.log("Hub bağlantısı başarılı, grup katılımı yapılıyor...");
-    console.log("Connection state:", hubConnection.state);
-    console.log("Connection ID:", hubConnection.connectionId);
+    console.log("✅ SignalR bağlantısı başarılı! Grup katılımı yapılıyor...");
+    console.log("📡 Connection ID:", hubConnection.connectionId);
 
     // Bağlantının hazır olması için biraz bekle
     if (hubConnection.state === HubConnectionState.Connected) {
@@ -374,11 +373,12 @@ export const createBaglantiBilgileri = async (
   denetlenenId: number,
   kullaniciId: number,
   yil: number,
-  tip: string
+  tip: string,
+  kaynakUrl?: string
 ) => {
   try {
     const response = await apiFetch(
-      `/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}`,
+      `/BaglantiBilgileri/BaglantiBilgileri?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&tip=${tip}${kaynakUrl ? `&kaynakUrl=${encodeURIComponent(kaynakUrl)}` : ""}`,
       {
         method: "POST",
         headers: {

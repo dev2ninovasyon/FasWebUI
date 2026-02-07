@@ -68,7 +68,7 @@ export class SecureTokenManager {
       return false;
     }
 
-    return timeRemaining > 60; // 60 saniye buffer
+    return timeRemaining > 10; // 10 saniye buffer (daha esnek)
   }
 
   /**
@@ -198,6 +198,15 @@ export class SecureTokenManager {
       if (trimmed.startsWith(nameEQ)) return trimmed.substring(nameEQ.length);
     }
     return null;
+  }
+
+  /**
+   * Token'ları manuel olarak güncelle (Refresh sonrası veya Login sonrası fallback)
+   */
+  static saveTokens(accessToken: string, refreshToken: string): void {
+    localStorage.setItem(TOKEN_KEYS.ACCESS_TOKEN, accessToken);
+    localStorage.setItem(TOKEN_KEYS.REFRESH_TOKEN, refreshToken);
+    console.log("✅ Token'lar manuel olarak güncellendi.");
   }
 
   static deleteCookie(cookieName: string): void {

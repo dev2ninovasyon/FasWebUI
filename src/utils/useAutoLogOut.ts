@@ -29,11 +29,11 @@ export default function useAutoLogout(
   const notifyBackendLogout = useCallback(async () => {
     try {
       const token = localStorage.getItem("fas_token");
-      
+
       if (token && typeof SecureTokenManager !== 'undefined') {
         // Token'ı blacklist'e ekle (JTI ile)
         SecureTokenManager.blacklistToken(token);
-        
+
         // Backend'e logout mesajı gönder
         await apiFetch('/Auth/logout', {
           method: 'POST',
@@ -57,7 +57,7 @@ export default function useAutoLogout(
   const logout = useCallback(() => {
     // ✅ Backend'e logout bildir (JTI revocation için)
     notifyBackendLogout();
-    
+
     // ✅ localStorage'dan tüm verileri temizle
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(TIMEOUT_KEY);
@@ -66,7 +66,7 @@ export default function useAutoLogout(
     localStorage.removeItem("fas_token");      // ✅ Token'ı temizle
     localStorage.removeItem("fas_refreshToken"); // ✅ Refresh token'ı temizle
     localStorage.removeItem("fas_blacklisted_tokens"); // ✅ Blacklist'i temizle
-    
+
     dispatch(resetToNull(""));
 
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
@@ -113,8 +113,17 @@ export default function useAutoLogout(
 
   // refresh token
   const refreshToken = useCallback(async () => {
-    if (!user?.refreshToken) {  // âœ… refreshToken kontrolü
-      console.warn("Refresh token bulunamadı, logout yapılıyor");
+    // ⚠️ ÖNEMLİ: Redux state henüz hydrate edilmemiş olabilir
+    // Önce localStorage'dan kontrol et
+    const localRefreshToken = typeof window !== "undefined"
+      ? localStorage.getItem("fas_refreshToken")
+      : null;
+
+    const tokenToUse = user?.refreshToken || localRefreshToken;
+
+    if (!tokenToUse) {
+      // Hem Redux'ta hem localStorage'da yok - gerçekten çıkış yap
+      console.warn("Refresh token bulunamadı (Redux ve localStorage), logout yapılıyor");
       logout();
       return;
     }
@@ -128,7 +137,7 @@ export default function useAutoLogout(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          RefreshToken: user.refreshToken  // âœ… Backend PascalCase bekliyor
+          RefreshToken: tokenToUse  // ✅ tokenToUse kullan (localStorage fallback)
         }),
       });
 

@@ -26,10 +26,13 @@ import {
   setRol,
   setTfrsmi,
   setYil,
+  setToken,
+  setRefreshToken,
 } from "@/store/user/UserSlice";
 import { AppState } from "@/store/store";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
+import { apiFetch, url } from "@/api/apiBase";
 
 const SirketPopup = () => {
   // drawer top
@@ -87,30 +90,69 @@ const SirketPopup = () => {
     localStorage.setItem("fas_denetlenenId", selectedId.toString());
     localStorage.setItem("fas_yil", selectedYear.toString());
     try {
-      const rolVerileri = await getRol(
-        user.id || 0,
-        selectedId,
-        selectedYearNumber
-      );
-      if (rolVerileri) {
-        dispatch(setRol(rolVerileri.rol));
-      }
+      if (selectedId && selectedYearNumber) {
+        // Redux ve LocalStorage güncellemeleri zaten yapıldı.
 
-      // Persist to database
-      if (user.token && user.id && user.id !== 0) {
-        console.log(`SirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
-        await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
-        console.log("SirketPopup - Persistence update successful.");
-      } else {
-        console.warn("SirketPopup - Skipping persistence update: Invalid user state.", { token: !!user.token, id: user.id });
+        // 1. Önce DB Persist (Son Seçilen Ayarlar) - BU ÖNEMLİ: 
+        // Backend'deki session/ayarlar güncellenmeli ki refresh token yeni şirketle gelsin.
+        if (user.token && user.id && user.id !== 0) {
+          console.log(`SirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
+          try {
+            await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
+            console.log("SirketPopup - Persistence update successful.");
+
+            // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
+            // Yeni token, güncel denetlenenId ve yil claim'lerini içerecek
+            const refreshToken = localStorage.getItem("fas_refreshToken");
+            if (refreshToken) {
+              try {
+                const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ RefreshToken: refreshToken }),
+                });
+
+                if (refreshResponse.ok) {
+                  const refreshData = await refreshResponse.json();
+                  if (refreshData?.token) {
+                    // Yeni token'ları kaydet
+                    localStorage.setItem("fas_token", refreshData.token);
+                    localStorage.setItem("fas_refreshToken", refreshData.refreshToken);
+                    dispatch(setToken(refreshData.token));
+                    dispatch(setRefreshToken(refreshData.refreshToken));
+                    console.log("✅ SirketPopup - Token refresh successful, yeni claim'ler alındı.");
+                  }
+                } else {
+                  console.warn("⚠️ SirketPopup - Token refresh başarısız, eski token kullanılacak.");
+                }
+              } catch (refreshErr) {
+                console.warn("⚠️ SirketPopup - Token refresh hatası:", refreshErr);
+              }
+            }
+          } catch (err) {
+            console.error("SirketPopup - Persistence update hatası:", err);
+          }
+        }
+
+        // 2. Rol Bilgisi Güncelleme
+        try {
+          const rolVerileri = await getRol(user.id || 0, selectedId, selectedYearNumber);
+          if (rolVerileri) {
+            dispatch(setRol(rolVerileri.rol));
+            console.log("SirketPopup - Rol güncellendi.");
+          }
+        } catch (err) {
+          console.error("SirketPopup - Rol güncelleme hatası:", err);
+        }
       }
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("SirketPopup - Genel hata:", error);
     }
 
     handleDrawerClose2();
 
     // Sayfayı tamamen yenile - tüm veriler güncellenecek
+    // localStorage'daki yeni değerlerle (id ve yıl) açılacak
     window.location.reload();
   };
 

@@ -204,6 +204,7 @@ export const getKullaniciRol = async (
         headers: {
           accept: "application/json",
         },
+        ignoreCustomHeaders: true,
       }
     );
     if (response.ok) {
