@@ -186,7 +186,7 @@ interface VeriDipnot384 {
 interface VeriDipnotHesaplar {
   dipnotNo: number;
   tabloNo: number;
-  hesaplarBobi: any[];
+  hesaplarkonsolide?: any[];
 }
 
 interface RaporProps {
@@ -247,7 +247,8 @@ const Rapor: React.FC<RaporProps> = ({
           (veri) => veri.dipnotNo === dipnotNo && veri.tabloNo === tabloNo
         )
         .reduce((acc, curr) => {
-          curr.hesaplarBobi.forEach((element) => {
+          const hesaplar = curr.hesaplarkonsolide || [];
+          hesaplar.forEach((element: any) => {
             const key = element.detayKodu;
             if (!acc[key]) {
               acc[key] = {
@@ -844,7 +845,7 @@ const Rapor: React.FC<RaporProps> = ({
         const newRows = dipnotVerileri.map((veri: any) => ({
           dipnotNo: veri.dipnotNo,
           tabloNo: veri.tabloNo,
-          hesaplarBobi: veri.hesaplarBobi,
+          hesaplarkonsolide: veri.hesaplarkonsolide,
         }));
         setDipnotHesaplarRows(newRows);
       }
