@@ -121,10 +121,6 @@ export class SecureTokenManager {
   static getAccessToken(): string | null {
     let token = this.getTokenFromCookie(TOKEN_KEYS.ACCESS_TOKEN);
 
-    if (!token) {
-      token = localStorage.getItem(TOKEN_KEYS.ACCESS_TOKEN);
-    }
-
     if (!token) return null;
 
     if (this.isTokenBlacklisted(token)) {
@@ -149,10 +145,6 @@ export class SecureTokenManager {
    */
   static getRefreshToken(): string | null {
     let token = this.getTokenFromCookie(TOKEN_KEYS.REFRESH_TOKEN);
-
-    if (!token) {
-      token = localStorage.getItem(TOKEN_KEYS.REFRESH_TOKEN);
-    }
 
     if (token && !this.isTokenValid(token)) {
       this.clearAllTokens();
@@ -201,12 +193,10 @@ export class SecureTokenManager {
   }
 
   /**
-   * Token'ları manuel olarak güncelle (Refresh sonrası veya Login sonrası fallback)
+   * ⚠️ DEPRECATED: Token'lar artık sadece backend tarafından set ediliyor.
    */
   static saveTokens(accessToken: string, refreshToken: string): void {
-    localStorage.setItem(TOKEN_KEYS.ACCESS_TOKEN, accessToken);
-    localStorage.setItem(TOKEN_KEYS.REFRESH_TOKEN, refreshToken);
-    console.log("✅ Token'lar manuel olarak güncellendi.");
+    console.warn("⚠️ saveTokens artık kullanılmamalı. Backend HttpOnly cookie ayarlar.");
   }
 
   static deleteCookie(cookieName: string): void {

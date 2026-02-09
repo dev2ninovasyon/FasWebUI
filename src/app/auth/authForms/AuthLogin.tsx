@@ -40,7 +40,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleLogin = async () => {
-    console.time("Giriş İşlemi Toplam Süre");
+    // console.time("Giriş İşlemi Toplam Süre");
     if (!executeRecaptcha) {
       enqueueSnackbar("Recaptcha yüklenemedi, lütfen sayfayı yenileyin.", {
         variant: "warning",
@@ -53,9 +53,9 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
     setIsVerifyingCaptcha(true);
     let token = "";
     try {
-      console.time("ReCAPTCHA Doğrulaması");
+      // console.time("ReCAPTCHA Doğrulaması");
       token = await executeRecaptcha("login");
-      console.timeEnd("ReCAPTCHA Doğrulaması");
+      // console.timeEnd("ReCAPTCHA Doğrulaması");
     } catch (error: any) {
       console.log("Recaptcha hatası:", error);
       let errorMessage = "Güvenlik doğrulaması sırasında bir hata oluştu.";
@@ -84,7 +84,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
     }
 
     try {
-      console.time("Login API İsteği");
+      // console.time("Login API İsteği");
       const response = await apiFetch(`/Auth/login`, {
         method: "POST",
         headers: {
@@ -93,10 +93,10 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         },
         body: JSON.stringify({ email, password, CaptchaToken: token }),
       });
-      console.timeEnd("Login API İsteği");
+      // console.timeEnd("Login API İsteği");
 
       if (response.ok) {
-        console.time("Veri İşleme ve Yönlendirme");
+        // console.time("Veri İşleme ve Yönlendirme");
         const data = await response.json();
         const userToken = data.token;
         const userRefreshToken = data.refreshToken;
@@ -149,6 +149,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           turTamamlandi: turTamamlandi,
           bddkmi: bddkmi
         };
+        console.log("UserData constructed");
 
         if (sonSecilenDenetlenenId && sonSecilenYil && sonSecilenDenetlenenFirmaAdi) {
           Object.assign(userData, {
@@ -167,18 +168,13 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           localStorage.setItem("fas_yil", sonSecilenYil.toString());
         }
 
-        // ✅ Token'ı localStorage'da kaydet (boşta kaldığında da kullanılabilsin)
-        try {
-          localStorage.setItem("fas_token", userToken);
-          if (userRefreshToken) {
-            localStorage.setItem("fas_refreshToken", userRefreshToken);
-          }
-          console.log("✅ Token localStorage'da kaydedildi");
-        } catch (e) {
-          console.warn("Token localStorage'da kaydedilemedi:", e);
-        }
+        // ✅ Token'lar artık sadece backend tarafından HttpOnly Cookie olarak set ediliyor.
+        // Güvenlik nedeniyle localStorage üzerine yazılmıyor (XSS koruması).
 
+        console.log("Before Dispatch");
         dispatch(setUserData(userData));
+        console.log("After Dispatch");
+        console.log("bddkmi value:", bddkmi);
 
         if (bddkmi === undefined) {
           console.time("Ek Bilgi API İsteği (bddkmi)");
@@ -200,9 +196,30 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         console.timeEnd("Giriş İşlemi Toplam Süre");
         router.push("/Anasayfa");
       } else {
-        console.timeEnd("Giriş İşlemi Toplam Süre");
+        // console.timeEnd("Giriş İşlemi Toplam Süre");
         setIsLoggedIn(false);
-        enqueueSnackbar("Giriş Başarısız", {
+
+        let errorMessage = "Giriş Başarısız";
+        try {
+          const errorData = await response.text();
+          if (errorData) {
+            // Eğer response bir JSON (ApiResult) ise Message alanını çekelim
+            if (errorData.trim().startsWith('{')) {
+              try {
+                const parsed = JSON.parse(errorData);
+                errorMessage = parsed.Message || parsed.message || errorData;
+              } catch {
+                errorMessage = errorData;
+              }
+            } else {
+              errorMessage = errorData;
+            }
+          }
+        } catch (e) {
+          console.error("Hata mesajı okunamadı:", e);
+        }
+
+        enqueueSnackbar(errorMessage, {
           variant: "error",
           autoHideDuration: 5000,
           style: {
@@ -219,6 +236,18 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
       console.log("Bir hata oluştu:", error);
       if (error.message === "Failed to fetch") {
         enqueueSnackbar("Bağlantı hatası: Sisteme şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyiniz.", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
+      } else {
+        enqueueSnackbar(`Giriş sırasında bir hata oluştu: ${error.message || "Bilinmeyen hata"}`, {
           variant: "error",
           autoHideDuration: 5000,
           style: {

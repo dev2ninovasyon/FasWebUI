@@ -1,40 +1,38 @@
-// Mock Next.js navigation
-jest.mock('next/navigation', () => ({
-    usePathname: jest.fn(() => '/dashboard'),
-    useRouter: jest.fn(() => ({
-        push: jest.fn(),
-        replace: jest.fn(),
-        prefetch: jest.fn(),
-    })),
-}))
-
-// Mock ProfileItems because it uses usePathname internally which is giving issues
-// Use relative path to ensure matching
-jest.mock('../../../app/(Uygulama)/components/Layout/Vertical/Header/Profile/ProfileItems', () => {
-    return function MockProfileItems() {
-        return <div data-testid="mock-profile-items">Mock Profile Items</div>
-    }
-})
-
-
-// Mock the resetToNull action
-jest.mock('@/store/user/UserSlice', () => ({
-    __esModule: true,
-    default: jest.fn(() => ({})),
-    resetToNull: jest.fn((payload) => ({ type: 'user/resetToNull', payload })),
-}))
-
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import Profile from '@/app/(Uygulama)/components/Layout/Vertical/Header/Profile/Profile'
 
+// Mock Next.js navigation
+vi.mock('next/navigation', () => ({
+    usePathname: vi.fn(() => '/dashboard'),
+    useRouter: vi.fn(() => ({
+        push: vi.fn(),
+        replace: vi.fn(),
+        prefetch: vi.fn(),
+    })),
+}))
+
+// Mock ProfileItems because it uses usePathname internally which is giving issues
+vi.mock('../../../app/(Uygulama)/components/Layout/Vertical/Header/Profile/ProfileItems', () => ({
+    default: () => <div data-testid="mock-profile-items">Mock Profile Items</div>
+}))
+
+
+// Mock the resetToNull action
+vi.mock('@/store/user/UserSlice', () => ({
+    __esModule: true,
+    default: vi.fn(() => ({})),
+    resetToNull: vi.fn((payload) => ({ type: 'user/resetToNull', payload })),
+}))
 
 describe('Profile Component', () => {
     let store: any
 
     beforeEach(() => {
+        vi.clearAllMocks()
         store = configureStore({
             reducer: {
                 userReducer: () => ({
@@ -68,6 +66,7 @@ describe('Profile Component', () => {
             </Provider>
         )
 
+        // IconButton has aria-label="show 11 new notifications" in the source (likely copy-paste error in source)
         const profileButton = screen.getByLabelText('show 11 new notifications')
         fireEvent.click(profileButton)
 

@@ -25,59 +25,13 @@ export async function apiFetch(
   try {
     let denetlenenIdFromStorage: string | null = null;
     let yilFromStorage: string | null = null;
-    let tokenFromStorage: string | null = null;
 
     if (typeof window !== "undefined" && !ignoreCustomHeaders) {
       denetlenenIdFromStorage = window.localStorage.getItem("fas_denetlenenId");
       yilFromStorage = window.localStorage.getItem("fas_yil");
 
-      if (typeof SecureTokenManager !== 'undefined') {
-        // 🔄 PROAKTİF YENİLEME: Token süresi dolmak üzereyse (son 5 dk) sessizce yenile
-        if (path !== '/Auth/login' && path !== '/Auth/refresh' && SecureTokenManager.shouldRefreshToken()) {
-          const refreshToken = window.localStorage.getItem("fas_refreshToken");
-          if (refreshToken) {
-            console.log("🔄 Token süresi dolmak üzere, proaktif yenileme yapılıyor...");
-            try {
-              const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ refreshToken }),
-              });
-
-              if (refreshResponse.ok) {
-                const refreshData = await refreshResponse.json();
-                if (refreshData?.token) {
-                  SecureTokenManager.saveTokens(refreshData.token, refreshData.refreshToken);
-                  console.log("✅ Proaktif yenileme başarılı.");
-                }
-              }
-            } catch (e) {
-              console.warn("⚠️ Proaktif yenileme başarısız, yine de devam ediliyor:", e);
-            }
-          }
-        }
-
-        // ✅ İYİLEŞTİRME: SecureTokenManager öncelikle kullan
-        tokenFromStorage = SecureTokenManager.getAccessToken();
-
-        // ⚠️ FALLBACK: SecureTokenManager null döndürürse (validation fail),
-        // raw localStorage token'ını kullan. Backend 401/403 ile gerçek validasyonu yapar.
-        if (!tokenFromStorage) {
-          const rawToken = window.localStorage.getItem("fas_token");
-          if (rawToken) {
-            console.log("ℹ️ SecureTokenManager null döndü, raw localStorage token kullanılıyor");
-            tokenFromStorage = rawToken;
-          }
-        }
-
-        // Login/Refresh path'leri hariç, token yoksa request gönderme
-        if (!tokenFromStorage && path !== '/Auth/login' && path !== '/Auth/refresh') {
-          console.warn('⚠️ Token bulunamadı. Request iptal ediliyor:', path);
-          throw new Error('Unauthorized - aborting request');
-        }
-      } else {
-        tokenFromStorage = window.localStorage.getItem("fas_token");
-      }
+      // HttpOnly cookie kullanımı nedeniyle token'ı localStorage'dan okumuyoruz.
+      // fetch(..., { credentials: 'include' }) ile otomatik gönderiliyor.
     }
 
     const mergedHeaders: HeadersInit = {
@@ -87,9 +41,7 @@ export async function apiFetch(
         ? { "X-Denetlenen-Id": denetlenenIdFromStorage }
         : {}),
       ...(!ignoreCustomHeaders && yilFromStorage ? { "X-Yil": yilFromStorage } : {}),
-      ...(tokenFromStorage && !ignoreCustomHeaders
-        ? { "Authorization": `Bearer ${tokenFromStorage}` }
-        : {}),
+      // Authorization header manuel eklenmiyor, cookie tabanlı auth kullanılıyor.
     };
 
     const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -107,29 +59,19 @@ export async function apiFetch(
       console.warn(`⚠️ Token süresi dolmuş ya da yetkisiz erişim (401 Unauthorized)`);
 
       // Login ve refresh path'leri için 401 kontrolünü pas geç, çağıran yer yönetsin
-      if (path === '/Auth/login' || path === '/Auth/refresh') {
+      const lowerPath = path.toLowerCase();
+      if (lowerPath === '/auth/login' || lowerPath === '/auth/refresh') {
         return response;
       }
 
       if (typeof window !== "undefined") {
-        // Sadece gerçekten oturum kapalıysa ve token geçersizse temizle
-        const currentToken = typeof SecureTokenManager !== 'undefined' ? SecureTokenManager.getAccessToken() : window.localStorage.getItem("fas_token");
+        // 401 durumunda oturumun kapandığı varsayılır. 
+        // Cookie'ler zaten sunucu tarafından HttpOnly olarak yönetiliyor.
+        window.localStorage.removeItem("persist:root");
+        window.sessionStorage.removeItem("reduxState");
 
-        if (!currentToken) {
-          if (typeof SecureTokenManager !== 'undefined') {
-            SecureTokenManager.clearAllTokens();
-          } else {
-            window.localStorage.removeItem("fas_token");
-            window.localStorage.removeItem("fas_refreshToken");
-          }
-          window.localStorage.removeItem("persist:root");
-          window.sessionStorage.removeItem("reduxState");
-
-          if (window.location && window.location.pathname !== "/") {
-            window.location.href = "/";
-          }
-        } else {
-          console.log("ℹ️ 401 alındı ancak token hala mevcut. Refresh denenmesi gerekebilir veya yetki hatası.");
+        if (window.location && window.location.pathname !== "/") {
+          window.location.href = "/";
         }
       }
       // 🔐 GÜVENLIK: Yetki hatası (403 Forbidden) - Şirket mismatch durumunda refresh deniyoruz
@@ -137,77 +79,41 @@ export async function apiFetch(
       console.warn(`⚠️ Bu işlem için yetkiniz bulunmamaktadır (403 Forbidden). Path: ${path}`);
 
       // Şirket değişimi sonrası token'daki eski claim'ler (denetlenenId mismatch) nedeniyle 403 alınabilir.
-      // Bu durumda sessizce token yenilemeyi deneyip isteği tekrar gönderiyoruz.
-      if (typeof window !== "undefined" && path !== '/Auth/refresh' && path !== '/Auth/login') {
-        const refreshToken = window.localStorage.getItem("fas_refreshToken");
+      // Cookie tabanlı auth'da browser otomatik refresh cookie'sini gönderir.
+      const lowerPath = path.toLowerCase();
+      if (typeof window !== "undefined" && lowerPath !== '/auth/refresh' && lowerPath !== '/auth/login') {
+        console.log("ℹ️ 403 alındı, cookie tabanlı session yenilenmesi deneniyor...");
 
-        if (refreshToken) {
-          console.log("ℹ️ 403 alındı, token yenilenerek tekrar deniniyor...");
+        try {
+          const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}), // Cookie kullanılacak
+          });
 
-          try {
-            // Token yenileme isteği
-            const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ refreshToken }),
-            });
-
-            if (refreshResponse.ok) {
-              const refreshData = await refreshResponse.json();
-              if (refreshData && refreshData.token) {
-                // Yeni tokenları kaydet
-                if (typeof SecureTokenManager !== 'undefined') {
-                  SecureTokenManager.saveTokens(refreshData.token, refreshData.refreshToken);
-                } else {
-                  window.localStorage.setItem("fas_token", refreshData.token);
-                  window.localStorage.setItem("fas_refreshToken", refreshData.refreshToken);
-                }
-
-                // Orijinal isteği yeni token ile tekrar dene
-                return await apiFetch(path, options);
-              }
-            } else {
-              console.warn("⚠️ Refresh token başarısız oldu ama oturum geçerli olabilir. Devam ediliyor...");
-            }
-          } catch (refreshError) {
-            console.error("❌ Token yenileme sırasında hata:", refreshError);
+          if (refreshResponse.ok) {
+            console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
+            return await apiFetch(path, options);
           }
-        }
-
-        // ⚠️ CRITICAL FIX: Şirket değiştirme sırasında 403 alınabilir.
-        // Eğer şirket değiştirme flow'undaysak (localStorage'da yeni değerler var),
-        // kullanıcıyı logout etmeden sadece 403 response'u dönelim.
-        // Page reload sonrası yeni token ile düzelecek.
-        const currentDenetlenenId = window.localStorage.getItem("fas_denetlenenId");
-        const hasValidSession = window.localStorage.getItem("fas_token") || window.localStorage.getItem("fas_refreshToken");
-
-        if (currentDenetlenenId && hasValidSession) {
-          console.warn("⚠️ 403 hatası alındı ancak şirket değiştirme flow'u tespit edildi. Logout yapılmadan devam ediliyor.");
-          // Response'u olduğu gibi dönelim, çağıran fonksiyon kendi error handling'ini yapsın
-          return response;
-        }
-
-        // Eğer kesinlikle yetki yoksa ve refresh de başarısız olduysa, o zaman logout yap
-        console.error("❌ Yetki hatası ve refresh başarısız. Oturum kapatılıyor.");
-        if (window.location.pathname !== "/") {
-          if (typeof SecureTokenManager !== 'undefined') {
-            SecureTokenManager.clearAllTokens();
-          } else {
-            window.localStorage.removeItem("fas_token");
-            window.localStorage.removeItem("fas_refreshToken");
-          }
-          window.localStorage.removeItem("persist:root");
-          window.location.href = "/";
+        } catch (refreshError) {
+          console.error("❌ Session yenileme sırasında hata:", refreshError);
         }
       }
-    }
 
+      // Kesinlikle yetki yoksa logout yap
+      console.error("❌ Yetki hatası. Oturum kapatılıyor.");
+      if (typeof window !== "undefined" && window.location.pathname !== "/") {
+        window.localStorage.removeItem("persist:root");
+        window.location.href = "/";
+      }
+    }
 
     return response;
   } catch (error: any) {
     if (error.name === "AbortError") {
       console.log("Fetch aborted for:", path);
-      return { success: false, message: "İstek zaman aşımına uğradı veya iptal edildi." };
+      // Tip güvenliği için obj döndürmek yerine hata fırlatalım
+      throw new Error("İstek zaman aşımına uğradı veya iptal edildi.");
     }
 
     // 📝 Log error to file
@@ -219,14 +125,9 @@ export async function apiFetch(
     if (isConnectionError) {
       console.error(`❌ API Bağlantı Hatası (${path}): Sisteme ulaşılamıyor. API servisinin çalıştığından emin olun.`);
 
-      // Sadece bağlantı hatası VE token gerçekten yoksa login'e yönlendir
+      // Bağlantı hatası durumunda login'e yönlendirme Redux state'ine göre yönetilmeli.
       if (typeof window !== "undefined" && window.location.pathname !== "/") {
-        const hasToken = window.localStorage.getItem("fas_token");
-        if (!hasToken) {
-          window.localStorage.removeItem("persist:root");
-          window.sessionStorage.removeItem("reduxState");
-          window.location.href = "/";
-        }
+        // window.location.href = "/"; // Şimdilik agresif yönlendirme yapmıyoruz.
       }
     } else if (isUnauthorizedError) {
       // ⚠️ Token validasyonu başarısız oldu ama login'e yönlendirme YAPMA
@@ -237,6 +138,6 @@ export async function apiFetch(
 
     throw error;
   } finally {
-    // If a timeout mechanism was active, clear it here if necessary
+    clearTimeout(timeoutId);
   }
 }

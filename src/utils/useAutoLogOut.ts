@@ -28,26 +28,17 @@ export default function useAutoLogout(
   // ✅ YENİ: Backend'e logout notification gönder
   const notifyBackendLogout = useCallback(async () => {
     try {
-      const token = localStorage.getItem("fas_token");
-
-      if (token && typeof SecureTokenManager !== 'undefined') {
-        // Token'ı blacklist'e ekle (JTI ile)
-        SecureTokenManager.blacklistToken(token);
-
-        // Backend'e logout mesajı gönder
-        await apiFetch('/Auth/logout', {
-          method: 'POST',
-          ignoreCustomHeaders: false,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ tokenId: SecureTokenManager.decodeToken(token)?.jti })
-        }).catch(err => {
-          console.warn('⚠️ Backend logout notification başarısız (normal):', err.message);
-          // Backend'e ulaşılamasa bile continue, client-side cleanup yapılacak
-        });
-      }
+      // HttpOnly cookie kullanımı nedeniyle token'ı artık localStorage'dan okumuyoruz.
+      // Backend /Auth/logout uç noktasında cookie'leri temizleyecektir.
+      await apiFetch('/Auth/logout', {
+        method: 'POST',
+        ignoreCustomHeaders: false,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).catch(err => {
+        console.warn('⚠️ Backend logout notification başarısız (normal):', err.message);
+      });
     } catch (error) {
       console.warn('⚠️ Backend logout notification error:', error);
     }
@@ -63,9 +54,7 @@ export default function useAutoLogout(
     localStorage.removeItem(TIMEOUT_KEY);
     localStorage.removeItem("fas_denetlenenId");
     localStorage.removeItem("fas_yil");
-    localStorage.removeItem("fas_token");      // ✅ Token'ı temizle
-    localStorage.removeItem("fas_refreshToken"); // ✅ Refresh token'ı temizle
-    localStorage.removeItem("fas_blacklisted_tokens"); // ✅ Blacklist'i temizle
+    localStorage.removeItem("fas_blacklisted_tokens");
 
     dispatch(resetToNull(""));
 
@@ -79,10 +68,6 @@ export default function useAutoLogout(
 
   // idle timer reset
   const resetIdleTimer = useCallback(() => {
-    // test logâ€™ları
-    //console.log("idleTimeout (ms):", idleTimeout);
-    //console.log("idleTimeout (dk):", idleTimeout / 60000);
-
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     if (countdownTimerRef.current) clearInterval(countdownTimerRef.current); // YENİ
 
@@ -94,11 +79,10 @@ export default function useAutoLogout(
       logout();
     }, idleTimeout);
 
-    // â¬‡â¬‡â¬‡ Kalan süreyi sürekli konsola yazan interval (test için yorum satırı)
+    // ⬇️⬇️⬇️ Kalan süreyi sürekli konsola yazan interval (test için yorum satırı)
     countdownTimerRef.current = setInterval(() => {
       const remaining = expiry - Date.now();
       if (remaining <= 0) {
-        // console.log("â° Kalan süre: 0 sn - LOGOUT!");
         clearInterval(countdownTimerRef.current!);
         countdownTimerRef.current = null;
         return;
@@ -107,28 +91,11 @@ export default function useAutoLogout(
       const remainingSeconds = Math.ceil(remaining / 1000);
       const minutes = Math.floor(remainingSeconds / 60);
       const seconds = remainingSeconds % 60;
-      // console.log(`â° Idle timeout'a kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
     }, 1000);
   }, [idleTimeout, logout]);
 
   // refresh token
   const refreshToken = useCallback(async () => {
-    // ⚠️ ÖNEMLİ: Redux state henüz hydrate edilmemiş olabilir
-    // Önce localStorage'dan kontrol et
-    const localRefreshToken = typeof window !== "undefined"
-      ? localStorage.getItem("fas_refreshToken")
-      : null;
-
-    const tokenToUse = user?.refreshToken || localRefreshToken;
-
-    if (!tokenToUse) {
-      // Hem Redux'ta hem localStorage'da yok - gerçekten çıkış yap
-      console.warn("Refresh token bulunamadı (Redux ve localStorage), logout yapılıyor");
-      logout();
-      return;
-    }
-    console.log("Token yenileniyor...");
-
     try {
       const response = await apiFetch(`/Auth/refresh`, {
         method: "POST",
@@ -136,23 +103,12 @@ export default function useAutoLogout(
           accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          RefreshToken: tokenToUse  // ✅ tokenToUse kullan (localStorage fallback)
-        }),
+        body: JSON.stringify({}), // RefreshToken parametresi body'den kaldırıldı, cookie kullanılacak
       });
 
       if (!response.ok) {
         console.log("Refresh token yenilenemedi, response.ok=false");
         console.log("HTTP Status:", response.status);
-        console.log("Status Text:", response.statusText);
-
-        // Backend'den gelen hata mesajını göster
-        try {
-          const errorData = await response.json();
-          console.log("Backend Error:", errorData);
-        } catch (e) {
-          console.log("Response body okunamadı");
-        }
 
         logout();
         return;
@@ -160,15 +116,14 @@ export default function useAutoLogout(
 
       const data = await response.json();
       dispatch(setToken(data.token));  // Yeni access token
-      if (data.refreshToken) {  // âœ… Yeni refresh token varsa kaydet
+      if (data.refreshToken) {
         dispatch(setRefreshToken(data.refreshToken));
       }
-      // console.log("âœ… Token başarıyla yenilendi!");
     } catch (err) {
       console.log("Refresh token yenilenemedi (catch):", err);
       logout();
     }
-  }, [user?.token, user?.refreshToken, dispatch, logout]);
+  }, [dispatch, logout]);
 
   useEffect(() => {
     if (!user?.token) return;
@@ -203,7 +158,6 @@ export default function useAutoLogout(
         const remainingSeconds = Math.ceil(remaining / 1000);
         const minutes = Math.floor(remainingSeconds / 60);
         const seconds = remainingSeconds % 60;
-        // console.log(`ğŸ”„ Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
       }, 1000);
     }, refreshInterval);
 
@@ -217,7 +171,6 @@ export default function useAutoLogout(
       const remainingSeconds = Math.ceil(remaining / 1000);
       const minutes = Math.floor(remainingSeconds / 60);
       const seconds = remainingSeconds % 60;
-      // console.log(`ğŸ”„ Token yenilemeye kalan süre: ${minutes}:${seconds.toString().padStart(2, '0')}`);
     }, 1000);
 
     return () => {
