@@ -50,10 +50,10 @@ import {
   getOzkaynakTablosu,
 } from "@/api/FinansalTablolar/FinansalToblolar";
 import dynamic from "next/dynamic";
-import Rapor from "./Rapor";
+import RaporKonsolide from "./RaporKonsolide";
 import jsPDF from "jspdf";
 import { base64FontBold, base64FontRegular } from "./Roboto";
-import RaporTfrs from "./RaporTfrs";
+import RaporTfrsKonsolide from "./RaporTfrsKonsolide";
 import { words } from "lodash";
 import { apiFetch } from "@/api/apiBase";
 
@@ -1984,7 +1984,7 @@ const BagimsizDenetciRaporuStepper = () => {
                 lg: 12
               }}>
               {user.denetimTuru == "Bobi" ? (
-                <Rapor
+                <RaporKonsolide
                   kapakImage={kapakImage || ""}
                   firmaLogoImage={firmaLogoImage || ""}
                   dikeyKonum={dikeyKonum}
@@ -2004,7 +2004,7 @@ const BagimsizDenetciRaporuStepper = () => {
                   konsolide={true}
                 />
               ) : user.denetimTuru == "Tfrs" ? (
-                <RaporTfrs
+                <RaporTfrsKonsolide
                   kapakImage={kapakImage || ""}
                   firmaLogoImage={firmaLogoImage || ""}
                   dikeyKonum={dikeyKonum}

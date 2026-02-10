@@ -165,7 +165,7 @@ export const getDipnot15Amortisman = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot15Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/Dipnot15Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -191,7 +191,7 @@ export const getDipnot16Amortisman = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot16Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/Dipnot16Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -217,7 +217,7 @@ export const getDipnot15Maliyet = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot15Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/Dipnot15Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -243,7 +243,7 @@ export const getDipnot16Maliyet = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot16Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/Dipnot16Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -341,7 +341,7 @@ export const getDipnot34 = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot34?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/Dipnot34?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -416,7 +416,7 @@ export const getDovizKuruRiski = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/DovizKuruRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/DovizKuruRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -465,7 +465,7 @@ export const getDovizKuruRiskiDuyarlilikAnalizi = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/DovizKuruRiskiDuyarlilikAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/DovizKuruRiskiDuyarlilikAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
       {
         method: "GET",
         headers: {
@@ -488,11 +488,11 @@ export const getDipnotAnaHesaplar = async (
   denetlenenId: number,
   yil: number,
   tur: string,
-  konsolidasyonMu?: boolean
+  detaymi: boolean = false
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/TumDipnotHesaplariniGetirRapor?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tur=${tur}`,
+      `/Rapor/TumDipnotHesaplariniGetirRapor?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tur=${tur}&detaymi=${detaymi}`,
       {
         method: "GET",
         headers: {
@@ -509,3 +509,12 @@ export const getDipnotAnaHesaplar = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+
+export const getDipnotAnaHesaplarDetay = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  tur: string
+) => {
+  return getDipnotAnaHesaplar(denetciId, denetlenenId, yil, tur, true);
+}

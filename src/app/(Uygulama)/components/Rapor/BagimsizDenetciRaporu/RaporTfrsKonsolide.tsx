@@ -198,7 +198,7 @@ interface RaporProps {
   konsolide?: boolean;
 }
 
-const RaporTfrs: React.FC<RaporProps> = ({
+const RaporTfrsKonsolide: React.FC<RaporProps> = ({
   kapakImage,
   firmaLogoImage,
   dikeyKonum,
@@ -360,7 +360,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot14AmortismanVerileri = await getDipnot15Amortisman(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        true
       );
       const newRows = dipnot14AmortismanVerileri.map((veri: any) => ({
         baslik: veri.baslik,
@@ -386,7 +386,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot17AmortismanVerileri = await getDipnot16Amortisman(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        true
       );
       const newRows = dipnot17AmortismanVerileri.map((veri: any) => ({
         baslik: veri.baslik,
@@ -412,7 +412,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot14MaliyetVerileri = await getDipnot15Maliyet(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        true
       );
       const newRows = dipnot14MaliyetVerileri.map((veri: any) => ({
         baslik: veri.baslik,
@@ -438,7 +438,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot17MaliyetVerileri = await getDipnot16Maliyet(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        true
       );
       const newRows = dipnot17MaliyetVerileri.map((veri: any) => ({
         baslik: veri.baslik,
@@ -462,7 +462,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot34Verileri = await getDipnot34(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        true
       );
 
       const newRows = dipnot34Verileri.map((veri: any) => ({
@@ -482,7 +482,7 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot451Verileri = await getKrediRiski(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        true
       );
 
       const newRows = dipnot451Verileri.map((veri: any) => ({
@@ -542,7 +542,8 @@ const RaporTfrs: React.FC<RaporProps> = ({
     try {
       const dipnot452Verileri = await getDovizKuruRiski(user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        true
       );
 
       const newRows = dipnot452Verileri.map((veri: any) => ({
@@ -596,7 +597,8 @@ const RaporTfrs: React.FC<RaporProps> = ({
     try {
       const dipnot453Verileri = await getDovizKuruRiskiDuyarlilikAnalizi(user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        true
       );
 
       const newRows = dipnot453Verileri.map((veri: any) => ({
@@ -647,14 +649,14 @@ const RaporTfrs: React.FC<RaporProps> = ({
   >([]);
   const fetchDataDipnotHesaplar = async () => {
     try {
+
       const fetchFunc = detayHesaplar ? getDipnotAnaHesaplarDetay : getDipnotAnaHesaplar;
       const dipnotVerileri = await fetchFunc(
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        user.denetimTuru || ""
+        user.denetimTuru + "Konsolide" || ""
       );
-
       if (dipnotVerileri && Array.isArray(dipnotVerileri)) {
         const newRows = dipnotVerileri.map((veri: any) => ({
           dipnotNo: veri.dipnotNo,
@@ -8656,5 +8658,5 @@ const RaporTfrs: React.FC<RaporProps> = ({
   );
 };
 
-export default RaporTfrs;
+export default RaporTfrsKonsolide;
 
