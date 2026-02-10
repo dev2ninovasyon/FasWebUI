@@ -841,28 +841,15 @@ const RaporKonsolide: React.FC<RaporProps> = ({
   >([]);
   const fetchDataDipnotHesaplar = async () => {
     try {
-      if (detayHesaplar) {
-        const dipnotVerileri = await getDipnotAnaHesaplarDetay(
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0,
-          user.denetimTuru + "Konsolide" || ""
-        );
+      const fetchFunc = detayHesaplar ? getDipnotAnaHesaplarDetay : getDipnotAnaHesaplar
+      const dipnotVerileri = await fetchFunc(
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        user.denetimTuru + "Konsolide" || ""
+      );
 
-        const newRows = dipnotVerileri.map((veri: any) => ({
-          dipnotNo: veri.dipnotNo,
-          tabloNo: veri.tabloNo,
-          hesaplarBobi: veri.hesaplarBobi,
-        }));
-        setDipnotHesaplarRows(newRows);
-      } else {
-        const dipnotVerileri = await getDipnotAnaHesaplar(
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0,
-          user.denetimTuru + "Konsolide" || ""
-        );
-
+      if (dipnotVerileri && Array.isArray(dipnotVerileri)) {
         const newRows = dipnotVerileri.map((veri: any) => ({
           dipnotNo: veri.dipnotNo,
           tabloNo: veri.tabloNo,
