@@ -41,7 +41,7 @@ interface VeriFT {
   id: number;
   parentId?: number | null;
   kalemAdi: string;
-  dipnot: string;
+  dipnot: string | null;
   formul: string;
   tutarYil1: number;
   tutarYil2: number;
@@ -855,6 +855,10 @@ const RaporKonsolide: React.FC<RaporProps> = ({
           tabloNo: veri.tabloNo,
           hesaplarBobi: veri.hesaplarBobi,
         }));
+        console.log("[Dipnot] API raw response:", dipnotVerileri);
+
+        console.log("[Dipnot] mapped newRows count:", newRows.length);
+        console.log("[Dipnot] sample first row:", newRows[0]);
         setDipnotHesaplarRows(newRows);
       }
     } catch (error) {
@@ -881,6 +885,94 @@ const RaporKonsolide: React.FC<RaporProps> = ({
     fetchDataDipnot384();
     fetchDataDipnotHesaplar();
   }, []);
+
+  type FdtRow = {
+    kalemAdi: string;
+    dipnot: string | number; // bazen "15" bazen "15,16" gelebilir
+    tutarYil1: number;
+    tutarYil2: number;
+  };
+
+  type DipnotHesaplarRow = {
+    dipnotNo: number;
+    tabloNo: number;
+    hesaplarBobi?: DonusumMizanRow[];
+    hesaplarTfrs?: DonusumMizanRow[];
+  };
+
+  type DonusumMizanRow = {
+    id: number | string;
+    yil: number;
+    bakiye: number;
+    detayKodu?: string;
+    detayHesapAdi?: string;
+    hesapAdi?: string;
+  };
+
+  type DipnotDetaySatir = {
+    label: string; // "--Türk Lirası (TL)" gibi
+    yil1: number;
+    yil2: number;
+  };
+
+  // "15,16" -> [15,16]
+  const parseDipnotNos = (dipnot: string | number): number[] => {
+    const s = String(dipnot ?? "").trim();
+    if (!s) return [];
+    return s
+      .split(",")
+      .map((x) => Number(x.trim()))
+      .filter((n) => Number.isFinite(n));
+  };
+
+  // dipnotNo -> detay satırlar
+  const dipnotDetayMap = React.useMemo(() => {
+    const map = new Map<number, DipnotDetaySatir[]>();
+
+    // hangi listeyi kullanacağını seç (Bobi/Tfrs)
+    const isTfrs = (user.denetimTuru || "").toLowerCase().includes("tfrs");
+
+    for (const dn of dipnotHesaplarRows as DipnotHesaplarRow[]) {
+      const list = (isTfrs ? dn.hesaplarTfrs : dn.hesaplarBobi) ?? [];
+      if (!list.length) continue;
+
+      // Aynı detayKodu’yu birleştir (yıllara göre topla)
+      const agg = new Map<string, { label: string; yil1: number; yil2: number }>();
+
+      for (const it of list as DonusumMizanRow[]) {
+        const detayKodu = (it.detayKodu || "").trim();
+        if (!detayKodu) continue;
+
+        const label = it.detayHesapAdi?.trim() || detayKodu;
+        const key = detayKodu; // istersen detayHesapAdi ile de anahtarlayabilirsin
+
+        const current = agg.get(key) ?? { label, yil1: 0, yil2: 0 };
+
+        if (it.yil === user.yil) current.yil1 += Number(it.bakiye) || 0;
+        if (it.yil === (user.yil ? user.yil - 1 : 0)) current.yil2 += Number(it.bakiye) || 0;
+
+        agg.set(key, current);
+      }
+
+      // ekrana basılacak detay satırlar
+      const detaylar: DipnotDetaySatir[] = Array.from(agg.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([, v]) => ({
+          label: `--${v.label}`,
+          yil1: v.yil1,
+          yil2: v.yil2,
+        }));
+
+      map.set(dn.dipnotNo, detaylar);
+    }
+
+    return map;
+  }, [dipnotHesaplarRows, user.denetimTuru, user.yil]);
+
+  React.useEffect(() => {
+    console.log("[Dipnot] dipnotHesaplarRows changed. count =", dipnotHesaplarRows.length);
+    console.log("[Dipnot] first item =", dipnotHesaplarRows[0]);
+  }, [dipnotHesaplarRows]);
 
   return (
     <div id="report" className="page-container">
@@ -983,6 +1075,7 @@ const RaporKonsolide: React.FC<RaporProps> = ({
       <div className="seperator48"></div>
       <div className="seperator48"></div>
       <div className="seperator48"></div>
+
       {/* Finansal Tablolar*/}
       <div className="page">
         {/* Finansal Durum Tablosu */}
@@ -1000,26 +1093,69 @@ const RaporKonsolide: React.FC<RaporProps> = ({
               </tr>
             </thead>
             <tbody>
-              {fdt.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  <td>{row.kalemAdi}</td>
-                  <td style={{ textAlign: "center" }}>{row.dipnot}</td>
-                  <td className="text-right">
-                    {row.tutarYil1 > 0
-                      ? formatNumber(row.tutarYil1)
-                      : row.tutarYil1 == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
-                  </td>
-                  <td className="text-right">
-                    {row.tutarYil2 > 0
-                      ? formatNumber(row.tutarYil2)
-                      : row.tutarYil2 == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
-                  </td>
-                </tr>
-              ))}
+
+              {(fdt as FdtRow[]).map((row, rowIndex) => {
+                const dipnotNos = parseDipnotNos(row.dipnot);
+
+                // Bir kalemde birden fazla dipnot varsa, hepsinin detayını alt alta ekle
+                const detaySatirlari = dipnotNos.flatMap((dn) => dipnotDetayMap.get(dn) ?? []);
+                if (rowIndex < 15) {
+                  console.log("[FDT] row", rowIndex, {
+                    kalemAdi: row.kalemAdi,
+                    dipnot: row.dipnot,
+                    dipnotType: typeof row.dipnot,
+                  });
+                }
+                return (
+                  <React.Fragment key={rowIndex}>
+                    {/* Ana satır (mevcut satırın aynısı) */}
+                    <tr>
+                      <td>{row.kalemAdi}</td>
+                      <td style={{ textAlign: "center" }}>{row.dipnot}</td>
+
+                      <td className="text-right">
+                        {row.tutarYil1 > 0
+                          ? formatNumber(row.tutarYil1)
+                          : row.tutarYil1 === 0
+                            ? "-"
+                            : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                      </td>
+
+                      <td className="text-right">
+                        {row.tutarYil2 > 0
+                          ? formatNumber(row.tutarYil2)
+                          : row.tutarYil2 === 0
+                            ? "-"
+                            : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                      </td>
+                    </tr>
+
+                    {/* Detay satırlar (dipnota göre) */}
+                    {detaySatirlari.map((d, i) => (
+                      <tr key={`${rowIndex}-det-${i}`}>
+                        <td style={{ paddingLeft: 18 }}>{d.label}</td>
+                        <td style={{ textAlign: "center" }}>-</td>
+
+                        <td className="text-right">
+                          {d.yil1 > 0
+                            ? formatNumber(d.yil1)
+                            : d.yil1 === 0
+                              ? "-"
+                              : `(${formatNumber(Math.abs(d.yil1))})`}
+                        </td>
+
+                        <td className="text-right">
+                          {d.yil2 > 0
+                            ? formatNumber(d.yil2)
+                            : d.yil2 === 0
+                              ? "-"
+                              : `(${formatNumber(Math.abs(d.yil2))})`}
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -1039,26 +1175,68 @@ const RaporKonsolide: React.FC<RaporProps> = ({
               </tr>
             </thead>
             <tbody>
-              {kzt.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  <td>{row.kalemAdi}</td>
-                  <td style={{ textAlign: "center" }}>{row.dipnot}</td>
-                  <td className="text-right">
-                    {row.tutarYil1 > 0
-                      ? formatNumber(row.tutarYil1)
-                      : row.tutarYil1 == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.tutarYil1))})`}
-                  </td>
-                  <td className="text-right">
-                    {row.tutarYil2 > 0
-                      ? formatNumber(row.tutarYil2)
-                      : row.tutarYil2 == 0
-                        ? "-"
-                        : `(${formatNumber(Math.abs(row.tutarYil2))})`}
-                  </td>
-                </tr>
-              ))}
+              {(kzt as FdtRow[]).map((row, rowIndex) => {
+                const dipnotNos = parseDipnotNos(row.dipnot);
+
+                // Bir kalemde birden fazla dipnot varsa, hepsinin detayını alt alta ekle
+                const detaySatirlari = dipnotNos.flatMap((dn) => dipnotDetayMap.get(dn) ?? []);
+                if (rowIndex < 15) {
+                  console.log("[KZT] row", rowIndex, {
+                    kalemAdi: row.kalemAdi,
+                    dipnot: row.dipnot,
+                    dipnotType: typeof row.dipnot,
+                  });
+                }
+                return (
+                  <React.Fragment key={rowIndex}>
+                    {/* Ana satır (mevcut satırın aynısı) */}
+                    <tr>
+                      <td>{row.kalemAdi}</td>
+                      <td style={{ textAlign: "center" }}>{row.dipnot}</td>
+
+                      <td className="text-right">
+                        {row.tutarYil1 > 0
+                          ? formatNumber(row.tutarYil1)
+                          : row.tutarYil1 === 0
+                            ? "-"
+                            : `(${formatNumber(Math.abs(row.tutarYil1))})`}
+                      </td>
+
+                      <td className="text-right">
+                        {row.tutarYil2 > 0
+                          ? formatNumber(row.tutarYil2)
+                          : row.tutarYil2 === 0
+                            ? "-"
+                            : `(${formatNumber(Math.abs(row.tutarYil2))})`}
+                      </td>
+                    </tr>
+
+                    {/* Detay satırlar (dipnota göre) */}
+                    {detaySatirlari.map((d, i) => (
+                      <tr key={`${rowIndex}-det-${i}`}>
+                        <td style={{ paddingLeft: 18 }}>{d.label}</td>
+                        <td style={{ textAlign: "center" }}>-</td>
+
+                        <td className="text-right">
+                          {d.yil1 > 0
+                            ? formatNumber(d.yil1)
+                            : d.yil1 === 0
+                              ? "-"
+                              : `(${formatNumber(Math.abs(d.yil1))})`}
+                        </td>
+
+                        <td className="text-right">
+                          {d.yil2 > 0
+                            ? formatNumber(d.yil2)
+                            : d.yil2 === 0
+                              ? "-"
+                              : `(${formatNumber(Math.abs(d.yil2))})`}
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
