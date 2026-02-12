@@ -1,5 +1,5 @@
-﻿//export const url = "https://betaapi.fasmart.app/api";
-export const url = "http://localhost:5000/api"; // ✅ HTTP for localhost development (backend HTTP port)
+﻿export const url = "https://betaapi.fasmart.app/api";
+//export const url = "http://localhost:5000/api"; // ✅ HTTP for localhost development (backend HTTP port)
 
 // 🔐 Güvenlik: Token manager import
 import SecureTokenManager from "@/utils/SecureTokenManager";

@@ -1,5 +1,5 @@
 ﻿const baselightTheme = {
-  direction: 'ltr',
+  direction: 'ltr' as any,
   palette: {
     primary: {
       main: '#5D87FF',
@@ -47,7 +47,7 @@
       400: '#7C8FAC',
       500: '#5A6A85',
       600: '#2A3547',
-      
+
     },
     text: {
       primary: '#2A3547',
@@ -63,7 +63,7 @@
 };
 
 const baseDarkTheme = {
-  direction: 'ltr',
+  direction: 'ltr' as any,
   palette: {
     primary: {
       main: '#5D87FF',

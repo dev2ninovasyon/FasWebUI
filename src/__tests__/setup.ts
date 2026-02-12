@@ -29,7 +29,10 @@ global.IntersectionObserver = class IntersectionObserver {
         return []
     }
     unobserve() { }
-}
+    root = null;
+    rootMargin = "";
+    thresholds = [];
+} as any;
 
 // Mock ResizeObserver (used by many UI components)
 global.ResizeObserver = class ResizeObserver {

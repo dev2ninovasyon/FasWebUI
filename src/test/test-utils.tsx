@@ -33,7 +33,7 @@ export function renderWithProviders(
 ) {
     const actualStore = store || createTestStore(preloadedState)
 
-    function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
+    function Wrapper({ children }: PropsWithChildren<{}>): React.JSX.Element {
         return (
             <Provider store={actualStore}>
                 <ThemeProvider theme={theme}>

@@ -44,13 +44,14 @@ const ResponsiveButtonGroup: React.FC<ResponsiveButtonGroupProps> = ({ children 
                 >
                     {React.Children.map(children, (child) => {
                         if (React.isValidElement(child)) {
+                            const element = child as React.ReactElement<any>;
                             // Çocuğa variant="menuitem" prop'unu ekle (EkBelgeYukleButton gibi bileşenler için)
                             // Ayrıca onClick olayını sarmalayarak menünün kapanmasını sağla
-                            return React.cloneElement(child as React.ReactElement<any>, {
+                            return React.cloneElement(element, {
                                 variant: 'menuitem',
                                 onClick: (e: any) => {
-                                    if (child.props.onClick) {
-                                        child.props.onClick(e);
+                                    if (element.props.onClick) {
+                                        element.props.onClick(e);
                                     }
                                     handleClose();
                                 }
