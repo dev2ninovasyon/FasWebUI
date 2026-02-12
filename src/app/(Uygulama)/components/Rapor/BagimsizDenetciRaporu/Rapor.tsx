@@ -242,7 +242,7 @@ const Rapor: React.FC<RaporProps> = ({
     rows: VeriDipnotHesaplar[],
     { dipnotNo, tabloNo, yil, formatNumber, sw1, sw2 }: FormatDipnotHesaplar
   ) => {
-    const result = Object.values(
+    const rawResult = Object.values(
       rows
         .filter(
           (veri) => veri.dipnotNo === dipnotNo && veri.tabloNo === tabloNo
@@ -257,75 +257,113 @@ const Rapor: React.FC<RaporProps> = ({
                 detayHesapAdi: element.detayHesapAdi,
                 cariYil: 0,
                 oncekiYil: 0,
+                level: (key && key.length > 3) ? 1 : 0
               };
             }
 
             if (element.yil === yil) {
-              acc[key].cariYil = element.kontrolBakiye;
+              acc[key].cariYil += element.kontrolBakiye;
             } else {
-              acc[key].oncekiYil = element.kontrolBakiye;
+              acc[key].oncekiYil += element.kontrolBakiye;
             }
           });
           return acc;
-        }, {} as Record<string, { detayKodu: string; detayHesapAdi: string; cariYil: string | number; oncekiYil: string | number }>)
+        }, {} as Record<string, { detayKodu: string; detayHesapAdi: string; cariYil: number; oncekiYil: number; level: number }>)
     );
 
-    let cariYilToplam = result.reduce((sum, item) => {
+    // Filter by sw1 and sw2 if provided
+    let filteredList = rawResult.filter(item => {
       if (sw1 && sw2) {
-        if (item.detayKodu.startsWith(sw1) || item.detayKodu.startsWith(sw2)) {
-          return sum + Number(item.cariYil);
-        }
-      } else {
-        return sum + Number(item.cariYil);
+        return item.detayKodu.startsWith(sw1) || item.detayKodu.startsWith(sw2);
       }
-      return sum;
-    }, 0);
+      return true;
+    });
 
-    let oncekiYilToplam = result.reduce((sum, item) => {
-      if (sw1 && sw2) {
-        if (item.detayKodu.startsWith(sw1) || item.detayKodu.startsWith(sw2)) {
-          return sum + Number(item.oncekiYil);
-        }
-      } else {
-        return sum + Number(item.oncekiYil);
+    // Handle hierarchy ordering
+    const finalResult: any[] = [];
+
+    const parents = filteredList
+      .filter(i => i.level === 0)
+      .sort((a, b) => (a.detayKodu || "").localeCompare(b.detayKodu || ""));
+
+    const children = filteredList
+      .filter(i => i.level === 1)
+      .sort((a, b) => (a.detayKodu || "").localeCompare(b.detayKodu || ""));
+
+    parents.forEach(parent => {
+      const parentCode = parent.detayKodu || "";
+
+      const subItems = children
+        .filter(child => (child.detayKodu || "").startsWith(parentCode))
+        .sort((a, b) => (a.detayKodu || "").localeCompare(b.detayKodu || ""));
+
+      // Parent satırını child toplamlarına eşitle
+      const parentCari = subItems.reduce((sum, x) => sum + (Number(x.cariYil) || 0), 0);
+      const parentOnceki = subItems.reduce((sum, x) => sum + (Number(x.oncekiYil) || 0), 0);
+
+      const parentRow = {
+        ...parent,
+        cariYil: parentCari,
+        oncekiYil: parentOnceki,
+        rawCari: parentCari,
+        rawOnceki: parentOnceki,
+      };
+
+      finalResult.push(parentRow);
+      finalResult.push(...subItems);
+    });
+
+    // parent'ı olmayan child'lar (opsiyonel)
+    children.forEach(child => {
+      if (!finalResult.find(item => item.detayKodu === child.detayKodu)) {
+        finalResult.push(child);
       }
-      return sum;
-    }, 0);
+    });
 
-    result.push({
+    const anaSatirlar = finalResult.filter(x => x.level === 0 && x.detayHesapAdi !== "Toplam");
+
+    let cariYilToplam = anaSatirlar.reduce((sum, item) => sum + (Number(item.cariYil) || 0), 0);
+    let oncekiYilToplam = anaSatirlar.reduce((sum, item) => sum + (Number(item.oncekiYil) || 0), 0);
+
+    const formattedResult = finalResult.map(item => {
+      const cari = Number(item.cariYil) || 0;
+      const onceki = Number(item.oncekiYil) || 0;
+
+      const cariStr =
+        cari > 0 ? formatNumber(cari) : cari === 0 ? "-" : `(${formatNumber(Math.abs(cari))})`;
+
+      const oncekiStr =
+        onceki > 0 ? formatNumber(onceki) : onceki === 0 ? "-" : `(${formatNumber(Math.abs(onceki))})`;
+
+      return {
+        ...item,
+        cariYil: cariStr,
+        oncekiYil: oncekiStr,
+        rawCari: cari,
+        rawOnceki: onceki,
+      };
+    });
+
+    formattedResult.push({
       detayHesapAdi: "Toplam",
       detayKodu: "",
-      cariYil: cariYilToplam,
-      oncekiYil: oncekiYilToplam,
+      cariYil:
+        cariYilToplam > 0
+          ? formatNumber(cariYilToplam)
+          : cariYilToplam === 0
+            ? "-"
+            : `(${formatNumber(Math.abs(cariYilToplam))})`,
+      oncekiYil:
+        oncekiYilToplam > 0
+          ? formatNumber(oncekiYilToplam)
+          : oncekiYilToplam === 0
+            ? "-"
+            : `(${formatNumber(Math.abs(oncekiYilToplam))})`,
+      level: 0,
     });
 
-    result.forEach((item) => {
-      if (
-        typeof item.cariYil === "number" &&
-        typeof item.oncekiYil === "number"
-      ) {
-        if (item.cariYil < 0) {
-          item.cariYil = "(" + formatNumber(Math.abs(item.cariYil)) + ")";
-        } else {
-          item.cariYil = formatNumber(item.cariYil);
-        }
+    return formattedResult;
 
-        if (item.oncekiYil < 0) {
-          item.oncekiYil = "(" + formatNumber(Math.abs(item.oncekiYil)) + ")";
-        } else {
-          item.oncekiYil = formatNumber(item.oncekiYil);
-        }
-
-        if (item.cariYil == "0,00") {
-          item.cariYil = "-";
-        }
-        if (item.oncekiYil == "0,00") {
-          item.oncekiYil = "-";
-        }
-      }
-    });
-
-    return result;
   };
 
   const [subelerRows, setSubelerRows] = useState<VeriSubeler[]>([]);
@@ -1345,9 +1383,9 @@ const Rapor: React.FC<RaporProps> = ({
                     yil: user.yil || 0,
 
                     formatNumber,
-                  }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                    <tr key={index}>
-                      <td>{detayHesapAdi}</td>
+                  }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                    <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                      <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                       <td style={{ textAlign: "right" }}>{cariYil}</td>
                       <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                     </tr>
@@ -1421,13 +1459,13 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "1",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1465,13 +1503,13 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "2",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1557,14 +1595,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1606,14 +1644,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1655,14 +1693,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1704,14 +1742,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1797,14 +1835,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1846,14 +1884,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1895,14 +1933,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -1944,14 +1982,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -2032,9 +2070,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2067,9 +2105,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2162,9 +2200,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2197,9 +2235,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2276,9 +2314,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2311,9 +2349,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2390,9 +2428,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2425,9 +2463,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2504,9 +2542,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2539,9 +2577,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2626,14 +2664,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -2675,14 +2713,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -2724,14 +2762,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -2773,14 +2811,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -2859,9 +2897,9 @@ const Rapor: React.FC<RaporProps> = ({
                         yil: user.yil || 0,
 
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2894,9 +2932,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -2973,9 +3011,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -3008,9 +3046,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -3607,9 +3645,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -3642,9 +3680,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -3849,14 +3887,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -3898,14 +3936,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -3947,14 +3985,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -3996,14 +4034,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4081,9 +4119,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -4116,9 +4154,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -4203,14 +4241,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4252,14 +4290,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4301,14 +4339,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4350,14 +4388,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4446,14 +4484,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4498,14 +4536,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4547,14 +4585,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4596,14 +4634,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4692,14 +4730,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4741,14 +4779,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4790,14 +4828,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4839,14 +4877,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -4941,9 +4979,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -4976,9 +5014,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -5291,14 +5329,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -5340,14 +5378,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -5389,14 +5427,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "3",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("1") ||
                             detayKodu.startsWith("3") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -5438,14 +5476,14 @@ const Rapor: React.FC<RaporProps> = ({
                         sw2: "4",
                       }).map(
                         (
-                          { detayKodu, detayHesapAdi, cariYil, oncekiYil },
+                          { detayKodu, detayHesapAdi, cariYil, oncekiYil, level },
                           index
                         ) =>
                           (detayKodu.startsWith("2") ||
                             detayKodu.startsWith("4") ||
                             detayHesapAdi == "Toplam") && (
-                            <tr key={index}>
-                              <td>{detayHesapAdi}</td>
+                            <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                              <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                               <td style={{ textAlign: "right" }}>{cariYil}</td>
                               <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                             </tr>
@@ -5526,9 +5564,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -5629,9 +5667,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -5708,9 +5746,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -5743,9 +5781,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -5816,9 +5854,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -5895,9 +5933,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -5930,9 +5968,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6009,9 +6047,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6044,9 +6082,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6123,9 +6161,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6158,9 +6196,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6237,9 +6275,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6272,9 +6310,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 2,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6474,9 +6512,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6547,9 +6585,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>
@@ -6620,9 +6658,9 @@ const Rapor: React.FC<RaporProps> = ({
                         tabloNo: 1,
                         yil: user.yil || 0,
                         formatNumber,
-                      }).map(({ detayHesapAdi, cariYil, oncekiYil }, index) => (
-                        <tr key={index}>
-                          <td>{detayHesapAdi}</td>
+                      }).map(({ detayHesapAdi, cariYil, oncekiYil, level }, index) => (
+                        <tr key={index} style={{ fontWeight: detayHesapAdi === "Toplam" ? "bold" : "normal" }}>
+                          <td style={{ paddingLeft: (level || 0) * 20 }}>{detayHesapAdi}</td>
                           <td style={{ textAlign: "right" }}>{cariYil}</td>
                           <td style={{ textAlign: "right" }}>{oncekiYil}</td>
                         </tr>

@@ -281,42 +281,95 @@ const RaporKonsolide: React.FC<RaporProps> = ({
 
     // Handle hierarchy ordering
     const finalResult: any[] = [];
-    const parents = filteredList.filter(i => i.level === 0).sort((a, b) => a.detayKodu.localeCompare(b.detayKodu));
-    const children = filteredList.filter(i => i.level === 1);
+
+    const parents = filteredList
+      .filter(i => i.level === 0)
+      .sort((a, b) => (a.detayKodu || "").localeCompare(b.detayKodu || ""));
+
+    const children = filteredList
+      .filter(i => i.level === 1)
+      .sort((a, b) => (a.detayKodu || "").localeCompare(b.detayKodu || ""));
 
     parents.forEach(parent => {
-      finalResult.push(parent);
+      const parentCode = parent.detayKodu || "";
+
       const subItems = children
-        .filter(child => child.detayKodu.startsWith(parent.detayKodu))
-        .sort((a, b) => a.detayKodu.localeCompare(b.detayKodu));
+        .filter(child => (child.detayKodu || "").startsWith(parentCode))
+        .sort((a, b) => (a.detayKodu || "").localeCompare(b.detayKodu || ""));
+
+      // ✅ Parent satırını child toplamlarına eşitle
+      const parentCari = subItems.reduce((sum, x) => sum + (Number(x.cariYil) || 0), 0);
+      const parentOnceki = subItems.reduce((sum, x) => sum + (Number(x.oncekiYil) || 0), 0);
+
+      // Eğer child yoksa parent'ın kendi değeri kalsın istiyorsan:
+      // const parentCari = subItems.length ? ... : (Number(parent.cariYil) || 0);
+      // const parentOnceki = subItems.length ? ... : (Number(parent.oncekiYil) || 0);
+
+      const parentRow = {
+        ...parent,
+        cariYil: parentCari,
+        oncekiYil: parentOnceki,
+        rawCari: parentCari,
+        rawOnceki: parentOnceki,
+      };
+
+      finalResult.push(parentRow);
       finalResult.push(...subItems);
     });
 
-    // In case there are children without a parent in the filtered list
+    // ✅ parent'ı olmayan child'lar (opsiyonel)
     children.forEach(child => {
       if (!finalResult.find(item => item.detayKodu === child.detayKodu)) {
         finalResult.push(child);
       }
     });
 
-    let cariYilToplam = finalResult.reduce((sum, item) => sum + item.cariYil, 0);
-    let oncekiYilToplam = finalResult.reduce((sum, item) => sum + item.oncekiYil, 0);
+    // ✅ Toplam = sadece ana hesapların toplamı (detaylar tekrar sayılmaz)
+    const anaSatirlar = finalResult.filter(x => x.level === 0 && x.detayHesapAdi !== "Toplam");
 
+    let cariYilToplam = anaSatirlar.reduce((sum, item) => sum + (Number(item.cariYil) || 0), 0);
+    let oncekiYilToplam = anaSatirlar.reduce((sum, item) => sum + (Number(item.oncekiYil) || 0), 0);
+
+    // Formatlama (senin mevcut format mantığına uygun)
     const formattedResult = finalResult.map(item => {
-      let cari = item.cariYil;
-      let onceki = item.oncekiYil;
+      const cari = Number(item.cariYil) || 0;
+      const onceki = Number(item.oncekiYil) || 0;
 
-      let cariStr = cari === 0 ? "-" : (cari < 0 ? `(${formatNumber(Math.abs(cari))})` : formatNumber(cari));
-      let oncekiStr = onceki === 0 ? "-" : (onceki < 0 ? `(${formatNumber(Math.abs(onceki))})` : formatNumber(onceki));
+      const cariStr =
+        cari > 0 ? formatNumber(cari) : cari === 0 ? "-" : `(${formatNumber(Math.abs(cari))})`;
+
+      const oncekiStr =
+        onceki > 0 ? formatNumber(onceki) : onceki === 0 ? "-" : `(${formatNumber(Math.abs(onceki))})`;
 
       return {
         ...item,
         cariYil: cariStr,
         oncekiYil: oncekiStr,
         rawCari: cari,
-        rawOnceki: onceki
+        rawOnceki: onceki,
       };
     });
+
+    // ✅ Toplam satırı
+    formattedResult.push({
+      detayHesapAdi: "Toplam",
+      detayKodu: "",
+      cariYil:
+        cariYilToplam > 0
+          ? formatNumber(cariYilToplam)
+          : cariYilToplam === 0
+            ? "-"
+            : `(${formatNumber(Math.abs(cariYilToplam))})`,
+      oncekiYil:
+        oncekiYilToplam > 0
+          ? formatNumber(oncekiYilToplam)
+          : oncekiYilToplam === 0
+            ? "-"
+            : `(${formatNumber(Math.abs(oncekiYilToplam))})`,
+      level: 0,
+    });
+
+    return formattedResult;
 
     formattedResult.push({
       detayHesapAdi: "Toplam",

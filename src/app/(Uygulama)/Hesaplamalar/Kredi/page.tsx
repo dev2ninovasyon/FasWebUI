@@ -26,6 +26,7 @@ import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import KrediVeriYukleme from "./KrediVeriYukleme";
 import KrediHesaplama from "./KrediHesaplama";
+import KrediHesaplamaBakiye from "./KrediHesaplamaBakiye"
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 import KrediHesaplamaDetay from "./KrediHesaplamaDetay";
@@ -322,6 +323,14 @@ const Page: React.FC = () => {
                     lg: 12
                   }}>
                   <KrediHesaplamaDetay hesaplaTiklandimi={hesaplaTiklandimi} />
+                </Grid>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <KrediHesaplamaBakiye hesaplaTiklandimi={hesaplaTiklandimi} />
                 </Grid>
                 <FloatingButtonFisler
                   handleClick={() => setFloatingButtonTiklandimi(true)}
