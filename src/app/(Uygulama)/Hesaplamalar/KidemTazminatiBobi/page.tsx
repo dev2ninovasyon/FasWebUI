@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import { alpha } from "@mui/material/styles";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
@@ -82,6 +84,7 @@ const Page: React.FC = () => {
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const [openHesapDetay, setOpenHesapDetay] = useState(true);
+  const [openIzinDetay, setOpenIzinDetay] = useState(true);
   const [openOdenenKidem, setOpenOdenenKidem] = useState(false);
   const [openTurnover, setOpenTurnover] = useState(false);
 
@@ -165,17 +168,22 @@ const Page: React.FC = () => {
 
   const [hesaplananKarsilik, setHesaplananKarsilik] = useState<number>(0);
   const [izinKarsiligi, setIzinKarsiligi] = useState<number>(0);
-  const [hesap620, setHesap620] = useState<number>(20000);
-  const [hesap622, setHesap622] = useState<number>(20000);
-  const [hesap630, setHesap630] = useState<number>(40000);
-  const [hesap631, setHesap631] = useState<number>(40000);
-  const [hesap632, setHesap632] = useState<number>(40000);
-  const [hesap720, setHesap720] = useState<number>(20000);
-  const [hesap730, setHesap730] = useState<number>(20000);
-  const [hesap740, setHesap740] = useState<number>(40000);
-  const [hesap750, setHesap750] = useState<number>(40000);
-  const [hesap760, setHesap760] = useState<number>(40000);
-  const [hesap770, setHesap770] = useState<number>(40000);
+  const [hesap620, setHesap620] = useState<number>(0);
+  const [hesap622, setHesap622] = useState<number>(0);
+  const [hesap630, setHesap630] = useState<number>(0);
+  const [hesap631, setHesap631] = useState<number>(0);
+  const [hesap632, setHesap632] = useState<number>(0);
+  const [hesap620Izin, setHesap620Izin] = useState<number>(0);
+  const [hesap622Izin, setHesap622Izin] = useState<number>(0);
+  const [hesap630Izin, setHesap630Izin] = useState<number>(0);
+  const [hesap631Izin, setHesap631Izin] = useState<number>(0);
+  const [hesap632Izin, setHesap632Izin] = useState<number>(0);
+  const [hesap720, setHesap720] = useState<number>(0);
+  const [hesap730, setHesap730] = useState<number>(0);
+  const [hesap740, setHesap740] = useState<number>(0);
+  const [hesap750, setHesap750] = useState<number>(0);
+  const [hesap760, setHesap760] = useState<number>(0);
+  const [hesap770, setHesap770] = useState<number>(0);
   const [ayrilan2019, setAyrilan2019] = useState<number>(0);
   const [personel2019, setPersonel2019] = useState<number>(0);
   const [ayrilan2020, setAyrilan2020] = useState<number>(0);
@@ -249,6 +257,11 @@ const Page: React.FC = () => {
       hesap630: hesap630,
       hesap631: hesap631,
       hesap632: hesap632,
+      hesap620Izin: hesap620Izin,
+      hesap622Izin: hesap622Izin,
+      hesap630Izin: hesap630Izin,
+      hesap631Izin: hesap631Izin,
+      hesap632Izin: hesap632Izin,
       hesap720: hesap720,
       hesap730: hesap730,
       hesap740: hesap740,
@@ -478,6 +491,16 @@ const Page: React.FC = () => {
   }, [hesap620, hesap622, hesap630, hesap631, hesap632]);
 
   useEffect(() => {
+    const toplamIzin =
+      Number(hesap620Izin) +
+      Number(hesap622Izin) +
+      Number(hesap630Izin) +
+      Number(hesap631Izin) +
+      Number(hesap632Izin);
+    setIzinKarsiligi(toplamIzin);
+  }, [hesap620Izin, hesap622Izin, hesap630Izin, hesap631Izin, hesap632Izin]);
+
+  useEffect(() => {
     fetchData();
     fetchData2();
     fetchData3();
@@ -535,7 +558,29 @@ const Page: React.FC = () => {
                       size={{
                         xs: 12,
                         lg: 6
-                      }}><CustomFormLabel>Bir Önceki Yıl Hesaplanan Karşılık</CustomFormLabel></Grid>
+                      }}><CustomFormLabel>Bir Önceki Yıl Hesaplanan Kıdem Karşılık
+                        <Box
+                          sx={(theme) => ({
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 0.75,
+                            px: 1,
+                            py: 0.5,
+                            borderRadius: 1,
+                            border: `1px solid ${alpha(theme.palette.warning.main, 0.35)}`,
+                            backgroundColor: alpha(theme.palette.warning.main, 0.08),
+                            color: theme.palette.warning.dark,
+                            width: "fit-content",
+                          })}
+                        >
+                          <WarningAmberRoundedIcon sx={{ fontSize: 16, opacity: 0.9 }} />
+                          <Typography sx={{ fontSize: 12, opacity: 0.9 }}>
+                            İlk önce detay verilerini giriniz...
+                          </Typography>
+                        </Box>
+                      </CustomFormLabel>
+                    </Grid>
+
                     <Grid
                       size={{
                         xs: 12,
@@ -551,7 +596,7 @@ const Page: React.FC = () => {
                         sx={{ cursor: 'pointer', mt: 2 }}
                       >
                         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                          Bir Önceki Yıl Hesaplanan Karşılık Detayları
+                          Bir Önceki Yıl Hesaplanan Kıdem KarşılıkDetayları
                         </Typography>
                         {openHesapDetay ? <IconChevronUp size="20" /> : <IconChevronDown size="20" />}
                       </Stack>
@@ -579,7 +624,7 @@ const Page: React.FC = () => {
                             size={{
                               xs: 12,
                               lg: 6
-                            }}><NumericInput fullWidth value={hesap622} onChange={(val) => setHesap630(val)} /></Grid>
+                            }}><NumericInput fullWidth value={hesap622} onChange={(val) => setHesap622(val)} /></Grid>
 
                           <Grid
                             size={{
@@ -633,12 +678,113 @@ const Page: React.FC = () => {
                       size={{
                         xs: 12,
                         lg: 6
-                      }}><CustomFormLabel>Bir Önceki Yıl İzin Karşılığı</CustomFormLabel></Grid>
+                      }}>
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
+                        <CustomFormLabel>Bir Önceki Yıl İzin Karşılığı
+
+                        </CustomFormLabel>
+                        <Box
+                          sx={(theme) => ({
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 0.75,
+                            px: 1,
+                            py: 0.5,
+                            borderRadius: 1,
+                            border: `0.5px solid ${alpha(theme.palette.warning.main, 0.35)}`,
+                            backgroundColor: alpha(theme.palette.warning.main, 0.08),
+                            color: theme.palette.warning.dark,
+                            width: "fit-content",
+                          })}
+                        >
+                          <WarningAmberRoundedIcon sx={{ fontSize: 16, opacity: 0.9 }} />
+                          <Typography sx={{ fontSize: 12, opacity: 0.9 }}>
+                            İlk önce detay verilerini giriniz...
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
                     <Grid
                       size={{
                         xs: 12,
                         lg: 6
                       }}><NumericInput fullWidth value={izinKarsiligi} onChange={(val) => setIzinKarsiligi(val)} /></Grid>
+
+                    <Grid size={12}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={1}
+                        onClick={() => setOpenIzinDetay(!openIzinDetay)}
+                        sx={{ cursor: 'pointer', mt: 2 }}
+                      >
+                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                          Bir Önceki Yıl İzin Karşılığı Detayları
+                        </Typography>
+                        {openIzinDetay ? <IconChevronUp size="20" /> : <IconChevronDown size="20" />}
+                      </Stack>
+                      <Divider />
+                    </Grid>
+                    <Grid size={12}>
+                      <Collapse in={openIzinDetay}>
+                        <Grid container spacing={2} sx={{ mt: 1 }}>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>620 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap620Izin} onChange={(val) => setHesap620Izin(val)} /></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>622 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap622Izin} onChange={(val) => setHesap622Izin(val)} /></Grid>
+
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>630 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap630Izin} onChange={(val) => setHesap630Izin(val)} /></Grid>
+
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>631 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap631Izin} onChange={(val) => setHesap631Izin(val)} /></Grid>
+
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><CustomFormLabel>632 Hesap</CustomFormLabel></Grid>
+                          <Grid
+                            size={{
+                              xs: 12,
+                              lg: 6
+                            }}><NumericInput fullWidth value={hesap632Izin} onChange={(val) => setHesap632Izin(val)} /></Grid>
+
+                        </Grid>
+                      </Collapse>
+                    </Grid>
 
                     <Grid
                       size={{

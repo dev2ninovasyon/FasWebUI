@@ -11,7 +11,9 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import { getKrediHesaplanmisOrnekFisler } from "@/api/Hesaplamalar/Hesaplamalar";
+import {
+  getKrediHesaplanmisOrnekFisler,
+} from "@/api/Hesaplamalar/Hesaplamalar";
 import { createFisGirisiVerisi } from "@/api/Donusum/FisGirisi";
 import { enqueueSnackbar } from "notistack";
 import numbro from "numbro";
@@ -429,26 +431,35 @@ const KrediHesaplamaOrnekFisler: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       const krediHesaplanmisOrnekFisVerileri =
-        await getKrediHesaplanmisOrnekFisler(user.denetciId || 0,
+        await getKrediHesaplanmisOrnekFisler(
+          user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
 
       const rowsAll: any = [];
-      krediHesaplanmisOrnekFisVerileri.forEach((veri: any) => {
-        const newRow: any = [
-          true,
-          veri.yevmiyeNo,
-          veri.fisTipi,
-          veri.detayKodu,
-          veri.hesapAdi,
-          veri.paraBirimi,
-          veri.borcTutari == undefined ? "Hesaplanacak" : veri.borcTutari,
-          veri.alacakTutari == undefined ? "Hesaplanacak" : veri.alacakTutari,
-          veri.aciklama,
-        ];
-        rowsAll.push(newRow);
-      });
+      let lastYevmiyeNo = 0;
+
+      // Mevcut fişleri ekle
+      if (Array.isArray(krediHesaplanmisOrnekFisVerileri)) {
+        krediHesaplanmisOrnekFisVerileri.forEach((veri: any) => {
+          const newRow: any = [
+            true,
+            veri.yevmiyeNo,
+            veri.fisTipi,
+            veri.detayKodu,
+            veri.hesapAdi,
+            veri.paraBirimi,
+            veri.borcTutari == undefined ? "Hesaplanacak" : veri.borcTutari,
+            veri.alacakTutari == undefined ? "Hesaplanacak" : veri.alacakTutari,
+            veri.aciklama,
+          ];
+          rowsAll.push(newRow);
+          if (veri.yevmiyeNo > lastYevmiyeNo) {
+            lastYevmiyeNo = veri.yevmiyeNo;
+          }
+        });
+      }
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
@@ -610,4 +621,3 @@ const KrediHesaplamaOrnekFisler: React.FC<Props> = ({
 };
 
 export default KrediHesaplamaOrnekFisler;
-

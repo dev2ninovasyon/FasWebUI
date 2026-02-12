@@ -105,6 +105,30 @@ export const getKrediHesaplanmis = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+export const getKrediHesaplanmisBakiye = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  konsolide: boolean = true
+) => {
+  try {
+    const res = await apiFetch(
+      `/Hesaplamalar/KrediHesaplanmisBakiye?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`
+    );
+
+    const json = await res.json().catch(() => null);
+
+    if (!res.ok) {
+      console.error("KrediHesaplanmisBakiye API Hatası:", res.status, json);
+      return [];
+    }
+
+    return json?.data ?? json ?? [];
+  } catch (error) {
+    console.error("KrediHesaplanmisBakiye API Hatası:", error);
+    return [];
+  }
+};
 
 export const getKrediHesaplanmisDetay = async (
   denetciId: number,
