@@ -141,10 +141,12 @@ const Page = () => {
       },
     });
 
+    const AnimatedDiv = animated.div as any;
+
     return (
-      <animated.div style={style}>
+      <AnimatedDiv style={style}>
         <Collapse {...props} />
-      </animated.div>
+      </AnimatedDiv>
     );
   }
 

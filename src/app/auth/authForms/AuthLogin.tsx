@@ -1,7 +1,7 @@
 ﻿import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { Box, Typography, Button, Stack, useTheme, InputAdornment } from "@mui/material";
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 // LoadingButton import removed
 import { IconTrash, IconMail, IconLock } from "@tabler/icons-react";
@@ -21,8 +21,8 @@ import { getDenetciOdemeBilgileri } from "@/api/Denetci/Denetci";
 
 interface loginType {
   title?: string;
-  subtitle?: JSX.Element | JSX.Element[];
-  subtext?: JSX.Element | JSX.Element[];
+  subtitle?: React.ReactNode;
+  subtext?: React.ReactNode;
 }
 
 const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {

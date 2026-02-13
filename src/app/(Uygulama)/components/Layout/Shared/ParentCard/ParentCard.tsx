@@ -6,8 +6,8 @@ import { AppState } from "@/store/store";
 
 type Props = {
   title: string;
-  footer?: string | React.ReactNode;
-  children: React.ReactNode;
+  footer?: string | JSX.Element;
+  children: JSX.Element;
 };
 
 const ParentCard = ({ title, children, footer }: Props) => {

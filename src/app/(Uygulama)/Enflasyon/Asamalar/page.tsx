@@ -20,9 +20,27 @@ const BCrumb = [
   },
 ];
 
+import { generateSignature } from "@/utils/crypto";
+
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const theme = useTheme();
+
+  // Kullanıcı bilgileri henüz yüklenmediyse render etme veya loading göster
+  if (!user || !user.kullaniciAdi) {
+    return <div>Yükleniyor...</div>;
+  }
+
+  const signature = generateSignature(
+    user.kullaniciAdi || "",
+    (user.denetciId || 0).toString(),
+    (user.id || 0).toString(),
+    (user.denetlenenId || 0).toString(),
+    (user.yil || 0).toString()
+  );
+
+  // URL encode signature because it contains special characters like + and /
+  const encodedSignature = encodeURIComponent(signature);
 
   return (
     <ProtectedPage allowed={user?.enflasyonmu || false}>
@@ -36,8 +54,7 @@ const Page: React.FC = () => {
               lg: 12
             }}>
             <iframe
-              //src={`${ENFLASYON_BASE_URL}/EnflasyonDuzeltmesi/Index?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
-              src={`/templates/EnflasyonAsamalar.html`}
+              src={`${ENFLASYON_BASE_URL}/EnflasyonDuzeltmesi/Index?username=${user.kullaniciAdi || ""}&denetciId=${user.denetciId || 0}&kullaniciId=${user.id || 0}&denetlenenId=${user.denetlenenId || 0}&yil=${user.yil || 0}&signature=${encodedSignature}`}
               style={{
                 background: theme.palette.common.white,
                 border: "0px",
