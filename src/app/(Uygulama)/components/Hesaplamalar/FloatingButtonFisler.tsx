@@ -31,7 +31,7 @@ export const FloatingButtonFisler: React.FC<FloatingButtonProps> = ({
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={warn ? () => {} : () => handleClick()}
+      onClick={warn ? () => { } : handleClick}
     >
       <Box
         sx={{
