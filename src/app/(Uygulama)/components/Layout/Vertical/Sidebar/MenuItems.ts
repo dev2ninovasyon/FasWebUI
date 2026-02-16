@@ -46,7 +46,8 @@ export function createMenuItems(
   denetimTuru?: string,
   enflasyonmu?: boolean,
   konsolidemi?: boolean,
-  bddkmi?: boolean
+  bddkmi?: boolean,
+  yil?: number
 ): MenuitemsType[] {
   return rol == undefined ||
     (rol.length === 1 && rol[0] === "FinansalTabloKontrol")
@@ -1521,20 +1522,19 @@ export function createMenuItems(
             icon: IconPoint,
             href: "/Surdurulebilirlik/SurdurulebilirlikEkBilgiler",
           },
-        ],
       },
       ...(enflasyonmu === true
         ? [
           {
             id: uniqueId(),
-            parentTitle: "ENFLASYON",
-            title: "ENFLASYON",
+            parentTitle: "ENFLASYON DÜZELTMESİ",
+            title: "ENFLASYON DÜZELTMESİ",
             icon: IconTrendingUp,
             href: "/Enflasyon",
             children: [
               {
                 id: uniqueId(),
-                parentTitle: "ENFLASYON",
+                parentTitle: "ENFLASYON DÜZELTMESİ",
                 title: "Aşamalar",
                 icon: IconPoint,
                 href: "/Enflasyon/Asamalar",
@@ -1553,21 +1553,37 @@ export function createMenuItems(
               },
               {
                 id: uniqueId(),
+                title: "Reel Olmayan Finansman Maaliyeti",
+                icon: IconPoint,
+                href: "/Enflasyon/ReelOlmayanFinansmanMaaliyeti",
+              },
+              ...(yil === 2024
+                ? [
+                  {
+                    id: uniqueId(),
+                    title: "Önceki Dönem Vuk Enflasyon İptal Fişi",
+                    icon: IconPoint,
+                    href: "/Enflasyon/VukEnflasyonIptalFisi",
+                  },
+                ]
+                : []),
+              {
+                id: uniqueId(),
+                title: "Stoklar Enflasyon Düzeltmesi",
+                icon: IconPoint,
+                href: "/Enflasyon/StoklarEnflasyonDuzeltmesi",
+              },
+              {
+                id: uniqueId(),
                 title: "Maddi Ve Maddi Olmayan Duran Varlıklar",
                 icon: IconPoint,
                 href: "/Enflasyon/MaddiVeMaddiOlmayanDuranVarliklar",
               },
               {
                 id: uniqueId(),
-                title: "Reel Olmayan Finansman Maaliyeti",
+                title: "Amortisman Haraket Tablosu",
                 icon: IconPoint,
-                href: "/Enflasyon/ReelOlmayanFinansmanMaaliyeti",
-              },
-              {
-                id: uniqueId(),
-                title: "Stoklar Enflasyon Düzeltmesi",
-                icon: IconPoint,
-                href: "/Enflasyon/StoklarEnflasyonDuzeltmesi",
+                href: "/Enflasyon/AmortismanHaraketTablosu",
               },
               {
                 id: uniqueId(),
@@ -1619,36 +1635,59 @@ export function createMenuItems(
                 icon: IconPoint,
                 href: "Enflasyon/DuzeltmeIslemleri",
                 children: [
-                  {
-                    id: uniqueId(),
-                    title: "Fiş Girişi",
-                    icon: IconPoint,
-                    href: "/Enflasyon/DuzeltmeIslemleri/FisGirisi",
-                  },
-                  {
-                    id: uniqueId(),
-                    title: "Fiş İşlemleri",
-                    icon: IconPoint,
-                    href: "/Enflasyon/DuzeltmeIslemleri/FisIslemleri",
-                  },
+                  ...(yil && yil >= 2025
+                    ? [
+                      {
+                        id: uniqueId(),
+                        title: "İptal Fişi",
+                        icon: IconPoint,
+                        href: "/Enflasyon/DuzeltmeIslemleri/IptalFisi",
+                      },
+                    ]
+                    : []),
+                  ...(yil && yil < 2025
+                    ? [
+                      {
+                        id: uniqueId(),
+                        title: "Fiş Girişi",
+                        icon: IconPoint,
+                        href: "/Enflasyon/DuzeltmeIslemleri/FisGirisi",
+                      },
+                      {
+                        id: uniqueId(),
+                        title: "Fiş İşlemleri",
+                        icon: IconPoint,
+                        href: "/Enflasyon/DuzeltmeIslemleri/FisIslemleri",
+                      },
+                    ]
+                    : []),
                   {
                     id: uniqueId(),
                     title: "Taşıma Fişi",
                     icon: IconPoint,
                     href: "/Enflasyon/DuzeltmeIslemleri/TasimaFisi",
                   },
-                  {
-                    id: uniqueId(),
-                    title: "Maliyet Fark Fişi Oluştur",
-                    icon: IconPoint,
-                    href: "/Enflasyon/DuzeltmeIslemleri/MaliyetFarkFisi",
-                  },
-                  {
-                    id: uniqueId(),
-                    title: "Maliyet Devir Fişi Oluştur",
-                    icon: IconPoint,
-                    href: "/Enflasyon/DuzeltmeIslemleri/MaliyetDevirFisi",
-                  },
+                  ...(yil && yil >= 2024
+                    ? [
+                      {
+                        id: uniqueId(),
+                        title: `Maliyet Fark Fişi Oluştur ${yil >= 2025 ? "(15,18,38)" : ""
+                          }`,
+                        icon: IconPoint,
+                        href: "/Enflasyon/DuzeltmeIslemleri/MaliyetFarkFisi",
+                      },
+                    ]
+                    : []),
+                  ...(yil && yil < 2024
+                    ? [
+                      {
+                        id: uniqueId(),
+                        title: "Maliyet Devir Fişi Oluştur",
+                        icon: IconPoint,
+                        href: "/Enflasyon/DuzeltmeIslemleri/MaliyetDevirFisi",
+                      },
+                    ]
+                    : []),
                   {
                     id: uniqueId(),
                     title: "Enflasyon Dönüşüm",
@@ -1672,35 +1711,35 @@ export function createMenuItems(
               {
                 id: uniqueId(),
                 title: "Finansal Tablolar",
-                parentTitle: "ENFLASYON",
+                parentTitle: "ENFLASYON DÜZELTMESİ",
                 icon: IconPoint,
                 href: "Enflasyon/FinansalTablolar",
                 children: [
                   {
                     id: uniqueId(),
                     title: "Finansal Durum Tablosu",
-                    parentTitle: "ENFLASYON",
+                    parentTitle: "ENFLASYON DÜZELTMESİ",
                     icon: IconPoint,
                     href: "/Enflasyon/FinansalTablolar/FinansalDurumTablosu",
                   },
                   {
                     id: uniqueId(),
                     title: "Kar / Zarar Tablosu",
-                    parentTitle: "ENFLASYON",
+                    parentTitle: "ENFLASYON DÜZELTMESİ",
                     icon: IconPoint,
                     href: "/Enflasyon/FinansalTablolar/KarZararTablosu",
                   },
                   {
                     id: uniqueId(),
                     title: "Nakit Akış Tablosu",
-                    parentTitle: "ENFLASYON",
+                    parentTitle: "ENFLASYON DÜZELTMESİ",
                     icon: IconPoint,
                     href: "/Enflasyon/FinansalTablolar/NakitAkisTablosu",
                   },
                   {
                     id: uniqueId(),
                     title: "Özkaynak Değişim Tablosu",
-                    parentTitle: "ENFLASYON",
+                    parentTitle: "ENFLASYON DÜZELTMESİ",
                     icon: IconPoint,
                     href: "/Enflasyon/FinansalTablolar/OzkaynakDegisimTablosu",
                   },
@@ -1708,7 +1747,7 @@ export function createMenuItems(
               },
               {
                 id: uniqueId(),
-                title: "Rapor",
+                title: "Denetçi Raporu",
                 icon: IconPoint,
                 href: "Enflasyon/Rapor",
                 children: [
@@ -1724,6 +1763,17 @@ export function createMenuItems(
                     icon: IconPoint,
                     href: "/Enflasyon/Rapor/DenetciRaporu",
                   },
+                  ...(denetimTuru !== "Tfrs"
+                    ? [
+                      {
+                        id: uniqueId(),
+                        title:
+                          "Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu",
+                        icon: IconPoint,
+                        href: "/Enflasyon/Rapor/FaaliyetRaporu",
+                      },
+                    ]
+                    : []),
                 ],
               },
             ],

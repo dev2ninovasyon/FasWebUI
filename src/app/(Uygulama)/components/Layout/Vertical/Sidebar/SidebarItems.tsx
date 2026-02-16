@@ -25,7 +25,8 @@ const SidebarItems: React.FC<Props> = ({ isSidebarHover }) => {
     user.denetimTuru || undefined,
     user.enflasyonmu || undefined,
     user.konsolidemi || undefined,
-    user.bddkmi || undefined
+    user.bddkmi || undefined,
+    user.yil || undefined
   );
 
   // Şirket seçilmediyse sadece ANASAYFA göster

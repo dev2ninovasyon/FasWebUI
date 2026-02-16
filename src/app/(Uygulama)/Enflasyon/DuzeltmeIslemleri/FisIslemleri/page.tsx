@@ -1,13 +1,13 @@
-﻿"use client";
+"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import React from "react";
-import { Grid } from "@mui/material";
+import React, { useState } from "react";
+import { Grid, CircularProgress, Box } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import ProtectedPage from "@/app/ProtectedPage";
-import { ENFLASYON_BASE_URL } from "@/config/enflasyonConfig";
+import EnflasyonIframe from "@/app/(Uygulama)/components/Enflasyon/EnflasyonIframe";
 
 const BCrumb = [
   {
@@ -24,6 +24,7 @@ const BCrumb = [
   },
 ];
 
+
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -31,21 +32,14 @@ const Page: React.FC = () => {
     <ProtectedPage allowed={user?.enflasyonmu || false}>
       <PageContainer title="Fiş İşlemleri" description="this is Fiş İşlemleri">
         <Breadcrumb title="Fiş İşlemleri" items={BCrumb} />
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ height: "calc(100vh - 225px)", overflow: "hidden" }}>
           <Grid
             size={{
               xs: 12,
               sm: 12,
               lg: 12
-            }}>
-            <iframe
-              src={`${ENFLASYON_BASE_URL}/EnflasyonDuzeltmesi/FisIslemleri?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}`}
-              style={{
-                border: "0px",
-                width: "100%",
-                height: 700,
-              }}
-            ></iframe>
+            }} sx={{ height: "100%", position: "relative" }}>
+            <EnflasyonIframe url="/EnflasyonDuzeltmesi/FisIslemleri" />
           </Grid>
         </Grid>
       </PageContainer>
@@ -54,3 +48,4 @@ const Page: React.FC = () => {
 };
 
 export default Page;
+

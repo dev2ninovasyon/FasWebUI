@@ -1,8 +1,6 @@
 import CryptoJS from 'crypto-js';
 
-// TODO: Bu anahtarı .env dosyasından almalısınız!
-// Şimdilik backend ile aynı hardcoded anahtarı kullanıyoruz.
-const SECRET_KEY = "MySuperSecretKey123!";
+const SECRET_KEY = process.env.NEXT_PUBLIC_ENFLASYON_SECRET_KEY || "MySuperSecretKey123!";
 
 export const generateSignature = (
     username: string,
