@@ -80,7 +80,14 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
     }, [customizer.activeMode, dispatch]);
 
     const colHeaders = useMemo(
-      () => ["Hesap Kodu", "Hesap Adı", "Mizan Bakiye", "İskontolu Bakiye", "Fark"],
+      () => [
+        "Hesap Kodu",
+        "Hesap Adı",
+        "Para Birimi",
+        "Mizan Bakiye",
+        "İskontolu Bakiye",
+        "Fark",
+      ],
       []
     );
 
@@ -97,6 +104,13 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
           data: "hesapAdi",
           type: "text",
           className: "htLeft",
+          readOnly: true,
+          editor: false,
+        },
+        {
+          data: "paraBirimi",
+          type: "text",
+          className: "htCenter",
           readOnly: true,
           editor: false,
         },
@@ -244,7 +258,7 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
             mizanBakiye: mizan,
             iskontolu,
             fark,
-            detayKodu: "660-01",
+            detayKodu: String(veri.hesapKodu ?? ""),
             paraBirimi: String(veri.paraBirimi ?? "TL"),
             borc: fark < 0 ? Math.abs(fark) : null,
             alacak: fark > 0 ? fark : null,
@@ -309,7 +323,7 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
           colHeaders={colHeaders}
           height={350}
           columns={columns}
-          colWidths={[80, 220, 130, 130, 130]}
+          colWidths={[80, 220, 80, 130, 130, 130]}
           manualColumnResize={true}
           rowHeaders={true}
           rowHeights={35}

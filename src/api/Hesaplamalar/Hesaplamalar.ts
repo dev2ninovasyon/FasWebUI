@@ -109,11 +109,12 @@ export const getKrediHesaplanmisBakiye = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
+  tip: string = "E-Defter",
   konsolide: boolean = true
 ) => {
   try {
     const res = await apiFetch(
-      `/Hesaplamalar/KrediHesaplanmisBakiye?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`
+      `/Hesaplamalar/KrediHesaplanmisBakiye?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`
     );
 
     const json = await res.json().catch(() => null);
@@ -158,11 +159,12 @@ export const getKrediHesaplanmisDetay = async (
 export const getKrediHesaplanmisOrnekFisler = async (
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  tip: string = "E-Defter"
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/KrediHesaplanmisOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/KrediHesaplanmisOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tip=${tip}`,
       {
         method: "GET",
         headers: {
