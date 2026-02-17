@@ -662,12 +662,12 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         >
           <Box
             sx={{
-              backgroundColor: "rgba(244, 67, 54, 0.9)", // Soft Red with transparency
+              backgroundColor: "#1D6373", // Custom teal color
               backdropFilter: "blur(12px)", // Glassmorphism
               color: "white",
               borderRadius: "16px",
               padding: "20px",
-              boxShadow: "0 20px 50px rgba(244, 67, 54, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 20px 50px rgba(29, 99, 115, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.2)",
               maxWidth: "380px",
               border: "1px solid rgba(255, 255, 255, 0.3)",
               display: "flex",

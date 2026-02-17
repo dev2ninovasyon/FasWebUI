@@ -72,12 +72,24 @@ export const createKrediHesaplanmis = async (
     );
 
     if (response.ok) {
-      return true;
+      const json = await response.json().catch(() => ({}));
+      const warnings = json?.warnings || [];
+      return {
+        success: true,
+        warnings
+      };
     } else {
-      return false;
+      return {
+        success: false,
+        warnings: []
+      };
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    return {
+      success: false,
+      warnings: []
+    };
   }
 };
 
@@ -121,13 +133,26 @@ export const getKrediHesaplanmisBakiye = async (
 
     if (!res.ok) {
       console.error("KrediHesaplanmisBakiye API Hatası:", res.status, json);
-      return [];
+      return {
+        data: [],
+        warnings: []
+      };
     }
 
-    return json?.data ?? json ?? [];
+    // Response'tan data ve warnings'i ayıkla
+    const data = json?.data ?? json ?? [];
+    const warnings = json?.warnings ?? [];
+
+    return {
+      data,
+      warnings
+    };
   } catch (error) {
     console.error("KrediHesaplanmisBakiye API Hatası:", error);
-    return [];
+    return {
+      data: [],
+      warnings: []
+    };
   }
 };
 

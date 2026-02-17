@@ -7,7 +7,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { useTheme, Box, Alert, Button } from "@mui/material";
 import React, {
   useEffect,
   useState,
@@ -20,6 +20,7 @@ import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getKrediHesaplanmisBakiye } from "@/api/Hesaplamalar/Hesaplamalar";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
+import { useRouter } from "next/navigation";
 
 // register Handsontable's modules
 registerAllModules();
@@ -46,6 +47,7 @@ interface Props {
 const KrediHesaplamaBakiye = forwardRef<any, Props>(
   ({ hesaplaTiklandimi }, ref) => {
     const hotTableComponent = useRef<any>(null);
+    const router = useRouter();
 
     useImperativeHandle(ref, () => ({
       get hotInstance() {
@@ -61,6 +63,8 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
     const [rowCount, setRowCount] = useState(0);
 
     const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+    const [warnings, setWarnings] = useState<string[]>([]);
+    const [programMizanMissing, setProgramMizanMissing] = useState(false);
 
     useEffect(() => {
       const loadStyles = async () => {
@@ -239,11 +243,15 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
 
     const fetchData = async () => {
       try {
-        const krediVerileri = await getKrediHesaplanmisBakiye(
+        const response = await getKrediHesaplanmisBakiye(
           user.denetciId || 0,
           user.yil || 0,
           user.denetlenenId || 0
         );
+
+        // Yeni response yapısı { data: [], warnings: [] }
+        const krediVerileri = response?.data || [];
+        const responseWarnings = response?.warnings || [];
 
         const list = Array.isArray(krediVerileri) ? krediVerileri : [];
 
@@ -267,21 +275,33 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
 
         setRowCount(mapped.length);
         setFetchedData(mapped);
+
+        const marker = "__NO_PROGRAM_MIZAN__";
+        const hasMarker = responseWarnings.includes(marker);
+        setProgramMizanMissing(hasMarker);
+        const filtered = responseWarnings.filter((w: string) => w !== marker);
+        setWarnings(filtered);
       } catch (error) {
-        console.log("Bir hata oluştu:", error);
+        console.error("Veri yüklenirken hata:", error);
         setRowCount(0);
         setFetchedData([]);
+        setWarnings([]);
       }
     };
 
+    // No toast notifications on this page; only inline alert when program mizan missing
+
     useEffect(() => {
       fetchData();
-    }, []);
+    }, [user.denetciId, user.yil, user.denetlenenId]);
+
+
 
     useEffect(() => {
       if (hesaplaTiklandimi) {
         setFetchedData([]);
         setRowCount(0);
+        setWarnings([]);
       } else {
         fetchData();
       }
@@ -310,40 +330,99 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
 
     return (
       <>
-        <HotTable
-          style={{
-            height: "100%",
+        <Box
+          sx={{
+            position: "relative",
             width: "100%",
-            maxHeight: 350,
-            maxWidth: "100%",
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            borderRadius: 1,
+            overflow: "hidden",
+            backgroundColor: (theme) => theme.palette.background.paper,
           }}
-          language={dictionary.languageCode}
-          ref={hotTableComponent}
-          data={fetchedData}
-          colHeaders={colHeaders}
-          height={350}
-          columns={columns}
-          colWidths={[80, 220, 80, 130, 130, 130]}
-          manualColumnResize={true}
-          rowHeaders={true}
-          rowHeights={35}
-          autoWrapRow={true}
-          minRows={rowCount}
-          minCols={colHeaders.length}
-          filters={true}
-          columnSorting={true}
-          dropdownMenu={[
-            "filter_by_condition",
-            "filter_by_value",
-            "filter_action_bar",
-          ]}
-          licenseKey="non-commercial-and-evaluation"
-          stretchH="all"
-          afterGetColHeader={afterGetColHeader}
-          afterGetRowHeader={afterGetRowHeader}
-          afterRenderer={afterRenderer}
-          contextMenu={["alignment", "copy"]}
-        />
+        >
+          <HotTable
+            style={{
+              height: "100%",
+              width: "100%",
+              maxHeight: 350,
+              maxWidth: "100%",
+            }}
+            language={dictionary.languageCode}
+            ref={hotTableComponent}
+            data={fetchedData}
+            colHeaders={colHeaders}
+            height={350}
+            columns={columns}
+            colWidths={[80, 220, 80, 130, 130, 130]}
+            manualColumnResize={true}
+            rowHeaders={true}
+            rowHeights={35}
+            autoWrapRow={true}
+            minRows={rowCount}
+            minCols={colHeaders.length}
+            filters={true}
+            columnSorting={true}
+            dropdownMenu={[
+              "filter_by_condition",
+              "filter_by_value",
+              "filter_action_bar",
+            ]}
+            licenseKey="non-commercial-and-evaluation"
+            stretchH="all"
+            afterGetColHeader={afterGetColHeader}
+            afterGetRowHeader={afterGetRowHeader}
+            afterRenderer={afterRenderer}
+            contextMenu={["alignment", "copy"]}
+          />
+
+          {programMizanMissing && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: { xs: "90%", sm: "70%", md: "60%" },
+                pointerEvents: "auto",
+                zIndex: 10,
+              }}
+            >
+              <Alert
+                severity="warning"
+                variant="outlined"
+                sx={{
+                  p: 4,
+                  borderRadius: 2,
+                  border: (theme) => `1px solid ${theme.palette.warning.dark}`,
+                  backgroundColor: "rgba(255,250,205,0.92)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Box sx={{ textAlign: "center", width: "100%" }}>
+                  <Box sx={{ fontWeight: 600, mb: 1 }}>
+                    Tabloyu görüntüleyebilmek için program formatına dönüştürmelisiniz.
+                  </Box>
+                  <Box sx={{ mb: 2, color: (theme) => theme.palette.warning.dark, fontWeight: 500 }}>
+                    Buraya tıklayınız
+                  </Box>
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      variant="contained"
+                      color="warning"
+                      onClick={() => router.push("/Veri/Mizanlar/EDefterMizan")}
+                      sx={{ textTransform: "none" }}
+                    >
+                      Git
+                    </Button>
+                  </Box>
+                </Box>
+              </Alert>
+            </Box>
+          )}
+        </Box>
       </>
     );
   }

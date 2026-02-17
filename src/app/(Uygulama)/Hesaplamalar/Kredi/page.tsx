@@ -102,8 +102,26 @@ const Page: React.FC = () => {
         user.yil || 0,
         user.denetlenenId || 0
       );
-      if (result) {
+      
+      if (result?.success) {
         setHesaplaTiklandimi(false);
+        
+        // Warnings varsa göster
+        if (result.warnings && result.warnings.length > 0) {
+          result.warnings.forEach((warning: string) => {
+            enqueueSnackbar(warning, {
+              variant: "warning",
+              autoHideDuration: 7000,
+              style: {
+                backgroundColor:
+                  customizer.activeMode === "dark"
+                    ? theme.palette.warning.light
+                    : theme.palette.warning.main,
+              },
+            });
+          });
+        }
+        
         enqueueSnackbar("Kredi Hesaplandı", {
           variant: "success",
           autoHideDuration: 5000,
