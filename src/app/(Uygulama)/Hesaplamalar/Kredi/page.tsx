@@ -2,7 +2,7 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -33,6 +33,9 @@ import KrediHesaplamaDetay from "./KrediHesaplamaDetay";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX } from "@tabler/icons-react";
 import KrediHesaplamaOrnekFisler from "./KrediHesaplamaOrnekFisler";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
@@ -86,6 +89,10 @@ const Page: React.FC = () => {
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
+  const krediHesaplamaRef = useRef<any>(null);
+  const krediHesaplamaDetayRef = useRef<any>(null);
+  const krediHesaplamaBakiyeRef = useRef<any>(null);
+
   const handleClosePopUp = () => {
     setIsPopUpOpen(false);
   };
@@ -96,8 +103,26 @@ const Page: React.FC = () => {
         user.yil || 0,
         user.denetlenenId || 0
       );
-      if (result) {
+      
+      if (result?.success) {
         setHesaplaTiklandimi(false);
+        
+        // Warnings varsa göster
+        if (result.warnings && result.warnings.length > 0) {
+          result.warnings.forEach((warning: string) => {
+            enqueueSnackbar(warning, {
+              variant: "warning",
+              autoHideDuration: 7000,
+              style: {
+                backgroundColor:
+                  customizer.activeMode === "dark"
+                    ? theme.palette.warning.light
+                    : theme.palette.warning.main,
+              },
+            });
+          });
+        }
+        
         enqueueSnackbar("Kredi Hesaplandı", {
           variant: "success",
           autoHideDuration: 5000,
@@ -123,6 +148,59 @@ const Page: React.FC = () => {
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    }
+  };
+
+  const handleDownloadAll = async () => {
+    const workbook = new ExcelJS.Workbook();
+
+    const addSheet = (ref: any, name: string) => {
+      if (ref.current && ref.current.hotInstance) {
+        const hotInstance = ref.current.hotInstance;
+        const data = hotInstance.getData();
+        const headers = hotInstance.getColHeader();
+        const fullData = [headers, ...data];
+
+        const worksheet = workbook.addWorksheet(name);
+
+        fullData.forEach((row: any) => {
+          worksheet.addRow(row);
+        });
+
+        const headerRow = worksheet.getRow(1);
+        headerRow.font = {
+          name: "Calibri",
+          size: 12,
+          bold: true,
+          color: { argb: "FFFFFF" },
+        };
+        headerRow.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "1a6786" },
+        };
+        headerRow.alignment = { horizontal: "left" };
+
+        worksheet.columns.forEach((column) => {
+          column.width = 25;
+        });
+      }
+    };
+
+    addSheet(krediHesaplamaRef, "Kredi Hesaplama");
+    addSheet(krediHesaplamaDetayRef, "Kredi Hesaplama Detay");
+    addSheet(krediHesaplamaBakiyeRef, "Kredi Hesaplama Bakiye");
+
+    try {
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, "KrediRaporu.xlsx");
+      enqueueSnackbar("Excel raporu başarıyla oluşturuldu", { variant: "success" });
+    } catch (error) {
+      console.error("Excel oluşturma hatası:", error);
+      enqueueSnackbar("Excel oluşturulurken bir hata oluştu", { variant: "error" });
     }
   };
 
@@ -297,6 +375,7 @@ const Page: React.FC = () => {
                       width: smDown ? "100%" : "auto",
                     }}
                   >
+                    <ExceleAktarButton handleDownload={handleDownloadAll} />
                     <Button
                       type="button"
                       size="medium"
@@ -318,14 +397,20 @@ const Page: React.FC = () => {
                     xs: 12,
                     lg: 12
                   }}>
-                  <KrediHesaplama hesaplaTiklandimi={hesaplaTiklandimi} />
+                  <KrediHesaplama
+                    ref={krediHesaplamaRef}
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                  />
                 </Grid>
                 <Grid
                   size={{
                     xs: 12,
                     lg: 12
                   }}>
-                  <KrediHesaplamaDetay hesaplaTiklandimi={hesaplaTiklandimi} />
+                  <KrediHesaplamaDetay
+                    ref={krediHesaplamaDetayRef}
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                  />
                 </Grid>
                 <Grid
                   mb={3}
@@ -333,7 +418,10 @@ const Page: React.FC = () => {
                     xs: 12,
                     lg: 12
                   }}>
-                  <KrediHesaplamaBakiye hesaplaTiklandimi={hesaplaTiklandimi} />
+                  <KrediHesaplamaBakiye
+                    ref={krediHesaplamaBakiyeRef}
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                  />
                 </Grid>
                 <FloatingButtonFisler
                   handleClick={() => setFloatingButtonTiklandimi(true)}
@@ -341,8 +429,7 @@ const Page: React.FC = () => {
                 <Dialog
                   open={floatingButtonTiklandimi}
                   onClose={() => setFloatingButtonTiklandimi(false)}
-                  fullWidth
-                  maxWidth={"lg"}
+                  fullScreen
                 >
                   <DialogContent
                     className="testdialog"
@@ -430,4 +517,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

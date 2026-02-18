@@ -1,4 +1,5 @@
-﻿import { Card } from '@mui/material';
+﻿import React from 'react';
+import { Card } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { AppState } from '@/store/store';
 import { useSelector } from '@/store/hooks';

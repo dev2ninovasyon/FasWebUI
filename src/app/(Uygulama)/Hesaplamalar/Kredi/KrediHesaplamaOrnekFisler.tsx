@@ -564,13 +564,13 @@ const KrediHesaplamaOrnekFisler: React.FC<Props> = ({
         style={{
           height: "100%",
           width: "100%",
-          maxHeight: 342,
+          maxHeight: 600,
           maxWidth: "100%",
         }}
         language={dictionary.languageCode}
         ref={hotTableComponent}
         data={fetchedData}
-        height={342}
+        height={600}
         colHeaders={colHeaders}
         columns={columns}
         colWidths={[40, 60, 60, 80, 100, 80, 80, 80, 80]}

@@ -1,37 +1,35 @@
-﻿import { HotTable } from "@handsontable/react";
+﻿"use client";
+
+import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import { useTheme } from "@mui/material";
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useRef,
+} from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getKrediHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
-import numbro from "numbro";
-import trTR from "numbro/languages/tr-TR";
 
 // register Handsontable's modules
 registerAllModules();
 
-numbro.registerLanguage(trTR);
-numbro.setLanguage("tr-TR");
-
 interface Veri {
+  alinanKrediNumarasi: number;
   detayHesapKodu: string;
   hesapAdi: string;
   anaPara: number;
   iskontolu: number;
   iskontosuz: number;
-  faizFonVergi: number;
-  kalanFaizFonVergi: number;
-  kalanFaizFonVergiIskontolu: number;
   faizOrani: number;
-  vade: string;
+  gun: number;
   vadeselDagilim3AyIskontolu: number;
   vadeselDagilim12AyIskontolu: number;
   vadeselDagilim5YilIskontolu: number;
@@ -40,13 +38,24 @@ interface Veri {
   vadeselDagilim12AyIskontosuz: number;
   vadeselDagilim5YilIskontosuz: number;
   vadeselDagilim5YildanUzunIskontosuz: number;
+  faizFonVergi: number;
+  kalanFaizFonVergi: number;
+  kalanFaizFonVergiIskontolu: number;
+  vade: string;
 }
 
 interface Props {
   hesaplaTiklandimi: boolean;
 }
-const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
+
+const KrediHesaplama = forwardRef<any, Props>(({ hesaplaTiklandimi }, ref) => {
   const hotTableComponent = useRef<any>(null);
+
+  useImperativeHandle(ref, () => ({
+    get hotInstance() {
+      return hotTableComponent.current?.hotInstance;
+    },
+  }));
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -55,7 +64,7 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const [rowCount, setRowCount] = useState(0);
 
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [fetchedData, setFetchedData] = useState<any[]>([]);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -74,25 +83,57 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     loadStyles();
   }, [customizer.activeMode]);
 
-  const colHeaders = [
-    "D. Hesap Kodu",
-    "Hesap Adı",
-    "Ana Para",
-    "İskontolu",
-    "İskontosuz",
-    "Raporlama Tarihine Kadar İşleyen Faiz Fon Vergi",
-    "Kalan Faiz Fon Vergi",
-    "Kalan Faiz Fon Verginin İskontolu Tutarı",
-    "Faiz Oranı",
-    "Vade",
-    "1-3 Ay",
-    "4-12 Ay",
-    "1-5 Yıl",
-    "5 Yıldan Uzun",
-    "1-3 Ay",
-    "4-12 Ay",
-    "1-5 Yıl",
-    "5 Yıldan Uzun",
+  const nestedHeaders = [
+    [
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "Vadesel Dağılım", colspan: 8 },
+    ],
+    [
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "", colspan: 1 },
+      { label: "İskontolu", colspan: 4 },
+      { label: "İskontosuz", colspan: 4 },
+    ],
+    [
+      "D. Hesap\n Kodu",
+      "Hesap Adı",
+      "Ana Para",
+      "İskontolu",
+      "İskontosuz",
+      "Raporlama Tarihine Kadar\n İşleyen Faiz Fon Vergi",
+      "Kalan Faiz\n Fon Vergi",
+      "Kalan Faiz Fon Verginin\n İskontolu Tutarı",
+      "Faiz Oranı",
+      "Vade",
+      "Gün",
+      "1-3 Ay",
+      "4-12 Ay",
+      "1-5 Yıl",
+      "5 Yıldan\n Uzun",
+      "1-3 Ay",
+      "4-12 Ay",
+      "1-5 Yıl",
+      "5 Yıldan\n Uzun",
+    ],
   ];
 
   const columns = [
@@ -103,7 +144,7 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Detay Hesap Kodu
+    }, // D. Hesap Kodu
     {
       type: "text",
       columnSorting: true,
@@ -114,77 +155,49 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Hesap Adı
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Ana Para
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // İskontolu
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // İskontosuz
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Raporlama Tarihine Kadar İşleyen Faiz Fon Vergi
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Kalan Faiz Fon Vergi
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
     }, // Kalan Faiz Fon Verginin İskontolu Tutarı
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
@@ -199,110 +212,77 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     }, // Vade
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 1-3 Ay İskontolu
+    }, // Gün
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 4-12 Ay İskontolu
+    }, // İskontolu - 1-3 Ay
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 1-5 Yıl İskontolu
+    }, // İskontolu - 4-12 Ay
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 5 Yıldan Uzun İskontolu
+    }, // İskontolu - 1-5 Yıl
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 1-3 Ay İskontosuz
+    }, // İskontolu - 5 Yıldan Uzun
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 4-12 Ay İskontosuz
+    }, // İskontosuz - 1-3 Ay
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 1-5 Yıl İskontosuz
+    }, // İskontosuz - 4-12 Ay
     {
       type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,
-    }, // 5 Yıldan Uzun İskontosuz
-  ];
-
-  // Nested Headers
-  const nestedHeaders = [
-    [
-      { label: "", colspan: 10 },
-      { label: "Vadesel Dağılım", colspan: 8 },
-    ],
-    [
-      { label: "", colspan: 10 },
-      { label: "İskontolu", colspan: 4 },
-      { label: "İskontosuz", colspan: 4 },
-    ],
-    colHeaders,
+    }, // İskontosuz - 1-5 Yıl
+    {
+      type: "numeric",
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
+      className: "htRight",
+      readOnly: true,
+      editor: false,
+    }, // İskontosuz - 5 Yıldan Uzun
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
-    TH.style.height = "55px";
+    const rowIndex = (TH.parentElement as HTMLTableRowElement)?.sectionRowIndex;
+    if (rowIndex === 0 || rowIndex === 1) {
+      TH.style.height = "50px";
+      TH.style.lineHeight = "50px";
+    } else {
+      TH.style.height = "65px";
+    }
 
     let div = TH.querySelector("div");
     if (!div) {
@@ -310,7 +290,7 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       TH.appendChild(div);
     }
 
-    div.style.whiteSpace = "normal";
+    div.style.whiteSpace = "pre-line";
     div.style.wordWrap = "break-word";
     div.style.display = "flex";
     div.style.alignItems = "center";
@@ -328,7 +308,8 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
     TH.style.backgroundColor = theme.palette.primary.light;
     //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
 
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
+    TH.style.borderColor =
+      customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
 
     // Create span for the header text
     let span = div.querySelector("span");
@@ -336,9 +317,12 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       span = document.createElement("span");
       div.appendChild(span);
     }
-    span.style.position = "absolute";
-    span.style.marginRight = "16px";
-    span.style.left = "4px";
+    span.style.position = "relative";
+    span.style.paddingRight = "10px";
+    span.style.paddingLeft = "4px";
+    span.style.display = "block";
+    span.style.width = "100%";
+    span.style.textAlign = "center";
 
     // Create button if it does not exist
     let button = div.querySelector("button");
@@ -409,7 +393,8 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
   const fetchData = async () => {
     try {
-      const krediVerileri = await getKrediHesaplanmis(user.denetciId || 0,
+      const krediVerileri = await getKrediHesaplanmis(
+        user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -427,6 +412,7 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
           veri.kalanFaizFonVergiIskontolu,
           veri.faizOrani,
           veri.vade,
+          veri.gun,
           veri.vadeselDagilim3AyIskontolu,
           veri.vadeselDagilim12AyIskontolu,
           veri.vadeselDagilim5YilIskontolu,
@@ -438,7 +424,6 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         ];
         rowsAll.push(newRow);
       });
-      rowsAll.sort((a: any, b: any) => (a[0] > b[0] ? 1 : -1));
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
@@ -459,56 +444,6 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       fetchData();
     }
   }, [hesaplaTiklandimi]);
-
-  const handleDownload = () => {
-    const hotTableInstance = hotTableComponent.current.hotInstance;
-    const data = hotTableInstance.getData();
-
-    const processedData = data.map((row: any) => row.slice(0));
-
-    const headers = hotTableInstance.getColHeader().slice(0);
-
-    const fullData = [headers, ...processedData];
-
-    async function createExcelFile() {
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet("Sayfa1");
-
-      fullData.forEach((row: any) => {
-        worksheet.addRow(row);
-      });
-
-      const headerRow = worksheet.getRow(1);
-      headerRow.font = {
-        name: "Calibri",
-        size: 12,
-        bold: true,
-        color: { argb: "FFFFFF" },
-      };
-      headerRow.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "1a6786" },
-      };
-      headerRow.alignment = { horizontal: "left" };
-
-      worksheet.columns.forEach((column) => {
-        column.width = 25;
-      });
-
-      try {
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
-        saveAs(blob, "KrediHesaplama.xlsx");
-        console.log("Excel dosyası başarıyla oluşturuldu");
-      } catch (error) {
-        console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
-      }
-    }
-    createExcelFile();
-  };
 
   useEffect(() => {
     if (hotTableComponent.current) {
@@ -537,20 +472,17 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         style={{
           height: "100%",
           width: "100%",
-          maxHeight: 684,
+          maxHeight: 450,
           maxWidth: "100%",
         }}
         language={dictionary.languageCode}
         ref={hotTableComponent}
         data={fetchedData}
-        height={684}
+        height={350}
         nestedHeaders={nestedHeaders}
         //collapsibleColumns={true}
         columns={columns}
-        colWidths={[
-          80, 140, 100, 100, 100, 100, 100, 100, 100, 80, 100, 100, 100, 115,
-          100, 100, 100, 115,
-        ]}
+        autoColumnSize={true}
         manualColumnResize={true}
         rowHeaders={true}
         rowHeights={35}
@@ -570,29 +502,10 @@ const KrediHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         afterRenderer={afterRenderer}
         contextMenu={["alignment", "copy"]}
       />
-      <Grid container marginTop={2} marginBottom={1}>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 10
-          }}></Grid>
-        <Grid
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-          size={{
-            xs: 12,
-            lg: 2
-          }}>
-          <ExceleAktarButton
-            handleDownload={handleDownload}
-          ></ExceleAktarButton>
-        </Grid>
-      </Grid>
     </>
   );
-};
+});
+
+KrediHesaplama.displayName = "KrediHesaplama";
 
 export default KrediHesaplama;
-

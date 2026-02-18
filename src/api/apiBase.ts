@@ -1,5 +1,5 @@
-﻿//export const url = "https://betaapi.fasmart.app/api";
-export const url = "http://localhost:5000/api";
+﻿export const url = "https://betaapi.fasmart.app/api";
+//export const url = "http://localhost:5000/api";
 
 // 🔐 Güvenlik: Token manager import
 import SecureTokenManager from "@/utils/SecureTokenManager";
@@ -10,9 +10,9 @@ import Logger from "@/utils/Logger";
  */
 export async function apiFetch(
   path: string,
-  options: RequestInit & { timeout?: number; ignoreCustomHeaders?: boolean } = {}
+  options: RequestInit & { timeout?: number; ignoreCustomHeaders?: boolean; includeCredentials?: boolean } = {}
 ) {
-  const { headers, timeout = 120000, ignoreCustomHeaders = false, ...rest } = options;
+  const { headers, timeout = 120000, ignoreCustomHeaders = false, includeCredentials = true, ...rest } = options;
 
   const clientUrl =
     typeof window !== "undefined"
@@ -31,7 +31,7 @@ export async function apiFetch(
       yilFromStorage = window.localStorage.getItem("fas_yil");
 
       // HttpOnly cookie kullanımı nedeniyle token'ı localStorage'dan okumuyoruz.
-      // fetch(..., { credentials: 'include' }) ile otomatik gönderiliyor.
+      // fetch(..., { credentials: 'include' }) ile otomatik gönderiliyor (includeCredentials: true ise).
     }
 
     const mergedHeaders: HeadersInit = {
@@ -51,7 +51,7 @@ export async function apiFetch(
       ...rest,
       headers: mergedHeaders,
       signal: controller.signal,
-      credentials: 'include',
+      credentials: includeCredentials ? 'include' : 'omit',
     });
 
     // 🔐 GÜVENLIK: Token expiry handle etme (401 Unauthorized)

@@ -246,6 +246,41 @@ export const deleteDenetlenenById = async (id: number) => {
   }
 };
 
+export const getOldDenetlenenForCurrentDenetci = async () => {
+  try {
+    const response = await apiFetch(`/DataTransfer/OldDenetlenen/ForCurrentDenetci`, {
+      method: "GET",
+      headers: { accept: "application/json" },
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("getOldDenetlenenForCurrentDenetci failed", response.status);
+      return [];
+    }
+  } catch (error) {
+    console.error("getOldDenetlenenForCurrentDenetci error:", error);
+    return [];
+  }
+};
+
+export const importDenetlenen = async (dto: any) => {
+  try {
+    const response = await apiFetch(`/DataTransfer/ImportDenetlenen`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dto),
+    });
+    if (response.ok) return true;
+    const txt = await response.text();
+    console.error("importDenetlenen failed", response.status, txt);
+    return false;
+  } catch (error) {
+    console.error("importDenetlenen error:", error);
+    return false;
+  }
+};
+
 export const getSektorKodlari = async () => {
   try {
     const response = await apiFetch(`/Denetlenen/SektorKodlari`, {

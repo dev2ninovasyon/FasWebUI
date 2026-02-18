@@ -72,12 +72,24 @@ export const createKrediHesaplanmis = async (
     );
 
     if (response.ok) {
-      return true;
+      const json = await response.json().catch(() => ({}));
+      const warnings = json?.warnings || [];
+      return {
+        success: true,
+        warnings
+      };
     } else {
-      return false;
+      return {
+        success: false,
+        warnings: []
+      };
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    return {
+      success: false,
+      warnings: []
+    };
   }
 };
 
@@ -109,24 +121,38 @@ export const getKrediHesaplanmisBakiye = async (
   denetciId: number,
   yil: number,
   denetlenenId: number,
+  tip: string = "E-Defter",
   konsolide: boolean = true
 ) => {
   try {
     const res = await apiFetch(
-      `/Hesaplamalar/KrediHesaplanmisBakiye?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`
+      `/Hesaplamalar/KrediHesaplanmisBakiye?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${tip}`
     );
 
     const json = await res.json().catch(() => null);
 
     if (!res.ok) {
       console.error("KrediHesaplanmisBakiye API Hatası:", res.status, json);
-      return [];
+      return {
+        data: [],
+        warnings: []
+      };
     }
 
-    return json?.data ?? json ?? [];
+    // Response'tan data ve warnings'i ayıkla
+    const data = json?.data ?? json ?? [];
+    const warnings = json?.warnings ?? [];
+
+    return {
+      data,
+      warnings
+    };
   } catch (error) {
     console.error("KrediHesaplanmisBakiye API Hatası:", error);
-    return [];
+    return {
+      data: [],
+      warnings: []
+    };
   }
 };
 
@@ -158,11 +184,12 @@ export const getKrediHesaplanmisDetay = async (
 export const getKrediHesaplanmisOrnekFisler = async (
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  tip: string = "E-Defter"
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/KrediHesaplanmisOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/KrediHesaplanmisOrnekFisler?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&tip=${tip}`,
       {
         method: "GET",
         headers: {
