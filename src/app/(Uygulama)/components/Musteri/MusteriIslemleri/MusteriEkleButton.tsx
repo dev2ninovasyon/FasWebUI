@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import { IconPlus } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
@@ -11,22 +11,13 @@ const MusteriEkleButton = () => {
   };
 
   return (
-    <>
-      <Stack
-        spacing={1}
-        direction="row"
-        justifyContent="start"
-        marginBottom={4}
-      >
-        <Button
-          color="primary"
-          onClick={() => handleRouteClick()}
-          startIcon={<IconPlus width={18} />}
-        >
-          Müşteri Ekle
-        </Button>
-      </Stack>
-    </>
+    <Button
+      color="primary"
+      onClick={() => handleRouteClick()}
+      startIcon={<IconPlus width={18} />}
+    >
+      Müşteri Ekle
+    </Button>
   );
 };
 

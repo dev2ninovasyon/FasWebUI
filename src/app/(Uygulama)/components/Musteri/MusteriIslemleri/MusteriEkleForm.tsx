@@ -8,6 +8,7 @@ import {
   getDenetlenenKonsolideAnaSirketByDenetciId,
   getSektorKodlari,
   uploadAndParseKurumlarBeyannamesi,
+  importDenetlenen,
 } from "@/api/Musteri/MusteriIslemleri";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -56,9 +57,9 @@ const MusteriEkleForm = ({
   const [konsolideMi, setKonsolideMi] = useState(initialData?.konsolideMi || "Hayır");
   const [konsolideTipi, setKonsolideTipi] = useState(initialData?.konsolideTipi || "Ana Şirket");
   const [konsolideBagliSirketId, setKonsolideBagliSirketId] = useState(initialData?.konsolideBagliSirketId || 0);
-  const [sektor1Id, setSektor1Id] = useState(initialData?.sektor1Id || 0);
-  const [sektor2Id, setSektor2Id] = useState(initialData?.sektor2Id || 0);
-  const [sektor3Id, setSektor3Id] = useState(initialData?.sektor3Id || 0);
+  const [sektor1Id, setSektor1Id] = useState(initialData?.sektor1Id ?? initialData?.Sektor1Id ?? 0);
+  const [sektor2Id, setSektor2Id] = useState(initialData?.sektor2Id ?? initialData?.Sektor2Id ?? 0);
+  const [sektor3Id, setSektor3Id] = useState(initialData?.sektor3Id ?? initialData?.Sektor3Id ?? 0);
 
   // New financial fields state
   const [aktifBuyukluk, setAktifBuyukluk] = useState<number | null>(null);
@@ -187,6 +188,39 @@ const MusteriEkleForm = ({
 
     try {
       setLoading(true);
+      // If initialData contains an Id (we are importing an old record), call import endpoint to preserve Id
+      if (initialData && (initialData.id || initialData.Id)) {
+        const dto: any = {
+          Id: initialData.id || initialData.Id,
+          DenetciId: denetciId,
+          FirmaAdi: firmaAdi,
+          Yetkili: yetkili,
+          Tel: tel,
+          Fax: null,
+          Adres: adres,
+          Email: email,
+          WebAdresi: webAdresi,
+          TicaretSicilNo: ticaretSicilNo,
+          VergiDairesi: vergiDairesi,
+          VergiNo: vergiNo,
+          ArsivId: null,
+          Aktifmi: true,
+        };
+
+        const imported = await importDenetlenen(dto);
+        if (imported) {
+          enqueueSnackbar("Eski şirket başarıyla yeni veritabanına aktarıldı.", { variant: "success" });
+          if (onCustomerCreated) onCustomerCreated(dto.Id, dto);
+          if (!skipNavigation) router.push("/Musteri/MusteriIslemleri");
+          setLoading(false);
+          return;
+        } else {
+          enqueueSnackbar("Şirket içe aktarma başarısız.", { variant: "error" });
+          setLoading(false);
+          return;
+        }
+      }
+
       const result = await createDenetlenen(createdMusteri);
       if (result && result.success) {
         const newId = result.data;
@@ -285,6 +319,28 @@ const MusteriEkleForm = ({
     fetchData2();
   }, []);
 
+  // Sektör adlarına göre eşleştirme
+  useEffect(() => {
+    if (!initialData) return;
+    // Sektör adları hem camelCase hem PascalCase gelebilir
+    const sektor1Adi = initialData.sektor1Adi || initialData.Sektor1Adi;
+    const sektor2Adi = initialData.sektor2Adi || initialData.Sektor2Adi;
+    const sektor3Adi = initialData.sektor3Adi || initialData.Sektor3Adi;
+
+    if (sektor1Adi && sektor1List.length > 0) {
+      const match = sektor1List.find(s => s.adi === sektor1Adi);
+      if (match) setSektor1Id(match.id);
+    }
+    if (sektor2Adi && sektor2List.length > 0) {
+      const match = sektor2List.find(s => s.adi === sektor2Adi);
+      if (match) setSektor2Id(match.id);
+    }
+    if (sektor3Adi && sektor3List.length > 0) {
+      const match = sektor3List.find(s => s.adi === sektor3Adi);
+      if (match) setSektor3Id(match.id);
+    }
+  }, [initialData, sektor1List, sektor2List, sektor3List]);
+
   useEffect(() => {
     if (isHovered && textFieldRef.current) textFieldRef.current.focus();
     else if (!isHovered && textFieldRef.current) textFieldRef.current.blur();
@@ -293,31 +349,6 @@ const MusteriEkleForm = ({
   return (
     <div>
       <Grid container spacing={isWizardView ? 2 : 3}>
-        <Grid size={12}>
-          <Box
-            {...getRootProps()}
-            sx={{
-              border: `2px dashed ${theme.palette.divider}`,
-              borderRadius: "8px",
-              padding: "20px",
-              textAlign: "center",
-              cursor: "pointer",
-              backgroundColor: theme.palette.background.paper,
-              "&:hover": {
-                borderColor: theme.palette.primary.main,
-              },
-            }}
-          >
-            <input {...getInputProps()} />
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              <Typography>
-                Şirket Bilgilerini PDF'den Yüklemek İçin Buraya Tıklayın veya Dosyayı Sürükleyin (Kurumlar Beyannamesi)
-              </Typography>
-            )}
-          </Box>
-        </Grid>
 
         {/* Firma Adı - Always Full Width */}
         <Grid size={12}>

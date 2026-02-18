@@ -3,9 +3,10 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import MusteriIslemleriLayout from "./MusteriIslemleriLayout";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import MusteriTable from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriTable";
 import MusteriEkleButton from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEkleButton";
+import MusteriImportOldButton from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriImportOldButton";
 
 const Page = () => {
   return (
@@ -17,7 +18,10 @@ const Page = () => {
         <ParentCard title="Müşteriler">
           <Grid container spacing={3}>
             <Grid size={12}>
-              <MusteriEkleButton />
+              <Stack spacing={1} direction="row" justifyContent="start" marginBottom={4}>
+                <MusteriEkleButton />
+                <MusteriImportOldButton />
+              </Stack>
               <Box>
                 <MusteriTable />
               </Box>
