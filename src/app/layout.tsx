@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import "@/app/api/index";
+import "./global.css";
 import "@/utils/i18n";
 import { NextAppDirEmotionCacheProvider } from "@/utils/theme/EmotionCache";
 import "slick-carousel/slick/slick.css";
@@ -182,10 +183,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://www.google.com" />
+        <link rel="preconnect" href="https://www.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body>
         <Script
           src="/libs/html-docx.js"
           strategy="beforeInteractive"
+        />
+        <Script
+          src="https://www.google.com/recaptcha/api.js?render=6Ld2CyEsAAAAALNU5rSOM_Q2RAWkQ2RADbsS5NQW"
+          strategy="afterInteractive"
         />
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>

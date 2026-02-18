@@ -6,6 +6,7 @@ import { Typography, Box } from "@mui/material";
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
     { to: "/Kys/RiskDegerlendirmeSureci", title: "2. Risk Değerlendirme Süreci" },
@@ -18,7 +19,9 @@ const Page: React.FC = () => {
             title="2.1 Risk Değerlendirme Süreci Politikası Beyanı"
             description="Risk Değerlendirme Süreci Politikası Beyanı Belgesi"
         >
-            <Breadcrumb title="2.1 Risk Değerlendirme Süreci Politikası Beyanı" items={BCrumb} />
+            <Breadcrumb title="2.1 Risk Değerlendirme Süreci Politikası Beyanı" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysRiskDegerlendirmePolitikasi" />
+      </Breadcrumb>
 
             <Box sx={{ mt: 3 }}>
 

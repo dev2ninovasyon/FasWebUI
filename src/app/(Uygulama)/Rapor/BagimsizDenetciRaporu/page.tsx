@@ -8,6 +8,7 @@ import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import BagimsizDenetciRaporuStepper from "@/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/BagimsizDenetciRaporuStepper";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Rapor",
@@ -30,7 +31,9 @@ const Page: React.FC = () => {
       description="this is Bağımsız Denetçi Raporu"
     >
       <Box className="no-print">
-        <Breadcrumb title="Bağımsız Denetçi Raporu" items={BCrumb} />
+        <Breadcrumb title="Bağımsız Denetçi Raporu" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="BagimsizDenetciRaporu" />
+      </Breadcrumb>
       </Box>
       <Grid container spacing={3}>
         <Grid

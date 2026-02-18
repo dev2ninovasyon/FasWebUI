@@ -11,6 +11,7 @@ import { createYaslandirmaHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import Yaslandirma from "./Yaslandirma";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -79,7 +80,9 @@ const Page: React.FC = () => {
 
   return (
     <PageContainer title="Yaşlandırma" description="this is Yaşlandırma">
-      <Breadcrumb title="Yaşlandırma" items={BCrumb} />
+      <Breadcrumb title="Yaşlandırma" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="Yaslandirma" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{

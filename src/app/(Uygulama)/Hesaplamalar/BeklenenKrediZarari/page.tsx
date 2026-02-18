@@ -26,6 +26,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import BeklenenKrediZarari from "./BeklenenKrediZarari";
 import { IconExclamationMark } from "@tabler/icons-react";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -119,7 +120,9 @@ const Page: React.FC = () => {
       title="Beklenen Kredi Zararı"
       description="this is Beklenen Kredi Zararı"
     >
-      <Breadcrumb title="Beklenen Kredi Zararı" items={BCrumb} />
+      <Breadcrumb title="Beklenen Kredi Zararı" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="BeklenenKrediZarari" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{

@@ -2,6 +2,7 @@
 
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Musteri",
@@ -20,7 +21,9 @@ export default function SubelerLayout({
 }) {
   return (
     <div>
-      <Breadcrumb title="Şubeler" items={BCrumb} />
+      <Breadcrumb title="Şubeler" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="Subeler" />
+      </Breadcrumb>
       {children}
     </div>
   );

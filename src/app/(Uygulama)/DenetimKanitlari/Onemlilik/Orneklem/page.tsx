@@ -14,6 +14,7 @@ import { enqueueSnackbar } from "notistack";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -93,7 +94,9 @@ const Page = () => {
 
   return (
     <PageContainer title="Örneklem" description="this is Örneklem">
-      <Breadcrumb title="Örneklem" items={BCrumb} />
+      <Breadcrumb title="Örneklem" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="Orneklem" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           mb={3}

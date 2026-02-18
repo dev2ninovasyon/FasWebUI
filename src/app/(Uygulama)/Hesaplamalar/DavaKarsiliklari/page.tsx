@@ -30,6 +30,7 @@ import DavaKarsiliklariCard from "@/app/(Uygulama)/components/Hesaplamalar/DavaK
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -198,7 +199,9 @@ const Page: React.FC = () => {
       title="Dava Karşılıkları"
       description="this is Dava Karşılıkları"
     >
-      <Breadcrumb title="Dava Karşılıkları" items={BCrumb} />
+      <Breadcrumb title="Dava Karşılıkları" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="DavaKarsiliklariHesaplanmis" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

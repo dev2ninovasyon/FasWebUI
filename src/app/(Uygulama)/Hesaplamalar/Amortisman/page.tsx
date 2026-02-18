@@ -26,6 +26,7 @@ import AmortismanHesaplama from "./AmortismanHesaplama";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -179,7 +180,9 @@ const Page: React.FC = () => {
 
   return (
     <PageContainer title="Amortisman" description="this is Amortisman">
-      <Breadcrumb title="Amortisman" items={BCrumb} />
+      <Breadcrumb title="Amortisman" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="AmortismanHesaplanmis" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

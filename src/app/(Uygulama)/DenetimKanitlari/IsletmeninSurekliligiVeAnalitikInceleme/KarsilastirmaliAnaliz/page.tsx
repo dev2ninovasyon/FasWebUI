@@ -13,6 +13,7 @@ import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { createKarsilastirmaliAnaliz } from "@/api/Analizler/Analizler";
 import { downloadPowerBIExport } from "@/utils/exportToPowerBI";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -141,7 +142,9 @@ const Page = () => {
       title="Karşılaştırmalı Analiz"
       description="this is Karşılaştırmalı Analiz"
     >
-      <Breadcrumb title="Karşılaştırmalı Analiz" items={BCrumb} />
+      <Breadcrumb title="Karşılaştırmalı Analiz" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KarsilastirmaliAnaliz" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{ display: "flex", justifyContent: "flex-end" }}

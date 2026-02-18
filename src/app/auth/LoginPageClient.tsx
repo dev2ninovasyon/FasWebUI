@@ -82,12 +82,7 @@ export default function LoginPageClient() {
                 nonce: undefined,
             }}
         >
-            <style jsx global>{`
-                .grecaptcha-badge {
-                    left: 24px !important;
-                    right: auto !important;
-                }
-            `}</style>
+
             <PageContainer title="Giriş" description="Giriş Yap">
                 <Box
                     sx={{

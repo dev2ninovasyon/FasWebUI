@@ -10,6 +10,7 @@ import { useSelector } from "@/store/hooks";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -35,7 +36,9 @@ const Page = () => {
       title="Fiş İşlem Sayıları"
       description="this is Fiş İşlem Sayıları"
     >
-      <Breadcrumb title="Fiş İşlem Sayıları" items={BCrumb} />
+      <Breadcrumb title="Fiş İşlem Sayıları" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="FisIslemSayilari" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

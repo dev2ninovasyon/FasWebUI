@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Box } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 const BCrumb = [
@@ -18,7 +19,9 @@ const Page: React.FC = () => {
             title="8.2 Kültür Değerlendirmesi – Kalite"
             description="8.2 Kültür Değerlendirmesi – Kalite"
         >
-            <Breadcrumb title="8.2 Kültür Değerlendirmesi – Kalite" items={BCrumb} />
+            <Breadcrumb title="8.2 Kültür Değerlendirmesi – Kalite" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysBilgiVeIletisimKulturDegerlendirmesi" />
+      </Breadcrumb>
             <Box sx={{ mt: 3 }}>
                 <KysEditor
                     formKodu="KysBilgiVeIletisimKulturDegerlendirmesi"

@@ -4,6 +4,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import KysCalismaKagidiUcSutunlu from "@/app/(Uygulama)/components/Kys/KysCalismaKagidiUcSutunlu";
 import { Box, Typography } from "@mui/material";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
     {
         to: "/Kys",
@@ -25,7 +26,9 @@ const Page: React.FC = () => {
             title="6.3 Uzman Çalışmalarının Kullanılması"
             description="Uzman Çalışmalarının Kullanılması"
         >
-            <Breadcrumb title="6.3 Uzman Çalışmalarının Kullanılması" items={BCrumb} />
+            <Breadcrumb title="6.3 Uzman Çalışmalarının Kullanılması" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysUzmanCalismalarininKullanilmasi" />
+      </Breadcrumb>
             <Box sx={{ mt: 3 }}>
                 <KysCalismaKagidiUcSutunlu
                     formKodu="KysUzmanCalismalarininKullanilmasi"

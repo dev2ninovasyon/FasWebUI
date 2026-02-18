@@ -34,6 +34,7 @@ import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/F
 import { IconX } from "@tabler/icons-react";
 import KrediHesaplamaOrnekFisler from "./KrediHesaplamaOrnekFisler";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -183,7 +184,9 @@ const Page: React.FC = () => {
 
   return (
     <PageContainer title="Kredi" description="this is Kredi">
-      <Breadcrumb title="Kredi" items={BCrumb} />
+      <Breadcrumb title="Kredi" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KrediHesaplanmis" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

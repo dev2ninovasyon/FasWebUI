@@ -5,6 +5,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import dynamic from "next/dynamic";
 import { Box, Typography } from "@mui/material";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 const BCrumb = [
@@ -16,7 +17,9 @@ const BCrumb = [
 const Page: React.FC = () => {
     return (
         <PageContainer title="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" description="Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi">
-            <Breadcrumb title="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" items={BCrumb} />
+            <Breadcrumb title="6.4 Dış Uzmanların Kullanılmasına İlişkin Kontrol Listesi" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysDisUzmanKontrolListesi" />
+      </Breadcrumb>
             <Box sx={{ mt: 3 }}>
                 <KysEditor
                     formKodu="KysDisUzmanKontrolListesi"

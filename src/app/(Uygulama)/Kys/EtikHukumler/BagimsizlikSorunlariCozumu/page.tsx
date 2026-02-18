@@ -6,6 +6,7 @@ import { Typography, Box } from "@mui/material";
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
     {
         to: "/Kys",
@@ -27,7 +28,9 @@ const Page: React.FC = () => {
             title="4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu"
             description="Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu Belgesi"
         >
-            <Breadcrumb title="4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu" items={BCrumb} />
+            <Breadcrumb title="4.3 Bağımsızlıkla İlgili Sorunları Çözüme Kavuşturma Formu" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysBagimsizlikSorunlariCozumu" />
+      </Breadcrumb>
 
             <Box sx={{ mt: 3 }}>
 

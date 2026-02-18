@@ -13,6 +13,7 @@ import OnemlilikHesaplamaBazi from "./OnemlilikHesaplamaBazi";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const CustomEditorWVeri = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditorWVeri"),
   { ssr: false }
@@ -80,10 +81,10 @@ const Page = () => {
       title="Önemlilik Seviyesi Belirleme Kılavuzu"
       description="this is Önemlilik Seviyesi Belirleme Kılavuzu"
     >
-      <Breadcrumb
-        title="Önemlilik Seviyesi Belirleme Kılavuzu"
-        items={BCrumb}
-      />
+      <Breadcrumb title="Önemlilik Seviyesi Belirleme Kılavuzu"
+        items={BCrumb}>
+        <EkBelgeYukleButton formKodu="OnemlilikSeviyesiBelirlemeKilavuzu" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

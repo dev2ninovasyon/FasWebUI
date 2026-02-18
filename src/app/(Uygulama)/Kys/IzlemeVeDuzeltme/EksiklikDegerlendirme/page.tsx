@@ -5,6 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { Typography, Box } from "@mui/material";
 import dynamic from "next/dynamic";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), {
     ssr: false,
 });
@@ -19,7 +20,9 @@ const BCrumb = [
 const Page: React.FC = () => {
     return (
         <PageContainer title="9.7 Eksiklik Değerlendirme Çalışma Sayfası" description="Eksiklik Değerlendirme Çalışma Sayfası">
-            <Breadcrumb title="9.7 Eksiklik Değerlendirme Çalışma Sayfası" items={BCrumb} />
+            <Breadcrumb title="9.7 Eksiklik Değerlendirme Çalışma Sayfası" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysEksiklikDegerlendirme" />
+      </Breadcrumb>
             <Box sx={{ mt: 3 }}>
 
                 <KysEditor formKodu="KysEksiklikDegerlendirme" alanAdi="9.7 Eksiklik Değerlendirme Çalışma Sayfası" />

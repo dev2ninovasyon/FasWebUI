@@ -16,6 +16,7 @@ import OnemlilikVeOrneklemHesaplamaBazi from "./OnemlilikVeOrneklemHesaplamaBazi
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/PlanVeProgram",
@@ -97,7 +98,9 @@ const Page = () => {
       title="Önemlilik Ve Örneklem"
       description="this is Önemlilik Ve Örneklem"
     >
-      <Breadcrumb title="Önemlilik Ve Örneklem" items={BCrumb} />
+      <Breadcrumb title="Önemlilik Ve Örneklem" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="OnemlilikVeOrneklem" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           mb={3}

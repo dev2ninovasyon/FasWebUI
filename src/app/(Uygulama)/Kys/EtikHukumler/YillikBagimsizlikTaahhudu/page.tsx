@@ -4,6 +4,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
     {
         to: "/Kys",
@@ -25,7 +26,9 @@ const Page: React.FC = () => {
             title="4.2 Yıllık Bağımsızlık Taahhüdü"
             description="4.2 Yıllık Bağımsızlık Taahhüdü"
         >
-            <Breadcrumb title="4.2 Yıllık Bağımsızlık Taahhüdü" items={BCrumb} />
+            <Breadcrumb title="4.2 Yıllık Bağımsızlık Taahhüdü" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysYillikBagimsizlikTaahhudu" />
+      </Breadcrumb>
             <KysCalismaKagidi formKodu="YillikBagimsizlikTaahhudu" alanAdi="4.2 Yıllık Bağımsızlık Taahhüdü" />
         </PageContainer>
     );

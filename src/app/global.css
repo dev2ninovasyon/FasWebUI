@@ -5,3 +5,7 @@
 .ck-editor {
   max-width: 100% !important;
 }
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

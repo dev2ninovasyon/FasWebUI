@@ -13,6 +13,7 @@ import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { createDikeyAnaliz } from "@/api/Analizler/Analizler";
 import GelirDegerlendirmeBelgesi from "@/app/(Uygulama)/components/DenetimKanitlari/Analizler/GelirDegerlendirmeBelgesi";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -54,7 +55,9 @@ const Page = () => {
 
   return (
     <PageContainer title="Gelir Değerlendirme Belgesi" description="this is Gelir Değerlendirme Belgesi">
-      <Breadcrumb title="Gelir Değerlendirme Belgesi" items={BCrumb} />
+      <Breadcrumb title="Gelir Değerlendirme Belgesi" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="GelirDegerlendirmeBelgesi" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{ display: "flex", justifyContent: "flex-end" }}

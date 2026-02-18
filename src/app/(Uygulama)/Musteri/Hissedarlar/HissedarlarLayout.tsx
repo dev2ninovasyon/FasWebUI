@@ -2,6 +2,7 @@
 
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Musteri",
@@ -20,7 +21,9 @@ export default function HissedarlarLayout({
 }) {
   return (
     <div>
-      <Breadcrumb title="Hissedarlar" items={BCrumb} />
+      <Breadcrumb title="Hissedarlar" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="Hissedarlar" />
+      </Breadcrumb>
       {children}
     </div>
   );

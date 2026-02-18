@@ -6,6 +6,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import NakitAkisTablosu from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/NakitAkisTablosu";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -27,7 +28,9 @@ const Page = () => {
       title="Nakit Akış Tablosu"
       description="this is Nakit Akış Tablosu"
     >
-      <Breadcrumb title="Nakit Akış Tablosu" items={BCrumb} />
+      <Breadcrumb title="Nakit Akış Tablosu" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="FinansalTabloKayitlari" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

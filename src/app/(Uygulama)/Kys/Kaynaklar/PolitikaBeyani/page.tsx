@@ -6,6 +6,7 @@ import { Typography, Box } from "@mui/material";
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
     { to: "/Kys/Kaynaklar", title: "7. Kaynaklar" },
@@ -15,7 +16,9 @@ const BCrumb = [
 const Page: React.FC = () => {
     return (
         <PageContainer title="7.1 Kaynaklar Politikası Beyanı" description="Kaynaklar Politikası Beyanı">
-            <Breadcrumb title="7.1 Kaynaklar Politikası Beyanı" items={BCrumb} />
+            <Breadcrumb title="7.1 Kaynaklar Politikası Beyanı" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysKaynaklarPolitikasi" />
+      </Breadcrumb>
             <Box sx={{ mt: 3 }}>
                 <KysCalismaKagidi formKodu="KysKaynaklarPolitikasi" alanAdi="7.1 Kaynaklar Politikası Beyanı" />
             </Box>

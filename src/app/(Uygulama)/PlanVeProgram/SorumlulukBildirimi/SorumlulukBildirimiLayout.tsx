@@ -2,6 +2,7 @@
 
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/PlanVeProgram",
@@ -20,7 +21,9 @@ export default function SorumlulukBildirimiLayout({
 }) {
   return (
     <div>
-      <Breadcrumb title="Sorumluluk Bildirimi" items={BCrumb} />
+      <Breadcrumb title="Sorumluluk Bildirimi" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="SorumlulukBildirimi" />
+      </Breadcrumb>
       {children}
     </div>
   );

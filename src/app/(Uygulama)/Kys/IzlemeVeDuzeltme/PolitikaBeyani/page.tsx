@@ -6,6 +6,7 @@ import { Typography, Box } from "@mui/material";
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
     { to: "/Kys", title: "KYS" },
     { to: "/Kys/IzlemeVeDuzeltme", title: "9. İzleme ve Düzeltme Süreci" },
@@ -15,7 +16,9 @@ const BCrumb = [
 const Page: React.FC = () => {
     return (
         <PageContainer title="9.2 İzleme ve Düzeltme Süreci Politikası Beyanı" description="İzleme ve Düzeltme Süreci Politikası Beyanı">
-            <Breadcrumb title="9.2 İzleme ve Düzeltme Süreci Politikası Beyanı" items={BCrumb} />
+            <Breadcrumb title="9.2 İzleme ve Düzeltme Süreci Politikası Beyanı" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysIzlemeVeDuzeltmePolitikasi" />
+      </Breadcrumb>
             <Box sx={{ mt: 3 }}>
                 <KysCalismaKagidi formKodu="KysIzlemeVeDuzeltmePolitikasi" alanAdi="9.2 İzleme ve Düzeltme Süreci Politikası Beyanı" />
             </Box>

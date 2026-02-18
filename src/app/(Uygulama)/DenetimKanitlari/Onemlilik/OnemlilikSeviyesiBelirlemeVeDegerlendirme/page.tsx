@@ -13,6 +13,7 @@ import OnemlilikHesaplamaBazi from "./OnemlilikHesaplamaBazi";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -81,10 +82,10 @@ const Page = () => {
       title="Önemlilik Seviyesi Belirleme Ve Değerlendirme"
       description="this is Önemlilik Seviyesi Belirleme Ve Değerlendirme"
     >
-      <Breadcrumb
-        title="Önemlilik Seviyesi Belirleme Ve Değerlendirme"
-        items={BCrumb}
-      />
+      <Breadcrumb title="Önemlilik Seviyesi Belirleme Ve Değerlendirme"
+        items={BCrumb}>
+        <EkBelgeYukleButton formKodu="OnemlilikSeviyesiKayitlari" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{

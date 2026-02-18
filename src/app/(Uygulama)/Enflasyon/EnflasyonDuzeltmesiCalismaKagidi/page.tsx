@@ -9,6 +9,7 @@ import { useSelector } from "@/store/hooks";
 import ProtectedPage from "@/app/ProtectedPage";
 import EnflasyonIframe from "@/app/(Uygulama)/components/Enflasyon/EnflasyonIframe";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Enflasyon",
@@ -30,10 +31,10 @@ const Page: React.FC = () => {
         title="Enflasyon Düzeltmesi Çalışma Kağıdı"
         description="this is Enflasyon Düzeltmesi Çalışma Kağıdı"
       >
-        <Breadcrumb
-          title="Enflasyon Düzeltmesi Çalışma Kağıdı"
-          items={BCrumb}
-        />
+        <Breadcrumb title="Enflasyon Düzeltmesi Çalışma Kağıdı"
+          items={BCrumb}>
+        <EkBelgeYukleButton formKodu="EnflasyonDuzeltmesi" />
+      </Breadcrumb>
         <Grid container spacing={3} sx={{ height: "calc(100vh - 225px)", overflow: "hidden" }}>
           <Grid
             size={{

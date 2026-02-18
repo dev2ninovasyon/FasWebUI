@@ -7,6 +7,7 @@ import { Typography, Box, Divider, Tabs, Tab } from "@mui/material";
 import dynamic from "next/dynamic";
 
 import { documentMapping, riskMatrixSections as sections, KYS_PATH_TO_FORM_KODU } from "@/api/Kys/KysRiskMatrixConstants";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const KysRiskMatrixEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysRiskMatrixEditor"), { ssr: false });
 const KysBelgeShow = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysBelgeShow"), { ssr: false });
 const KysCalismaKagidiShow = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysCalismaKagidiShow"), { ssr: false });
@@ -85,7 +86,9 @@ const Page: React.FC = () => {
             title="Kalite Yönetim Sistemi - Risk Matrisi"
             description="KYS Risk Matrisi ve İlgili Belgeler"
         >
-            <Breadcrumb title="Risk Matrisi" items={BCrumb} />
+            <Breadcrumb title="Risk Matrisi" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysRiskMatrisi" />
+      </Breadcrumb>
 
             <Box sx={{ mt: 3 }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

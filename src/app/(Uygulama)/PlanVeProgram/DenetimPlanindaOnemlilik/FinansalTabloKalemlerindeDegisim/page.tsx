@@ -13,6 +13,7 @@ import FinansalTabloKalemlerindeDegisim from "./FinansalTabloKalemlerindeDegisim
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/PlanVeProgram",
@@ -90,7 +91,9 @@ const Page = () => {
       title="Finansal Tablo Kalemlerinde Değişim"
       description="this is Finansal Tablo Kalemlerinde Değişim"
     >
-      <Breadcrumb title="Finansal Tablo Kalemlerinde Değişim" items={BCrumb} />
+      <Breadcrumb title="Finansal Tablo Kalemlerinde Değişim" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="FinansalTabloKalemlerindeDegisim" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{

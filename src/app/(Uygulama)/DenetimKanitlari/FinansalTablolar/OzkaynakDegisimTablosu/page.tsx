@@ -6,6 +6,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import OzkaynakDegisimTablosu from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -27,7 +28,9 @@ const Page = () => {
       title="Özkaynak Değişim Tablosu"
       description="this is Özkaynak Değişim Tablosu"
     >
-      <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb} />
+      <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="FinansalTabloOzkaynakKayitlari" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{

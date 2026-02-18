@@ -6,6 +6,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import FinansalDurumTablosu from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/FinansalDurumTablosu";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -27,7 +28,9 @@ const Page = () => {
       title="Finansal Durum Tablosu"
       description="this is Finansal Durum Tablosu"
     >
-      <Breadcrumb title="Finansal Durum Tablosu" items={BCrumb} />
+      <Breadcrumb title="Finansal Durum Tablosu" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="FinansalTabloKayitlari" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

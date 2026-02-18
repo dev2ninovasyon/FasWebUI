@@ -11,6 +11,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -52,7 +53,9 @@ const Page = () => {
 
   return (
     <PageContainer title="Bilanço Değerlendirme Belgesi" description="this is Bilanço Değerlendirme Belgesi">
-      <Breadcrumb title="Bilanço Değerlendirme Belgesi" items={BCrumb} />
+      <Breadcrumb title="Bilanço Değerlendirme Belgesi" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="BilancoDegerlendirmeBelgesi" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{ display: "flex", justifyContent: "flex-end" }}

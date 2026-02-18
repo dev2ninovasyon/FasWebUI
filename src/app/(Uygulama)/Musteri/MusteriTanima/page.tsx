@@ -36,6 +36,7 @@ import MusteriTanima from "./MusteriTanima";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Musteri",
@@ -188,7 +189,9 @@ const Page: React.FC = () => {
   }, []);
   return (
     <PageContainer title="Müşteri Tanıma" description="Müşteri Tanıma">
-      <Breadcrumb title="Müşteri Tanıma" items={BCrumb} />
+      <Breadcrumb title="Müşteri Tanıma" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="MusteriTanimaStatikBilgiler-MusteriTanimaSayisalBilgiler" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{

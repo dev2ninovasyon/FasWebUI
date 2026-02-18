@@ -41,6 +41,7 @@ import CekSenetReeskontHesaplamadaKullanilanDegerler from "./CekSenetReeskontHes
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -313,7 +314,9 @@ const Page: React.FC = () => {
       title="Çek / Senet Reeskont"
       description="this is Çek / Senet Reeskont"
     >
-      <Breadcrumb title="Çek / Senet Reeskont" items={BCrumb} />
+      <Breadcrumb title="Çek / Senet Reeskont" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="CekSenetReeskontHesaplanmis" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           size={{

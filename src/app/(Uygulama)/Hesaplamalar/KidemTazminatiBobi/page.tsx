@@ -45,6 +45,7 @@ import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { Collapse } from "@mui/material";
 import NumericInput from "@/app/(Uygulama)/components/Forms/ThemeElements/NumericInput";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -532,7 +533,9 @@ const Page: React.FC = () => {
 
   return (
     <PageContainer title="Kıdem Tazminatı (Bobi)" description="this is Kıdem Tazminatı (Bobi)">
-      <Breadcrumb title="Kıdem Tazminatı (Bobi)" items={BCrumb} />
+      <Breadcrumb title="Kıdem Tazminatı (Bobi)" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KidemTazminatiBobiHesaplanmis" />
+      </Breadcrumb>
       <Grid container>
         <Grid size={12}>
           <TabContext value={tip}>

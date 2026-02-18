@@ -1522,19 +1522,20 @@ export function createMenuItems(
             icon: IconPoint,
             href: "/Surdurulebilirlik/SurdurulebilirlikEkBilgiler",
           },
+        ],
       },
       ...(enflasyonmu === true
         ? [
           {
             id: uniqueId(),
-            parentTitle: "ENFLASYON DÜZELTMESİ",
-            title: "ENFLASYON DÜZELTMESİ",
+            parentTitle: "ENFLASYON",
+            title: "ENFLASYON",
             icon: IconTrendingUp,
             href: "/Enflasyon",
             children: [
               {
                 id: uniqueId(),
-                parentTitle: "ENFLASYON DÜZELTMESİ",
+                parentTitle: "ENFLASYON",
                 title: "Aşamalar",
                 icon: IconPoint,
                 href: "/Enflasyon/Asamalar",

@@ -12,6 +12,7 @@ import { AppState } from "@/store/store";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { createDikeyAnaliz } from "@/api/Analizler/Analizler";
 
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -88,7 +89,9 @@ const Page = () => {
 
   return (
     <PageContainer title="Oran Analizi Tespit Belgesi" description="this is Oran Analizi Tespit Belgesi">
-      <Breadcrumb title="Oran Analizi Tespit Belgesi" items={BCrumb} />
+      <Breadcrumb title="Oran Analizi Tespit Belgesi" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="OranAnaliziTespitBelgesi" />
+      </Breadcrumb>
       <Grid container>
         <Grid
           sx={{ display: "flex", justifyContent: "flex-end" }}

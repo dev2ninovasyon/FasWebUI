@@ -4,6 +4,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
+import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 const BCrumb = [
@@ -15,7 +16,9 @@ const BCrumb = [
 const Page: React.FC = () => {
     return (
         <PageContainer title="5.3 Yeni Müşteri Formu" description="Yeni Müşteri Formu">
-            <Breadcrumb title="5.3 Yeni Müşteri Formu" items={BCrumb} />
+            <Breadcrumb title="5.3 Yeni Müşteri Formu" items={BCrumb}>
+        <EkBelgeYukleButton formKodu="KysYeniMusteriFormu" />
+      </Breadcrumb>
             <Box sx={{ mt: 3 }}>
                 <KysEditor formKodu="KysYeniMusteriFormu" alanAdi="5.3 Yeni Müşteri Formu" />
             </Box>
