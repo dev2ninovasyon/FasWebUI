@@ -1708,3 +1708,28 @@ export const getDovizKurlariOtuzBirAralik = async () => {
     console.log("Bir hata oluştu:", error);
   }
 };
+
+export const getKrediMizanKarsilastirmasi = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/Veri/KrediMizanKarsilastirmasi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("Kredi Mizan Karşılaştırması verileri getirilemedi");
+    }
+  } catch (error) {
+    console.log("Kredi Mizan Karşılaştırması yüklenirken hata:", error);
+  }
+};

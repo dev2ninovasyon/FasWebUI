@@ -30,6 +30,7 @@ import KrediHesaplamaBakiye from "./KrediHesaplamaBakiye"
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 import KrediHesaplamaDetay from "./KrediHesaplamaDetay";
+import KrediMizanKarsilastirmaTable from "./KrediMizanKarsilastirmaTable";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import KrediHesaplamaOrnekFisler from "./KrediHesaplamaOrnekFisler";
@@ -370,6 +371,14 @@ const Page: React.FC = () => {
             </TabPanel>
             <TabPanel value="Hesaplama" sx={{ paddingX: 0 }}>
               <Grid container>
+                <Grid
+                  mb={3}
+                  size={{
+                    xs: 12,
+                    lg: 12
+                  }}>
+                  <KrediMizanKarsilastirmaTable hesaplaTiklandimi={hesaplaTiklandimi} />
+                </Grid>
                 <Grid
                   sx={{
                     display: "flex",

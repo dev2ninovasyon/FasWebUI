@@ -38,7 +38,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
     const src = `${ENFLASYON_BASE_URL}${url}${separator}${authParams}`;
 
     return (
-        <Box sx={{ height: "100%", position: "relative" }}>
+        <Box sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
             {isLoading && (
                 <Box sx={{
                     display: 'flex',
@@ -63,6 +63,8 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
                     border: "0px",
                     width: "100%",
                     height: "100%",
+                    overflow: "hidden",
+                    display: "block"
                 }}
             ></iframe>
         </Box>
