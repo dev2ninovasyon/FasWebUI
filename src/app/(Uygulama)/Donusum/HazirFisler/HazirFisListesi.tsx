@@ -405,14 +405,14 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -438,7 +438,8 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
           height={586}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[0, 28, 60, 60, 120, 80, 80, 80, 60]}
+          autoColumnSize={{ useHeaders: true }}
+          colWidths={[0.1, 30, 70, 100, 350, 80, 80, 300]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}

@@ -478,7 +478,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   return (
     <>
       <Stack direction="row" alignItems="center" mb={1}>
-        <Box padding={"16px"} width={"100%"}>
+        <Box padding={"16px"} sx={{ flexGrow: 1 }}>
           <Typography variant="h5">Yüklenmiş Dosya Bilgileri</Typography>
         </Box>
         <TextField
@@ -493,8 +493,8 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       <TableContainer
         sx={{
           mt: 0.5,
-          maxHeight: "425px",
-          minHeight: "425px",
+          flexGrow: 1,
+          overflowY: "auto",
         }}
       >
         <Table stickyHeader aria-label="sticky table" size="small">
@@ -700,10 +700,11 @@ const DosyaTable: React.FC<MyComponentProps> = ({
             handleIsConfirm();
           }}
           sx={{
-            position: smDown ? "relative" : "absolute",
+            position: "relative",
             width: smDown ? "100%" : "auto",
-            marginLeft: smDown ? "" : "10px",
-            marginY: smDown ? "8px" : "12px",
+            marginLeft: "10px",
+            marginBottom: "12px",
+            marginTop: "8px",
           }}
         >
           {selected.length} Kayıt Sil

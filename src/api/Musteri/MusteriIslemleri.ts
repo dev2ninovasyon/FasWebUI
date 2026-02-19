@@ -1,4 +1,39 @@
-﻿import { apiFetch } from "@/api/apiBase";
+﻿// ImportFromOld: Kuyruğa alma ve polling
+export const startImportFromOldJob = async (params: any) => {
+  // DTO: TableKey, OldCompanyId, NewCompanyId, Years, TableKeys, Yil
+  const body = {
+    TableKey: "MusteriImport",
+    OldCompanyId: params.OldCompanyId,
+    NewCompanyId: params.NewCompanyId,
+    Years: params.Years || [],
+    TableKeys: params.TableKeys || [],
+    Yil: params.Yil || null
+  };
+  const response = await apiFetch(`/DataTransfer/ImportFromOldJob`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  // If apiFetch returns a Response, parse JSON
+  if (response && typeof response.json === 'function') {
+    return await response.json();
+  }
+  // If already parsed, return as is
+  return response;
+};
+
+export const getImportJobStatus = async (jobId: string) => {
+  const response = await apiFetch(`/DataTransfer/ImportJobStatus/${jobId}`);
+  if (!response.ok) throw new Error("Job bulunamadı");
+  return await response.json();
+};
+
+export const getImportJobNotifications = async (jobId: string) => {
+  const response = await apiFetch(`/DataTransfer/ImportJobNotifications/${jobId}`);
+  if (!response.ok) throw new Error("Bildirimler alınamadı");
+  return await response.json();
+};
+import { apiFetch } from "@/api/apiBase";
 
 
 export const createDenetlenen = async (createdMusteri: any) => {

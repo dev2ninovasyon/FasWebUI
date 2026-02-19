@@ -251,7 +251,18 @@ const PopUpComponent: React.FC<PopUpProps> = ({
 
   const [kaydetTiklandimi, setKaydetTiklandimi] = useState(false);
   return (
-    <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
+    <Dialog
+      open={isPopUpOpen}
+      onClose={handleClose}
+      PaperProps={{
+        sx: {
+          width: 1200,
+          height: 800,
+          maxWidth: '1200px',
+          maxHeight: '800px',
+        },
+      }}
+    >
       {isPopUpOpen && (
         <>
           <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
@@ -324,70 +335,70 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                     (veri.dipnotKodu == 15 || veri.dipnotKodu == 16)) ||
                     (user.denetimTuru == "Tfrs" &&
                       (veri.dipnotKodu == 14 || veri.dipnotKodu == 17))) && (
-                    <Box>
-                      <Box px={3} pt={3}>
-                        <MaliyetCari
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
+                      <Box>
+                        <Box px={3} pt={3}>
+                          <MaliyetCari
+                            dipnotKodu={veri.dipnotKodu}
+                            kaydetTiklandimi={kaydetTiklandimi}
+                            setKaydetTiklandimi={setKaydetTiklandimi}
+                          />
+                        </Box>
+                        <Box px={3} pt={3}>
+                          <MaliyetOnceki
+                            dipnotKodu={veri.dipnotKodu}
+                            kaydetTiklandimi={kaydetTiklandimi}
+                            setKaydetTiklandimi={setKaydetTiklandimi}
+                          />
+                        </Box>
+                        <Box px={3} pt={3}>
+                          <AmortismanCari
+                            dipnotKodu={veri.dipnotKodu}
+                            kaydetTiklandimi={kaydetTiklandimi}
+                            setKaydetTiklandimi={setKaydetTiklandimi}
+                          />
+                        </Box>
                       </Box>
-                      <Box px={3} pt={3}>
-                        <MaliyetOnceki
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
-                      </Box>
-                      <Box px={3} pt={3}>
-                        <AmortismanCari
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
-                      </Box>
-                    </Box>
-                  )}
+                    )}
                   {((user.denetimTuru == "Bobi" && veri.dipnotKodu == 381) ||
                     (user.denetimTuru == "Tfrs" && veri.dipnotKodu == 45)) && (
-                    <Box>
-                      <Box px={3} pt={3}>
-                        <KrediRiskiCari
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
+                      <Box>
+                        <Box px={3} pt={3}>
+                          <KrediRiskiCari
+                            dipnotKodu={veri.dipnotKodu}
+                            kaydetTiklandimi={kaydetTiklandimi}
+                            setKaydetTiklandimi={setKaydetTiklandimi}
+                          />
+                        </Box>
+                        <Box px={3} pt={3}>
+                          <KrediRiskiOnceki
+                            dipnotKodu={veri.dipnotKodu}
+                            kaydetTiklandimi={kaydetTiklandimi}
+                            setKaydetTiklandimi={setKaydetTiklandimi}
+                          />
+                        </Box>
                       </Box>
-                      <Box px={3} pt={3}>
-                        <KrediRiskiOnceki
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
-                      </Box>
-                    </Box>
-                  )}
+                    )}
                   {((user.denetimTuru == "Bobi" &&
                     veri.dipnotKodu == 383 &&
                     index == 2) ||
                     (user.denetimTuru == "Tfrs" && veri.dipnotKodu == 45)) && (
-                    <Box>
-                      <Box px={3} pt={3}>
-                        <DovizKuruRiskiCari
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
+                      <Box>
+                        <Box px={3} pt={3}>
+                          <DovizKuruRiskiCari
+                            dipnotKodu={veri.dipnotKodu}
+                            kaydetTiklandimi={kaydetTiklandimi}
+                            setKaydetTiklandimi={setKaydetTiklandimi}
+                          />
+                        </Box>
+                        <Box px={3} pt={3}>
+                          <DovizKuruRiskiOnceki
+                            dipnotKodu={veri.dipnotKodu}
+                            kaydetTiklandimi={kaydetTiklandimi}
+                            setKaydetTiklandimi={setKaydetTiklandimi}
+                          />
+                        </Box>
                       </Box>
-                      <Box px={3} pt={3}>
-                        <DovizKuruRiskiOnceki
-                          dipnotKodu={veri.dipnotKodu}
-                          kaydetTiklandimi={kaydetTiklandimi}
-                          setKaydetTiklandimi={setKaydetTiklandimi}
-                        />
-                      </Box>
-                    </Box>
-                  )}
+                    )}
                 </Box>
               ))}
           </DialogContent>

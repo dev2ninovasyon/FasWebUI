@@ -54,6 +54,23 @@ export async function apiFetch(
       credentials: includeCredentials ? 'include' : 'omit',
     });
 
+    // 400+ response: log and parse body
+    if (!response.ok) {
+      const text = await response.text();
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        parsed = undefined;
+      }
+      console.error("API ERROR", response.status, parsed ?? text);
+      if (parsed && parsed.errors) {
+        throw new Error(JSON.stringify(parsed.errors));
+      } else {
+        throw new Error(parsed?.message || text || `HTTP ${response.status}`);
+      }
+    }
+
     // 🔐 GÜVENLIK: Token expiry handle etme (401 Unauthorized)
     if (response.status === 401) {
       console.warn(`⚠️ Token süresi dolmuş ya da yetkisiz erişim (401 Unauthorized)`);
