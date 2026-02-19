@@ -223,9 +223,9 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
         });
 
         const result = await getKrediMizanKarsilastirmasi(
-          user.denetciId,
-          user.yil,
-          user.denetlenenId
+          user.denetciId || 0,
+          user.yil || 0,
+          user.denetlenenId || 0 || 0
         );
 
         console.log("📊 API Response Data (Raw):", result);
