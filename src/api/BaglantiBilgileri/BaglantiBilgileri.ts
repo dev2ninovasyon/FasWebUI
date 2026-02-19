@@ -1,4 +1,4 @@
-﻿import { apiFetch } from "@/api/apiBase";
+﻿import { apiFetch, url as apiBaseUrl } from "@/api/apiBase";
 import SecureTokenManager from "@/utils/SecureTokenManager";
 import { HubConnectionBuilder, HttpTransportType, LogLevel, HubConnectionState } from "@microsoft/signalr";
 
@@ -12,15 +12,11 @@ let pollingDenetciId: number | null = null;
 
 // API URL'ini apiBase'den al
 const getApiUrl = () => {
-  if (typeof window !== "undefined") {
-    // Statik URL yerine dinamik origin kullanımı (Localhost/Production uyumu)
-    const origin = window.location.origin;
-    if (origin.includes("localhost")) {
-      return "http://localhost:5000";
-    }
-    return origin.replace("3000", "5000").replace("3001", "5000"); // Standardize on 5000
-  }
-  return "http://localhost:5000";
+  // apiBaseUrl: "https://betaapi.fasmart.app/api" formatında geliyor. 
+  // SignalR için "/api" kısmını temizlememiz gerekebiliyor bazen (hub isminde varsa), 
+  // ama hub adresi api url'i üzerine ekleniyor.
+  // /api kısmını kaldırarak ana domaini alalım:
+  return apiBaseUrl.replace(/\/api$/, "").replace(/\/$/, "");
 };
 
 // Bağlantı test et (fetch ile HTTPS sorunlarını handle et)

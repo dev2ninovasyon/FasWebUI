@@ -490,7 +490,6 @@ const Page = () => {
                 // If there are existing active tokens, show the most recent one
                 if (activeTokens && activeTokens.length > 0) {
                   const mostRecentToken = activeTokens[0];
-                  const baseUrl = window.location.origin.replace('localhost:3000', 'betaverigirisi.fasmart.app');
                   setGeneratedLink(`https://betaverigirisi.fasmart.app/mutabakat-upload/${mostRecentToken.token}`);
                   setLinkExpiry(new Date(mostRecentToken.sonKullanmaTarihi).toLocaleString("tr-TR"));
                   setAliciAdi(mostRecentToken.aliciAdi || "");
