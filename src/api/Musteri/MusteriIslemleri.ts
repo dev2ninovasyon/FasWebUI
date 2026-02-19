@@ -264,6 +264,24 @@ export const getOldDenetlenenForCurrentDenetci = async () => {
   }
 };
 
+export const checkDenetciExistsInOldDb = async () => {
+  try {
+    const response = await apiFetch(`/DataTransfer/CheckDenetciExistsInOldDb`, {
+      method: "GET",
+      headers: { accept: "application/json" },
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("checkDenetciExistsInOldDb failed", response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error("checkDenetciExistsInOldDb error:", error);
+    return false;
+  }
+};
+
 export const importDenetlenen = async (dto: any) => {
   try {
     const response = await apiFetch(`/DataTransfer/ImportDenetlenen`, {

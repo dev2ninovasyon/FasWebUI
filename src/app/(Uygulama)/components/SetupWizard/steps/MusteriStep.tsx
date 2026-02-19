@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Autocomplete } from "@mui/material";
 import MusteriEkleForm from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEkleForm";
-import { getOldDenetlenenForCurrentDenetci } from "@/api/Musteri/MusteriIslemleri";
+import { getOldDenetlenenForCurrentDenetci, checkDenetciExistsInOldDb } from "@/api/Musteri/MusteriIslemleri";
 import { IconPlus, IconDatabase } from "@tabler/icons-react";
 
 interface MusteriStepProps {
@@ -21,6 +21,15 @@ export default function MusteriStep({
     const [mode, setMode] = useState<"new" | "import">("new");
     const [oldList, setOldList] = useState<any[]>([]);
     const [selected, setSelected] = useState<any | null>(null);
+    const [canImport, setCanImport] = useState<boolean>(false);
+
+    useEffect(() => {
+        const checkImportEligibility = async () => {
+            const exists = await checkDenetciExistsInOldDb();
+            setCanImport(exists);
+        };
+        checkImportEligibility();
+    }, []);
 
     useEffect(() => {
         if (mode === "import") {
@@ -64,14 +73,16 @@ export default function MusteriStep({
                 >
                     Yeni Müşteri Ekle
                 </Button>
-                <Button
-                    variant={mode === "import" ? "contained" : "outlined"}
-                    color="secondary"
-                    onClick={() => setMode("import")}
-                    startIcon={<IconDatabase width={18} />}
-                >
-                    Müşterileri Taşı
-                </Button>
+                {canImport && (
+                    <Button
+                        variant={mode === "import" ? "contained" : "outlined"}
+                        color="secondary"
+                        onClick={() => setMode("import")}
+                        startIcon={<IconDatabase width={18} />}
+                    >
+                        Müşterileri Taşı
+                    </Button>
+                )}
             </Stack>
 
             {mode === "import" && (
