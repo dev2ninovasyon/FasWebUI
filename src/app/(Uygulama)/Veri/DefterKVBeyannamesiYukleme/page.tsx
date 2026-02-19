@@ -455,8 +455,11 @@ const Page: React.FC = () => {
           <Box
             sx={{
               height: "550px",
+              display: "flex",
+              flexDirection: "column",
               border: `1px solid ${borderColor}`,
               borderRadius: `${borderRadius}/5`,
+              overflow: "hidden",
             }}
           >
             <Stack
@@ -619,8 +622,12 @@ const Page: React.FC = () => {
           <Box
             sx={{
               height: smDown ? "610px" : "550px",
+              display: "flex",
+              flexDirection: "column",
               border: `1px solid ${borderColor}`,
               borderRadius: `${borderRadius}/5`,
+              position: "relative",
+              overflow: "hidden",
             }}
           >
             <DosyaTable
