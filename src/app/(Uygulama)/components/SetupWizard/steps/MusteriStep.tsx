@@ -80,7 +80,7 @@ export default function MusteriStep({
                         onClick={() => setMode("import")}
                         startIcon={<IconDatabase width={18} />}
                     >
-                        Müşterileri Taşı
+                        Müşteri Taşı
                     </Button>
                 )}
             </Stack>

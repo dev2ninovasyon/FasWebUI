@@ -24,7 +24,7 @@ const MusteriImportOldButton = () => {
 
   return (
     <Button color="secondary" onClick={() => handleRouteClick()} startIcon={<IconDatabase width={18} />}>
-      Müşterileri Taşı
+      Müşteri Taşı
     </Button>
   );
 };
