@@ -31,7 +31,7 @@ import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgi
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
 import KrediHesaplamaDetay from "./KrediHesaplamaDetay";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
-import { IconX } from "@tabler/icons-react";
+import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import KrediHesaplamaOrnekFisler from "./KrediHesaplamaOrnekFisler";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import ExcelJS from "exceljs";
@@ -88,6 +88,7 @@ const Page: React.FC = () => {
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const krediHesaplamaRef = useRef<any>(null);
   const krediHesaplamaDetayRef = useRef<any>(null);
@@ -103,10 +104,10 @@ const Page: React.FC = () => {
         user.yil || 0,
         user.denetlenenId || 0
       );
-      
+
       if (result?.success) {
         setHesaplaTiklandimi(false);
-        
+
         // Warnings varsa göster
         if (result.warnings && result.warnings.length > 0) {
           result.warnings.forEach((warning: string) => {
@@ -122,7 +123,7 @@ const Page: React.FC = () => {
             });
           });
         }
-        
+
         enqueueSnackbar("Kredi Hesaplandı", {
           variant: "success",
           autoHideDuration: 5000,
@@ -259,6 +260,21 @@ const Page: React.FC = () => {
       setOpenCartAlert(false);
     }
   }, [hesaplaTiklandimi]);
+
+  const hasRefData = (ref: any) => {
+    try {
+      const data = ref?.current?.hotInstance?.getData?.();
+      return Array.isArray(data) && data.length > 0;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const hasData =
+    fetchedData != null ||
+    hasRefData(krediHesaplamaRef) ||
+    hasRefData(krediHesaplamaDetayRef) ||
+    hasRefData(krediHesaplamaBakiyeRef);
 
   return (
     <PageContainer title="Kredi" description="this is Kredi">
@@ -423,13 +439,18 @@ const Page: React.FC = () => {
                     hesaplaTiklandimi={hesaplaTiklandimi}
                   />
                 </Grid>
-                <FloatingButtonFisler
-                  handleClick={() => setFloatingButtonTiklandimi(true)}
-                />
+                {hasData && (
+                  <FloatingButtonFisler
+                    handleClick={() => setFloatingButtonTiklandimi(true)}
+                  />
+                )}
                 <Dialog
                   open={floatingButtonTiklandimi}
                   onClose={() => setFloatingButtonTiklandimi(false)}
-                  fullScreen
+                  fullWidth
+                  maxWidth={false}
+                  fullScreen={isFullScreen}
+                  PaperProps={isFullScreen ? {} : { sx: { maxWidth: "98vw" } }}
                 >
                   <DialogContent
                     className="testdialog"
@@ -455,12 +476,24 @@ const Page: React.FC = () => {
                           <strong> tamamen sizin sorumluluğunuzdadır</strong>.
                         </Typography>
                       </Box>
-                      <IconButton
-                        size="small"
-                        onClick={() => setFloatingButtonTiklandimi(false)}
-                      >
-                        <IconX size="18" />
-                      </IconButton>
+                      <Box display="flex" alignItems="center">
+                        <IconButton
+                          size="small"
+                          onClick={() => setIsFullScreen(!isFullScreen)}
+                        >
+                          {isFullScreen ? (
+                            <IconArrowsMinimize size="24" />
+                          ) : (
+                            <IconArrowsMaximize size="24" />
+                          )}
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => setFloatingButtonTiklandimi(false)}
+                        >
+                          <IconX size="24" />
+                        </IconButton>
+                      </Box>
                     </Stack>
                   </DialogContent>
                   <Divider />

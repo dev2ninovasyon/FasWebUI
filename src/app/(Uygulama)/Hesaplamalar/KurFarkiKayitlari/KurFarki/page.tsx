@@ -17,7 +17,7 @@ import {
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 
-import { IconX } from "@tabler/icons-react";
+import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
@@ -52,6 +52,7 @@ const Page: React.FC = () => {
     useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   return (
     <PageContainer title="Kur Farkı" description="this is Kur Farkı">
@@ -93,7 +94,9 @@ const Page: React.FC = () => {
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}
           fullWidth
-          maxWidth={"lg"}
+          maxWidth={false}
+          fullScreen={isFullScreen}
+          PaperProps={isFullScreen ? {} : { sx: { maxWidth: "98vw" } }}
         >
           <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
             <Stack
@@ -114,12 +117,24 @@ const Page: React.FC = () => {
                   <strong> tamamen sizin sorumluluğunuzdadır</strong>.
                 </Typography>
               </Box>
-              <IconButton
-                size="small"
-                onClick={() => setFloatingButtonTiklandimi(false)}
-              >
-                <IconX size="18" />
-              </IconButton>
+              <Box display="flex" alignItems="center">
+                <IconButton
+                  size="small"
+                  onClick={() => setIsFullScreen(!isFullScreen)}
+                >
+                  {isFullScreen ? (
+                    <IconArrowsMinimize size="24" />
+                  ) : (
+                    <IconArrowsMaximize size="24" />
+                  )}
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => setFloatingButtonTiklandimi(false)}
+                >
+                  <IconX size="24" />
+                </IconButton>
+              </Box>
             </Stack>
           </DialogContent>
           <Divider />

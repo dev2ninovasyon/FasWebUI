@@ -36,12 +36,19 @@ export const getEDefterIncelemeVerileriPaged = async (
   hesapNo: string,
   baslangicTarihi: string,
   bitisTarihi: string,
+  hesaplar?: string,
+  iliskilihesaplar?: string,
+  yevmiyeNolar?: string,
+  haricYevmiyeNo?: string,
+  borcTutarindanFazla?: number,
+  alacakTutarindanFazla?: number,
+  aciklama?: string,
   pageNumber: number = 1,
   pageSize: number = 50
 ) => {
   try {
     const response = await apiFetch(
-      `/Veri/EDefterIncelemePaged?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      `/Veri/EDefterIncelemePaged?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${encodeURIComponent(hesapNo)}&baslangicTarihi=${encodeURIComponent(baslangicTarihi)}&bitisTarihi=${encodeURIComponent(bitisTarihi)}${hesaplar ? `&hesaplar=${encodeURIComponent(hesaplar)}` : ""}${iliskilihesaplar ? `&iliskilihesaplar=${encodeURIComponent(iliskilihesaplar)}` : ""}${yevmiyeNolar ? `&yevmiyeNolar=${encodeURIComponent(yevmiyeNolar)}` : ""}${haricYevmiyeNo ? `&haricYevmiyeNo=${encodeURIComponent(haricYevmiyeNo)}` : ""}${borcTutarindanFazla ? `&borcTutarindanFazla=${borcTutarindanFazla}` : ""}${alacakTutarindanFazla ? `&alacakTutarindanFazla=${alacakTutarindanFazla}` : ""}${aciklama ? `&aciklama=${encodeURIComponent(aciklama)}` : ""}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
       {
         method: "GET",
         headers: {

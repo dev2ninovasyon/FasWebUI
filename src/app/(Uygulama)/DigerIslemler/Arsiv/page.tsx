@@ -11,6 +11,7 @@ import {
   useMediaQuery,
   useTheme,
   Collapse,
+  CircularProgress,
 } from "@mui/material";
 import { SvgIconProps } from "@mui/material/SvgIcon";
 import { alpha, styled } from "@mui/material/styles";
@@ -73,6 +74,7 @@ const Page = () => {
   const [silTiklandimi, setSilTiklandimi] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
@@ -168,9 +170,19 @@ const Page = () => {
     }, */
   }));
 
-  const renderTree = (node: Veri, level: number = 0, parentPath: string = "") => {
+  const renderTree = (node: Veri, level: number = 0, parentPath: string = "", index: number = 0) => {
     const isFile = hasExtension(node.name);
-    const uniquePath = parentPath ? `${parentPath}-${node.id}` : node.id.toString();
+    // Dosyaları sol ağaçta gösterme
+    if (isFile) return null;
+
+    const uniquePath = parentPath ? `${parentPath}-${index}_${node.id}` : `root-${index}_${node.id}`;
+
+    // Çocuklardan sadece klasörleri al ve isme göre sırala
+    const folderChildren = Array.isArray(node.children)
+      ? node.children
+        .filter((child) => !hasExtension(child.name))
+        .sort((a, b) => a.name.localeCompare(b.name, "tr"))
+      : [];
 
     return (
       <StyledTreeItem
@@ -181,21 +193,11 @@ const Page = () => {
             {node.name}
           </Typography>
         }
-        // Belge ise tıklanmasın
-        disabled={isFile}
-        // Belge için ikon
-        slots={{
-          icon: isFile ? () => <IconFileText style={{ width: 20, height: 20 }} /> : undefined
-        }}
-        // Klasörse seçim yap
-        onClick={isFile ? undefined : () => setSelectedRow(node)}
+        onClick={() => setSelectedRow(node)}
         sx={{ my: 1, p: 0 }}
       >
-        {/* Belge ise çocukları render etme; klasörse devam */}
-        {!isFile &&
-          Array.isArray(node.children) &&
-          node.children.length > 0 &&
-          node.children.map((child) => renderTree(child, level + 1, uniquePath))}
+        {folderChildren.length > 0 &&
+          folderChildren.map((child, childIdx) => renderTree(child, level + 1, uniquePath, childIdx))}
       </StyledTreeItem>
     );
   };
@@ -230,43 +232,47 @@ const Page = () => {
   };
 
   const fetchData = async () => {
+    setLoading(true);
     try {
-      const data = await getArsiv(user.denetciId || 0,
+      const data = await getArsiv(
+        user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
-      setRows(data);
+      setRows(data || []);
     } catch (error) {
       console.log("An error occurred:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (!silTiklandimi) {
-      fetchData();
-    } else {
-      setRows([]);
-      setSelectedRow(null);
-      setSearchTerm("");
+    if (user.denetciId && user.yil && user.denetlenenId) {
+      if (!silTiklandimi) {
+        fetchData();
+      } else {
+        setRows([]);
+        setSelectedRow(null);
+        setSearchTerm("");
+      }
     }
-  }, [silTiklandimi]);
+  }, [user.denetciId, user.yil, user.denetlenenId, silTiklandimi]);
 
   return (
     <PageContainer title="Arşiv" description="this is Arşiv">
       <Breadcrumb title="Arşiv" items={BCrumb} />
       <Grid container spacing={3}>
-        <Grid
-          size={{
-            xs: 12,
-            md: 12,
-            lg: 12
-          }}>
-          <WarnBox warn={uyari} noMargin />
-        </Grid>
+        {!loading && rows.length === 0 && (
+          <Grid
+            size={{
+              xs: 12,
+              md: 12,
+              lg: 12
+            }}>
+            <WarnBox warn={uyari} noMargin />
+          </Grid>
+        )}
         <Grid
           mb={3}
           size={{
@@ -301,19 +307,36 @@ const Page = () => {
                 height: "480px",
                 overflowX: "hidden",
                 overflowY: "auto",
+                display: loading ? "flex" : "block",
+                justifyContent: "center",
+                alignItems: loading ? "center" : "initial",
               }}
             >
-              <SimpleTreeView
-                aria-label="customized"
-                slots={{
-                  collapseIcon: MinusSquare,
-                  expandIcon: PlusSquare,
-                  endIcon: CloseSquare
-                }}
-              >
-                {rows &&
-                  filterTree(rows, searchTerm).map((row, index) => renderTree(row, 0, `root-${index}`))}
-              </SimpleTreeView>
+              {loading ? (
+                <CircularProgress size={40} />
+              ) : rows && rows.length > 0 ? (
+                <SimpleTreeView
+                  aria-label="customized"
+                  slots={{
+                    collapseIcon: MinusSquare,
+                    expandIcon: PlusSquare,
+                    endIcon: CloseSquare,
+                  }}
+                >
+                  {filterTree(rows, searchTerm)
+                    .filter((row) => !hasExtension(row.name))
+                    .sort((a, b) => a.name.localeCompare(b.name, "tr"))
+                    .map((row, index) =>
+                      renderTree(row, 0, "", index)
+                    )}
+                </SimpleTreeView>
+              ) : (
+                <Box p={2} textAlign="center">
+                  <Typography variant="body2" color="text.secondary">
+                    Arşiv verisi bulunamadı.
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
         </Grid>

@@ -36,7 +36,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import KidemTazminatiBobiVeriYukleme from "./KidemTazminatiBobiVeriYukleme";
 import KidemTazminatiBobiHesaplama from "./KidemTazminatiBobiHesaplama";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
-import { IconX } from "@tabler/icons-react";
+import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import KidemTazminatiBobiOrnekFisler from "./KidemTazminatiBobiOrnekFisler";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
@@ -210,6 +210,7 @@ const Page: React.FC = () => {
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const handleClosePopUp = () => {
     setIsPopUpOpen(false);
@@ -530,6 +531,19 @@ const Page: React.FC = () => {
       setOpenCartAlert(false);
     }
   }, [hesaplaTiklandimi]);
+
+  const hasData =
+    fetchedKidemTazminatiCalismasi.length > 0 ||
+    fetchedHesaplananKidemTazminatiToplami.length > 0 ||
+    fetchedOdenenKidemTazminatiToplami.length > 0 ||
+    fetchedDonemIcinKaydedilecekKidemTazminati.length > 0 ||
+    fetchedGecmisYillarIcinKaydedilecekKidemTazminati.length > 0 ||
+    fetchedIsTenCikisKodlari.length > 0 ||
+    fetchedHesaplananKullanilmamisIzinKarsiligi.length > 0 ||
+    fetchedOncekiDonemKaydedilmisKullanilmamisIzinKarsiligi.length > 0 ||
+    fetchedOdenenKaydedilecekKullanilmamisIzinKarsiligi.length > 0 ||
+    fetchedKidemTazminatiBobiOrnekFisler.length > 0 ||
+    fetchedData != null;
 
   return (
     <PageContainer title="Kıdem Tazminatı (Bobi)" description="this is Kıdem Tazminatı (Bobi)">
@@ -957,16 +971,50 @@ const Page: React.FC = () => {
                 </Grid>
                 {fetchedKidemTazminatiCalismasi.length > 0 && <Grid size={12}><KidemTazminatiBobiHesaplama data={fetchedKidemTazminatiCalismasi} title="Kıdem Tazminatı Çalışması" /></Grid>}
                 {fetchedHesaplananKidemTazminatiToplami.length > 0 && <Grid size={12}><KidemTazminatiBobiHesaplama data={fetchedHesaplananKidemTazminatiToplami} title="Dönem Toplamı" /></Grid>}
-                <FloatingButtonFisler handleClick={() => setFloatingButtonTiklandimi(true)} />
+                {hasData && <FloatingButtonFisler handleClick={() => setFloatingButtonTiklandimi(true)} />}
               </Grid>
 
-              <Dialog open={floatingButtonTiklandimi} onClose={() => setFloatingButtonTiklandimi(false)} fullWidth maxWidth="lg">
+              <Dialog
+                open={floatingButtonTiklandimi}
+                onClose={() => setFloatingButtonTiklandimi(false)}
+                fullWidth
+                maxWidth={false}
+                fullScreen={isFullScreen}
+                PaperProps={isFullScreen ? {} : { sx: { maxWidth: "98vw" } }}
+              >
                 <DialogContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h5">Örnek Fişleri Kaydet</Typography>
-                    <IconButton onClick={() => setFloatingButtonTiklandimi(false)}><IconX size="18" /></IconButton>
+                    <Box>
+                      <Typography variant="h5" p={1}>
+                        Sizin için oluşturduğum fişleri kaydetmek ister misiniz?
+                      </Typography>
+                      <Typography variant="body1" p={1}>
+                        Sizin için oluşturduğum fiş kayıtlarının doğruluğunu mutlaka
+                        kontrol edin. Fişlerinizi kontrol etmeden kaydetmek, hatalı
+                        kayıtların oluşmasına yol açabilir. Unutmayın, bu alanda
+                        gerçekleştirdiğiniz işlemlerden kaynaklanan hatalı kayıtlar
+                        <strong> tamamen sizin sorumluluğunuzdadır</strong>.
+                      </Typography>
+                    </Box>
+                    <Box display="flex" alignItems="center">
+                      <IconButton
+                        size="small"
+                        onClick={() => setIsFullScreen(!isFullScreen)}
+                      >
+                        {isFullScreen ? (
+                          <IconArrowsMinimize size="24" />
+                        ) : (
+                          <IconArrowsMaximize size="24" />
+                        )}
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => setFloatingButtonTiklandimi(false)}
+                      >
+                        <IconX size="24" />
+                      </IconButton>
+                    </Box>
                   </Stack>
-                  <Typography variant="body2" sx={{ mt: 1 }}>Oluşturulan fişleri kontrol ederek kaydediniz.</Typography>
                 </DialogContent>
                 <Divider />
                 <DialogContent>

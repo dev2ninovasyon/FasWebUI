@@ -27,7 +27,7 @@ import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getVadeliBankaMevduatiManuelSiniflama } from "@/api/Hesaplamalar/Hesaplamalar";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
-import { IconX } from "@tabler/icons-react";
+import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import VadeliBankaMevduatiManuelSiniflamaOrnekFisler from "./VadeliBankaMevduatiManuelSiniflamaOrnekFisler";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
@@ -71,6 +71,7 @@ const VadeliBankaMevduatiManuelSiniflama = () => {
 
   const [json, setJson] = useState<any>();
   const [warn, setWarn] = useState<boolean>(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -604,7 +605,9 @@ const VadeliBankaMevduatiManuelSiniflama = () => {
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}
           fullWidth
-          maxWidth={"lg"}
+          maxWidth={false}
+          fullScreen={isFullScreen}
+          PaperProps={isFullScreen ? {} : { sx: { maxWidth: "98vw" } }}
         >
           <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
             <Stack
@@ -625,12 +628,24 @@ const VadeliBankaMevduatiManuelSiniflama = () => {
                   <strong> tamamen sizin sorumluluğunuzdadır</strong>.
                 </Typography>
               </Box>
-              <IconButton
-                size="small"
-                onClick={() => setFloatingButtonTiklandimi(false)}
-              >
-                <IconX size="18" />
-              </IconButton>
+              <Box display="flex" alignItems="center">
+                <IconButton
+                  size="small"
+                  onClick={() => setIsFullScreen(!isFullScreen)}
+                >
+                  {isFullScreen ? (
+                    <IconArrowsMinimize size="24" />
+                  ) : (
+                    <IconArrowsMaximize size="24" />
+                  )}
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => setFloatingButtonTiklandimi(false)}
+                >
+                  <IconX size="24" />
+                </IconButton>
+              </Box>
             </Stack>
           </DialogContent>
           <Divider />

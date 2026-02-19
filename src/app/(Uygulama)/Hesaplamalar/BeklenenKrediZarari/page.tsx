@@ -12,14 +12,17 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Link,
 } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import { enqueueSnackbar } from "notistack";
-import {
-  createBeklenenKrediZarariHesaplanmis,
-  getIskontoOrani,
-} from "@/api/Hesaplamalar/Hesaplamalar";
+import { createBeklenenKrediZarariHesaplanmis, getIskontoOrani } from "@/api/Hesaplamalar/Hesaplamalar";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -47,6 +50,7 @@ const Page: React.FC = () => {
 
   const [revizeOrani, setRevizeOrani] = useState<number>(0);
   const [iskontoOrani, setIskontoOrani] = useState<number>(0);
+  const [openInfoDialog, setOpenInfoDialog] = useState<boolean>(false);
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
@@ -145,20 +149,8 @@ const Page: React.FC = () => {
             }}
           >
             <CustomFormLabel
-              htmlFor="revize"
-              sx={{ mt: 0, mb: { sm: 0 }, mr: 2 }}
-            >
-              <Typography variant="subtitle1">Revize Oranı:</Typography>
-            </CustomFormLabel>
-            <CustomTextField
-              id="revize"
-              type="number"
-              value={revizeOrani}
-              onChange={(e: any) => setRevizeOrani(e.target.value)}
-            />
-            <CustomFormLabel
               htmlFor="iskonto"
-              sx={{ mt: 0, mb: { sm: 0 }, mx: 2 }}
+              sx={{ mt: 0, mb: { sm: 0 }, mr: 2 }}
             >
               <Typography variant="subtitle1">İskonto Oranı:</Typography>
             </CustomFormLabel>
@@ -167,6 +159,19 @@ const Page: React.FC = () => {
               type="number"
               value={iskontoOrani}
               onChange={(e: any) => setIskontoOrani(e.target.value)}
+            />
+
+            <CustomFormLabel
+              htmlFor="revize"
+              sx={{ mt: 0, mb: { sm: 0 }, mx: 2 }}
+            >
+              <Typography variant="subtitle1">Revize Oranı:</Typography>
+            </CustomFormLabel>
+            <CustomTextField
+              id="revize"
+              type="number"
+              value={revizeOrani}
+              onChange={(e: any) => setRevizeOrani(e.target.value)}
             />
           </Box>
           <Box
@@ -178,8 +183,12 @@ const Page: React.FC = () => {
               width: smDown ? "100%" : "auto",
             }}
           >
-            <Tooltip title="TCMB Faiz Oranı veya Müşterilerin Kullandığı Kredilerin Ortalama Faiz Oranı Alınabilir">
-              <Fab color="warning" size="small">
+            <Tooltip title="Oranların kaynağı ve açıklamaları">
+              <Fab
+                color="warning"
+                size="small"
+                onClick={() => setOpenInfoDialog(true)}
+              >
                 <IconExclamationMark width={18.25} height={18.25} />
               </Fab>
             </Tooltip>
@@ -212,6 +221,26 @@ const Page: React.FC = () => {
             setOpenCartAlert={setOpenCartAlert}
           ></InfoAlertCart>
         )}
+        <Dialog
+          open={openInfoDialog}
+          onClose={() => setOpenInfoDialog(false)}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>Oranların Kaynağı ve Açıklamalar</DialogTitle>
+          <DialogContent dividers>
+            <Typography paragraph>
+              İskonto oranı: "Bankalarca Açılan Ticari Kredilere Uygulanan Ağırlıklı Ortalama Faiz Oranları" verisinden veya alacağın vadesine uygun DİBS (Devlet İç Borçlanma Senetleri) getiri eğrisinden veya TLREF oranı alınabilir. TLREF için: <Link href="https://www.borsaistanbul.com/endeksler/tlref" target="_blank" rel="noopener">https://www.borsaistanbul.com/endeksler/tlref</Link>
+            </Typography>
+            <Typography paragraph>
+              Revize oran için açıklama: Değişken faizli araçlarda, piyasa koşullarına göre faiz güncellendiğinde, revize edilmiş nakit akışlarını varlığın defter değerine eşitleyen yeni bir etkin faiz oranı hesaplanır.
+            </Typography>
+
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenInfoDialog(false)}>Kapat</Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
     </PageContainer>
   );

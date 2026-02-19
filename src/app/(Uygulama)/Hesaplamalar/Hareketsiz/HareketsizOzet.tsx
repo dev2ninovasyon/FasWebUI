@@ -33,8 +33,9 @@ interface Veri {
 interface Props {
   hesaplaTiklandimi: boolean;
   tip: string;
+  onDataCount?: (count: number) => void;
 }
-const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
+const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip, onDataCount }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -266,6 +267,7 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
 
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
+        onDataCount && onDataCount(rowsAll.length);
       }
       if (tip == "Stoklar") {
         const hareketsizStoklarVerileri = await getHareketsizStoklarOzet(user.denetciId || 0,
@@ -288,6 +290,7 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
 
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
+        onDataCount && onDataCount(rowsAll.length);
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -302,6 +305,7 @@ const HareketsizOzet: React.FC<Props> = ({ hesaplaTiklandimi, tip }) => {
     if (hesaplaTiklandimi) {
       setFetchedData([]);
       setRowCount(0);
+      onDataCount && onDataCount(0);
     } else {
       fetchData();
     }

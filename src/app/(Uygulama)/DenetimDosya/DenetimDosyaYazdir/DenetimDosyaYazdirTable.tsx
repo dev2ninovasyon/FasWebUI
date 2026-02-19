@@ -56,9 +56,9 @@ interface SelectionItem {
   word: boolean;
 }
 
-interface Props {}
+interface Props { }
 
-const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
+const DenetimDosyaYazdirTable: React.FC<Props> = ({ }) => {
   const [rows, setRows] = useState<Veri[]>([]);
   const [updatedRows, setUpdatedRows] = useState<Veri2[]>([]);
 
@@ -70,7 +70,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
   const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [rowsPerPage, setRowsPerPage] = useState(-1);
 
   // PDF & Word seçimleri
   const [selectedPdf, setSelectedPdf] = useState<number[]>([]);
@@ -243,7 +243,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
 
   return (
     <>
-       {/* Birleştirilen PDF alanı (tablonun en altında) */}
+      {/* Birleştirilen PDF alanı (tablonun en altında) */}
       {mergedPdfUrl && (
         <Stack
           direction={smDown ? "column" : "row"}
@@ -254,7 +254,7 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
           bgcolor={"#e0e0e0"}
           padding={3}
           borderRadius={2}
-          
+
         >
           <Typography variant="subtitle2">Birleştirilen PDF:</Typography>
 
@@ -286,10 +286,8 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
           </Typography>
         </Stack>
       )}
-      <Stack  direction="row" alignItems="center" marginBottom={2} gap={2}>
-        <Box width={"100%"}>
-          <Typography variant="h6">Denetim Dosya Listesi V2</Typography>
-        </Box>
+      <Stack direction="row" alignItems="center" marginBottom={2} gap={2}>
+
         <TextField
           placeholder="Arama"
           variant="outlined"
@@ -436,8 +434,8 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
                                 return durum === "Aktarıldı"
                                   ? (theme: any) => theme.palette.success.light
                                   : durum === "Seçilmedi"
-                                  ? (theme: any) => theme.palette.info.light
-                                  : (theme: any) => theme.palette.error.light;
+                                    ? (theme: any) => theme.palette.info.light
+                                    : (theme: any) => theme.palette.error.light;
                               })(),
                               color: (() => {
                                 const matched = updatedRows.find((r) => r.id === row.id);
@@ -445,8 +443,8 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
                                 return durum === "Aktarıldı"
                                   ? (theme: any) => theme.palette.success.main
                                   : durum === "Seçilmedi"
-                                  ? (theme: any) => theme.palette.info.main
-                                  : (theme: any) => theme.palette.error.main;
+                                    ? (theme: any) => theme.palette.info.main
+                                    : (theme: any) => theme.palette.error.main;
                               })(),
                             }}
                           />
@@ -492,37 +490,9 @@ const DenetimDosyaYazdirTable: React.FC<Props> = ({}) => {
         </Stack>
       )}
 
-      {/* Footer / pagination */}
-      <Table>
-        <TableFooter
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            border: 0,
-          }}
-        >
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[20, 100, 500, { label: "Hepsi", value: -1 }]}
-              count={filteredRows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{ native: true }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-              labelRowsPerPage="Sayfa başına satır sayısı:"
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} arası / ${count !== -1 ? count : `daha fazla`} satır`
-              }
-              sx={{ mt: 0.5, border: 0 }}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
 
-   
+
+
 
       {openCartAlert && (
         <InfoAlertCart

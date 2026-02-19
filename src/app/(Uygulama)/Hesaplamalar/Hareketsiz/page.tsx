@@ -67,6 +67,8 @@ const Page: React.FC = () => {
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
+  const [hasData, setHasData] = useState(false);
+
   const handleHesapla = async () => {
     try {
       if (tip == "TicariAlacaklar") {
@@ -241,16 +243,21 @@ const Page: React.FC = () => {
                     lg: 12
                   }}>
                   <HareketsizOzet
-                    hesaplaTiklandimi={hesaplaTiklandimi}
-                    tip={tip}
-                  />
+                      hesaplaTiklandimi={hesaplaTiklandimi}
+                      tip={tip}
+                      onDataCount={(c: number) => setHasData((prev) => prev || c > 0)}
+                    />
                 </Grid>
                 <Grid
                   size={{
                     xs: 12,
                     lg: 12
                   }}>
-                  <Hareketsiz hesaplaTiklandimi={hesaplaTiklandimi} tip={tip} />
+                  <Hareketsiz
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                    tip={tip}
+                    onDataCount={(c: number) => setHasData((prev) => prev || c > 0)}
+                  />
                 </Grid>
               </Grid>
             </TabPanel>
@@ -337,9 +344,11 @@ const Page: React.FC = () => {
             </TabPanel>
           </TabContext>
         </Grid>
-        <FloatingButtonFisler
-          handleClick={() => setFloatingButtonTiklandimi(true)}
-        />
+        {hasData && (
+          <FloatingButtonFisler
+            handleClick={() => setFloatingButtonTiklandimi(true)}
+          />
+        )}
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

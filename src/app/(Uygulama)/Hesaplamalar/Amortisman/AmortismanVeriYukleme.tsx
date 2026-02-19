@@ -5,7 +5,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Grid, useTheme, Fab, Tooltip } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
@@ -21,6 +21,8 @@ import {
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
+import FullScreenInfoDialog from "@/app/(Uygulama)/components/Dialogs/FullScreenInfoDialog";
+import { IconExclamationMark } from "@tabler/icons-react";
 
 // register Handsontable's modules
 registerAllModules();
@@ -64,6 +66,8 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState<number>(200);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+
+  const [openInfoDialog, setOpenInfoDialog] = useState<boolean>(false);
 
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
@@ -952,11 +956,20 @@ const AmortismanVeriYukleme: React.FC<Props> = ({
             xs: 12,
             lg: 2
           }}>
-          <ExceleAktarButton
-            handleDownload={handleDownload}
-          ></ExceleAktarButton>
+          <Tooltip title="Açıklamalar (tam ekran)">
+            <Fab
+              color="warning"
+              size="small"
+              onClick={() => setOpenInfoDialog(true)}
+              sx={{ mr: 1 }}
+            >
+              <IconExclamationMark width={18.25} height={18.25} />
+            </Fab>
+          </Tooltip>
+          <ExceleAktarButton handleDownload={handleDownload}></ExceleAktarButton>
         </Grid>
       </Grid>
+      <FullScreenInfoDialog open={openInfoDialog} onClose={() => setOpenInfoDialog(false)} title="Oran ve Veri Kaynağı Açıklamaları" />
     </>
   );
 };

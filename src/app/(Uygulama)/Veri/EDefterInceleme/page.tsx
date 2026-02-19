@@ -27,6 +27,13 @@ const Page = () => {
   const [hesapNo, setHesapNo] = useState("");
   const [baslangicTarihi, setBaslangicTarihi] = useState(`${user.yil}-01-01`);
   const [bitisTarihi, setBitisTarihi] = useState(`${user.yil}-12-31`);
+  const [hesaplar, setHesaplar] = useState<string | undefined>(undefined);
+  const [iliskilihesaplar, setIliskiliHesaplar] = useState<string | undefined>(undefined);
+  const [yevmiyeNolar, setYevmiyeNolar] = useState<string | undefined>(undefined);
+  const [haricYevmiyeNo, setHaricYevmiyeNo] = useState<string | undefined>(undefined);
+  const [borcTutarindanFazla, setBorcTutarindanFazla] = useState<number | undefined>(undefined);
+  const [alacakTutarindanFazla, setAlacakTutarindanFazla] = useState<number | undefined>(undefined);
+  const [aciklama, setAciklama] = useState<string | undefined>(undefined);
 
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [openCartAlert, setOpenCartAlert] = useState(false);
@@ -63,6 +70,20 @@ const Page = () => {
             setBaslangicTarihi={setBaslangicTarihi}
             setBitisTarihi={setBitisTarihi}
             setVerileriGetirTiklandimi={setVerileriGetirTiklandimi}
+            hesaplar={hesaplar}
+            setHesaplar={setHesaplar}
+            iliskilihesaplar={iliskilihesaplar}
+            setIliskiliHesaplar={setIliskiliHesaplar}
+            yevmiyeNolar={yevmiyeNolar}
+            setYevmiyeNolar={setYevmiyeNolar}
+            haricYevmiyeNo={haricYevmiyeNo}
+            setHaricYevmiyeNo={setHaricYevmiyeNo}
+            borcTutarindanFazla={borcTutarindanFazla}
+            setBorcTutarindanFazla={setBorcTutarindanFazla}
+            alacakTutarindanFazla={alacakTutarindanFazla}
+            setAlacakTutarindanFazla={setAlacakTutarindanFazla}
+            aciklama={aciklama}
+            setAciklama={setAciklama}
           />
         </Grid>
       </Grid>
@@ -78,6 +99,13 @@ const Page = () => {
             bitisTarihi={bitisTarihi}
             verileriGetirTiklandimi={verileriGetirTiklandimi}
             setVerileriGetirTiklandimi={setVerileriGetirTiklandimi}
+            hesaplar={hesaplar}
+            iliskilihesaplar={iliskilihesaplar}
+            yevmiyeNolar={yevmiyeNolar}
+            haricYevmiyeNo={haricYevmiyeNo}
+            borcTutarindanFazla={borcTutarindanFazla}
+            alacakTutarindanFazla={alacakTutarindanFazla}
+            aciklama={aciklama}
           />
         </Grid>
       </Grid>

@@ -18,6 +18,7 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  CircularProgress,
 } from "@mui/material";
 import { Stack, useTheme } from "@mui/system";
 import TablePaginationActions from "@/components/shared/TablePaginationActions";
@@ -72,6 +73,9 @@ const BelgeTable: React.FC<MyComponentProps> = ({
 
   const [selected, setSelected] = useState<number[]>([]);
   const [selectedId, setSelectedId] = useState(0);
+
+  const [downloading, setDownloading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
   const mdUp = useMediaQuery((theme: any) => theme.breakpoints.up("md"));
@@ -194,6 +198,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
 
   const deleteSelected = async (veri: Veri) => {
     try {
+      setDeleting(true);
       setSilTiklandimi(true);
 
       const response = await deleteArsiv(veri.url || "");
@@ -226,11 +231,14 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       handleIsConfirm();
     } catch (error: any) {
       console.log("Silme hatası:", error);
+    } finally {
+      setDeleting(false);
     }
   };
 
   const deleteAllSelected = async () => {
     try {
+      setDeleting(true);
       setSilTiklandimi(true);
       const paths = selected
         .map((id) => data.find((x) => x.id === id))
@@ -267,12 +275,15 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       handleIsConfirm();
     } catch (error: any) {
       console.log("Silme hatası:", error);
+    } finally {
+      setDeleting(false);
     }
   };
 
   const downloadSelected = async (veri: Veri) => {
     try {
-      const response =  await axios({
+      setDownloading(true);
+      const response = await axios({
         url: `${url}/ArsivIslemleri/Indir?path=${veri.url}`,
         method: "GET",
         responseType: "blob",
@@ -289,11 +300,14 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       link.click();
     } catch (error) {
       console.log("İndirme hatası:", error);
+    } finally {
+      setDownloading(false);
     }
   };
 
   const downloadAllSelected = async () => {
     try {
+      setDownloading(true);
       const paths = selected
         .map((id) => data.find((x) => x.id === id))
         .map((row) => (row?.url?.trim() ? row.url : null))
@@ -326,6 +340,8 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       link.click();
     } catch (error) {
       console.log("İndirme hatası:", error);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -386,9 +402,9 @@ const BelgeTable: React.FC<MyComponentProps> = ({
           <TableBody>
             {(rowsPerPage > 0
               ? filteredRows.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage
+              )
               : filteredRows
             ).map((row, index) => {
               const isItemSelected = isSelected(row.id);
@@ -452,11 +468,11 @@ const BelgeTable: React.FC<MyComponentProps> = ({
                         "aria-labelledby": "basic-button",
                       }}
                     >
-                      <MenuItem onClick={() => downloadSelected(row)}>
+                      <MenuItem onClick={() => downloadSelected(row)} disabled={downloading}>
                         <ListItemIcon>
-                          <IconDownload width={18} />
+                          {downloading ? <CircularProgress size={18} /> : <IconDownload width={18} />}
                         </ListItemIcon>
-                        İndir
+                        {downloading ? "İndiriliyor..." : "İndir"}
                       </MenuItem>
                     </Menu>
                   </TableCell>
@@ -476,6 +492,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
           variant="outlined"
           color="error"
           size="small"
+          disabled={deleting || downloading}
           onClick={() => {
             handleIsConfirm();
           }}
@@ -485,8 +502,9 @@ const BelgeTable: React.FC<MyComponentProps> = ({
             marginLeft: smDown ? "" : "10px",
             marginY: smDown ? "8px" : "12px",
           }}
+          startIcon={deleting ? <CircularProgress size={16} color="error" /> : undefined}
         >
-          {selected.length} Kayıt Sil
+          {deleting ? "Siliniyor..." : `${selected.length} Kayıt Sil`}
         </Button>
       )}
       {selected.length !== 0 && (
@@ -494,6 +512,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
           variant="outlined"
           color="primary"
           size="small"
+          disabled={downloading || deleting}
           onClick={() => {
             downloadAllSelected();
           }}
@@ -503,8 +522,9 @@ const BelgeTable: React.FC<MyComponentProps> = ({
             marginLeft: smDown ? "" : "100px",
             marginY: smDown ? "8px" : "12px",
           }}
+          startIcon={downloading ? <CircularProgress size={16} /> : undefined}
         >
-          {selected.length} Kayıt İndir
+          {downloading ? "İndiriliyor..." : `${selected.length} Kayıt İndir`}
         </Button>
       )}
       {/*selected.length === 0 && (
@@ -554,8 +574,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
               ActionsComponent={TablePaginationActions}
               labelRowsPerPage="Sayfa başına satır sayısı:"
               labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} arası / ${
-                  count !== -1 ? count : `daha fazla`
+                `${from}-${to} arası / ${count !== -1 ? count : `daha fazla`
                 } satır`
               }
               sx={{ mt: 0.5, mr: "2px", border: 0 }}

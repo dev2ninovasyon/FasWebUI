@@ -48,6 +48,13 @@ interface Props {
   bitisTarihi: string;
   verileriGetirTiklandimi: boolean;
   setVerileriGetirTiklandimi: (bool: boolean) => void;
+  hesaplar?: string | undefined;
+  iliskilihesaplar?: string | undefined;
+  yevmiyeNolar?: string | undefined;
+  haricYevmiyeNo?: string | undefined;
+  borcTutarindanFazla?: number | undefined;
+  alacakTutarindanFazla?: number | undefined;
+  aciklama?: string | undefined;
 }
 
 const EDefterInceleme: React.FC<Props> = ({
@@ -56,6 +63,13 @@ const EDefterInceleme: React.FC<Props> = ({
   bitisTarihi,
   verileriGetirTiklandimi,
   setVerileriGetirTiklandimi,
+  hesaplar,
+  iliskilihesaplar,
+  yevmiyeNolar,
+  haricYevmiyeNo,
+  borcTutarindanFazla,
+  alacakTutarindanFazla,
+  aciklama,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -377,6 +391,13 @@ const EDefterInceleme: React.FC<Props> = ({
         hesapNo,
         baslangicTarihi,
         bitisTarihi,
+        hesaplar,
+        iliskilihesaplar,
+        yevmiyeNolar,
+        haricYevmiyeNo,
+        borcTutarindanFazla,
+        alacakTutarindanFazla,
+        aciklama,
         pageNum,
         pageSize
       );
