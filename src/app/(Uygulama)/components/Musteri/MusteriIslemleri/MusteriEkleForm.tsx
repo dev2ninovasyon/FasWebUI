@@ -349,7 +349,31 @@ const MusteriEkleForm = ({
   return (
     <div>
       <Grid container spacing={isWizardView ? 2 : 3}>
-
+         <Grid size={12}>
+          <Box
+            {...getRootProps()}
+            sx={{
+              border: `2px dashed ${theme.palette.divider}`,
+              borderRadius: "8px",
+              padding: "20px",
+              textAlign: "center",
+              cursor: "pointer",
+              backgroundColor: theme.palette.background.paper,
+              "&:hover": {
+                borderColor: theme.palette.primary.main,
+              },
+            }}
+          >
+            <input {...getInputProps()} />
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Typography>
+                Şirket Bilgilerini PDF'den Yüklemek İçin Buraya Tıklayın veya Dosyayı Sürükleyin (Kurumlar Beyannamesi)
+              </Typography>
+            )}
+          </Box>
+        </Grid>
         {/* Firma Adı - Always Full Width */}
         <Grid size={12}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">

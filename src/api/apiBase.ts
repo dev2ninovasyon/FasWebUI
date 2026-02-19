@@ -1,5 +1,5 @@
-﻿export const url = "https://betaapi.fasmart.app/api";
-//export const url = "http://localhost:5000/api";
+﻿//export const url = "https://betaapi.fasmart.app/api";
+export const url = "http://localhost:5000/api";
 
 // 🔐 Güvenlik: Token manager import
 import SecureTokenManager from "@/utils/SecureTokenManager";
@@ -53,6 +53,23 @@ export async function apiFetch(
       signal: controller.signal,
       credentials: includeCredentials ? 'include' : 'omit',
     });
+
+    // 400+ response: log and parse body
+    if (!response.ok) {
+      const text = await response.text();
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        parsed = undefined;
+      }
+      console.error("API ERROR", response.status, parsed ?? text);
+      if (parsed && parsed.errors) {
+        throw new Error(JSON.stringify(parsed.errors));
+      } else {
+        throw new Error(parsed?.message || text || `HTTP ${response.status}`);
+      }
+    }
 
     // 🔐 GÜVENLIK: Token expiry handle etme (401 Unauthorized)
     if (response.status === 401) {
