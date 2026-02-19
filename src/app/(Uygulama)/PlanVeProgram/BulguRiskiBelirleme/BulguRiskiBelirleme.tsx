@@ -349,7 +349,7 @@ const BulguRiskiBelirleme: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         height={92}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[80, 80, 80, 80]}
+        colWidths={[45, 45, 45, 45]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

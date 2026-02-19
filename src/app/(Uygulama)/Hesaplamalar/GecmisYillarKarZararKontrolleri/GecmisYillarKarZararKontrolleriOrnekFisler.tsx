@@ -168,7 +168,7 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
 
   const colHeaders = [
     "Seçim",
-    "Fiş No",
+    "No",
     "Fiş Tipi",
     "Detay Kodu",
     "Hesap Adı",
@@ -547,7 +547,7 @@ const GecmisYillarKarZararKontrolleriOrnekFisler: React.FC<Props> = ({
         height={342}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[40, 60, 60, 80, 100, 80, 80, 80, 80]}
+        colWidths={[40, 28, 60, 80, 100, 80, 80, 80, 80]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

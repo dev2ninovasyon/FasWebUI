@@ -174,7 +174,7 @@ const HareketsizOrnekFisler: React.FC<Props> = ({
 
   const colHeaders = [
     "Seçim",
-    "Fiş No",
+    "No",
     "Fiş Tipi",
     "Detay Kodu",
     "Hesap Adı",
@@ -596,7 +596,7 @@ const HareketsizOrnekFisler: React.FC<Props> = ({
         height={342}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[40, 60, 60, 80, 100, 80, 80, 80, 80]}
+        colWidths={[30, 18, 35, 50, 60, 50, 50, 50, 50]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

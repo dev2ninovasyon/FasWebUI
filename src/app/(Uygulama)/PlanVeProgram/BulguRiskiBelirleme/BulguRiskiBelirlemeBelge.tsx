@@ -268,7 +268,7 @@ const BulguRiskiBelirlemeBelge = () => {
         height={296}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[80, 80, 80, 80]}
+        colWidths={[45, 45, 45, 45]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

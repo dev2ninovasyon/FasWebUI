@@ -375,7 +375,7 @@ const FisDetaylari = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 50, 50, 80, 150, 180, 100, 100]}
+        colWidths={[0, 35, 35, 50, 90, 110, 70, 70]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

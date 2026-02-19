@@ -429,7 +429,7 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         height={342}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[110, 80, 80, 80, 80, 100, 100, 80, 110, 80, 80, 80]}
+        colWidths={[80, 60, 60, 60, 60, 70, 70, 60, 80, 60, 60, 60]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

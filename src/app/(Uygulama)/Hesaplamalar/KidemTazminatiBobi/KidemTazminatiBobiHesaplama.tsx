@@ -226,7 +226,7 @@ const KidemTazminatiBobiHesaplama: React.FC<Props> = ({ data, title }) => {
         height={342}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[240, 80]}
+        colWidths={[170, 60]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

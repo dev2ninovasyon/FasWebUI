@@ -531,7 +531,7 @@ const OnemlilikVeOrneklem: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 50, 100, 80, 60, 80, 80, 60, 60, 60, 50, 100]}
+        colWidths={[0, 30, 55, 45, 35, 45, 45, 35, 35, 35, 30, 55]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

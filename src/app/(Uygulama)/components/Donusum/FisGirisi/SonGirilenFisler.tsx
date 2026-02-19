@@ -79,7 +79,7 @@ const SonGirilenFisler: React.FC<Props> = ({
 
   const colHeaders = [
     "Id",
-    "Fiş No",
+    "No",
     "Tip",
     "Detay Kodu",
     "Hesap Adı",
@@ -412,7 +412,7 @@ const SonGirilenFisler: React.FC<Props> = ({
         data={fetchedData}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 32, 40, 80, 130, 100, 100, 100, 100]}
+        colWidths={[0, 28, 40, 80, 130, 100, 100, 100, 100]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

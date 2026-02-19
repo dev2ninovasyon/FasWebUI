@@ -72,7 +72,7 @@ const FisListesi = () => {
 
   const colHeaders = [
     "Id",
-    "Fiş No",
+    "No",
     "Tip",
     "Detay Kodu",
     "Hesap Adı",
@@ -501,7 +501,7 @@ const FisListesi = () => {
           height={684}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[0, 60, 60, 60, 150, 100, 100, 100, 80]}
+          colWidths={[0, 20, 30, 30, 70, 50, 50, 50]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}

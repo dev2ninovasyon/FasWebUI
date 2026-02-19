@@ -403,7 +403,7 @@ const KurFarki = () => {
           height={684}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[60, 120, 40, 80, 80, 80, 80, 80]}
+          colWidths={[40, 80, 25, 50, 50, 50, 50, 50]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}

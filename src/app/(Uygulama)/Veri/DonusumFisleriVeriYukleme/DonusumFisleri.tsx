@@ -171,7 +171,7 @@ const DonusumFisleri: React.FC<Props> = ({
   }, [duplicatesControl]);
 
   const colHeaders = [
-    "Fiş No",
+    "No",
     "Fiş Tipi",
     "D. Hesap Kodu",
     "Hesap Adı",
@@ -719,7 +719,7 @@ const DonusumFisleri: React.FC<Props> = ({
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[60, 60, 80, 140, 100, 100, 200]}
+        colWidths={[30, 18, 40, 70, 50, 50, 90]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
