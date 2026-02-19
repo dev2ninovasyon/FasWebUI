@@ -533,8 +533,17 @@ const DonusturulmusMizan: React.FC<Props> = ({
 
       if ([3, 4, 5, 6, 7, 8, 9, 10].includes(prop)) {
         if (typeof newValue === "string") {
-          const cleanedNewValue = newValue.replaceAll(/\./g, "");
-          changes[i][3] = cleanedNewValue;
+          let normalized = newValue.trim();
+          
+          // Eğer virgül varsa → Türkçe format (47.792,87 veya 47792,87)
+          if (normalized.includes(',')) {
+            // Bin ayırıcıları (noktaları) kaldır, virgülü noktaya çevir
+            // 47.792,87 → 47792.87
+            normalized = normalized.replace(/\./g, '').replace(',', '.');
+          }
+          // Eğer sadece nokta varsa → International format (47792.87) → olduğu gibi
+          
+          changes[i][3] = normalized;
         }
       }
     }

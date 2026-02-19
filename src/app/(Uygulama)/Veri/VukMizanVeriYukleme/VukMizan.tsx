@@ -5,7 +5,27 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { 
+  Grid, 
+  useTheme, 
+  Alert, 
+  IconButton, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogActions, 
+  Button, 
+  CircularProgress,
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
+} from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
@@ -21,6 +41,7 @@ import {
   getVukMizanVerileriByDenetciDenetlenenYil,
 } from "@/api/Veri/VukMizan";
 import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
+import { IconX, IconAlertTriangle } from "@tabler/icons-react";
 
 // register Handsontable's modules
 registerAllModules();
@@ -41,12 +62,16 @@ interface Props {
   genelHesapPlaniListesi: any;
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (b: boolean) => void;
+  onLoadingChange?: (loading: boolean) => void;
+  onDataLoaded?: (hasData: boolean) => void;
 }
 
 const VukMizan: React.FC<Props> = ({
   genelHesapPlaniListesi,
   kaydetTiklandimi,
   setKaydetTiklandimi,
+  onLoadingChange,
+  onDataLoaded,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -57,9 +82,16 @@ const VukMizan: React.FC<Props> = ({
 
   const [rowCount, setRowCount] = useState<number>(200);
 
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [fetchedData, setFetchedData] = useState<any[]>([]);
 
   const [duplicatesControl, setDuplicatesControl] = useState(false);
+
+  const [duplicateMessage, setDuplicateMessage] = useState<string>("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
+  const [duplicateGroups, setDuplicateGroups] = useState<number[][]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCleaningSaving, setIsCleaningSaving] = useState(false);
 
   const uyari = [
     "Boş Bırakılmaması Gereken Sütunlar: Kebir Kodu, Detay Hesap Kodu, Hesap Adı, Borç, Alacak",
@@ -67,7 +99,8 @@ const VukMizan: React.FC<Props> = ({
     "Detay Hesap Kodu Sütunu Boş Bırakılmamalıdır Ve Seçeneklerden Biri Seçilmelidir.",
     "Hesap Adı Sütunu Boş Bırakılmamalıdır.",
     "Borç Ve Alacak Sütunları Boş Bırakılmamalıdır Ve Ondalıklı Sayı Girilmelidir.",
-    "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir.",
+    "Para Birimi Sütununda Seçeneklerden Biri Seçilmelidir Veya Boş Bırakılabilir. (3 Haneli Detay Kodu İçin Otomatik Boş Tutulur)",
+    "Detay Kodu Sütunu 3 Haneli Ise Para Birimi Otomatik Olarak Boş Tutulacaktır.",
   ];
 
   const [endRow, setEndRow] = useState(-1);
@@ -141,28 +174,38 @@ const VukMizan: React.FC<Props> = ({
     return duplicates;
   }
 
+  function groupDuplicateRows(data: any[]): number[][] {
+    const rowMap = new Map<string, number[]>();
+
+    data.forEach((row, index) => {
+      if (isRowEmpty(row)) return;
+
+      const rowString = JSON.stringify(row, Object.keys(row).sort());
+
+      if (!rowMap.has(rowString)) {
+        rowMap.set(rowString, []);
+      }
+      rowMap.get(rowString)!.push(index + 1); // 1-based row number
+    });
+
+    // Sadece 2+ tekrar eden satırları döndür (duplicate olanları)
+    const duplicateGroups: number[][] = [];
+    rowMap.forEach((rowNumbers, _) => {
+      if (rowNumbers.length > 1) {
+        duplicateGroups.push(rowNumbers.sort((a, b) => a - b));
+      }
+    });
+
+    return duplicateGroups.sort((a, b) => a[0] - b[0]);
+  }
+
   useEffect(() => {
     if (duplicatesControl) {
-      const duplicateRowNumbers = findDuplicateRows(fetchedData);
+      const duplicateRowGroups = groupDuplicateRows(fetchedData);
 
-      if (duplicateRowNumbers.length > 0) {
-        const duplicatesMessage = duplicateRowNumbers.join(", ") + " ";
-
-        enqueueSnackbar(
-          `${duplicatesMessage}Numaralı Satır${duplicateRowNumbers.length > 1 ? "lar" : ""
-          } Tekrar Eden Veri İçeriyor. Kontrol Edin.`,
-          {
-            variant: "warning",
-            autoHideDuration: 5000,
-            style: {
-              backgroundColor:
-                customizer.activeMode === "dark"
-                  ? theme.palette.warning.dark
-                  : theme.palette.warning.main,
-              maxWidth: "720px",
-            },
-          }
-        );
+      if (duplicateRowGroups.length > 0) {
+        setDuplicateGroups(duplicateRowGroups);
+        setShowDuplicateDialog(true);
       }
 
       setDuplicatesControl(false);
@@ -405,7 +448,7 @@ const VukMizan: React.FC<Props> = ({
       genelHesapPlaniListesi.map((item: any) => [item.kod, item])
     );
 
-    const rowsToUpdate = new Map<number, { kod?: string; adi?: string }>();
+    const rowsToUpdate = new Map<number, { kod?: string; adi?: string; paraBirimi?: string }>();
 
     for (const [row, prop, oldValue, newValue] of changes) {
       if (prop === 1 && newValue !== oldValue) {
@@ -418,6 +461,11 @@ const VukMizan: React.FC<Props> = ({
             hotTableComponent.current?.hotInstance.getDataAtCell(row, 0)
           ) {
             currentRowData.kod = newValue.substring(0, 3);
+          }
+          
+          // 3 haneli ise Para Birimi boş olmalı
+          if (newValue.length === 3) {
+            currentRowData.paraBirimi = "";
           }
         }
 
@@ -450,6 +498,13 @@ const VukMizan: React.FC<Props> = ({
             data.adi
           );
         }
+        if (data.paraBirimi !== undefined) {
+          hotTableComponent.current?.hotInstance.setDataAtCell(
+            row,
+            5,
+            data.paraBirimi
+          );
+        }
       });
     });
   };
@@ -460,82 +515,117 @@ const VukMizan: React.FC<Props> = ({
     for (let i = 0; i < changes.length; i++) {
       const [row, prop, oldValue, newValue] = changes[i];
 
-      if ([3, 4].includes(prop)) {
+      if ([3, 4].includes(prop)) {  // Borç ve Alacak sütunları
         if (typeof newValue === "string") {
-          const cleanedNewValue = newValue.replaceAll(/\./g, "");
-          changes[i][3] = cleanedNewValue;
+          let normalized = newValue.trim();
+          
+          // Eğer virgül varsa → Türkçe format (47.792,87 veya 47792,87)
+          if (normalized.includes(',')) {
+            // Bin ayırıcıları (noktaları) kaldır, virgülü noktaya çevir
+            // 47.792,87 → 47792.87
+            normalized = normalized.replace(/\./g, '').replace(',', '.');
+          }
+          // Eğer sadece nokta varsa → International format (47792.87) → olduğu gibi
+          
+          changes[i][3] = normalized;
         }
       }
     }
   };
 
-  const handleCreateVukMizanVerisi = async () => {
-    if (fetchedData.filter((item: any) => item[0]).length == 0) {
-      await handleDeleteVukMizanVerisi();
-      return;
-    }
+  const handleCreateVukMizanVerisi = async (cleanDuplicates: boolean = false) => {
+    onLoadingChange?.(true);
+    setIsLoading(true);
+    try {
+      // HotTable'dan güncel verileri al (state'ten değil)
+      const hotTableInstance = hotTableComponent.current?.hotInstance;
+      let dataToSave = hotTableInstance?.getData() || fetchedData;
 
-    const keys = [
-      "denetciId",
-      "denetlenenId",
-      "yil",
-      "kebirKodu",
-      "detayHesapKodu",
-      "hesapAdi",
-      "borc",
-      "alacak",
-      "paraBirimi",
-    ];
-    const jsonData = fetchedData
-      .filter((item: any) => item[0])
-      .map((item: any) => {
-        let obj: { [key: string]: any } = {};
-        keys.forEach((key, index) => {
-          if (key === "denetciId") {
-            obj[key] = user.denetciId;
-          } else if (key === "denetlenenId") {
-            obj[key] = user.denetlenenId;
-          } else if (key === "yil") {
-            obj[key] = user.yil;
-          } else if (key === "borc" || key === "alacak") {
-            if (
-              item[index - 3] == undefined ||
-              item[index - 3] == null ||
-              item[index - 3] == ""
-            ) {
-              obj[key] = 0.0;
+      // Eğer cleanDuplicates true ise, çift kayıtları temizle
+      if (cleanDuplicates) {
+        const duplicateRowNumbers = findDuplicateRows(dataToSave);
+        dataToSave = dataToSave.filter((_: any, index: number) => !duplicateRowNumbers.includes(index + 1));
+      }
+
+      if (dataToSave.filter((item: any) => item[0]).length == 0) {
+        await handleDeleteVukMizanVerisi();
+        onLoadingChange?.(false);
+        setIsLoading(false);
+        return;
+      }
+
+      const keys = [
+        "denetciId",
+        "denetlenenId",
+        "yil",
+        "kebirKodu",
+        "detayHesapKodu",
+        "hesapAdi",
+        "borc",
+        "alacak",
+        "paraBirimi",
+      ];
+      const jsonData = dataToSave
+        .filter((item: any) => item[0])
+        .map((item: any) => {
+          let obj: { [key: string]: any } = {};
+          const detayHesapKodu = item[1];
+          
+          keys.forEach((key, index) => {
+            if (key === "denetciId") {
+              obj[key] = user.denetciId;
+            } else if (key === "denetlenenId") {
+              obj[key] = user.denetlenenId;
+            } else if (key === "yil") {
+              obj[key] = user.yil;
+            } else if (key === "borc" || key === "alacak") {
+              if (
+                item[index - 3] == undefined ||
+                item[index - 3] == null ||
+                item[index - 3] == ""
+              ) {
+                obj[key] = 0.0;
+              } else {
+                obj[key] = item[index - 3];
+              }
+            } else if (key === "paraBirimi") {
+              // 3 haneli Detay Kodu ise Para Birimi boş tutulmalı
+              if (detayHesapKodu && typeof detayHesapKodu === "string" && detayHesapKodu.length === 3) {
+                obj[key] = "";
+              } else if (
+                item[index - 3] == undefined ||
+                item[index - 3] == null ||
+                item[index - 3] == ""
+              ) {
+                obj[key] = "TL";
+              } else {
+                obj[key] = item[index - 3];
+              }
             } else {
-              obj[key] = item[index - 3];
+              if (
+                item[index - 3] == undefined ||
+                item[index - 3] == null ||
+                item[index - 3] == ""
+              ) {
+                obj[key] = null;
+              } else {
+                obj[key] = item[index - 3];
+              }
             }
-          } else if (key === "paraBirimi") {
-            if (
-              item[index - 3] == undefined ||
-              item[index - 3] == null ||
-              item[index - 3] == ""
-            ) {
-              obj[key] = "TL";
-            } else {
-              obj[key] = item[index - 3];
-            }
-          } else {
-            if (
-              item[index - 3] == undefined ||
-              item[index - 3] == null ||
-              item[index - 3] == ""
-            ) {
-              obj[key] = null;
-            } else {
-              obj[key] = item[index - 3];
-            }
-          }
+          });
+
+          return obj;
         });
 
-        return obj;
-      });
-    try {
       const result = await createVukMizanVerisi(jsonData);
       if (result) {
         await fetchData();
+        setDuplicatesControl(true);
+        setDuplicateGroups([]);
+        setShowDuplicateDialog(false);
+        setIsLoading(false);
+        onLoadingChange?.(false);
+        onDataLoaded?.(true); // Veri başarıyla kaydedildi
         enqueueSnackbar("Kaydedildi", {
           variant: "success",
           autoHideDuration: 5000,
@@ -548,6 +638,8 @@ const VukMizan: React.FC<Props> = ({
           },
         });
       } else {
+        setIsLoading(false);
+        onLoadingChange?.(false);
         enqueueSnackbar("Kaydedilemedi", {
           variant: "error",
           autoHideDuration: 5000,
@@ -561,6 +653,8 @@ const VukMizan: React.FC<Props> = ({
         });
       }
     } catch (error) {
+      setIsLoading(false);
+      onLoadingChange?.(false);
       console.log("Bir hata oluştu:", error);
     }
   };
@@ -574,6 +668,8 @@ const VukMizan: React.FC<Props> = ({
       );
       if (result) {
         await fetchData();
+        setIsLoading(false);
+        onLoadingChange?.(false);
         enqueueSnackbar("Kaydedildi", {
           variant: "success",
           autoHideDuration: 5000,
@@ -586,6 +682,8 @@ const VukMizan: React.FC<Props> = ({
           },
         });
       } else {
+        setIsLoading(false);
+        onLoadingChange?.(false);
         enqueueSnackbar("Kaydedilemedi", {
           variant: "error",
           autoHideDuration: 5000,
@@ -626,7 +724,6 @@ const VukMizan: React.FC<Props> = ({
         rowsAll.push(newRow);
       });
       setFetchedData(rowsAll);
-      setDuplicatesControl(true);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -635,7 +732,9 @@ const VukMizan: React.FC<Props> = ({
   const fetchRowCount = async () => {
     try {
       const format = await getFormat("Vuk Mizan");
-      setRowCount(format.satirSayisi)
+      if (format && format.satirSayisi) {
+        setRowCount(format.satirSayisi);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -646,15 +745,201 @@ const VukMizan: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    fetchRowCount();
+    // Non-blocking çağrı
+    fetchRowCount().catch((error) => {
+      console.log("RowCount fetch başarısız (görmezden gelinecek):", error);
+    });
   }, []);
+
+  const handleCheckDuplicatesBeforeSave = async () => {
+    // HotTable instance'ünden güncel verileri al (state'ten değil)
+    const hotTableInstance = hotTableComponent.current?.hotInstance;
+    const currentData = hotTableInstance?.getData() || fetchedData;
+    
+    const duplicateGroups = groupDuplicateRows(currentData);
+
+    if (duplicateGroups.length > 0) {
+      setDuplicateGroups(duplicateGroups);
+      setShowDuplicateDialog(true);
+    } else {
+      // Çift kayıt yok, direkt kaydet
+      await handleCreateVukMizanVerisi(false);
+    }
+  };
+
+  const handleCleanAndSave = async () => {
+    // HotTable instance'ünden güncel verileri al
+    const hotTableInstance = hotTableComponent.current?.hotInstance;
+    const currentData = hotTableInstance?.getData() || fetchedData;
+    
+    // Çift satırları gruplandır
+    const duplicateGroups = groupDuplicateRows(currentData);
+    
+    // Tüm duplicate satırları flatten et
+    const duplicateRowNumbers = duplicateGroups.flat();
+    
+    // Çift satırları filtrele
+    const cleanedData = currentData.filter((_: any, index: number) => !duplicateRowNumbers.includes(index + 1));
+    
+    // HotTable'ı görsel olarak update et
+    hotTableInstance?.loadData(cleanedData);
+    setFetchedData(cleanedData);
+    
+    // Loading state başla
+    setIsCleaningSaving(true);
+    
+    // Çift satırların hepsini sil mesajı göster
+    enqueueSnackbar(`${duplicateRowNumbers.length} satır siliniyor, veriler kaydediliyor...`, {
+      variant: "info",
+      autoHideDuration: 3000,
+      style: {
+        backgroundColor:
+          customizer.activeMode === "dark"
+            ? theme.palette.info.light
+            : theme.palette.info.main,
+        maxWidth: "720px",
+      },
+    });
+    
+    // Temizlenmiş veriyi kaydet
+    try {
+      const keys = [
+        "denetciId",
+        "denetlenenId",
+        "yil",
+        "kebirKodu",
+        "detayHesapKodu",
+        "hesapAdi",
+        "borc",
+        "alacak",
+        "paraBirimi",
+      ];
+      
+      const jsonData = cleanedData
+        .filter((item: any) => item[0])
+        .map((item: any) => {
+          let obj: { [key: string]: any } = {};
+          const detayHesapKodu = item[1];
+          
+          keys.forEach((key, index) => {
+            if (key === "denetciId") {
+              obj[key] = user.denetciId;
+            } else if (key === "denetlenenId") {
+              obj[key] = user.denetlenenId;
+            } else if (key === "yil") {
+              obj[key] = user.yil;
+            } else if (key === "borc" || key === "alacak") {
+              if (
+                item[index - 3] == undefined ||
+                item[index - 3] == null ||
+                item[index - 3] == ""
+              ) {
+                obj[key] = 0.0;
+              } else {
+                obj[key] = item[index - 3];
+              }
+            } else if (key === "paraBirimi") {
+              // 3 haneli Detay Kodu ise Para Birimi boş tutulmalı
+              if (detayHesapKodu && typeof detayHesapKodu === "string" && detayHesapKodu.length === 3) {
+                obj[key] = "";
+              } else if (
+                item[index - 3] == undefined ||
+                item[index - 3] == null ||
+                item[index - 3] == ""
+              ) {
+                obj[key] = "TL";
+              } else {
+                obj[key] = item[index - 3];
+              }
+            } else {
+              if (
+                item[index - 3] == undefined ||
+                item[index - 3] == null ||
+                item[index - 3] == ""
+              ) {
+                obj[key] = null;
+              } else {
+                obj[key] = item[index - 3];
+              }
+            }
+          });
+
+          return obj;
+        });
+
+      const result = await createVukMizanVerisi(jsonData);
+      if (result) {
+        await fetchData();
+        setDuplicatesControl(true);
+        
+        enqueueSnackbar("Kaydedildi", {
+          variant: "success",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.success.light
+                : theme.palette.success.main,
+            maxWidth: "720px",
+          },
+        });
+        
+        // Başarıdan sonra dialog kapat
+        setShowDuplicateDialog(false);
+      } else {
+        enqueueSnackbar("Kaydedilemedi", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
+      }
+    } catch (error) {
+      console.log("Temizleme kaydetme sırasında hata:", error);
+      enqueueSnackbar("Kayıt sırasında hata oluştu", {
+        variant: "error",
+        autoHideDuration: 5000,
+        style: {
+          backgroundColor:
+            customizer.activeMode === "dark"
+              ? theme.palette.error.light
+              : theme.palette.error.main,
+          maxWidth: "720px",
+        },
+      });
+    } finally {
+      setIsCleaningSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (kaydetTiklandimi) {
-      handleCreateVukMizanVerisi();
+      handleCheckDuplicatesBeforeSave();
       setKaydetTiklandimi(false);
     }
   }, [kaydetTiklandimi]);
+
+  // HotTable'daki veri değişikliğini izle ve parent'a bildir
+  useEffect(() => {
+    const checkHasData = () => {
+      const hotTableInstance = hotTableComponent.current?.hotInstance;
+      const currentData = hotTableInstance?.getData() || [];
+      
+      // Boş olmayan satır sayısını kontrol et
+      const hasNonEmptyRows = currentData.some((row: any) => {
+        return row.some((cell: any) => cell != null && cell !== "" && cell !== undefined);
+      });
+      
+      onDataLoaded?.(hasNonEmptyRows);
+    };
+    
+    checkHasData();
+  }, [fetchedData, onDataLoaded]);
 
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
@@ -730,6 +1015,26 @@ const VukMizan: React.FC<Props> = ({
   return (
     <>
       <WarnBox warn={uyari} />
+      {showAlert && (
+        <Alert
+          severity="warning"
+          sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setShowAlert(false);
+              }}
+            >
+              <IconX fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          {duplicateMessage}
+        </Alert>
+      )}
       <HotTable
         style={{
           height: "100%",
@@ -795,6 +1100,103 @@ const VukMizan: React.FC<Props> = ({
           ></ExceleAktarButton>
         </Grid>
       </Grid>
+
+      {/* Duplicate Detection Dialog */}
+      <Dialog
+        open={showDuplicateDialog}
+        onClose={() => setShowDuplicateDialog(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconAlertTriangle size={24} color="#ff9800" />
+            Çift Kayıt Uyarısı
+          </Box>
+          <IconButton
+            onClick={() => setShowDuplicateDialog(false)}
+            size="small"
+            sx={{ position: "absolute", right: 8, top: 8 }}
+          >
+            <IconX size={24} />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2, mt: 1 }}>
+            Aşağıdaki satırlar tekrar eden veri içeriyor. Lütfen kontrol edin ve gerekirse düzeltme yapın.
+          </Typography>
+          <TableContainer component={Paper} sx={{ maxHeight: 500, overflow: "auto" }}>
+            <Table stickyHeader size="small">
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 80 }}>Satır No</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 120 }}>Kebir Kodu</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 140 }}>D. Hesap Kodu</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 180 }}>Hesap Adı</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 100, textAlign: "right" }}>Borç</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 100, textAlign: "right" }}>Alacak</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 120 }}>Para Birimi</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {duplicateGroups.map((group, groupIndex) => (
+                  <>
+                    {group.map((rowNum) => {
+                      // Her grup için farklı renk (HSL color space)
+                      const hue = (groupIndex * 60) % 360;
+                      const backgroundColor = `hsl(${hue}, 70%, 85%)`;
+                      
+                      return (
+                        <TableRow 
+                          key={rowNum} 
+                          sx={{ backgroundColor: backgroundColor }}
+                        >
+                          <TableCell sx={{ fontWeight: "500" }}>
+                            {rowNum}
+                          </TableCell>
+                          <TableCell>{(fetchedData[rowNum - 1] as any)?.[0] || "-"}</TableCell>
+                          <TableCell>{(fetchedData[rowNum - 1] as any)?.[1] || "-"}</TableCell>
+                          <TableCell>{(fetchedData[rowNum - 1] as any)?.[2] || "-"}</TableCell>
+                          <TableCell sx={{ textAlign: "right" }}>
+                            {(fetchedData[rowNum - 1] as any)?.[3] ? parseFloat((fetchedData[rowNum - 1] as any)[3]).toLocaleString("tr-TR") : "-"}
+                          </TableCell>
+                          <TableCell sx={{ textAlign: "right" }}>
+                            {(fetchedData[rowNum - 1] as any)?.[4] ? parseFloat((fetchedData[rowNum - 1] as any)[4]).toLocaleString("tr-TR") : "-"}
+                          </TableCell>
+                          <TableCell>{(fetchedData[rowNum - 1] as any)?.[5] || "TL"}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button
+            onClick={async () => {
+              setShowDuplicateDialog(false);
+              await handleCreateVukMizanVerisi(false);
+            }}
+            variant="contained"
+            color="primary"
+            disabled={isLoading || isCleaningSaving}
+            startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
+          >
+            {isLoading ? "Kaydediliyor..." : "Bu Şekilde Kaydet"}
+          </Button>
+          <Button
+            onClick={handleCleanAndSave}
+            variant="contained"
+            color="success"
+            disabled={isCleaningSaving || isLoading}
+            startIcon={isCleaningSaving ? <CircularProgress size={20} color="inherit" /> : null}
+          >
+            {isCleaningSaving ? "Kaydediliyor..." : "Tekrar Edenleri Temizle Kaydet"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

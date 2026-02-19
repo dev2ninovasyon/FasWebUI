@@ -301,26 +301,10 @@ export function createMenuItems(
           },
           {
             id: uniqueId(),
-            title: "Vuk Mizan Veri Yükleme",
+            title: "Diğer Veri Yükleme",
             customIcon: "public/images/svgs/veri/vuk-mizan-veri-yukleme.svg",
             icon: IconPoint,
-            href: "/Veri/VukMizanVeriYukleme",
-          },
-          {
-            id: uniqueId(),
-            title: "Dönüştürülmüş Mizan Veri Yükleme",
-            customIcon:
-              "public/images/svgs/veri/donusturulmus-mizan-veri-yukleme.svg",
-            icon: IconPoint,
-            href: "/Veri/DonusturulmusMizanVeriYukleme",
-          },
-          {
-            id: uniqueId(),
-            title: "Dönüşüm Fişleri Veri Yükleme",
-            customIcon:
-              "public/images/svgs/veri/donusum-fisleri-veri-yukleme.svg",
-            icon: IconPoint,
-            href: "/Veri/DonusumFisleriVeriYukleme",
+            href: "/Veri/VeriYukleme",
           },
           {
             id: uniqueId(),
@@ -335,13 +319,6 @@ export function createMenuItems(
                 customIcon: "public/images/svgs/veri/mizanlar.svg",
                 icon: IconPoint,
                 href: "/Veri/Mizanlar/EDefterMizan",
-              },
-              {
-                id: uniqueId(),
-                title: "Vuk Mizan Oluşturma",
-                customIcon: "public/images/svgs/veri/mizanlar.svg",
-                icon: IconPoint,
-                href: "/Veri/Mizanlar/VukMizan",
               },
               {
                 id: uniqueId(),

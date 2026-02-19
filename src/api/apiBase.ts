@@ -10,9 +10,9 @@ import Logger from "@/utils/Logger";
  */
 export async function apiFetch(
   path: string,
-  options: RequestInit & { timeout?: number; ignoreCustomHeaders?: boolean; includeCredentials?: boolean } = {}
+  options: RequestInit & { timeout?: number; ignoreCustomHeaders?: boolean; includeCredentials?: boolean; suppressErrorLog?: boolean } = {}
 ) {
-  const { headers, timeout = 120000, ignoreCustomHeaders = false, includeCredentials = true, ...rest } = options;
+  const { headers, timeout = 120000, ignoreCustomHeaders = false, includeCredentials = true, suppressErrorLog = false, ...rest } = options;
 
   const clientUrl =
     typeof window !== "undefined"
@@ -63,7 +63,15 @@ export async function apiFetch(
       } catch {
         parsed = undefined;
       }
-      console.error("API ERROR", response.status, parsed ?? text);
+      if (!suppressErrorLog) {
+        console.error("API ERROR", response.status, parsed ?? text);
+      }
+      
+      // If suppressErrorLog is true, return response silently (caller will handle)
+      if (suppressErrorLog) {
+        return response;
+      }
+      
       if (parsed && parsed.errors) {
         throw new Error(JSON.stringify(parsed.errors));
       } else {
