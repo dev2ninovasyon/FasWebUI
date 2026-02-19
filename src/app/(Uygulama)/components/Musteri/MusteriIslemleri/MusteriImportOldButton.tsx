@@ -12,7 +12,7 @@ const MusteriImportOldButton = () => {
 
   return (
     <Button color="secondary" onClick={() => handleRouteClick()} startIcon={<IconDatabase width={18} />}>
-      Eski Denetlenenleri Taşı
+      Müşterileri Taşı
     </Button>
   );
 };

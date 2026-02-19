@@ -29,7 +29,7 @@ export default function MusteriStep({
                     const data = await getOldDenetlenenForCurrentDenetci();
                     setOldList(Array.isArray(data) ? data : []);
                 } catch (err) {
-                    console.error("MusteriStep: Eski denetlenenler yüklenemedi:", err);
+                    console.error("MusteriStep: Müşteriler yüklenemedi:", err);
                 }
             };
             fetchOld();
@@ -70,7 +70,7 @@ export default function MusteriStep({
                     onClick={() => setMode("import")}
                     startIcon={<IconDatabase width={18} />}
                 >
-                    Eski Denetlenenleri Taşı
+                    Müşterileri Taşı
                 </Button>
             </Stack>
 
@@ -80,7 +80,7 @@ export default function MusteriStep({
                         options={oldList}
                         getOptionLabel={(opt: any) => opt.firmaAdi || opt.FirmaAdi || ""}
                         onChange={(e, val) => setSelected(val)}
-                        renderInput={(params) => <TextField {...params} label="Eski Denetlenen Seçiniz" variant="outlined" size="small" />}
+                        renderInput={(params) => <TextField {...params} label="Müşteri Seçiniz" variant="outlined" size="small" />}
                     />
                 </Box>
             )}

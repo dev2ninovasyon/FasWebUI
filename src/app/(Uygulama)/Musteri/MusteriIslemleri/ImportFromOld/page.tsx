@@ -21,7 +21,7 @@ const Page = () => {
         setOldList(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("ImportFromOld fetch error:", err);
-        enqueueSnackbar("Eski denetlenenler yüklenemedi.", { variant: "error" });
+        enqueueSnackbar("Müşteriler yüklenemedi.", { variant: "error" });
       }
     };
     fetch();
@@ -29,17 +29,17 @@ const Page = () => {
 
   return (
     <MusteriIslemleriLayout>
-      <PageContainer title="Eski Denetlenenleri İçe Aktar" description="Eski veritabanından seçili şirketi yeni veritabanına taşı">
+      <PageContainer title="Müşterileri İçe Aktar" description="Eski veritabanından seçili şirketi yeni veritabanına taşı">
         <Grid container spacing={3}>
           <Grid size={12}>
-            <ParentCard title="Eski Denetlenenlerden Seç">
+            <ParentCard title="Müşteri Seç">
               <Grid container spacing={3}>
                 <Grid size={12}>
                   <Autocomplete
                     options={oldList}
                     getOptionLabel={(opt: any) => opt.firmaAdi || opt.FirmaAdi || ""}
                     onChange={(e, val) => setSelected(val)}
-                    renderInput={(params) => <TextField {...params} label="Eski Denetlenen Seçiniz" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="Müşteri Seçiniz" variant="outlined" />}
                   />
                 </Grid>
 
