@@ -75,7 +75,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
 
   const colHeaders = [
     "Id",
-    "Fiş No",
+    "No",
     "Tip",
     "Detay Kodu",
     "Hesap Adı",
@@ -453,7 +453,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
           height={684}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[0, 60, 60, 60, 150, 100, 100, 100, 80]}
+          colWidths={[0, 28, 60, 60, 120, 80, 80, 80, 60]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}

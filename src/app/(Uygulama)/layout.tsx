@@ -23,14 +23,14 @@ import Logger from "@/utils/Logger";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
-  minHeight: "100vh",
+  minHeight: "100dvh",
   width: "100%",
 }));
 
 const PageWrapper = styled("div")(() => ({
   display: "flex",
   flexGrow: 1,
-  paddingBottom: "60px",
+  paddingBottom: "0px", // footer spacing handled by inner Box via --footer-height
   flexDirection: "column",
   zIndex: 1,
   width: "100%",
@@ -215,8 +215,8 @@ export default function RootLayout({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
-          width: "100vw",
+          height: "100dvh",
+          width: "100dvw",
         }}
       >
         <CircularProgress />
@@ -251,6 +251,7 @@ export default function RootLayout({
         {/* Main Wrapper */}
         <PageWrapper
           className="page-wrapper"
+          style={{ ['--appbar-height' as any]: `${customizer.TopbarHeight}px`, ['--footer-height' as any]: '60px' }}
           sx={{
             ...(customizer.isCollapse && {
               [theme.breakpoints.up("lg")]: {
@@ -272,7 +273,7 @@ export default function RootLayout({
             {/* Page Loading Overlay */}
             <PageLoadingOverlay />
 
-            <Box sx={{ minHeight: "calc(100vh - 170px)" }}>
+            <Box sx={{ minHeight: "calc(100dvh - var(--appbar-height) - var(--footer-height))" }}>
               {children}
             </Box>
 

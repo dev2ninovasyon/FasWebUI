@@ -101,7 +101,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
 
   const colHeaders = [
     "Id",
-    "Fiş No",
+    "No",
     "Tip",
     "Detay Kodu",
     "Hesap Adı",
@@ -592,7 +592,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
           data={fetchedData}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[0, 31, 50, 50, 125, 90, 90, 90]}
+          colWidths={[0, 20, 30, 30, 70, 50, 50, 50]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}

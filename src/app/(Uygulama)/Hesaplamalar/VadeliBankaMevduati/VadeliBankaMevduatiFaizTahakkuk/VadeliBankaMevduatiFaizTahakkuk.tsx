@@ -727,7 +727,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[60, 50, 100, 80, 80, 80, 60, 60, 70, 80, 85, 80, 80, 80]}
+        colWidths={[35, 30, 55, 45, 45, 45, 35, 35, 40, 45, 50, 45, 45, 45]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

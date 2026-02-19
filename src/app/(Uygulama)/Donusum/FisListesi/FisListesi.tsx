@@ -72,7 +72,7 @@ const FisListesi = () => {
 
   const colHeaders = [
     "Id",
-    "Fiş No",
+    "No",
     "Tip",
     "Detay Kodu",
     "Hesap Adı",
@@ -464,14 +464,14 @@ const FisListesi = () => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -497,7 +497,7 @@ const FisListesi = () => {
           height={684}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[0, 60, 60, 60, 150, 100, 100, 100, 80]}
+          colWidths={[0, 20, 30, 30, 70, 60, 60, 70, 60]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}

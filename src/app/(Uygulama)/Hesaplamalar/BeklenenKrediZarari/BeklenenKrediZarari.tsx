@@ -413,7 +413,7 @@ const BeklenenKrediZarari: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[60, 80, 80, 80, 80, 80, 80, 80, 80]}
+        colWidths={[40, 50, 50, 50, 50, 50, 50, 50, 50]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

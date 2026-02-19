@@ -608,7 +608,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip, onDataCount }) =>
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[60, 60, 80, 100, 80, 80, 80, 80]}
+        colWidths={[40, 40, 50, 60, 50, 50, 50, 50]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

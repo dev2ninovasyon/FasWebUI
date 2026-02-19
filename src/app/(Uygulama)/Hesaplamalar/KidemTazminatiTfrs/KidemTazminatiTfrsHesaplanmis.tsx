@@ -392,7 +392,7 @@ const KidemTazminatiTfrsHesaplanmis: React.FC<Props> = ({ data }) => {
         height={468}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[120, 50, 50, 80, 80, 80, 60, 80, 80, 80]}
+        colWidths={[90, 35, 35, 50, 50, 50, 40, 50, 50, 50]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

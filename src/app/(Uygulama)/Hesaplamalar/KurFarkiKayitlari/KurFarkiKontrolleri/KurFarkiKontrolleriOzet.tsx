@@ -243,7 +243,7 @@ const KurFarkiKontrolleriOzet: React.FC<Props> = ({ data }) => {
         height={342}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[80, 240, 80, 80]}
+        colWidths={[60, 180, 60, 60]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

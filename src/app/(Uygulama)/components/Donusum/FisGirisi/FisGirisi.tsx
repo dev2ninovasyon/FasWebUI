@@ -208,7 +208,7 @@ const FisGirisi: React.FC<Props> = ({
   }, [duplicatesControl]);
 
   const colHeaders = [
-    "Fiş No",
+    "No",
     "D. Hesap Kodu",
     "Hesap Adı",
     "Borç",

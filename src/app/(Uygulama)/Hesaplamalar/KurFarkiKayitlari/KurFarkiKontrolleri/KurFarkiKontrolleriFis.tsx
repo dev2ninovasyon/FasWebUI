@@ -431,7 +431,7 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
         height={684}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 60, 60, 100, 150, 180, 120, 120]}
+        colWidths={[0, 40, 40, 60, 90, 110, 70, 70]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

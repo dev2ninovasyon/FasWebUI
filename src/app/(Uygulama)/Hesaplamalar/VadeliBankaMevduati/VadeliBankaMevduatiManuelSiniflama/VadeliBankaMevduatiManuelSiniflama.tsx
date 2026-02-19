@@ -552,7 +552,7 @@ const VadeliBankaMevduatiManuelSiniflama = () => {
           height={684}
           colHeaders={colHeaders}
           columns={columns}
-          colWidths={[60, 40, 60, 80, 120, 80, 80, 80, 60]}
+          colWidths={[35, 25, 35, 45, 60, 45, 45, 45, 35]}
           stretchH="all"
           manualColumnResize={true}
           rowHeaders={true}

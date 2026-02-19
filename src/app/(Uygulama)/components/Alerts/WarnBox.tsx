@@ -1,5 +1,7 @@
 ﻿import * as React from "react";
-import { Grid, Paper, Typography } from "@mui/material";
+import { Grid, Paper, Typography, Collapse, Box, Stack, IconButton } from "@mui/material";
+import { IconAlertCircle, IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import { useState } from "react";
 
 interface Props {
   warn: string[];
@@ -7,6 +9,8 @@ interface Props {
 }
 
 const WarnBox = ({ warn, noMargin = false }: Props) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <React.Fragment>
       <Grid container>
@@ -22,17 +26,43 @@ const WarnBox = ({ warn, noMargin = false }: Props) => {
               mb: noMargin ? 0 : 2,
               borderRadius: 1,
               backgroundColor: "warning.light",
+              border: "1px solid",
+              borderColor: "warning.main",
             }}
           >
-            {warn.map((warnMessage, index) => (
-              <Typography
-                key={index}
-                variant="body1"
-                sx={{ color: "warning.dark" }}
-              >
-                - {warnMessage}
-              </Typography>
-            ))}
+            <Box
+              onClick={() => setOpen(!open)}
+              sx={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <IconAlertCircle size={20} color="#ff9800" />
+                <Typography variant="subtitle1" fontWeight={600} color="warning.dark">
+                  Uyarılar ({warn.length})
+                </Typography>
+              </Stack>
+              <IconButton size="small" onClick={(e) => { e.stopPropagation(); setOpen(!open); }}>
+                {open ? <IconChevronUp size={18} /> : <IconChevronDown size={18} />}
+              </IconButton>
+            </Box>
+
+            <Collapse in={open}>
+              <Box mt={1}>
+                {warn.map((warnMessage, index) => (
+                  <Typography
+                    key={index}
+                    variant="body2"
+                    sx={{ color: "warning.dark", mb: 0.5 }}
+                  >
+                    - {warnMessage}
+                  </Typography>
+                ))}
+              </Box>
+            </Collapse>
           </Paper>
         </Grid>
       </Grid>

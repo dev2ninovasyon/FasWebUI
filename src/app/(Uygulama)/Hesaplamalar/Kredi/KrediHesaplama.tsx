@@ -212,7 +212,7 @@ const KrediHesaplama = forwardRef<any, Props>(({ hesaplaTiklandimi }, ref) => {
     }, // Vade
     {
       type: "numeric",
-      numericFormat: { pattern: "0,0", columnSorting: true },
+      numericFormat: { pattern: "0,0.00", columnSorting: true },
       className: "htRight",
       readOnly: true,
       editor: false,

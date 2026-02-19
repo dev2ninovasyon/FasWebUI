@@ -305,7 +305,7 @@ export default function MandatoryFlow({
             {/* Footer */}
             <Box sx={{ p: 3, textAlign: "center", opacity: 0.6, position: "relative", zIndex: 1 }}>
                 <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
-                    Â© {new Date().getFullYear()} Fas Denetim. Tüm Hakları Saklıdır.
+                    {new Date().getFullYear()} Fas Denetim. Tüm Hakları Saklıdır.
                 </Typography>
             </Box>
         </Box>

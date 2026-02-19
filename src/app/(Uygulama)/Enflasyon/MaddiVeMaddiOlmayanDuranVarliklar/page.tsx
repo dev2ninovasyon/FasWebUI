@@ -41,8 +41,8 @@ const Page: React.FC = () => {
               xs: 12,
               sm: 12,
               lg: 12
-            }} sx={{ height: "100%", position: "relative" }}>
-            <EnflasyonIframe url="/EnflasyonDuzeltmesi/MaddiVeMaddiOlmayanDuranVarliklarEnflasyonDuzeltmesi" />
+            }} sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
+            <EnflasyonIframe url="/EnflasyonDuzeltmesi/MaddiVeMaddiOlmayanDuranVarliklarEnflasyonDuzeltmesiV3" />
           </Grid>
         </Grid>
       </PageContainer>

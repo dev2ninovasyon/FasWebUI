@@ -402,7 +402,7 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
         nestedHeaders={nestedHeaders}
         //collapsibleColumns={true}
         columns={columns}
-        colWidths={[60, 80, 80, 80, 80, 80, 80]}
+        colWidths={[40, 50, 50, 50, 50, 50, 50]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}

@@ -101,7 +101,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
 
   const colHeaders = [
     "Id",
-    "Fiş No",
+    "No",
     "Tip",
     "Detay Kodu",
     "Hesap Adı",

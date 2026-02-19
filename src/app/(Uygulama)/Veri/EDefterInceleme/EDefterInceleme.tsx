@@ -115,7 +115,7 @@ const EDefterInceleme: React.FC<Props> = ({
     "Hesap Adı",
     "Açıklama",
     "Fatura No",
-    "Muhasebe Fiş No",
+    "Muhasebe No",
     "Borç",
     "Alacak",
     "Tespit Açıklama",
@@ -565,7 +565,7 @@ const EDefterInceleme: React.FC<Props> = ({
           height={450}
         colHeaders={colHeaders}
         columns={columns}
-        colWidths={[0, 60, 60, 100, 150, 180, 100, 100, 120, 120, 120]}
+        colWidths={[0, 30, 30, 50, 70, 80, 50, 50, 50, 50, 50]}
         stretchH="all"
         manualColumnResize={true}
         rowHeaders={true}
