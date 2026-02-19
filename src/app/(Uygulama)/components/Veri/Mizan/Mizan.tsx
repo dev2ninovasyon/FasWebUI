@@ -53,6 +53,7 @@ interface Props {
   mizanBitisTarihi?: any;
   setMizanBitisTarihi?: (date: any) => void;
   sharedData?: any[];
+  showOnlyTable?: boolean;
 }
 
 const Mizan: React.FC<Props> = ({
@@ -67,6 +68,7 @@ const Mizan: React.FC<Props> = ({
   mizanBitisTarihi,
   setMizanBitisTarihi,
   sharedData,
+  showOnlyTable = false,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -392,19 +394,17 @@ const Mizan: React.FC<Props> = ({
   }, [page, rowsPerPage, allData]);
 
   useEffect(() => {
-    fetchData();
-  }, [sharedData]);
-
-  useEffect(() => {
     if (mizanOlusturTiklandimi) {
+      // Temizle veriler
       setFetchedData([]);
       setRowCount(0);
       setPage(0);
+      setRawMizanData([]);
     } else {
+      // Yeni verileri yükle
       fetchData();
-      setMizanOlusturTiklandimi(false);
     }
-  }, [mizanOlusturTiklandimi, sharedData]);
+  }, [mizanOlusturTiklandimi]);
 
   const handleDownload = () => {
     if (!hotTableComponent.current || !hotTableComponent.current.hotInstance) return;
@@ -498,6 +498,74 @@ const Mizan: React.FC<Props> = ({
     setRowCount(filtered.length);
     setPage(0);
   };
+
+  // If showOnlyTable is true, render only HotTable
+  if (showOnlyTable) {
+    return (
+      <Box sx={{ position: "relative" }}>
+        {loading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: customizer.activeMode === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.7)",
+              zIndex: 1000,
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        <HotTable
+          style={{
+            height: "100%",
+            width: "100%",
+            maxHeight: "calc(100vh - 450px)",
+            maxWidth: "100%",
+          }}
+          language={dictionary.languageCode}
+          ref={hotTableComponent}
+          data={fetchedData}
+          height="calc(100vh - 450px)"
+          colHeaders={colHeaders}
+          columns={columns}
+          colWidths={[80, 80, 120, 120, 100, 100, 60, 100]}
+          stretchH="all"
+          manualColumnResize={true}
+          rowHeaders={true}
+          rowHeights={35}
+          autoWrapRow={true}
+          minRows={rowCount}
+          minCols={8}
+          filters={true}
+          columnSorting={true}
+          dropdownMenu={[
+            "filter_by_condition",
+            "filter_by_value",
+            "filter_action_bar",
+          ]}
+          hiddenRows={{
+            rows: hiddenIndices,
+            indicators: false,
+          }}
+          afterFilter={() => {
+            setPage(0);
+            updatePagination();
+          }}
+          licenseKey="non-commercial-and-evaluation"
+          afterGetColHeader={afterGetColHeader}
+          afterGetRowHeader={afterGetRowHeader}
+          afterRenderer={afterRenderer}
+          contextMenu={["alignment", "copy"]}
+        />
+      </Box>
+    );
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="tr">

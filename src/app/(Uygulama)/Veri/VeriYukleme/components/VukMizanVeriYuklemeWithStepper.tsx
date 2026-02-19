@@ -30,6 +30,7 @@ import {
   createVukMizan,
   createProgramVukMizan,
   getProgramVukMizanControl,
+  getMizanVerileri,
 } from "@/api/Veri/Mizan";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -37,6 +38,7 @@ import KurumlarVergisiBeyannamesiKarsilastirma from "@/app/(Uygulama)/components
 import ProgramVukMizan from "@/app/(Uygulama)/components/Veri/Mizan/ProgramVukMizan";
 import ProgramFormatiCard from "@/app/(Uygulama)/components/Veri/Mizan/ProgramFormatiCard";
 import MizanCard from "@/app/(Uygulama)/components/Veri/Mizan/MizanCard";
+import Mizan from "@/app/(Uygulama)/components/Veri/Mizan/Mizan";
 import MizanTable from "@/app/(Uygulama)/components/Veri/Mizan/MizanTable";
 import { MizanConfirmPopUpComponent } from "@/app/(Uygulama)/components/Veri/Mizan/MizanConfirmPopUpComponent";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
@@ -432,6 +434,7 @@ const VukMizanVeriYuklemeWithStepper: React.FC = () => {
                     disabled={mizanOlusturuluyor}
                     startIcon={mizanOlusturuluyor ? <CircularProgress size={20} color="inherit" /> : null}
                     onClick={() => {
+                      setMizanOlusturTiklandimi(true);
                       handleVukMizan();
                     }}
                   >
@@ -454,6 +457,16 @@ const VukMizanVeriYuklemeWithStepper: React.FC = () => {
                 />
               </Grid>
             </Grid>
+            <Grid container marginTop={2}>
+              <Grid size={{ xs: 12, lg: 12 }}>
+                <Mizan
+                  type={"VukMizan"}
+                  mizanOlusturTiklandimi={mizanOlusturTiklandimi && !mizanOlusturmaHatasi}
+                  setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+                  showOnlyTable={true}
+                />
+              </Grid>
+            </Grid>
           </>
         ) : activeStep === 2 ? (
           // Step 2: KV. B. Karşılaştırma
@@ -463,16 +476,74 @@ const VukMizanVeriYuklemeWithStepper: React.FC = () => {
             </Grid>
           </Grid>
         ) : activeStep === 3 ? (
-          // Step 3: P. F. (Program Vuk Mizan)
-          <Grid container marginTop={3}>
-            <Grid padding={1} size={{ xs: 12, lg: 12 }}>
-              <ProgramVukMizan
-                type={"VukMizan"}
-                programFormatinaDonusturTiklandimi={programFormatinaDonusturTiklandimi}
-                setProgramFormatinaDonusturTiklandimi={setProgramFormatinaDonusturTiklandimi}
-              />
+          // Step 3: P. F. (Program Formatı)
+          <>
+            <Grid container marginTop={3}>
+              <Grid
+                sx={{ pl: { xs: 1, lg: 1 }, pr: { xs: 1, lg: 0 }, py: 1 }}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                size={{
+                  xs: 12,
+                  lg: 1.75,
+                }}
+              >
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  fullWidth
+                  onClick={() => {
+                    handleProgramFormatinaDonusturOnClick();
+                  }}
+                >
+                  Program Formatına Dönüştür
+                </Button>
+              </Grid>
+              <Grid
+                padding={1}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                size={{
+                  xs: 12,
+                  lg: 10.25,
+                }}
+              >
+                <ProgramFormatiCard
+                  type={"VukMizan"}
+                  programFormatinaDonusturTiklandimi={programFormatinaDonusturTiklandimi}
+                  setProgramFormatinaDonusturTiklandimi={setProgramFormatinaDonusturTiklandimi}
+                />
+              </Grid>
             </Grid>
-          </Grid>
+            <Grid
+              padding={1}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              size={{
+                xs: 12,
+                lg: 10.25,
+              }}
+            />
+            <Grid container marginTop={3}>
+              <Grid
+                padding={1}
+                size={{
+                  xs: 12,
+                  lg: 12,
+                }}
+              >
+                <ProgramVukMizan
+                  type={"VukMizan"}
+                  programFormatinaDonusturTiklandimi={programFormatinaDonusturTiklandimi}
+                  setProgramFormatinaDonusturTiklandimi={setProgramFormatinaDonusturTiklandimi}
+                />
+              </Grid>
+            </Grid>
+          </>
         ) : null}
       </Box>
 

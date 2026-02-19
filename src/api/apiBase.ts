@@ -1,5 +1,5 @@
-﻿//export const url = "https://betaapi.fasmart.app/api";
-export const url = "http://localhost:5000/api";
+﻿export const url = "https://betaapi.fasmart.app/api";
+//export const url = "http://localhost:5000/api";
 
 // 🔐 Güvenlik: Token manager import
 import SecureTokenManager from "@/utils/SecureTokenManager";
@@ -66,12 +66,12 @@ export async function apiFetch(
       if (!suppressErrorLog) {
         console.error("API ERROR", response.status, parsed ?? text);
       }
-      
+
       // If suppressErrorLog is true, return response silently (caller will handle)
       if (suppressErrorLog) {
         return response;
       }
-      
+
       if (parsed && parsed.errors) {
         throw new Error(JSON.stringify(parsed.errors));
       } else {

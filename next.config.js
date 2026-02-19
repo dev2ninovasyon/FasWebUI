@@ -11,6 +11,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  typedRoutes: false,
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', '@tabler/icons-react'],
   },
