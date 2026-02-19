@@ -27,6 +27,8 @@ import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimB
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
+
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -80,6 +82,16 @@ const Page: React.FC = () => {
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    } else {
+      setHasData(false);
+    }
+  };
 
   const handleClosePopUp = () => {
     setIsPopUpOpen(false);
@@ -285,21 +297,27 @@ const Page: React.FC = () => {
                     xs: 12,
                     lg: 12
                   }}>
-                  <CustomSelect
-                    labelId="hesaplamaYontemi"
-                    id="hesaplamaYontemi"
-                    size="small"
-                    value={hesaplamaYontemi}
-                    onChange={handleChangeHesaplamaYontemi}
-                    height={"36px"}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                   >
-                    <MenuItem value={"Aylık"}>
-                      Hesaplama Yöntemi: Aylık
-                    </MenuItem>
-                    <MenuItem value={"Günlük"}>
-                      Hesaplama Yöntemi: Günlük
-                    </MenuItem>
-                  </CustomSelect>
+                    <Typography variant="subtitle1" mr={2}>
+                      Hesaplama Yöntemi:
+                    </Typography>
+                    <CustomSelect
+                      labelId="hesaplamaYontemi"
+                      id="hesaplamaYontemi"
+                      size="small"
+                      value={hesaplamaYontemi}
+                      onChange={handleChangeHesaplamaYontemi}
+                    >
+                      <MenuItem value={"Aylık"}>Aylık</MenuItem>
+                      <MenuItem value={"Günlük"}>Günlük</MenuItem>
+                    </CustomSelect>
+                  </Box>
                   <Box
                     sx={{
                       display: "flex",
@@ -311,9 +329,10 @@ const Page: React.FC = () => {
                     <Button
                       type="button"
                       size="medium"
-                      disabled={kaydetTiklandimi || hesaplaTiklandimi}
+                      disabled={hesaplaTiklandimi}
                       variant="outlined"
                       color="primary"
+                      sx={{ height: "100%" }}
                       onClick={() => {
                         setHesaplaTiklandimi(true);
                         handleHesapla();
@@ -328,8 +347,14 @@ const Page: React.FC = () => {
                     xs: 12,
                     lg: 12
                   }}>
-                  <AmortismanHesaplama hesaplaTiklandimi={hesaplaTiklandimi} />
+                  <AmortismanHesaplama
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
+                  />
                 </Grid>
+                {hasData && (
+                  <FloatingButtonFisler handleClick={() => setTip("VeriYukleme")} />
+                )}
                 {openCartAlert && (
                   <InfoAlertCart
                     openCartAlert={openCartAlert}
@@ -354,4 +379,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

@@ -34,10 +34,11 @@ interface Veri {
 
 interface Props {
   hesaplaTiklandimi: boolean;
+  onDataCount?: (count: number) => void;
 }
 
 const KrediHesaplamaDetay = forwardRef<any, Props>(
-  ({ hesaplaTiklandimi }, ref) => {
+  ({ hesaplaTiklandimi, onDataCount }, ref) => {
     const hotTableComponent = useRef<any>(null);
 
     useImperativeHandle(ref, () => ({
@@ -238,6 +239,7 @@ const KrediHesaplamaDetay = forwardRef<any, Props>(
 
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
+        onDataCount?.(rowsAll.length);
       } catch (error) {
         console.log("Bir hata oluştu:", error);
       }

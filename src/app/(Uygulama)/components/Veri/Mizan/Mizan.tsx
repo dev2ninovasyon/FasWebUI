@@ -5,7 +5,10 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme, CircularProgress, Box, Pagination, Typography, Button, Fab, Tooltip } from "@mui/material";
+import { Grid, useTheme, CircularProgress, Box, Pagination, Typography, Button, Fab, Tooltip, Stack } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { CustomDatePicker } from "@/utils/datePickerUtil";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import ExcelJS from "exceljs";
@@ -497,285 +500,276 @@ const Mizan: React.FC<Props> = ({
   };
 
   return (
-    <>
-      <Grid container spacing={3} mb={3}>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 6
-          }}
-          sx={{ display: "flex", flexDirection: "column" }}
-        >
-          <Grid container spacing={2} p={1} height="100%" direction="column">
-            <Grid size="auto">
-              <Grid container spacing={2} alignItems="center">
-                <Grid size="auto">
-                  <CustomFormLabel
-                    htmlFor="mizanBaslangicTarihi"
-                    sx={{
-                      mt: 0,
-                      mb: { xs: "-10px", sm: 0 },
-                      mr: 0,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <Typography variant="subtitle1">
-                      Başlangıç Tarihi:
-                    </Typography>
-                  </CustomFormLabel>
-                </Grid>
-                <Grid size="auto">
-                  <CustomTextField
-                    id="mizanBaslangicTarihi"
-                    type="date"
-                    value={mizanBaslangicTarihi}
-                    onChange={(e: any) =>
-                      setMizanBaslangicTarihi && setMizanBaslangicTarihi(e.target.value)
-                    }
-                  />
-                </Grid>
-                <Grid size="auto">
-                  <CustomFormLabel
-                    htmlFor="mizanBitisTarihi"
-                    sx={{
-                      mt: 0,
-                      mb: { xs: "-10px", sm: 0 },
-                      mr: 0,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <Typography variant="subtitle1">
-                      Bitiş Tarihi:
-                    </Typography>
-                  </CustomFormLabel>
-                </Grid>
-                <Grid size="auto">
-                  <CustomTextField
-                    id="mizanBitisTarihi"
-                    type="date"
-                    value={mizanBitisTarihi}
-                    onChange={(e: any) =>
-                      setMizanBitisTarihi && setMizanBitisTarihi(e.target.value)
-                    }
-                  />
-                </Grid>
-                <Grid size="auto">
-                  <Button
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    disabled={mizanOlusturTiklandimi}
-                    onClick={() => {
-                      setMizanOlusturTiklandimi(true);
-                      if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
-                        handleBirlestirilmisMizan();
-                      } else if (handleAnaHesapMizan) {
-                        handleAnaHesapMizan();
-                      }
-                    }}
-                    sx={{
-                      backgroundColor: isDataEmpty ? theme.palette.warning.light : 'inherit',
-                      borderColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
-                      '&:hover': {
-                        backgroundColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
-                      },
-                      animation: isDataEmpty ? 'pulse 2s infinite' : 'none',
-                    }}
-                  >
-                    Mizan
-                  </Button>
-                  <style>
-                    {`
-                              @keyframes pulse {
-                                0% {
-                                  box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7);
-                                }
-                                70% {
-                                  box-shadow: 0 0 0 10px rgba(255, 165, 0, 0);
-                                }
-                                100% {
-                                  box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);
-                                }
-                              }
-                            `}
-                  </style>
-                </Grid>
-                <Grid size="auto">
-                  <Button
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    disabled={mizanOlusturTiklandimi}
-                    onClick={() => {
-                      setMizanOlusturTiklandimi(true);
-                      if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
-                        handleBirlestirilmisMizan();
-                      } else if (handleDetayHesapMizan) {
-                        handleDetayHesapMizan();
-                      }
-                    }}
-                    sx={{
-                      backgroundColor: isDataEmpty ? theme.palette.warning.light : 'inherit',
-                      borderColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
-                      '&:hover': {
-                        backgroundColor: isDataEmpty ? theme.palette.warning.main : 'inherit',
-                      },
-                      animation: isDataEmpty ? 'pulse 2s infinite' : 'none',
-                    }}
-                  >
-                    Detay Mizan
-                  </Button>
-                </Grid>
-                <Grid size="auto">
-                  <Tooltip title="Mizan Oluşturma Kayıtları">
-                    <Fab
-                      color="warning"
-                      size="small"
-                      onClick={() => setShowDrawer(true)}
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="tr">
+      <>
+        <Grid container spacing={3} mb={3}>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 6
+            }}
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
+            <Grid container spacing={2} p={1} height="100%" direction="column">
+              <Grid size="auto">
+                {/* Tarih Satırı */}
+                <Grid container spacing={2} alignItems="center">
+                  <Grid size="auto">
+                    <CustomFormLabel
+                      htmlFor="mizanBaslangicTarihi"
+                      sx={{
+                        mt: 0,
+                        mb: { xs: "-10px", sm: 0 },
+                        mr: 0,
+                        whiteSpace: "nowrap",
+                      }}
                     >
-                      <IconHistory width={18.25} height={18.25} />
-                    </Fab>
-                  </Tooltip>
+                      <Typography variant="subtitle1">
+                        Başlangıç Tarihi:
+                      </Typography>
+                    </CustomFormLabel>
+                  </Grid>
+                  <Grid size="auto" sx={{ width: "160px" }}>
+                    <CustomDatePicker
+                      id="mizanBaslangicTarihi"
+                      value={mizanBaslangicTarihi}
+                      onChange={(value: any) =>
+                        setMizanBaslangicTarihi && setMizanBaslangicTarihi(value)
+                      }
+                    />
+                  </Grid>
+                  <Grid size="auto">
+                    <CustomFormLabel
+                      htmlFor="mizanBitisTarihi"
+                      sx={{
+                        mt: 0,
+                        mb: { xs: "-10px", sm: 0 },
+                        mr: 0,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <Typography variant="subtitle1">
+                        Bitiş Tarihi:
+                      </Typography>
+                    </CustomFormLabel>
+                  </Grid>
+                  <Grid size="auto" sx={{ width: "160px" }}>
+                    <CustomDatePicker
+                      id="mizanBitisTarihi"
+                      value={mizanBitisTarihi}
+                      onChange={(value: any) =>
+                        setMizanBitisTarihi && setMizanBitisTarihi(value)
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-            <Box sx={{ flexGrow: 1 }} />
-            <Grid size="auto" sx={{ display: "flex", gap: 2, pb: 1 }}>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleShowAnaHesap}
-              >
-                Ana Hesap Göster
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={handleShowDetayHesap}
-              >
-                Detay Hesap Göster
-              </Button>
+              {/* Buton Satırı */}
+              <Grid size="auto" sx={{ mt: 1 }}>
+                <Grid container spacing={2} alignItems="center" justifyContent="center">
+                  <Grid size="auto">
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        size="medium"
+                        variant="outlined"
+                        color="primary"
+                        disabled={mizanOlusturTiklandimi}
+                        onClick={() => {
+                          setMizanOlusturTiklandimi(true);
+                          if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
+                            handleBirlestirilmisMizan();
+                          } else if (handleAnaHesapMizan) {
+                            handleAnaHesapMizan();
+                          }
+                        }}
+                        sx={{
+                          backgroundColor: isDataEmpty ? theme.palette.warning.light : 'transparent',
+                          borderColor: isDataEmpty ? theme.palette.warning.main : theme.palette.primary.main,
+                          '&:hover': {
+                            backgroundColor: isDataEmpty ? theme.palette.warning.main : theme.palette.primary.light,
+                          },
+                          animation: isDataEmpty ? 'pulse 2s infinite' : 'none',
+                        }}
+                      >
+                        Mizan
+                      </Button>
+                      <Button
+                        size="medium"
+                        variant="outlined"
+                        color="primary"
+                        disabled={mizanOlusturTiklandimi}
+                        onClick={() => {
+                          setMizanOlusturTiklandimi(true);
+                          if (type === "BirlestirilmisMizan" && handleBirlestirilmisMizan) {
+                            handleBirlestirilmisMizan();
+                          } else if (handleDetayHesapMizan) {
+                            handleDetayHesapMizan();
+                          }
+                        }}
+                        sx={{
+                          backgroundColor: isDataEmpty ? theme.palette.warning.light : 'transparent',
+                          borderColor: isDataEmpty ? theme.palette.warning.main : theme.palette.primary.main,
+                          '&:hover': {
+                            backgroundColor: isDataEmpty ? theme.palette.warning.main : theme.palette.primary.light,
+                          },
+                          animation: isDataEmpty ? 'pulse 2s infinite' : 'none',
+                        }}
+                      >
+                        Detay Mizan
+                      </Button>
+                    </Stack>
+                  </Grid>
+                  <Grid size="auto">
+                    <Tooltip title="Mizan Oluşturma Kayıtları">
+                      <Fab
+                        color="warning"
+                        size="small"
+                        onClick={() => setShowDrawer(true)}
+                      >
+                        <IconHistory width={18.25} height={18.25} />
+                      </Fab>
+                    </Tooltip>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Box sx={{ flexGrow: 1 }} />
+              <Grid size="auto" sx={{ display: "flex", gap: 2, pb: 1, justifyContent: "center" }}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleShowAnaHesap}
+                >
+                  Ana Hesap Göster
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleShowDetayHesap}
+                >
+                  Detay Hesap Göster
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 6
-          }}
-          sx={{ display: "flex", flexDirection: "column" }}
-        >
-          <MizanCard
-            type={"E-Defter"}
-            mizanOlusturTiklandimi={mizanOlusturTiklandimi}
-            setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
-            fetchedData={rawMizanData}
-          />
-        </Grid>
-      </Grid>
-      <Box sx={{ position: "relative" }}>
-        {loading && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: customizer.activeMode === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.7)",
-              zIndex: 1000,
+          <Grid
+            size={{
+              xs: 12,
+              lg: 6
             }}
+            sx={{ display: "flex", flexDirection: "column" }}
           >
-            <CircularProgress />
-          </Box>
-        )}
-        <HotTable
-          style={{
-            height: "100%",
-            width: "100%",
-            maxHeight: "calc(100vh - 450px)",
-            maxWidth: "100%",
-          }}
-          language={dictionary.languageCode}
-          ref={hotTableComponent}
-          data={fetchedData}
-          height="calc(100vh - 450px)"
-          colHeaders={colHeaders}
-          columns={columns}
-          colWidths={[80, 80, 120, 120, 100, 100, 60, 100]}
-          stretchH="all"
-          manualColumnResize={true}
-          rowHeaders={true}
-          rowHeights={35}
-          autoWrapRow={true}
-          minRows={rowCount}
-          minCols={8}
-          filters={true}
-          columnSorting={true}
-          dropdownMenu={[
-            "filter_by_condition",
-            "filter_by_value",
-            "filter_action_bar",
-          ]}
-          hiddenRows={{
-            rows: hiddenIndices,
-            indicators: false,
-          }}
-          afterFilter={() => {
-            setPage(0); // Reset to first page on filter change
-            updatePagination();
-          }}
-          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-          afterGetColHeader={afterGetColHeader}
-          afterGetRowHeader={afterGetRowHeader}
-          afterRenderer={afterRenderer}
-          contextMenu={["alignment", "copy"]}
-        />
-      </Box>
-      <Grid container marginTop={2} marginBottom={1} alignItems="center">
-        <Grid
-          size={{
-            xs: 12,
-            lg: 6
-          }}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            gap: 2
-          }}>
-          <Pagination
-            count={Math.ceil(rowCount / rowsPerPage)}
-            page={page + 1}
-            onChange={(event, value) => setPage(value - 1)}
-            color="primary"
-            showFirstButton
-            showLastButton
+            <MizanCard
+              type={"E-Defter"}
+              mizanOlusturTiklandimi={mizanOlusturTiklandimi}
+              setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
+              fetchedData={rawMizanData}
+            />
+          </Grid>
+        </Grid>
+        <Box sx={{ position: "relative" }}>
+          {loading && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: customizer.activeMode === "dark" ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.7)",
+                zIndex: 1000,
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
+          <HotTable
+            style={{
+              height: "100%",
+              width: "100%",
+              maxHeight: "calc(100vh - 450px)",
+              maxWidth: "100%",
+            }}
+            language={dictionary.languageCode}
+            ref={hotTableComponent}
+            data={fetchedData}
+            height="calc(100vh - 450px)"
+            colHeaders={colHeaders}
+            columns={columns}
+            colWidths={[80, 80, 120, 120, 100, 100, 60, 100]}
+            stretchH="all"
+            manualColumnResize={true}
+            rowHeaders={true}
+            rowHeights={35}
+            autoWrapRow={true}
+            minRows={rowCount}
+            minCols={8}
+            filters={true}
+            columnSorting={true}
+            dropdownMenu={[
+              "filter_by_condition",
+              "filter_by_value",
+              "filter_action_bar",
+            ]}
+            hiddenRows={{
+              rows: hiddenIndices,
+              indicators: false,
+            }}
+            afterFilter={() => {
+              setPage(0); // Reset to first page on filter change
+              updatePagination();
+            }}
+            licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+            afterGetColHeader={afterGetColHeader}
+            afterGetRowHeader={afterGetRowHeader}
+            afterRenderer={afterRenderer}
+            contextMenu={["alignment", "copy"]}
           />
-          <Typography variant="body2" color="text.secondary">
-            {rowCount} kayıttan {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, rowCount)} arası gösteriliyor
-          </Typography>
-        </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 6
-          }}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}>
+        </Box>
+        <Grid container marginTop={2} marginBottom={1} alignItems="center">
+          <Grid
+            size={{
+              xs: 12,
+              lg: 6
+            }}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: 2
+            }}>
+            <Pagination
+              count={Math.ceil(rowCount / rowsPerPage)}
+              page={page + 1}
+              onChange={(event, value) => setPage(value - 1)}
+              color="primary"
+              showFirstButton
+              showLastButton
+            />
+            <Typography variant="body2" color="text.secondary">
+              {rowCount} kayıttan {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, rowCount)} arası gösteriliyor
+            </Typography>
+          </Grid>
+          <Grid
+            size={{
+              xs: 12,
+              lg: 6
+            }}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}>
 
-          <ExceleAktarButton
-            handleDownload={handleDownload}
-          ></ExceleAktarButton>
+            <ExceleAktarButton
+              handleDownload={handleDownload}
+            ></ExceleAktarButton>
+          </Grid>
         </Grid>
-      </Grid>
-    </>
+      </>
+    </LocalizationProvider>
   );
 };
 

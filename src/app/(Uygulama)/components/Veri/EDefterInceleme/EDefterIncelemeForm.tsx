@@ -5,6 +5,9 @@ import { enqueueSnackbar } from "notistack";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextAreaAutoSize from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextAreaAutoSize";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { CustomDatePicker } from "@/utils/datePickerUtil";
 
 interface Props {
   hesapNo: string;
@@ -74,27 +77,36 @@ const EDefterIncelemeForm: React.FC<Props> = ({
   };
 
   return (
-    <div>
-      <Grid container spacing={3}>
-        <Grid display="flex" alignItems="center" size={{ xs: 12, sm: 6, lg: 4 }}>
-          <CustomFormLabel htmlFor="baslangicTarihi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
-            <Typography variant="subtitle1">Başlangıç Tarihi:</Typography>
-          </CustomFormLabel>
-          <CustomTextField id="baslangicTarihi" type="date" value={baslangicTarihi} fullWidth onChange={(e: any) => setBaslangicTarihi(e.target.value)} />
-          <Tooltip title="Yevmiye Tarihi Başlar." arrow>
-            <InfoOutlined fontSize="small" sx={{ ml: 1, mt: 1, color: 'text.secondary', verticalAlign: 'middle' }} />
-          </Tooltip>
-        </Grid>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="tr">
+      <div>
+        <Grid container spacing={3}>
+          <Grid display="flex" alignItems="center" size={{ xs: 12, sm: 6, lg: 4 }}>
+            <CustomFormLabel htmlFor="baslangicTarihi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
+              <Typography variant="subtitle1">Başlangıç Tarihi:</Typography>
+            </CustomFormLabel>
+            <CustomDatePicker
+              id="baslangicTarihi"
+              value={baslangicTarihi}
+              onChange={setBaslangicTarihi}
+            />
+            <Tooltip title="Yevmiye Tarihi Başlar." arrow>
+              <InfoOutlined fontSize="small" sx={{ ml: 1, mt: 1, color: 'text.secondary', verticalAlign: 'middle' }} />
+            </Tooltip>
+          </Grid>
 
-        <Grid display="flex" alignItems="center" size={{ xs: 12, sm: 6, lg: 4 }}>
-          <CustomFormLabel htmlFor="bitisTarihi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
-            <Typography variant="subtitle1">Bitiş Tarihi:</Typography>
-          </CustomFormLabel>
-          <CustomTextField id="bitisTarihi" type="date" value={bitisTarihi} fullWidth onChange={(e: any) => setBitisTarihi(e.target.value)} />
-          <Tooltip title="Yevmiye Tarihi Biter." arrow>
-            <InfoOutlined fontSize="small" sx={{ ml: 1, mt: 1, color: 'text.secondary', verticalAlign: 'middle' }} />
-          </Tooltip>
-        </Grid>
+          <Grid display="flex" alignItems="center" size={{ xs: 12, sm: 6, lg: 4 }}>
+            <CustomFormLabel htmlFor="bitisTarihi" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
+              <Typography variant="subtitle1">Bitiş Tarihi:</Typography>
+            </CustomFormLabel>
+            <CustomDatePicker
+              id="bitisTarihi"
+              value={bitisTarihi}
+              onChange={setBitisTarihi}
+            />
+            <Tooltip title="Yevmiye Tarihi Biter." arrow>
+              <InfoOutlined fontSize="small" sx={{ ml: 1, mt: 1, color: 'text.secondary', verticalAlign: 'middle' }} />
+            </Tooltip>
+          </Grid>
 
         <Grid display="flex" alignItems="center" size={{ xs: 12, sm: 6, lg: 4 }}>
           <CustomFormLabel htmlFor="hesaplar" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
@@ -184,6 +196,7 @@ const EDefterIncelemeForm: React.FC<Props> = ({
         </Grid>
       </Grid>
     </div>
+    </LocalizationProvider>
   );
 };
 

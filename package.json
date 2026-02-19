@@ -48,7 +48,7 @@
     "@mui/material": "^7.3.7",
     "@mui/styled-engine-sc": "^7.3.7",
     "@mui/system": "^7.3.7",
-    "@mui/x-date-pickers": "^8.26.0",
+    "@mui/x-date-pickers": "^8.27.0",
     "@mui/x-tree-view": "^8.26.0",
     "@react-pdf/renderer": "^4.1.6",
     "@reduxjs/toolkit": "^1.9.7",

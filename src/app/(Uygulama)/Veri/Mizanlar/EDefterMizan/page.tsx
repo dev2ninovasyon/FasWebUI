@@ -39,7 +39,7 @@ const Page: React.FC = () => {
       description="this is E-Defter Mizan Oluşturma"
     >
       <Breadcrumb title="E-Defter Mizan Oluşturma" items={BCrumb} />
-      {user.yil == 2024 ? (
+      {user.yil != null && user.yil >= 2024 ? (
         <TabContext value={tip}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Enflasyon Dahil Mizan" value="EnflasyonDahil" />

@@ -35,16 +35,24 @@ const Page: React.FC = () => {
           items={BCrumb}>
         <EkBelgeYukleButton formKodu="MaddiVeMaddiOlmayanVarliklarEnflasyonDuzeltmesi" />
       </Breadcrumb>
-        <Grid container spacing={3} sx={{ height: "calc(100vh - 225px)", overflow: "hidden" }}>
-          <Grid
-            size={{
-              xs: 12,
-              sm: 12,
-              lg: 12
-            }} sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
-            <EnflasyonIframe url="/EnflasyonDuzeltmesi/MaddiVeMaddiOlmayanDuranVarliklarEnflasyonDuzeltmesiV3" />
+        <Box sx={{ 
+          width: "calc(100% + 16px)",
+          marginLeft: "-16px",
+          marginRight: "-16px",
+          height: "calc(100vh - 225px)",
+          overflow: "hidden"
+        }}>
+          <Grid container spacing={0} sx={{ height: "100%", overflow: "hidden" }}>
+            <Grid
+              size={{
+                xs: 12,
+                sm: 12,
+                lg: 12
+              }} sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
+              <EnflasyonIframe url="/EnflasyonDuzeltmesi/MaddiVeMaddiOlmayanDuranVarliklarEnflasyonDuzeltmesiV3" />
+            </Grid>
           </Grid>
-        </Grid>
+        </Box>
       </PageContainer>
     </ProtectedPage>
   );

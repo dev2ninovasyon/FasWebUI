@@ -54,6 +54,14 @@ const Page: React.FC = () => {
   const [openCartAlert, setOpenCartAlert] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    }
+  };
+
   return (
     <PageContainer title="Kur Farkı" description="this is Kur Farkı">
       <Breadcrumb title="Kur Farkı" items={BCrumb} />
@@ -64,7 +72,7 @@ const Page: React.FC = () => {
             xs: 12,
             lg: 12
           }}>
-          <KurFarki />
+          <KurFarki onDataCount={handleDataCount} />
         </Grid>
         <Grid
           sx={{
@@ -85,11 +93,13 @@ const Page: React.FC = () => {
             xs: 12,
             lg: 12
           }}>
-          <DovizKurlariOtuzBirAralik />
+          <DovizKurlariOtuzBirAralik onDataCount={handleDataCount} />
         </Grid>
-        <FloatingButtonFisler
-          handleClick={() => setFloatingButtonTiklandimi(true)}
-        />
+        {hasData && (
+          <FloatingButtonFisler
+            handleClick={() => setFloatingButtonTiklandimi(true)}
+          />
+        )}
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

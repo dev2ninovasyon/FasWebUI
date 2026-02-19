@@ -28,7 +28,11 @@ interface Veri {
   dovizSatis: number;
 }
 
-const DovizKurlariOtuzBirAralik = () => {
+interface Props {
+  onDataCount?: (count: number) => void;
+}
+
+const DovizKurlariOtuzBirAralik: React.FC<Props> = ({ onDataCount }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -212,7 +216,7 @@ const DovizKurlariOtuzBirAralik = () => {
   const fetchData = async () => {
     try {
       const dovizKurlariOtuzBirAralik = await getDovizKurlariOtuzBirAralik(
-        
+
       );
 
       const rowsAll: any = [];
@@ -231,6 +235,7 @@ const DovizKurlariOtuzBirAralik = () => {
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      onDataCount?.(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -295,14 +300,14 @@ const DovizKurlariOtuzBirAralik = () => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);

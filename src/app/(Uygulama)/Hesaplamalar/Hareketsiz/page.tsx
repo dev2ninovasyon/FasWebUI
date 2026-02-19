@@ -69,6 +69,12 @@ const Page: React.FC = () => {
 
   const [hasData, setHasData] = useState(false);
 
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    }
+  };
+
   const handleHesapla = async () => {
     try {
       if (tip == "TicariAlacaklar") {
@@ -155,6 +161,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (hesaplaTiklandimi) {
       setOpenCartAlert(true);
+      setHasData(false);
     } else {
       setOpenCartAlert(false);
     }
@@ -243,10 +250,10 @@ const Page: React.FC = () => {
                     lg: 12
                   }}>
                   <HareketsizOzet
-                      hesaplaTiklandimi={hesaplaTiklandimi}
-                      tip={tip}
-                      onDataCount={(c: number) => setHasData((prev) => prev || c > 0)}
-                    />
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                    tip={tip}
+                    onDataCount={handleDataCount}
+                  />
                 </Grid>
                 <Grid
                   size={{
@@ -256,7 +263,7 @@ const Page: React.FC = () => {
                   <Hareketsiz
                     hesaplaTiklandimi={hesaplaTiklandimi}
                     tip={tip}
-                    onDataCount={(c: number) => setHasData((prev) => prev || c > 0)}
+                    onDataCount={handleDataCount}
                   />
                 </Grid>
               </Grid>
@@ -284,7 +291,7 @@ const Page: React.FC = () => {
                     }}
                   >
                     <CustomFormLabel
-                      htmlFor="acilisFisNo"
+                      htmlFor="acilisFisNoStok"
                       sx={{ mt: 0, mb: { sm: 0 }, mr: 2 }}
                     >
                       <Typography variant="subtitle1">
@@ -292,7 +299,7 @@ const Page: React.FC = () => {
                       </Typography>
                     </CustomFormLabel>
                     <CustomTextField
-                      id="acilisFisNo"
+                      id="acilisFisNoStok"
                       type="number"
                       value={acilisFisNo}
                       onChange={(e: any) => setAcilisFisNo(e.target.value)}
@@ -331,6 +338,7 @@ const Page: React.FC = () => {
                   <HareketsizOzet
                     hesaplaTiklandimi={hesaplaTiklandimi}
                     tip={tip}
+                    onDataCount={handleDataCount}
                   />
                 </Grid>
                 <Grid
@@ -338,7 +346,11 @@ const Page: React.FC = () => {
                     xs: 12,
                     lg: 12
                   }}>
-                  <Hareketsiz hesaplaTiklandimi={hesaplaTiklandimi} tip={tip} />
+                  <Hareketsiz
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                    tip={tip}
+                    onDataCount={handleDataCount}
+                  />
                 </Grid>
               </Grid>
             </TabPanel>
@@ -425,4 +437,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

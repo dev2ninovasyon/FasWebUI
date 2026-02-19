@@ -1,7 +1,7 @@
 ﻿import { useDispatch, useSelector } from "@/store/hooks";
 import { resetToNull, setToken, setRefreshToken } from "@/store/user/UserSlice";  // ✅ setRefreshToken import
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { AppState } from "@/store/store";
 import { apiFetch } from "@/api/apiBase";
 import SecureTokenManager from "@/utils/SecureTokenManager";
@@ -9,21 +9,32 @@ import SecureTokenManager from "@/utils/SecureTokenManager";
 const STORAGE_KEY = "user";
 const TIMEOUT_KEY = "user_expiry";
 
+interface UseAutoLogoutReturn {
+  showWarning: boolean;
+  secondsBeforeLogout: number;
+  onKeepSession: () => void;
+  onLogout: () => void;
+}
+
 export default function useAutoLogout(
   idleTimeout: number,     // kullanıcı inaktifse logout süresi (ms)
-  refreshInterval: number  // token yenileme süresi (ms)
-) {
+  refreshInterval: number, // token yenileme süresi (ms)
+  warningShowBefore: number = 60 * 1000 // Logout'tan kaç ms önce uyarı göster (varsayılan 60 saniye)
+): UseAutoLogoutReturn {
   const dispatch = useDispatch();
   const router = useRouter();
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // ⬇️⬇️⬇️ YENİ: geri sayım logu için interval
+  const warningTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const refreshCountdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const resetIdleTimerRef = useRef<(() => void) | null>(null);
+
+  // Warning dialog state
+  const [showWarning, setShowWarning] = useState(false);
+  const [secondsBeforeLogout, setSecondsBeforeLogout] = useState(60);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  // console.log("Debug User:", user); // Debug için
 
   // ✅ YENİ: Backend'e logout notification gönder
   const notifyBackendLogout = useCallback(async () => {
@@ -46,6 +57,9 @@ export default function useAutoLogout(
 
   // *** ÇIKIŞ ***
   const logout = useCallback(() => {
+    // Warning state'i temizle
+    setShowWarning(false);
+    
     // ✅ Backend'e logout bildir (JTI revocation için)
     notifyBackendLogout();
 
@@ -60,39 +74,50 @@ export default function useAutoLogout(
 
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
     if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
     if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
 
     router.replace("/Login");
   }, [dispatch, router, notifyBackendLogout]);
 
-  // idle timer reset
-  const resetIdleTimer = useCallback(() => {
-    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current); // YENİ
+  // ✅ Keep session by refreshing token and resetting idle timer
+  const keepSession = useCallback(async () => {
+    console.log("🔄 Oturum devam ettiriliyor...");
+    setShowWarning(false);
+    setSecondsBeforeLogout(60);
+    
+    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+    if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
+    
+    // Refresh token
+    try {
+      const response = await apiFetch(`/Auth/refresh`, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
 
-    const expiry = Date.now() + idleTimeout;
-    localStorage.setItem(TIMEOUT_KEY, expiry.toString());
-
-    // Süre dolunca logout olacak timer
-    idleTimerRef.current = setTimeout(() => {
-      logout();
-    }, idleTimeout);
-
-    // ⬇️⬇️⬇️ Kalan süreyi sürekli konsola yazan interval (test için yorum satırı)
-    countdownTimerRef.current = setInterval(() => {
-      const remaining = expiry - Date.now();
-      if (remaining <= 0) {
-        clearInterval(countdownTimerRef.current!);
-        countdownTimerRef.current = null;
-        return;
+      if (response.ok) {
+        const data = await response.json();
+        dispatch(setToken(data.token));
+        if (data.refreshToken) {
+          dispatch(setRefreshToken(data.refreshToken));
+        }
+        console.log("✅ Oturum başarıyla devam ettirildi");
       }
-
-      const remainingSeconds = Math.ceil(remaining / 1000);
-      const minutes = Math.floor(remainingSeconds / 60);
-      const seconds = remainingSeconds % 60;
-    }, 1000);
-  }, [idleTimeout, logout]);
+    } catch (err) {
+      console.warn("⚠️ Oturum devam ettirme hatası:", err);
+    }
+    
+    // Reset idle timer via ref
+    if (resetIdleTimerRef.current) {
+      resetIdleTimerRef.current();
+    }
+  }, [dispatch]);
 
   // refresh token
   const refreshToken = useCallback(async () => {
@@ -119,6 +144,7 @@ export default function useAutoLogout(
       if (data.refreshToken) {
         dispatch(setRefreshToken(data.refreshToken));
       }
+      console.log("✅ Token başarıyla yenilendi");
     } catch (err) {
       console.log("Refresh token yenilenemedi (catch):", err);
       logout();
@@ -127,6 +153,53 @@ export default function useAutoLogout(
 
   useEffect(() => {
     if (!user?.token) return;
+
+    // Helper function to reset idle timer - called from multiple places
+    const resetIdleTimer = () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
+      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+
+      setShowWarning(false);
+      setSecondsBeforeLogout(60);
+
+      const expiry = Date.now() + idleTimeout;
+      localStorage.setItem(TIMEOUT_KEY, expiry.toString());
+
+      // Show warning dialog X seconds before logout (default 60 seconds before)
+      const warningTriggerTime = idleTimeout - warningShowBefore;
+      
+      if (warningTriggerTime > 0) {
+        warningTimerRef.current = setTimeout(() => {
+          // Show warning and start countdown
+          setShowWarning(true);
+          
+          // Start countdown timer for warning dialog
+          const countdownStart = Date.now();
+          countdownTimerRef.current = setInterval(() => {
+            const elapsed = Date.now() - countdownStart;
+            const remaining = Math.max(0, warningShowBefore - elapsed);
+            const remainingSeconds = Math.ceil(remaining / 1000);
+            
+            setSecondsBeforeLogout(Math.max(0, remainingSeconds));
+            
+            if (remaining <= 0) {
+              clearInterval(countdownTimerRef.current!);
+              // Auto logout when countdown reaches 0
+              logout();
+            }
+          }, 100); // Update UI every 100ms for smooth countdown
+        }, warningTriggerTime);
+      }
+
+      // Final logout timer (as backup)
+      idleTimerRef.current = setTimeout(() => {
+        logout();
+      }, idleTimeout);
+    };
+
+    // Store reset function in ref so keepSession can call it
+    resetIdleTimerRef.current = resetIdleTimer;
 
     const events: (keyof WindowEventMap)[] = [
       "mousemove",
@@ -138,51 +211,30 @@ export default function useAutoLogout(
     events.forEach((event) => window.addEventListener(event, resetIdleTimer));
     resetIdleTimer();
 
-    // Token yenileme zamanlayıcısı
+    // Token yenileme zamanlayıcısı - her 30 dakikada bir token yenile
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
-    if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
-
-    const refreshExpiry = Date.now() + refreshInterval;
 
     refreshTimerRef.current = setInterval(() => {
+      console.log("🔄 Token otomatik olarak yenileniyor...");
       refreshToken();
-      // Yeni çevrim başlatılıyor, geri sayımı sıfırla
-      const newRefreshExpiry = Date.now() + refreshInterval;
-      if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
-      refreshCountdownTimerRef.current = setInterval(() => {
-        const remaining = newRefreshExpiry - Date.now();
-        if (remaining <= 0) {
-          clearInterval(refreshCountdownTimerRef.current!);
-          return;
-        }
-        const remainingSeconds = Math.ceil(remaining / 1000);
-        const minutes = Math.floor(remainingSeconds / 60);
-        const seconds = remainingSeconds % 60;
-      }, 1000);
     }, refreshInterval);
-
-    // İlk geri sayımı başlat (test için yorum satırı)
-    refreshCountdownTimerRef.current = setInterval(() => {
-      const remaining = refreshExpiry - Date.now();
-      if (remaining <= 0) {
-        clearInterval(refreshCountdownTimerRef.current!);
-        return;
-      }
-      const remainingSeconds = Math.ceil(remaining / 1000);
-      const minutes = Math.floor(remainingSeconds / 60);
-      const seconds = remainingSeconds % 60;
-    }, 1000);
 
     return () => {
       events.forEach((event) =>
         window.removeEventListener(event, resetIdleTimer)
       );
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
       if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
       if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
       if (refreshCountdownTimerRef.current) clearInterval(refreshCountdownTimerRef.current);
     };
-  }, [user?.token, resetIdleTimer, refreshToken, refreshInterval]);
+  }, [user?.token, refreshToken, refreshInterval, idleTimeout, warningShowBefore, logout]);
 
-  return null;
+  return {
+    showWarning,
+    secondsBeforeLogout,
+    onKeepSession: keepSession,
+    onLogout: logout,
+  };
 }

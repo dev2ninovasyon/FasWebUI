@@ -28,6 +28,9 @@ import {
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import { IconExclamationMark, IconArrowLeft, IconCheck } from "@tabler/icons-react";
 import { getGorevAtamalariByDenetlenenIdYil } from "@/api/Sozlesme/DenetimKadrosuAtama";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { CustomDatePicker } from "@/utils/datePickerUtil";
 
 const CustomEditorWVeri = dynamic(
     () => import("@/app/(Uygulama)/components/Editor/CustomEditorWVeri"),
@@ -120,38 +123,39 @@ export default function DenetimSozlesmesiStep({
     };
 
     return (
-        <Box sx={{ width: "100%" }}>
-            <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Box>
-                    <Typography variant="h5">Bağımsız Denetim Sözleşmesi</Typography>
-                    <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-                        <strong>{sirket?.firmaAdi || "Şirket"}</strong> için denetim sözleşmesini hazırlayın. Sözleşme tarihi ve içeriği otomatik şablon üzerinden oluşturulacaktır.
-                    </Typography>
-                    <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 2, fontStyle: "italic" }}>
-                        * Sözleşme metnini ve tarihini daha sonra 'Denetim Sözleşmesi' menüsünden dilediğiniz zaman yeniden düzenleyebilirsiniz.
-                    </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="tr">
+            <Box sx={{ width: "100%" }}>
+                <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Box>
+                        <Typography variant="h5">Bağımsız Denetim Sözleşmesi</Typography>
+                        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+                            <strong>{sirket?.firmaAdi || "Şirket"}</strong> için denetim sözleşmesini hazırlayın. Sözleşme tarihi ve içeriği otomatik şablon üzerinden oluşturulacaktır.
+                        </Typography>
+                        <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 2, fontStyle: "italic" }}>
+                            * Sözleşme metnini ve tarihini daha sonra 'Denetim Sözleşmesi' menüsünden dilediğiniz zaman yeniden düzenleyebilirsiniz.
+                        </Typography>
+                    </Box>
                 </Box>
-            </Box>
-            <Paper elevation={0} sx={{ p: 2, border: 1, borderColor: "divider", mb: 2 }}>
-                <Grid container spacing={3}>
-                    <Grid display="flex" alignItems="center" justifyContent="center" size={12}>
-                        <CustomFormLabel htmlFor="sozlesmeTarihi" sx={{ mt: 0, mb: 0, mr: 2 }}>
-                            Sözleşme Tarihi:
-                        </CustomFormLabel>
-                        <CustomTextField
-                            id="sozlesmeTarihi"
-                            type="date"
-                            value={tempSozlesmeTarihi}
-                            onChange={(e: any) => setTempSozlesmeTarihi(e.target.value)}
-                            onBlur={() => setSozlesmeTarihi(tempSozlesmeTarihi)}
-                            size="small"
-                        />
-                        <Tooltip title="Sözleşme Tarihi Girmeyi Unutmayınız">
-                            <Fab color="warning" size="small" sx={{ ml: 2, minHeight: 32, width: 32, height: 32 }}>
-                                <IconExclamationMark size={18} />
-                            </Fab>
-                        </Tooltip>
-                    </Grid>
+                <Paper elevation={0} sx={{ p: 2, border: 1, borderColor: "divider", mb: 2 }}>
+                    <Grid container spacing={3}>
+                        <Grid display="flex" alignItems="center" justifyContent="center" size={12}>
+                            <CustomFormLabel htmlFor="sozlesmeTarihi" sx={{ mt: 0, mb: 0, mr: 2 }}>
+                                Sözleşme Tarihi:
+                            </CustomFormLabel>
+                            <CustomDatePicker
+                                id="sozlesmeTarihi"
+                                value={tempSozlesmeTarihi}
+                                onChange={(value) => {
+                                    setTempSozlesmeTarihi(value);
+                                    setSozlesmeTarihi(value);
+                                }}
+                            />
+                            <Tooltip title="Sözleşme Tarihi Girmeyi Unutmayınız">
+                                <Fab color="warning" size="small" sx={{ ml: 2, minHeight: 32, width: 32, height: 32 }}>
+                                    <IconExclamationMark size={18} />
+                                </Fab>
+                            </Tooltip>
+                        </Grid>
 
                     {loading ? (
                         <Grid textAlign="center" size={12}>
@@ -252,6 +256,7 @@ export default function DenetimSozlesmesiStep({
                 </Button>
             </Box>
         </Box>
+        </LocalizationProvider>
     );
 }
 

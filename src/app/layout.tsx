@@ -26,6 +26,7 @@ import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
 import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
 import { LoadingProvider } from "@/contexts/LoadingContext";
+import SessionWarningDialog from "@/components/SessionWarning/SessionWarningDialog";
 
 // Turkish character removal helper function
 const removeTurkishChars = (str: string | undefined | null) => {
@@ -39,9 +40,14 @@ const removeTurkishChars = (str: string | undefined | null) => {
 };
 
 const MyApp = ({ children }: { children: React.ReactNode }) => {
-  useAutoLogout(
-    40 * 60 * 1000, // 45 dakika idle süresi
-    999 * 60 * 1000  // Token yenileme devre dışı (çok yüksek değer)
+  const {
+    showWarning,
+    secondsBeforeLogout,
+    onKeepSession,
+    onLogout,
+  } = useAutoLogout(
+    40 * 60 * 1000, // 40 dakika idle süresi
+    30 * 60 * 1000  // 30 dakika aralığında token yenileme (90 dakika token ömründen önce)
   );
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -152,6 +158,13 @@ const MyApp = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
+      <SessionWarningDialog
+        open={showWarning}
+        secondsRemaining={secondsBeforeLogout}
+        onKeepSession={onKeepSession}
+        onLogout={onLogout}
+        maxSeconds={60}
+      />
       <NextAppDirEmotionCacheProvider
         options={{ key: "financial-audit-software" }}
       >

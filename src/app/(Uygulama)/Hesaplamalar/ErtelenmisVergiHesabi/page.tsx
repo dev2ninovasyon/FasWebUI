@@ -64,6 +64,14 @@ const Page: React.FC = () => {
   const [openCartAlert, setOpenCartAlert] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    }
+  };
+
   const handleHesapla = async () => {
     try {
       const result = await createVergiVarligiVeYukumlulugu(user.denetciId || 0,
@@ -106,6 +114,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (hesaplaTiklandimi) {
       setOpenCartAlert(true);
+      setHasData(false);
     } else {
       setOpenCartAlert(false);
     }
@@ -250,7 +259,10 @@ const Page: React.FC = () => {
             xs: 12,
             lg: 12
           }}>
-          <VergiVarlik hesaplaTiklandimi={hesaplaTiklandimi} />
+          <VergiVarlik
+            hesaplaTiklandimi={hesaplaTiklandimi}
+            onDataCount={handleDataCount}
+          />
         </Grid>
         <Grid
           mb={2}
@@ -258,7 +270,10 @@ const Page: React.FC = () => {
             xs: 12,
             lg: 12
           }}>
-          <VergiYukumluluk hesaplaTiklandimi={hesaplaTiklandimi} />
+          <VergiYukumluluk
+            hesaplaTiklandimi={hesaplaTiklandimi}
+            onDataCount={handleDataCount}
+          />
         </Grid>
         <Grid
           size={{
@@ -267,9 +282,11 @@ const Page: React.FC = () => {
           }}>
           <ErtelenmisVergiHesabiCard hesaplaTiklandimi={hesaplaTiklandimi} />
         </Grid>
-        <FloatingButtonFisler
-          handleClick={() => setFloatingButtonTiklandimi(true)}
-        />
+        {hasData && (
+          <FloatingButtonFisler
+            handleClick={() => setFloatingButtonTiklandimi(true)}
+          />
+        )}
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}
@@ -359,4 +376,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

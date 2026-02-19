@@ -40,8 +40,9 @@ import CekSenetReeskontDuzeltmeFarklari from "./CekSenetReeskontDuzeltmeFarklari
 import CekSenetReeskontHesaplamadaKullanilanDegerler from "./CekSenetReeskontHesaplamadaKullanilanDegerler";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
-
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -113,13 +114,21 @@ const Page: React.FC = () => {
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    }
+  };
+
   const handleClosePopUp = () => {
     setIsPopUpOpen(false);
   };
 
   const handleHesapla = async () => {
     try {
-      const kidem = await createCekSenetReeskontHesapla(user.denetciId || 0,
+      await createCekSenetReeskontHesapla(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
@@ -684,7 +693,7 @@ const Page: React.FC = () => {
                             id="iskonto3090"
                             type="number"
                             fullWidth
-                            value={iskontoOrani130}
+                            value={iskontoOrani3090}
                             onChange={(e: any) =>
                               setIskontoOrani3090(parseFloat(e.target.value))
                             }
@@ -884,28 +893,22 @@ const Page: React.FC = () => {
                   }}>
                   <CekSenetReeskontHesaplama
                     hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
                   />
-                </Grid>
-                <Grid
-                  marginBottom={3}
-                  size={{
-                    xs: 12,
-                    lg: 12
-                  }}>
+                  <Divider sx={{ mt: 2, mb: 2 }} />
                   <CekSenetReeskontDuzeltmeFarklari
                     hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
                   />
-                </Grid>
-                <Grid
-                  marginBottom={3}
-                  size={{
-                    xs: 12,
-                    lg: 12
-                  }}>
+                  <Divider sx={{ mt: 2, mb: 2 }} />
                   <CekSenetReeskontHesaplamadaKullanilanDegerler
                     hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
                   />
                 </Grid>
+                {hasData && (
+                  <FloatingButtonFisler handleClick={() => setTip("VeriYukleme")} />
+                )}
                 {openCartAlert && (
                   <InfoAlertCart
                     openCartAlert={openCartAlert}
@@ -918,7 +921,7 @@ const Page: React.FC = () => {
         </Grid>
         {isPopUpOpen && (
           <PaylasimBaglantisiPopUp
-            controller="CekSenetReeskont"
+            controller={"CekSenetReeskont"}
             setControl={setControl}
             isPopUpOpen={isPopUpOpen}
             handleClosePopUp={handleClosePopUp}
@@ -930,4 +933,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-
