@@ -182,6 +182,7 @@ export default function RootLayout({
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ RefreshToken: refreshToken }),
+              credentials: 'include',
             });
 
             if (refreshResponse.ok) {
@@ -205,7 +206,10 @@ export default function RootLayout({
 
     // Modal state update is not needed here as it's triggered by Redux and useEffect,
     // and followed by a full page reload anyway.
-    window.location.reload();
+    // Persistence sync için çok kısa bir bekleme (50ms)
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
   };
 
   if (isChecking || isLoadingCompanies) {

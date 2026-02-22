@@ -104,6 +104,7 @@ const MobileSirketPopup = () => {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ RefreshToken: refreshToken }),
+                  credentials: 'include',
                 });
 
                 if (refreshResponse.ok) {
@@ -145,7 +146,10 @@ const MobileSirketPopup = () => {
     handleDrawerClose2();
 
     // Sayfayı tamamen yenile - tüm veriler güncellenecek
-    window.location.reload();
+    // Persistence sync için çok kısa bir bekleme (50ms)
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
   };
 
   return (

@@ -168,8 +168,10 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           localStorage.setItem("fas_yil", sonSecilenYil.toString());
         }
 
-        // ✅ Token'lar artık sadece backend tarafından HttpOnly Cookie olarak set ediliyor.
-        // Güvenlik nedeniyle localStorage üzerine yazılmıyor (XSS koruması).
+        // ✅ Token'lar artık hem backend tarafından HttpOnly Cookie olarak set ediliyor,
+        // hem de fallback (CORS sorunları) için localStorage üzerinde yedekleniyor.
+        if (userToken) localStorage.setItem("fas_token", userToken);
+        if (userRefreshToken) localStorage.setItem("fas_refreshToken", userRefreshToken);
 
         console.log("Before Dispatch");
         dispatch(setUserData(userData));
@@ -234,7 +236,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
     } catch (error: any) {
       console.timeEnd("Giriş İşlemi Toplam Süre");
       console.log("Bir hata oluştu:", error);
-      if (error.message === "Failed to fetch") {
+      if (error.message === "Failed to fetch" || error.message.includes("Sunucuya ulaşılamıyor")) {
         enqueueSnackbar("Bağlantı hatası: Sisteme şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyiniz.", {
           variant: "error",
           autoHideDuration: 5000,

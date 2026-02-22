@@ -291,14 +291,7 @@ export function createMenuItems(
             icon: IconPoint,
             href: "/Veri/DefterKVBeyannamesiYukleme",
           },
-          {
-            id: uniqueId(),
-            title: "Fatura",
-            customIcon:
-              "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
-            icon: IconPoint,
-            href: "/Veri/Fatura",
-          },
+
           {
             id: uniqueId(),
             title: "Diğer Veri Yükleme",
@@ -328,6 +321,14 @@ export function createMenuItems(
                 href: "/Veri/Mizanlar/OlusturulmusMizanlar",
               },
             ],
+          },
+          {
+            id: uniqueId(),
+            title: "Fatura",
+            customIcon:
+              "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
+            icon: IconPoint,
+            href: "/Veri/Fatura",
           },
           {
             id: uniqueId(),

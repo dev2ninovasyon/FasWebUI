@@ -1,0 +1,414 @@
+﻿
+Running 39 tests using 16 workers
+
+[1A[2K[1/39] [chromium] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials
+[1A[2K[2/39] [chromium] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials
+[1A[2K[3/39] [chromium] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully
+[1A[2K[4/39] [firefox] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials
+[1A[2K[5/39] [chromium] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page
+[1A[2K[6/39] [chromium] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:51:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Hydration_WhenInitialRenderOccurs_ShouldNotProduceConsoleErrors
+[1A[2K[7/39] [firefox] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials
+[1A[2K[8/39] [chromium] ÔÇ║ e2e\security\SecurityAudit.spec.ts:58:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ AuthGuard_WhenAccessingProtectedPageWithoutSession_ShouldRedirectToLogin
+[1A[2K[9/39] [chromium] ÔÇ║ e2e\security\SecurityAudit.spec.ts:43:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Auth_WhenCheckingClientSideStorage_ShouldNotExposeTokensToJS
+[1A[2K[10/39] [chromium] ÔÇ║ e2e\security\SecurityAudit.spec.ts:71:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Logout_WhenUserClicksLogout_ShouldClearSessionState
+[1A[2K[11/39] [chromium] ÔÇ║ e2e\security\SecurityAudit.spec.ts:87:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ API_WhenCompanyChanged_ShouldSendCorrectDenetlenenIdHeader
+[1A[2K[12/39] [chromium] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:23:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Accessibility_WhenLoginPageLoaded_ShouldMeetWCAGRequirements
+[1A[2K[13/39] [chromium] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:97:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ UX_WhenLoginInitiated_ShouldProvideImmediateInteractionFeedback
+[1A[2K[14/39] [chromium] ÔÇ║ e2e\security\SecurityAudit.spec.ts:27:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Login_WhenInvalidCredentials_ShouldDisplayErrorMessage
+[1A[2K[15/39] [firefox] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page
+[1A[2K[16/39] [chromium] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:78:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Responsive_WhenMobileViewActive_ShouldRenderFormElementsCorrectly
+[1A[2K[chromium] ÔÇ║ e2e\security\SecurityAudit.spec.ts:27:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Login_WhenInvalidCredentials_ShouldDisplayErrorMessage
+[CI/CD Logger]: Yakalanan hata mesaj─▒ -> ""
+
+[1A[2K[chromium] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:97:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ UX_WhenLoginInitiated_ShouldProvideImmediateInteractionFeedback
+[Dev Note]: Kullan─▒c─▒ etkile┼şimi tetiklendi, UI yan─▒t veriyor.
+
+[1A[2K  1) [chromium] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page ÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('input[name="kullaniciKodu"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+       8 |     test('should display login page', async ({ page }) => {
+       9 |         // Wait for login page elements
+    > 10 |         await expect(page.locator('input[name="kullaniciKodu"]')).toBeVisible()
+         |                                                                   ^
+      11 |         await expect(page.locator('input[name="sifre"]')).toBeVisible()
+      12 |         await expect(page.locator('button[type="submit"]')).toBeVisible()
+      13 |     })
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:10:67
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication-Flow-should-display-login-page-chromium\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication-Flow-should-display-login-page-chromium\error-context.md
+
+
+[1A[2K[17/39] [firefox] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully
+[1A[2K[18/39] [firefox] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:23:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Accessibility_WhenLoginPageLoaded_ShouldMeetWCAGRequirements
+[1A[2K[19/39] [firefox] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:78:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Responsive_WhenMobileViewActive_ShouldRenderFormElementsCorrectly
+[1A[2K[20/39] [firefox] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:51:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Hydration_WhenInitialRenderOccurs_ShouldNotProduceConsoleErrors
+[1A[2K[21/39] [firefox] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:97:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ UX_WhenLoginInitiated_ShouldProvideImmediateInteractionFeedback
+[1A[2K[22/39] [firefox] ÔÇ║ e2e\security\SecurityAudit.spec.ts:43:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Auth_WhenCheckingClientSideStorage_ShouldNotExposeTokensToJS
+[1A[2K[23/39] [firefox] ÔÇ║ e2e\security\SecurityAudit.spec.ts:27:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Login_WhenInvalidCredentials_ShouldDisplayErrorMessage
+[1A[2K[24/39] [firefox] ÔÇ║ e2e\security\SecurityAudit.spec.ts:58:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ AuthGuard_WhenAccessingProtectedPageWithoutSession_ShouldRedirectToLogin
+[1A[2K[25/39] [firefox] ÔÇ║ e2e\security\SecurityAudit.spec.ts:71:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Logout_WhenUserClicksLogout_ShouldClearSessionState
+[1A[2K[26/39] [firefox] ÔÇ║ e2e\security\SecurityAudit.spec.ts:87:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ API_WhenCompanyChanged_ShouldSendCorrectDenetlenenIdHeader
+[1A[2K  2) [firefox] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('input[name="kullaniciKodu"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+       8 |     test('should display login page', async ({ page }) => {
+       9 |         // Wait for login page elements
+    > 10 |         await expect(page.locator('input[name="kullaniciKodu"]')).toBeVisible()
+         |                                                                   ^
+      11 |         await expect(page.locator('input[name="sifre"]')).toBeVisible()
+      12 |         await expect(page.locator('button[type="submit"]')).toBeVisible()
+      13 |     })
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:10:67
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication-Flow-should-display-login-page-firefox\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication-Flow-should-display-login-page-firefox\error-context.md
+
+
+[1A[2K[27/39] [webkit] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page
+[1A[2K[firefox] ÔÇ║ e2e\security\SecurityAudit.spec.ts:27:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Login_WhenInvalidCredentials_ShouldDisplayErrorMessage
+[CI/CD Logger]: Yakalanan hata mesaj─▒ -> ""
+
+[1A[2K[28/39] [webkit] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials
+[1A[2K[firefox] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:97:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ UX_WhenLoginInitiated_ShouldProvideImmediateInteractionFeedback
+[Dev Note]: Kullan─▒c─▒ etkile┼şimi tetiklendi, UI yan─▒t veriyor.
+
+[1A[2K  3) [webkit] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('input[name="kullaniciKodu"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+       8 |     test('should display login page', async ({ page }) => {
+       9 |         // Wait for login page elements
+    > 10 |         await expect(page.locator('input[name="kullaniciKodu"]')).toBeVisible()
+         |                                                                   ^
+      11 |         await expect(page.locator('input[name="sifre"]')).toBeVisible()
+      12 |         await expect(page.locator('button[type="submit"]')).toBeVisible()
+      13 |     })
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:10:67
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication-Flow-should-display-login-page-webkit\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication-Flow-should-display-login-page-webkit\error-context.md
+
+
+[1A[2K  4) [chromium] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      15 |     test('should login successfully with valid credentials', async ({ page }) => {
+      16 |         // Fill in login form
+    > 17 |         await page.fill('input[name="kullaniciKodu"]', 'test')
+         |                    ^
+      18 |         await page.fill('input[name="sifre"]', 'test123')
+      19 |
+      20 |         // Submit form
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:17:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication--2674e-ully-with-valid-credentials-chromium\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication--2674e-ully-with-valid-credentials-chromium\error-context.md
+
+
+[1A[2K[29/39] [webkit] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials
+[1A[2K[30/39] [webkit] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully
+[1A[2K[31/39] [webkit] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:23:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Accessibility_WhenLoginPageLoaded_ShouldMeetWCAGRequirements
+[1A[2K[32/39] [webkit] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:78:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Responsive_WhenMobileViewActive_ShouldRenderFormElementsCorrectly
+[1A[2K[33/39] [webkit] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:97:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ UX_WhenLoginInitiated_ShouldProvideImmediateInteractionFeedback
+[1A[2K  5) [firefox] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      15 |     test('should login successfully with valid credentials', async ({ page }) => {
+      16 |         // Fill in login form
+    > 17 |         await page.fill('input[name="kullaniciKodu"]', 'test')
+         |                    ^
+      18 |         await page.fill('input[name="sifre"]', 'test123')
+      19 |
+      20 |         // Submit form
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:17:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication--2674e-ully-with-valid-credentials-firefox\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication--2674e-ully-with-valid-credentials-firefox\error-context.md
+
+
+[1A[2K  6) [firefox] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      30 |     test('should show error with invalid credentials', async ({ page }) => {
+      31 |         // Fill in login form with invalid credentials
+    > 32 |         await page.fill('input[name="kullaniciKodu"]', 'invalid')
+         |                    ^
+      33 |         await page.fill('input[name="sifre"]', 'wrong')
+      34 |
+      35 |         // Submit form
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:32:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication--65ae5-or-with-invalid-credentials-firefox\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication--65ae5-or-with-invalid-credentials-firefox\error-context.md
+
+
+[1A[2K  7) [chromium] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully ÔöÇÔöÇÔöÇ
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      42 |     test('should logout successfully', async ({ page }) => {
+      43 |         // Login first
+    > 44 |         await page.fill('input[name="kullaniciKodu"]', 'test')
+         |                    ^
+      45 |         await page.fill('input[name="sifre"]', 'test123')
+      46 |         await page.click('button[type="submit"]')
+      47 |         await page.waitForURL('**/AnaSayfa')
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:44:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication-Flow-should-logout-successfully-chromium\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication-Flow-should-logout-successfully-chromium\error-context.md
+
+
+[1A[2K  8) [chromium] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      30 |     test('should show error with invalid credentials', async ({ page }) => {
+      31 |         // Fill in login form with invalid credentials
+    > 32 |         await page.fill('input[name="kullaniciKodu"]', 'invalid')
+         |                    ^
+      33 |         await page.fill('input[name="sifre"]', 'wrong')
+      34 |
+      35 |         // Submit form
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:32:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication--65ae5-or-with-invalid-credentials-chromium\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication--65ae5-or-with-invalid-credentials-chromium\error-context.md
+
+
+[1A[2K[34/39] [webkit] ÔÇ║ e2e\security\SecurityAudit.spec.ts:71:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Logout_WhenUserClicksLogout_ShouldClearSessionState
+[1A[2K[35/39] [webkit] ÔÇ║ e2e\security\SecurityAudit.spec.ts:58:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ AuthGuard_WhenAccessingProtectedPageWithoutSession_ShouldRedirectToLogin
+[1A[2K[36/39] [webkit] ÔÇ║ e2e\security\SecurityAudit.spec.ts:87:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ API_WhenCompanyChanged_ShouldSendCorrectDenetlenenIdHeader
+[1A[2K[37/39] [webkit] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:51:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Hydration_WhenInitialRenderOccurs_ShouldNotProduceConsoleErrors
+[1A[2K[38/39] [webkit] ÔÇ║ e2e\security\SecurityAudit.spec.ts:43:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Auth_WhenCheckingClientSideStorage_ShouldNotExposeTokensToJS
+[1A[2K[39/39] [webkit] ÔÇ║ e2e\security\SecurityAudit.spec.ts:27:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Login_WhenInvalidCredentials_ShouldDisplayErrorMessage
+[1A[2K[webkit] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:97:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ UX_WhenLoginInitiated_ShouldProvideImmediateInteractionFeedback
+[Dev Note]: Kullan─▒c─▒ etkile┼şimi tetiklendi, UI yan─▒t veriyor.
+
+[1A[2K  9) [firefox] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully ÔöÇÔöÇÔöÇÔöÇ
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      42 |     test('should logout successfully', async ({ page }) => {
+      43 |         // Login first
+    > 44 |         await page.fill('input[name="kullaniciKodu"]', 'test')
+         |                    ^
+      45 |         await page.fill('input[name="sifre"]', 'test123')
+      46 |         await page.click('button[type="submit"]')
+      47 |         await page.waitForURL('**/AnaSayfa')
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:44:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication-Flow-should-logout-successfully-firefox\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication-Flow-should-logout-successfully-firefox\error-context.md
+
+
+[1A[2K[webkit] ÔÇ║ e2e\security\SecurityAudit.spec.ts:27:9 ÔÇ║ G├╝venlik Audit: Profesyonel E2E Denetim S├╝reci ÔÇ║ Login_WhenInvalidCredentials_ShouldDisplayErrorMessage
+[CI/CD Logger]: Yakalanan hata mesaj─▒ -> ""
+
+[1A[2K  10) [firefox] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:23:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Accessibility_WhenLoginPageLoaded_ShouldMeetWCAGRequirements 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+      26 |
+      27 |         // Sayfan─▒n statikle┼şmesini ve animasyonlar─▒n bitmesini bekleyelim.
+    > 28 |         await page.waitForLoadState('networkidle');
+         |                    ^
+      29 |
+      30 |         // Axe-Core motorunu kullanarak teknik ihlalleri tar─▒yoruz.
+      31 |         const results = await new AxeBuilder({ page })
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\nextjs\NextAppSuite.spec.ts:28:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\nextjs-NextAppSuite-Next-j-40f46--ShouldMeetWCAGRequirements-firefox\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\nextjs-NextAppSuite-Next-j-40f46--ShouldMeetWCAGRequirements-firefox\error-context.md
+
+
+[1A[2K  11) [webkit] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      15 |     test('should login successfully with valid credentials', async ({ page }) => {
+      16 |         // Fill in login form
+    > 17 |         await page.fill('input[name="kullaniciKodu"]', 'test')
+         |                    ^
+      18 |         await page.fill('input[name="sifre"]', 'test123')
+      19 |
+      20 |         // Submit form
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:17:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication--2674e-ully-with-valid-credentials-webkit\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication--2674e-ully-with-valid-credentials-webkit\error-context.md
+
+
+[1A[2K  12) [webkit] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      30 |     test('should show error with invalid credentials', async ({ page }) => {
+      31 |         // Fill in login form with invalid credentials
+    > 32 |         await page.fill('input[name="kullaniciKodu"]', 'invalid')
+         |                    ^
+      33 |         await page.fill('input[name="sifre"]', 'wrong')
+      34 |
+      35 |         // Submit form
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:32:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication--65ae5-or-with-invalid-credentials-webkit\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication--65ae5-or-with-invalid-credentials-webkit\error-context.md
+
+
+[1A[2K  13) [webkit] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully ÔöÇÔöÇÔöÇÔöÇ
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[name="kullaniciKodu"]')[22m
+
+
+      42 |     test('should logout successfully', async ({ page }) => {
+      43 |         // Login first
+    > 44 |         await page.fill('input[name="kullaniciKodu"]', 'test')
+         |                    ^
+      45 |         await page.fill('input[name="sifre"]', 'test123')
+      46 |         await page.click('button[type="submit"]')
+      47 |         await page.waitForURL('**/AnaSayfa')
+        at C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\e2e\auth\login.spec.ts:44:20
+
+    attachment #1: screenshot (image/png) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    test-results\auth-login-Authentication-Flow-should-logout-successfully-webkit\test-failed-1.png
+    ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+
+    Error Context: test-results\auth-login-Authentication-Flow-should-logout-successfully-webkit\error-context.md
+
+
+[1A[2K  13 failed
+    [chromium] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    [chromium] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials 
+    [chromium] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials 
+    [chromium] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully ÔöÇÔöÇÔöÇÔöÇ
+    [firefox] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    [firefox] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials 
+    [firefox] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials 
+    [firefox] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully ÔöÇÔöÇÔöÇÔöÇÔöÇ
+    [firefox] ÔÇ║ e2e\nextjs\NextAppSuite.spec.ts:23:9 ÔÇ║ Next.js Uygulama Sa─şl─▒─ş─▒: Modern Web Standartlar─▒ Denetimi ÔÇ║ Accessibility_WhenLoginPageLoaded_ShouldMeetWCAGRequirements 
+    [webkit] ÔÇ║ e2e\auth\login.spec.ts:8:9 ÔÇ║ Authentication Flow ÔÇ║ should display login page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    [webkit] ÔÇ║ e2e\auth\login.spec.ts:15:9 ÔÇ║ Authentication Flow ÔÇ║ should login successfully with valid credentials 
+    [webkit] ÔÇ║ e2e\auth\login.spec.ts:30:9 ÔÇ║ Authentication Flow ÔÇ║ should show error with invalid credentials 
+    [webkit] ÔÇ║ e2e\auth\login.spec.ts:42:9 ÔÇ║ Authentication Flow ÔÇ║ should logout successfully ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+  26 passed (1.2m)
+
+[36m  Serving HTML report at http://localhost:63192. Press Ctrl+C to quit.[39m

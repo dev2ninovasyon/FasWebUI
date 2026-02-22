@@ -30,7 +30,9 @@ const WarningBox = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2),
-  backgroundColor: theme.palette.warning.light,
+  backgroundColor: theme.palette.mode === 'dark' 
+    ? 'rgba(237, 108, 0, 0.15)' 
+    : 'rgba(237, 108, 0, 0.1)',
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(2),
 }));
@@ -42,8 +44,10 @@ const CountdownBox = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   gap: theme.spacing(1),
   padding: theme.spacing(2),
-  backgroundColor: theme.palette.background.paper,
-  border: `2px solid ${theme.palette.warning.main}`,
+  backgroundColor: theme.palette.mode === 'dark'
+    ? 'rgba(237, 108, 0, 0.08)'
+    : 'rgba(237, 108, 0, 0.05)',
+  border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(237, 108, 0, 0.4)' : 'rgba(237, 108, 0, 0.3)'}`,
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(2),
 }));
@@ -104,20 +108,33 @@ export default function SessionWarningDialog({
       disableEscapeKeyDown
       PaperProps={{
         sx: {
-          borderRadius: 1,
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
+          borderRadius: 2,
+          boxShadow: "0 12px 48px rgba(0, 0, 0, 0.25)",
+          backgroundColor: (theme) => 
+            theme.palette.mode === 'dark' 
+              ? 'rgba(20, 25, 35, 0.95)'
+              : 'rgba(255, 255, 255, 0.98)',
         },
       }}
     >
       <DialogTitle
         sx={{
-          backgroundColor: "warning.light",
-          color: "warning.dark",
-          fontWeight: 600,
-          fontSize: "1.25rem",
+          backgroundColor: (theme) => theme.palette.mode === 'dark' 
+            ? 'rgba(237, 108, 0, 0.2)'
+            : 'rgba(237, 108, 0, 0.12)',
+          color: (theme) => theme.palette.mode === 'dark'
+            ? '#ED6C00'
+            : '#D66B00',
+          fontWeight: 700,
+          fontSize: "1.35rem",
           display: "flex",
           alignItems: "center",
           gap: 1,
+          borderBottom: (theme) => `1px solid ${
+            theme.palette.mode === 'dark' 
+              ? 'rgba(237, 108, 0, 0.15)'
+              : 'rgba(237, 108, 0, 0.1)'
+          }`,
         }}
       >
         <WarningAmberIcon sx={{ fontSize: "1.5rem" }} />
@@ -201,10 +218,21 @@ export default function SessionWarningDialog({
         <Button
           onClick={handleLogout}
           variant="outlined"
-          color="error"
+          color="inherit"
           sx={{
             textTransform: "none",
-            fontWeight: 500,
+            fontWeight: 600,
+            borderColor: (theme) => theme.palette.mode === 'dark'
+              ? 'rgba(237, 108, 0, 0.3)'
+              : 'rgba(237, 108, 0, 0.2)',
+            color: (theme) => theme.palette.mode === 'dark'
+              ? '#ED6C00'
+              : '#D66B00',
+            '&:hover': {
+              backgroundColor: (theme) => theme.palette.mode === 'dark'
+                ? 'rgba(237, 108, 0, 0.1)'
+                : 'rgba(237, 108, 0, 0.08)',
+            }
           }}
         >
           Çıkış Yap
@@ -212,10 +240,18 @@ export default function SessionWarningDialog({
         <Button
           onClick={handleKeepSession}
           variant="contained"
-          color="warning"
           sx={{
             textTransform: "none",
-            fontWeight: 600,
+            fontWeight: 700,
+            backgroundColor: (theme) => theme.palette.mode === 'dark'
+              ? '#ED6C00'
+              : '#F57C00',
+            color: '#fff',
+            '&:hover': {
+              backgroundColor: (theme) => theme.palette.mode === 'dark'
+                ? '#F58400'
+                : '#FF9100',
+            }
           }}
           autoFocus
         >
