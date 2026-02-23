@@ -9,6 +9,9 @@ import {
   getSektorKodlari,
   uploadAndParseKurumlarBeyannamesi,
   importDenetlenen,
+  startImportFromOldJob,
+  getImportJobStatus,
+  getImportJobNotifications,
 } from "@/api/Musteri/MusteriIslemleri";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
@@ -35,6 +38,8 @@ interface MusteriEkleFormProps {
   showNavigationButtons?: boolean;
   onBack?: () => void;
   isWizardView?: boolean;
+  showPdfUpload?: boolean;
+  isImportMode?: boolean;
 }
 
 const MusteriEkleForm = ({
@@ -43,7 +48,9 @@ const MusteriEkleForm = ({
   initialData,
   showNavigationButtons = false,
   onBack,
-  isWizardView = false
+  isWizardView = false,
+  showPdfUpload = true,
+  isImportMode = false
 }: MusteriEkleFormProps = {}) => {
   const [firmaAdi, setFirmaAdi] = useState(initialData?.firmaAdi || initialData?.unvan || "");
   const [yetkili, setYetkili] = useState(initialData?.yetkili || "");
@@ -78,6 +85,11 @@ const MusteriEkleForm = ({
   const [control, setControl] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [jobStatus, setJobStatus] = useState<any>(null);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [polling, setPolling] = useState(false);
 
   const textFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -144,6 +156,31 @@ const MusteriEkleForm = ({
     multiple: false,
   });
 
+  // Job polling effect
+  useEffect(() => {
+    if (!jobId) return;
+    setPolling(true);
+    let interval = setInterval(async () => {
+      try {
+        const status = await getImportJobStatus(jobId);
+        setJobStatus(status);
+        const notifs = await getImportJobNotifications(jobId);
+        setNotifications(notifs);
+        if (status.status === "Succeeded" || status.status === "Failed" || status.status === "Cancelled") {
+          clearInterval(interval);
+          setPolling(false);
+          setLoading(false);
+          if (status.status === "Succeeded") {
+            enqueueSnackbar("Müşteri verileri başarıyla aktarıldı.", { variant: "success" });
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [jobId]);
+
 
 
   const handleButtonClick = async () => {
@@ -188,6 +225,30 @@ const MusteriEkleForm = ({
 
     try {
       setLoading(true);
+
+      // --- IMPORT MODE LOGIC ---
+      if (isImportMode && initialData && (initialData.id || initialData.Id)) {
+        try {
+          const result = await startImportFromOldJob({
+            OldCompanyId: initialData.id || initialData.Id,
+            NewCompanyId: 0,
+            Years: [],
+            TableKeys: []
+          });
+
+          setJobId(result.jobId);
+          setJobStatus({ status: result.status });
+          enqueueSnackbar(result.alreadyQueued ? "Zaten kuyruğa alınmış veya çalışıyor." : "Import işlemi kuyruğa alındı.", { variant: "info" });
+          // Note: setLoading(false) is handled in polling effect when done, 
+          // but we keep it true to disable the button.
+          return;
+        } catch (e: any) {
+          setLoading(false);
+          enqueueSnackbar(e.message || "Kuyruğa alınamadı", { variant: "error" });
+          return;
+        }
+      }
+
       // If initialData contains an Id (we are importing an old record), call import endpoint to preserve Id
       if (initialData && (initialData.id || initialData.Id)) {
         const dto: any = {
@@ -349,31 +410,33 @@ const MusteriEkleForm = ({
   return (
     <div>
       <Grid container spacing={isWizardView ? 2 : 3}>
-         <Grid size={12}>
-          <Box
-            {...getRootProps()}
-            sx={{
-              border: `2px dashed ${theme.palette.divider}`,
-              borderRadius: "8px",
-              padding: "20px",
-              textAlign: "center",
-              cursor: "pointer",
-              backgroundColor: theme.palette.background.paper,
-              "&:hover": {
-                borderColor: theme.palette.primary.main,
-              },
-            }}
-          >
-            <input {...getInputProps()} />
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              <Typography>
-                Şirket Bilgilerini PDF'den Yüklemek İçin Buraya Tıklayın veya Dosyayı Sürükleyin (Kurumlar Beyannamesi)
-              </Typography>
-            )}
-          </Box>
-        </Grid>
+        {showPdfUpload && (
+          <Grid size={12}>
+            <Box
+              {...getRootProps()}
+              sx={{
+                border: `2px dashed ${theme.palette.divider}`,
+                borderRadius: "8px",
+                padding: "20px",
+                textAlign: "center",
+                cursor: "pointer",
+                backgroundColor: theme.palette.background.paper,
+                "&:hover": {
+                  borderColor: theme.palette.primary.main,
+                },
+              }}
+            >
+              <input {...getInputProps()} />
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <Typography>
+                  Şirket Bilgilerini PDF'den Yüklemek İçin Buraya Tıklayın veya Dosyayı Sürükleyin (Kurumlar Beyannamesi)
+                </Typography>
+              )}
+            </Box>
+          </Grid>
+        )}
         {/* Firma Adı - Always Full Width */}
         <Grid size={12}>
           <Grid container spacing={isWizardView ? 1 : 2} alignItems="center">
@@ -865,18 +928,39 @@ const MusteriEkleForm = ({
 
         {/* Buttons */}
         <Grid size={12}>
-          <Box sx={{ display: "flex", justifyContent: isWizardView ? "flex-end" : "flex-start", mt: 2 }}>
-            {showNavigationButtons ? (
-              <Box sx={{ display: "flex", gap: 2 }}>
-                <Button variant="outlined" onClick={onBack} disabled={loading}>Geri</Button>
+          <Box sx={{ display: "flex", flexDirection: "column", mt: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: isWizardView ? "flex-end" : "flex-start" }}>
+              {showNavigationButtons ? (
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <Button variant="outlined" onClick={onBack} disabled={loading}>Geri</Button>
+                  <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={loading}>
+                    {loading ? <CircularProgress size={16} color="inherit" /> : (isWizardView ? "Kaydet ve İleri" : "Kaydet")}
+                  </Button>
+                </Box>
+              ) : (
                 <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={loading}>
-                  {loading ? <CircularProgress size={16} color="inherit" /> : (isWizardView ? "Kaydet ve İleri" : "Kaydet")}
+                  {loading ? <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} /> : null}
+                  {isImportMode ? "Müşteri Ekle" : "Müşteri Ekle"}
                 </Button>
+              )}
+            </Box>
+
+            {jobId && (
+              <Box mt={3} p={2} sx={{ bgcolor: "action.hover", borderRadius: 1 }}>
+                <Typography variant="h6" gutterBottom>Import Durumu: {jobStatus?.status}</Typography>
+                <Box sx={{ maxHeight: "200px", overflowY: "auto" }}>
+                  {notifications.map((n, i) => (
+                    <Typography key={i} variant="body2" sx={{ mb: 0.5, color: n.status === "Failed" ? "error.main" : "text.secondary" }}>
+                      <strong>{new Date(n.createdAt).toLocaleString()}:</strong> {n.status} - {n.message}
+                    </Typography>
+                  ))}
+                </Box>
+                {jobStatus?.errorMessage && (
+                  <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                    Hata: {jobStatus.errorMessage}
+                  </Typography>
+                )}
               </Box>
-            ) : (
-              <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={loading}>
-                {loading ? <CircularProgress size={16} color="inherit" /> : "Müşteri Ekle"}
-              </Button>
             )}
           </Box>
         </Grid>

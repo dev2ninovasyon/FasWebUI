@@ -33,8 +33,25 @@ export const getImportJobNotifications = async (jobId: string) => {
   if (!response.ok) throw new Error("Bildirimler alınamadı");
   return await response.json();
 };
-import { apiFetch } from "@/api/apiBase";
 
+// Yeni pipeline endpointine uygun örnek fonksiyonlar:
+export async function startImportFromOldPipelineJob(body: { TableKey: string, DenetciId: number, DenetlenenId: number, Yil: number }) {
+  const res = await apiFetch(`/DataTransfer/ImportFromOldJob`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (res && typeof res.json === 'function') return await res.json();
+  return res;
+}
+
+export async function getImportPipelineJobStatus(jobId: string) {
+  const res = await apiFetch(`/DataTransfer/ImportJobs/${jobId}`);
+  if (!res.ok) throw new Error('Job bulunamadı');
+  return await res.json();
+}
+
+import { apiFetch } from "@/api/apiBase";
 
 export const createDenetlenen = async (createdMusteri: any) => {
   try {
@@ -278,24 +295,6 @@ export const deleteDenetlenenById = async (id: number) => {
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
-  }
-};
-
-export const getOldDenetlenenForCurrentDenetci = async () => {
-  try {
-    const response = await apiFetch(`/DataTransfer/OldDenetlenen/ForCurrentDenetci`, {
-      method: "GET",
-      headers: { accept: "application/json" },
-    });
-    if (response.ok) {
-      return response.json();
-    } else {
-      console.error("getOldDenetlenenForCurrentDenetci failed", response.status);
-      return [];
-    }
-  } catch (error) {
-    console.error("getOldDenetlenenForCurrentDenetci error:", error);
-    return [];
   }
 };
 
@@ -1044,3 +1043,70 @@ export const deleteTeklifHesaplama = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+
+// ===== OldDb İthalatı için API Fonksiyonları =====
+
+import type {
+  OldDenetlenenListItemDto,
+  OldDenetlenenDetayDto,
+} from "./MusteriIslemleriDtos";
+
+// OldDb'den mevcut denetciId'ye ait firma listesi
+export async function getOldDenetlenenForCurrentDenetci(): Promise<
+  OldDenetlenenListItemDto[]
+> {
+  try {
+    const res = await apiFetch(`/DataTransfer/OldDenetlenen/ForCurrentDenetci`);
+    if (!res.ok) throw new Error("Firma listesi alınamadı");
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("getOldDenetlenenForCurrentDenetci error:", error);
+    throw error;
+  }
+}
+
+// OldDb'den firma detaylarını ID ile çek
+export async function getOldDenetlenenDetay(
+  id: number
+): Promise<OldDenetlenenDetayDto> {
+  try {
+    const res = await apiFetch(`/DataTransfer/OldDenetlenen/${id}`);
+    if (!res.ok) throw new Error(`Firma detayı yüklenemedi (ID: ${id})`);
+    const data = await res.json();
+    return data as OldDenetlenenDetayDto;
+  } catch (error) {
+    console.error("getOldDenetlenenDetay error:", error);
+    throw error;
+  }
+}
+
+// OldDb firma detaylarını MusteriEkleForm format'ına map et
+export function mapOldDenetlenenToFormData(
+  detay: OldDenetlenenDetayDto
+): Record<string, any> {
+  return {
+    id: detay.id,
+    firmaAdi: detay.firmaAdi || "",
+    yetkili: detay.yetkili || "",
+    tel: detay.tel || "",
+    fax: detay.fax || "",
+    adres: detay.adres || "",
+    email: detay.email || "",
+    webAdresi: detay.webAdresi || "",
+    ticaretSicilNo: detay.ticaretSicilNo || "",
+    vergiDairesi: detay.vergiDairesi || "",
+    vergiNo: detay.vergiNo || "",
+    arsivId: detay.arsivId || "",
+    aktifmi: detay.aktifmi ?? true,
+    sektor1Id: detay.sektor1Id || 0,
+    sektor2Id: detay.sektor2Id || 0,
+    sektor3Id: detay.sektor3Id || 0,
+    konsolideMi: detay.konsolide ? "Evet" : "Hayır",
+    konsolideTipi: detay.konsolideAnaSirketmi
+      ? "Ana Şirket"
+      : detay.konsolideAltSirketmi
+        ? "Alt Şirket"
+        : "Ana Şirket",
+  };
+}

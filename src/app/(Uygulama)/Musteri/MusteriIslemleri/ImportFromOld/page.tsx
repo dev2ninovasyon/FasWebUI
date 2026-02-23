@@ -1,131 +1,192 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import MusteriIslemleriLayout from "../MusteriIslemleriLayout";
-import { Box, Grid, TextField } from "@mui/material";
-import { Autocomplete } from "@mui/material";
+import {
+  Box,
+  Stack,
+  TextField,
+  Autocomplete,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 import MusteriEkleForm from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEkleForm";
-import { getOldDenetlenenForCurrentDenetci } from "@/api/Musteri/MusteriIslemleri";
+import {
+  getOldDenetlenenForCurrentDenetci,
+  getOldDenetlenenDetay,
+  mapOldDenetlenenToFormData,
+} from "@/api/Musteri/MusteriIslemleri";
+import type {
+  OldDenetlenenListItemDto,
+  OldDenetlenenDetayDto,
+} from "@/api/Musteri/MusteriIslemleriDtos";
 import { enqueueSnackbar } from "notistack";
 
-const Page = () => {
-  const [oldList, setOldList] = useState<any[]>([]);
-  const [selected, setSelected] = useState<any | null>(null);
-  const [jobId, setJobId] = useState<string | null>(null);
-  const [jobStatus, setJobStatus] = useState<any>(null);
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [polling, setPolling] = useState(false);
+const BCrumb = [
+  { to: "/Musteri", title: "Müşteri" },
+  { to: "/Musteri/MusteriIslemleri", title: "Müşteri İşlemleri" },
+  { to: "/Musteri/MusteriIslemleri/ImportFromOld", title: "Müşteri Taşı" },
+];
 
+const Page = () => {
+  const [oldList, setOldList] = useState<OldDenetlenenListItemDto[]>([]);
+  const [listLoading, setListLoading] = useState(true);
+  const [listError, setListError] = useState<string | null>(null);
+
+  const [selected, setSelected] = useState<OldDenetlenenListItemDto | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState<string | null>(null);
+  const [formData, setFormData] = useState<Record<string, any> | null>(null);
+
+  // AbortController for race condition prevention
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Load company list on mount
   useEffect(() => {
-    const fetch = async () => {
+    const loadList = async () => {
       try {
+        setListLoading(true);
+        setListError(null);
         const data = await getOldDenetlenenForCurrentDenetci();
         setOldList(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error("ImportFromOld fetch error:", err);
-        enqueueSnackbar("Müşteriler yüklenemedi.", { variant: "error" });
+      } catch (error) {
+        const errorMsg =
+          error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
+        setListError(errorMsg);
+        enqueueSnackbar("Müşteriler yüklenemedi: " + errorMsg, {
+          variant: "error",
+        });
+      } finally {
+        setListLoading(false);
       }
     };
-    fetch();
+
+    loadList();
   }, []);
 
-  // Job polling
+  // Load selected company details when selection changes
   useEffect(() => {
-    if (!jobId) return;
-    setPolling(true);
-    let interval = setInterval(async () => {
+    // Cancel previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    if (!selected) {
+      setFormData(null);
+      setDetailError(null);
+      return;
+    }
+
+    // Create new AbortController for this request
+    abortControllerRef.current = new AbortController();
+
+    const loadDetail = async () => {
       try {
-        const status = await import("@/api/Musteri/MusteriIslemleri").then(m => m.getImportJobStatus(jobId));
-        setJobStatus(status);
-        const notifs = await import("@/api/Musteri/MusteriIslemleri").then(m => m.getImportJobNotifications(jobId));
-        setNotifications(notifs);
-        if (status.status === "Succeeded" || status.status === "Failed" || status.status === "Cancelled") {
-          clearInterval(interval);
-          setPolling(false);
+        setDetailLoading(true);
+        setDetailError(null);
+
+        const detailData = await getOldDenetlenenDetay(selected.id);
+
+        // Check if request was aborted before state update
+        if (abortControllerRef.current?.signal.aborted) {
+          return;
         }
-      } catch (e) {
-        // ignore
+
+        const mapped = mapOldDenetlenenToFormData(detailData);
+        setFormData(mapped);
+      } catch (error) {
+        // Ignore abort errors
+        if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
+
+        const errorMsg =
+          error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
+        setDetailError(errorMsg);
+        enqueueSnackbar("Firma detayları yüklenemedi: " + errorMsg, {
+          variant: "error",
+        });
+      } finally {
+        setDetailLoading(false);
       }
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [jobId]);
+    };
+
+    loadDetail();
+
+    // Cleanup: abort request on unmount or selection change
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [selected]);
 
   return (
-    <MusteriIslemleriLayout>
-      <PageContainer title="Müşterileri İçe Aktar" description="Eski veritabanından seçili şirketi yeni veritabanına taşı">
-        <Grid container spacing={3}>
-          <Grid size={12}>
-            <ParentCard title="Müşteri Seç">
-              <Grid container spacing={3}>
-                <Grid size={12}>
+    <MusteriIslemleriLayout title="Müşteri Taşı" items={BCrumb}>
+      <PageContainer title="Müşteri Taşı" description="Eski veriler aktarılıyor">
+        <Stack spacing={3}>
+          {/* Company Selection Section */}
+          <ParentCard title="Müşteri Seç">
+            <Stack spacing={3}>
+              {listLoading ? (
+                <Box display="flex" justifyContent="center" py={3}>
+                  <CircularProgress size={40} />
+                </Box>
+              ) : listError ? (
+                <Alert severity="error">{listError}</Alert>
+              ) : (
+                <Box>
                   <Autocomplete
                     options={oldList}
-                    getOptionLabel={(opt: any) => opt.firmaAdi || opt.FirmaAdi || ""}
+                    getOptionLabel={(opt: OldDenetlenenListItemDto) =>
+                      opt.firmaAdi || ""
+                    }
+                    value={selected}
                     onChange={(e, val) => setSelected(val)}
-                    renderInput={(params) => <TextField {...params} label="Müşteri Seçiniz" variant="outlined" />}
+                    fullWidth
+                    sx={{ minWidth: 350, maxWidth: 600 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Müşteri Seçiniz"
+                        variant="outlined"
+                        fullWidth
+                      />
+                    )}
+                    noOptionsText="Müşteri bulunamadı"
+                    isOptionEqualToValue={(opt, val) => opt.id === val.id}
                   />
-                </Grid>
-                <Grid size={12}>
-                  <Box>
-                    <MusteriEkleForm key={selected?.id || selected?.Id || "empty"} initialData={selected} />
+                </Box>
+              )}
+            </Stack>
+          </ParentCard>
+
+          {/* Firm Detail Section */}
+          {selected && (
+            <ParentCard title="Firma Detayları">
+              <Stack spacing={2}>
+                {detailLoading ? (
+                  <Box display="flex" justifyContent="center" py={5}>
+                    <CircularProgress size={40} />
                   </Box>
-                </Grid>
-                <Grid size={12}>
-                  <Box mt={2}>
-                    <button
-                      disabled={!selected || polling}
-                      onClick={async () => {
-                        try {
-                          const { queued, alreadyQueued, jobId: newJobId, status } = await import("@/api/Musteri/MusteriIslemleri").then(m => m.startImportFromOldJob({
-                            OldCompanyId: selected.id || selected.Id,
-                            NewCompanyId: 0, // Gerekirse seçtir
-                            Years: [], // Gerekirse seçtir
-                            TableKeys: [] // Gerekirse seçtir
-                            // TableKey: "MusteriImport" // Artık API fonksiyonu ekliyor
-                          }));
-                          setJobId(newJobId);
-                          setJobStatus({ status });
-                          enqueueSnackbar(alreadyQueued ? "Zaten kuyruğa alınmış veya çalışıyor." : "Kuyruğa alındı", { variant: "info" });
-                        } catch (e: any) {
-                          if (e && e.errors && e.errors.TableKey) {
-                            enqueueSnackbar("TableKey gerekli: 'MusteriImport'", { variant: "error" });
-                          } else if (e && e.errors) {
-                            Object.entries(e.errors).forEach(([field, messages]: [string, any]) => {
-                              (messages as string[]).forEach((msg) => {
-                                enqueueSnackbar(`${field}: ${msg}`, { variant: "error" });
-                              });
-                            });
-                          } else if (e && e.message) {
-                            enqueueSnackbar(e.message, { variant: "error" });
-                          } else {
-                            enqueueSnackbar("Kuyruğa alınamadı", { variant: "error" });
-                          }
-                        }
-                      }}
-                    >
-                      {polling ? "İşlem Devam Ediyor..." : "Müşteri Import Et (Kuyruğa Al)"}
-                    </button>
-                  </Box>
-                </Grid>
-                {jobId && (
-                  <Grid size={12}>
-                    <Box mt={2}>
-                      <strong>Durum:</strong> {jobStatus?.status}
-                      <ul>
-                        {notifications.map((n, i) => (
-                          <li key={i}>{n.createdAt}: {n.status} - {n.message}</li>
-                        ))}
-                      </ul>
-                      {jobStatus?.errorMessage && <div style={{ color: "red" }}>{jobStatus.errorMessage}</div>}
-                    </Box>
-                  </Grid>
+                ) : detailError ? (
+                  <Alert severity="error">{detailError}</Alert>
+                ) : formData ? (
+                  <MusteriEkleForm
+                    key={`import-${selected.id}`}
+                    initialData={formData}
+                    showPdfUpload={false}
+                    isImportMode={true}
+                  />
+                ) : (
+                  <Alert severity="warning">Firma verileri bulunamadı</Alert>
                 )}
-              </Grid>
+              </Stack>
             </ParentCard>
-          </Grid>
-        </Grid>
+          )}
+        </Stack>
       </PageContainer>
     </MusteriIslemleriLayout>
   );

@@ -14,15 +14,21 @@ const BCrumb = [
   },
 ];
 
+interface Props {
+  children: React.ReactNode;
+  title?: string;
+  items?: any[];
+}
+
 export default function MusteriIslemleriLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+  title = "Müşteri İşlemleri",
+  items = BCrumb,
+}: Props) {
   return (
     <ProtectedRoute allowedRoles={["DenetciAdmin"]}>
       <div>
-        <Breadcrumb title="Müşteri İşlemleri" items={BCrumb} />
+        <Breadcrumb title={title} items={items} />
         {children}
       </div>
     </ProtectedRoute>
