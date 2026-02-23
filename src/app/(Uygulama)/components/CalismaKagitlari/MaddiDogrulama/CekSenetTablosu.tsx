@@ -1,9 +1,8 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import Handsontable from "handsontable";
+import { HotTable } from "@handsontable/react";import Handsontable from "handsontable";
 import "handsontable/dist/handsontable.full.min.css";
 import "@/utils/languages/handsontable.tr-TR";
 
@@ -16,10 +15,7 @@ import {
     createCekSenetReeskontVerisi,
 } from "@/api/Veri/CekSenetReeskont";
 
-// Handsontable modüllerini kaydet
-registerAllModules();
-
-interface Props {
+// Handsontable modüllerini kaydetinterface Props {
     dipnotNo: string;
     isReport?: boolean;
 }

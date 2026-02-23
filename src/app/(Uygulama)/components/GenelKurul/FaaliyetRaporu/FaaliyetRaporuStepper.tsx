@@ -117,6 +117,11 @@ const FaaliyetRaporuStepper = () => {
     []
   );
   const [kapakImage, setKapakImage] = useState<string | null>(null);
+  const revokeBlobUrl = (value?: string | null) => {
+    if (value && value.startsWith("blob:")) {
+      URL.revokeObjectURL(value);
+    }
+  };
 
   const handleKapakImageChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -124,15 +129,27 @@ const FaaliyetRaporuStepper = () => {
     const file = event.target.files?.[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
-      setKapakImage(objectURL);
+      setKapakImage((prev) => {
+        revokeBlobUrl(prev);
+        return objectURL;
+      });
       setKapak("ResimSec");
     }
   };
 
   const [kapak, setKapak] = useState("ResimSec");
   const handleChangeKapak = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value !== "ResimSec") {
+      setKapakImage((prev) => {
+        revokeBlobUrl(prev);
+        return prev;
+      });
+    }
     if (event.target.value == "ResimSec") {
-      setKapakImage(null);
+      setKapakImage((prev) => {
+        revokeBlobUrl(prev);
+        return null;
+      });
     }
     if (event.target.value == "Resim1") {
       setKapakImage("/images/kapak/ArkaPlan1.jpg");
@@ -560,9 +577,18 @@ const FaaliyetRaporuStepper = () => {
   };
 
   const handleRemoveKapakImage = () => {
-    setKapakImage(null);
+    setKapakImage((prev) => {
+      revokeBlobUrl(prev);
+      return null;
+    });
     setKapak("ResimSec");
   };
+
+  useEffect(() => {
+    return () => {
+      revokeBlobUrl(kapakImage);
+    };
+  }, [kapakImage]);
   async function createPDF() {
     const reportElement = document.querySelector("div#report") as HTMLElement;
     const reportPage = document.querySelector(
@@ -675,6 +701,7 @@ const FaaliyetRaporuStepper = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   return (

@@ -331,8 +331,11 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       const xmlBlob = new Blob([response.data], {
         type: fileType === "E-DefterKebir" ? "text/html" : "application/pdf",
       });
-      const xmlBlobUrl = window.URL.createObjectURL(xmlBlob);
-      setXmlBlobUrl(xmlBlobUrl);
+      const nextBlobUrl = window.URL.createObjectURL(xmlBlob);
+      if (xmlBlobUrl) {
+        window.URL.revokeObjectURL(xmlBlobUrl);
+      }
+      setXmlBlobUrl(nextBlobUrl);
       setIsOpen2(true);
       handleClose();
     } catch (error) {
@@ -397,6 +400,14 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       return () => clearInterval(intervalId);
     }
   }, [dosyaYuklendiMi]);
+
+  useEffect(() => {
+    return () => {
+      if (xmlBlobUrl) {
+        window.URL.revokeObjectURL(xmlBlobUrl);
+      }
+    };
+  }, [xmlBlobUrl]);
 
   // const emptyRows =
   //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -670,7 +681,13 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         )}
         <Dialog
           open={isOpen2}
-          onClose={() => setIsOpen2(false)}
+          onClose={() => {
+            if (xmlBlobUrl) {
+              window.URL.revokeObjectURL(xmlBlobUrl);
+              setXmlBlobUrl("");
+            }
+            setIsOpen2(false);
+          }}
           fullWidth
           maxWidth={fileType === "E-DefterKebir" ? false : "xl"}
         >

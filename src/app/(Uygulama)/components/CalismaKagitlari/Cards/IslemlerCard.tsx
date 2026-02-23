@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Button, Dialog, DialogContent, Grid } from "@mui/material";
@@ -6,7 +6,7 @@ import { IconFileTypeDocx, IconFileTypePdf } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
-import { apiFetch,url } from "@/api/apiBase";
+import { url } from "@/api/apiBase";
 
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
@@ -18,12 +18,17 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const [isOpen, setIsOpen] = useState(false);
   const [pdfBlobUrl, setPdfBlobUrl] = useState("");
-
   const [openCartAlert, setOpenCartAlert] = useState(false);
+
+  const revokeBlobUrl = (value?: string | null) => {
+    if (value && value.startsWith("blob:")) {
+      window.URL.revokeObjectURL(value);
+    }
+  };
 
   const handleDownload = async () => {
     try {
-      const response =  await axios({
+      const response = await axios({
         url: `${url}/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
         method: "GET",
         responseType: "blob",
@@ -38,6 +43,8 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       link.setAttribute("download", `${controller}.docx`);
       document.body.appendChild(link);
       link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(urlFile), 0);
     } catch (error) {
       console.log("İndirme hatası:", error);
     } finally {
@@ -57,8 +64,11 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       });
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-      const pdfBlobUrl = window.URL.createObjectURL(pdfBlob);
-      setPdfBlobUrl(pdfBlobUrl);
+      const nextPdfBlobUrl = window.URL.createObjectURL(pdfBlob);
+      setPdfBlobUrl((prev) => {
+        revokeBlobUrl(prev);
+        return nextPdfBlobUrl;
+      });
       setIsOpen(true);
     } catch (error) {
       console.log("Error fetching PDF:", error);
@@ -67,13 +77,20 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      revokeBlobUrl(pdfBlobUrl);
+    };
+  }, [pdfBlobUrl]);
+
   return (
     <Grid container>
       <Grid
         size={{
           xs: 12,
-          lg: 12
-        }}>
+          lg: 12,
+        }}
+      >
         <Card
           sx={{
             width: "100%",
@@ -97,8 +114,9 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
                 }}
                 size={{
                   xs: 12,
-                  lg: 5.75
-                }}>
+                  lg: 5.75,
+                }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
@@ -121,8 +139,9 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
                 }}
                 size={{
                   xs: 12,
-                  lg: 5.75
-                }}>
+                  lg: 5.75,
+                }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
@@ -144,7 +163,13 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
       </Grid>
       <Dialog
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={() => {
+          setIsOpen(false);
+          setPdfBlobUrl((prev) => {
+            revokeBlobUrl(prev);
+            return "";
+          });
+        }}
         fullWidth
         maxWidth="xl"
       >

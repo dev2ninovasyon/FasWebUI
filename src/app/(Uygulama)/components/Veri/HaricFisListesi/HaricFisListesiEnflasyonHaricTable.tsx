@@ -1,7 +1,6 @@
-﻿import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+﻿import "@/lib/handsontableSetup";
+import React, { useEffect, useState, useRef } from "react";
+import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import {
@@ -30,11 +29,7 @@ import {
   saveHaricFisListesiHaric,
 } from "@/api/Veri/HaricFisListesi";
 import { enqueueSnackbar } from "notistack";
-import { setCollapse } from "@/store/customizer/CustomizerSlice";
-
-registerAllModules();
-
-interface Props {
+import { setCollapse } from "@/store/customizer/CustomizerSlice";interface Props {
   hesapNo: string;
   yevmiyeFisNo: string;
   baslangicTarihi: string;

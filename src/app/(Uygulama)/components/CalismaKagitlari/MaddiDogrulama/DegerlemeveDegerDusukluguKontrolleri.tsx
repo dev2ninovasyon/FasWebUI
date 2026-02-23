@@ -1,9 +1,8 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
 import "@/utils/languages/handsontable.tr-TR";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "@/store/hooks";
@@ -12,11 +11,7 @@ import {
     getDegerlemeveDegerDusukluguKontrolleri,
 } from "@/api/CalismaKagitlari/DegerlemeveDegerDusukluguKontrolleri";
 import { useLoading } from "@/contexts/LoadingContext";
-import { enqueueSnackbar } from "notistack";
-
-registerAllModules();
-
-interface Props {
+import { enqueueSnackbar } from "notistack";interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;

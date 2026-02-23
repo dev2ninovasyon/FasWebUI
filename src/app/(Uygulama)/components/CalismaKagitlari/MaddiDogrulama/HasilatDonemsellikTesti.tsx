@@ -1,8 +1,7 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
 import "@/utils/languages/handsontable.tr-TR";
 import { Box, Button, Typography, useTheme, TextField } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -16,11 +15,7 @@ import {
 } from "@/api/CalismaKagitlari/HasilatDonemsellikTesti";
 import { useLoading } from "@/contexts/LoadingContext";
 import { enqueueSnackbar } from "notistack";
-import { format } from "date-fns";
-
-registerAllModules();
-
-interface Props {
+import { format } from "date-fns";interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;

@@ -1,0 +1,4 @@
+Debugger listening on ws://127.0.0.1:9230/2add4596-9656-4b4e-aece-95204a1f100f
+For help, see: https://nodejs.org/en/docs/inspector
+⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+Debugger attached.

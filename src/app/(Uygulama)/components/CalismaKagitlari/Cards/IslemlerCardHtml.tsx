@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Button, Dialog, DialogContent, Grid, useTheme } from "@mui/material";
@@ -8,15 +8,15 @@ import { IconFileTypeDocx, IconFileTypePdf, IconArchive } from "@tabler/icons-re
 import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
-import { apiFetch,url } from "@/api/apiBase";
+import { url } from "@/api/apiBase";
 
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { enqueueSnackbar } from "notistack";
 
 interface Props {
   controller: string;
-  buildHtmlAsync?: () => Promise<string>; // ğŸ”‘
-  previewEndpoint?: string; // opsiyonel override (şimdilik kullanılmıyor)
+  buildHtmlAsync?: () => Promise<string>;
+  previewEndpoint?: string;
 }
 
 const IslemlerCardHtml: React.FC<Props> = ({
@@ -31,6 +31,12 @@ const IslemlerCardHtml: React.FC<Props> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [pdfBlobUrl, setPdfBlobUrl] = useState("");
   const [openCartAlert, setOpenCartAlert] = useState(false);
+
+  const revokeBlobUrl = (value?: string | null) => {
+    if (value && value.startsWith("blob:")) {
+      window.URL.revokeObjectURL(value);
+    }
+  };
 
   const handleDownload = async () => {
     try {
@@ -52,7 +58,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
           title: controller,
           modelAdi: controller,
           html,
-          save: true, // arşive kaydet
+          save: true,
         },
         {
           baseURL: url,
@@ -71,6 +77,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
       document.body.appendChild(link);
       link.click();
       link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(urlFile), 0);
     } catch (error) {
       console.log("İndirme hatası:", error);
       enqueueSnackbar("İndirme sırasında hata oluştu.", {
@@ -89,7 +96,6 @@ const IslemlerCardHtml: React.FC<Props> = ({
     }
   };
 
-  // ğŸ”¸ Önizleme: HTML'i (PNG gömülü) üret â†’ gönder â†’ PDF blob aç
   const handlePreview = async () => {
     try {
       setOpenCartAlert(true);
@@ -110,7 +116,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
           title: controller,
           modelAdi: controller,
           html,
-          save: true, // arşive kaydet
+          save: true,
         },
         {
           baseURL: url,
@@ -123,8 +129,11 @@ const IslemlerCardHtml: React.FC<Props> = ({
       );
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-      const pdfUrl = window.URL.createObjectURL(pdfBlob);
-      setPdfBlobUrl(pdfUrl);
+      const nextPdfUrl = window.URL.createObjectURL(pdfBlob);
+      setPdfBlobUrl((prev) => {
+        revokeBlobUrl(prev);
+        return nextPdfUrl;
+      });
       setIsOpen(true);
     } catch (error: any) {
       console.log("Önizleme/Export hatası:", error?.response || error);
@@ -144,7 +153,6 @@ const IslemlerCardHtml: React.FC<Props> = ({
     }
   };
 
-  // ğŸ”¸ Sadece arşive kaydet (indir / preview yok)
   const handleArchive = async () => {
     try {
       setOpenCartAlert(true);
@@ -154,7 +162,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
       }
 
       const html = await buildHtmlAsync();
-      const endpoint = `/ArsivIslemleri/ArsiveKaydetHtml`; // ğŸ”´ Backend'de bu endpoint'i karşılamalısın
+      const endpoint = `/ArsivIslemleri/ArsiveKaydetHtml`;
 
       await axios.post(
         endpoint,
@@ -205,13 +213,20 @@ const IslemlerCardHtml: React.FC<Props> = ({
     }
   };
 
+  useEffect(() => {
+    return () => {
+      revokeBlobUrl(pdfBlobUrl);
+    };
+  }, [pdfBlobUrl]);
+
   return (
     <Grid container>
       <Grid
         size={{
           xs: 12,
-          lg: 12
-        }}>
+          lg: 12,
+        }}
+      >
         <Card sx={{ width: "100%", bgcolor: "primary.light" }}>
           <CardContent sx={{ bgcolor: "primary.light" }}>
             <Grid
@@ -227,8 +242,9 @@ const IslemlerCardHtml: React.FC<Props> = ({
                 sx={{ display: "flex", justifyContent: "center" }}
                 size={{
                   xs: 12,
-                  lg: 3.75
-                }}>
+                  lg: 3.75,
+                }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
@@ -246,8 +262,9 @@ const IslemlerCardHtml: React.FC<Props> = ({
                 sx={{ display: "flex", justifyContent: "center" }}
                 size={{
                   xs: 12,
-                  lg: 3.75
-                }}>
+                  lg: 3.75,
+                }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
@@ -265,8 +282,9 @@ const IslemlerCardHtml: React.FC<Props> = ({
                 sx={{ display: "flex", justifyContent: "center" }}
                 size={{
                   xs: 12,
-                  lg: 3.75
-                }}>
+                  lg: 3.75,
+                }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
@@ -285,7 +303,13 @@ const IslemlerCardHtml: React.FC<Props> = ({
       </Grid>
       <Dialog
         open={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={() => {
+          setIsOpen(false);
+          setPdfBlobUrl((prev) => {
+            revokeBlobUrl(prev);
+            return "";
+          });
+        }}
         fullWidth
         maxWidth="xl"
       >

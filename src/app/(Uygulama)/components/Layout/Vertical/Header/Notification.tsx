@@ -104,6 +104,7 @@ const sanitizeText = (text: string): string => {
 };
 
 const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
+  const MAX_NOTIFICATION_ITEMS = 200;
   const [anchorEl, setanchorEl] = useState(null);
   const [isShaking, setIsShaking] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -129,6 +130,9 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   const dispatch = useDispatch();
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const shakeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const modalTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const browserNotificationsRef = React.useRef<Notification[]>([]);
 
   // Tarih formatı: "Bugün 14:30" veya "Dün 09:45" veya "01 Ş 14:30"
   const formatTarih = (tarih?: string) => {
@@ -278,7 +282,10 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     // İkonu ve sayfayı sallandır
     setIsShaking(true);
     setScreenShake(true);
-    setTimeout(() => {
+    if (shakeTimeoutRef.current) {
+      clearTimeout(shakeTimeoutRef.current);
+    }
+    shakeTimeoutRef.current = setTimeout(() => {
       setIsShaking(false);
       setScreenShake(false);
     }, 1000);
@@ -290,7 +297,10 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       aciklama: sanitizeText(bildirim.aciklama || "")
     });
     setShowModal(true);
-    setTimeout(() => {
+    if (modalTimeoutRef.current) {
+      clearTimeout(modalTimeoutRef.current);
+    }
+    modalTimeoutRef.current = setTimeout(() => {
       setShowModal(false);
     }, 4000);
 
@@ -300,16 +310,21 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
 
     // Browser notification (izin varsa)
     if ("Notification" in window && Notification.permission === "granted") {
-      new Notification(bildirim.konu, {
+      const browserNotification = new Notification(bildirim.konu, {
         body: bildirim.aciklama,
         icon: "/images/svgs/icon-dot.png",
         tag: "bildirim",
         requireInteraction: true,
       });
+      browserNotificationsRef.current.push(browserNotification);
+      if (browserNotificationsRef.current.length > 3) {
+        const oldest = browserNotificationsRef.current.shift();
+        oldest?.close();
+      }
     }
 
     // Listeye ekle (başa)
-    setFetchedData((prev) => [yeniBildirim, ...prev]);
+    setFetchedData((prev) => [yeniBildirim, ...prev].slice(0, MAX_NOTIFICATION_ITEMS));
   };
 
   useEffect(() => {
@@ -342,6 +357,9 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
 
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.3);
+      setTimeout(() => {
+        audioContext.close().catch(() => { });
+      }, 350);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.log("Ses çalma hatası");
@@ -354,6 +372,19 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (shakeTimeoutRef.current) {
+        clearTimeout(shakeTimeoutRef.current);
+      }
+      if (modalTimeoutRef.current) {
+        clearTimeout(modalTimeoutRef.current);
+      }
+      browserNotificationsRef.current.forEach((n) => n.close());
+      browserNotificationsRef.current = [];
+    };
   }, []);
 
   // Akıllı Yönlendirme ve Şirket Değiştirme Mantığı

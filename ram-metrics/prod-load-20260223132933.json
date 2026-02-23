@@ -1,0 +1,58 @@
+{
+  "startedAt": "2026-02-23T13:34:28.849Z",
+  "baseUrl": "http://127.0.0.1:3100",
+  "scenarios": [
+    10,
+    25,
+    50
+  ],
+  "durationSec": 60,
+  "results": [
+    {
+      "concurrency": 10,
+      "durationSec": 60,
+      "requests": 78887,
+      "throughputBytes": 995711714,
+      "p95LatencyMs": null,
+      "rssAvgMB": 186.39,
+      "rssPeakMB": 218.76,
+      "heapUsedAvgMB": 63.26,
+      "heapUsedPeakMB": 102.23,
+      "oom": false,
+      "sampleCount": 81,
+      "errors": 0,
+      "timeouts": 0
+    },
+    {
+      "concurrency": 25,
+      "durationSec": 60,
+      "requests": 108638,
+      "throughputBytes": 1371228836,
+      "p95LatencyMs": null,
+      "rssAvgMB": 220.47,
+      "rssPeakMB": 221.98,
+      "heapUsedAvgMB": 73.76,
+      "heapUsedPeakMB": 105.32,
+      "oom": false,
+      "sampleCount": 63,
+      "errors": 0,
+      "timeouts": 0
+    },
+    {
+      "concurrency": 50,
+      "durationSec": 60,
+      "requests": 124071,
+      "throughputBytes": 1566024162,
+      "p95LatencyMs": null,
+      "rssAvgMB": 231.91,
+      "rssPeakMB": 233.57,
+      "heapUsedAvgMB": 78.55,
+      "heapUsedPeakMB": 108.35,
+      "oom": false,
+      "sampleCount": 61,
+      "errors": 0,
+      "timeouts": 0
+    }
+  ],
+  "serverExitCode": null
+}

@@ -1,6 +1,5 @@
-﻿import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+﻿import "@/lib/handsontableSetup";
+import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -9,23 +8,17 @@ import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
-import {
-  createDonusumFisleriVerisi,
+import {  createDonusumFisleriVerisi,
   deleteDonusumFisleriVerisi,
   getDonusumFisleriVerileriByDenetciDenetlenenYil,
 } from "@/api/Veri/DonusumFisleri";
 import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 
-// register Handsontable's modules
-registerAllModules();
-
-numbro.registerLanguage(trTR);
+// register Handsontable's modulesnumbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -652,6 +645,7 @@ const DonusumFisleri: React.FC<Props> = ({
     const fullData = [headers, ...processedData];
 
     async function createExcelFile() {
+      const { default: ExcelJS } = await import("exceljs");
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sayfa1");
 

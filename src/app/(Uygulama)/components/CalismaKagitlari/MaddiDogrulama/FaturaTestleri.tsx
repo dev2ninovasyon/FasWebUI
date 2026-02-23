@@ -1,20 +1,15 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState } from "react";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { Box, useTheme, Typography, CircularProgress } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getFaturaTestleri, faturaTestiGuncelle, FaturaTestleriSatir } from "@/api/CalismaKagitlari/FaturaTestleri";
 import { enqueueSnackbar } from "notistack";
-import moment from "moment";
-
-registerAllModules();
-
-const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isReport?: boolean }) => {
+import moment from "moment";const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isReport?: boolean }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);

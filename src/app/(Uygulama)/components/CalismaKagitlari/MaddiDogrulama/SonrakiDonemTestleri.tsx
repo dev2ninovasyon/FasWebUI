@@ -1,9 +1,8 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
 import "@/utils/languages/handsontable.tr-TR";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "@/store/hooks";
@@ -18,11 +17,7 @@ import {
 } from "@/api/CalismaKagitlari/SonrakiDonemTestleri";
 import { useLoading } from "@/contexts/LoadingContext";
 import { enqueueSnackbar } from "notistack";
-import moment from "moment";
-
-registerAllModules();
-
-interface Props {
+import moment from "moment";interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;

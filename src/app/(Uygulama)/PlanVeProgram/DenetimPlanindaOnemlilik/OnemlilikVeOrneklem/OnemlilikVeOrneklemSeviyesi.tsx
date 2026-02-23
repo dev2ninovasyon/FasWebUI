@@ -1,6 +1,5 @@
-﻿import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+﻿import "@/lib/handsontableSetup";
+import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -17,10 +16,7 @@ import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
-// register Handsontable's modules
-registerAllModules();
-
-numbro.registerLanguage(trTR);
+// register Handsontable's modulesnumbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {

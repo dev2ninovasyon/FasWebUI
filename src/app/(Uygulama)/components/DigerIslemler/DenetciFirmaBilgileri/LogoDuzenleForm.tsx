@@ -10,7 +10,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createLogo, getLogo } from "@/api/Denetci/Denetci";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -24,6 +24,13 @@ const LogoDuzenleForm = () => {
   const mdDown = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
 
   const [firmaLogoImage, setFirmaLogoImage] = useState<string | null>(null);
+  const tempBlobUrlRef = useRef<string | null>(null);
+
+  const revokeBlobUrl = (value?: string | null) => {
+    if (value && value.startsWith("blob:")) {
+      URL.revokeObjectURL(value);
+    }
+  };
 
   const handleFirmaLogoImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -31,15 +38,15 @@ const LogoDuzenleForm = () => {
     const file = event.target.files?.[0];
     if (file) {
       const objectURL = URL.createObjectURL(file);
+      revokeBlobUrl(tempBlobUrlRef.current);
+      tempBlobUrlRef.current = objectURL;
       setFirmaLogoImage(objectURL);
 
       const formData = new FormData();
       formData.append("logo", file);
 
       try {
-        const success = await createLogo(user.denetciId || 0,
-          formData
-        );
+        const success = await createLogo(user.denetciId || 0, formData);
 
         if (success) {
           enqueueSnackbar("Logo Yüklendi", {
@@ -77,7 +84,10 @@ const LogoDuzenleForm = () => {
     try {
       const denetciLogo = await getLogo(user.denetciId);
       if (!denetciLogo.message) {
+        // Sunucudan gelen base64 kalıcı içerik; blob URL değil.
         setFirmaLogoImage(denetciLogo.logoBase64);
+        revokeBlobUrl(tempBlobUrlRef.current);
+        tempBlobUrlRef.current = null;
       } else {
         enqueueSnackbar(denetciLogo && denetciLogo.message, {
           variant: "warning",
@@ -97,6 +107,10 @@ const LogoDuzenleForm = () => {
 
   useEffect(() => {
     fetchData();
+    return () => {
+      revokeBlobUrl(tempBlobUrlRef.current);
+      tempBlobUrlRef.current = null;
+    };
   }, []);
 
   return (
@@ -105,8 +119,9 @@ const LogoDuzenleForm = () => {
         size={{
           xs: 12,
           sm: 6,
-          lg: 6
-        }}>
+          lg: 6,
+        }}
+      >
         <Box bgcolor={"info.light"} textAlign="center">
           <CardContent
             style={{
@@ -122,8 +137,9 @@ const LogoDuzenleForm = () => {
                 size={{
                   xs: 12,
                   md: 6,
-                  lg: 6
-                }}>
+                  lg: 6,
+                }}
+              >
                 <Typography
                   variant="subtitle1"
                   height={"100%"}
@@ -138,8 +154,9 @@ const LogoDuzenleForm = () => {
                 size={{
                   xs: 12,
                   md: 3,
-                  lg: 3
-                }}>
+                  lg: 3,
+                }}
+              >
                 <input
                   accept=".png,.jpg,.jpeg"
                   style={{ display: "none" }}
@@ -166,8 +183,9 @@ const LogoDuzenleForm = () => {
         size={{
           xs: 12,
           sm: 6,
-          lg: 6
-        }}>
+          lg: 6,
+        }}
+      >
         <Box bgcolor={"info.light"} textAlign="center">
           <CardContent
             style={{
@@ -183,8 +201,9 @@ const LogoDuzenleForm = () => {
                 size={{
                   xs: 4,
                   md: 4,
-                  lg: 4
-                }}>
+                  lg: 4,
+                }}
+              >
                 <Typography
                   variant="subtitle1"
                   height={"100%"}
@@ -202,8 +221,9 @@ const LogoDuzenleForm = () => {
                 size={{
                   xs: 8,
                   md: 8,
-                  lg: 8
-                }}>
+                  lg: 8,
+                }}
+              >
                 {firmaLogoImage && (
                   <Box
                     sx={{
@@ -240,4 +260,3 @@ const LogoDuzenleForm = () => {
 };
 
 export default LogoDuzenleForm;
-

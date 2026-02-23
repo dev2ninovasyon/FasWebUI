@@ -298,6 +298,8 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       link.setAttribute("download", `${veri.name}`);
       document.body.appendChild(link);
       link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(urlFile), 0);
     } catch (error) {
       console.log("İndirme hatası:", error);
     } finally {
@@ -338,6 +340,8 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       );
       document.body.appendChild(link);
       link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(urlFile), 0);
     } catch (error) {
       console.log("İndirme hatası:", error);
     } finally {

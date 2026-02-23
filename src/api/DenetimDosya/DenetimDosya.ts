@@ -329,6 +329,12 @@ export async function getLastBirlesikPdf(
     return null;
   }
 }
+
+export const releaseBirlesikPdfBlobUrl = (blobUrl?: string | null) => {
+  if (blobUrl && blobUrl.startsWith("blob:")) {
+    URL.revokeObjectURL(blobUrl);
+  }
+};
 export async function sendBulkOnay(
   payload: {
     denetciId: number;

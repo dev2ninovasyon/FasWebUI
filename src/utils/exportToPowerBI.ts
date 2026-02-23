@@ -1,8 +1,6 @@
-﻿import ExcelJS from "exceljs";
-import JSZip from "jszip";
+﻿import JSZip from "jszip";
 import { saveAs } from "file-saver";
-
-interface AnalysisData {
+import type { Workbook } from "exceljs";interface AnalysisData {
     id: number;
     tabloAdi: string;
     kalemId: number | null;
@@ -42,7 +40,7 @@ const formatNumber = (num: number): string => {
  * Creates an Excel worksheet with hierarchical data
  */
 const createWorksheet = (
-    workbook: ExcelJS.Workbook,
+    workbook: Workbook,
     sheetName: string,
     title: string,
     year: number,
@@ -180,6 +178,7 @@ export const exportKarsilastirmaliAnalizToExcel = async (
         companyName,
     } = options;
 
+    const { default: ExcelJS } = await import("exceljs");
     const workbook = new ExcelJS.Workbook();
     workbook.creator = "FAS WebUI";
     workbook.created = new Date();
@@ -315,3 +314,5 @@ export const downloadPowerBIExport = async (
         throw error;
     }
 };
+
+
