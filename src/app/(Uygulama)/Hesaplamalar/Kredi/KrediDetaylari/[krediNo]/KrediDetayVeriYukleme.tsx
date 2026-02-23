@@ -1,5 +1,5 @@
 ﻿import { HotTable } from "@handsontable/react";
-import type { ColumnSettings } from "handsontable/settings"; // Handsontable'dan ColumnSettings tipi
+import Handsontable from "handsontable";
 import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
@@ -196,7 +196,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
   }, [duplicatesControl]);
 
   const [colHeaders, setColHeaders] = useState<string[]>([]);
-  const [columns, setColumns] = useState<ColumnSettings[]>([]);
+  const [columns, setColumns] = useState<Handsontable.ColumnSettings[]>([]);
 
   useEffect(() => {
     setColHeaders(
@@ -275,7 +275,7 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
           readOnly: true,
           editor: false,
         }, // Kalan
-      ].filter(Boolean) as ColumnSettings[]
+      ].filter(Boolean) as Handsontable.ColumnSettings[]
     );
   }, [tur]);
 
@@ -485,13 +485,13 @@ const KrediDetayVeriYukleme: React.FC<Props> = ({
       if ([1, 2, 3, 4].includes(prop)) {
         if (typeof newValue === "string") {
           let normalized = newValue.trim();
-          
+
           // Turkish format: 47.792,87 → remove dots → replace comma with dot
           if (normalized.includes(',')) {
             normalized = normalized.replace(/\./g, '').replace(',', '.');
           }
           // International format: 47792.87 stays as-is
-          
+
           changes[i][3] = normalized;
         }
       }

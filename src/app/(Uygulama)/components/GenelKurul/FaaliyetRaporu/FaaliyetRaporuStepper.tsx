@@ -36,7 +36,7 @@ import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Car
 import { getCalismaKagidiVerileriByDenetciDenetlenenYil } from "@/api/CalismaKagitlari/CalismaKagitlari";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
-import zIndex from "@mui/material/styles/zIndex";
+
 const steps = ["Rapor Düzenleme", "Kapak Tasarımı", "Faaliyet Raporu"];
 
 interface Veri {
