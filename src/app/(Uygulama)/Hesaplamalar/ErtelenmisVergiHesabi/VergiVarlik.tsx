@@ -29,8 +29,9 @@ interface Veri {
 
 interface Props {
   hesaplaTiklandimi: boolean;
+  onDataCount?: (count: number) => void;
 }
-const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi }) => {
+const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -226,6 +227,7 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      onDataCount?.(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -299,14 +301,14 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi }) => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);

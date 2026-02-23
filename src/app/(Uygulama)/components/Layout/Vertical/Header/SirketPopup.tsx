@@ -110,6 +110,7 @@ const SirketPopup = () => {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ RefreshToken: refreshToken }),
+                  credentials: 'include',
                 });
 
                 if (refreshResponse.ok) {
@@ -152,8 +153,10 @@ const SirketPopup = () => {
     handleDrawerClose2();
 
     // Sayfayı tamamen yenile - tüm veriler güncellenecek
-    // localStorage'daki yeni değerlerle (id ve yıl) açılacak
-    window.location.reload();
+    // Persistence sync için çok kısa bir bekleme (50ms)
+    setTimeout(() => {
+      window.location.reload();
+    }, 50);
   };
 
   return (

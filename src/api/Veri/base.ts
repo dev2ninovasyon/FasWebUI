@@ -8,13 +8,14 @@ export const getFormat = async (name: string) => {
       headers: {
         accept: "application/json",
       },
+      suppressErrorLog: true,
     });
-    if (response.ok) {
-      return response.json();
+    if (response?.ok) {
+      return await response.json();
     } else {
-      console.log("Format verileri getirilemedi");
+      return null;
     }
   } catch (error) {
-    console.log("Bir hata oluştu:", error);
+    return null;
   }
 };

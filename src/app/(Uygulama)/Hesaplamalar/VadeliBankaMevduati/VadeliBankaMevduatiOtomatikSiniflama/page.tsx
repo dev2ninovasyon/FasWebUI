@@ -57,6 +57,15 @@ const Page = () => {
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    } else {
+      setHasData(false);
+    }
+  };
 
   const handleHesapla = async () => {
     try {
@@ -156,11 +165,14 @@ const Page = () => {
           }}>
           <VadeliBankaMevduatiOtomatikSiniflama
             hesaplaTiklandimi={hesaplaTiklandimi}
+            onDataCount={handleDataCount}
           />
         </Grid>
-        <FloatingButtonFisler
-          handleClick={() => setFloatingButtonTiklandimi(true)}
-        />
+        {hasData && (
+          <FloatingButtonFisler
+            handleClick={() => setFloatingButtonTiklandimi(true)}
+          />
+        )}
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

@@ -250,7 +250,9 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     }
 
     return () => {
+      // Cleanup both SignalR connection AND polling to prevent memory leaks
       stopPollingBildirim();
+      stopBildirimConnection();
     };
   }, [user.token, user.denetciId]);
 

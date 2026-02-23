@@ -1,10 +1,11 @@
 ﻿"use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import VadeliBankaMevduatiFaizTahakkuk from "./VadeliBankaMevduatiFaizTahakkuk";
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 
 const BCrumb = [
   {
@@ -22,6 +23,16 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    } else {
+      setHasData(false);
+    }
+  };
+
   return (
     <PageContainer
       title="Vadeli Banka Mevduatı Faiz Tahakkuk"
@@ -34,8 +45,9 @@ const Page = () => {
             xs: 12,
             lg: 12
           }}>
-          <VadeliBankaMevduatiFaizTahakkuk />
+          <VadeliBankaMevduatiFaizTahakkuk onDataCount={handleDataCount} />
         </Grid>
+        {hasData && <FloatingButtonFisler handleClick={() => { }} />}
       </Grid>
     </PageContainer>
   );

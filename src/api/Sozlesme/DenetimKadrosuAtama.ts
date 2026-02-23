@@ -180,6 +180,7 @@ export const getRol = async (
         headers: {
           accept: "*/*",
         },
+        ignoreCustomHeaders: true,
       }
     );
     if (response.ok) {

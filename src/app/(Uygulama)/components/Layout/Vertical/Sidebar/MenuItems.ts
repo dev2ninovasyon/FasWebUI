@@ -291,36 +291,13 @@ export function createMenuItems(
             icon: IconPoint,
             href: "/Veri/DefterKVBeyannamesiYukleme",
           },
+
           {
             id: uniqueId(),
-            title: "Fatura",
-            customIcon:
-              "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
-            icon: IconPoint,
-            href: "/Veri/Fatura",
-          },
-          {
-            id: uniqueId(),
-            title: "Vuk Mizan Veri Yükleme",
+            title: "Diğer Veri Yükleme",
             customIcon: "public/images/svgs/veri/vuk-mizan-veri-yukleme.svg",
             icon: IconPoint,
-            href: "/Veri/VukMizanVeriYukleme",
-          },
-          {
-            id: uniqueId(),
-            title: "Dönüştürülmüş Mizan Veri Yükleme",
-            customIcon:
-              "public/images/svgs/veri/donusturulmus-mizan-veri-yukleme.svg",
-            icon: IconPoint,
-            href: "/Veri/DonusturulmusMizanVeriYukleme",
-          },
-          {
-            id: uniqueId(),
-            title: "Dönüşüm Fişleri Veri Yükleme",
-            customIcon:
-              "public/images/svgs/veri/donusum-fisleri-veri-yukleme.svg",
-            icon: IconPoint,
-            href: "/Veri/DonusumFisleriVeriYukleme",
+            href: "/Veri/VeriYukleme",
           },
           {
             id: uniqueId(),
@@ -338,19 +315,20 @@ export function createMenuItems(
               },
               {
                 id: uniqueId(),
-                title: "Vuk Mizan Oluşturma",
-                customIcon: "public/images/svgs/veri/mizanlar.svg",
-                icon: IconPoint,
-                href: "/Veri/Mizanlar/VukMizan",
-              },
-              {
-                id: uniqueId(),
                 title: "Oluşturulmuş Mizanlar",
                 customIcon: "public/images/svgs/veri/mizanlar.svg",
                 icon: IconPoint,
                 href: "/Veri/Mizanlar/OlusturulmusMizanlar",
               },
             ],
+          },
+          {
+            id: uniqueId(),
+            title: "Fatura",
+            customIcon:
+              "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
+            icon: IconPoint,
+            href: "/Veri/Fatura",
           },
           {
             id: uniqueId(),

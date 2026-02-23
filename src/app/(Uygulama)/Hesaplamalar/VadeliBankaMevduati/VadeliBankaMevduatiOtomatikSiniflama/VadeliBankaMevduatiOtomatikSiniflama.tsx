@@ -58,9 +58,11 @@ interface Veri {
 
 interface Props {
   hesaplaTiklandimi: boolean;
+  onDataCount?: (count: number) => void;
 }
 const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
   hesaplaTiklandimi,
+  onDataCount,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -431,6 +433,7 @@ const VadeliBankaMevduatiOtomatikSiniflama: React.FC<Props> = ({
       ]);
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      onDataCount?.(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     } finally {

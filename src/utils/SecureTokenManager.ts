@@ -116,7 +116,7 @@ export class SecureTokenManager {
   }
 
   /**
-   * Access Token'ı getir (Önce Cookie, sonra Fallback denemesi)
+   * Access Token'ı getir (Cookie'den)
    */
   static getAccessToken(): string | null {
     let token = this.getTokenFromCookie(TOKEN_KEYS.ACCESS_TOKEN);
@@ -128,8 +128,9 @@ export class SecureTokenManager {
       return null;
     }
 
-    if (!this.isTokenValid(token)) return null;
-
+    // ✅ Token geçerliliği backend'e bırakıldı (401 yanıtıyla yönetilir)
+    // isTokenValid() burada çağrılmıyor — çünkü token expire olsa bile
+    // backend refresh endpoint'i yeni token döndürecektir.
     return token;
   }
 
@@ -144,15 +145,12 @@ export class SecureTokenManager {
    * Refresh Token'ı getir
    */
   static getRefreshToken(): string | null {
-    let token = this.getTokenFromCookie(TOKEN_KEYS.REFRESH_TOKEN);
-
-    if (token && !this.isTokenValid(token)) {
-      this.clearAllTokens();
-      return null;
-    }
-
-    return token;
+    // ✅ FIX: Refresh token opaque string'dir (JWT değil).
+    // isTokenValid() çağırmak her zaman false döndürür → logout tetiklenir.
+    // Sadece cookie'den oku, geçerliliği backend'e bırak.
+    return this.getTokenFromCookie(TOKEN_KEYS.REFRESH_TOKEN);
   }
+
 
   /**
    * Tüm token'ları temizle

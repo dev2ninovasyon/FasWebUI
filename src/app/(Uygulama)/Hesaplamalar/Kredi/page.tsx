@@ -95,6 +95,14 @@ const Page: React.FC = () => {
   const krediHesaplamaDetayRef = useRef<any>(null);
   const krediHesaplamaBakiyeRef = useRef<any>(null);
 
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    }
+  };
+
   const handleClosePopUp = () => {
     setIsPopUpOpen(false);
   };
@@ -235,6 +243,7 @@ const Page: React.FC = () => {
           tip: baglantiBilgisi.tip,
         };
         setFetchedData(newRow);
+        setHasData(true);
       } else {
         setFetchedData(null);
       }
@@ -257,25 +266,11 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (hesaplaTiklandimi) {
       setOpenCartAlert(true);
+      setHasData(false);
     } else {
       setOpenCartAlert(false);
     }
   }, [hesaplaTiklandimi]);
-
-  const hasRefData = (ref: any) => {
-    try {
-      const data = ref?.current?.hotInstance?.getData?.();
-      return Array.isArray(data) && data.length > 0;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  const hasData =
-    fetchedData != null ||
-    hasRefData(krediHesaplamaRef) ||
-    hasRefData(krediHesaplamaDetayRef) ||
-    hasRefData(krediHesaplamaBakiyeRef);
 
   return (
     <PageContainer title="Kredi" description="this is Kredi">
@@ -425,6 +420,7 @@ const Page: React.FC = () => {
                   <KrediHesaplama
                     ref={krediHesaplamaRef}
                     hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
                   />
                 </Grid>
                 <Grid
@@ -435,6 +431,7 @@ const Page: React.FC = () => {
                   <KrediHesaplamaDetay
                     ref={krediHesaplamaDetayRef}
                     hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
                   />
                 </Grid>
                 <Grid
@@ -446,6 +443,7 @@ const Page: React.FC = () => {
                   <KrediHesaplamaBakiye
                     ref={krediHesaplamaBakiyeRef}
                     hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
                   />
                 </Grid>
                 {hasData && (

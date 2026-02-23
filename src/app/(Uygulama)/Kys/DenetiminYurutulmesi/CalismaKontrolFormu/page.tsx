@@ -6,7 +6,6 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import KysCalismaKagidi from "@/app/(Uygulama)/components/Kys/KysCalismaKagidi";
 import dynamic from "next/dynamic";
 import { Box, Typography } from "@mui/material";
-import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const KysEditor = dynamic(() => import("@/app/(Uygulama)/components/Kys/KysEditor"), { ssr: false });
 
 const BCrumb = [
@@ -20,9 +19,7 @@ const BCrumb = [
 const Page: React.FC = () => {
     return (
         <PageContainer title="6.2 Çalışma Kontrol Formu" description="Çalışma Kontrol Formu">
-            <Breadcrumb title="6.2 Çalışma Kontrol Formu" items={BCrumb}>
-        <EkBelgeYukleButton formKodu="KysCalismaKontrolFormu" />
-      </Breadcrumb>
+            <Breadcrumb title="6.2 Çalışma Kontrol Formu" items={BCrumb} />
             <Box sx={{ mt: 3 }}>
                 <KysEditor
                     formKodu="KysCalismaKontrolFormu"

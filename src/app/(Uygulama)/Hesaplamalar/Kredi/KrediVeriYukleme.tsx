@@ -477,8 +477,15 @@ const KrediVeriYukleme: React.FC<Props> = ({
 
       if ([5, 8].includes(prop)) {
         if (typeof newValue === "string") {
-          const cleanedNewValue = newValue.replaceAll(/\./g, "");
-          changes[i][3] = cleanedNewValue;
+          let normalized = newValue.trim();
+          
+          // Turkish format: 47.792,87 → remove dots → replace comma with dot
+          if (normalized.includes(',')) {
+            normalized = normalized.replace(/\./g, '').replace(',', '.');
+          }
+          // International format: 47792.87 stays as-is
+          
+          changes[i][3] = normalized;
         }
       }
     }

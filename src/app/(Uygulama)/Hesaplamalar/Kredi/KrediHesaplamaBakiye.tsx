@@ -42,10 +42,11 @@ interface Veri {
 
 interface Props {
   hesaplaTiklandimi: boolean;
+  onDataCount?: (count: number) => void;
 }
 
 const KrediHesaplamaBakiye = forwardRef<any, Props>(
-  ({ hesaplaTiklandimi }, ref) => {
+  ({ hesaplaTiklandimi, onDataCount }, ref) => {
     const hotTableComponent = useRef<any>(null);
     const router = useRouter();
 
@@ -275,6 +276,7 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
 
         setRowCount(mapped.length);
         setFetchedData(mapped);
+        onDataCount?.(mapped.length);
 
         const marker = "__NO_PROGRAM_MIZAN__";
         const hasMarker = responseWarnings.includes(marker);

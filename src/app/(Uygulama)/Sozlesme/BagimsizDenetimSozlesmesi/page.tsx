@@ -32,6 +32,10 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
 import EkBelgeYukleButton from "../../components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { CustomDatePicker } from "@/utils/datePickerUtil";
+import "dayjs/locale/tr";
 
 const CustomEditorWVeri = dynamic(
   () => import("@/app/(Uygulama)/components/Editor/CustomEditorWVeri"),
@@ -195,13 +199,16 @@ const Page = () => {
             >
               <Typography variant="subtitle1">Sözleşme Tarihi:</Typography>
             </CustomFormLabel>
-            <CustomTextField
-              id="sozlesmeTarihi"
-              type="date"
-              value={tempSozlesmeTarihi}
-              onChange={(e: any) => setTempSozlesmeTarihi(e.target.value)}
-              onBlur={() => setSozlesmeTarihi(tempSozlesmeTarihi)}
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="tr">
+              <CustomDatePicker
+                id="sozlesmeTarihi"
+                value={tempSozlesmeTarihi}
+                onChange={(value) => {
+                  setTempSozlesmeTarihi(value);
+                  setSozlesmeTarihi(value);
+                }}
+              />
+            </LocalizationProvider>
             <Tooltip title="Sözleşme Tarihi Girmeyi Unutmayınız">
               <Fab color="warning" size="small" sx={{ marginLeft: 2 }}>
                 <IconExclamationMark width={18.25} height={18.25} />

@@ -59,7 +59,8 @@ export const updateSonSecilenAyarlari = async (kullaniciId: number, denetlenenId
             body: JSON.stringify({
                 denetlenenId,
                 yil
-            })
+            }),
+            ignoreCustomHeaders: true
         });
         if (response.ok) {
             return await response.json();

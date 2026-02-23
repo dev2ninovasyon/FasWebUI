@@ -24,7 +24,7 @@ const BCrumb = [
   },
 ];
 
-const Page = () => {
+const Page: React.FC = () => {
   const [islem, setIslem] = useState("");
   const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
 

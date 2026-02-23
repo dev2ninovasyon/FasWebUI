@@ -33,8 +33,12 @@ interface Veri {
 
 interface Props {
   hesaplaTiklandimi: boolean;
+  onDataCount?: (count: number) => void;
 }
-const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
+const CekSenetReeskontHesaplama: React.FC<Props> = ({
+  hesaplaTiklandimi,
+  onDataCount,
+}) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -297,6 +301,7 @@ const CekSenetReeskontHesaplama: React.FC<Props> = ({ hesaplaTiklandimi }) => {
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      onDataCount?.(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }

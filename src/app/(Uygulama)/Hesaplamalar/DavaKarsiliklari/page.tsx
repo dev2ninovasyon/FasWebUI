@@ -29,8 +29,9 @@ import DavaKarsiliklariHesaplama from "./DavaKarsiliklariHesaplama";
 import DavaKarsiliklariCard from "@/app/(Uygulama)/components/Hesaplamalar/DavaKarsiliklari/DavaKarsiliklariCard";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import PaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/PaylasimBaglantisiPopUp";
-
+import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+
 const BCrumb = [
   {
     to: "/Hesaplamalar",
@@ -79,6 +80,16 @@ const Page: React.FC = () => {
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+
+  const [hasData, setHasData] = useState(false);
+
+  const handleDataCount = (count: number) => {
+    if (count > 0) {
+      setHasData(true);
+    } else {
+      setHasData(false);
+    }
+  };
 
   const handleClosePopUp = () => {
     setIsPopUpOpen(false);
@@ -365,8 +376,12 @@ const Page: React.FC = () => {
                   }}>
                   <DavaKarsiliklariHesaplama
                     hesaplaTiklandimi={hesaplaTiklandimi}
+                    onDataCount={handleDataCount}
                   />
                 </Grid>
+                {hasData && (
+                  <FloatingButtonFisler handleClick={() => setTip("VeriYukleme")} />
+                )}
                 {openCartAlert && (
                   <InfoAlertCart
                     openCartAlert={openCartAlert}
@@ -391,4 +406,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

@@ -34,7 +34,6 @@ import KurumlarVergisiBeyannamesiKarsilastirma from "@/app/(Uygulama)/components
 import ProgramVukMizan from "@/app/(Uygulama)/components/Veri/Mizan/ProgramVukMizan";
 import ProgramFormatiCard from "@/app/(Uygulama)/components/Veri/Mizan/ProgramFormatiCard";
 import MizanCard from "@/app/(Uygulama)/components/Veri/Mizan/MizanCard";
-import Mizan from "@/app/(Uygulama)/components/Veri/Mizan/Mizan";
 import MizanTable from "@/app/(Uygulama)/components/Veri/Mizan/MizanTable";
 import { MizanConfirmPopUpComponent } from "@/app/(Uygulama)/components/Veri/Mizan/MizanConfirmPopUpComponent";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
@@ -540,24 +539,6 @@ const VukMizanStepper = () => {
                     type={"VukMizan"}
                     mizanOlusturTiklandimi={mizanOlusturTiklandimi}
                     setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
-                  />
-                </Grid>
-              </Grid>
-              <Grid container marginTop={3}>
-                <Grid
-                  padding={1}
-                  size={{
-                    xs: 12,
-                    lg: 12
-                  }}>
-                  <Mizan
-                    type={"VukMizan"}
-                    mizanOlusturTiklandimi={mizanOlusturTiklandimi}
-                    setMizanOlusturTiklandimi={setMizanOlusturTiklandimi}
-                    mizanBaslangicTarihi={mizanBaslangicTarihi}
-                    setMizanBaslangicTarihi={setMizanBaslangicTarihi}
-                    mizanBitisTarihi={mizanBitisTarihi}
-                    setMizanBitisTarihi={setMizanBitisTarihi}
                   />
                 </Grid>
               </Grid>

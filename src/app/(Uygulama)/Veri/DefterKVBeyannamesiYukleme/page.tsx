@@ -146,7 +146,13 @@ const Page: React.FC = () => {
         ) {
           if (file.type === "text/xml" || file.name.slice(-4).toLowerCase() === ".xml") {
             try {
-              const text = await file.text();
+              // RAM Optimizasyonu: tüm dosyayı değil, sadece ilk 2KB oku — VKN her zaman dosyanın başındadır.
+              const head = file.slice(0, 2048);
+              const text = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve((e.target?.result as string) ?? "");
+                reader.readAsText(head, "utf-8");
+              });
               let dosyaVkn = null;
 
               // 1. Try standard VKN tag (e.g., <gl-cor:VKN>)
@@ -191,8 +197,9 @@ const Page: React.FC = () => {
       setProgressInfos(_progressInfos);
 
       try {
-        const uploadPromises = validFiles.map(async (file, index) => {
-          if (fileType === "KurumlarBeyannamesi") {
+        if (fileType === "KurumlarBeyannamesi") {
+          // Kurumlar Beyannamesi: her dosya için ayrı istek (API bu şekilde çalışıyor)
+          const uploadPromises = validFiles.map(async (file, index) => {
             try {
               const res = await uploadAndParseKurumlarBeyannamesi(
                 file,
@@ -203,9 +210,7 @@ const Page: React.FC = () => {
               if (res.success) {
                 setProgressInfos((prev) => {
                   const next = [...prev];
-                  if (next[index]) {
-                    next[index] = { ...next[index], status: "Tamamlandı", percentage: 100 };
-                  }
+                  if (next[index]) next[index] = { ...next[index], status: "Tamamlandı", percentage: 100 };
                   return next;
                 });
               } else {
@@ -214,56 +219,38 @@ const Page: React.FC = () => {
             } catch (error: any) {
               setProgressInfos((prev) => {
                 const next = [...prev];
-                if (next[index]) {
-                  next[index] = { ...next[index], status: "Hata!", percentage: 0 };
-                }
+                if (next[index]) next[index] = { ...next[index], status: "Hata!", percentage: 0 };
                 return next;
               });
               enqueueSnackbar(error.message || "Bilinmeyen bir hata oluştu.", { variant: "error" });
             }
-          } else {
-            const formData = new FormData();
-            formData.append("files", file);
+          });
+          await Promise.all(uploadPromises);
+        } else {
+          // RAM & Bağlantı Optimizasyonu: TÜM dosyaları tek FormData'ya ekleyip TEK HTTP isteği ile gönder.
+          // Önceden her dosya için ayrı istek açılıyordu (12 dosya × 5 kullanıcı = 60 bağlantı).
+          const formData = new FormData();
+          validFiles.forEach((file) => formData.append("files", file));
 
-            try {
-              await axios.post(
-                `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
-                formData,
-                {
-                  headers: { "Content-Type": "multipart/form-data" },
-                  onUploadProgress: (event) => {
-                    const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
-                    setProgressInfos((prev) => {
-                      const next = [...prev];
-                      if (next[index]) {
-                        next[index] = { ...next[index], percentage: Math.round(progress * 0.2), status: "Yükleniyor..." };
-                      }
-                      return next;
-                    });
-                  },
-                }
-              );
-
-              setProgressInfos((prev) => {
-                const next = [...prev];
-                if (next[index]) {
-                  next[index] = { ...next[index], status: "Yüklendi", percentage: 20 };
-                }
-                return next;
-              });
-            } catch (error) {
-              setProgressInfos((prev) => {
-                const next = [...prev];
-                if (next[index]) {
-                  next[index] = { ...next[index], status: "Hata!", percentage: 0 };
-                }
-                return next;
-              });
+          await axios.post(
+            `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+              onUploadProgress: (event) => {
+                const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
+                setProgressInfos((prev) =>
+                  prev.map((info) => ({ ...info, percentage: Math.round(progress * 0.2), status: "Yükleniyor..." }))
+                );
+              },
             }
-          }
-        });
+          );
 
-        await Promise.all(uploadPromises);
+          // Yükleme tamamlandı — tüm dosyaları "Yüklendi" olarak güncelle
+          setProgressInfos((prev) =>
+            prev.map((info) => ({ ...info, status: "Yüklendi", percentage: 20 }))
+          );
+        }
 
         if (fileType === "KurumlarBeyannamesi") {
           setUploading(false);
@@ -272,35 +259,32 @@ const Page: React.FC = () => {
           return;
         }
 
-        // Polling for processing status
+        // Polling: Sunucudan işleme durumunu 3sn'de bir sorgula (2sn'den artırıldı — DB yükünü azaltır)
+        let pollingActive = true;
         const interval = setInterval(async () => {
+          if (!pollingActive) return;
           try {
             const res = await axios.get(`${url}/Veri/DosyaDurumlari?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`);
             const data = res.data;
 
-            setProgressInfos((prev) => {
-              return prev.map((info) => {
+            setProgressInfos((prev) =>
+              prev.map((info) => {
                 const serverFile = data.find((d: any) => d.adi === info.fileName);
                 if (serverFile) {
-                  const serverProgress = serverFile.progress || 0;
-                  const totalProgress = 20 + Math.round(serverProgress * 0.8);
-                  return {
-                    ...info,
-                    percentage: Math.min(totalProgress, 100),
-                    status: serverFile.durum,
-                  };
+                  const totalProgress = 20 + Math.round((serverFile.progress || 0) * 0.8);
+                  return { ...info, percentage: Math.min(totalProgress, 100), status: serverFile.durum };
                 }
                 return info;
-              });
-            });
+              })
+            );
 
-            // Check if all files are processed based on the fetched data
             const allDone = validFiles.every((file) => {
               const serverFile = data.find((d: any) => d.adi === file.name);
               return serverFile && (serverFile.durum === "Tamamlandı" || serverFile.durum === "Hata Oluştu");
             });
 
             if (allDone) {
+              pollingActive = false;
               clearInterval(interval);
               setUploading(false);
               setDosyaYuklendiMi(true);
@@ -310,7 +294,7 @@ const Page: React.FC = () => {
           } catch (error) {
             console.error("Polling error:", error);
           }
-        }, 2000);
+        }, 3000);
 
       } catch (error: any) {
         console.log("Dosya yüklenirken hata oluştu:", error);

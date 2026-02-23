@@ -32,7 +32,11 @@ interface Veri {
   kurFarkiKazanclari: number;
 }
 
-const KurFarki = () => {
+interface Props {
+  onDataCount?: (count: number) => void;
+}
+
+const KurFarki: React.FC<Props> = ({ onDataCount }) => {
   const hotTableComponent = useRef<any>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
@@ -291,6 +295,7 @@ const KurFarki = () => {
       });
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      onDataCount?.(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     } finally {

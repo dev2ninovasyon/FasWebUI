@@ -43,7 +43,11 @@ interface Veri {
   hesaplananBakiye: number;
 }
 
-const VadeliBankaMevduatiFaizTahakkuk = () => {
+interface Props {
+  onDataCount?: (count: number) => void;
+}
+
+const VadeliBankaMevduatiFaizTahakkuk: React.FC<Props> = ({ onDataCount }) => {
   const hotTableComponent = useRef<any>(null);
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
@@ -421,63 +425,63 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       const jsonData =
         fetchedData.length === 1
           ? keys.reduce(
-              (acc: { [key: string]: any }, key: string, index: number) => {
-                if (key === "denetciId") {
-                  acc[key] = user.denetciId;
-                } else if (key === "denetlenenId") {
-                  acc[key] = user.denetlenenId;
-                } else if (key === "yil") {
-                  acc[key] = user.yil;
-                } else {
-                  if (
-                    key === "faizBaslangicTarihi" ||
-                    key === "faizTahakkukTarihi"
-                  ) {
-                    acc[key] =
-                      acc[index - 3] != null &&
+            (acc: { [key: string]: any }, key: string, index: number) => {
+              if (key === "denetciId") {
+                acc[key] = user.denetciId;
+              } else if (key === "denetlenenId") {
+                acc[key] = user.denetlenenId;
+              } else if (key === "yil") {
+                acc[key] = user.yil;
+              } else {
+                if (
+                  key === "faizBaslangicTarihi" ||
+                  key === "faizTahakkukTarihi"
+                ) {
+                  acc[key] =
+                    acc[index - 3] != null &&
                       acc[index - 3] != "" &&
                       acc[index - 3] != undefined
-                        ? new Date(
-                            acc[index - 3].split(".").reverse().join("-")
-                          ).toISOString()
-                        : null;
-                  } else {
-                    acc[key] = acc[index - 3];
-                  }
-                }
-                return acc;
-              },
-              {}
-            )
-          : fetchedData.map((item: any[]) => {
-              let obj: { [key: string]: any } = {};
-              keys.forEach((key, index) => {
-                if (key === "denetciId") {
-                  obj[key] = user.denetciId;
-                } else if (key === "denetlenenId") {
-                  obj[key] = user.denetlenenId;
-                } else if (key === "yil") {
-                  obj[key] = user.yil;
+                      ? new Date(
+                        acc[index - 3].split(".").reverse().join("-")
+                      ).toISOString()
+                      : null;
                 } else {
-                  if (
-                    key === "faizBaslangicTarihi" ||
-                    key === "faizTahakkukTarihi"
-                  ) {
-                    obj[key] =
-                      item[index - 3] != null &&
+                  acc[key] = acc[index - 3];
+                }
+              }
+              return acc;
+            },
+            {}
+          )
+          : fetchedData.map((item: any[]) => {
+            let obj: { [key: string]: any } = {};
+            keys.forEach((key, index) => {
+              if (key === "denetciId") {
+                obj[key] = user.denetciId;
+              } else if (key === "denetlenenId") {
+                obj[key] = user.denetlenenId;
+              } else if (key === "yil") {
+                obj[key] = user.yil;
+              } else {
+                if (
+                  key === "faizBaslangicTarihi" ||
+                  key === "faizTahakkukTarihi"
+                ) {
+                  obj[key] =
+                    item[index - 3] != null &&
                       item[index - 3] != "" &&
                       item[index - 3] != undefined
-                        ? new Date(
-                            item[index - 3].split(".").reverse().join("-")
-                          ).toISOString()
-                        : null;
-                  } else {
-                    obj[key] = item[index - 3];
-                  }
+                      ? new Date(
+                        item[index - 3].split(".").reverse().join("-")
+                      ).toISOString()
+                      : null;
+                } else {
+                  obj[key] = item[index - 3];
                 }
-              });
-              return obj;
+              }
             });
+            return obj;
+          });
       return jsonData;
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -588,6 +592,7 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      onDataCount?.(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -663,14 +668,14 @@ const VadeliBankaMevduatiFaizTahakkuk = () => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
