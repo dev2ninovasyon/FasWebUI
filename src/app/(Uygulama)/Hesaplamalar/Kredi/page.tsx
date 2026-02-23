@@ -1,6 +1,4 @@
-﻿"use client";
-
-import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
+﻿"use client";import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -34,9 +32,7 @@ import KrediMizanKarsilastirmaTable from "./KrediMizanKarsilastirmaTable";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import KrediHesaplamaOrnekFisler from "./KrediHesaplamaOrnekFisler";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
 
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
@@ -94,8 +90,11 @@ const Page: React.FC = () => {
   const krediHesaplamaRef = useRef<any>(null);
   const krediHesaplamaDetayRef = useRef<any>(null);
   const krediHesaplamaBakiyeRef = useRef<any>(null);
+  const krediMizanKarsilastirmaRef = useRef<any>(null);
 
   const [hasData, setHasData] = useState(false);
+  const [hasMizanDifference, setHasMizanDifference] = useState(false);
+  const [openMizanDifferenceDialog, setOpenMizanDifferenceDialog] = useState(false);
 
   const handleDataCount = (count: number) => {
     if (count > 0) {
@@ -109,6 +108,8 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
+      setHesaplaTiklandimi(true);
+
       const result = await createKrediHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
@@ -161,7 +162,17 @@ const Page: React.FC = () => {
     }
   };
 
+  const handleHesaplaClick = () => {
+    if (hasMizanDifference) {
+      setOpenMizanDifferenceDialog(true);
+      return;
+    }
+
+    handleHesapla();
+  };
+
   const handleDownloadAll = async () => {
+    const { default: ExcelJS } = await import("exceljs");
     const workbook = new ExcelJS.Workbook();
 
     const addSheet = (ref: any, name: string) => {
@@ -169,7 +180,10 @@ const Page: React.FC = () => {
         const hotInstance = ref.current.hotInstance;
         const data = hotInstance.getData();
         const headers = hotInstance.getColHeader();
-        const fullData = [headers, ...data];
+        const fullData = [
+          headers,
+          ...data.map((row: any[]) => row.slice(0, headers.length)),
+        ];
 
         const worksheet = workbook.addWorksheet(name);
 
@@ -197,6 +211,7 @@ const Page: React.FC = () => {
       }
     };
 
+    addSheet(krediMizanKarsilastirmaRef, "Kredi Mizan Karşılaştırma");
     addSheet(krediHesaplamaRef, "Kredi Hesaplama");
     addSheet(krediHesaplamaDetayRef, "Kredi Hesaplama Detay");
     addSheet(krediHesaplamaBakiyeRef, "Kredi Hesaplama Bakiye");
@@ -372,7 +387,11 @@ const Page: React.FC = () => {
                     xs: 12,
                     lg: 12
                   }}>
-                  <KrediMizanKarsilastirmaTable hesaplaTiklandimi={hesaplaTiklandimi} />
+                  <KrediMizanKarsilastirmaTable
+                    ref={krediMizanKarsilastirmaRef}
+                    hesaplaTiklandimi={hesaplaTiklandimi}
+                    onHasDifferenceChange={setHasMizanDifference}
+                  />
                 </Grid>
                 <Grid
                   sx={{
@@ -402,10 +421,7 @@ const Page: React.FC = () => {
                       disabled={hesaplaTiklandimi}
                       variant="outlined"
                       color="primary"
-                      onClick={() => {
-                        setHesaplaTiklandimi(true);
-                        handleHesapla();
-                      }}
+                      onClick={handleHesaplaClick}
                     >
                       Hesapla
                     </Button>
@@ -451,6 +467,45 @@ const Page: React.FC = () => {
                     handleClick={() => setFloatingButtonTiklandimi(true)}
                   />
                 )}
+                <Dialog
+                  open={openMizanDifferenceDialog}
+                  onClose={() => setOpenMizanDifferenceDialog(false)}
+                  fullWidth
+                  maxWidth="sm"
+                >
+                  <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
+                    <Box>
+                      <Typography variant="h5" p={1}>
+                        Uyarı
+                      </Typography>
+                      <Typography variant="body1" p={1}>
+                      Mizan ile girilen kredi listesi arasında fark vardır.
+                      Hesaplamaya devam etmek istiyor musunuz?
+                      </Typography>
+                    </Box>
+                  </DialogContent>
+                  <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      sx={{ width: "20%", whiteSpace: "nowrap" }}
+                      onClick={() => {
+                        setOpenMizanDifferenceDialog(false);
+                        handleHesapla();
+                      }}
+                    >
+                      Evet, Devam Et
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      sx={{ width: "20%", whiteSpace: "nowrap" }}
+                      onClick={() => setOpenMizanDifferenceDialog(false)}
+                    >
+                      Hayır, Vazgeç
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 <Dialog
                   open={floatingButtonTiklandimi}
                   onClose={() => setFloatingButtonTiklandimi(false)}

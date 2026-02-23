@@ -1,6 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+﻿import "@/lib/handsontableSetup";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
@@ -10,9 +16,6 @@ import { useTheme, Box } from "@mui/material";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getKrediMizanKarsilastirmasi } from "@/api/Hesaplamalar/Hesaplamalar";
 import { enqueueSnackbar } from "notistack";
-
-registerAllModules();
-
 interface KrediMizanKarsilastirmaRow {
   detayKodu: string;
   hesapAdi: string;
@@ -24,11 +27,17 @@ interface KrediMizanKarsilastirmaRow {
 
 interface KrediMizanKarsilastirmaTableProps {
   hesaplaTiklandimi: boolean;
+  onHasDifferenceChange?: (hasDifference: boolean) => void;
 }
 
-const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> =
-  ({ hesaplaTiklandimi }) => {
+const KrediMizanKarsilastirmaTable = forwardRef<any, KrediMizanKarsilastirmaTableProps>(
+  ({ hesaplaTiklandimi, onHasDifferenceChange }, ref) => {
     const hotTableComponent = useRef<any>(null);
+    useImperativeHandle(ref, () => ({
+      get hotInstance() {
+        return hotTableComponent.current?.hotInstance;
+      },
+    }));
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
     const dispatch = useDispatch();
@@ -57,7 +66,7 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
 
     const colHeaders = [
       "Detay Hesap Kodu",
-      "Hesap Adı",
+      "Hesap Adi",
       "Ana Para",
       "Mizan Bakiye",
       "Fark",
@@ -201,7 +210,7 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
           customizer.activeMode === "dark" ? "#10141c" : "#e0e0e0";
       }
 
-      // Fark sütunu (col === 4) için kırmızı renklendir
+      // Fark sÃ¼tunu (col === 4) iÃ§in kÄ±rmÄ±zÄ± renklendir
       if (col === 4) {
         const currentRowData = fetchedData[row];
         const isFarkVar = currentRowData && currentRowData[5]; // farkVar is at index 5
@@ -216,7 +225,7 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log("🔵 Kredi Mizan API isteği başlatılıyor:", {
+        console.log("ğŸ”µ Kredi Mizan API isteÄŸi baÅŸlatÄ±lÄ±yor:", {
           denetciId: user.denetciId,
           yil: user.yil,
           denetlenenId: user.denetlenenId,
@@ -228,7 +237,7 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
           user.denetlenenId || 0 || 0
         );
 
-        console.log("📊 API Response Data (Raw):", result);
+        console.log("ğŸ“Š API Response Data (Raw):", result);
 
         let dataArray: KrediMizanKarsilastirmaRow[] = [];
 
@@ -240,10 +249,11 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
           dataArray = result.data;
         }
 
-        console.log("📊 İşlenen veriler:", dataArray);
+        console.log("ğŸ“Š Ä°ÅŸlenen veriler:", dataArray);
 
         if (dataArray && dataArray.length > 0) {
           setRows(dataArray);
+          onHasDifferenceChange?.(dataArray.some((row) => row.farkVar));
           
           // Convert to Handsontable format
           const hotData = dataArray.map((row) => [
@@ -256,17 +266,19 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
           ]);
 
           setFetchedData(hotData);
-          console.log("🟢 Veriler başarıyla yüklendi:", dataArray.length, "satır");
+          console.log("ğŸŸ¢ Veriler baÅŸarÄ±yla yÃ¼klendi:", dataArray.length, "satÄ±r");
         } else {
           setRows([]);
           setFetchedData([]);
-          console.warn("⚠️ Veri bulunamadı veya boş array:", result);
+          onHasDifferenceChange?.(false);
+          console.warn("âš ï¸ Veri bulunamadÄ± veya boÅŸ array:", result);
         }
       } catch (error) {
-        console.error("❌ API Hatası:", error);
-        enqueueSnackbar("Veri yüklenirken hata oluştu", { variant: "error" });
+        console.error("âŒ API HatasÄ±:", error);
+        enqueueSnackbar("Veri yÃ¼klenirken hata oluÅŸtu", { variant: "error" });
         setRows([]);
         setFetchedData([]);
+        onHasDifferenceChange?.(false);
       } finally {
         setLoading(false);
       }
@@ -304,7 +316,7 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
           </Box>
         ) : rows.length === 0 ? (
           <Box p={2}>
-            Kredi Mizan Karşılaştırması verisi bulunmamaktadır.
+            Kredi Mizan KarÅŸÄ±laÅŸtÄ±rmasÄ± verisi bulunmamaktadÄ±r.
           </Box>
         ) : (
           <HotTable
@@ -344,6 +356,9 @@ const KrediMizanKarsilastirmaTable: React.FC<KrediMizanKarsilastirmaTableProps> 
         )}
       </Box>
     );
-  };
+  }
+);
 
+KrediMizanKarsilastirmaTable.displayName = "KrediMizanKarsilastirmaTable";
 export default KrediMizanKarsilastirmaTable;
+
