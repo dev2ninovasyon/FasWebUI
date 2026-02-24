@@ -1,0 +1,11 @@
+﻿{
+    "command":  "npm run build",
+    "startedAt":  "2026-02-23T14:26:57.8501121+03:00",
+    "endedAt":  "2026-02-23T14:27:00.0515883+03:00",
+    "durationSeconds":  2.2,
+    "peakNodeWorkingSetMB":  0,
+    "avgNodeWorkingSetMB":  0,
+    "samples":  1,
+    "timedOut":  false,
+    "exitCode":  1
+}

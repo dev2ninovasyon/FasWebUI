@@ -1,0 +1,55 @@
+{
+  "finishedAt": "2026-02-23T14:06:12.626Z",
+  "baseUrl": "http://127.0.0.1:3100",
+  "durationSec": 60,
+  "scenarios": [
+    10,
+    25,
+    50
+  ],
+  "results": [
+    {
+      "concurrency": 10,
+      "durationSec": 60,
+      "requests": 82989,
+      "p95LatencyMs": 11.33,
+      "rssAvgMB": 317.76,
+      "rssPeakMB": 363.18,
+      "heapUsedAvgMB": 127.85,
+      "heapUsedPeakMB": 229.63,
+      "oom": false,
+      "errors": 0,
+      "timeouts": 0,
+      "sampleCount": 64
+    },
+    {
+      "concurrency": 25,
+      "durationSec": 60,
+      "requests": 118910,
+      "p95LatencyMs": 19,
+      "rssAvgMB": 360.58,
+      "rssPeakMB": 361.17,
+      "heapUsedAvgMB": 130.07,
+      "heapUsedPeakMB": 218.14,
+      "oom": false,
+      "errors": 0,
+      "timeouts": 0,
+      "sampleCount": 61
+    },
+    {
+      "concurrency": 50,
+      "durationSec": 60,
+      "requests": 115025,
+      "p95LatencyMs": 39.67,
+      "rssAvgMB": 363.42,
+      "rssPeakMB": 364.52,
+      "heapUsedAvgMB": 128.55,
+      "heapUsedPeakMB": 202.6,
+      "oom": false,
+      "errors": 0,
+      "timeouts": 0,
+      "sampleCount": 61
+    }
+  ],
+  "serverExitCode": null
+}

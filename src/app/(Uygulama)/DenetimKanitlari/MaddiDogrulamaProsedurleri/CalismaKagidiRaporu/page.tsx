@@ -749,12 +749,14 @@ const CalismaKagidiRaporu = () => {
         const blob = new Blob(["\ufeff", wordDocument], {
             type: "application/msword",
         });
+        const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
+        link.href = blobUrl;
         link.download = `FAS-Calisma-Kagidi-${parentName}.doc`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 0);
     }
 
     async function handleArchiveWord() {

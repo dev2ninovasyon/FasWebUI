@@ -1,4 +1,5 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -14,9 +15,7 @@ import {
     CircularProgress,
     useTheme,
 } from "@mui/material";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
@@ -27,11 +26,7 @@ import {
     DavaKarsiliklariSummary
 } from "@/api/CalismaKagitlari/DavaKarsiliklariCalismasi";
 import { enqueueSnackbar } from "notistack";
-import "@/utils/languages/handsontable.tr-TR";
-
-registerAllModules();
-
-const fmt = (n: any) =>
+import "@/utils/languages/handsontable.tr-TR";const fmt = (n: any) =>
     Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 interface Props {

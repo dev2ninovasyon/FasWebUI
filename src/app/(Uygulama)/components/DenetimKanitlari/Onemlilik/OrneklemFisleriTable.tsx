@@ -1,5 +1,5 @@
-﻿import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
+﻿import "@/lib/handsontableSetup";
+import { HotTable } from "@handsontable/react";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
@@ -8,7 +8,6 @@ import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
@@ -23,8 +22,6 @@ import { getOrneklemFisleri } from "@/api/DenetimKanitlari/DenetimKanitlari";
 import TespitAciklamaForm from "@/app/(Uygulama)/components/DenetimKanitlari/Onemlilik/TespitAciklamaForm";
 
 // register Handsontable's modules
-registerAllModules();
-
 if (!numbro.languages()["tr-TR"]) {
     numbro.registerLanguage(trTR);
 }
@@ -74,15 +71,15 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
 
     const colHeaders = [
         "Id",
-        "SeÃ§im",
+        "Seçim",
         "Yevmiye No",
         "Yevmiye Tarihi",
         "Detay Kodu",
-        "Hesap AdÄ±",
-        "AÃ§Ä±klama",
-        "BorÃ§",
+        "Hesap Adı",
+        "Açıklama",
+        "Borç",
         "Alacak",
-        "Tespit AÃ§Ä±klama",
+        "Tespit Açıklama",
     ];
 
     const columns = [
@@ -131,7 +128,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
             readOnly: true,
             editor: false,
             className: "htLeft",
-        }, // AÃ§Ä±klama
+        }, // Açıklama
         {
             type: "numeric",
             numericFormat: {
@@ -160,7 +157,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
             type: "text",
             columnSorting: true,
             className: "htLeft",
-        }, // Tespit AÃ§Ä±klama
+        }, // Tespit Açıklama
     ];
 
     const afterGetColHeader = (col: any, TH: any) => {
@@ -459,6 +456,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
         const fullData = [headers, ...processedData];
 
         async function createExcelFile() {
+            const { default: ExcelJS } = await import("exceljs");
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet("Sayfa1");
 
@@ -572,7 +570,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
                 contextMenu={{
                     items: {
                         gise_git: {
-                            name: "FiÅŸe Git",
+                            name: "Fişe Git",
                             callback: async function (key, selection) {
                                 const row = await handleGetRowData(selection[0].start.row);
                                 router.push(

@@ -1,0 +1,54 @@
+﻿{
+    "startedAt":  "2026-02-23T16:06:49.5444868+03:00",
+    "endedAt":  "2026-02-23T16:21:49.6027179+03:00",
+    "durationSeconds":  900.06,
+    "peakNodeMB":  2684.62,
+    "peakRoute":  "/Hesaplamalar",
+    "avgAfterMB":  2569.02,
+    "totalSamples":  677,
+    "hotspotDeltaThresholdMB":  80,
+    "hotspotCount":  0,
+    "topRoutes":  [
+                      {
+                          "route":  "/Hesaplamalar",
+                          "samples":  62,
+                          "avgDeltaMB":  -7.48,
+                          "maxAfterMB":  2684.62,
+                          "maxDeltaMB":  0.94
+                      },
+                      {
+                          "route":  "/Hesaplamalar/Kredi",
+                          "samples":  62,
+                          "avgDeltaMB":  0.11,
+                          "maxAfterMB":  2684.62,
+                          "maxDeltaMB":  3.63
+                      },
+                      {
+                          "route":  "/Anasayfa",
+                          "samples":  62,
+                          "avgDeltaMB":  -0.19,
+                          "maxAfterMB":  2684.45,
+                          "maxDeltaMB":  3.56
+                      },
+                      {
+                          "route":  "/Veri/Mizanlar/VukMizan",
+                          "samples":  62,
+                          "avgDeltaMB":  -0.15,
+                          "maxAfterMB":  2684.45,
+                          "maxDeltaMB":  7.06
+                      },
+                      {
+                          "route":  "/Veri",
+                          "samples":  62,
+                          "avgDeltaMB":  0.1,
+                          "maxAfterMB":  2684.45,
+                          "maxDeltaMB":  3.62
+                      }
+                  ],
+    "topHotspots":  [
+
+                    ],
+    "traceCsv":  "C:\\Users\\lenov\\source\\repos\\dev2ninovasyon\\FasWebUI\\ram-metrics\\nav-trace-15m-20260223-160645.csv",
+    "stdoutLog":  "C:\\Users\\lenov\\AppData\\Local\\Temp\\fas-dev-out-20260223-160645.log",
+    "stderrLog":  "C:\\Users\\lenov\\AppData\\Local\\Temp\\fas-dev-err-20260223-160645.log"
+}

@@ -1,16 +1,11 @@
 ﻿"use client";
-
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import "@/lib/handsontableSetup";import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Button, Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
 import {
@@ -21,10 +16,7 @@ import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 import BelgeKontrolCard from "../../CalismaKagitlari/Cards/BelgeKontrolCard";
 
-// Handsontable modülleri
-registerAllModules();
-
-numbro.registerLanguage(trTR);
+// Handsontable modüllerinumbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -366,6 +358,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
     const fullData = [headers, ...processedData];
 
     async function createExcelFile() {
+      const { default: ExcelJS } = await import("exceljs");
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sayfa1");
 

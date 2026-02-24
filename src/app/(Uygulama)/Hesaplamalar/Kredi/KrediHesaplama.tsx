@@ -1,8 +1,7 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -18,10 +17,7 @@ import React, {
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getKrediHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
 
-// register Handsontable's modules
-registerAllModules();
-
-interface Veri {
+// register Handsontable's modulesinterface Veri {
   alinanKrediNumarasi: number;
   detayHesapKodu: string;
   hesapAdi: string;

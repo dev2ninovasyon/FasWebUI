@@ -1,0 +1,11 @@
+﻿{
+    "command":  "npm run dev",
+    "startedAt":  "2026-02-23T14:27:00.3055064+03:00",
+    "endedAt":  "2026-02-23T14:27:03.0499029+03:00",
+    "durationSeconds":  2.74,
+    "peakNodeWorkingSetMB":  0,
+    "avgNodeWorkingSetMB":  0,
+    "samples":  1,
+    "timedOut":  false,
+    "exitCode":  1
+}

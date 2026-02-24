@@ -1614,7 +1614,7 @@ export function createMenuItems(
                 icon: IconPoint,
                 href: "Enflasyon/DuzeltmeIslemleri",
                 children: [
-                  ...(yil && yil >= 2025
+                  ...(yil !== undefined && yil >= 2025
                     ? [
                       {
                         id: uniqueId(),
@@ -1624,7 +1624,7 @@ export function createMenuItems(
                       },
                     ]
                     : []),
-                  ...(yil && yil < 2025
+                  ...(yil === undefined || yil < 2025
                     ? [
                       {
                         id: uniqueId(),
@@ -1642,11 +1642,11 @@ export function createMenuItems(
                     : []),
                   {
                     id: uniqueId(),
-                    title: "Taşıma Fişi",
+                    title: "Taşıma/Açılış Fişi",
                     icon: IconPoint,
                     href: "/Enflasyon/DuzeltmeIslemleri/TasimaFisi",
                   },
-                  ...(yil && yil >= 2024
+                  ...(yil !== undefined && yil >= 2024
                     ? [
                       {
                         id: uniqueId(),
@@ -1657,7 +1657,7 @@ export function createMenuItems(
                       },
                     ]
                     : []),
-                  ...(yil && yil < 2024
+                  ...(yil !== undefined && yil < 2024
                     ? [
                       {
                         id: uniqueId(),
@@ -1667,9 +1667,25 @@ export function createMenuItems(
                       },
                     ]
                     : []),
+                  ...(yil !== undefined && yil >= 2025
+                    ? [
+                      {
+                        id: uniqueId(),
+                        title: "Fiş Girişi",
+                        icon: IconPoint,
+                        href: "/Enflasyon/DuzeltmeIslemleri/FisGirisi",
+                      },
+                      {
+                        id: uniqueId(),
+                        title: "Fiş İşlemleri",
+                        icon: IconPoint,
+                        href: "/Enflasyon/DuzeltmeIslemleri/FisIslemleri",
+                      },
+                    ]
+                    : []),
                   {
                     id: uniqueId(),
-                    title: "Enflasyon Dönüşüm",
+                    title: "Dönüşüm",
                     icon: IconPoint,
                     href: "/Enflasyon/DuzeltmeIslemleri/Donusum",
                   },

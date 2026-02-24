@@ -1,6 +1,5 @@
-﻿import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+﻿import "@/lib/handsontableSetup";
+import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -10,9 +9,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CustomDatePicker } from "@/utils/datePickerUtil";
 import { useEffect, useRef, useState } from "react";
-import { getFormat } from "@/api/Veri/base";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import { getFormat } from "@/api/Veri/base";import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getMizanVerileri } from "@/api/Veri/Mizan";
@@ -22,12 +19,7 @@ import { IconHistory } from "@tabler/icons-react";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import MizanCard from "@/app/(Uygulama)/components/Veri/Mizan/MizanCard";
-import { enqueueSnackbar } from "notistack";
-
-// register Handsontable's modules
-registerAllModules();
-
-numbro.registerLanguage(trTR);
+import { enqueueSnackbar } from "notistack";// register Handsontable's modulesnumbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -422,6 +414,7 @@ const Mizan: React.FC<Props> = ({
     const fullDataForExcel = [headers, ...rows];
 
     async function createExcelFile() {
+      const { default: ExcelJS } = await import("exceljs");
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sayfa1");
 

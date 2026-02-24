@@ -1,4 +1,5 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from "react";
+﻿import "@/lib/handsontableSetup";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Card,
@@ -33,9 +34,7 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 // en üst importlara ekle:
 import { enqueueSnackbar } from "notistack";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
 
 // API
 import {
@@ -44,9 +43,7 @@ import {
   // varsa: getSentInvoiceMatches, SentInvoiceMatchRow
 } from "@/api/Fatura/FaturaApi";
 
-// Handsontable modülleri
-registerAllModules();
-interface Veri {
+// Handsontable modülleriinterface Veri {
   id: number;
   kontrolTesti: string;
   kontrolAmaci: string;

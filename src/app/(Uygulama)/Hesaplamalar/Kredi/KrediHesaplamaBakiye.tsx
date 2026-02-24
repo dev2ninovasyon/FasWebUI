@@ -1,8 +1,7 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -22,10 +21,7 @@ import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 import { useRouter } from "next/navigation";
 
-// register Handsontable's modules
-registerAllModules();
-
-numbro.registerLanguage(trTR);
+// register Handsontable's modulesnumbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {

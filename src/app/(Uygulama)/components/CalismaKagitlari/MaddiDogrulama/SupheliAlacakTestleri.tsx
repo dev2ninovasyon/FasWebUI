@@ -1,9 +1,8 @@
 ﻿"use client";
+import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import Handsontable from "handsontable";
+import { HotTable } from "@handsontable/react";import Handsontable from "handsontable";
 import "handsontable/dist/handsontable.full.min.css";
 import "@/utils/languages/handsontable.tr-TR";
 
@@ -16,11 +15,7 @@ import {
     saveAllSupheliAlacakTestleri,
     varsayilanaDon,
     SupheliAlacakTestleriData,
-} from "@/api/CalismaKagitlari/SupheliAlacakTestleri";
-
-registerAllModules();
-
-interface Props {
+} from "@/api/CalismaKagitlari/SupheliAlacakTestleri";interface Props {
     dipnotNo: string;
     modelAdi: string;
     isClickedVarsayilanaDon: boolean;

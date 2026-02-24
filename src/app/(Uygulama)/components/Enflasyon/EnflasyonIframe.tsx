@@ -8,174 +8,205 @@ import { ENFLASYON_BASE_URL } from "@/config/enflasyonConfig";
 import { generateSignature } from "@/utils/crypto";
 
 interface Props {
-    url: string;
+  url: string;
 }
 
 const EnflasyonIframe: React.FC<Props> = ({ url }) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [iframeSrcDoc, setIframeSrcDoc] = useState<string>("");
-    const [serverError, setServerError] = useState<string | null>(null);
-    const [retryKey, setRetryKey] = useState(0);
-    const iframeRef = useRef<HTMLIFrameElement>(null);
-    const user = useSelector((state: AppState) => state.userReducer);
+  const [isLoading, setIsLoading] = useState(true);
+  const [iframeSrcDoc, setIframeSrcDoc] = useState<string>("");
+  const [iframeDirectSrc, setIframeDirectSrc] = useState<string>("");
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const user = useSelector((state: AppState) => state.userReducer);
 
-    useEffect(() => {
-        if (!user || !user.kullaniciAdi) return;
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      if (event?.data?.type === "fas-enflasyon-refresh") {
+        setRetryKey((k) => k + 1);
+      }
+    };
 
-        const loadPageWithJQuery = async () => {
-            setServerError(null);
-            setIsLoading(true);
-            setIframeSrcDoc("");
-            try {
-                const signature = generateSignature(
-                    user.kullaniciAdi || "",
-                    (user.denetciId || 0).toString(),
-                    (user.id || 0).toString(),
-                    (user.denetlenenId || 0).toString(),
-                    (user.yil || 0).toString()
-                );
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
 
-                const encodedSignature = encodeURIComponent(signature);
-                const authParams = `username=${encodeURIComponent(user.kullaniciAdi || "")}&denetciId=${encodeURIComponent((user.denetciId || 0).toString())}&kullaniciId=${encodeURIComponent((user.id || 0).toString())}&denetlenenId=${encodeURIComponent((user.denetlenenId || 0).toString())}&yil=${encodeURIComponent((user.yil || 0).toString())}&signature=${encodedSignature}`;
+  useEffect(() => {
+    if (!user || !user.kullaniciAdi) return;
 
-                const separator = url.includes('?') ? '&' : '?';
-                const fullUrl = `${ENFLASYON_BASE_URL}${url}${separator}${authParams}`;
+    const buildAuthUrl = () => {
+      const signature = generateSignature(
+        user.kullaniciAdi || "",
+        (user.denetciId || 0).toString(),
+        (user.id || 0).toString(),
+        (user.denetlenenId || 0).toString(),
+        (user.yil || 0).toString()
+      );
 
-                console.log("📥 [EnflasyonIframe] HTML fetch başlıyor:", fullUrl);
+      const encodedSignature = encodeURIComponent(signature);
+      const authParams = `username=${encodeURIComponent(user.kullaniciAdi || "")}&denetciId=${encodeURIComponent((user.denetciId || 0).toString())}&kullaniciId=${encodeURIComponent((user.id || 0).toString())}&denetlenenId=${encodeURIComponent((user.denetlenenId || 0).toString())}&yil=${encodeURIComponent((user.yil || 0).toString())}&signature=${encodedSignature}`;
 
-                // HTML'yi fetch et
-                const response = await fetch(fullUrl, {
-                    credentials: 'include',
-                    method: 'GET',
-                });
+      const separator = url.includes("?") ? "&" : "?";
+      return {
+        fullUrl: `${ENFLASYON_BASE_URL}${url}${separator}${authParams}`,
+        authParams,
+      };
+    };
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+    const loadPageWithJQuery = async () => {
+      setServerError(null);
+      setIsLoading(true);
+      setIframeSrcDoc("");
+      setIframeDirectSrc("");
 
-                let html = await response.text();
-                console.log("✅ [EnflasyonIframe] HTML alındı, optimizasyonlar yapılıyor...");
+      const { fullUrl, authParams } = buildAuthUrl();
+      try {
+        const response = await fetch(fullUrl, {
+          credentials: "include",
+          method: "GET",
+        });
 
-                // <base> tag'ini ekle
-                const baseTag = `<base href="${ENFLASYON_BASE_URL}/">`;
-                const authScript = `<script>
-                    window.FasAuthParams = "?${authParams}";
-                    try {
-                        var originalPush = history.pushState;
-                        var originalReplace = history.replaceState;
-                        history.pushState = function() {
-                            try { return originalPush.apply(history, arguments); } catch(e) { console.warn("prevented pushState error"); }
-                        };
-                        history.replaceState = function() {
-                            try { return originalReplace.apply(history, arguments); } catch(e) { console.warn("prevented replaceState error"); }
-                        };
-                    } catch(e) {}
-                </script>`;
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-                // Mevcut vendors.bundle.js'i bul ve başa taşı (jQuery içinde olduğu için)
-                const vendorsRegex = /<script[^>]+vendors\.bundle\.js[^>]*><\/script>/i;
-                const vendorsMatch = html.match(vendorsRegex);
-                let injections = baseTag + "\n" + authScript;
+        let html = await response.text();
 
-                if (vendorsMatch) {
-                    html = html.replace(vendorsMatch[0], ""); // Alttaki orijinali kaldır
-                    injections += `\n${vendorsMatch[0]}`; // Başa ekle
-                } else {
-                    // Bulunamazsa (garanti olsun diye) CDN ekle
-                    injections += `\n<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>`;
-                }
+        const baseTag = `<base href="${ENFLASYON_BASE_URL}/">`;
+        const authScript = `<script>
+window.FasAuthParams = "?${authParams}";
+try {
+  var originalPush = history.pushState;
+  var originalReplace = history.replaceState;
+  history.pushState = function() {
+    try { return originalPush.apply(history, arguments); } catch(e) {}
+  };
+  history.replaceState = function() {
+    try { return originalReplace.apply(history, arguments); } catch(e) {}
+  };
+} catch(e) {}
+</script>`;
 
-                if (html.includes('<head')) {
-                    html = html.replace(/<head[^>]*>/, `$&\n${injections}`);
-                } else if (html.includes('</head>')) {
-                    html = html.replace('</head>', `${injections}\n</head>`);
-                } else {
-                    html = `<head>${injections}</head>${html}`;
-                }
+        const vendorsRegex = /<script[^>]+vendors\.bundle\.js[^>]*><\/script>/i;
+        const vendorsMatch = html.match(vendorsRegex);
+        let injections = `${baseTag}\n${authScript}`;
 
-                console.log("✅ [EnflasyonIframe] Scriptler optimize edildi");
+        if (vendorsMatch) {
+          html = html.replace(vendorsMatch[0], "");
+          injections += `\n${vendorsMatch[0]}`;
+        } else {
+          injections += "\n<script src=\"https://code.jquery.com/jquery-3.6.0.min.js\"></script>";
+        }
 
-                // srcdoc ile iFrame'e set et
-                setIframeSrcDoc(html);
-                setIsLoading(false);
+        if (html.includes("<head")) {
+          html = html.replace(/<head[^>]*>/, `$&\n${injections}`);
+        } else if (html.includes("</head>")) {
+          html = html.replace("</head>", `${injections}\n</head>`);
+        } else {
+          html = `<head>${injections}</head>${html}`;
+        }
 
-            } catch (error: any) {
-                console.error("❌ [EnflasyonIframe] Hata:", error);
-                const msg: string = error?.message || "";
-                const isConnectionError =
-                    msg.includes("Failed to fetch") ||
-                    msg.includes("NetworkError") ||
-                    msg.includes("fetch failed") ||
-                    msg.includes("Load failed");
-                setServerError(
-                    isConnectionError
-                        ? "Enflasyon modülüne şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyin."
-                        : "Enflasyon modülü yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
-                );
-                setIsLoading(false);
-            }
-        };
+        setIframeSrcDoc(html);
+      } catch (error: any) {
+        // Fallback: srcdoc fetch başarısızsa doğrudan iframe src ile aç.
+        setIframeDirectSrc(fullUrl);
 
-        loadPageWithJQuery();
-    }, [user?.kullaniciAdi, url, retryKey]);
+        const msg: string = error?.message || "";
+        const isConnectionError =
+          msg.includes("Failed to fetch") ||
+          msg.includes("NetworkError") ||
+          msg.includes("fetch failed") ||
+          msg.includes("Load failed");
 
-    // User yüklenmemiş ise loading göster  
-    if (!user || !user.kullaniciAdi) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <CircularProgress />
-            </Box>
+        setServerError(
+          isConnectionError
+            ? "On yukleme basarisiz oldu. Sayfa dogrudan acilmaya calisiliyor."
+            : null
         );
-    }
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    if (serverError) {
-        return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%', gap: 2, p: 4 }}>
-                <Alert severity="error" sx={{ width: '100%', maxWidth: 600 }}>
-                    <Typography variant="body1">{serverError}</Typography>
-                </Alert>
-                <Button variant="outlined" color="error" onClick={() => setRetryKey(k => k + 1)}>
-                    Tekrar Dene
-                </Button>
-            </Box>
-        );
-    }
+    loadPageWithJQuery();
+  }, [user?.kullaniciAdi, user?.denetciId, user?.id, user?.denetlenenId, user?.yil, url, retryKey]);
 
+  if (!user || !user.kullaniciAdi) {
     return (
-        <Box sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
-            {isLoading && (
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                    width: '100%',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    zIndex: 1,
-                    background: 'transparent'
-                }}>
-                    <CircularProgress />
-                </Box>
-            )}
-            {iframeSrcDoc && (
-                <iframe
-                    ref={iframeRef}
-                    srcDoc={iframeSrcDoc}
-                    style={{
-                        background: "transparent",
-                        border: "0px",
-                        width: "100%",
-                        height: "100%",
-                        overflow: "hidden",
-                        display: "block"
-                    }}
-                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                ></iframe>
-            )}
-        </Box>
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+        <CircularProgress />
+      </Box>
     );
+  }
+
+  if (serverError && !iframeDirectSrc) {
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", gap: 2, p: 4 }}>
+        <Alert severity="error" sx={{ width: "100%", maxWidth: 600 }}>
+          <Typography variant="body1">{serverError}</Typography>
+        </Alert>
+        <Button variant="outlined" color="error" onClick={() => setRetryKey((k) => k + 1)}>
+          Tekrar Dene
+        </Button>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
+      {isLoading && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 1,
+            background: "transparent",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
+
+      {iframeSrcDoc && (
+        <iframe
+          ref={iframeRef}
+          srcDoc={iframeSrcDoc}
+          style={{
+            background: "transparent",
+            border: "0px",
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+            display: "block",
+          }}
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+        />
+      )}
+
+      {!iframeSrcDoc && iframeDirectSrc && (
+        <iframe
+          ref={iframeRef}
+          src={iframeDirectSrc}
+          style={{
+            background: "transparent",
+            border: "0px",
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+            display: "block",
+          }}
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          onLoad={() => setServerError(null)}
+        />
+      )}
+    </Box>
+  );
 };
 
 export default EnflasyonIframe;

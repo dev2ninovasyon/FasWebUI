@@ -1,4 +1,5 @@
-﻿import React, { useEffect, useRef, useState, useMemo } from "react";
+﻿import "@/lib/handsontableSetup";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   Box,
   Card,
@@ -42,12 +43,7 @@ import { enqueueSnackbar } from "notistack";
 import { getSentInvoiceMatches, SentInvoiceMatchRow } from "@/api/Fatura/FaturaApi";
 
 // âœ… Handsontable
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/dist/handsontable.full.min.css";
-registerAllModules();
-
-interface Veri {
+import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";interface Veri {
   id: number;
   kontrolTesti: string;
   kontrolAmaci: string;

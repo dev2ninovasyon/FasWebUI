@@ -1,28 +1,19 @@
 ﻿"use client";
-
-import { HotTable } from "@handsontable/react";
-import { registerAllModules } from "handsontable/registry";
-import "handsontable/dist/handsontable.full.min.css";
+import "@/lib/handsontableSetup";import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
 import {
   Grid, Button, ToggleButtonGroup, ToggleButton, Typography
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { enqueueSnackbar, closeSnackbar } from "notistack";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
+import { enqueueSnackbar, closeSnackbar } from "notistack";import { saveAs } from "file-saver";
 import {
   fetchPagedFaturalarFull,
   Fatura,
   FaturaSatiri,
   findInvoiceYevmiyeRowsByVkn,
 } from "@/api/Fatura/FaturaApi";
-import YevmiyeFaturaDialog from "@/app/(Uygulama)/components/Veri/Fatura/YevmiyeFaturaDialog";
-
-registerAllModules();
-
-type Props = {
+import YevmiyeFaturaDialog from "@/app/(Uygulama)/components/Veri/Fatura/YevmiyeFaturaDialog";type Props = {
   tip?: string;       // default "Alınan"
   pageSize?: number;  // default 50
 };
@@ -132,6 +123,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
   ];
 
   const handleExportExcel = async () => {
+    const { default: ExcelJS } = await import("exceljs");
     const wb = new ExcelJS.Workbook();
 
     // Sayfa 1: Fatura listesi
