@@ -464,7 +464,7 @@ const OncekiDonemDonusumDuzeltmeBelgesi = () => {
           afterGetRowHeader={afterGetRowHeader}
           afterRenderer={afterRenderer}
           
-          copyPaste={false}
+          copyPaste={true}
         />
       </Grid>
       {roluVarMi && (

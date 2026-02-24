@@ -441,7 +441,7 @@ const SonGirilenFisler: React.FC<Props> = ({
             },
           },
         }}
-        copyPaste={false}
+        copyPaste={true}
       />
     </>
   );

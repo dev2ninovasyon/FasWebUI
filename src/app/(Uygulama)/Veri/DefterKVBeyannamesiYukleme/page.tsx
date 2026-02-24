@@ -3,7 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -17,7 +17,7 @@ import {
   useTheme,
 } from "@mui/material";
 import DosyaTable from "@/app/(Uygulama)/components/Veri/DosyaTable";
-import { getDenetlenenById, uploadAndParseKurumlarBeyannamesi } from "@/api/Musteri/MusteriIslemleri";
+import { uploadAndParseKurumlarBeyannamesi } from "@/api/Musteri/MusteriIslemleri";
 import { getBaglantiBilgileriByTip } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "@/store/hooks";
@@ -61,6 +61,40 @@ interface DosyaType {
   durum: string;
 }
 
+interface ProgressInfo {
+  fileName: string;
+  percentage: number;
+  status: string;
+}
+
+const normalizeStatus = (status: string) =>
+  (status || "").toLocaleLowerCase("tr-TR");
+
+const isCompletedStatus = (status: string) =>
+  normalizeStatus(status).includes("tamamlandı");
+
+const isProcessingStatus = (status: string) =>
+  normalizeStatus(status).includes("işleniyor") ||
+  normalizeStatus(status).includes("isleniyor");
+
+const isQueueStatus = (status: string) =>
+  normalizeStatus(status).includes("sıraya alındı") ||
+  normalizeStatus(status).includes("siraya alindi") ||
+  normalizeStatus(status).startsWith("sırada") ||
+  normalizeStatus(status).startsWith("sirada");
+
+const isErrorStatus = (status: string) =>
+  normalizeStatus(status).includes("hata");
+
+const getStatusOrder = (status: string) => {
+  if (isProcessingStatus(status)) return 1;
+  if (normalizeStatus(status).includes("yükleniyor")) return 2;
+  if (isQueueStatus(status)) return 3;
+  if (isErrorStatus(status)) return 4;
+  if (isCompletedStatus(status)) return 5;
+  return 6;
+};
+
 interface Veri {
   id: number;
   link: string;
@@ -99,25 +133,17 @@ const Page: React.FC = () => {
 
   const [uploading, setUploading] = useState(false);
   const [dosyaYuklendiMi, setDosyaYuklendiMi] = useState(true);
-  const [progressInfos, setProgressInfos] = useState<any[]>([]);
-
-  const [denetlenenVergiNo, setDenetlenenVergiNo] = useState("");
-
-  const fetchDenetlenen = useCallback(async () => {
-    if (!user.denetlenenId || user.denetlenenId === 0) return;
-    try {
-      const denetlenen = await getDenetlenenById(user.denetlenenId);
-      if (denetlenen && denetlenen.vergiNo) {
-        setDenetlenenVergiNo(denetlenen.vergiNo); //mevcut müşteri vergi nosu state'e kaydedildi.
-      }
-    } catch (error) {
-      console.log("Denetlenen bilgileri alınamadı:", error);
-    }
-  }, [user.denetlenenId, user.token]);
-
-  useEffect(() => {
-    fetchDenetlenen();
-  }, [fetchDenetlenen]);
+  const [progressInfos, setProgressInfos] = useState<ProgressInfo[]>([]);
+  const [trackedFileNames, setTrackedFileNames] = useState<string[]>([]);
+  const sortedProgressInfos = useMemo(
+    () =>
+      [...progressInfos].sort((a, b) => {
+        const statusDiff = getStatusOrder(a.status) - getStatusOrder(b.status);
+        if (statusDiff !== 0) return statusDiff;
+        return a.fileName.localeCompare(b.fileName, "tr");
+      }),
+    [progressInfos]
+  );
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -133,9 +159,7 @@ const Page: React.FC = () => {
       setUploading(true);
       setDosyaYuklendiMi(false);
 
-      // 2. Vergi Numarası Kontrolü ve Dosya Hazırlığı
       const validFiles: File[] = [];
-      const invalidFiles: string[] = [];
 
       for (const file of acceptedFiles) {
         if (
@@ -144,41 +168,7 @@ const Page: React.FC = () => {
           fileType === "E-DefterKebir" ||
           fileType === "E-DefterYevmiye"
         ) {
-          if (file.type === "text/xml" || file.name.slice(-4).toLowerCase() === ".xml") {
-            try {
-              // RAM Optimizasyonu: tüm dosyayı değil, sadece ilk 2KB oku — VKN her zaman dosyanın başındadır.
-              const head = file.slice(0, 2048);
-              const text = await new Promise<string>((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve((e.target?.result as string) ?? "");
-                reader.readAsText(head, "utf-8");
-              });
-              let dosyaVkn = null;
-
-              // 1. Try standard VKN tag (e.g., <gl-cor:VKN>)
-              const vknMatch = text.match(/<([a-zA-Z0-9]+:)?VKN>(\d+)<\/([a-zA-Z0-9]+:)?VKN>/);
-              if (vknMatch) {
-                dosyaVkn = vknMatch[2];
-              } else {
-                // 2. Try XBRL identifier tag (e.g., <xbrli:identifier ...>)
-                const xbrlMatch = text.match(/<([a-zA-Z0-9]+:)?identifier[^>]*>(\d+)<\/([a-zA-Z0-9]+:)?identifier>/);
-                if (xbrlMatch) {
-                  dosyaVkn = xbrlMatch[2];
-                }
-              }
-
-              if (dosyaVkn && denetlenenVergiNo && dosyaVkn !== denetlenenVergiNo) {
-                enqueueSnackbar(
-                  `Şirket eklenirken girilen vergi numarası (${denetlenenVergiNo}) ve yüklenmeye çalışan edefter vergi numarası (${dosyaVkn}) eşleşmemektedir.`,
-                  { variant: "error", autoHideDuration: 8000 }
-                );
-                invalidFiles.push(file.name);
-                continue; // Bu dosyayı yükleme listesine ekleme
-              }
-            } catch (err) {
-              console.error("Dosya okunurken hata:", err);
-            }
-          }
+          // Vergi no kontrolü kaldırıldı: uygun tipteki dosyalar doğrudan yükleme listesine alınır.
         }
         validFiles.push(file);
       }
@@ -188,18 +178,22 @@ const Page: React.FC = () => {
         return;
       }
 
-      const _progressInfos = validFiles.map((file) => ({
-        fileName: file.name,
-        percentage: 0,
-        status: "Yükleniyor...",
-      }));
+      const currentBatchNames = validFiles.map((file) => file.name);
+      const allTrackedNames = Array.from(new Set([...trackedFileNames, ...currentBatchNames]));
+      setTrackedFileNames(allTrackedNames);
 
-      setProgressInfos(_progressInfos);
+      setProgressInfos((prev) => {
+        const map = new Map<string, ProgressInfo>(prev.map((x) => [x.fileName, x]));
+        for (const name of currentBatchNames) {
+          map.set(name, { fileName: name, percentage: 0, status: "Yükleniyor..." });
+        }
+        return Array.from(map.values());
+      });
 
       try {
         if (fileType === "KurumlarBeyannamesi") {
           // Kurumlar Beyannamesi: her dosya için ayrı istek (API bu şekilde çalışıyor)
-          const uploadPromises = validFiles.map(async (file, index) => {
+          const uploadPromises = validFiles.map(async (file) => {
             try {
               const res = await uploadAndParseKurumlarBeyannamesi(
                 file,
@@ -209,18 +203,22 @@ const Page: React.FC = () => {
               );
               if (res.success) {
                 setProgressInfos((prev) => {
-                  const next = [...prev];
-                  if (next[index]) next[index] = { ...next[index], status: "Tamamlandı", percentage: 100 };
-                  return next;
+                  return prev.map((info) =>
+                    info.fileName === file.name
+                      ? { ...info, status: "Tamamlandı", percentage: 100 }
+                      : info
+                  );
                 });
               } else {
                 throw new Error(res.message);
               }
             } catch (error: any) {
               setProgressInfos((prev) => {
-                const next = [...prev];
-                if (next[index]) next[index] = { ...next[index], status: "Hata!", percentage: 0 };
-                return next;
+                return prev.map((info) =>
+                  info.fileName === file.name
+                    ? { ...info, status: "Hata!", percentage: 0 }
+                    : info
+                );
               });
               enqueueSnackbar(error.message || "Bilinmeyen bir hata oluştu.", { variant: "error" });
             }
@@ -240,16 +238,25 @@ const Page: React.FC = () => {
               onUploadProgress: (event) => {
                 const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
                 setProgressInfos((prev) =>
-                  prev.map((info) => ({ ...info, percentage: Math.round(progress * 0.2), status: "Yükleniyor..." }))
+                  prev.map((info) =>
+                    currentBatchNames.includes(info.fileName)
+                      ? { ...info, percentage: Math.round(progress * 0.2), status: "Yükleniyor..." }
+                      : info
+                  )
                 );
               },
             }
           );
 
-          // Yükleme tamamlandı — tüm dosyaları "Yüklendi" olarak güncelle
+          // Yükleme tamamlandı — tüm dosyalar kuyruğa alındı
           setProgressInfos((prev) =>
-            prev.map((info) => ({ ...info, status: "Yüklendi", percentage: 20 }))
+            prev.map((info) =>
+              currentBatchNames.includes(info.fileName)
+                ? { ...info, status: "Sıraya Alındı.", percentage: 20 }
+                : info
+            )
           );
+          enqueueSnackbar("Dosyalar kuyruğa alındı. İşlem sırası geldiğinde otomatik işlenecek.", { variant: "info" });
         }
 
         if (fileType === "KurumlarBeyannamesi") {
@@ -266,20 +273,54 @@ const Page: React.FC = () => {
           try {
             const res = await axios.get(`${url}/Veri/DosyaDurumlari?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`);
             const data = res.data;
+            const queueItems = data
+              .filter((d: any) => isQueueStatus(d.durum))
+              .sort((a: any, b: any) => (a.id || 0) - (b.id || 0));
 
-            setProgressInfos((prev) =>
-              prev.map((info) => {
-                const serverFile = data.find((d: any) => d.adi === info.fileName);
+            setProgressInfos((prev) => {
+              const byName = new Map<string, ProgressInfo>(prev.map((x) => [x.fileName, x]));
+              for (const name of allTrackedNames) {
+                const serverFile = data.find((d: any) => d.adi === name);
                 if (serverFile) {
-                  const totalProgress = 20 + Math.round((serverFile.progress || 0) * 0.8);
-                  return { ...info, percentage: Math.min(totalProgress, 100), status: serverFile.durum };
-                }
-                return info;
-              })
-            );
+                  let nextPercentage = 20;
+                  let nextStatus = serverFile.durum;
 
-            const allDone = validFiles.every((file) => {
-              const serverFile = data.find((d: any) => d.adi === file.name);
+                  if (isCompletedStatus(serverFile.durum)) {
+                    nextPercentage = 100;
+                  } else if (isErrorStatus(serverFile.durum)) {
+                    nextPercentage = Math.max(20, serverFile.progress || 20);
+                  } else if (isProcessingStatus(serverFile.durum)) {
+                    const processingBase = serverFile.progress || 0;
+                    nextPercentage = Math.min(95, 35 + Math.round(processingBase * 0.6));
+                  } else if (isQueueStatus(serverFile.durum)) {
+                    const queueTotal = queueItems.length || 1;
+                    const queuePos =
+                      Math.max(
+                        1,
+                        queueItems.findIndex((x: any) => x.adi === name) + 1
+                      ) || queueTotal;
+                    // Kuyrukta öne geldikçe yüzde artar: 20-35 bandı
+                    const queueWeight = (queueTotal - queuePos + 1) / queueTotal;
+                    nextPercentage = 20 + Math.round(queueWeight * 15);
+                    nextStatus = `Sırada (${queuePos}/${queueTotal})`;
+                  } else {
+                    nextPercentage = Math.max(20, serverFile.progress || 20);
+                  }
+
+                  byName.set(name, {
+                    fileName: name,
+                    percentage: Math.min(nextPercentage, 100),
+                    status: nextStatus,
+                  });
+                } else if (!byName.has(name)) {
+                  byName.set(name, { fileName: name, percentage: 20, status: "Sıraya Alındı." });
+                }
+              }
+              return Array.from(byName.values());
+            });
+
+            const allDone = allTrackedNames.every((fileName) => {
+              const serverFile = data.find((d: any) => d.adi === fileName);
               return serverFile && (serverFile.durum === "Tamamlandı" || serverFile.durum === "Hata Oluştu");
             });
 
@@ -288,6 +329,7 @@ const Page: React.FC = () => {
               clearInterval(interval);
               setUploading(false);
               setDosyaYuklendiMi(true);
+              setTrackedFileNames([]);
               enqueueSnackbar("Tüm dosyalar işlendi.", { variant: "success" });
               setControl(true);
             }
@@ -302,7 +344,7 @@ const Page: React.FC = () => {
         setUploading(false);
       }
     },
-    [user.denetciId, user.yil, user.denetlenenId, fileType, fetchedData, denetlenenVergiNo]
+    [user.denetciId, user.yil, user.denetlenenId, fileType, fetchedData, trackedFileNames]
   );
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
@@ -541,7 +583,7 @@ const Page: React.FC = () => {
                         overflow={"auto"} // Taşmayı önler ve gerektiğinde scroll çıkarır
                         maxHeight={"240px"} // Dikey sınır, gerekirse değiştirebilirsiniz
                       >
-                        {progressInfos.map((info, index) => (
+                        {sortedProgressInfos.map((info, index) => (
                           <Box key={index} sx={{ mb: 2, textAlign: "left" }}>
                             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
                               <Typography variant="body2" sx={{ fontWeight: 600, color: "text.primary", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>

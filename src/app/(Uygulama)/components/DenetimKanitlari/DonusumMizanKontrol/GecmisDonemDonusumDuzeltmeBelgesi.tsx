@@ -469,7 +469,7 @@ const GecmisDonemDonusumDuzeltmeBelgesi = () => { //component tanımı ve temel 
           afterGetRowHeader={afterGetRowHeader}
           afterRenderer={afterRenderer}
           
-          copyPaste={false}
+          copyPaste={true}
         />
       </Grid>
       {roluVarMi && (

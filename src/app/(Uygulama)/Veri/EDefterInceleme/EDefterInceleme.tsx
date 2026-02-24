@@ -434,7 +434,7 @@ const EDefterInceleme: React.FC<Props> = ({
       setRowCount(rowsAll.length);
       setTotalCount(pagedData.totalCount || 0);
       setTotalPages(
-        Math.ceil((pagedData.totalCount || 0) / pageSize)
+        Math.max(1, Math.ceil((pagedData.totalCount || 0) / pageSize))
       );
       setCurrentPage(pageNum);
       setIsLoading(false);
@@ -584,6 +584,7 @@ const EDefterInceleme: React.FC<Props> = ({
         afterChange={handleAfterChange}
         contextMenu={{
           items: {
+              copy: {},
             fise_git: {
               name: "Fişe Git",
               callback: async function (key, selection) {
@@ -593,7 +594,7 @@ const EDefterInceleme: React.FC<Props> = ({
             },
           },
         }}
-        copyPaste={false}
+        copyPaste={true}
       />
       </Box>
       {fetchedData.length > 0 && (

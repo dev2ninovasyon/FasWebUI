@@ -573,7 +573,7 @@ const FisDetaylari = () => {
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
         afterChange={handleAfterChange}
-        copyPaste={false}
+        copyPaste={true}
       />
       {fetchedData.length > 0 && (
         <Grid container marginTop={2}>

@@ -1,9 +1,40 @@
-﻿export const url = "https://betaapi.fasmart.app/api";
-//export const url = "http://localhost:5000/api";
+﻿//export const url = "https://betaapi.fasmart.app/api";
+export const url = "http://localhost:5000/api";
 
 // 🔐 Güvenlik: Token manager import
 import SecureTokenManager from "@/utils/SecureTokenManager";
 import Logger from "@/utils/Logger";
+
+const LOGIN_ROUTE_PATH = "/";
+const MAINTENANCE_ROUTE_PATH = "/maintenance";
+
+const isAuthEndpoint = (path: string) => {
+  const lowerPath = path.toLowerCase();
+  return (
+    lowerPath === "/auth/login" ||
+    lowerPath === "/auth/refresh" ||
+    lowerPath === "/auth/logout"
+  );
+};
+
+const redirectTo = (targetPath: string) => {
+  if (typeof window === "undefined") return;
+  if (window.location.pathname === targetPath) return;
+  window.location.href = targetPath;
+};
+
+const redirectToLogin = () => {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem("persist:root");
+  window.sessionStorage.removeItem("reduxState");
+  redirectTo(LOGIN_ROUTE_PATH);
+};
+
+const redirectToMaintenance = () => {
+  if (typeof window === "undefined") return;
+  if (window.location.pathname === LOGIN_ROUTE_PATH) return;
+  redirectTo(MAINTENANCE_ROUTE_PATH);
+};
 
 /**
  * ✅ İYİLEŞTİRİLMİŞ API Fetch fonksiyonu (Güvenlik Kontrolleri)
@@ -56,9 +87,8 @@ export async function apiFetch(
 
     // 🔐 GÜVENLIK: Token expiry (401) or Permission Mismatch (403)
     if (response.status === 401 || response.status === 403) {
-      const lowerPath = path.toLowerCase();
       // Login or Refresh endpoints themselves shouldn't trigger another refresh
-      if (lowerPath === '/auth/login' || lowerPath === '/auth/refresh') {
+      if (isAuthEndpoint(normalizedPath)) {
         return response;
       }
 
@@ -98,13 +128,7 @@ export async function apiFetch(
             return await apiFetch(path, options);
           } else {
             console.error("❌ Session yenileme başarısız. Oturum kapatılıyor.");
-
-            // Sadece gerçekten başarısızsa logout yap
-            window.localStorage.removeItem("persist:root");
-            window.sessionStorage.removeItem("reduxState");
-            if (window.location && window.location.pathname !== "/") {
-              window.location.href = "/";
-            }
+            redirectToLogin();
           }
         } catch (refreshError) {
           (window as any)._isRefreshing = false;
@@ -112,6 +136,13 @@ export async function apiFetch(
         }
       }
       return response;
+    }
+
+    if (response.status >= 500) {
+      console.error(`❌ [API] Sunucu hatası: ${response.status} (${normalizedPath})`);
+      if (!isAuthEndpoint(normalizedPath)) {
+        redirectToMaintenance();
+      }
     }
 
     // 400+ response: log and parse body
@@ -123,6 +154,31 @@ export async function apiFetch(
       } catch {
         parsed = undefined;
       }
+
+      const parsedMessage =
+        typeof parsed === "string"
+          ? parsed
+          : parsed?.message;
+      const rawMessage =
+        typeof text === "string" ? text.trim().replace(/^"+|"+$/g, "") : "";
+      const normalizedMessage = (parsedMessage || rawMessage || "")
+        .toString()
+        .trim()
+        .replace(/^"+|"+$/g, "");
+
+      const isBaglantiByTipNoConnection =
+        response.status === 400 &&
+        normalizedPath.startsWith("/BaglantiBilgileri/BaglantiBilgileriByTip") &&
+        normalizedMessage === "Bağlantı oluşturulmamış.";
+
+      // Sadece bu özel durumda akışı bozma ve error seviyesinde loglama yapma
+      if (isBaglantiByTipNoConnection) {
+        console.info(
+          `[API INFO] ${response.status} ${normalizedPath}: ${normalizedMessage}`
+        );
+        return undefined as any;
+      }
+
       if (!suppressErrorLog) {
         console.error("API ERROR", response.status, parsed ?? text);
       }
@@ -144,6 +200,7 @@ export async function apiFetch(
 
     if (error.name === "AbortError") {
       console.warn(`⏱️ [API] Timeout: ${path} (${timeout}ms)`);
+      redirectToMaintenance();
       const timeoutError = new Error(`İstek zaman aşımına uğradı (${timeout}ms). İsteği yeniden deneyin.`);
       Logger.error(`API Timeout: ${path}`, error);
       throw timeoutError;
@@ -157,6 +214,7 @@ export async function apiFetch(
     const isUnauthorizedError = errorMessage === "Unauthorized - aborting request";
 
     if (isConnectionError) {
+      redirectToMaintenance();
       const detailedError = `
 ❌ [API Connection Error]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

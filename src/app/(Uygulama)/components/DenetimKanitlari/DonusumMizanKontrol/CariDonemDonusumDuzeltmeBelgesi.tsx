@@ -466,7 +466,7 @@ const CariDonemDonusumDuzeltmeBelgesi = () => {
           afterRenderer={afterRenderer}
           
           
-          copyPaste={false}
+          copyPaste={true}
         />
       </Grid>
       {roluVarMi && (

@@ -1,17 +1,38 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
+const normalizeToKebirCodes = (value?: string): string => {
+  if (!value) return "";
 
+  return value
+    .split(/[\n,;]+/)
+    .map((item) => item.trim())
+    .filter((item) => item !== "")
+    .map((item) => {
+      const digits = item.replace(/[^\d]/g, "");
+      return digits.length >= 3 ? digits.slice(0, 3) : item;
+    })
+    .join(",");
+};
 export const getEDefterIncelemeVerileri = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  hesapNo: string,
+  detayKodu: string,
   baslangicTarihi: string,
   bitisTarihi: string
 ) => {
   try {
+    const params = new URLSearchParams();
+    params.set("denetciId", String(denetciId));
+    params.set("yil", String(yil));
+    params.set("denetlenenId", String(denetlenenId));
+    params.set("hesapNo", detayKodu);
+    params.set("detayKodu", detayKodu); // Backend varyant uyumluluğu
+    params.set("baslangicTarihi", baslangicTarihi);
+    params.set("bitisTarihi", bitisTarihi);
+
     const response = await apiFetch(
-      `/Veri/EDefterInceleme?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${hesapNo}&baslangicTarihi=${baslangicTarihi}&bitisTarihi=${bitisTarihi}`,
+      `/Veri/EDefterInceleme?${params.toString()}`,
       {
         method: "GET",
         headers: {
@@ -33,11 +54,11 @@ export const getEDefterIncelemeVerileriPaged = async (
   denetciId: number,
   denetlenenId: number,
   yil: number,
-  hesapNo: string,
+  detayKodu: string,
   baslangicTarihi: string,
   bitisTarihi: string,
   hesaplar?: string,
-  iliskilihesaplar?: string,
+  iliskiliHesaplar?: string,
   yevmiyeNolar?: string,
   haricYevmiyeNo?: string,
   borcTutarindanFazla?: number,
@@ -47,8 +68,51 @@ export const getEDefterIncelemeVerileriPaged = async (
   pageSize: number = 50
 ) => {
   try {
+    const params = new URLSearchParams();
+    params.set("denetciId", String(denetciId));
+    params.set("yil", String(yil));
+    params.set("denetlenenId", String(denetlenenId));
+    params.set("hesapNo", detayKodu);
+    params.set("detayKodu", detayKodu); // Backend varyant uyumluluğu
+    params.set("baslangicTarihi", baslangicTarihi);
+    params.set("bitisTarihi", bitisTarihi);
+
+    if (hesaplar && hesaplar.trim() !== "") {
+      params.set("hesaplar", hesaplar);
+    }
+
+    if (iliskiliHesaplar && iliskiliHesaplar.trim() !== "") {
+      // Bazı endpointlerde farklı isimlendirme olabiliyor
+      const iliskiliKebirKodlar = normalizeToKebirCodes(iliskiliHesaplar);
+      params.set("iliskilihesaplar", iliskiliKebirKodlar);
+      params.set("iliskiliHesaplar", iliskiliKebirKodlar);
+    }
+
+    if (yevmiyeNolar && yevmiyeNolar.trim() !== "") {
+      params.set("yevmiyeNolar", yevmiyeNolar);
+    }
+
+    if (haricYevmiyeNo && haricYevmiyeNo.trim() !== "") {
+      params.set("haricYevmiyeNo", haricYevmiyeNo);
+    }
+
+    if (borcTutarindanFazla !== undefined && borcTutarindanFazla !== null) {
+      params.set("borcTutarindanFazla", String(borcTutarindanFazla));
+    }
+
+    if (alacakTutarindanFazla !== undefined && alacakTutarindanFazla !== null) {
+      params.set("alacakTutarindanFazla", String(alacakTutarindanFazla));
+    }
+
+    if (aciklama && aciklama.trim() !== "") {
+      params.set("aciklama", aciklama);
+    }
+
+    params.set("pageNumber", String(pageNumber));
+    params.set("pageSize", String(pageSize));
+
     const response = await apiFetch(
-      `/Veri/EDefterIncelemePaged?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&hesapNo=${encodeURIComponent(hesapNo)}&baslangicTarihi=${encodeURIComponent(baslangicTarihi)}&bitisTarihi=${encodeURIComponent(bitisTarihi)}${hesaplar ? `&hesaplar=${encodeURIComponent(hesaplar)}` : ""}${iliskilihesaplar ? `&iliskilihesaplar=${encodeURIComponent(iliskilihesaplar)}` : ""}${yevmiyeNolar ? `&yevmiyeNolar=${encodeURIComponent(yevmiyeNolar)}` : ""}${haricYevmiyeNo ? `&haricYevmiyeNo=${encodeURIComponent(haricYevmiyeNo)}` : ""}${borcTutarindanFazla ? `&borcTutarindanFazla=${borcTutarindanFazla}` : ""}${alacakTutarindanFazla ? `&alacakTutarindanFazla=${alacakTutarindanFazla}` : ""}${aciklama ? `&aciklama=${encodeURIComponent(aciklama)}` : ""}&pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      `/Veri/EDefterIncelemePaged?${params.toString()}`,
       {
         method: "GET",
         headers: {
@@ -151,3 +215,4 @@ export const getEDefterIncelemeVerileriByFisNo = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+

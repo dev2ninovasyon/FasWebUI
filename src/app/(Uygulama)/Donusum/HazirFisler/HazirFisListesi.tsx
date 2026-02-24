@@ -457,6 +457,7 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
           afterRenderer={afterRenderer}
           contextMenu={{
             items: {
+              copy: {},
               fis_listesine_ekle: {
                 name: "Fiş Listesine Ekle",
                 callback: async function (key, selection) {
@@ -501,7 +502,7 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
               },
             },
           }}
-          copyPaste={false}
+          copyPaste={true}
         />
       </Grid>
       <Grid

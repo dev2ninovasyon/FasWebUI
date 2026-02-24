@@ -460,7 +460,7 @@ const KurFarkiKontrolleriFis: React.FC<Props> = ({ data }) => {
             },
           },
         }}
-        copyPaste={false}
+        copyPaste={true}
       />
       <Grid container marginTop={2}>
         <Grid

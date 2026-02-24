@@ -2,33 +2,33 @@
   "cookies": [
     {
       "name": "_GRECAPTCHA",
-      "value": "09AKhCRwgtg51AzAXJV9yOxRzOs6wgCTyyxitGneORpJYOdetqs8h2Sf-14Kgdy_iU-DM9HhLvHJtvQFL6xhXKNRo",
+      "value": "09AKhCRwhih2XMbk7b5j574uTJTQPNigqzTKpCz7Aa2bm4Gfany6rPyCUNyHNPOd-lgfPWzBFmqf_lL44qGkgB9Uk",
       "domain": "www.google.com",
       "path": "/recaptcha",
-      "expires": 1787332139.191246,
+      "expires": 1787495181.469936,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "fas_token",
-      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNCIsImt1bGxhbmljaUlkIjoiMzkiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDQiLCJqdGkiOiJmM2M0MDdjOS1hOGQ4LTQ1MTgtYmQxOC00YTBkMTRiNTFlYmEiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMiIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTc4MDEzOSwiZXhwIjoxNzcxNzgzNzM5LCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.VEkL8K9ULoUec3dIjquEBkCjt7rTLty82zNROcBrBNg",
+      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNCIsImt1bGxhbmljaUlkIjoiMzkiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDQiLCJqdGkiOiI1NDg4ZTA1ZS0wNzMzLTQzNGEtYjYxYi1hY2UwODg1ZDM4NTQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMiIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTk0MzE4MSwiZXhwIjoxNzcxOTQ2NzgxLCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.jHqCfcjJPqfxZAnLaA2cy7VEbmylnfGkYPcaWrf5XgU",
       "domain": "localhost",
       "path": "/",
-      "expires": 1771785540.315867,
+      "expires": 1771948582.548416,
       "httpOnly": true,
       "secure": false,
-      "sameSite": "Strict"
+      "sameSite": "Lax"
     },
     {
       "name": "fas_refreshToken",
-      "value": "%2FgtRMgM%2F2yVQEi52kmkYuRrj52jNsY2UcMF8lzKpE%2Fk%3D",
+      "value": "yR8wCqOYX2KjJiI0cVAyoBc1hFQLFOEWAHoPNXBGTzY%3D",
       "domain": "localhost",
       "path": "/",
-      "expires": 1772384940.315969,
+      "expires": 1772547982.54851,
       "httpOnly": true,
       "secure": false,
-      "sameSite": "Strict"
+      "sameSite": "Lax"
     }
   ],
   "origins": [
@@ -36,16 +36,24 @@
       "origin": "http://localhost:3000",
       "localStorage": [
         {
+          "name": "fas_token",
+          "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNCIsImt1bGxhbmljaUlkIjoiMzkiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDQiLCJqdGkiOiI1NDg4ZTA1ZS0wNzMzLTQzNGEtYjYxYi1hY2UwODg1ZDM4NTQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMiIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTk0MzE4MSwiZXhwIjoxNzcxOTQ2NzgxLCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.jHqCfcjJPqfxZAnLaA2cy7VEbmylnfGkYPcaWrf5XgU"
+        },
+        {
+          "name": "fas_refreshToken",
+          "value": "yR8wCqOYX2KjJiI0cVAyoBc1hFQLFOEWAHoPNXBGTzY="
+        },
+        {
           "name": "fas_yil",
           "value": "2024"
         },
         {
           "name": "_grecaptcha",
-          "value": "09AKhCRwiTZDkR-f-_-cI9B5hUAfdCA-7mwG3WR0lXzNjd975fjLQinK5BLl61SQgB8NCKQlv5FbZtFvYXzRgX0rVa027ez2MdUlICOLA0FbgLsMeZd2uwjYnJexjSchss"
+          "value": "09AKhCRwiAk1YRXGMzaBh00luCIT5yMwxRw_Gq379GUUhAL_MiqzR8BwRfhlFSqmR9-rs8wJtm2woSshsYPLwLxauf8sk38Q7ZIETn7tIv3_BayPBkHTvVUE6d5d6d5Iie"
         },
         {
           "name": "user_expiry",
-          "value": "1771785540355"
+          "value": "1771948582608"
         },
         {
           "name": "fas_denetlenenId",
@@ -53,7 +61,7 @@
         },
         {
           "name": "persist:root",
-          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7}\",\"userReducer\":\"{\\\"id\\\":39,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":2,\\\"denetlenenFirmaAdi\\\":\\\" INOVEN ENERJİ MÜHENDİSLİK  VE TİCARET ANONİM ŞİRKETİ\\\",\\\"denetimTuru\\\":\\\"Tfrs\\\",\\\"bobimi\\\":false,\\\"tfrsmi\\\":true,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":true,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 4\\\",\\\"mail\\\":\\\"test4@2ninovasyon.com\\\",\\\"token\\\":\\\"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNCIsImt1bGxhbmljaUlkIjoiMzkiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDQiLCJqdGkiOiJmM2M0MDdjOS1hOGQ4LTQ1MTgtYmQxOC00YTBkMTRiNTFlYmEiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMiIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTc4MDEzOSwiZXhwIjoxNzcxNzgzNzM5LCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.VEkL8K9ULoUec3dIjquEBkCjt7rTLty82zNROcBrBNg\\\",\\\"refreshToken\\\":\\\"/gtRMgM/2yVQEi52kmkYuRrj52jNsY2UcMF8lzKpE/k=\\\",\\\"formHazirlayanOnaylayan\\\":false,\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"sonSecilenDenetlenenId\\\":2,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\" INOVEN ENERJİ MÜHENDİSLİK  VE TİCARET ANONİM ŞİRKETİ\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Tfrs\\\",\\\"sonSecilenBobimi\\\":false,\\\"sonSecilenTfrsmi\\\":true,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":true,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
+          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7}\",\"userReducer\":\"{\\\"id\\\":39,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":2,\\\"denetlenenFirmaAdi\\\":\\\" INOVEN ENERJİ MÜHENDİSLİK  VE TİCARET ANONİM ŞİRKETİ\\\",\\\"denetimTuru\\\":\\\"Tfrs\\\",\\\"bobimi\\\":false,\\\"tfrsmi\\\":true,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":true,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 4\\\",\\\"mail\\\":\\\"test4@2ninovasyon.com\\\",\\\"token\\\":\\\"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNCIsImt1bGxhbmljaUlkIjoiMzkiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDQiLCJqdGkiOiI1NDg4ZTA1ZS0wNzMzLTQzNGEtYjYxYi1hY2UwODg1ZDM4NTQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMiIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTk0MzE4MSwiZXhwIjoxNzcxOTQ2NzgxLCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.jHqCfcjJPqfxZAnLaA2cy7VEbmylnfGkYPcaWrf5XgU\\\",\\\"refreshToken\\\":\\\"yR8wCqOYX2KjJiI0cVAyoBc1hFQLFOEWAHoPNXBGTzY=\\\",\\\"formHazirlayanOnaylayan\\\":false,\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"sonSecilenDenetlenenId\\\":2,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\" INOVEN ENERJİ MÜHENDİSLİK  VE TİCARET ANONİM ŞİRKETİ\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Tfrs\\\",\\\"sonSecilenBobimi\\\":false,\\\"sonSecilenTfrsmi\\\":true,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":true,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
         }
       ]
     },
@@ -62,11 +70,11 @@
       "localStorage": [
         {
           "name": "rc::a",
-          "value": "MXdhMmY0OXhzbnB6dA=="
+          "value": "MWRzNzhjYTVhYnZhaQ=="
         },
         {
           "name": "rc::f",
-          "value": "0aADtQnsdrfexXbw_kya1_fxSbu_GZqyZBEyymNunWJW_sQR9GK6cG0S2I5IDzq5nBaHhs3l8"
+          "value": "0aADtQnseaEacZYgIGHvR8I3EEiGA9AOX4-7bshPS3O4zs7307Il8vsDD3i9jMXCMsSPawl80"
         }
       ]
     }

@@ -46,7 +46,7 @@ export default defineConfig({
                 ...devices['Desktop Chrome'],
                 // Varsayılan state testlerin içinde (use) manipüle edileceği için setup dependency konuldu
             },
-            // dependencies: ['setup'],
+            dependencies: ['setup'],
         }
     ],
 
