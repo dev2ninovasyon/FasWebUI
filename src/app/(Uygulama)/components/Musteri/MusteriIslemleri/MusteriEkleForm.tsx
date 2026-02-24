@@ -231,7 +231,7 @@ const MusteriEkleForm = ({
         try {
           const result = await startImportFromOldJob({
             OldCompanyId: initialData.id || initialData.Id,
-            NewCompanyId: 0,
+            NewCompanyId: initialData.id || initialData.Id,
             Years: [],
             TableKeys: []
           });
