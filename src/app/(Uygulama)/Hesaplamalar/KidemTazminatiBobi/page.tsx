@@ -185,16 +185,12 @@ const Page: React.FC = () => {
   const [hesap750, setHesap750] = useState<number>(0);
   const [hesap760, setHesap760] = useState<number>(0);
   const [hesap770, setHesap770] = useState<number>(0);
-  const [ayrilan2019, setAyrilan2019] = useState<number>(0);
-  const [personel2019, setPersonel2019] = useState<number>(0);
-  const [ayrilan2020, setAyrilan2020] = useState<number>(0);
-  const [personel2020, setPersonel2020] = useState<number>(0);
-  const [ayrilan2021, setAyrilan2021] = useState<number>(0);
-  const [personel2021, setPersonel2021] = useState<number>(0);
-  const [ayrilan2022, setAyrilan2022] = useState<number>(0);
-  const [personel2022, setPersonel2022] = useState<number>(0);
-  const [ayrilan2023, setAyrilan2023] = useState<number>(0);
-  const [personel2023, setPersonel2023] = useState<number>(0);
+  // Dinamik 5 yıl: [yil-4, yil-3, yil-2, yil-1, yil]
+  const [ayrilanlar, setAyrilanlar] = useState<number[]>([0, 0, 0, 0, 0]);
+  const [personeller, setPersoneller] = useState<number[]>([0, 0, 0, 0, 0]);
+
+  // Seçilen yıldan 5 yıl öncesi → 5 yıllık dizi
+  const personelYillari = Array.from({ length: 5 }, (_, i) => (user.yil || 0) - 4 + i);
 
   const [control, setControl] = useState(false);
 
@@ -270,16 +266,17 @@ const Page: React.FC = () => {
       hesap750: hesap750,
       hesap760: hesap760,
       hesap770: hesap770,
-      ayrilan2019: ayrilan2019,
-      personel2019: personel2019,
-      ayrilan2020: ayrilan2020,
-      personel2020: personel2020,
-      ayrilan2021: ayrilan2021,
-      personel2021: personel2021,
-      ayrilan2022: ayrilan2022,
-      personel2022: personel2022,
-      ayrilan2023: ayrilan2023,
-      personel2023: personel2023,
+      // Dinamik yıl verileri — array index 0..4 → yil-4..yil
+      ayrilan2019: ayrilanlar[0],
+      personel2019: personeller[0],
+      ayrilan2020: ayrilanlar[1],
+      personel2020: personeller[1],
+      ayrilan2021: ayrilanlar[2],
+      personel2021: personeller[2],
+      ayrilan2022: ayrilanlar[3],
+      personel2022: personeller[3],
+      ayrilan2023: ayrilanlar[4],
+      personel2023: personeller[4],
     };
     try {
       const result = await createKidemTazminatiBobiEkBilgi(createdKidemEkBilgi
@@ -317,9 +314,12 @@ const Page: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const kidemEkBilgiVerileri = await getKidemTazminatiBobiEkBilgi(user.denetciId || 0,
+      const yilFiltresi = (user.yil || 0) - 5; // Seçilen yıldan 5 yıl öncesi
+      const kidemEkBilgiVerileri = await getKidemTazminatiBobiEkBilgi(
+        user.denetciId || 0,
         user.yil || 0,
-        user.denetlenenId || 0
+        user.denetlenenId || 0,
+        yilFiltresi
       );
       if (kidemEkBilgiVerileri) {
         setHesaplananKarsilik(kidemEkBilgiVerileri.hesaplananKarsilik);
@@ -332,16 +332,21 @@ const Page: React.FC = () => {
         setHesap750(kidemEkBilgiVerileri.hesap750);
         setHesap760(kidemEkBilgiVerileri.hesap760);
         setHesap770(kidemEkBilgiVerileri.hesap770);
-        setAyrilan2019(kidemEkBilgiVerileri.ayrilan2019);
-        setPersonel2019(kidemEkBilgiVerileri.personel2019);
-        setAyrilan2020(kidemEkBilgiVerileri.ayrilan2020);
-        setPersonel2020(kidemEkBilgiVerileri.personel2020);
-        setAyrilan2021(kidemEkBilgiVerileri.ayrilan2021);
-        setPersonel2021(kidemEkBilgiVerileri.personel2021);
-        setAyrilan2022(kidemEkBilgiVerileri.ayrilan2022);
-        setPersonel2022(kidemEkBilgiVerileri.personel2022);
-        setAyrilan2023(kidemEkBilgiVerileri.ayrilan2023);
-        setPersonel2023(kidemEkBilgiVerileri.personel2023);
+        // API'den gelen sabit alan adları (ayrilan2019..2023) array'e map ediliyor
+        setAyrilanlar([
+          kidemEkBilgiVerileri.ayrilan2019 ?? 0,
+          kidemEkBilgiVerileri.ayrilan2020 ?? 0,
+          kidemEkBilgiVerileri.ayrilan2021 ?? 0,
+          kidemEkBilgiVerileri.ayrilan2022 ?? 0,
+          kidemEkBilgiVerileri.ayrilan2023 ?? 0,
+        ]);
+        setPersoneller([
+          kidemEkBilgiVerileri.personel2019 ?? 0,
+          kidemEkBilgiVerileri.personel2020 ?? 0,
+          kidemEkBilgiVerileri.personel2021 ?? 0,
+          kidemEkBilgiVerileri.personel2022 ?? 0,
+          kidemEkBilgiVerileri.personel2023 ?? 0,
+        ]);
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -921,36 +926,43 @@ const Page: React.FC = () => {
                     <Grid size={12}>
                       <Collapse in={openTurnover}>
                         <Grid container spacing={2} sx={{ mt: 1 }}>
-                          {[2019, 2020, 2021, 2022, 2023].map((yil) => {
-                            const yrAyrilan = yil === 2019 ? ayrilan2019 : yil === 2020 ? ayrilan2020 : yil === 2021 ? ayrilan2021 : yil === 2022 ? ayrilan2022 : ayrilan2023;
-                            const setYrAyrilan = yil === 2019 ? setAyrilan2019 : yil === 2020 ? setAyrilan2020 : yil === 2021 ? setAyrilan2021 : yil === 2022 ? setAyrilan2022 : setAyrilan2023;
-                            const yrPersonel = yil === 2019 ? personel2019 : yil === 2020 ? personel2020 : yil === 2021 ? personel2021 : yil === 2022 ? personel2022 : personel2023;
-                            const setYrPersonel = yil === 2019 ? setPersonel2019 : yil === 2020 ? setPersonel2020 : yil === 2021 ? setPersonel2021 : yil === 2022 ? setPersonel2022 : setPersonel2023;
-                            return (
-                              <React.Fragment key={yil}>
-                                <Grid
-                                  size={{
-                                    xs: 12,
-                                    lg: 6
-                                  }}><CustomFormLabel>Tazminatsız Ayrılan Sayısı ({yil})</CustomFormLabel></Grid>
-                                <Grid
-                                  size={{
-                                    xs: 12,
-                                    lg: 6
-                                  }}><NumericInput fullWidth value={yrAyrilan} onChange={(val) => setYrAyrilan(val)} /></Grid>
-                                <Grid
-                                  size={{
-                                    xs: 12,
-                                    lg: 6
-                                  }}><CustomFormLabel>Ortalama Personel Sayısı ({yil})</CustomFormLabel></Grid>
-                                <Grid
-                                  size={{
-                                    xs: 12,
-                                    lg: 6
-                                  }}><NumericInput fullWidth value={yrPersonel} onChange={(val) => setYrPersonel(val)} /></Grid>
-                              </React.Fragment>
-                            );
-                          })}
+                          {/* Dinamik yıl listesi: seçilen yıldan 5 yıl öncesinden başlar */}
+                          {personelYillari.map((yil, idx) => (
+                            <React.Fragment key={yil}>
+                              <Grid size={{ xs: 12, lg: 6 }}>
+                                <CustomFormLabel>Tazminatsız Ayrılan Sayısı ({yil})</CustomFormLabel>
+                              </Grid>
+                              <Grid size={{ xs: 12, lg: 6 }}>
+                                <NumericInput
+                                  fullWidth
+                                  value={ayrilanlar[idx] ?? 0}
+                                  onChange={(val) =>
+                                    setAyrilanlar((prev) => {
+                                      const next = [...prev];
+                                      next[idx] = val;
+                                      return next;
+                                    })
+                                  }
+                                />
+                              </Grid>
+                              <Grid size={{ xs: 12, lg: 6 }}>
+                                <CustomFormLabel>Ortalama Personel Sayısı ({yil})</CustomFormLabel>
+                              </Grid>
+                              <Grid size={{ xs: 12, lg: 6 }}>
+                                <NumericInput
+                                  fullWidth
+                                  value={personeller[idx] ?? 0}
+                                  onChange={(val) =>
+                                    setPersoneller((prev) => {
+                                      const next = [...prev];
+                                      next[idx] = val;
+                                      return next;
+                                    })
+                                  }
+                                />
+                              </Grid>
+                            </React.Fragment>
+                          ))}
                         </Grid>
                       </Collapse>
                     </Grid>
