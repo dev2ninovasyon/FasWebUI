@@ -42,6 +42,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiFetch } from "@/api/apiBase";
+import MigrationConfirmDialog from "@/app/(Uygulama)/components/DataMigration/MigrationConfirmDialog";
 
 const steps = ["Şirket Seçimi", "Tablo Seçimi", "Onay ve Taşıma"];
 
@@ -82,6 +83,7 @@ export default function DataMigrationPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [results, setResults] = useState<MigrationResult[]>([]);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
     const loadData = useCallback(async () => {
         setLoadingData(true);
@@ -148,6 +150,15 @@ export default function DataMigrationPage() {
         setActiveStep(0);
         setSelectedTableKeys([]);
         setResults([]);
+    };
+
+    const handleStartMigration = () => {
+        setOpenConfirmDialog(true);
+    };
+
+    const handleConfirmMigration = async () => {
+        setOpenConfirmDialog(false);
+        await handleSubmit();
     };
 
     const handleSubmit = async () => {
@@ -477,7 +488,7 @@ export default function DataMigrationPage() {
                                             variant="contained"
                                             color="success"
                                             size="large"
-                                            onClick={handleSubmit}
+                                            onClick={handleStartMigration}
                                             startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <PlayArrowIcon />}
                                             sx={{ borderRadius: 2, px: 4, fontWeight: "bold" }}
                                         >
@@ -536,5 +547,14 @@ export default function DataMigrationPage() {
                 )}
             </AnimatePresence>
         </Container>
+
+        <MigrationConfirmDialog
+            open={openConfirmDialog}
+            selectedTables={tables.filter(t => selectedTableKeys.includes(t.key))}
+            onConfirm={handleConfirmMigration}
+            onCancel={() => setOpenConfirmDialog(false)}
+            isLoading={isSubmitting}
+            autoConfirmSeconds={0}
+        />
     );
 }

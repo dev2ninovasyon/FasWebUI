@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { IconDatabase } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 import { checkDenetciExistsInOldDb } from "@/api/Musteri/MusteriIslemleri";
+import { useRouter } from "next/navigation";
 
-const MusteriImportOldButton = () => {
-  const router = useRouter();
+interface Props {
+  onImportCompleted?: () => void;
+}
+
+const MusteriImportOldButton = (_props: Props) => {
   const [showButton, setShowButton] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const checkVisibility = async () => {
@@ -16,14 +20,14 @@ const MusteriImportOldButton = () => {
     checkVisibility();
   }, []);
 
-  const handleRouteClick = () => {
-    router.push("/Musteri/MusteriIslemleri/ImportFromOld");
-  };
-
-  //if (!showButton) return null;
+  if (!showButton) return null;
 
   return (
-    <Button color="secondary" onClick={() => handleRouteClick()} startIcon={<IconDatabase width={18} />}>
+    <Button
+      color="secondary"
+      onClick={() => router.push("/Musteri/MusteriIslemleri/ImportFromOld")}
+      startIcon={<IconDatabase width={18} />}
+    >
       Müşteri Taşı
     </Button>
   );

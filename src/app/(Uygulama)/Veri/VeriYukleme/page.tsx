@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { 
   Box, 
   Grid, 
@@ -28,8 +29,18 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  const searchParams = useSearchParams();
   const [selectedOption, setSelectedOption] = useState("vuk-mizan");
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
+  useEffect(() => {
+    const requestedTab = searchParams.get("selectedOption");
+    const allowedTabs = new Set(["vuk-mizan", "donusturulmus-mizan", "donusum-fisleri"]);
+
+    if (requestedTab && allowedTabs.has(requestedTab)) {
+      setSelectedOption(requestedTab);
+    }
+  }, [searchParams]);
 
   return (
     <PageContainer
