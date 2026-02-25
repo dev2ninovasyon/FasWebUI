@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import {
+  getTransferredDenetlenenIdsByDenetciId,
   getOldDenetlenenDetay,
   getOldDenetlenenForCurrentDenetci,
   mapOldDenetlenenToFormData,
@@ -27,6 +28,8 @@ import type {
 } from "@/api/Musteri/MusteriIslemleriDtos";
 import MusteriEkleForm from "./MusteriEkleForm";
 import ImportProgressDialog from "./ImportProgressDialog";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 interface Props {
   open: boolean;
@@ -49,6 +52,7 @@ export default function MusteriImportOldWorkflowDialog({
   onClose,
   onImportCompleted,
 }: Props) {
+  const user = useSelector((state: AppState) => state.userReducer);
   const [oldList, setOldList] = useState<OldDenetlenenListItemDto[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const [selected, setSelected] = useState<OldDenetlenenListItemDto | null>(null);
@@ -61,23 +65,34 @@ export default function MusteriImportOldWorkflowDialog({
   const [progressOpen, setProgressOpen] = useState(false);
   const [jobId, setJobId] = useState<string | null>(null);
 
+  const loadOldList = async () => {
+    setListLoading(true);
+    try {
+      const denetciId = user?.denetciId || 0;
+      const [data, transferredIds] = await Promise.all([
+        getOldDenetlenenForCurrentDenetci(),
+        denetciId > 0 ? getTransferredDenetlenenIdsByDenetciId(denetciId) : Promise.resolve([]),
+      ]);
+
+      const transferredSet = new Set((transferredIds || []).map((x) => Number(x)));
+      const filtered = (Array.isArray(data) ? data : []).filter((item: any) => {
+        const id = Number(item?.id ?? item?.Id ?? 0);
+        return !transferredSet.has(id);
+      });
+      setOldList(filtered);
+    } catch (error: any) {
+      enqueueSnackbar(error?.message || "Eski musteri listesi alinamadi.", {
+        variant: "error",
+      });
+    } finally {
+      setListLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!open) return;
-    const loadList = async () => {
-      setListLoading(true);
-      try {
-        const data = await getOldDenetlenenForCurrentDenetci();
-        setOldList(Array.isArray(data) ? data : []);
-      } catch (error: any) {
-        enqueueSnackbar(error?.message || "Eski müşteri listesi alınamadı.", {
-          variant: "error",
-        });
-      } finally {
-        setListLoading(false);
-      }
-    };
-    loadList();
-  }, [open]);
+    loadOldList();
+  }, [open, user?.denetciId]);
 
   useEffect(() => {
     if (!selected) {
@@ -118,6 +133,10 @@ export default function MusteriImportOldWorkflowDialog({
   };
 
   const handleProgressCompleted = () => {
+    loadOldList();
+    setSelected(null);
+    setFormData(null);
+    setShowForm(false);
     onImportCompleted?.();
   };
 
@@ -226,4 +245,3 @@ export default function MusteriImportOldWorkflowDialog({
     </>
   );
 }
-

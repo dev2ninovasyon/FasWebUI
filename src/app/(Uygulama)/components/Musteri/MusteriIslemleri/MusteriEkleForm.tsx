@@ -264,8 +264,7 @@ const MusteriEkleForm = ({
       }
 
       const result = await startImportFromOldJob({
-        OldCompanyId: initialData.id || initialData.Id,
-        NewCompanyId: initialData.id || initialData.Id,
+        TasinanDenetlenenId: initialData.id || initialData.Id,
         Years: [],
         TableKeys: []
       });
@@ -279,7 +278,7 @@ const MusteriEkleForm = ({
       enqueueSnackbar(
         result.alreadyQueued
           ? "Zaten kuyruğa alınmış veya çalışıyor."
-          : "Import işlemi kuyruğa alındı.",
+          : "Taşıma işlemi kuyruğa alındı.",
         { variant: "info" }
       );
       // loading, polling tamamlanınca kapanır

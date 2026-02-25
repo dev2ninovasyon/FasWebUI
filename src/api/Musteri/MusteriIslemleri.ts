@@ -1,10 +1,10 @@
 ﻿// ImportFromOld: Kuyruğa alma ve polling
 export const startImportFromOldJob = async (params: any) => {
-  // DTO: TableKey, OldCompanyId, NewCompanyId, Years, TableKeys, Yil
+  // DTO: TableKey, TasinanDenetlenenId, Years, TableKeys, Yil
+  const transferredId = params.TasinanDenetlenenId;
   const body = {
     TableKey: "MusteriImport",
-    OldCompanyId: params.OldCompanyId,
-    NewCompanyId: params.NewCompanyId,
+    TasinanDenetlenenId: transferredId,
     Years: params.Years || [],
     TableKeys: params.TableKeys || [],
     Yil: params.Yil || null
@@ -35,11 +35,20 @@ export const getImportJobNotifications = async (jobId: string) => {
 };
 
 // Yeni pipeline endpointine uygun örnek fonksiyonlar:
-export async function startImportFromOldPipelineJob(body: { TableKey: string, DenetciId: number, DenetlenenId: number, Yil: number }) {
+export async function startImportFromOldPipelineJob(body: {
+  TableKey: string;
+  DenetciId: number;
+  TasinanDenetlenenId: number;
+  Yil: number;
+}) {
+  const payload = {
+    ...body,
+    TasinanDenetlenenId: body.TasinanDenetlenenId,
+  };
   const res = await apiFetch(`/DataTransfer/ImportFromOldJob`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    body: JSON.stringify(payload)
   });
   if (res && typeof res.json === 'function') return await res.json();
   return res;
@@ -263,6 +272,32 @@ export const getImportJobSummariesByDenetciId = async (denetciId: number) => {
     console.log("getImportJobSummariesByDenetciId hatası:", error);
     return [];
   }
+};
+
+export const getTransferredDenetlenenIdsByDenetciId = async (denetciId: number): Promise<number[]> => {
+  const summaries = await getImportJobSummariesByDenetciId(denetciId);
+  const ids = new Set<number>();
+
+  (summaries || []).forEach((summary: any) => {
+    const rawStatus = String(summary?.status ?? summary?.Status ?? "").toLowerCase();
+    const isTransferredStatus =
+      rawStatus === "succeeded" ||
+      rawStatus === "success" ||
+      rawStatus === "completed" ||
+      rawStatus.includes("succeed") ||
+      rawStatus.includes("success") ||
+      rawStatus.includes("completed");
+    if (!isTransferredStatus) return;
+
+    const rawId =
+      summary?.tasinanDenetlenenId ??
+      summary?.TasinanDenetlenenId;
+
+    const id = Number(rawId);
+    if (Number.isFinite(id) && id > 0) ids.add(id);
+  });
+
+  return Array.from(ids);
 };
 
 export const updateDenetlenen = async (

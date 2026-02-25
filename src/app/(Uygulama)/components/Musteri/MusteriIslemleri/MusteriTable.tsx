@@ -19,12 +19,15 @@ import {
   Button,
   Chip,
   TableSortLabel,
+  Tooltip,
+  Box,
 } from "@mui/material";
 import {
   IconDotsVertical,
   IconEdit,
   IconTrash,
   IconEye,
+  IconInfoCircle,
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import {
@@ -263,9 +266,18 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography textAlign="center" variant="h6">
-                  Durum
-                </Typography>
+                <Box display="flex" alignItems="center" justifyContent="center" gap={0.5}>
+                  <Typography variant="h6">Durum</Typography>
+                  <Tooltip
+                    title="'Taşındı' durumundaki müşterilere tıklayarak taşıma logunu görüntüleyebilirsiniz."
+                    arrow
+                    placement="top"
+                  >
+                    <Box component="span" sx={{ display: "flex", alignItems: "center", color: "text.secondary", cursor: "help" }}>
+                      <IconInfoCircle size={15} />
+                    </Box>
+                  </Tooltip>
+                </Box>
               </TableCell>
               <TableCell>
                 <TableSortLabel
@@ -334,15 +346,28 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
                   </TableCell>
                   <TableCell align="center">
                     {isImported ? (
-                      <IconButton
+                      <Chip
                         size="small"
+                        color="success"
+                        label="Taşındı"
                         onClick={() => handleOpenImportLog(logJobId)}
-                        sx={{ borderRadius: 2 }}
-                      >
-                        <Chip size="small" color="success" label="Taşındı" />
-                      </IconButton>
+                        sx={{
+                          minWidth: 90,
+                          height: 24,
+                          cursor: "pointer",
+                          fontWeight: 600,
+                          transition: "box-shadow 0.15s",
+                          "&:hover": {
+                            boxShadow: "0 0 0 3px rgba(76,175,80,0.25)",
+                          },
+                        }}
+                      />
                     ) : (
-                      <Chip size="small" label="Oluşturuldu" />
+                      <Chip
+                        size="small"
+                        label="Oluşturuldu"
+                        sx={{ minWidth: 90, height: 24 }}
+                      />
                     )}
                   </TableCell>
                   <TableCell align="center">

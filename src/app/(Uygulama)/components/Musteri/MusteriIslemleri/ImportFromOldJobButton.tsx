@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   Dialog,
@@ -28,12 +28,26 @@ interface JobStatus {
   jobId: string;
   status: string;
   errorMessage?: string;
+  tasinanDenetlenenId?: number;
   isUserInteractionPending?: boolean;
   pendingTableKey?: string;
   skippedTables?: string[];
   notifications?: any[];
   stageResults?: any[];
 }
+
+const normalizeJobStatus = (raw: any): JobStatus => ({
+  jobId: raw?.jobId ?? raw?.JobId ?? "",
+  status: raw?.status ?? raw?.Status ?? "",
+  errorMessage: raw?.errorMessage ?? raw?.ErrorMessage,
+  tasinanDenetlenenId: raw?.tasinanDenetlenenId ?? raw?.TasinanDenetlenenId,
+  isUserInteractionPending:
+    (raw?.isUserInteractionPending ?? raw?.IsUserInteractionPending ?? false) === true,
+  pendingTableKey: raw?.pendingTableKey ?? raw?.PendingTableKey,
+  skippedTables: raw?.skippedTables ?? raw?.SkippedTables ?? [],
+  notifications: raw?.notifications ?? raw?.Notifications ?? [],
+  stageResults: raw?.stageResults ?? raw?.StageResults ?? [],
+});
 
 export default function ImportFromOldJobButton({
   denetciId,
@@ -55,6 +69,7 @@ export default function ImportFromOldJobButton({
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [pendingDialogOpen, setPendingDialogOpen] = useState(false);
   const [actionInProgress, setActionInProgress] = useState(false);
+  const lastTerminalNotifiedRef = useRef<string | null>(null);
 
   // Duraklamış işi göster
   useEffect(() => {
@@ -80,7 +95,7 @@ export default function ImportFromOldJobButton({
       const { jobId, alreadyQueued } = await startImportFromOldPipelineJob({
         TableKey: "ImportFromOldPipeline",
         DenetciId: denetciId,
-        DenetlenenId: denetlenenId,
+        TasinanDenetlenenId: denetlenenId,
         Yil: yil,
       });
       setJobId(jobId);
@@ -101,11 +116,22 @@ export default function ImportFromOldJobButton({
 
     const interval = setInterval(async () => {
       try {
-        const status = await getImportPipelineJobStatus(jobId);
+        const statusRaw = await getImportPipelineJobStatus(jobId);
+        const status = normalizeJobStatus(statusRaw);
         setJobStatus(status);
 
         // Check if user interaction is needed
-        if (status.isUserInteractionPending) {
+        const waitingFromNotification = (status.notifications ?? []).some((n: any) =>
+          String(n?.message ?? n?.Message ?? "").toLowerCase().includes("waitingforuserinput")
+        );
+        if (
+          !["Succeeded", "Failed", "Cancelled"].includes(status.status) &&
+          (
+            status.isUserInteractionPending ||
+            status.status === "WaitingForUserInput" ||
+            waitingFromNotification
+          )
+        ) {
           setErrorModalOpen(true);
         }
 
@@ -115,23 +141,39 @@ export default function ImportFromOldJobButton({
           status.status === "Failed" ||
           status.status === "Cancelled"
         ) {
+          const cancelFinalized =
+            status.status !== "Cancelled" ||
+            (status.notifications ?? []).some((n: any) => {
+              const msg = String(n?.message ?? n?.Message ?? "").toLowerCase();
+              return msg.includes("geri alma tamamlandı") || msg.includes("geri alma sırasında uyarı");
+            });
+
+          if (!cancelFinalized) {
+            return;
+          }
+
           clearInterval(interval);
           setPolling(false);
           setLoading(false);
           setReportModalOpen(true);
 
-          if (status.status === "Succeeded") {
-            enqueueSnackbar("Import başarıyla tamamlandı!", {
-              variant: "success",
-            });
-          } else if (status.status === "Failed") {
-            enqueueSnackbar("Import sırasında hata oluştu!", {
-              variant: "error",
-            });
-          } else if (status.status === "Cancelled") {
-            enqueueSnackbar("Import kullanıcı tarafından iptal edildi.", {
-              variant: "warning",
-            });
+          const terminalKey = `${status.jobId}:${status.status}`;
+          if (lastTerminalNotifiedRef.current !== terminalKey) {
+            lastTerminalNotifiedRef.current = terminalKey;
+
+            if (status.status === "Succeeded") {
+              enqueueSnackbar("Taşıma işlemi başarıyla tamamlandı!", {
+                variant: "success",
+              });
+            } else if (status.status === "Failed") {
+              enqueueSnackbar("Taşıma işlemi sırasında hata oluştu!", {
+                variant: "error",
+              });
+            } else if (status.status === "Cancelled") {
+              enqueueSnackbar("Taşıma işlemi kullanıcı tarafından iptal edildi.", {
+                variant: "warning",
+              });
+            }
           }
         }
       } catch (e) {
@@ -156,6 +198,10 @@ export default function ImportFromOldJobButton({
       setErrorModalOpen(false);
       if (action === "continue") {
         enqueueSnackbar("Hatalı tablo atlandı, işlem diğer tablolarla devam ediyor.", {
+          variant: "warning",
+        });
+      } else if (action === "cancel") {
+        enqueueSnackbar("İşlem iptal edildi.", {
           variant: "warning",
         });
       } else {
@@ -367,7 +413,7 @@ export default function ImportFromOldJobButton({
         onClose={() => setReportModalOpen(false)}
       >
         <DialogTitle>
-          📊 Import İşlemi Sonuç Raporu
+          Import İşlemi Sonuç Raporu
           <Chip
             label={getStatusLabel(jobStatus?.status || "")}
             color={getStatusColor(jobStatus?.status || "") as any}
@@ -549,3 +595,5 @@ export default function ImportFromOldJobButton({
     </>
   );
 }
+
+

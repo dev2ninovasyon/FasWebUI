@@ -17,7 +17,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     console.log("🧹 Cleaning up stale BaglantiBilgileri connections from previous hot reload");
     globalBaglanti();
   }
-  
+
   // Register this module's cleanup function
   (window as any).__baglantiBilgileriCleanup = () => {
     if (pollingInterval) {
@@ -26,9 +26,9 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     }
     if (hubConnection) {
       try {
-        hubConnection.stop().catch(() => {});
+        hubConnection.stop().catch(() => { });
         hubConnection = null;
-      } catch (e) {}
+      } catch (e) { }
     }
     listenerRegistered = false;
     notificationCallback = null;
@@ -152,7 +152,7 @@ export const startBildirimConnection = async (denetciId: number) => {
     console.log("DenetçiId:", denetciId);
 
     // Use lighter reconnect strategy in development to save memory
-    const reconnectStrategy = process.env.NODE_ENV === 'development' 
+    const reconnectStrategy = process.env.NODE_ENV === 'development'
       ? [0, 5000, 10000] // Dev: lighter strategy
       : [0, 2000, 5000, 10000, 30000]; // Prod: full strategy
 
@@ -200,6 +200,11 @@ export const startBildirimConnection = async (denetciId: number) => {
     console.log("🔌 SignalR bağlantısı kuruluyor...");
     await hubConnection.start();
 
+    // hubConnection, start() sonrası onclose ile null olmuş olabilir (auth/CORS hatası)
+    if (!hubConnection) {
+      throw new Error("Bağlantı kuruldu ancak hemen kapandı (onclose tetiklendi).");
+    }
+
     console.log("✅ SignalR bağlantısı başarılı! Grup katılımı yapılıyor...");
     console.log("📡 Connection ID:", hubConnection.connectionId);
 
@@ -222,6 +227,7 @@ export const startBildirimConnection = async (denetciId: number) => {
     stopPollingBildirim();
 
     return hubConnection;
+
   } catch (error) {
     console.error("❌ SignalR bağlantı hatası:", error);
 

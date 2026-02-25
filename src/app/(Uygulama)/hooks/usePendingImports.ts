@@ -8,8 +8,7 @@ export interface PendingImportJob {
   tableDisplayName: string; // TÃ¼rkÃ§e isim
   errorMessage: string;
   pausedAt: string;
-  oldCompanyId: number;
-  newCompanyId: number;
+  tasinanDenetlenenId?: number;
   totalTables: number;
   completedTables: number;
   // Pending table stage details
@@ -23,6 +22,21 @@ export const usePendingImports = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const normalizePendingJob = (raw: any): PendingImportJob => ({
+    jobId: raw?.jobId ?? raw?.JobId ?? "",
+    status: raw?.status ?? raw?.Status ?? "",
+    pendingTableKey: raw?.pendingTableKey ?? raw?.PendingTableKey ?? "",
+    tableDisplayName: raw?.tableDisplayName ?? raw?.TableDisplayName ?? "",
+    errorMessage: raw?.errorMessage ?? raw?.ErrorMessage ?? "",
+    pausedAt: raw?.pausedAt ?? raw?.PausedAt ?? "",
+    tasinanDenetlenenId: raw?.tasinanDenetlenenId ?? raw?.TasinanDenetlenenId,
+    totalTables: Number(raw?.totalTables ?? raw?.TotalTables ?? 0),
+    completedTables: Number(raw?.completedTables ?? raw?.CompletedTables ?? 0),
+    pendingTableTotalRecords: Number(raw?.pendingTableTotalRecords ?? raw?.PendingTableTotalRecords ?? 0),
+    pendingTableProcessedRecords: Number(raw?.pendingTableProcessedRecords ?? raw?.PendingTableProcessedRecords ?? 0),
+    pendingTableStatus: raw?.pendingTableStatus ?? raw?.PendingTableStatus ?? "",
+  });
+
   const checkPendingJobs = async () => {
     setLoading(true);
     setError(null);
@@ -31,7 +45,9 @@ export const usePendingImports = () => {
       const response = await apiFetch("/DataTransfer/ImportJob/pending");
 
       if (response && response.jobs) {
-        setPendingJobs(response.jobs);
+        setPendingJobs(
+          Array.isArray(response.jobs) ? response.jobs.map(normalizePendingJob) : []
+        );
       } else {
         setPendingJobs([]);
       }

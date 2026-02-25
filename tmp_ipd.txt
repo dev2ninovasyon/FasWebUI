@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -131,15 +131,8 @@ export default function ImportProgressDialog({
   const [controlTableKey, setControlTableKey] = useState<string>("");
   const [controlYear, setControlYear] = useState<number | null>(null);
   const [previousSelection, setPreviousSelection] = useState<{ denetlenenId?: number; yil?: number } | null>(null);
-  const lastTerminalNotifiedRef = useRef<string | null>(null);
-  const onCompletedRef = useRef(onCompleted);
-  const handledTerminalRef = useRef<string | null>(null);
   const dispatch = useDispatch();
   const user = useSelector((state: AppState) => state.userReducer);
-
-  useEffect(() => {
-    onCompletedRef.current = onCompleted;
-  }, [onCompleted]);
 
   useEffect(() => {
     if (!open || !jobId) {
@@ -159,11 +152,15 @@ export default function ImportProgressDialog({
         const status = normalizeJobStatus(statusRaw);
         setJobStatus(status);
 
+        const waitingFromNotification = (status.notifications ?? []).some((n: any) =>
+          String(n?.message ?? n?.Message ?? "").toLowerCase().includes("waitingforuserinput")
+        );
         if (
           !["Succeeded", "Failed", "Cancelled"].includes(status.status) &&
           (
             status.isUserInteractionPending ||
-            status.status === "WaitingForUserInput"
+            status.status === "WaitingForUserInput" ||
+            waitingFromNotification
           )
         ) {
           setPolling(false);
@@ -175,26 +172,12 @@ export default function ImportProgressDialog({
           status.status === "Failed" ||
           status.status === "Cancelled"
         ) {
-          const cancelFinalized =
-            status.status !== "Cancelled" ||
-            (status.notifications ?? []).some((n: any) => {
-              const msg = String(n?.message ?? n?.Message ?? "").toLowerCase();
-              return msg.includes("geri alma tamamlandı") || msg.includes("geri alma sırasında uyarı");
-            });
-
-          // Cancel durumunda rollback final mesajı gelmeden polling'i kesme.
-          if (!cancelFinalized) {
-            return;
-          }
-
           clearInterval(interval);
           setPolling(false);
           setCanClose(true);
 
-          const handledKey = `${status.jobId}:${status.status}`;
-          if (handledTerminalRef.current !== handledKey) {
-            handledTerminalRef.current = handledKey;
-            onCompletedRef.current?.(status.status);
+          if (onCompleted) {
+            onCompleted(status.status);
           }
 
           const hasStageErrors = (status.stageResults ?? []).some((r: any) => {
@@ -203,19 +186,14 @@ export default function ImportProgressDialog({
             return success === false || Boolean(err);
           });
 
-          const terminalKey = `${status.jobId}:${status.status}`;
-          if (lastTerminalNotifiedRef.current !== terminalKey) {
-            lastTerminalNotifiedRef.current = terminalKey;
-
-            if (status.status === "Succeeded" && !hasStageErrors) {
-              enqueueSnackbar("✓ Taşıma işlemi başarıyla tamamlandı!", { variant: "success" });
-            } else if (status.status === "Succeeded" && hasStageErrors) {
-              enqueueSnackbar("Import tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
-            } else if (status.status === "Failed") {
-              enqueueSnackbar("✗ Taşıma işlemi sırasında hata oluştu!", { variant: "error" });
-            } else if (status.status === "Cancelled") {
-              enqueueSnackbar("⊘ Taşıma işlemi kullanıcı tarafından iptal edildi.", { variant: "warning" });
-            }
+          if (status.status === "Succeeded" && !hasStageErrors) {
+            enqueueSnackbar("✓ Import başarıyla tamamlandı!", { variant: "success" });
+          } else if (status.status === "Succeeded" && hasStageErrors) {
+            enqueueSnackbar("Import tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
+          } else if (status.status === "Failed") {
+            enqueueSnackbar("✗ Import sırasında hata oluştu!", { variant: "error" });
+          } else if (status.status === "Cancelled") {
+            enqueueSnackbar("⊘ Import kullanıcı tarafından iptal edildi. Geri alma backend tarafından tamamlandı.", { variant: "warning" });
           }
         }
       } catch (e: any) {
@@ -224,7 +202,7 @@ export default function ImportProgressDialog({
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [open, jobId]);
+  }, [open, jobId, onCompleted]);
 
   const handleErrorModalAction = async (action: "continue" | "skip" | "cancel") => {
     if (!jobId) return;
@@ -247,7 +225,7 @@ export default function ImportProgressDialog({
           variant: "warning",
         });
       } else if (action === "cancel") {
-        enqueueSnackbar("İşlem iptal edildi.", {
+        enqueueSnackbar("İşlem iptal edildi. Geri alma backend tarafından yürütülüyor.", {
           variant: "warning",
         });
       } else {
@@ -375,22 +353,16 @@ export default function ImportProgressDialog({
     const isTargetModel = rawResults.every(
       (r: any) =>
         (r?.tabloAdi || r?.tableKey || r?.TableKey) &&
-        Array.isArray(r?.yillar ?? r?.years ?? r?.yearSummaries ?? r?.YearSummaries)
+        Array.isArray(r?.yillar ?? r?.years)
     );
 
     if (isTargetModel) {
       return rawResults.map((r: any) => {
-        const yillar: YearBreakdownResult[] = (r?.yillar ?? r?.years ?? r?.yearSummaries ?? r?.YearSummaries ?? [])
+        const yillar: YearBreakdownResult[] = (r?.yillar ?? r?.years ?? [])
           .map((y: any) => {
             const yil = parseNumber(y?.yil ?? y?.year ?? y?.Year, 0);
-            const toplam = parseNumber(
-              y?.toplam ?? y?.total ?? y?.totalRecords ?? y?.TotalRecords ?? y?.readRecords ?? y?.ReadRecords,
-              0
-            );
-            const islenen = parseNumber(
-              y?.islenen ?? y?.processed ?? y?.processedRecords ?? y?.ProcessedRecords ?? y?.addedRecords ?? y?.AddedRecords,
-              0
-            );
+            const toplam = parseNumber(y?.toplam ?? y?.total ?? y?.totalRecords ?? y?.TotalRecords, 0);
+            const islenen = parseNumber(y?.islenen ?? y?.processed ?? y?.processedRecords ?? y?.ProcessedRecords, 0);
             const sureSn = parseNumber(y?.sureSn ?? y?.durationSeconds ?? y?.DurationSeconds, 0);
             const durum = toTransferDurum(
               y?.durum ?? y?.status,
@@ -533,6 +505,11 @@ export default function ImportProgressDialog({
     );
   };
 
+  const getTableControlYear = (result: GroupedTableResult): number | undefined => {
+    const years = result.yillar.map((y) => y.yil).filter((y) => y > 0).sort((a, b) => b - a);
+    return years[0];
+  };
+
   const getControlHref = (tableKey: string, year?: number, denetlenenId?: number) => {
     const route = getControlRoute(tableKey);
     if (!route) return null;
@@ -591,7 +568,7 @@ export default function ImportProgressDialog({
         disableEscapeKeyDown={!canClose}
       >
         <DialogTitle>
-          Müşteri Data Taşıma İşlemi
+          Müşteri Veri Taşıma İşlemi
           {jobStatus && (
             <Chip
               label={getStatusLabel(jobStatus.status)}
@@ -655,11 +632,13 @@ export default function ImportProgressDialog({
                             <TableCell><strong>Yillar</strong></TableCell>
                             <TableCell align="right"><strong>Sure (sn)</strong></TableCell>
                             <TableCell><strong>Durum</strong></TableCell>
+                            <TableCell><strong>Kontrol</strong></TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {groupedResults.map((result) => {
                             const expanded = Boolean(expandedTables[result.tabloAdi]);
+                            const tableYear = getTableControlYear(result);
                             return (
                               <React.Fragment key={`new-${result.tabloAdi}`}>
                                 <TableRow hover onClick={() => toggleExpanded(result.tabloAdi)} sx={{ cursor: "pointer" }}>
@@ -680,9 +659,22 @@ export default function ImportProgressDialog({
                                   <TableCell>{renderYearChips(result)}</TableCell>
                                   <TableCell align="right">{result.sureSn ? result.sureSn.toFixed(2) : "-"}</TableCell>
                                   <TableCell>{renderDurum(result.durum)}</TableCell>
+                                  <TableCell onClick={(event) => event.stopPropagation()}>
+                                    {tableYear ? (
+                                      <Button
+                                        size="small"
+                                        variant="text"
+                                        onClick={() => handleOpenControlDialog(result.tabloAdi, tableYear)}
+                                      >
+                                        Kontrol Et
+                                      </Button>
+                                    ) : (
+                                      "-"
+                                    )}
+                                  </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                  <TableCell colSpan={7} sx={{ py: 0, border: 0 }}>
+                                  <TableCell colSpan={8} sx={{ py: 0, border: 0 }}>
                                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                                       <Paper
                                         elevation={0}
@@ -1015,6 +1007,5 @@ export default function ImportProgressDialog({
     </>
   );
 }
-
 
 

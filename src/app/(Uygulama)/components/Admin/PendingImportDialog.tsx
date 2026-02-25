@@ -22,7 +22,7 @@ interface PendingImportDialogProps {
   open: boolean;
   job: PendingImportJob | null;
   onClose: () => void;
-  onActionComplete?: () => void;
+  onActionComplete?: (action?: "continue" | "cancel") => void;
 }
 
 export const PendingImportDialog: React.FC<PendingImportDialogProps> = ({
@@ -52,7 +52,7 @@ export const PendingImportDialog: React.FC<PendingImportDialogProps> = ({
 
       if (response) {
         enqueueSnackbar("âœ… Ä°ÅŸlem devam ediyor...", { variant: "success" });
-        onActionComplete?.();
+        onActionComplete?.("continue");
         onClose();
       }
     } catch (error) {
@@ -89,7 +89,7 @@ export const PendingImportDialog: React.FC<PendingImportDialogProps> = ({
 
       if (response) {
         enqueueSnackbar("ğŸ›‘ Ä°ÅŸlem iptal edildi", { variant: "info" });
-        onActionComplete?.();
+        onActionComplete?.("cancel");
         onClose();
       }
     } catch (error) {
