@@ -199,18 +199,16 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
       <NextAppDirEmotionCacheProvider
         options={{ key: "financial-audit-software" }}
       >
-        <ThemeProvider theme={theme}>
-          <LoadingProvider>
-            <RTL direction={customizer.activeDir}>
-              <CssBaseline />
-              <SnackbarProvider
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              >
+        <SnackbarProvider anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+          <ThemeProvider theme={theme}>
+            <LoadingProvider>
+              <RTL direction={customizer.activeDir}>
+                <CssBaseline />
                 {children}
-              </SnackbarProvider>
-            </RTL>
-          </LoadingProvider>
-        </ThemeProvider>
+              </RTL>
+            </LoadingProvider>
+          </ThemeProvider>
+        </SnackbarProvider>
       </NextAppDirEmotionCacheProvider>
     </>
   );

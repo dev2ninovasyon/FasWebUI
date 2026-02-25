@@ -16,7 +16,7 @@ import { setKurulumTamamlandi, setDenetlenenId, setDenetlenenFirmaAdi, setYil, s
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
 import MandatoryFlow from "./components/Layout/Mandatory/MandatoryFlow";
 import { useDispatch } from "@/store/hooks";
-import { getDenetlenenByRol, getDenetlenenByDenetciId } from "@/api/Musteri/MusteriIslemleri";
+import { getDenetlenenByRolForSelection, getDenetlenenByDenetciIdForSelection } from "@/api/Musteri/MusteriIslemleri";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { url } from "@/api/apiBase";
 import Logger from "@/utils/Logger";
@@ -99,9 +99,9 @@ export default function RootLayout({
         try {
           let companies = [];
           if (user.yetki === "DenetciAdmin") {
-            companies = await getDenetlenenByDenetciId(user.denetciId || 0);
+            companies = await getDenetlenenByDenetciIdForSelection(user.denetciId || 0);
           } else {
-            companies = await getDenetlenenByRol(user.denetciId || 0, user.id || 0);
+            companies = await getDenetlenenByRolForSelection(user.denetciId || 0, user.id || 0);
           }
 
           const hasCompanies = companies && companies.length > 0;

@@ -111,7 +111,6 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
           overflow: "hidden",
           display: "block",
         }}
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
         onLoad={() => {
           setIsLoading(false);
           setServerError(null);

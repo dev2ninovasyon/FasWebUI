@@ -3,8 +3,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
-  getDenetlenenByDenetciId,
-  getDenetlenenByRol,
+  getDenetlenenByDenetciIdForSelection,
+  getDenetlenenByRolForSelection,
 } from "@/api/Musteri/MusteriIslemleri";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 
@@ -48,7 +48,7 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
     console.log("CompanyBox: fetchData başlatıldı", { yetki: user.yetki, denetciId: user.denetciId, userId: user.id });
     try {
       if (user.yetki == "DenetciAdmin") {
-        const musteriVerileri = await getDenetlenenByDenetciId(user.denetciId || 0
+        const musteriVerileri = await getDenetlenenByDenetciIdForSelection(user.denetciId || 0
         );
         console.log("CompanyBox: DenetciAdmin verisi", musteriVerileri);
         if (Array.isArray(musteriVerileri)) {
@@ -67,7 +67,7 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
           console.warn("CompanyBox: DenetciAdmin verisi bir dizi değil!", musteriVerileri);
         }
       } else {
-        const musteriVerileri = await getDenetlenenByRol(user.denetciId || 0,
+        const musteriVerileri = await getDenetlenenByRolForSelection(user.denetciId || 0,
           user.id || 0
         );
         console.log("CompanyBox: Normal kullanıcı verisi", musteriVerileri);

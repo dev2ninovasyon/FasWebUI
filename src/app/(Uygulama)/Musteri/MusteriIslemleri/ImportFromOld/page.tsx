@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import MusteriIslemleriLayout from "../MusteriIslemleriLayout";
@@ -11,6 +11,12 @@ import {
   Autocomplete,
   CircularProgress,
   Alert,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
 } from "@mui/material";
 import MusteriEkleForm from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEkleForm";
 import {
@@ -40,10 +46,9 @@ const Page = () => {
   const [detailError, setDetailError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, any> | null>(null);
 
-  // AbortController for race condition prevention
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState<OldDenetlenenDetayDto | null>(null);
 
-  // Load company list on mount
   useEffect(() => {
     const loadList = async () => {
       try {
@@ -66,69 +71,50 @@ const Page = () => {
     loadList();
   }, []);
 
-  // Load selected company details when selection changes
-  useEffect(() => {
-    // Cancel previous request if exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
+  const handlePrepareTransfer = async () => {
     if (!selected) {
-      setFormData(null);
-      setDetailError(null);
+      enqueueSnackbar("Lütfen önce bir müşteri seçiniz.", { variant: "warning" });
       return;
     }
 
-    // Create new AbortController for this request
-    abortControllerRef.current = new AbortController();
+    try {
+      setDetailLoading(true);
+      setDetailError(null);
+      const detailData = await getOldDenetlenenDetay(selected.id);
+      setSelectedDetail(detailData);
+      setConfirmOpen(true);
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
+      setDetailError(errorMsg);
+      enqueueSnackbar("Firma detayları yüklenemedi: " + errorMsg, {
+        variant: "error",
+      });
+    } finally {
+      setDetailLoading(false);
+    }
+  };
 
-    const loadDetail = async () => {
-      try {
-        setDetailLoading(true);
-        setDetailError(null);
+  const handleConfirmTransfer = () => {
+    if (!selectedDetail || !selected) {
+      setConfirmOpen(false);
+      return;
+    }
 
-        const detailData = await getOldDenetlenenDetay(selected.id);
-
-        // Check if request was aborted before state update
-        if (abortControllerRef.current?.signal.aborted) {
-          return;
-        }
-
-        const mapped = mapOldDenetlenenToFormData(detailData);
-        setFormData(mapped);
-      } catch (error) {
-        // Ignore abort errors
-        if (error instanceof Error && error.name === "AbortError") {
-          return;
-        }
-
-        const errorMsg =
-          error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
-        setDetailError(errorMsg);
-        enqueueSnackbar("Firma detayları yüklenemedi: " + errorMsg, {
-          variant: "error",
-        });
-      } finally {
-        setDetailLoading(false);
-      }
-    };
-
-    loadDetail();
-
-    // Cleanup: abort request on unmount or selection change
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, [selected]);
+    const mapped = mapOldDenetlenenToFormData(selectedDetail);
+    setFormData(mapped);
+    setDetailError(null);
+    setConfirmOpen(false);
+    enqueueSnackbar(`${selected.firmaAdi} için firma detayları dolduruldu.`, {
+      variant: "success",
+    });
+  };
 
   return (
     <MusteriIslemleriLayout title="Müşteri Taşı" items={BCrumb}>
       <PageContainer title="Müşteri Taşı" description="Eski veriler aktarılıyor">
         <Stack spacing={3}>
-          {/* Company Selection Section */}
-          <ParentCard title="Müşteri Seç">
+          <ParentCard title="Önceki Versiyonda Kayıtlı Müşteriler">
             <Stack spacing={3}>
               {listLoading ? (
                 <Box display="flex" justifyContent="center" py={3}>
@@ -137,20 +123,24 @@ const Page = () => {
               ) : listError ? (
                 <Alert severity="error">{listError}</Alert>
               ) : (
-                <Box>
+                <Stack direction={{ xs: "column", md: "row" }} spacing={1} alignItems="center">
                   <Autocomplete
                     options={oldList}
-                    getOptionLabel={(opt: OldDenetlenenListItemDto) =>
-                      opt.firmaAdi || ""
-                    }
+                    getOptionLabel={(opt: OldDenetlenenListItemDto) => opt.firmaAdi || ""}
                     value={selected}
-                    onChange={(e, val) => setSelected(val)}
+                    onChange={(e, val) => {
+                      setSelected(val);
+                      setFormData(null);
+                      setDetailError(null);
+                      setSelectedDetail(null);
+                      setConfirmOpen(false);
+                    }}
                     fullWidth
-                    sx={{ minWidth: 350, maxWidth: 600 }}
+                    sx={{ width: { xs: "100%", md: 520 }, maxWidth: "100%" }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Müşteri Seçiniz"
+                        label="Önceki versiyonda kayıtlı müşteri seçiniz"
                         variant="outlined"
                         fullWidth
                       />
@@ -158,35 +148,94 @@ const Page = () => {
                     noOptionsText="Müşteri bulunamadı"
                     isOptionEqualToValue={(opt, val) => opt.id === val.id}
                   />
-                </Box>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handlePrepareTransfer}
+                    disabled={!selected || detailLoading}
+                    sx={{ minWidth: 120, height: 56, whiteSpace: "nowrap" }}
+                  >
+                    {detailLoading ? "Yükleniyor..." : "Taşı"}
+                  </Button>
+                </Stack>
               )}
             </Stack>
           </ParentCard>
 
-          {/* Firm Detail Section */}
-          {selected && (
+          {detailError && <Alert severity="error">{detailError}</Alert>}
+
+          {formData && selected && (
             <ParentCard title="Firma Detayları">
               <Stack spacing={2}>
-                {detailLoading ? (
-                  <Box display="flex" justifyContent="center" py={5}>
-                    <CircularProgress size={40} />
-                  </Box>
-                ) : detailError ? (
-                  <Alert severity="error">{detailError}</Alert>
-                ) : formData ? (
-                  <MusteriEkleForm
-                    key={`import-${selected.id}`}
-                    initialData={formData}
-                    showPdfUpload={false}
-                    isImportMode={true}
-                  />
-                ) : (
-                  <Alert severity="warning">Firma verileri bulunamadı</Alert>
-                )}
+                <Alert severity="info">
+                  <strong>{selected.firmaAdi}</strong> bilgileri yüklendi. Gerekirse düzenleyip taşıma işlemini başlatabilirsiniz.
+                </Alert>
+                <MusteriEkleForm
+                  key={`import-${selected.id}`}
+                  initialData={formData}
+                  showPdfUpload={false}
+                  isImportMode={true}
+                  submitAlign="end"
+                />
               </Stack>
             </ParentCard>
           )}
         </Stack>
+
+        <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} fullWidth maxWidth="sm">
+          <DialogTitle sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+            Firma Taşıma Onayı
+          </DialogTitle>
+          <DialogContent>
+            <Stack spacing={2.5} mt={1}>
+              <Typography variant="body2" color="text.secondary">
+                Aşağıdaki firmaya ait detaylı bilgiler taşımaya hazırlanacaktır. Lütfen bilgileri kontrol ediniz.
+              </Typography>
+
+              <Box sx={{ 
+                bgcolor: "rgba(25, 118, 210, 0.05)", 
+                p: 2, 
+                borderRadius: 2,
+                border: "1px solid rgba(25, 118, 210, 0.2)"
+              }}>
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "primary.main" }}>
+                    Şirket Bilgileri
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Şirket Adı:</strong> {selectedDetail?.firmaAdi || selected?.firmaAdi || "-"}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Yetkili Kişi:</strong> {selectedDetail?.yetkili || "-"}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Vergi No:</strong> {selectedDetail?.vergiNo || "-"}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Telefon:</strong> {selectedDetail?.tel || "-"}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Email:</strong> {selectedDetail?.email || "-"}
+                  </Typography>
+                </Stack>
+              </Box>
+
+              <Alert severity="info" sx={{ borderRadius: 2 }}>
+                <Typography variant="body2">
+                  ℹ️ <strong>Bilgi:</strong> Onay sonrasında firma bilgilerinde ihtiyaç duyduğunuz değişiklikleri yapabileceksiniz.
+                </Typography>
+              </Alert>
+            </Stack>
+          </DialogContent>
+          <DialogActions sx={{ p: 2, gap: 1 }}>
+            <Button onClick={() => setConfirmOpen(false)} variant="outlined">
+              İptal
+            </Button>
+            <Button variant="contained" color="secondary" onClick={handleConfirmTransfer}>
+              Onayla
+            </Button>
+          </DialogActions>
+        </Dialog>
       </PageContainer>
     </MusteriIslemleriLayout>
   );

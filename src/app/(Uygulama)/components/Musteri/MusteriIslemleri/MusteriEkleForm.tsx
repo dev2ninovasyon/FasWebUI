@@ -1,10 +1,11 @@
-﻿import { Grid, Button, MenuItem, useTheme, Box, CircularProgress, Typography } from "@mui/material";
+﻿import { Grid, Button, MenuItem, useTheme, Box, CircularProgress, Typography, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText, Alert } from "@mui/material";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
   createDenetlenen,
+  getDenetlenenByDenetciId,
   getDenetlenenKonsolideAnaSirketByDenetciId,
   getSektorKodlari,
   uploadAndParseKurumlarBeyannamesi,
@@ -12,7 +13,9 @@ import {
   startImportFromOldJob,
   getImportJobStatus,
   getImportJobNotifications,
+  getImportFromOldTransferTables,
 } from "@/api/Musteri/MusteriIslemleri";
+import { getDenetciOdemeBilgileri } from "@/api/Denetci/Denetci";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
@@ -31,6 +34,11 @@ interface Veri2 {
   parentId: number | null;
 }
 
+interface TransferTableInfo {
+  key: string;
+  name: string;
+}
+
 interface MusteriEkleFormProps {
   onCustomerCreated?: (customerId: number, customerData: any) => void;
   skipNavigation?: boolean;
@@ -40,6 +48,9 @@ interface MusteriEkleFormProps {
   isWizardView?: boolean;
   showPdfUpload?: boolean;
   isImportMode?: boolean;
+  submitLabel?: string;
+  submitAlign?: "start" | "end";
+  onImportJobStarted?: (jobId: string) => void;
 }
 
 const MusteriEkleForm = ({
@@ -50,7 +61,10 @@ const MusteriEkleForm = ({
   onBack,
   isWizardView = false,
   showPdfUpload = true,
-  isImportMode = false
+  isImportMode = false,
+  submitLabel,
+  submitAlign,
+  onImportJobStarted
 }: MusteriEkleFormProps = {}) => {
   const [firmaAdi, setFirmaAdi] = useState(initialData?.firmaAdi || initialData?.unvan || "");
   const [yetkili, setYetkili] = useState(initialData?.yetkili || "");
@@ -90,6 +104,9 @@ const MusteriEkleForm = ({
   const [jobStatus, setJobStatus] = useState<any>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [polling, setPolling] = useState(false);
+  const [startImportConfirmOpen, setStartImportConfirmOpen] = useState(false);
+  const [transferTables, setTransferTables] = useState<TransferTableInfo[]>([]);
+  const [transferTablesLoading, setTransferTablesLoading] = useState(false);
 
   const textFieldRef = useRef<HTMLInputElement | null>(null);
 
@@ -181,6 +198,97 @@ const MusteriEkleForm = ({
     return () => clearInterval(interval);
   }, [jobId]);
 
+  const checkCompanyQuotaBeforeImport = async (): Promise<boolean> => {
+    try {
+      const currentDenetciId = denetciId || 0;
+      const odemeBilgileri = await getDenetciOdemeBilgileri(currentDenetciId);
+      const sirketKota = Number(odemeBilgileri?.sirketKota ?? 0);
+
+      // Kota bilgisi yoksa akışı engelleme
+      if (!sirketKota || sirketKota < 1) return true;
+
+      let mevcutFirmaSayisi = Number(odemeBilgileri?.mevcutFirmaSayisi ?? -1);
+      if (mevcutFirmaSayisi < 0) {
+        const denetlenenler = await getDenetlenenByDenetciId(currentDenetciId);
+        mevcutFirmaSayisi = Array.isArray(denetlenenler) ? denetlenenler.length : 0;
+      }
+
+      if (mevcutFirmaSayisi >= sirketKota) {
+        enqueueSnackbar("Şirket Kotanız Dolmuştur", {
+          variant: "error",
+          autoHideDuration: 5000,
+        });
+        return false;
+      }
+
+      return true;
+    } catch (error: any) {
+      enqueueSnackbar(
+        error?.message || "Kota kontrolü sırasında bir hata oluştu.",
+        { variant: "error", autoHideDuration: 5000 }
+      );
+      return false;
+    }
+  };
+
+  const loadTransferTables = async () => {
+    try {
+      setTransferTablesLoading(true);
+      const tables = await getImportFromOldTransferTables();
+      setTransferTables(Array.isArray(tables) ? tables : []);
+    } catch (error: any) {
+      setTransferTables([]);
+      enqueueSnackbar(
+        error?.message || "Taşınacak tablo listesi alınamadı.",
+        { variant: "error", autoHideDuration: 5000 }
+      );
+    } finally {
+      setTransferTablesLoading(false);
+    }
+  };
+
+  const handleConfirmStartImport = async () => {
+    if (!initialData || (!initialData.id && !initialData.Id)) {
+      setStartImportConfirmOpen(false);
+      return;
+    }
+
+    setStartImportConfirmOpen(false);
+    setLoading(true);
+
+    try {
+      const quotaOk = await checkCompanyQuotaBeforeImport();
+      if (!quotaOk) {
+        setLoading(false);
+        return;
+      }
+
+      const result = await startImportFromOldJob({
+        OldCompanyId: initialData.id || initialData.Id,
+        NewCompanyId: initialData.id || initialData.Id,
+        Years: [],
+        TableKeys: []
+      });
+
+      setJobId(result.jobId);
+      setJobStatus({ status: result.status });
+      if (result?.jobId && onImportJobStarted) {
+        onImportJobStarted(result.jobId);
+      }
+
+      enqueueSnackbar(
+        result.alreadyQueued
+          ? "Zaten kuyruğa alınmış veya çalışıyor."
+          : "Import işlemi kuyruğa alındı.",
+        { variant: "info" }
+      );
+      // loading, polling tamamlanınca kapanır
+    } catch (e: any) {
+      setLoading(false);
+      enqueueSnackbar(e?.message || "Kuyruğa alınamadı", { variant: "error" });
+    }
+  };
+
 
 
   const handleButtonClick = async () => {
@@ -213,6 +321,7 @@ const MusteriEkleForm = ({
     // Validation
     const newErrors: { [key: string]: string } = {};
     if (!firmaAdi.trim()) newErrors.firmaAdi = "Firma Adı zorunludur.";
+    if (!email.trim()) newErrors.email = "Email zorunludur.";
     if (!vergiNo.trim()) newErrors.vergiNo = "Vergi Numarası zorunludur.";
     if (!sektor3Id) newErrors.sektor3Id = "Sektör seçimi zorunludur.";
 
@@ -228,25 +337,10 @@ const MusteriEkleForm = ({
 
       // --- IMPORT MODE LOGIC ---
       if (isImportMode && initialData && (initialData.id || initialData.Id)) {
-        try {
-          const result = await startImportFromOldJob({
-            OldCompanyId: initialData.id || initialData.Id,
-            NewCompanyId: initialData.id || initialData.Id,
-            Years: [],
-            TableKeys: []
-          });
-
-          setJobId(result.jobId);
-          setJobStatus({ status: result.status });
-          enqueueSnackbar(result.alreadyQueued ? "Zaten kuyruğa alınmış veya çalışıyor." : "Import işlemi kuyruğa alındı.", { variant: "info" });
-          // Note: setLoading(false) is handled in polling effect when done, 
-          // but we keep it true to disable the button.
-          return;
-        } catch (e: any) {
-          setLoading(false);
-          enqueueSnackbar(e.message || "Kuyruğa alınamadı", { variant: "error" });
-          return;
-        }
+        setLoading(false);
+        await loadTransferTables();
+        setStartImportConfirmOpen(true);
+        return;
       }
 
       // If initialData contains an Id (we are importing an old record), call import endpoint to preserve Id
@@ -311,13 +405,19 @@ const MusteriEkleForm = ({
           router.push("/Musteri/MusteriIslemleri");
         }
       } else {
-        enqueueSnackbar((result as any)?.message || "Kayıt başarısız.", {
-          variant: "warning",
-          autoHideDuration: 5000,
-        });
+        throw new Error((result as any)?.message || "Bilinmeyen bir hata oluştu.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("Bir hata oluştu:", error);
+      const errorMessage =
+        (error?.message || "")
+          .toString()
+          .trim()
+          .replace(/^"+|"+$/g, "") || "Kayıt sırasında bir hata oluştu.";
+      enqueueSnackbar(errorMessage, {
+        variant: "error",
+        autoHideDuration: 5000,
+      });
     } finally {
       setLoading(false);
     }
@@ -583,7 +683,7 @@ const MusteriEkleForm = ({
                 sm: isWizardView ? 4 : 3
               }}>
               <CustomFormLabel htmlFor="email" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 } }}>
-                Email
+                Email *
               </CustomFormLabel>
             </Grid>
             <Grid
@@ -596,7 +696,15 @@ const MusteriEkleForm = ({
                 fullWidth
                 size={isWizardView ? "small" : "medium"}
                 value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
+                placeholder={errors.email || ""}
+                onChange={(e: any) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+                }}
+                onFocus={() => {
+                  if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+                }}
+                error={!!errors.email}
               />
             </Grid>
           </Grid>
@@ -929,7 +1037,7 @@ const MusteriEkleForm = ({
         {/* Buttons */}
         <Grid size={12}>
           <Box sx={{ display: "flex", flexDirection: "column", mt: 2 }}>
-            <Box sx={{ display: "flex", justifyContent: isWizardView ? "flex-end" : "flex-start" }}>
+            <Box sx={{ display: "flex", justifyContent: submitAlign ? (submitAlign === "end" ? "flex-end" : "flex-start") : "flex-end" }}>
               {showNavigationButtons ? (
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <Button variant="outlined" onClick={onBack} disabled={loading}>Geri</Button>
@@ -940,10 +1048,55 @@ const MusteriEkleForm = ({
               ) : (
                 <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={loading}>
                   {loading ? <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} /> : null}
-                  {isImportMode ? "Müşteri Ekle" : "Müşteri Ekle"}
+                  {submitLabel || (isImportMode ? "Taşımayı Başlat" : "Müşteri Ekle")}
                 </Button>
               )}
             </Box>
+
+            {isImportMode && (
+              <Dialog
+                open={startImportConfirmOpen}
+                onClose={() => setStartImportConfirmOpen(false)}
+                fullWidth
+                maxWidth="sm"
+              >
+                <DialogTitle>Taşımayı Başlat Onayı</DialogTitle>
+                <DialogContent>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+                    Taşıma işlemi başlatıldığında aşağıdaki tablolar eski veritabanından aktarılacaktır:
+                  </Typography>
+
+                  {transferTablesLoading ? (
+                    <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                      <CircularProgress size={24} />
+                    </Box>
+                  ) : transferTables.length > 0 ? (
+                    <List dense sx={{ bgcolor: "action.hover", borderRadius: 1 }}>
+                      {transferTables.map((table) => (
+                        <ListItem key={table.key} disablePadding sx={{ px: 1.5, py: 0.25 }}>
+                          <ListItemText primary={table.name} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <Alert severity="warning">
+                      Taşınacak tablo listesi alınamadı. Lütfen tekrar deneyiniz.
+                    </Alert>
+                  )}
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setStartImportConfirmOpen(false)}>İptal</Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleConfirmStartImport}
+                    disabled={transferTablesLoading || transferTables.length === 0}
+                  >
+                    Taşımayı Başlat
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            )}
 
             {jobId && (
               <Box mt={3} p={2} sx={{ bgcolor: "action.hover", borderRadius: 1 }}>
@@ -971,4 +1124,5 @@ const MusteriEkleForm = ({
 };
 
 export default MusteriEkleForm;
+
 

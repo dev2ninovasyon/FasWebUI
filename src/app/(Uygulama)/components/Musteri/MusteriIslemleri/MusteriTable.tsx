@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -17,6 +17,8 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Chip,
+  TableSortLabel,
 } from "@mui/material";
 import {
   IconDotsVertical,
@@ -28,16 +30,79 @@ import { useRouter } from "next/navigation";
 import {
   deleteDenetlenenById,
   getDenetlenenByDenetciId,
+  getImportJobSummariesByDenetciId,
 } from "@/api/Musteri/MusteriIslemleri";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
 import { enqueueSnackbar } from "notistack";
+import ImportProgressDialog from "./ImportProgressDialog";
 
-const MusteriTable = () => {
+interface Props {
+  refreshKey?: number;
+  searchTerm?: string;
+}
+
+const formatDate = (value?: string | null) => {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleString("tr-TR");
+};
+
+const normalize = (value?: string | null) =>
+  (value || "").toLocaleLowerCase("tr-TR").trim();
+
+type SortField = "date" | "firmaAdi";
+type SortDirection = "desc" | "asc";
+
+const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [rows, setRows] = useState<any[]>([]);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [logDialogOpen, setLogDialogOpen] = useState(false);
+  const [selectedLogJobId, setSelectedLogJobId] = useState<string | null>(null);
+  const [sortField, setSortField] = useState<SortField>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
   const open = Boolean(anchorEl);
+  const router = useRouter();
+  const user = useSelector((state: AppState) => state.userReducer);
+
+  const filteredRows = useMemo(() => {
+    const q = normalize(searchTerm);
+    if (!q) return rows;
+    return rows.filter((row) => normalize(row.firmaAdi).includes(q));
+  }, [rows, searchTerm]);
+
+  const sortedRows = useMemo(() => {
+    const toSortDate = (row: any) => {
+      const summary = row.importSummary;
+      const isImported = row.kayitKaynagi === "OldDbImport";
+      const rawDate = isImported
+        ? summary?.updatedAt || summary?.createdAt || row.importedAt || row.createdAt
+        : row.createdAt;
+      const timestamp = rawDate ? new Date(rawDate).getTime() : 0;
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    };
+
+    return [...filteredRows].sort((a, b) => {
+      if (sortField === "firmaAdi") {
+        const aName = normalize(a.firmaAdi);
+        const bName = normalize(b.firmaAdi);
+        return sortDirection === "asc"
+          ? aName.localeCompare(bName, "tr")
+          : bName.localeCompare(aName, "tr");
+      }
+
+      const aTime = toSortDate(a);
+      const bTime = toSortDate(b);
+      return sortDirection === "desc" ? bTime - aTime : aTime - bTime;
+    });
+  }, [filteredRows, sortDirection, sortField]);
+
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement>,
     id: number
@@ -46,13 +111,7 @@ const MusteriTable = () => {
     setSelectedId(id);
   };
 
-  const router = useRouter();
-
-  const user = useSelector((state: AppState) => state.userReducer);
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClose = () => setAnchorEl(null);
 
   const handleDuzenle = () => {
     handleClose();
@@ -64,20 +123,84 @@ const MusteriTable = () => {
     router.push(`/Musteri/MusteriIslemleri/MusteriDetay/${selectedId}`);
   };
 
-  /* State for Delete Confirmation Dialog */
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
   const handleDelete = () => {
     handleClose();
     setOpenDeleteDialog(true);
   };
 
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const handleOpenImportLog = (jobId?: string | null) => {
+    if (!jobId) {
+      enqueueSnackbar("Bu kayıt için taşıma logu bulunamadı.", {
+        variant: "warning",
+        autoHideDuration: 3000,
+      });
+      return;
+    }
+
+    setSelectedLogJobId(jobId);
+    setLogDialogOpen(true);
+  };
+
+  const handleDateSortToggle = () => {
+    if (sortField !== "date") {
+      setSortField("date");
+      setSortDirection("desc");
+      return;
+    }
+    setSortDirection((prev) => (prev === "desc" ? "asc" : "desc"));
+  };
+
+  const handleFirmaSortToggle = () => {
+    if (sortField !== "firmaAdi") {
+      setSortField("firmaAdi");
+      setSortDirection("asc");
+      return;
+    }
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
+  const fetchData = async () => {
+    try {
+      const denetciId = user.denetciId || 0;
+      const [musteriVerileri, importSummaries] = await Promise.all([
+        getDenetlenenByDenetciId(denetciId),
+        getImportJobSummariesByDenetciId(denetciId),
+      ]);
+
+      const summaryMap: Record<number, any> = {};
+      (importSummaries || []).forEach((summary: any) => {
+        summaryMap[summary.companyId] = summary;
+      });
+
+      const newRows = (musteriVerileri || []).map((musteri: any) => ({
+        id: musteri.id,
+        denetciId: musteri.denetciId,
+        firmaAdi: musteri.firmaAdi,
+        yetkili: musteri.yetkili,
+        tel: musteri.tel,
+        adres: musteri.adres,
+        email: musteri.email,
+        createdAt: musteri.createdAt || null,
+        kayitKaynagi: musteri.kayitKaynagi || "Manual",
+        importedAt: musteri.importedAt || null,
+        importJobId: musteri.importJobId || null,
+        importSummary: summaryMap[musteri.id] || null,
+      }));
+
+      setRows(newRows);
+    } catch (error) {
+      console.log("Bir hata oluştu:", error);
+    }
+  };
+
   const confirmDelete = async () => {
     setIsDeleting(true);
     try {
-      const result = await deleteDenetlenenById(selectedId || 0
-      );
+      const result = await deleteDenetlenenById(selectedId || 0);
       if (result) {
         await fetchData();
         setOpenDeleteDialog(false);
@@ -86,7 +209,6 @@ const MusteriTable = () => {
           autoHideDuration: 3000,
         });
       } else {
-        console.log("Denetlenen silinemedi");
         setOpenDeleteDialog(false);
         enqueueSnackbar("Şirket silinemedi. Lütfen tekrar deneyin.", {
           variant: "error",
@@ -94,7 +216,6 @@ const MusteriTable = () => {
         });
       }
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
       setOpenDeleteDialog(false);
       enqueueSnackbar("Bir hata oluştu. Lütfen tekrar deneyin.", {
         variant: "error",
@@ -105,55 +226,9 @@ const MusteriTable = () => {
     }
   };
 
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
-
-  const [rows, setRows] = useState([]);
-
-  const fetchData = async () => {
-    try {
-      const musteriVerileri = await getDenetlenenByDenetciId(user.denetciId || 0
-      );
-      const newRows = musteriVerileri.map((musteri: any) => ({
-        id: musteri.id,
-        denetciId: musteri.denetciId,
-        firmaAdi: musteri.firmaAdi,
-        yetkili: musteri.yetkili,
-        tel: musteri.tel,
-        adres: musteri.adres,
-        email: musteri.email,
-        webAdresi: musteri.webAdresi,
-        ticaretSicilNo: musteri.ticaretSicilNo,
-        vergiDairesi: musteri.vergiDairesi,
-        vergiNo: musteri.vergiNo,
-        tfrs: musteri.tfrs,
-        bobi: musteri.bobi,
-        bobiBuyuk: musteri.bobiBuyuk,
-        tfrsDonemsel: musteri.tfrsDonemsel,
-        arsivId: musteri.arsivId,
-        kosolide: musteri.kosolide,
-        konsolideAltSirketmi: musteri.konsolideAltSirketmi,
-        konsolideAnaSirketmi: musteri.konsolideAnaSirketmi,
-        konsolideBagliSirketmi: musteri.konsolideBagliSirketmi,
-        firmaNo: musteri.tfrs,
-        sektor1Id: musteri.sektor1Id,
-        sektor2Id: musteri.sektor2Id,
-        sektor3Id: musteri.sektor3Id,
-        ozelDenetim: musteri.ozelDenetim,
-        kumi: musteri.kumi,
-        aktifmi: musteri.aktifmi,
-        enflasyonMu: musteri.enflasyonMu,
-      }));
-      setRows(newRows);
-    } catch (error) {
-      console.log("Bir hata oluştu:", error);
-    }
-  };
-
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refreshKey, user.denetciId]);
 
   return (
     <BlankCard>
@@ -162,7 +237,15 @@ const MusteriTable = () => {
           <TableHead>
             <TableRow>
               <TableCell>
-                <Typography variant="h6">Firma Adı</Typography>
+                <TableSortLabel
+                  active={sortField === "firmaAdi"}
+                  direction={sortField === "firmaAdi" ? sortDirection : "asc"}
+                  onClick={handleFirmaSortToggle}
+                  hideSortIcon={false}
+                  sx={{ "& .MuiTableSortLabel-icon": { opacity: 1 } }}
+                >
+                  <Typography variant="h6">Firma Adı</Typography>
+                </TableSortLabel>
               </TableCell>
               <TableCell>
                 <Typography textAlign="center" variant="h6">
@@ -179,91 +262,138 @@ const MusteriTable = () => {
                   Email
                 </Typography>
               </TableCell>
+              <TableCell>
+                <Typography textAlign="center" variant="h6">
+                  Durum
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortField === "date"}
+                  direction={sortField === "date" ? sortDirection : "desc"}
+                  onClick={handleDateSortToggle}
+                  hideSortIcon={false}
+                  sx={{ "& .MuiTableSortLabel-icon": { opacity: 1 } }}
+                >
+                  <Typography textAlign="center" variant="h6">
+                    Tarih
+                  </Typography>
+                </TableSortLabel>
+              </TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row: any) => (
-              <TableRow
-                key={row.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell>
-                  <Typography variant="h6">{row.firmaAdi}</Typography>
-                </TableCell>
-                <TableCell scope="row">
-                  <Typography
-                    textAlign="center"
-                    variant="subtitle1"
-                    color="textSecondary"
-                  >
-                    {row.yetkili}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography
-                    textAlign="center"
-                    variant="subtitle1"
-                    color="textSecondary"
-                  >
-                    {row.tel}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography
-                    textAlign="center"
-                    variant="subtitle1"
-                    color="textSecondary"
-                  >
-                    {row.email}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    id="basic-button2"
-                    aria-controls={open ? "basic-menu2" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "false" : undefined}
-                    onClick={(event) => handleClick(event, row.id)}
-                  >
-                    <IconDotsVertical width={18} />
-                  </IconButton>
-                  <Menu
-                    id="basic-menu2"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                      "aria-labelledby": "basic-button2",
-                    }}
-                  >
-                    <MenuItem onClick={() => handleDuzenle()}>
-                      <ListItemIcon>
-                        <IconEdit width={18} />
-                      </ListItemIcon>
-                      Düzenle
-                    </MenuItem>
-                    <MenuItem onClick={() => handleDetay()}>
-                      <ListItemIcon>
-                        <IconEye width={18} />
-                      </ListItemIcon>
-                      Detay
-                    </MenuItem>
-                    <MenuItem onClick={() => handleDelete()}>
-                      <ListItemIcon>
-                        <IconTrash width={18} />
-                      </ListItemIcon>
-                      Sil
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
+            {sortedRows.map((row: any) => {
+              const summary = row.importSummary;
+              const isImported = row.kayitKaynagi === "OldDbImport";
+              const displayDate = formatDate(
+                isImported
+                  ? summary?.updatedAt ||
+                      summary?.createdAt ||
+                      row.importedAt ||
+                      row.createdAt
+                  : row.createdAt
+              );
+              const logJobId = summary?.jobId || row.importJobId;
+
+              return (
+                <TableRow
+                  key={row.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell>
+                    <Typography variant="h6">{row.firmaAdi}</Typography>
+                  </TableCell>
+                  <TableCell scope="row">
+                    <Typography
+                      textAlign="center"
+                      variant="subtitle1"
+                      color="textSecondary"
+                    >
+                      {row.yetkili}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      textAlign="center"
+                      variant="subtitle1"
+                      color="textSecondary"
+                    >
+                      {row.tel}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      textAlign="center"
+                      variant="subtitle1"
+                      color="textSecondary"
+                    >
+                      {row.email}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    {isImported ? (
+                      <IconButton
+                        size="small"
+                        onClick={() => handleOpenImportLog(logJobId)}
+                        sx={{ borderRadius: 2 }}
+                      >
+                        <Chip size="small" color="success" label="Taşındı" />
+                      </IconButton>
+                    ) : (
+                      <Chip size="small" label="Oluşturuldu" />
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="body2">{displayDate}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      id="basic-button2"
+                      aria-controls={open ? "basic-menu2" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "false" : undefined}
+                      onClick={(event) => handleClick(event, row.id)}
+                    >
+                      <IconDotsVertical width={18} />
+                    </IconButton>
+                    <Menu
+                      id="basic-menu2"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button2",
+                      }}
+                    >
+                      <MenuItem onClick={() => handleDuzenle()}>
+                        <ListItemIcon>
+                          <IconEdit width={18} />
+                        </ListItemIcon>
+                        Düzenle
+                      </MenuItem>
+                      <MenuItem onClick={() => handleDetay()}>
+                        <ListItemIcon>
+                          <IconEye width={18} />
+                        </ListItemIcon>
+                        Detay
+                      </MenuItem>
+                      <MenuItem onClick={() => handleDelete()}>
+                        <ListItemIcon>
+                          <IconTrash width={18} />
+                        </ListItemIcon>
+                        Sil
+                      </MenuItem>
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}
@@ -287,9 +417,14 @@ const MusteriTable = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <ImportProgressDialog
+        open={logDialogOpen}
+        jobId={selectedLogJobId}
+        onClose={() => setLogDialogOpen(false)}
+      />
     </BlankCard>
   );
 };
 
 export default MusteriTable;
-

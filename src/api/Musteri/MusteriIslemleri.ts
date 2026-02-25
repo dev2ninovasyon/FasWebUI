@@ -46,7 +46,7 @@ export async function startImportFromOldPipelineJob(body: { TableKey: string, De
 }
 
 export async function getImportPipelineJobStatus(jobId: string) {
-  const res = await apiFetch(`/DataTransfer/ImportJobs/${jobId}`);
+  const res = await apiFetch(`/DataTransfer/ImportJobStatus/${jobId}`);
   if (!res.ok) throw new Error('Job bulunamadı');
   return await res.json();
 }
@@ -54,32 +54,16 @@ export async function getImportPipelineJobStatus(jobId: string) {
 import { apiFetch } from "@/api/apiBase";
 
 export const createDenetlenen = async (createdMusteri: any) => {
-  try {
-    const response = await apiFetch(`/Denetlenen`, {
-      method: "POST",
-      headers: {
-        accept: "*/*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(createdMusteri),
-    });
-    if (response.ok) {
-      return { success: true, data: await response.json() };
-    } else {
-      const contentType = response.headers.get("content-type");
-      let message = "Hata Oluştu";
-      if (contentType && contentType.includes("application/json")) {
-        const errorData = await response.json();
-        message = errorData || message;
-      } else {
-        message = await response.text();
-      }
+  const response = await apiFetch(`/Denetlenen`, {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(createdMusteri),
+  });
 
-      return { success: false, message };
-    }
-  } catch (error) {
-    console.log("Bir hata oluştu:", error);
-  }
+  return { success: true, data: await response.json() };
 };
 
 export const uploadAndParseKurumlarBeyannamesi = async (
@@ -218,6 +202,69 @@ export const getDenetlenenByRol = async (
   }
 };
 
+export const getDenetlenenByDenetciIdForSelection = async (
+  denetciId: number
+) => {
+  try {
+    const response = await apiFetch(`/Denetlenen/DenetciSelection/${denetciId}`, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+      ignoreCustomHeaders: true,
+    });
+    if (response.ok) {
+      return response.json();
+    }
+    return [];
+  } catch (error: any) {
+    console.log("getDenetlenenByDenetciIdForSelection hatası:", error);
+    return [];
+  }
+};
+
+export const getDenetlenenByRolForSelection = async (
+  denetciId: number,
+  kullaniciId: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/Denetlenen/RolSelection/${denetciId}/${kullaniciId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+        timeout: 60000,
+        ignoreCustomHeaders: true,
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    }
+    return [];
+  } catch (error: any) {
+    console.log("getDenetlenenByRolForSelection hatası:", error);
+    return [];
+  }
+};
+
+export const getImportJobSummariesByDenetciId = async (denetciId: number) => {
+  try {
+    const response = await apiFetch(`/DataTransfer/ImportJobSummariesByDenetci/${denetciId}`, {
+      method: "GET",
+      headers: { accept: "application/json" },
+      ignoreCustomHeaders: true,
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.log("getImportJobSummariesByDenetciId hatası:", error);
+    return [];
+  }
+};
+
 export const updateDenetlenen = async (
   id: any,
   updatedDenetlenen: any
@@ -314,6 +361,19 @@ export const checkDenetciExistsInOldDb = async () => {
     console.error("checkDenetciExistsInOldDb error:", error);
     return false;
   }
+};
+
+export const getImportFromOldTransferTables = async () => {
+  const response = await apiFetch(`/DataTransfer/ImportFromOldTransferTables`, {
+    method: "GET",
+    headers: { accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error("Taşınacak tablo listesi alınamadı.");
+  }
+
+  return response.json();
 };
 
 export const importDenetlenen = async (dto: any) => {
@@ -1085,28 +1145,39 @@ export async function getOldDenetlenenDetay(
 export function mapOldDenetlenenToFormData(
   detay: OldDenetlenenDetayDto
 ): Record<string, any> {
+  const d = detay as any;
+  const sektor1Id = d.sektor1Id ?? d.Sektor1Id ?? 0;
+  const sektor2Id = d.sektor2Id ?? d.Sektor2Id ?? 0;
+  const sektor3Id = d.sektor3Id ?? d.Sektor3Id ?? 0;
+
   return {
-    id: detay.id,
-    firmaAdi: detay.firmaAdi || "",
-    yetkili: detay.yetkili || "",
-    tel: detay.tel || "",
-    fax: detay.fax || "",
-    adres: detay.adres || "",
-    email: detay.email || "",
-    webAdresi: detay.webAdresi || "",
-    ticaretSicilNo: detay.ticaretSicilNo || "",
-    vergiDairesi: detay.vergiDairesi || "",
-    vergiNo: detay.vergiNo || "",
-    arsivId: detay.arsivId || "",
-    aktifmi: detay.aktifmi ?? true,
-    sektor1Id: detay.sektor1Id || 0,
-    sektor2Id: detay.sektor2Id || 0,
-    sektor3Id: detay.sektor3Id || 0,
-    konsolideMi: detay.konsolide ? "Evet" : "Hayır",
-    konsolideTipi: detay.konsolideAnaSirketmi
+    id: d.id ?? d.Id ?? 0,
+    firmaAdi: d.firmaAdi ?? d.FirmaAdi ?? "",
+    yetkili: d.yetkili ?? d.Yetkili ?? "",
+    tel: d.tel ?? d.Tel ?? "",
+    fax: d.fax ?? d.Fax ?? "",
+    adres: d.adres ?? d.Adres ?? "",
+    email: d.email ?? d.Email ?? "",
+    webAdresi: d.webAdresi ?? d.WebAdresi ?? "",
+    ticaretSicilNo: d.ticaretSicilNo ?? d.TicaretSicilNo ?? "",
+    vergiDairesi: d.vergiDairesi ?? d.VergiDairesi ?? "",
+    vergiNo: d.vergiNo ?? d.VergiNo ?? "",
+    arsivId: d.arsivId ?? d.ArsivId ?? "",
+    aktifmi: d.aktifmi ?? d.Aktifmi ?? true,
+    sektor1Id,
+    sektor2Id,
+    sektor3Id,
+    // Name-based fallback used in form when ID does not match current DB
+    sektor1Adi: d.sektor1Adi ?? d.Sektor1Adi ?? "",
+    sektor2Adi: d.sektor2Adi ?? d.Sektor2Adi ?? "",
+    sektor3Adi: d.sektor3Adi ?? d.Sektor3Adi ?? "",
+    konsolideMi: (d.konsolide ?? d.Konsolide) ? "Evet" : "Hayır",
+    konsolideTipi: d.konsolideAnaSirketmi ?? d.KonsolideAnaSirketmi
       ? "Ana Şirket"
-      : detay.konsolideAltSirketmi
+      : d.konsolideAltSirketmi ?? d.KonsolideAltSirketmi
         ? "Alt Şirket"
         : "Ana Şirket",
   };
 }
+
+
