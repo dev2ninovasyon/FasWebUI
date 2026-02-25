@@ -22,7 +22,16 @@ export const ConfirmPopUpComponent: React.FC<ConfirmPopUpProps> = ({
   isLoading = false,
 }) => {
   return (
-    <Dialog maxWidth={"lg"} open={isConfirmPopUp} onClose={handleClose}>
+    <Dialog
+      maxWidth={"lg"}
+      open={isConfirmPopUp}
+      onClose={(_, reason) => {
+        if (isLoading && (reason === "backdropClick" || reason === "escapeKeyDown")) {
+          return;
+        }
+        handleClose();
+      }}
+    >
       {isConfirmPopUp && (
         <>
           <DialogContent className="testdialog">
@@ -42,17 +51,18 @@ export const ConfirmPopUpComponent: React.FC<ConfirmPopUpProps> = ({
               <Button
                 variant="outlined"
                 color="error"
-                loading={isLoading}
+                disabled={isLoading}
                 onClick={() => {
                   handleDelete();
                 }}
                 sx={{ width: "100%", mb: 1 }}
               >
-                Evet, Sil
+                {isLoading ? "Siliniyor..." : "Evet, Sil"}
               </Button>
               <Button
                 variant="outlined"
                 color="success"
+                disabled={isLoading}
                 onClick={() => handleClose()}
                 sx={{ width: "100%" }}
               >

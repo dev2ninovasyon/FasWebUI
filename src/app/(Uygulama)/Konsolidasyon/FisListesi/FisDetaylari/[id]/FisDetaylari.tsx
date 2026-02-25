@@ -610,7 +610,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
           afterRenderer={afterRenderer}
           afterChange={handleAfterChange}
           beforeChange={handleBeforeChange}
-          copyPaste={false}
+          copyPaste={true}
           contextMenu={{
             items: {
               row_below: {

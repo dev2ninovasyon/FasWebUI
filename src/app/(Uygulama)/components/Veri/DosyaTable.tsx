@@ -13,6 +13,7 @@ import {
   TextField,
   Box,
   Dialog,
+  DialogTitle,
   DialogContent,
   Chip,
   useMediaQuery,
@@ -78,7 +79,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const [xmlBlobUrl, setXmlBlobUrl] = useState("");
+  const [xmlBlobUrl, setXmlBlobUrl] = useState<string | null>(null);
 
   const [defterLoglari, setDefterLoglari] = useState("");
 
@@ -108,7 +109,26 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoadingPreview, setIsLoadingPreview] = useState<number | null>(null);
 
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  const isFinalStatus = (status?: string) => {
+    const s = (status || "").toLocaleLowerCase("tr-TR");
+    return (
+      s.includes("tamamlandı") ||
+      s.includes("hata oluştu") ||
+      s.includes("hatalı belge")
+    );
+  };
+
+  const isQueueStatus = (status?: string) => {
+    const s = (status || "").toLocaleLowerCase("tr-TR");
+    return s.includes("sıraya alındı") || s.includes("sırada");
+  };
+
+  const isProcessingStatus = (status?: string) => {
+    const s = (status || "").toLocaleLowerCase("tr-TR");
+    return s.includes("işleniyor");
+  };
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -309,9 +329,9 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     if (isLoadingPreview !== null) return; // Prevent double-click
 
     setIsLoadingPreview(selectedId);
-    enqueueSnackbar("Dosya yükleniyor, lütfen bekleyin...", {
+    const loadingSnackbarKey = enqueueSnackbar("Dosya yükleniyor, lütfen bekleyin...", {
       variant: "info",
-      autoHideDuration: 2000,
+      persist: true,
     });
 
     try {
@@ -345,18 +365,19 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         autoHideDuration: 3000,
       });
     } finally {
+      closeSnackbar(loadingSnackbarKey);
       setIsLoadingPreview(null);
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (): Promise<boolean> => {
     try {
       const dosyaBilgileri = await getDosyaBilgileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         fileType
       );
-      const newRows = dosyaBilgileri.map((dosya: DosyaType) => ({
+      const newRows: DosyaType[] = dosyaBilgileri.map((dosya: DosyaType) => ({
         id: dosya.id,
         adi: dosya.adi,
         olusturulmaTarihi: dosya.olusturulmaTarihi
@@ -368,8 +389,10 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       }));
       setRows(newRows);
       setControl(true);
+      return newRows.some((r: DosyaType) => !isFinalStatus(r.durum));
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+      return false;
     }
   };
 
@@ -382,24 +405,29 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   }, [control, control2]);
 
   useEffect(() => {
-    fetchData();
-  }, [fileType]);
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    const poll = async () => {
+      const hasActive = await fetchData();
+      if (cancelled) return;
 
-  useEffect(() => {
-    if (dosyaYuklendiMi) {
-      fetchData();
-      setControl2(true);
-    } else {
-      const intervalId = setInterval(fetchData, 2000);
-      setControl2(false);
+      if (!hasActive && !dosyaYuklendiMi) {
+        setDosyaYuklendiMi(true);
+      }
+      setControl2(!hasActive);
 
-      return () => clearInterval(intervalId);
-    }
-  }, [dosyaYuklendiMi]);
+      const nextMs = hasActive || !dosyaYuklendiMi ? 1200 : 4000;
+      timer = setTimeout(poll, nextMs);
+    };
+
+    poll();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [fileType, user.denetciId, user.denetlenenId, user.yil, dosyaYuklendiMi]);
 
   useEffect(() => {
     return () => {
@@ -586,27 +614,25 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                         handlePreview(row.id);
                       }}
                     >
-                      <Chip
-                        label={row.durum}
-                        sx={{
-                          backgroundColor:
-                            row.durum === "Tamamlandı"
+                        <Chip
+                          label={row.durum}
+                          sx={{
+                            backgroundColor: isFinalStatus(row.durum)
                               ? (theme) => theme.palette.success.light
-                              : row.durum === "İşleniyor"
+                              : isProcessingStatus(row.durum)
                                 ? (theme) => theme.palette.info.light
-                                : row.durum === "Sıraya Alındı."
+                                : isQueueStatus(row.durum)
                                   ? (theme) => theme.palette.warning.light
                                   : (theme) => theme.palette.error.light,
-                          color:
-                            row.durum === "Tamamlandı"
+                            color: isFinalStatus(row.durum)
                               ? (theme) => theme.palette.success.main
-                              : row.durum === "İşleniyor"
+                              : isProcessingStatus(row.durum)
                                 ? (theme) => theme.palette.info.main
-                                : row.durum === "Sıraya Alındı."
+                                : isQueueStatus(row.durum)
                                   ? (theme) => theme.palette.warning.main
                                   : (theme) => theme.palette.error.main,
-                        }}
-                      />
+                          }}
+                        />
                     </IconButton>
                   </TableCell>
                   {mdUp && (
@@ -684,25 +710,70 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           onClose={() => {
             if (xmlBlobUrl) {
               window.URL.revokeObjectURL(xmlBlobUrl);
-              setXmlBlobUrl("");
+              setXmlBlobUrl(null);
             }
             setIsOpen2(false);
           }}
           fullWidth
+          scroll="paper"
           maxWidth={fileType === "E-DefterKebir" ? false : "xl"}
+          PaperProps={{
+            sx: {
+              height: "95vh",
+              maxHeight: "95vh",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            },
+          }}
         >
-          <DialogContent>
-            <iframe
-              src={xmlBlobUrl}
-              width="100%"
-              height="800px"
-              style={{
-                backgroundColor: "#fff",
-                border: "none",
-                margin: "0 auto",
-                overflow: "hidden",
-              }}
-            ></iframe>
+          <DialogTitle
+            sx={{
+              p: 1,
+              position: "sticky",
+              top: 0,
+              zIndex: 1,
+              bgcolor: "background.paper",
+            }}
+          >
+            <Stack direction="row" justifyContent="flex-end" alignItems="center">
+              <IconButton
+                size="medium"
+                onClick={() => {
+                  if (xmlBlobUrl) {
+                    window.URL.revokeObjectURL(xmlBlobUrl);
+                    setXmlBlobUrl(null);
+                  }
+                  setIsOpen2(false);
+                }}
+              >
+                <IconX size="24" />
+              </IconButton>
+            </Stack>
+          </DialogTitle>
+          <DialogContent
+            sx={{
+              p: 0,
+              overflow: "hidden",
+              flex: 1,
+              minHeight: 0,
+            }}
+          >
+            {xmlBlobUrl && (
+              <iframe
+                src={xmlBlobUrl}
+                width="100%"
+                height="100%"
+                loading="eager"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "#fff",
+                  border: "none",
+                }}
+              ></iframe>
+            )}
           </DialogContent>
         </Dialog>
       </TableContainer>

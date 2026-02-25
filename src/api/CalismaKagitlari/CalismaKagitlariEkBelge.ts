@@ -98,8 +98,8 @@ export async function downloadEkBelge(
     // örn: attachment; filename="rapor.docx"
     const fileNameMatch = contentDisposition
       .split(";")
-      .map((part) => part.trim())
-      .find((part) => part.toLowerCase().startsWith("filename="));
+      .map((part: string) => part.trim())
+      .find((part: string) => part.toLowerCase().startsWith("filename="));
 
     if (fileNameMatch) {
       fileName = fileNameMatch.split("=")[1].trim().replace(/(^")|("$)/g, "");

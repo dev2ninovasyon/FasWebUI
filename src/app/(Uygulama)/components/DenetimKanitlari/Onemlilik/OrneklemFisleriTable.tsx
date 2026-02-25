@@ -566,7 +566,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
                 afterGetRowHeader={afterGetRowHeader}
                 afterRenderer={afterRenderer}
                 afterChange={handleAfterChange}
-                copyPaste={false}
+                copyPaste={true}
                 contextMenu={{
                     items: {
                         gise_git: {

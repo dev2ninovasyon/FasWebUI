@@ -1,4 +1,4 @@
-import { Button, Grid, Typography, Tooltip } from "@mui/material";
+﻿import { Button, Grid, Typography, Tooltip } from "@mui/material";
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import React from "react";
 import { enqueueSnackbar } from "notistack";
@@ -56,6 +56,50 @@ const EDefterIncelemeForm: React.FC<Props> = ({
   aciklama,
   setAciklama,
 }) => {
+  const trN2Formatter = React.useMemo(
+    () =>
+      new Intl.NumberFormat("tr-TR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    []
+  );
+
+  const formatToTrN2 = (value?: number): string =>
+    value === undefined || value === null || Number.isNaN(value)
+      ? ""
+      : trN2Formatter.format(value);
+
+  const [borcInput, setBorcInput] = React.useState<string>(
+    formatToTrN2(borcTutarindanFazla)
+  );
+  const [alacakInput, setAlacakInput] = React.useState<string>(
+    formatToTrN2(alacakTutarindanFazla)
+  );
+
+  const parseDecimalInput = (value: string): number | undefined => {
+    const raw = value.trim();
+    if (raw === "") return undefined;
+
+    const cleaned = raw
+      .replace(/\u00A0/g, "")
+      .replace(/\s/g, "")
+      .replace(/[₺$€]/g, "");
+
+    let normalized = cleaned;
+    if (cleaned.includes(",") && cleaned.includes(".")) {
+      // tr-TR: 1.234,56 -> 1234.56
+      normalized = cleaned.replace(/\./g, "").replace(",", ".");
+    } else if (cleaned.includes(",")) {
+      normalized = cleaned.replace(",", ".");
+    } else if ((cleaned.match(/\./g) || []).length > 1) {
+      // 1.234.567 -> 1234567
+      normalized = cleaned.replace(/\./g, "");
+    }
+
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  };
   const handleSubmit = () => {
     const hasAnyFilter = (
       (hesapNo && hesapNo.toString().trim() !== "") ||
@@ -152,7 +196,24 @@ const EDefterIncelemeForm: React.FC<Props> = ({
           <CustomFormLabel htmlFor="borcTutarindanFazla" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
             <Typography variant="subtitle1">Borç &gt;:</Typography>
           </CustomFormLabel>
-          <CustomTextField id="borcTutarindanFazla" type="number" value={borcTutarindanFazla ?? ""} fullWidth onChange={(e: any) => setBorcTutarindanFazla && setBorcTutarindanFazla(e.target.value ? Number(e.target.value) : undefined)} />
+          <CustomTextField
+            id="borcTutarindanFazla"
+            type="text"
+            value={borcInput}
+            fullWidth
+            inputProps={{ inputMode: "decimal" }}
+            onChange={(e: any) => {
+              const rawValue = e.target.value;
+              setBorcInput(rawValue);
+              if (setBorcTutarindanFazla) {
+                setBorcTutarindanFazla(parseDecimalInput(rawValue));
+              }
+            }}
+            onBlur={() => {
+              const parsed = parseDecimalInput(borcInput);
+              setBorcInput(formatToTrN2(parsed));
+            }}
+          />
           <Tooltip title="Borcu, yazdığınız tutardan fazla olan kayıtlar getirilir." arrow>
             <InfoOutlined fontSize="small" sx={{ ml: 1, mt: 1, color: 'text.secondary', verticalAlign: 'middle' }} />
           </Tooltip>
@@ -162,7 +223,24 @@ const EDefterIncelemeForm: React.FC<Props> = ({
           <CustomFormLabel htmlFor="alacakTutarindanFazla" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
             <Typography variant="subtitle1">Alacak &gt;:</Typography>
           </CustomFormLabel>
-          <CustomTextField id="alacakTutarindanFazla" type="number" value={alacakTutarindanFazla ?? ""} fullWidth onChange={(e: any) => setAlacakTutarindanFazla && setAlacakTutarindanFazla(e.target.value ? Number(e.target.value) : undefined)} />
+          <CustomTextField
+            id="alacakTutarindanFazla"
+            type="text"
+            value={alacakInput}
+            fullWidth
+            inputProps={{ inputMode: "decimal" }}
+            onChange={(e: any) => {
+              const rawValue = e.target.value;
+              setAlacakInput(rawValue);
+              if (setAlacakTutarindanFazla) {
+                setAlacakTutarindanFazla(parseDecimalInput(rawValue));
+              }
+            }}
+            onBlur={() => {
+              const parsed = parseDecimalInput(alacakInput);
+              setAlacakInput(formatToTrN2(parsed));
+            }}
+          />
           <Tooltip title="Alacağı, yazdığınız tutardan fazla olan kayıtlar getirilir." arrow>
             <InfoOutlined fontSize="small" sx={{ ml: 1, mt: 1, color: 'text.secondary', verticalAlign: 'middle' }} />
           </Tooltip>
@@ -181,10 +259,10 @@ const EDefterIncelemeForm: React.FC<Props> = ({
         
         <Grid display="flex" alignItems="center" size={{ xs: 12, sm: 8, lg: 9 }}>
           <CustomFormLabel htmlFor="hesapNo" sx={{ mt: 0, mb: { xs: "-10px", sm: 0 }, mr: 2, whiteSpace: "nowrap" }}>
-            <Typography variant="subtitle1">Hesap No:</Typography>
+            <Typography variant="subtitle1">Detay Kodu:</Typography>
           </CustomFormLabel>
-          <CustomTextAreaAutoSize id="hesapNo" value={hesapNo} fullWidth placeholder="örn. 500" onChange={(e: any) => setHesapNo(e.target.value)} />
-          <Tooltip title="Sadece yazdığınız hesaplar getirilir." arrow>
+          <CustomTextAreaAutoSize id="hesapNo" value={hesapNo} fullWidth placeholder="örn. 320.01, 120.01" onChange={(e: any) => setHesapNo(e.target.value)} />
+          <Tooltip title="Sadece yazdığınız detay kodları getirilir." arrow>
             <InfoOutlined fontSize="small" sx={{ ml: 1, mt: 1, color: 'text.secondary', verticalAlign: 'middle' }} />
           </Tooltip>
         </Grid>

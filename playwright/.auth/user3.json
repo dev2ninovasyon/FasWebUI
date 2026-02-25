@@ -2,33 +2,33 @@
   "cookies": [
     {
       "name": "_GRECAPTCHA",
-      "value": "09AKhCRwjNFoCNDlO-Tvd-fWwGVIuuOs7daL1Dd_SNvZCG4TT7PkYyb_AvwGzaDPlR5h9xSPBatopujyf9hHv0I6c",
+      "value": "09AKhCRwjLKetqfOuJVFzXOTelCjsLIn5jGNZjXGH6ux55MTjQsoPrAZBN5YcrH7EEGcfNfZX-hbPQDqHv2v0D9_M",
       "domain": "www.google.com",
       "path": "/recaptcha",
-      "expires": 1787332135.218629,
+      "expires": 1787495181.416599,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "fas_token",
-      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM4IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgMyIsImt1bGxhbmljaUlkIjoiMzgiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDMiLCJqdGkiOiJhODJhZTM5Ni1jYWFiLTRkNGMtODNkYS1mMzhlZGQwMWUwNTkiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMTIiLCJ5aWwiOiIyMDI0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiWW9uZXRpbUt1cnVsdUJhc2thbmkiLCJuYmYiOjE3NzE3ODAxMzUsImV4cCI6MTc3MTc4MzczNSwiaXNzIjoid3d3LmZhc2FyY2hpdGVjdHVyZS5jb20iLCJhdWQiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSJ9.ultjb1a9XcW9In2_Sv8N3kywrYIBYOKwssRrXatkup0",
+      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM4IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgMyIsImt1bGxhbmljaUlkIjoiMzgiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDMiLCJqdGkiOiI5YmRlYWUyYy1kOWQ4LTRkYjktOWM2NC0wNjBiMTE5ZmQxOGQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMTIiLCJ5aWwiOiIyMDI0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiWW9uZXRpbUt1cnVsdUJhc2thbmkiLCJuYmYiOjE3NzE5NDMxODEsImV4cCI6MTc3MTk0Njc4MSwiaXNzIjoid3d3LmZhc2FyY2hpdGVjdHVyZS5jb20iLCJhdWQiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSJ9.P7nWuLuiF02L-TwloACwDE55fo8tRsiLpCSkAx0PN4A",
       "domain": "localhost",
       "path": "/",
-      "expires": 1771785536.289516,
+      "expires": 1771948582.548384,
       "httpOnly": true,
       "secure": false,
-      "sameSite": "Strict"
+      "sameSite": "Lax"
     },
     {
       "name": "fas_refreshToken",
-      "value": "jCOScg9b0%2Bb6N%2B6bkY4ppRaE0cWCLLfJXqSM9ILj3Ow%3D",
+      "value": "twT1Qsqo3J89cO5T%2BQneMjKRwhEsHFNcB6VwAigK3CA%3D",
       "domain": "localhost",
       "path": "/",
-      "expires": 1772384936.289606,
+      "expires": 1772547982.548514,
       "httpOnly": true,
       "secure": false,
-      "sameSite": "Strict"
+      "sameSite": "Lax"
     }
   ],
   "origins": [
@@ -36,16 +36,24 @@
       "origin": "http://localhost:3000",
       "localStorage": [
         {
+          "name": "fas_token",
+          "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM4IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgMyIsImt1bGxhbmljaUlkIjoiMzgiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDMiLCJqdGkiOiI5YmRlYWUyYy1kOWQ4LTRkYjktOWM2NC0wNjBiMTE5ZmQxOGQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMTIiLCJ5aWwiOiIyMDI0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiWW9uZXRpbUt1cnVsdUJhc2thbmkiLCJuYmYiOjE3NzE5NDMxODEsImV4cCI6MTc3MTk0Njc4MSwiaXNzIjoid3d3LmZhc2FyY2hpdGVjdHVyZS5jb20iLCJhdWQiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSJ9.P7nWuLuiF02L-TwloACwDE55fo8tRsiLpCSkAx0PN4A"
+        },
+        {
+          "name": "fas_refreshToken",
+          "value": "twT1Qsqo3J89cO5T+QneMjKRwhEsHFNcB6VwAigK3CA="
+        },
+        {
           "name": "fas_yil",
           "value": "2024"
         },
         {
           "name": "_grecaptcha",
-          "value": "09AKhCRwjK9WKHTTtlNfIkv7n-0LuQLr0wblgtQ5GmySXTpFaaoE0VPT6oPZYQNTTh2r6zdF_pChDknseqCNe07WN5zXC9dhbCZcdhbcD2Mt2NrTHlMd8jnl_GOjuat0FV"
+          "value": "09AKhCRwjAzKR1BuIZZ3QEawlQR584dwztE_4F7R4HsHgWSWSOjYEOCoCZRLk1o8sIJSVuXwK-8okQH0idMSSWWhsY8aBCx9e6nJCwocyXPqE6zCKofbwUXXPIx4S97a3J"
         },
         {
           "name": "user_expiry",
-          "value": "1771785536317"
+          "value": "1771948582591"
         },
         {
           "name": "fas_denetlenenId",
@@ -53,7 +61,7 @@
         },
         {
           "name": "persist:root",
-          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7}\",\"userReducer\":\"{\\\"id\\\":38,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":12,\\\"denetlenenFirmaAdi\\\":\\\"ABC Teknoloji  A.Ş\\\",\\\"denetimTuru\\\":\\\"Bobi\\\",\\\"bobimi\\\":true,\\\"tfrsmi\\\":false,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":true,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 3\\\",\\\"mail\\\":\\\"test3@2ninovasyon.com\\\",\\\"token\\\":\\\"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM4IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgMyIsImt1bGxhbmljaUlkIjoiMzgiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDMiLCJqdGkiOiJhODJhZTM5Ni1jYWFiLTRkNGMtODNkYS1mMzhlZGQwMWUwNTkiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMTIiLCJ5aWwiOiIyMDI0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiWW9uZXRpbUt1cnVsdUJhc2thbmkiLCJuYmYiOjE3NzE3ODAxMzUsImV4cCI6MTc3MTc4MzczNSwiaXNzIjoid3d3LmZhc2FyY2hpdGVjdHVyZS5jb20iLCJhdWQiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSJ9.ultjb1a9XcW9In2_Sv8N3kywrYIBYOKwssRrXatkup0\\\",\\\"refreshToken\\\":\\\"jCOScg9b0+b6N+6bkY4ppRaE0cWCLLfJXqSM9ILj3Ow=\\\",\\\"formHazirlayanOnaylayan\\\":false,\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"sonSecilenDenetlenenId\\\":12,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\"ABC Teknoloji  A.Ş\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Bobi\\\",\\\"sonSecilenBobimi\\\":true,\\\"sonSecilenTfrsmi\\\":false,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":true,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
+          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7}\",\"userReducer\":\"{\\\"id\\\":38,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":12,\\\"denetlenenFirmaAdi\\\":\\\"ABC Teknoloji  A.Ş\\\",\\\"denetimTuru\\\":\\\"Bobi\\\",\\\"bobimi\\\":true,\\\"tfrsmi\\\":false,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":true,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 3\\\",\\\"mail\\\":\\\"test3@2ninovasyon.com\\\",\\\"token\\\":\\\"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM4IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgMyIsImt1bGxhbmljaUlkIjoiMzgiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDMiLCJqdGkiOiI5YmRlYWUyYy1kOWQ4LTRkYjktOWM2NC0wNjBiMTE5ZmQxOGQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiMTIiLCJ5aWwiOiIyMDI0IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiWW9uZXRpbUt1cnVsdUJhc2thbmkiLCJuYmYiOjE3NzE5NDMxODEsImV4cCI6MTc3MTk0Njc4MSwiaXNzIjoid3d3LmZhc2FyY2hpdGVjdHVyZS5jb20iLCJhdWQiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSJ9.P7nWuLuiF02L-TwloACwDE55fo8tRsiLpCSkAx0PN4A\\\",\\\"refreshToken\\\":\\\"twT1Qsqo3J89cO5T+QneMjKRwhEsHFNcB6VwAigK3CA=\\\",\\\"formHazirlayanOnaylayan\\\":false,\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"sonSecilenDenetlenenId\\\":12,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\"ABC Teknoloji  A.Ş\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Bobi\\\",\\\"sonSecilenBobimi\\\":true,\\\"sonSecilenTfrsmi\\\":false,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":true,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
         }
       ]
     },
@@ -62,11 +70,11 @@
       "localStorage": [
         {
           "name": "rc::a",
-          "value": "MTRjdWplOTF5Mm93c3E="
+          "value": "MWE2bnFocWxld3Mybw=="
         },
         {
           "name": "rc::f",
-          "value": "0aADtQnsc6CdV3K5FbohGQBLsP61M2fh-2KtWYjW2LpCm0EvOrrffgqwFoZ1K4wmgi2yUwM7g"
+          "value": "0aADtQnsdnEdce-oMWZtcw-ZAHNtYdyCOq47-bpHegk4538T0O2Syu8DGWmiaiYPqxvwDd03g"
         }
       ]
     }

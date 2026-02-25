@@ -519,6 +519,7 @@ const FisListesi = () => {
           afterRenderer={afterRenderer}
           contextMenu={{
             items: {
+              copy: {},
               fise_git: {
                 name: "Fişe Git",
                 callback: async function (key, selection) {
@@ -536,7 +537,7 @@ const FisListesi = () => {
               },
             },
           }}
-          copyPaste={false}
+          copyPaste={true}
         />
       </Grid>
       <Grid

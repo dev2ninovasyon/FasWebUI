@@ -9,6 +9,9 @@ let notificationCallback: ((bildirim: any) => void) | null = null;
 let listenerRegistered = false;
 let pollingToken: string | null = null;
 let pollingDenetciId: number | null = null;
+let startConnectionPromise: Promise<any> | null = null;
+let isStoppingConnection = false;
+let pendingStopRequested = false;
 
 // Hot reload cleanup: In development, ensure old connections are cleaned up on module reload
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
@@ -134,6 +137,8 @@ export const stopPollingBildirim = () => {
 };
 
 export const startBildirimConnection = async (denetciId: number) => {
+  pendingStopRequested = false;
+
   // Polling için token ve denetciId'yi kaydet (fallback için)
   pollingToken = SecureTokenManager.getAccessToken() || "";
   pollingDenetciId = denetciId;
@@ -143,7 +148,18 @@ export const startBildirimConnection = async (denetciId: number) => {
     return hubConnection;
   }
 
-  try {
+  if (isStoppingConnection) {
+    console.warn("⚠️ SignalR stop işlemi devam ediyor, start şimdilik atlandı.");
+    return null;
+  }
+
+  if (startConnectionPromise) {
+    console.info("ℹ️ SignalR start zaten devam ediyor, mevcut start işlemi bekleniyor.");
+    return startConnectionPromise;
+  }
+
+  startConnectionPromise = (async () => {
+    try {
     const apiUrl = getApiUrl();
     const hubUrl = `${apiUrl}/bildirim-hub`;
 
@@ -200,8 +216,29 @@ export const startBildirimConnection = async (denetciId: number) => {
     console.log("🔌 SignalR bağlantısı kuruluyor...");
     await hubConnection.start();
 
+    if (pendingStopRequested) {
+      console.info("ℹ️ SignalR start sırasında stop talebi geldi, bağlantı güvenli şekilde kapatılıyor.");
+      try {
+        await hubConnection.stop();
+      } catch {
+        // no-op
+      }
+      hubConnection = null;
+      listenerRegistered = false;
+      return null;
+    }
+
     console.log("✅ SignalR bağlantısı başarılı! Grup katılımı yapılıyor...");
-    console.log("📡 Connection ID:", hubConnection.connectionId);
+    const connectionId = hubConnection?.connectionId;
+    console.log("📡 Connection ID:", connectionId);
+
+    if (!connectionId) {
+      console.warn("⚠️ SignalR bağlantısı kuruldu ancak connectionId null. Güvenli çıkış yapılıyor.");
+      if (pollingDenetciId && notificationCallback) {
+        startPollingBildirim(pollingDenetciId, notificationCallback);
+      }
+      return null;
+    }
 
     // Bağlantının hazır olması için biraz bekle
     if (hubConnection.state === HubConnectionState.Connected) {
@@ -223,12 +260,15 @@ export const startBildirimConnection = async (denetciId: number) => {
 
     return hubConnection;
   } catch (error) {
-    console.error("❌ SignalR bağlantı hatası:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isStartStopRaceError =
+      errorMessage.includes("Failed to start the HttpConnection before stop() was called") ||
+      errorMessage.includes("The connection was stopped during negotiation");
 
-    // Detaylı hata bilgisi
-    if (error instanceof Error) {
-      console.error("Hata mesajı:", error.message);
-      console.error("Stack trace ilk satır:", error.stack?.split('\n')[0]);
+    if (isStartStopRaceError) {
+      console.warn("⚠️ SignalR start/stop yarış durumu yakalandı, polling ile devam ediliyor:", errorMessage);
+    } else {
+      console.warn("⚠️ SignalR bağlantısı kurulamadı, polling fallback kullanılacak:", errorMessage);
     }
 
     // Hata kodu için bağlantıyı kapat ama null'a setleme
@@ -237,16 +277,26 @@ export const startBildirimConnection = async (denetciId: number) => {
         await hubConnection.stop();
       }
     } catch (stopError) {
-      console.error("Bağlantı durdurma hatası:", stopError);
+      console.warn("⚠️ Bağlantı durdurma sırasında uyarı:", stopError);
     }
 
     hubConnection = null;
     listenerRegistered = false;
 
     // SignalR başarısız oldu, polling'i başlat
-    console.warn("⚠️ SignalR başarısız, polling fallback'ine geçiliyor...");
+    console.info("ℹ️ SignalR başarısız, polling fallback'ine geçiliyor...");
+    if (pollingDenetciId && notificationCallback) {
+      startPollingBildirim(pollingDenetciId, notificationCallback);
+    }
 
-    throw error;
+    return null;
+  }
+  })();
+
+  try {
+    return await startConnectionPromise;
+  } finally {
+    startConnectionPromise = null;
   }
 };
 
@@ -273,15 +323,30 @@ export const onYeniBildirim = (callback: (bildirim: any) => void, denetciId?: nu
 };
 
 export const stopBildirimConnection = async () => {
-  if (hubConnection) {
-    try {
-      await hubConnection.stop();
-      hubConnection = null;
-      listenerRegistered = false;
-      console.log("SignalR bağlantısı kesildi");
-    } catch (error) {
-      console.log("SignalR kapatma hatası:", error);
+  isStoppingConnection = true;
+  pendingStopRequested = true;
+  try {
+    if (startConnectionPromise) {
+      try {
+        await startConnectionPromise;
+      } catch {
+        // start hataları burada tekrar yükseltilmez
+      }
     }
+
+    if (hubConnection) {
+      try {
+        await hubConnection.stop();
+        hubConnection = null;
+        listenerRegistered = false;
+        console.log("SignalR bağlantısı kesildi");
+      } catch (error) {
+        console.log("SignalR kapatma hatası:", error);
+      }
+    }
+  } finally {
+    isStoppingConnection = false;
+    pendingStopRequested = false;
   }
 };
 
@@ -353,6 +418,12 @@ export const getBaglantiBilgileriByTip = async (
         },
       }
     );
+
+    if (!response) {
+      console.info("ℹ️ Bağlantı bilgisi bulunamadı (DefterKVBeyannamesi). Boş state ile devam ediliyor.");
+      return null;
+    }
+
     if (response.ok) {
       return response.json();
     } else {
