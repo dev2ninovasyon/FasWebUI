@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";

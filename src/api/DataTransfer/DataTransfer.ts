@@ -1,5 +1,79 @@
 import { apiFetch } from "@/api/apiBase";
 
+// ── Veri Taşıma (Migration) DTOs ──────────────────────────────────────────────
+
+export interface OldSystemCustomerDto {
+  id: number;
+  firmaAdi: string;
+  vergiNo?: string;
+  /** Backend taşınmış mı bilgisini bu alanla dönebilir */
+  migrated?: boolean;
+}
+
+export interface MigrationLogDto {
+  dosyaAdi?: string;
+  toplamFisBasligi?: number;
+  toplamDetayKayit?: number;
+  toplamBorc?: number;
+  toplamAlacak?: number;
+  netFark?: number;
+  detayIslemHizi?: number;
+  islemSuresi?: string;
+  basarili: boolean;
+  mesaj?: string;
+}
+
+// ── Veri Taşıma API fonksiyonları ─────────────────────────────────────────────
+
+/**
+ * GET /api/migration/old-customers
+ * Eski sistemdeki müşteri listesini döner. Taşınmış olanlar migrated=true ile işaretlenmiş olabilir.
+ */
+export const getMigrationOldCustomers = async (): Promise<OldSystemCustomerDto[]> => {
+  try {
+    const response = await apiFetch(`/migration/old-customers`, {
+      method: "GET",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data || [];
+    } else {
+      console.error(`❌ getMigrationOldCustomers: HTTP ${response.status}`);
+      return [];
+    }
+  } catch (error: any) {
+    console.error("❌ getMigrationOldCustomers hata:", error);
+    return [];
+  }
+};
+
+/**
+ * POST /api/migration/migrate-customer
+ * Seçilen eski müşteriyi belirtilen yıla ait verilerle taşır.
+ * Body: { oldCustomerId, year }
+ * Response: MigrationLogDto
+ */
+export const migrateCustomer = async (body: {
+  oldCustomerId: number;
+  year: number;
+}): Promise<MigrationLogDto> => {
+  const response = await apiFetch(`/migration/migrate-customer`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    let msg = "Veri taşıma başarısız.";
+    try {
+      msg = await response.text();
+    } catch {}
+    throw new Error(msg);
+  }
+  return await response.json();
+};
+
+// ── Mevcut DataTransfer DTOs ──────────────────────────────────────────────────
+
 export interface DenetciDto {
   id: number;
   firmaAdi: string;

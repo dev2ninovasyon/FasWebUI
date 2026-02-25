@@ -290,9 +290,9 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
               const displayDate = formatDate(
                 isImported
                   ? summary?.updatedAt ||
-                      summary?.createdAt ||
-                      row.importedAt ||
-                      row.createdAt
+                  summary?.createdAt ||
+                  row.importedAt ||
+                  row.createdAt
                   : row.createdAt
               );
               const logJobId = summary?.jobId || row.importJobId;

@@ -24,10 +24,7 @@ import {
   getOldDenetlenenDetay,
   mapOldDenetlenenToFormData,
 } from "@/api/Musteri/MusteriIslemleri";
-import type {
-  OldDenetlenenListItemDto,
-  OldDenetlenenDetayDto,
-} from "@/api/Musteri/MusteriIslemleriDtos";
+import type { OldDenetlenenListItemDto } from "@/api/Musteri/MusteriIslemleriDtos";
 import { enqueueSnackbar } from "notistack";
 
 const BCrumb = [
@@ -36,11 +33,25 @@ const BCrumb = [
   { to: "/Musteri/MusteriIslemleri/ImportFromOld", title: "Müşteri Taşı" },
 ];
 
+// Taşınacak veri listesi — ✔ olanlar hazır, olmayanlar henüz dahil değil
+const TASIMA_KALEMLERI = [
+  { label: "Yaşlandırma", hazir: true },
+  { label: "Kıdem Tazminatı", hazir: true },
+  { label: "Amortisman", hazir: true },
+  { label: "Kredi", hazir: true },
+  { label: "Çek / Senet Reeskont", hazir: true },
+  { label: "Dava Karşılıkları", hazir: true },
+  { label: "Ertelenmiş Vergi Hesabı", hazir: false },
+  { label: "Mizan", hazir: true },
+];
+
 const Page = () => {
+  // ── Liste ──────────────────────────────────────────────────────────────
   const [oldList, setOldList] = useState<OldDenetlenenListItemDto[]>([]);
   const [listLoading, setListLoading] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
 
+  // ── Seçim & detay ──────────────────────────────────────────────────────
   const [selected, setSelected] = useState<OldDenetlenenListItemDto | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState<string | null>(null);
@@ -55,19 +66,22 @@ const Page = () => {
         setListLoading(true);
         setListError(null);
         const data = await getOldDenetlenenForCurrentDenetci();
-        setOldList(Array.isArray(data) ? data : []);
+        const sorted = Array.isArray(data)
+          ? [...data].sort((a, b) =>
+            (a.firmaAdi ?? "").localeCompare(b.firmaAdi ?? "", "tr", {
+              sensitivity: "base",
+            })
+          )
+          : [];
+        setOldList(sorted);
       } catch (error) {
-        const errorMsg =
-          error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
-        setListError(errorMsg);
-        enqueueSnackbar("Müşteriler yüklenemedi: " + errorMsg, {
-          variant: "error",
-        });
+        const msg = error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
+        setListError(msg);
+        enqueueSnackbar("Müşteriler yüklenemedi: " + msg, { variant: "error" });
       } finally {
         setListLoading(false);
       }
     };
-
     loadList();
   }, []);
 
@@ -180,6 +194,7 @@ const Page = () => {
               </Stack>
             </ParentCard>
           )}
+
         </Stack>
 
         <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} fullWidth maxWidth="sm">
@@ -192,9 +207,9 @@ const Page = () => {
                 Aşağıdaki firmaya ait detaylı bilgiler taşımaya hazırlanacaktır. Lütfen bilgileri kontrol ediniz.
               </Typography>
 
-              <Box sx={{ 
-                bgcolor: "rgba(25, 118, 210, 0.05)", 
-                p: 2, 
+              <Box sx={{
+                bgcolor: "rgba(25, 118, 210, 0.05)",
+                p: 2,
                 borderRadius: 2,
                 border: "1px solid rgba(25, 118, 210, 0.2)"
               }}>
@@ -237,6 +252,67 @@ const Page = () => {
           </DialogActions>
         </Dialog>
       </PageContainer>
+
+      {/* ── Onay Dialogu ───────────────────────────────────────────── */}
+      <Dialog
+        open={confirmOpen}
+        onClose={handleConfirmNo}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Veri Taşıma Onayı</DialogTitle>
+
+        <DialogContent dividers>
+          <Typography variant="body2" color="text.secondary" mb={1}>
+            Aşağıdaki veriler yeni sisteme taşınacaktır:
+          </Typography>
+
+          <List dense disablePadding>
+            {TASIMA_KALEMLERI.map((kalem) => (
+              <ListItem key={kalem.label} disableGutters sx={{ py: 0.25 }}>
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="body2"
+                      sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                    >
+                      {kalem.hazir ? (
+                        <Box
+                          component="span"
+                          sx={{ color: "success.main", fontWeight: 700 }}
+                        >
+                          ✔
+                        </Box>
+                      ) : (
+                        <Box
+                          component="span"
+                          sx={{ color: "text.disabled", fontWeight: 700 }}
+                        >
+                          –
+                        </Box>
+                      )}
+                      {kalem.label}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
+
+          <Typography variant="body1" fontWeight={600} mt={2}>
+            Onaylıyor musunuz?
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleConfirmNo} variant="outlined" color="inherit">
+            Hayır
+          </Button>
+          <Button onClick={handleConfirmYes} variant="contained" color="primary">
+            Evet
+          </Button>
+        </DialogActions>
+      </Dialog>
     </MusteriIslemleriLayout>
   );
 };
