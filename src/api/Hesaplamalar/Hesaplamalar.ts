@@ -391,11 +391,13 @@ export const createKidemTazminatiBobiEkBilgi = async (
 export const getKidemTazminatiBobiEkBilgi = async (
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  yilFiltresi?: number
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/KidemTazminatiBobiEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/KidemTazminatiBobiEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}` +
+      (yilFiltresi !== undefined ? `&yilFiltresi=${yilFiltresi}` : ""),
       {
         method: "GET",
         headers: {
@@ -443,11 +445,13 @@ export const createKidemTazminatiTfrsEkBilgi = async (
 export const getKidemTazminatiTfrsEkBilgi = async (
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  yilFiltresi?: number
 ) => {
   try {
     const response = await apiFetch(
-      `/Hesaplamalar/KidemTazminatiTfrsEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      `/Hesaplamalar/KidemTazminatiTfrsEkBilgi?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}` +
+      (yilFiltresi !== undefined ? `&yilFiltresi=${yilFiltresi}` : ""),
       {
         method: "GET",
         headers: {
