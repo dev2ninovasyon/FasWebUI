@@ -17,6 +17,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Chip,
 } from "@mui/material";
 import {
   IconDotsVertical,
@@ -144,6 +145,8 @@ const MusteriTable = () => {
         kumi: musteri.kumi,
         aktifmi: musteri.aktifmi,
         enflasyonMu: musteri.enflasyonMu,
+        veriTasimaDurumu: musteri.veriTasimaDurumu,
+        veriTasimaKaynak: musteri.veriTasimaKaynak,
       }));
       setRows(newRows);
     } catch (error) {
@@ -177,6 +180,11 @@ const MusteriTable = () => {
               <TableCell>
                 <Typography textAlign="center" variant="h6">
                   Email
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography textAlign="center" variant="h6">
+                  Durum
                 </Typography>
               </TableCell>
               <TableCell></TableCell>
@@ -217,6 +225,23 @@ const MusteriTable = () => {
                   >
                     {row.email}
                   </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  {row.veriTasimaDurumu === "Tasindi" || row.veriTasimaKaynak ? (
+                    <Chip
+                      label="Taşındı"
+                      color="success"
+                      size="small"
+                      variant="filled"
+                    />
+                  ) : (
+                    <Chip
+                      label="Oluşturuldu"
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                    />
+                  )}
                 </TableCell>
                 <TableCell>
                   <IconButton

@@ -940,7 +940,7 @@ const MusteriEkleForm = ({
               ) : (
                 <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={loading}>
                   {loading ? <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} /> : null}
-                  {isImportMode ? "Müşteri Ekle" : "Müşteri Ekle"}
+                  {isImportMode ? "Taşımayı Başlat" : "Müşteri Ekle"}
                 </Button>
               )}
             </Box>

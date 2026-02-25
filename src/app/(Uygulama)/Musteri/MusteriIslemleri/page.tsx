@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
@@ -15,19 +15,25 @@ const Page = () => {
         title="Müşteri İşlemleri"
         description="this is Müşteri İşlemleri"
       >
-        <ParentCard title="Müşteriler">
-          <Grid container spacing={3}>
-            <Grid size={12}>
-              <Stack spacing={1} direction="row" justifyContent="start" marginBottom={4}>
-                <MusteriEkleButton />
-                <MusteriImportOldButton />
-              </Stack>
-              <Box>
-                <MusteriTable />
-              </Box>
-            </Grid>
+        <Grid container spacing={3}>
+          {/* Mevcut müşteri listesi */}
+          <Grid size={12}>
+            <ParentCard title="Müşteriler">
+              <Grid container spacing={3}>
+                <Grid size={12}>
+                  <Stack spacing={1} direction="row" justifyContent="start" marginBottom={4}>
+                    <MusteriEkleButton />
+                    <MusteriImportOldButton />
+                  </Stack>
+                  <Box>
+                    <MusteriTable />
+                  </Box>
+                </Grid>
+              </Grid>
+            </ParentCard>
           </Grid>
-        </ParentCard>
+
+        </Grid>
       </PageContainer>
     </MusteriIslemleriLayout>
   );

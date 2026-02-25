@@ -11,6 +11,15 @@ import {
   Autocomplete,
   CircularProgress,
   Alert,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import MusteriEkleForm from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/MusteriEkleForm";
 import {
@@ -18,10 +27,7 @@ import {
   getOldDenetlenenDetay,
   mapOldDenetlenenToFormData,
 } from "@/api/Musteri/MusteriIslemleri";
-import type {
-  OldDenetlenenListItemDto,
-  OldDenetlenenDetayDto,
-} from "@/api/Musteri/MusteriIslemleriDtos";
+import type { OldDenetlenenListItemDto } from "@/api/Musteri/MusteriIslemleriDtos";
 import { enqueueSnackbar } from "notistack";
 
 const BCrumb = [
@@ -30,141 +36,168 @@ const BCrumb = [
   { to: "/Musteri/MusteriIslemleri/ImportFromOld", title: "Müşteri Taşı" },
 ];
 
+// Taşınacak veri listesi — ✔ olanlar hazır, olmayanlar henüz dahil değil
+const TASIMA_KALEMLERI = [
+  { label: "Yaşlandırma", hazir: true },
+  { label: "Kıdem Tazminatı", hazir: true },
+  { label: "Amortisman", hazir: true },
+  { label: "Kredi", hazir: true },
+  { label: "Çek / Senet Reeskont", hazir: true },
+  { label: "Dava Karşılıkları", hazir: true },
+  { label: "Ertelenmiş Vergi Hesabı", hazir: false },
+  { label: "Mizan", hazir: true },
+];
+
 const Page = () => {
+  // ── Liste ──────────────────────────────────────────────────────────────
   const [oldList, setOldList] = useState<OldDenetlenenListItemDto[]>([]);
   const [listLoading, setListLoading] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
 
+  // ── Seçim & detay ──────────────────────────────────────────────────────
   const [selected, setSelected] = useState<OldDenetlenenListItemDto | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, any> | null>(null);
 
-  // AbortController for race condition prevention
+  // ── Onay dialogu ───────────────────────────────────────────────────────
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Load company list on mount
+  // ── Firma listesini yükle ──────────────────────────────────────────────
   useEffect(() => {
     const loadList = async () => {
       try {
         setListLoading(true);
         setListError(null);
         const data = await getOldDenetlenenForCurrentDenetci();
-        setOldList(Array.isArray(data) ? data : []);
+        const sorted = Array.isArray(data)
+          ? [...data].sort((a, b) =>
+              (a.firmaAdi ?? "").localeCompare(b.firmaAdi ?? "", "tr", {
+                sensitivity: "base",
+              })
+            )
+          : [];
+        setOldList(sorted);
       } catch (error) {
-        const errorMsg =
-          error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
-        setListError(errorMsg);
-        enqueueSnackbar("Müşteriler yüklenemedi: " + errorMsg, {
-          variant: "error",
-        });
+        const msg = error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
+        setListError(msg);
+        enqueueSnackbar("Müşteriler yüklenemedi: " + msg, { variant: "error" });
       } finally {
         setListLoading(false);
       }
     };
-
     loadList();
   }, []);
 
-  // Load selected company details when selection changes
-  useEffect(() => {
-    // Cancel previous request if exists
+  // ── Seçim değişince formu sıfırla (otomatik yüklemeden) ──────────────
+  const handleSelectionChange = (val: OldDenetlenenListItemDto | null) => {
+    // Önceki isteği iptal et
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
+    setSelected(val);
+    setFormData(null);
+    setDetailError(null);
+  };
 
-    if (!selected) {
-      setFormData(null);
-      setDetailError(null);
-      return;
+  // ── Firma detayını yükle (onay sonrası çağrılır) ──────────────────────
+  const loadDetail = async (id: number) => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
-
-    // Create new AbortController for this request
     abortControllerRef.current = new AbortController();
 
-    const loadDetail = async () => {
-      try {
-        setDetailLoading(true);
-        setDetailError(null);
+    try {
+      setDetailLoading(true);
+      setDetailError(null);
 
-        const detailData = await getOldDenetlenenDetay(selected.id);
+      const detailData = await getOldDenetlenenDetay(id);
 
-        // Check if request was aborted before state update
-        if (abortControllerRef.current?.signal.aborted) {
-          return;
-        }
+      if (abortControllerRef.current?.signal.aborted) return;
 
-        const mapped = mapOldDenetlenenToFormData(detailData);
-        setFormData(mapped);
-      } catch (error) {
-        // Ignore abort errors
-        if (error instanceof Error && error.name === "AbortError") {
-          return;
-        }
+      setFormData(mapOldDenetlenenToFormData(detailData));
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") return;
+      const msg = error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
+      setDetailError(msg);
+      enqueueSnackbar("Firma detayları yüklenemedi: " + msg, { variant: "error" });
+    } finally {
+      setDetailLoading(false);
+    }
+  };
 
-        const errorMsg =
-          error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
-        setDetailError(errorMsg);
-        enqueueSnackbar("Firma detayları yüklenemedi: " + errorMsg, {
-          variant: "error",
-        });
-      } finally {
-        setDetailLoading(false);
-      }
-    };
+  // ── "Taşı" butonuna tıklandı → dialogu aç ────────────────────────────
+  const handleTasiClick = () => {
+    if (!selected) return;
+    setConfirmOpen(true);
+  };
 
-    loadDetail();
+  // ── Onay: Evet ────────────────────────────────────────────────────────
+  const handleConfirmYes = () => {
+    setConfirmOpen(false);
+    if (selected) loadDetail(selected.id);
+  };
 
-    // Cleanup: abort request on unmount or selection change
+  // ── Onay: Hayır ───────────────────────────────────────────────────────
+  const handleConfirmNo = () => {
+    setConfirmOpen(false);
+  };
+
+  // ── Unmount temizliği ─────────────────────────────────────────────────
+  useEffect(() => {
     return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+      abortControllerRef.current?.abort();
     };
-  }, [selected]);
+  }, []);
 
   return (
     <MusteriIslemleriLayout title="Müşteri Taşı" items={BCrumb}>
       <PageContainer title="Müşteri Taşı" description="Eski veriler aktarılıyor">
         <Stack spacing={3}>
-          {/* Company Selection Section */}
+
+          {/* ── Müşteri Seç ─────────────────────────────────────────── */}
           <ParentCard title="Müşteri Seç">
-            <Stack spacing={3}>
-              {listLoading ? (
-                <Box display="flex" justifyContent="center" py={3}>
-                  <CircularProgress size={40} />
-                </Box>
-              ) : listError ? (
-                <Alert severity="error">{listError}</Alert>
-              ) : (
-                <Box>
-                  <Autocomplete
-                    options={oldList}
-                    getOptionLabel={(opt: OldDenetlenenListItemDto) =>
-                      opt.firmaAdi || ""
-                    }
-                    value={selected}
-                    onChange={(e, val) => setSelected(val)}
-                    fullWidth
-                    sx={{ minWidth: 350, maxWidth: 600 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Müşteri Seçiniz"
-                        variant="outlined"
-                        fullWidth
-                      />
-                    )}
-                    noOptionsText="Müşteri bulunamadı"
-                    isOptionEqualToValue={(opt, val) => opt.id === val.id}
-                  />
-                </Box>
-              )}
-            </Stack>
+            {listLoading ? (
+              <Box display="flex" justifyContent="center" py={3}>
+                <CircularProgress size={40} />
+              </Box>
+            ) : listError ? (
+              <Alert severity="error">{listError}</Alert>
+            ) : (
+              <Box display="flex" alignItems="center" gap={2}>
+                <Autocomplete
+                  options={oldList}
+                  getOptionLabel={(opt) => opt.firmaAdi || ""}
+                  value={selected}
+                  onChange={(_, val) => handleSelectionChange(val)}
+                  sx={{ flex: 1, maxWidth: 600 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Müşteri Seçiniz"
+                      variant="outlined"
+                    />
+                  )}
+                  noOptionsText="Müşteri bulunamadı"
+                  isOptionEqualToValue={(opt, val) => opt.id === val.id}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!selected}
+                  onClick={handleTasiClick}
+                  sx={{ whiteSpace: "nowrap", height: 56 }}
+                >
+                  Taşı
+                </Button>
+              </Box>
+            )}
           </ParentCard>
 
-          {/* Firm Detail Section */}
-          {selected && (
+          {/* ── Firma Detayları (yalnızca onaydan sonra) ────────────── */}
+          {selected && (detailLoading || detailError || formData) && (
             <ParentCard title="Firma Detayları">
               <Stack spacing={2}>
                 {detailLoading ? (
@@ -180,14 +213,74 @@ const Page = () => {
                     showPdfUpload={false}
                     isImportMode={true}
                   />
-                ) : (
-                  <Alert severity="warning">Firma verileri bulunamadı</Alert>
-                )}
+                ) : null}
               </Stack>
             </ParentCard>
           )}
+
         </Stack>
       </PageContainer>
+
+      {/* ── Onay Dialogu ───────────────────────────────────────────── */}
+      <Dialog
+        open={confirmOpen}
+        onClose={handleConfirmNo}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Veri Taşıma Onayı</DialogTitle>
+
+        <DialogContent dividers>
+          <Typography variant="body2" color="text.secondary" mb={1}>
+            Aşağıdaki veriler yeni sisteme taşınacaktır:
+          </Typography>
+
+          <List dense disablePadding>
+            {TASIMA_KALEMLERI.map((kalem) => (
+              <ListItem key={kalem.label} disableGutters sx={{ py: 0.25 }}>
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="body2"
+                      sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                    >
+                      {kalem.hazir ? (
+                        <Box
+                          component="span"
+                          sx={{ color: "success.main", fontWeight: 700 }}
+                        >
+                          ✔
+                        </Box>
+                      ) : (
+                        <Box
+                          component="span"
+                          sx={{ color: "text.disabled", fontWeight: 700 }}
+                        >
+                          –
+                        </Box>
+                      )}
+                      {kalem.label}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
+
+          <Typography variant="body1" fontWeight={600} mt={2}>
+            Onaylıyor musunuz?
+          </Typography>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleConfirmNo} variant="outlined" color="inherit">
+            Hayır
+          </Button>
+          <Button onClick={handleConfirmYes} variant="contained" color="primary">
+            Evet
+          </Button>
+        </DialogActions>
+      </Dialog>
     </MusteriIslemleriLayout>
   );
 };
