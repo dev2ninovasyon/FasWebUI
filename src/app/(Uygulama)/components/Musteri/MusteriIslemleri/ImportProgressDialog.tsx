@@ -210,7 +210,7 @@ export default function ImportProgressDialog({
             if (status.status === "Succeeded" && !hasStageErrors) {
               enqueueSnackbar("✓ Taşıma işlemi başarıyla tamamlandı!", { variant: "success" });
             } else if (status.status === "Succeeded" && hasStageErrors) {
-              enqueueSnackbar("Import tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
+              enqueueSnackbar("Müşteri veri taşıma işlemi tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
             } else if (status.status === "Failed") {
               enqueueSnackbar("✗ Taşıma işlemi sırasında hata oluştu!", { variant: "error" });
             } else if (status.status === "Cancelled") {
@@ -359,6 +359,20 @@ export default function ImportProgressDialog({
     }
   };
 
+  const getTableDisplayName = (tableKey: string): string => {
+    const names: Record<string, string> = {
+      "DonusumMizan": "Dönüşüm Mizan",
+      "Amortisman": "Amortisman",
+      "CekSenetReeskont": "Çek Senet Reeskont",
+      "DavaKarsiliklari": "Dava Karşılıkları",
+      "KidemTazminati": "Kıdem Tazminatı",
+      "KrediHesaplama": "Kredi Hesaplaması",
+      "Yaslandirma": "Yaşlandırma",
+      "ErtelenmisVergiHesabi": "Ertelenmiş Vergi Hesabı",
+    };
+    return names[tableKey] ?? tableKey;
+  };
+
   const normalizeStageResult = (result: any): NormalizedStageResult => ({
     tableKey: result?.tableKey ?? result?.TableKey ?? "",
     totalRecords: result?.totalRecords ?? result?.TotalRecords ?? 0,
@@ -379,7 +393,9 @@ export default function ImportProgressDialog({
     );
 
     if (isTargetModel) {
-      return rawResults.map((r: any) => {
+      return rawResults
+        .filter((r: any) => (r?.tableKey ?? r?.TableKey) !== "Denetlened")
+        .map((r: any) => {
         const yillar: YearBreakdownResult[] = (r?.yillar ?? r?.years ?? r?.yearSummaries ?? r?.YearSummaries ?? [])
           .map((y: any) => {
             const yil = parseNumber(y?.yil ?? y?.year ?? y?.Year, 0);
@@ -425,7 +441,7 @@ export default function ImportProgressDialog({
           : toTransferDurum(r?.durum ?? r?.status, undefined, Boolean(r?.errorMessage ?? r?.ErrorMessage));
 
         return {
-          tabloAdi: String(r?.tabloAdi ?? r?.tableKey ?? r?.TableKey ?? ""),
+          tabloAdi: getTableDisplayName(String(r?.tableKey ?? r?.TableKey ?? r?.tabloAdi ?? "")),
           toplam,
           islenen,
           sureSn,
@@ -439,6 +455,7 @@ export default function ImportProgressDialog({
     rawResults.forEach((raw: any) => {
       const result = normalizeStageResult(raw);
       if (!result.tableKey) return;
+      if (result.tableKey === "Denetlened") return;
 
       const yil = parseNumber(raw?.yil ?? raw?.year ?? raw?.Year, 0);
       const stageDurum = toTransferDurum(raw?.durum ?? raw?.status ?? raw?.Status, result.success, Boolean(result.errorMessage));
@@ -447,7 +464,7 @@ export default function ImportProgressDialog({
 
       if (!grouped.has(result.tableKey)) {
         grouped.set(result.tableKey, {
-          tabloAdi: result.tableKey,
+          tabloAdi: getTableDisplayName(result.tableKey),
           toplam: 0,
           islenen: 0,
           sureSn: 0,

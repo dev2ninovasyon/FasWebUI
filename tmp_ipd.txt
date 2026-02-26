@@ -187,13 +187,13 @@ export default function ImportProgressDialog({
           });
 
           if (status.status === "Succeeded" && !hasStageErrors) {
-            enqueueSnackbar("✓ Import başarıyla tamamlandı!", { variant: "success" });
+            enqueueSnackbar("✓ Müşteri veri taşıma işlemi başarıyla tamamlandı!", { variant: "success" });
           } else if (status.status === "Succeeded" && hasStageErrors) {
-            enqueueSnackbar("Import tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
+            enqueueSnackbar("Müşteri veri taşıma işlemi tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
           } else if (status.status === "Failed") {
-            enqueueSnackbar("✗ Import sırasında hata oluştu!", { variant: "error" });
+            enqueueSnackbar("✗ Müşteri veri taşıma işlemi sırasında hata oluştu!", { variant: "error" });
           } else if (status.status === "Cancelled") {
-            enqueueSnackbar("⊘ Import kullanıcı tarafından iptal edildi. Geri alma backend tarafından tamamlandı.", { variant: "warning" });
+            enqueueSnackbar("⊘ Müşteri veri taşıma işlemi kullanıcı tarafından iptal edildi. Geri alma backend tarafından tamamlandı.", { variant: "warning" });
           }
         }
       } catch (e: any) {
