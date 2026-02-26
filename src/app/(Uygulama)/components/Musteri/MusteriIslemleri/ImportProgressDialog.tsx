@@ -856,7 +856,7 @@ export default function ImportProgressDialog({
                         lineHeight: 1.6,
                       }}
                     >
-                      {jobStatus.notifications.slice(-50).map((notif: any, idx: number) => (
+                      {jobStatus.notifications.map((notif: any, idx: number) => (
                         <Box
                           key={idx}
                           sx={{
