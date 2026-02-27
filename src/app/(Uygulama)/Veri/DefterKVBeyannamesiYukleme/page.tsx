@@ -3,7 +3,7 @@
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Box,
   Typography,
@@ -135,6 +135,7 @@ const Page: React.FC = () => {
   const [dosyaYuklendiMi, setDosyaYuklendiMi] = useState(true);
   const [progressInfos, setProgressInfos] = useState<ProgressInfo[]>([]);
   const [trackedFileNames, setTrackedFileNames] = useState<string[]>([]);
+  const pendingCompletionRef = useRef(false);
   const sortedProgressInfos = useMemo(
     () =>
       [...progressInfos].sort((a, b) => {
@@ -266,77 +267,8 @@ const Page: React.FC = () => {
           return;
         }
 
-        // Polling: Sunucudan işleme durumunu 3sn'de bir sorgula (2sn'den artırıldı — DB yükünü azaltır)
-        let pollingActive = true;
-        const interval = setInterval(async () => {
-          if (!pollingActive) return;
-          try {
-            const res = await axios.get(`${url}/Veri/DosyaDurumlari?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`);
-            const data = res.data;
-            const queueItems = data
-              .filter((d: any) => isQueueStatus(d.durum))
-              .sort((a: any, b: any) => (a.id || 0) - (b.id || 0));
-
-            setProgressInfos((prev) => {
-              const byName = new Map<string, ProgressInfo>(prev.map((x) => [x.fileName, x]));
-              for (const name of allTrackedNames) {
-                const serverFile = data.find((d: any) => d.adi === name);
-                if (serverFile) {
-                  let nextPercentage = 20;
-                  let nextStatus = serverFile.durum;
-
-                  if (isCompletedStatus(serverFile.durum)) {
-                    nextPercentage = 100;
-                  } else if (isErrorStatus(serverFile.durum)) {
-                    nextPercentage = Math.max(20, serverFile.progress || 20);
-                  } else if (isProcessingStatus(serverFile.durum)) {
-                    const processingBase = serverFile.progress || 0;
-                    nextPercentage = Math.min(95, 35 + Math.round(processingBase * 0.6));
-                  } else if (isQueueStatus(serverFile.durum)) {
-                    const queueTotal = queueItems.length || 1;
-                    const queuePos =
-                      Math.max(
-                        1,
-                        queueItems.findIndex((x: any) => x.adi === name) + 1
-                      ) || queueTotal;
-                    // Kuyrukta öne geldikçe yüzde artar: 20-35 bandı
-                    const queueWeight = (queueTotal - queuePos + 1) / queueTotal;
-                    nextPercentage = 20 + Math.round(queueWeight * 15);
-                    nextStatus = `Sırada (${queuePos}/${queueTotal})`;
-                  } else {
-                    nextPercentage = Math.max(20, serverFile.progress || 20);
-                  }
-
-                  byName.set(name, {
-                    fileName: name,
-                    percentage: Math.min(nextPercentage, 100),
-                    status: nextStatus,
-                  });
-                } else if (!byName.has(name)) {
-                  byName.set(name, { fileName: name, percentage: 20, status: "Sıraya Alındı." });
-                }
-              }
-              return Array.from(byName.values());
-            });
-
-            const allDone = allTrackedNames.every((fileName) => {
-              const serverFile = data.find((d: any) => d.adi === fileName);
-              return serverFile && (serverFile.durum === "Tamamlandı" || serverFile.durum === "Hata Oluştu");
-            });
-
-            if (allDone) {
-              pollingActive = false;
-              clearInterval(interval);
-              setUploading(false);
-              setDosyaYuklendiMi(true);
-              setTrackedFileNames([]);
-              enqueueSnackbar("Tüm dosyalar işlendi.", { variant: "success" });
-              setControl(true);
-            }
-          } catch (error) {
-            console.error("Polling error:", error);
-          }
-        }, 3000);
+        // Durum takibi DosyaTable bileşenindeki tek polling akışından yapılır.
+        setControl(true);
 
       } catch (error: any) {
         console.log("Dosya yüklenirken hata oluştu:", error);
@@ -421,6 +353,22 @@ const Page: React.FC = () => {
       setControl(false);
     }
   }, [control]);
+
+  useEffect(() => {
+    if (!uploading) return;
+
+    if (!dosyaYuklendiMi) {
+      pendingCompletionRef.current = true;
+      return;
+    }
+
+    if (pendingCompletionRef.current) {
+      setUploading(false);
+      setTrackedFileNames([]);
+      enqueueSnackbar("Tüm dosyalar işlendi.", { variant: "success" });
+      pendingCompletionRef.current = false;
+    }
+  }, [dosyaYuklendiMi, uploading]);
 
   return (
     <PageContainer

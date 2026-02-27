@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const SESSIONS = [
     { name: 'Sirket_test1', denetlenenId: 3, storageFile: 'user1.json' },
@@ -9,9 +10,7 @@ const SESSIONS = [
     { name: 'Sirket_test5', denetlenenId: 4, storageFile: 'user5.json' },
 ];
 
-const XML_FOLDER_PATH = 'C:\\Users\\lenov\\Desktop\\XML Kebir, Fatura ve PDF Kurumlar Beyannamesi\\XML KEBİR DEFTERİ';
-
-const FILES_TO_UPLOAD = [
+const FILE_NAMES = [
     '6640804404-202401-K-000000.xml',
     '6640804404-202402-K-000000.xml',
     '6640804404-202403-K-000000.xml',
@@ -24,7 +23,41 @@ const FILES_TO_UPLOAD = [
     '6640804404-202410-K-000000.xml',
     '6640804404-202411-K-000000.xml',
     '6640804404-202412-K-000000.xml',
-].map(fileName => path.join(XML_FOLDER_PATH, fileName));
+];
+
+const resolveXmlFolderPath = (): string => {
+    const userProfile = process.env.USERPROFILE ?? '';
+    const envPath = process.env.E_DEFTER_XML_DIR?.trim();
+    const candidates = [
+        envPath,
+        path.join(userProfile, 'Desktop', 'Dosyalar', 'XML Kebir, Fatura ve PDF Kurumlar Beyannamesi', 'XML KEBIR DEFTERI'),
+        path.join(userProfile, 'Desktop', 'Dosyalar', 'XML Kebir, Fatura ve PDF Kurumlar Beyannamesi', 'XML KEB\u0130R DEFTER\u0130'),
+        path.join(userProfile, 'Desktop', 'XML Kebir, Fatura ve PDF Kurumlar Beyannamesi', 'XML KEBIR DEFTERI'),
+        path.join(userProfile, 'Desktop', 'XML Kebir, Fatura ve PDF Kurumlar Beyannamesi', 'XML KEB\u0130R DEFTER\u0130'),
+        'C:\\Users\\lenov\\Desktop\\Dosyalar\\XML Kebir, Fatura ve PDF Kurumlar Beyannamesi\\XML KEBIR DEFTERI',
+        'C:\\Users\\lenov\\Desktop\\Dosyalar\\XML Kebir, Fatura ve PDF Kurumlar Beyannamesi\\XML KEB\u0130R DEFTER\u0130',
+        'C:\\Users\\lenov\\Desktop\\XML Kebir, Fatura ve PDF Kurumlar Beyannamesi\\XML KEBIR DEFTERI',
+        'C:\\Users\\lenov\\Desktop\\XML Kebir, Fatura ve PDF Kurumlar Beyannamesi\\XML KEB\u0130R DEFTER\u0130',
+    ].filter((candidate): candidate is string => !!candidate);
+
+    const existing = candidates.find(candidate => fs.existsSync(candidate));
+    if (existing) return existing;
+
+    throw new Error(
+        `XML klasoru bulunamadi. Kontrol edilen yollar: ${candidates.join(' | ')}. ` +
+        `Alternatif olarak E_DEFTER_XML_DIR ortam degiskenini kullanin.`
+    );
+};
+
+const XML_FOLDER_PATH = resolveXmlFolderPath();
+
+const FILES_TO_UPLOAD = FILE_NAMES.map(fileName => path.join(XML_FOLDER_PATH, fileName));
+const missingFiles = FILES_TO_UPLOAD.filter(filePath => !fs.existsSync(filePath));
+if (missingFiles.length > 0) {
+    throw new Error(
+        `Yuklenecek XML dosyalari bulunamadi. Klasor: ${XML_FOLDER_PATH}. Eksik dosyalar: ${missingFiles.join(', ')}`
+    );
+}
 
 for (let i = 0; i < SESSIONS.length; i++) {
     const session = SESSIONS[i];

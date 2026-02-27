@@ -134,14 +134,17 @@ export default function RootLayout({
         // Token yoksa login'e yönlendir
         // ⚠️ ÖNEMLİ: Persist rehydration henüz tamamlanmamış olabilir
         const localToken = localStorage.getItem("fas_token");
-        const localDenetlenenId = localStorage.getItem("fas_denetlenenId");
+        const localRefreshToken = localStorage.getItem("fas_refreshToken");
 
         if (!localToken) {
           router.push("/");
         } else {
-          // Token localStorage'da var ama Redux'ta henüz yok
-          // Persist rehydration devam ediyor, hiçbir yönlendirme yapma, bekle
-          console.log("⏳ Persist rehydration bekleniyor (Token var)...");
+          // Fallback: persist rehydration gecikirse token'ı localStorage'dan store'a al.
+          dispatch(setToken(localToken));
+          if (localRefreshToken) {
+            dispatch(setRefreshToken(localRefreshToken));
+          }
+          console.log("⏳ Persist rehydration gecikti, token localStorage'dan store'a yüklendi.");
         }
       }
     };
