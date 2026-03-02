@@ -246,9 +246,12 @@ const Yaslandirma: React.FC<Props> = ({ hesaplaTiklandimi }) => {
   ) => {
     //typography body1
     TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontWeight = 500;
     TD.style.fontSize = "0.875rem";
     TD.style.lineHeight = "1.334rem";
+
+    const isToplam =
+      hotTableComponent.current?.hotInstance?.getDataAtCell(row, 0) === "Toplam";
+    TD.style.fontWeight = isToplam ? "700" : "500";
     //TD.style.textAlign = "left";
 
     //color
