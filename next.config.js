@@ -7,9 +7,6 @@ const nextConfig = {
   },
   reactStrictMode: false,
   output: "standalone",
-  turbopack: {
-    root: "c:/Users/Melisa/Desktop/MelisaUI/FasWebUI",
-  },
   typescript: {
     ignoreBuildErrors: false,
   },
