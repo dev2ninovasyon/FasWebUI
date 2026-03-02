@@ -4,7 +4,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme, Fab, Tooltip } from "@mui/material";
+import { Grid, useTheme, Fab, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import {  createKrediHesaplamaVerisi,
   deleteKrediHesaplamaVerisi,
@@ -14,8 +14,8 @@ import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import { useRouter } from "next/navigation";
 import numbro from "numbro";
+import KrediDetayVeriYukleme from "@/app/(Uygulama)/Hesaplamalar/Kredi/KrediDetaylari/[krediNo]/KrediDetayVeriYukleme";
 import trTR from "numbro/languages/tr-TR";
 import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 import FullScreenInfoDialog from "@/app/(Uygulama)/components/Dialogs/FullScreenInfoDialog";
@@ -51,11 +51,15 @@ const KrediVeriYukleme: React.FC<Props> = ({
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
-  const router = useRouter();
   const dispatch = useDispatch();
   const theme = useTheme();
 
   const [rowCount, setRowCount] = useState<number>(200);
+  const [detayDialogOpen, setDetayDialogOpen] = useState(false);
+  const [detayKrediId, setDetayKrediId] = useState<number | null>(null);
+  const [detayKrediNo, setDetayKrediNo] = useState<number | null>(null);
+  const [detayKaydetTiklandimi, setDetayKaydetTiklandimi] = useState(false);
+  const [detaySonKaydedilmeTarihi, setDetaySonKaydedilmeTarihi] = useState("");
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
 
@@ -656,7 +660,7 @@ const KrediVeriYukleme: React.FC<Props> = ({
         const newRow: any = [
           veri.id,
           veri.alinanKrediNumarasi,
-          veri.tur,
+          veri.tur || "Taksitli Kredi",
           veri.detayHesapKodu,
           veri.hesapAdi,
           veri.alinanKrediTutar,
@@ -827,9 +831,12 @@ const KrediVeriYukleme: React.FC<Props> = ({
             copy: {},
             fise_git: {
               name: "Detaya Git",
-              callback: async function (key, selection) {
+              callback: async function (_key, selection) {
                 const row = await handleGetRowData(selection[0].start.row);
-                router.push(`/Hesaplamalar/Kredi/KrediDetaylari/${row[0]}`);
+                setDetayKrediId(row[0]);
+                setDetayKrediNo(row[1]);
+                setDetaySonKaydedilmeTarihi("");
+                setDetayDialogOpen(true);
               },
             },
           },
@@ -864,6 +871,41 @@ const KrediVeriYukleme: React.FC<Props> = ({
         </Grid>
       </Grid>
       <FullScreenInfoDialog open={openInfoDialog} onClose={() => setOpenInfoDialog(false)} title="Oran ve Veri Kaynağı Açıklamaları" />
+
+      <Dialog
+        open={detayDialogOpen}
+        onClose={() => setDetayDialogOpen(false)}
+        maxWidth="xl"
+        fullWidth
+      >
+        <DialogTitle>
+          {detayKrediNo ? `${detayKrediNo} Numaralı Kredi Detayları` : "Kredi Detayları"}
+          {detaySonKaydedilmeTarihi && (
+            <Typography variant="body2" component="span" sx={{ ml: 2, color: "text.secondary" }}>
+              Son Kaydedilme: {detaySonKaydedilmeTarihi}
+            </Typography>
+          )}
+        </DialogTitle>
+        <DialogContent dividers>
+          {detayKrediId != null && (
+            <KrediDetayVeriYukleme
+              key={detayKrediId}
+              krediId={detayKrediId}
+              kaydetTiklandimi={detayKaydetTiklandimi}
+              setKaydetTiklandimi={setDetayKaydetTiklandimi}
+              setSonKaydedilmeTarihi={setDetaySonKaydedilmeTarihi}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDetayKaydetTiklandimi(true)} variant="outlined">
+            Kaydet
+          </Button>
+          <Button onClick={() => setDetayDialogOpen(false)} variant="contained">
+            Kapat
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

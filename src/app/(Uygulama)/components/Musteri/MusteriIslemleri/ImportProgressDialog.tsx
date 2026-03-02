@@ -75,7 +75,7 @@ interface NormalizedStageResult {
   errorMessage?: string;
 }
 
-type TransferDurum = "Success" | "Warning" | "Error";
+type TransferDurum = "Başarılı" | "Başarısız" | "Hata" | "Uyarı";
 
 interface YearBreakdownResult {
   yil: number;
@@ -86,6 +86,7 @@ interface YearBreakdownResult {
 }
 
 interface GroupedTableResult {
+  tableKey: string;
   tabloAdi: string;
   toplam: number;
   islenen: number;
@@ -100,19 +101,20 @@ const parseNumber = (value: any, fallback = 0): number => {
 };
 
 const mergeDurum = (a: TransferDurum, b: TransferDurum): TransferDurum => {
-  if (a === "Error" || b === "Error") return "Error";
-  if (a === "Warning" || b === "Warning") return "Warning";
-  return "Success";
+  if (a === "Hata" || b === "Hata") return "Hata";
+  if (a === "Başarısız" || b === "Başarısız") return "Başarısız";
+  if (a === "Uyarı" || b === "Uyarı") return "Uyarı";
+  return "Başarılı";
 };
 
 const toTransferDurum = (rawStatus: any, success?: boolean, hasErrorMessage?: boolean): TransferDurum => {
   const statusText = String(rawStatus ?? "").toLowerCase();
-  if (statusText.includes("error") || statusText.includes("fail") || statusText.includes("hata")) return "Error";
-  if (statusText.includes("warning") || statusText.includes("warn")) return "Warning";
-  if (statusText.includes("success") || statusText.includes("succeed") || statusText.includes("basar")) return "Success";
-  if (hasErrorMessage) return "Error";
-  if (typeof success === "boolean") return success ? "Success" : "Error";
-  return "Success";
+  if (statusText.includes("error") || statusText.includes("fail") || statusText.includes("hata")) return "Hata";
+  if (statusText.includes("warning") || statusText.includes("warn")) return "Başarısız";
+  if (statusText.includes("success") || statusText.includes("succeed") || statusText.includes("basar")) return "Başarılı";
+  if (hasErrorMessage) return "Hata";
+  if (typeof success === "boolean") return success ? "Başarılı" : "Hata";
+  return "Başarılı";
 };
 
 export default function ImportProgressDialog({
@@ -134,6 +136,7 @@ export default function ImportProgressDialog({
   const lastTerminalNotifiedRef = useRef<string | null>(null);
   const onCompletedRef = useRef(onCompleted);
   const handledTerminalRef = useRef<string | null>(null);
+  const isFirstPollRef = useRef(true);
   const dispatch = useDispatch();
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -149,53 +152,55 @@ export default function ImportProgressDialog({
 
     setPolling(true);
     setCanClose(false);
+    isFirstPollRef.current = true;
 
-    const interval = setInterval(async () => {
-      try {
-        const response = await apiFetch(`/DataTransfer/ImportJobStatus/${jobId}`);
-        if (!response.ok) throw new Error("Job bulunamadı");
+    const processStatus = (status: JobStatus, intervalRef: { id: ReturnType<typeof setInterval> | null }) => {
+      setJobStatus(status);
 
-        const statusRaw = await response.json();
-        const status = normalizeJobStatus(statusRaw);
-        setJobStatus(status);
+      if (
+        !["Succeeded", "Failed", "Cancelled"].includes(status.status) &&
+        (status.isUserInteractionPending || status.status === "WaitingForUserInput")
+      ) {
+        setPolling(false);
+        setErrorModalOpen(true);
+      }
 
-        if (
-          !["Succeeded", "Failed", "Cancelled"].includes(status.status) &&
-          (
-            status.isUserInteractionPending ||
-            status.status === "WaitingForUserInput"
-          )
-        ) {
-          setPolling(false);
-          setErrorModalOpen(true);
+      if (
+        status.status === "Succeeded" ||
+        status.status === "Failed" ||
+        status.status === "Cancelled"
+      ) {
+        const cancelFinalized =
+          status.status !== "Cancelled" ||
+          (status.notifications ?? []).some((n: any) => {
+            const msg = String(n?.message ?? n?.Message ?? "").toLowerCase();
+            return msg.includes("geri alma tamamlandı") || msg.includes("geri alma sırasında uyarı");
+          });
+
+        // Cancel durumunda rollback final mesajı gelmeden polling'i kesme.
+        if (!cancelFinalized) {
+          isFirstPollRef.current = false;
+          return;
         }
 
-        if (
-          status.status === "Succeeded" ||
-          status.status === "Failed" ||
-          status.status === "Cancelled"
-        ) {
-          const cancelFinalized =
-            status.status !== "Cancelled" ||
-            (status.notifications ?? []).some((n: any) => {
-              const msg = String(n?.message ?? n?.Message ?? "").toLowerCase();
-              return msg.includes("geri alma tamamlandı") || msg.includes("geri alma sırasında uyarı");
-            });
+        if (intervalRef.id !== null) {
+          clearInterval(intervalRef.id);
+          intervalRef.id = null;
+        }
+        setPolling(false);
+        setCanClose(true);
 
-          // Cancel durumunda rollback final mesajı gelmeden polling'i kesme.
-          if (!cancelFinalized) {
-            return;
-          }
+        const handledKey = `${status.jobId}:${status.status}`;
+        if (handledTerminalRef.current !== handledKey) {
+          handledTerminalRef.current = handledKey;
+          onCompletedRef.current?.(status.status);
+        }
 
-          clearInterval(interval);
-          setPolling(false);
-          setCanClose(true);
-
-          const handledKey = `${status.jobId}:${status.status}`;
-          if (handledTerminalRef.current !== handledKey) {
-            handledTerminalRef.current = handledKey;
-            onCompletedRef.current?.(status.status);
-          }
+        // İlk polling'de zaten terminal durumdaysa (dialog önceden tamamlanmış bir job için açıldı)
+        // snackbar gösterme — sadece bu oturumda tamamlandıysa göster.
+        const terminalKey = `${status.jobId}:${status.status}`;
+        if (lastTerminalNotifiedRef.current !== terminalKey && !isFirstPollRef.current) {
+          lastTerminalNotifiedRef.current = terminalKey;
 
           const hasStageErrors = (status.stageResults ?? []).some((r: any) => {
             const success = r?.success ?? r?.Success;
@@ -203,27 +208,46 @@ export default function ImportProgressDialog({
             return success === false || Boolean(err);
           });
 
-          const terminalKey = `${status.jobId}:${status.status}`;
-          if (lastTerminalNotifiedRef.current !== terminalKey) {
-            lastTerminalNotifiedRef.current = terminalKey;
-
-            if (status.status === "Succeeded" && !hasStageErrors) {
-              enqueueSnackbar("✓ Taşıma işlemi başarıyla tamamlandı!", { variant: "success" });
-            } else if (status.status === "Succeeded" && hasStageErrors) {
-              enqueueSnackbar("Müşteri veri taşıma işlemi tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
-            } else if (status.status === "Failed") {
-              enqueueSnackbar("✗ Taşıma işlemi sırasında hata oluştu!", { variant: "error" });
-            } else if (status.status === "Cancelled") {
-              enqueueSnackbar("⊘ Taşıma işlemi kullanıcı tarafından iptal edildi.", { variant: "warning" });
-            }
+          if (status.status === "Succeeded" && !hasStageErrors) {
+            enqueueSnackbar("✓ Taşıma işlemi başarıyla tamamlandı!", { variant: "success" });
+          } else if (status.status === "Succeeded" && hasStageErrors) {
+            enqueueSnackbar("Müşteri veri taşıma işlemi tamamlandı ancak bazı tablolarda hata var.", { variant: "warning" });
+          } else if (status.status === "Failed") {
+            enqueueSnackbar("✗ Taşıma işlemi sırasında hata oluştu!", { variant: "error" });
+          } else if (status.status === "Cancelled") {
+            enqueueSnackbar("⊘ Taşıma işlemi kullanıcı tarafından iptal edildi.", { variant: "warning" });
           }
+        } else if (lastTerminalNotifiedRef.current !== terminalKey) {
+          // İlk polling zaten terminal → sadece ref'i güncelle, snackbar gösterme
+          lastTerminalNotifiedRef.current = terminalKey;
         }
+      }
+
+      isFirstPollRef.current = false;
+    };
+
+    const intervalRef: { id: ReturnType<typeof setInterval> | null } = { id: null };
+
+    // Dialog açılır açılmaz anında ilk fetch yap (2 sn beklemeden)
+    const fetchStatus = async () => {
+      try {
+        const response = await apiFetch(`/DataTransfer/ImportJobStatus/${jobId}`);
+        if (!response.ok) throw new Error("Job bulunamadı");
+        const statusRaw = await response.json();
+        processStatus(normalizeJobStatus(statusRaw), intervalRef);
       } catch (e: any) {
         console.error("Polling hatası:", e);
+        isFirstPollRef.current = false;
       }
-    }, 2000);
+    };
 
-    return () => clearInterval(interval);
+    fetchStatus();
+
+    intervalRef.id = setInterval(fetchStatus, 2000);
+
+    return () => {
+      if (intervalRef.id !== null) clearInterval(intervalRef.id);
+    };
   }, [open, jobId]);
 
   const handleErrorModalAction = async (action: "continue" | "skip" | "cancel") => {
@@ -312,6 +336,10 @@ export default function ImportProgressDialog({
         return "OldDb: KrediHesaplama";
       case "Yaslandirma":
         return "OldDb: YaslandirmaKayitlariV3";
+      case "ErtelenmisVergiHesabi":
+        return "OldDb: ErtelenmisVergiHesabi";
+      case "EnflasyonDonusumMizan":
+        return "OldDb: DonusumEnflasyonDetayMizan";
       default:
         return "OldDb ilgili kaynak tablo";
     }
@@ -333,6 +361,10 @@ export default function ImportProgressDialog({
         return "/Hesaplamalar/KrediHesaplama";
       case "Yaslandirma":
         return "/Hesaplamalar/Yaslandirma";
+      case "ErtelenmisVergiHesabi":
+        return "/Hesaplamalar/ErtelenmisVergiHesabi";
+      case "EnflasyonDonusumMizan":
+        return "/DenetimKanitlari/MizanKontrol/DonusumMizanKontrol";
       default:
         return null;
     }
@@ -354,6 +386,10 @@ export default function ImportProgressDialog({
         return "/Hesaplamalar/KrediHesaplama";
       case "Yaslandirma":
         return "/Hesaplamalar/Yaslandirma";
+      case "ErtelenmisVergiHesabi":
+        return "/Hesaplamalar/ErtelenmisVergiHesabi";
+      case "EnflasyonDonusumMizan":
+        return "/DenetimKanitlari/MizanKontrol/DonusumMizanKontrol";
       default:
         return null;
     }
@@ -369,6 +405,7 @@ export default function ImportProgressDialog({
       "KrediHesaplama": "Kredi Hesaplaması",
       "Yaslandirma": "Yaşlandırma",
       "ErtelenmisVergiHesabi": "Ertelenmiş Vergi Hesabı",
+      "EnflasyonDonusumMizan": "Enflasyon Dönüşüm Mizan",
     };
     return names[tableKey] ?? tableKey;
   };
@@ -394,81 +431,84 @@ export default function ImportProgressDialog({
 
     if (isTargetModel) {
       return rawResults
-        .filter((r: any) => (r?.tableKey ?? r?.TableKey) !== "Denetlened")
+        .filter((r: any) => !["Denetlened", "Denetlenen"].includes(r?.tableKey ?? r?.TableKey ?? ""))
         .map((r: any) => {
-        const yillar: YearBreakdownResult[] = (r?.yillar ?? r?.years ?? r?.yearSummaries ?? r?.YearSummaries ?? [])
-          .map((y: any) => {
-            const yil = parseNumber(y?.yil ?? y?.year ?? y?.Year, 0);
-            const toplam = parseNumber(
-              y?.toplam ?? y?.total ?? y?.totalRecords ?? y?.TotalRecords ?? y?.readRecords ?? y?.ReadRecords,
-              0
-            );
-            const islenen = parseNumber(
-              y?.islenen ?? y?.processed ?? y?.processedRecords ?? y?.ProcessedRecords ?? y?.addedRecords ?? y?.AddedRecords,
-              0
-            );
-            const sureSn = parseNumber(y?.sureSn ?? y?.durationSeconds ?? y?.DurationSeconds, 0);
-            const durum = toTransferDurum(
-              y?.durum ?? y?.status,
-              undefined,
-              Boolean(y?.errorMessage ?? y?.ErrorMessage)
-            );
-            return {
-              yil,
-              toplam,
-              islenen,
-              sureSn,
-              durum: islenen < toplam && durum === "Success" ? "Warning" : durum,
-            };
-          })
-          .filter((y: YearBreakdownResult) => y.yil > 0)
-          .sort((a: YearBreakdownResult, b: YearBreakdownResult) => a.yil - b.yil);
+          const yillar: YearBreakdownResult[] = (r?.yillar ?? r?.years ?? r?.yearSummaries ?? r?.YearSummaries ?? [])
+            .map((y: any) => {
+              const yil = parseNumber(y?.yil ?? y?.year ?? y?.Year, 0);
+              const toplam = parseNumber(
+                y?.toplam ?? y?.total ?? y?.totalRecords ?? y?.TotalRecords ?? y?.readRecords ?? y?.ReadRecords,
+                0
+              );
+              const islenen = parseNumber(
+                y?.islenen ?? y?.processed ?? y?.processedRecords ?? y?.ProcessedRecords ?? y?.addedRecords ?? y?.AddedRecords,
+                0
+              );
+              const sureSn = parseNumber(y?.sureSn ?? y?.durationSeconds ?? y?.DurationSeconds, 0);
+              const durum = toTransferDurum(
+                y?.durum ?? y?.status,
+                undefined,
+                Boolean(y?.errorMessage ?? y?.ErrorMessage)
+              );
+              const cappedIslenen = toplam > 0 ? Math.min(islenen, toplam) : islenen;
+              return {
+                yil,
+                toplam,
+                islenen: cappedIslenen,
+                sureSn,
+                durum: cappedIslenen < toplam && durum === "Başarılı" ? "Uyarı" : durum,
+              };
+            })
+            .filter((y: YearBreakdownResult) => y.yil > 0)
+            .sort((a: YearBreakdownResult, b: YearBreakdownResult) => a.yil - b.yil);
 
-        const toplam = parseNumber(
-          r?.toplam ?? r?.totalRecords ?? r?.TotalRecords,
-          yillar.reduce((sum, y) => sum + y.toplam, 0)
-        );
-        const islenen = parseNumber(
-          r?.islenen ?? r?.processedRecords ?? r?.ProcessedRecords,
-          yillar.reduce((sum, y) => sum + y.islenen, 0)
-        );
-        const sureSn = parseNumber(
-          r?.sureSn ?? r?.durationSeconds ?? r?.DurationSeconds,
-          yillar.reduce((sum, y) => sum + y.sureSn, 0)
-        );
-        const durum = yillar.length
-          ? yillar.reduce<TransferDurum>((agg, y) => mergeDurum(agg, y.durum), "Success")
-          : toTransferDurum(r?.durum ?? r?.status, undefined, Boolean(r?.errorMessage ?? r?.ErrorMessage));
+          const toplam = parseNumber(
+            r?.toplam ?? r?.totalRecords ?? r?.TotalRecords,
+            yillar.reduce((sum, y) => sum + y.toplam, 0)
+          );
+          const islenen = yillar.length > 0
+            ? yillar.reduce((sum, y) => sum + y.islenen, 0)
+            : parseNumber(r?.islenen ?? r?.processedRecords ?? r?.ProcessedRecords, 0);
+          const sureSn = parseNumber(
+            r?.sureSn ?? r?.durationSeconds ?? r?.DurationSeconds,
+            yillar.reduce((sum, y) => sum + y.sureSn, 0)
+          );
+          const durum = yillar.length
+            ? yillar.reduce<TransferDurum>((agg, y) => mergeDurum(agg, y.durum), "Başarılı")
+            : toTransferDurum(r?.durum ?? r?.status, undefined, Boolean(r?.errorMessage ?? r?.ErrorMessage));
 
-        return {
-          tabloAdi: getTableDisplayName(String(r?.tableKey ?? r?.TableKey ?? r?.tabloAdi ?? "")),
-          toplam,
-          islenen,
-          sureSn,
-          durum,
-          yillar,
-        };
-      });
+          const rawTableKey = String(r?.tableKey ?? r?.TableKey ?? r?.tabloAdi ?? "");
+          return {
+            tableKey: rawTableKey,
+            tabloAdi: getTableDisplayName(rawTableKey),
+            toplam,
+            islenen,
+            sureSn,
+            durum,
+            yillar,
+          };
+        });
     }
 
     const grouped = new Map<string, GroupedTableResult>();
     rawResults.forEach((raw: any) => {
       const result = normalizeStageResult(raw);
       if (!result.tableKey) return;
-      if (result.tableKey === "Denetlened") return;
+      if (result.tableKey === "Denetlened" || result.tableKey === "Denetlenen") return;
 
       const yil = parseNumber(raw?.yil ?? raw?.year ?? raw?.Year, 0);
       const stageDurum = toTransferDurum(raw?.durum ?? raw?.status ?? raw?.Status, result.success, Boolean(result.errorMessage));
       const computedStageDurum =
-        result.processedRecords < result.totalRecords && stageDurum === "Success" ? "Warning" : stageDurum;
+        result.processedRecords < result.totalRecords && stageDurum === "Başarılı" ? "Uyarı" : stageDurum;
 
       if (!grouped.has(result.tableKey)) {
         grouped.set(result.tableKey, {
+          tableKey: result.tableKey,
           tabloAdi: getTableDisplayName(result.tableKey),
           toplam: 0,
           islenen: 0,
           sureSn: 0,
-          durum: "Success",
+          durum: "Başarılı",
           yillar: [],
         });
       }
@@ -504,7 +544,7 @@ export default function ImportProgressDialog({
       ...group,
       yillar: group.yillar.sort((a, b) => a.yil - b.yil),
       durum: group.yillar.length
-        ? group.yillar.reduce<TransferDurum>((agg, y) => mergeDurum(agg, y.durum), "Success")
+        ? group.yillar.reduce<TransferDurum>((agg, y) => mergeDurum(agg, y.durum), "Başarılı")
         : group.durum,
     }));
   }, [jobStatus?.stageResults]);
@@ -515,9 +555,9 @@ export default function ImportProgressDialog({
 
   const renderDurum = (durum: TransferDurum) => {
     const icon =
-      durum === "Success" ? (
+      durum === "Başarılı" ? (
         <CheckCircleOutlineIcon fontSize="small" sx={{ color: "success.main" }} />
-      ) : durum === "Warning" ? (
+      ) : durum === "Uyarı" ? (
         <WarningAmberOutlinedIcon fontSize="small" sx={{ color: "warning.main" }} />
       ) : (
         <ErrorOutlineIcon fontSize="small" sx={{ color: "error.main" }} />
@@ -563,12 +603,12 @@ export default function ImportProgressDialog({
   const handleOpenControlDialog = (tableKey: string, year?: number) => {
     const targetDenetlenenId = Number(jobStatus?.tasinanDenetlenenId ?? 0);
     if (!targetDenetlenenId) {
-      enqueueSnackbar("Kontrol icin tasinan denetlenen kimligi bulunamadi.", { variant: "warning" });
+      enqueueSnackbar("Kontrol için taşınan denetlenen kimliği bulunamadı.", { variant: "warning" });
       return;
     }
     const targetYear = Number(year ?? 0);
     if (!targetYear) {
-      enqueueSnackbar("Kontrol icin yil bilgisi bulunamadi.", { variant: "warning" });
+      enqueueSnackbar("Kontrol için yıl bilgisi bulunamadı.", { variant: "warning" });
       return;
     }
 
@@ -660,17 +700,17 @@ export default function ImportProgressDialog({
 
                 {groupedResults.length > 0 && (
                   <Box sx={{ mb: 3 }}>
-                    <h4>Tablo Basina Sonuclar:</h4>
+                    <h4>Tablo Başına Sonuçlar:</h4>
                     <TableContainer component={Paper}>
                       <Table size="small">
                         <TableHead>
                           <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                             <TableCell sx={{ width: 56 }} />
-                            <TableCell><strong>Tablo Adi</strong></TableCell>
+                            <TableCell><strong>Tablo Adı</strong></TableCell>
                             <TableCell align="right"><strong>Toplam</strong></TableCell>
-                            <TableCell align="right"><strong>Islenen</strong></TableCell>
-                            <TableCell><strong>Yillar</strong></TableCell>
-                            <TableCell align="right"><strong>Sure (sn)</strong></TableCell>
+                            <TableCell align="right"><strong>Taşınan</strong></TableCell>
+                            <TableCell><strong>Yıllar</strong></TableCell>
+                            <TableCell align="right"><strong>Süre (sn)</strong></TableCell>
                             <TableCell><strong>Durum</strong></TableCell>
                           </TableRow>
                         </TableHead>
@@ -712,15 +752,15 @@ export default function ImportProgressDialog({
                                         }}
                                       >
                                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                          Yil Bazli Sonuclar
+                                          Yıl Bazlı Sonuçlar
                                         </Typography>
                                         <Table size="small">
                                           <TableHead>
                                             <TableRow>
-                                              <TableCell><strong>Yil</strong></TableCell>
+                                              <TableCell><strong>Yıl</strong></TableCell>
                                               <TableCell align="right"><strong>Toplam</strong></TableCell>
-                                              <TableCell align="right"><strong>Islenen</strong></TableCell>
-                                              <TableCell align="right"><strong>Sure (sn)</strong></TableCell>
+                                              <TableCell align="right"><strong>Taşınan</strong></TableCell>
+                                              <TableCell align="right"><strong>Süre (sn)</strong></TableCell>
                                               <TableCell><strong>Durum</strong></TableCell>
                                               <TableCell><strong>Kontrol</strong></TableCell>
                                             </TableRow>
@@ -729,12 +769,12 @@ export default function ImportProgressDialog({
                                             {result.yillar.length > 0 ? (
                                               result.yillar.map((yearRow) => {
                                                 const yearHref = getControlHref(
-                                                  result.tabloAdi,
+                                                  result.tableKey,
                                                   yearRow.yil,
                                                   Number(jobStatus?.tasinanDenetlenenId ?? 0)
                                                 );
                                                 return (
-                                                  <TableRow key={`${result.tabloAdi}-${yearRow.yil}`}>
+                                                  <TableRow key={`${result.tableKey}-${yearRow.yil}`}>
                                                     <TableCell>{yearRow.yil}</TableCell>
                                                     <TableCell align="right">{yearRow.toplam}</TableCell>
                                                     <TableCell align="right">{yearRow.islenen}</TableCell>
@@ -745,7 +785,7 @@ export default function ImportProgressDialog({
                                                         <Button
                                                           size="small"
                                                           variant="text"
-                                                          onClick={() => handleOpenControlDialog(result.tabloAdi, yearRow.yil)}
+                                                          onClick={() => handleOpenControlDialog(result.tableKey, yearRow.yil)}
                                                         >
                                                           Kontrol Et
                                                         </Button>
@@ -759,7 +799,7 @@ export default function ImportProgressDialog({
                                             ) : (
                                               <TableRow>
                                                 <TableCell colSpan={6} align="center">
-                                                  Yil kirilimi bulunamadi.
+                                                  Yıl kırılımı bulunamadı.
                                                 </TableCell>
                                               </TableRow>
                                             )}
@@ -952,14 +992,14 @@ export default function ImportProgressDialog({
             {jobStatus?.stageResults
               ?.map((r: any) => normalizeStageResult(r))
               .find((r) => r.tableKey === jobStatus.pendingTableKey)?.errorMessage && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {
-                  jobStatus.stageResults
-                    .map((r: any) => normalizeStageResult(r))
-                    .find((r) => r.tableKey === jobStatus.pendingTableKey)?.errorMessage
-                }
-              </Alert>
-            )}
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {
+                    jobStatus.stageResults
+                      .map((r: any) => normalizeStageResult(r))
+                      .find((r) => r.tableKey === jobStatus.pendingTableKey)?.errorMessage
+                  }
+                </Alert>
+              )}
 
             <Box sx={{ mb: 2 }}>
               <p>
@@ -999,7 +1039,7 @@ export default function ImportProgressDialog({
       <Dialog open={controlDialogOpen} maxWidth="xl" fullWidth onClose={handleCloseControlDialog}>
         <DialogTitle>
           Kontrol
-          {controlTableKey ? ` - ${controlTableKey}` : ""}
+          {controlTableKey ? ` - ${getTableDisplayName(controlTableKey)}` : ""}
           {controlYear ? ` (${controlYear})` : ""}
         </DialogTitle>
         <DialogContent dividers>
@@ -1021,7 +1061,7 @@ export default function ImportProgressDialog({
               rel="noopener noreferrer"
               sx={{ mr: "auto", ml: 1 }}
             >
-              Yeni sekmede ac
+              Yeni sekmede aç
             </MuiLink>
           )}
           <Button onClick={handleCloseControlDialog} variant="contained">

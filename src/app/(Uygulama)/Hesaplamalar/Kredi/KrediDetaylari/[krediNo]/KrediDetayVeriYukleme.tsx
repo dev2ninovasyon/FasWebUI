@@ -37,19 +37,21 @@ interface Props {
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (b: boolean) => void;
   setSonKaydedilmeTarihi: (str: string) => void;
+  krediId?: number;
 }
 
 const KrediDetayVeriYukleme: React.FC<Props> = ({
   kaydetTiklandimi,
   setKaydetTiklandimi,
   setSonKaydedilmeTarihi,
+  krediId,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
   const pathname = usePathname();
   const segments = pathname.split("/");
   const idIndex = segments.indexOf("KrediDetaylari") + 1;
-  const pathKrediId = parseInt(segments[idIndex]);
+  const pathKrediId = krediId ?? parseInt(segments[idIndex]);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);

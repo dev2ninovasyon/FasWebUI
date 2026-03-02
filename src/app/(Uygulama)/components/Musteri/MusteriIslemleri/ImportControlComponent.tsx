@@ -18,6 +18,8 @@ const loaderMap: Record<string, Loader> = {
   KidemTazminati: () => import("@/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/page"),
   KrediHesaplama: () => import("@/app/(Uygulama)/Hesaplamalar/KrediHesaplama/page"),
   Yaslandirma: () => import("@/app/(Uygulama)/Hesaplamalar/Yaslandirma/page"),
+  ErtelenmisVergiHesabi: () => import("@/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/page"),
+  EnflasyonDonusumMizan: () => import("@/app/(Uygulama)/Enflasyon/DetayMizanKontrol/page"),
 };
 
 export default function ImportControlComponent({ tableKey }: ImportControlComponentProps) {
@@ -32,7 +34,7 @@ export default function ImportControlComponent({ tableKey }: ImportControlCompon
 
     if (!loader) {
       setComponent(null);
-      setError("Bu tablo icin kontrol bileseni bulunamadi.");
+      setError("Bu tablo için kontrol bileşeni bulunamadı.");
       return () => {
         active = false;
       };
@@ -49,7 +51,7 @@ export default function ImportControlComponent({ tableKey }: ImportControlCompon
       })
       .catch((e: any) => {
         if (!active) return;
-        setError(e?.message || "Kontrol bileseni yuklenemedi.");
+        setError(e?.message || "Kontrol bileşeni yüklenemedi.");
       })
       .finally(() => {
         if (!active) return;
@@ -74,7 +76,7 @@ export default function ImportControlComponent({ tableKey }: ImportControlCompon
   }
 
   if (!component) {
-    return <Alert severity="info">Kontrol bileseni hazirlaniyor...</Alert>;
+    return <Alert severity="info">Kontrol bileşeni hazırlanıyor...</Alert>;
   }
 
   const LoadedComponent = component;

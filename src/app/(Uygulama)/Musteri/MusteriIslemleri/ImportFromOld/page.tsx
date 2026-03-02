@@ -37,9 +37,9 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 
 const BCrumb = [
-  { to: "/Musteri", title: "Musteri" },
-  { to: "/Musteri/MusteriIslemleri", title: "Musteri Islemleri" },
-  { to: "/Musteri/MusteriIslemleri/ImportFromOld", title: "Musteri Tasi" },
+  { to: "/Musteri", title: "Müşteri" },
+  { to: "/Musteri/MusteriIslemleri", title: "Müşteri İşlemleri" },
+  { to: "/Musteri/MusteriIslemleri/ImportFromOld", title: "Müşteri Taşı" },
 ];
 
 const Page = () => {
@@ -80,9 +80,9 @@ const Page = () => {
         : [];
       setOldList(sorted);
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Bilinmeyen bir hata olustu";
+      const msg = error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
       setListError(msg);
-      enqueueSnackbar("Musteriler yuklenemedi: " + msg, { variant: "error" });
+      enqueueSnackbar("Müşteriler yüklenemedi: " + msg, { variant: "error" });
     } finally {
       setListLoading(false);
     }
@@ -100,7 +100,7 @@ const Page = () => {
 
   const handlePrepareTransfer = async () => {
     if (!selected) {
-      enqueueSnackbar("Lutfen once bir musteri seciniz.", { variant: "warning" });
+      enqueueSnackbar("Lütfen önce bir müşteri seçiniz.", { variant: "warning" });
       return;
     }
 
@@ -111,9 +111,9 @@ const Page = () => {
       setSelectedDetail(detailData);
       setConfirmOpen(true);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : "Bilinmeyen bir hata olustu";
+      const errorMsg = error instanceof Error ? error.message : "Bilinmeyen bir hata oluştu";
       setDetailError(errorMsg);
-      enqueueSnackbar("Firma detaylari yuklenemedi: " + errorMsg, { variant: "error" });
+      enqueueSnackbar("Firma detayları yüklenemedi: " + errorMsg, { variant: "error" });
     } finally {
       setDetailLoading(false);
     }
@@ -128,7 +128,7 @@ const Page = () => {
     setFormData(mapOldDenetlenenToFormData(selectedDetail));
     setDetailError(null);
     setConfirmOpen(false);
-    enqueueSnackbar(`${selected.firmaAdi} icin firma detaylari dolduruldu.`, { variant: "success" });
+    enqueueSnackbar(`${selected.firmaAdi} için firma detayları dolduruldu.`, { variant: "success" });
   };
 
   const handleImportCompleted = async () => {
@@ -139,10 +139,10 @@ const Page = () => {
   };
 
   return (
-    <MusteriIslemleriLayout title="Musteri Tasi" items={BCrumb}>
-      <PageContainer title="Musteri Tasi" description="Eski veriler aktariliyor">
+    <MusteriIslemleriLayout title="Müşteri Taşı" items={BCrumb}>
+      <PageContainer title="Müşteri Taşı" description="Eski veriler aktarılıyor">
         <Stack spacing={3}>
-          <ParentCard title="Onceki Versiyonda Kayitli Musteriler">
+          <ParentCard title="Önceki Versiyonda Kayıtlı Müşteriler">
             <Stack spacing={3}>
               {listLoading ? (
                 <Box display="flex" justifyContent="center" py={3}>
@@ -168,22 +168,22 @@ const Page = () => {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Onceki versiyonda kayitli musteri seciniz"
+                        label="Önceki versiyonda kayıtlı müşteri seçiniz"
                         variant="outlined"
                         fullWidth
                       />
                     )}
-                    noOptionsText="Musteri bulunamadi"
+                    noOptionsText="Müşteri bulunamadı"
                     isOptionEqualToValue={(opt, val) => opt.id === val.id}
                   />
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                     onClick={handlePrepareTransfer}
                     disabled={!selected || detailLoading}
                     sx={{ minWidth: 120, height: 56, whiteSpace: "nowrap" }}
                   >
-                    {detailLoading ? "Yukleniyor..." : "Tasi"}
+                    {detailLoading ? "Yükleniyor..." : "Taşı"}
                   </Button>
                 </Stack>
               )}
@@ -192,7 +192,7 @@ const Page = () => {
 
           {hasPendingJobs && (
             <Alert severity="warning">
-              Yarim kalan bir tasima islemi bulundu. Devam ettirebilir veya iptal edebilirsiniz.
+              Yarım kalan bir taşıma işlemi bulundu. Devam ettirebilir veya iptal edebilirsiniz.
             </Alert>
           )}
 
@@ -202,7 +202,7 @@ const Page = () => {
             <ParentCard title="Firma Detaylari">
               <Stack spacing={2}>
                 <Alert severity="info">
-                  <strong>{selected.firmaAdi}</strong> bilgileri yuklendi. Gerekirse duzenleyip tasima islemini baslatabilirsiniz.
+                  <strong>{selected.firmaAdi}</strong> bilgileri yüklendi. Gerekirse düzenleyip taşıma işlemini başlatabilirsiniz.
                 </Alert>
                 <MusteriEkleForm
                   key={`import-${selected.id}`}
@@ -222,12 +222,12 @@ const Page = () => {
 
         <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} fullWidth maxWidth="sm">
           <DialogTitle sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
-            Firma Tasima Onayi
+            Firma Taşıma Onayı
           </DialogTitle>
           <DialogContent>
             <Stack spacing={2.5} mt={1}>
               <Typography variant="body2" color="text.secondary">
-                Asagidaki firmaya ait detayli bilgiler tasimaya hazirlanacaktir. Lutfen bilgileri kontrol ediniz.
+                Aşağıdaki firmaya ait detaylı bilgiler taşımaya hazırlanacaktır. Lütfen bilgileri kontrol ediniz.
               </Typography>
 
               <Box
@@ -240,10 +240,10 @@ const Page = () => {
               >
                 <Stack spacing={1.5}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "primary.main" }}>
-                    Sirket Bilgileri
+                    Şirket Bilgileri
                   </Typography>
                   <Typography variant="body2">
-                    <strong>Sirket Adi:</strong> {selectedDetail?.firmaAdi || selected?.firmaAdi || "-"}
+                    <strong>Şirket Adı:</strong> {selectedDetail?.firmaAdi || selected?.firmaAdi || "-"}
                   </Typography>
                   <Typography variant="body2">
                     <strong>Yetkili Kisi:</strong> {selectedDetail?.yetkili || "-"}
@@ -263,7 +263,7 @@ const Page = () => {
           </DialogContent>
           <DialogActions sx={{ p: 2, gap: 1 }}>
             <Button onClick={() => setConfirmOpen(false)} variant="outlined">
-              Iptal
+              İptal
             </Button>
             <Button variant="contained" color="secondary" onClick={handleConfirmTransfer}>
               Onayla
