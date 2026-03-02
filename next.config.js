@@ -7,6 +7,9 @@ const nextConfig = {
   },
   reactStrictMode: false,
   output: "standalone",
+  turbopack: {
+    root: "c:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI",
+  },
   typescript: {
     ignoreBuildErrors: false,
   },
