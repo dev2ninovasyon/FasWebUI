@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CircularProgress, Box, Alert, Typography, Button } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -16,6 +16,22 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
   const user = useSelector((state: AppState) => state.userReducer);
+  const customizer = useSelector((state: AppState) => state.customizer);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const currentMode = customizer.activeMode === "dark" ? "dark" : "light";
+
+  const broadcastThemeToIframe = () => {
+    const target = iframeRef.current?.contentWindow;
+    if (!target) return;
+    target.postMessage(
+      {
+        type: "fas-theme-change",
+        mode: currentMode,
+        theme: currentMode,
+      },
+      "*"
+    );
+  };
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
@@ -45,12 +61,25 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
       kullaniciId: (user.id || 0).toString(),
       denetlenenId: (user.denetlenenId || 0).toString(),
       yil: (user.yil || 0).toString(),
+      mode: currentMode,
+      theme: currentMode,
       signature,
     });
 
     const separator = url.includes("?") ? "&" : "?";
     return `${ENFLASYON_BASE_URL}${url}${separator}${authParams.toString()}`;
-  }, [user, url, retryKey]);
+  }, [user, url, retryKey, currentMode]);
+
+  useEffect(() => {
+    broadcastThemeToIframe();
+
+    const t1 = window.setTimeout(() => broadcastThemeToIframe(), 100);
+    const t2 = window.setTimeout(() => broadcastThemeToIframe(), 500);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [currentMode, iframeSrc]);
 
   useEffect(() => {
     if (iframeSrc) {
@@ -81,7 +110,14 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
   }
 
   return (
-    <Box sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
+    <Box
+      sx={{
+        height: "100%",
+        position: "relative",
+        overflow: "hidden",
+        bgcolor: currentMode === "dark" ? "#0f1720" : "#ffffff",
+      }}
+    >
       {isLoading && (
         <Box
           sx={{
@@ -94,7 +130,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
             top: 0,
             left: 0,
             zIndex: 1,
-            background: "transparent",
+            background: currentMode === "dark" ? "#0f1720" : "#ffffff",
           }}
         >
           <CircularProgress />
@@ -102,9 +138,11 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
       )}
 
       <iframe
+        ref={iframeRef}
         src={iframeSrc}
+        key={iframeSrc}
         style={{
-          background: "transparent",
+          background: currentMode === "dark" ? "#0f1720" : "#ffffff",
           border: "0px",
           width: "100%",
           height: "100%",
@@ -112,6 +150,8 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
           display: "block",
         }}
         onLoad={() => {
+          broadcastThemeToIframe();
+          window.setTimeout(() => broadcastThemeToIframe(), 200);
           setIsLoading(false);
           setServerError(null);
         }}

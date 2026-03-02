@@ -1,12 +1,12 @@
-﻿export const url = "https://betaapi.fasmart.app/api";
-//export const url = "http://localhost:5000/api";
+﻿//export const url = "https://betaapi.fasmart.app/api";
+export const url = "http://localhost:5000/api";
 
-// 🔐 Güvenlik: Token manager import
-import SecureTokenManager from "@/utils/SecureTokenManager";
 import Logger from "@/utils/Logger";
 
 const LOGIN_ROUTE_PATH = "/";
 const MAINTENANCE_ROUTE_PATH = "/maintenance";
+const SESSION_ACCESS_TOKEN_KEY = "fas_session_token";
+const SESSION_REFRESH_TOKEN_KEY = "fas_session_refreshToken";
 
 const isAuthEndpoint = (path: string) => {
   const lowerPath = path.toLowerCase();
@@ -23,10 +23,21 @@ const redirectTo = (targetPath: string) => {
   window.location.href = targetPath;
 };
 
+const shouldSkipLoginRedirect = () => {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem("fas_debug_no_login_redirect") === "1";
+};
+
 const redirectToLogin = () => {
   if (typeof window === "undefined") return;
+  if (shouldSkipLoginRedirect()) {
+    console.warn("🧪 Debug modu aktif: login redirect atlandı (fas_debug_no_login_redirect=1).");
+    return;
+  }
   window.localStorage.removeItem("persist:root");
   window.sessionStorage.removeItem("reduxState");
+  window.sessionStorage.removeItem(SESSION_ACCESS_TOKEN_KEY);
+  window.sessionStorage.removeItem(SESSION_REFRESH_TOKEN_KEY);
   redirectTo(LOGIN_ROUTE_PATH);
 };
 
@@ -41,9 +52,23 @@ const redirectToMaintenance = () => {
  */
 export async function apiFetch(
   path: string,
-  options: RequestInit & { timeout?: number; ignoreCustomHeaders?: boolean; includeCredentials?: boolean; suppressErrorLog?: boolean } = {}
+  options: RequestInit & {
+    timeout?: number;
+    ignoreCustomHeaders?: boolean;
+    includeCredentials?: boolean;
+    suppressErrorLog?: boolean;
+    __retryCount?: number;
+  } = {}
 ) {
-  const { headers, timeout = 120000, ignoreCustomHeaders = false, includeCredentials = true, suppressErrorLog = false, ...rest } = options;
+  const {
+    headers,
+    timeout = 120000,
+    ignoreCustomHeaders = false,
+    includeCredentials = true,
+    suppressErrorLog = false,
+    __retryCount = 0,
+    ...rest
+  } = options;
 
   const clientUrl =
     typeof window !== "undefined"
@@ -55,13 +80,12 @@ export async function apiFetch(
 
   let denetlenenIdFromStorage: string | null = null;
   let yilFromStorage: string | null = null;
+  let sessionAccessToken: string | null = null;
 
   if (typeof window !== "undefined" && !ignoreCustomHeaders) {
     denetlenenIdFromStorage = window.localStorage.getItem("fas_denetlenenId");
     yilFromStorage = window.localStorage.getItem("fas_yil");
-
-    // HttpOnly cookie kullanımı nedeniyle token'ı localStorage'dan okumuyoruz.
-    // fetch(..., { credentials: 'include' }) ile otomatik gönderiliyor (includeCredentials: true ise).
+    sessionAccessToken = window.sessionStorage.getItem(SESSION_ACCESS_TOKEN_KEY);
   }
 
   const mergedHeaders: HeadersInit = {
@@ -71,7 +95,9 @@ export async function apiFetch(
       ? { "X-Denetlenen-Id": denetlenenIdFromStorage }
       : {}),
     ...(!ignoreCustomHeaders && yilFromStorage ? { "X-Yil": yilFromStorage } : {}),
-    // Authorization header manuel eklenmiyor, cookie tabanlı auth kullanılıyor.
+    ...(!isAuthEndpoint(normalizedPath) && sessionAccessToken
+      ? { Authorization: `Bearer ${sessionAccessToken}` }
+      : {}),
   };
 
   const controller = new AbortController();
@@ -85,10 +111,18 @@ export async function apiFetch(
       credentials: includeCredentials ? 'include' : 'omit',
     });
 
-    // 🔐 GÜVENLIK: Token expiry (401) or Permission Mismatch (403)
-    if (response.status === 401 || response.status === 403) {
+    // 🔐 GÜVENLIK: Token expiry (401)
+    // Not: 403 yetki problemidir, refresh ile düzelmeyebilir; loop'a girmemesi için refresh denemiyoruz.
+    if (response.status === 401) {
       // Login or Refresh endpoints themselves shouldn't trigger another refresh
       if (isAuthEndpoint(normalizedPath)) {
+        return response;
+      }
+
+      // En fazla 1 kez retry: sonsuz refresh döngüsünü engelle
+      if (__retryCount >= 1) {
+        console.error(`❌ API 401 devam ediyor, retry sınırına ulaşıldı (${path}).`);
+        redirectToLogin();
         return response;
       }
 
@@ -96,42 +130,51 @@ export async function apiFetch(
 
       if (typeof window !== "undefined") {
         try {
-          // Check if we are already refreshing to avoid infinite loops
-          const isRefreshing = (window as any)._isRefreshing;
-          if (isRefreshing) {
-            console.warn("⏳ Zaten bir yenileme işlemi devam ediyor, bekleniyor...");
-            // Optionally wait or just fail to avoid loops
-            return response;
+          // Tek bir refresh isteği paylaşımı (concurrent 401 storm için)
+          const activeRefreshPromise = (window as any)._activeRefreshPromise as Promise<Response> | undefined;
+          const refreshPromise =
+            activeRefreshPromise ||
+            fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                refreshToken: window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY),
+                RefreshToken: window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY),
+              }),
+              credentials: "include", // HttpOnly cookie'leri gönder
+            });
+
+          if (!activeRefreshPromise) {
+            (window as any)._activeRefreshPromise = refreshPromise;
           }
-          (window as any)._isRefreshing = true;
 
-          const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ refreshToken: window.localStorage.getItem("fas_refreshToken") }),
-            credentials: 'include', // HttpOnly cookie'leri gönder
-          });
+          const refreshResponse = await refreshPromise;
+          (window as any)._activeRefreshPromise = undefined;
 
-          (window as any)._isRefreshing = false;
+            if (refreshResponse.ok) {
+              const refreshData = await refreshResponse.json().catch(() => null);
+              if (refreshData) {
+                const nextToken = refreshData.token || refreshData.Token;
+                const nextRefreshToken = refreshData.refreshToken || refreshData.RefreshToken;
+                if (nextToken) {
+                  window.sessionStorage.setItem(SESSION_ACCESS_TOKEN_KEY, nextToken);
+                }
+                if (nextRefreshToken) {
+                  window.sessionStorage.setItem(SESSION_REFRESH_TOKEN_KEY, nextRefreshToken);
+                }
+              }
+              console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
 
-          if (refreshResponse.ok) {
-            const refreshData = await refreshResponse.json();
-            console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
-
-            // Eğer token döndüyse (opsiyonel, genelde cookie yeter ama state için gerekebilir)
-            if (refreshData) {
-              if (refreshData.token) localStorage.setItem("fas_token", refreshData.token);
-              if (refreshData.refreshToken) localStorage.setItem("fas_refreshToken", refreshData.refreshToken);
-              // Redux state update is handled by the caller or triggers on next rehydration
-            }
-
-            return await apiFetch(path, options);
+            return await apiFetch(path, {
+              ...options,
+              __retryCount: __retryCount + 1,
+            });
           } else {
             console.error("❌ Session yenileme başarısız. Oturum kapatılıyor.");
             redirectToLogin();
           }
         } catch (refreshError) {
-          (window as any)._isRefreshing = false;
+          (window as any)._activeRefreshPromise = undefined;
           console.error("❌ Session yenileme sırasında kritik hata:", refreshError);
         }
       }

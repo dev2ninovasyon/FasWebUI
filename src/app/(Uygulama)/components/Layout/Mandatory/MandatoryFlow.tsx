@@ -89,6 +89,8 @@ export default function MandatoryFlow({
         window.localStorage.removeItem("fas_yil");
         window.localStorage.removeItem("persist:root");
         window.sessionStorage.removeItem("reduxState");
+        window.sessionStorage.removeItem("fas_session_token");
+        window.sessionStorage.removeItem("fas_session_refreshToken");
 
         window.location.href = "/";
     };

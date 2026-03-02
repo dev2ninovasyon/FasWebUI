@@ -69,9 +69,16 @@ export default function useAutoLogout(
 
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(TIMEOUT_KEY);
+    localStorage.removeItem("persist:root");
+    sessionStorage.removeItem("reduxState");
+    localStorage.removeItem("fas_token");
+    localStorage.removeItem("fas_refreshToken");
     localStorage.removeItem("fas_denetlenenId");
     localStorage.removeItem("fas_yil");
     localStorage.removeItem("fas_blacklisted_tokens");
+    sessionStorage.removeItem("fas_debug_no_login_redirect");
+    sessionStorage.removeItem("fas_session_token");
+    sessionStorage.removeItem("fas_session_refreshToken");
 
     dispatch(resetToNull(""));
 
@@ -80,7 +87,7 @@ export default function useAutoLogout(
     if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
     if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
 
-    router.replace("/Login");
+    router.replace("/");
   }, [dispatch, router, notifyBackendLogout]);
 
   // 🔧 logout'u ref'te tut — effect dependency'sinden çıkar
@@ -95,7 +102,7 @@ export default function useAutoLogout(
       const response = await apiFetch(`/Auth/refresh`, {
         method: "POST",
         headers: { accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken: user?.refreshToken || localStorage.getItem("fas_refreshToken") }),
+        body: JSON.stringify({}),
         suppressErrorLog: true,
       } as any);
 
@@ -143,7 +150,7 @@ export default function useAutoLogout(
       const response = await apiFetch(`/Auth/refresh`, {
         method: "POST",
         headers: { accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken: user?.refreshToken || localStorage.getItem("fas_refreshToken") }),
+        body: JSON.stringify({}),
       });
       if (response.ok) {
         const data = await response.json();
