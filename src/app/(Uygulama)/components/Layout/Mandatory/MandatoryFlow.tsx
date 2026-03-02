@@ -80,6 +80,19 @@ export default function MandatoryFlow({
         }
     };
 
+    const handleLogout = () => {
+        if (typeof window === "undefined") return;
+
+        window.localStorage.removeItem("fas_token");
+        window.localStorage.removeItem("fas_refreshToken");
+        window.localStorage.removeItem("fas_denetlenenId");
+        window.localStorage.removeItem("fas_yil");
+        window.localStorage.removeItem("persist:root");
+        window.sessionStorage.removeItem("reduxState");
+
+        window.location.href = "/";
+    };
+
     const renderContent = () => {
         switch (type) {
             case "selection":
@@ -199,13 +212,27 @@ export default function MandatoryFlow({
                                     Lütfen yöneticinizle (Denetçi Admin) iletişime geçerek bir şirket tanımlanmasını talep edin.
                                 </Typography>
                             </Box>
-                            <Button
-                                variant="outlined"
-                                onClick={() => window.location.reload()}
-                                sx={{ mt: 2, py: 1, borderRadius: 2 }}
+                            <Stack
+                                direction={{ xs: "column", sm: "row" }}
+                                spacing={1.5}
+                                sx={{ mt: 2, justifyContent: "center", alignItems: "center" }}
                             >
-                                Tekrar Dene
-                            </Button>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => window.location.reload()}
+                                    sx={{ py: 1, borderRadius: 2 }}
+                                >
+                                    Tekrar Dene
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={handleLogout}
+                                    sx={{ py: 1, borderRadius: 2 }}
+                                >
+                                    Çıkış Yap
+                                </Button>
+                            </Stack>
                         </Stack>
                     </Fade>
                 );

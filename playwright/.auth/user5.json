@@ -2,30 +2,30 @@
   "cookies": [
     {
       "name": "_GRECAPTCHA",
-      "value": "09AKhCRwhiHdV45kXII0LCvsWJeMIPiMJDqBXt46-i2aGkfAu5bVRIey821V7BvtyvXXvJFU8hEpZjYcAS1sSMmi0",
+      "value": "09AKhCRwih-FniLXfnQdGlQV2fwC5BO02huY9OX49OVizW8FjFzQVbLHXY3MSwaOeuPFNgxZbxtFT8TYyjTnsjTwo",
       "domain": "www.google.com",
       "path": "/recaptcha",
-      "expires": 1787495181.574471,
+      "expires": 1787681374.075516,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "fas_token",
-      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiIyYmZlMmE4Yi1hNjQ1LTQ2YjgtODRlYi02ZjNkZDZmNGFiZGQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTk0MzE4MSwiZXhwIjoxNzcxOTQ2NzgxLCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.qVY1DmB_PgJVfGYWyDzvHF-rQImj28US8bg_Mk4wMwI",
+      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiIyNmE0NzUzYS0yZTE5LTQ2M2UtOWZhOC02MTI4NjBjY2RhYWMiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MjEyOTM3NSwiZXhwIjoxNzcyMTMyOTc1LCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.z_ip8f0TxREzzdBxP0Y_UIGMn54lH-YX18z5cAPbjKY",
       "domain": "localhost",
       "path": "/",
-      "expires": 1771948582.548424,
+      "expires": 1772134778.518989,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "fas_refreshToken",
-      "value": "ptXLA598YVja%2FIj%2FaMNOa9gzxN%2BV%2F4wm1%2FDl%2F5sALCY%3D",
+      "value": "XW8oHFx9kjwnTNc%2BpB2XqNR9B%2F5ChzfK%2FzwAGmQxP%2Bg%3D",
       "domain": "localhost",
       "path": "/",
-      "expires": 1772547982.548732,
+      "expires": 1772734178.519149,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"
@@ -36,24 +36,32 @@
       "origin": "http://localhost:3000",
       "localStorage": [
         {
-          "name": "fas_token",
-          "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiIyYmZlMmE4Yi1hNjQ1LTQ2YjgtODRlYi02ZjNkZDZmNGFiZGQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTk0MzE4MSwiZXhwIjoxNzcxOTQ2NzgxLCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.qVY1DmB_PgJVfGYWyDzvHF-rQImj28US8bg_Mk4wMwI"
-        },
-        {
           "name": "fas_refreshToken",
-          "value": "ptXLA598YVja/Ij/aMNOa9gzxN+V/4wm1/Dl/5sALCY="
+          "value": "XW8oHFx9kjwnTNc+pB2XqNR9B/5ChzfK/zwAGmQxP+g="
         },
         {
           "name": "fas_yil",
           "value": "2024"
         },
         {
-          "name": "_grecaptcha",
-          "value": "09AKhCRwiLMUA11VGk7KRZssnRLtFbqEuDqmGVPg6mhwp5fgZuFQUoTJGr46N3J4ytoRHC7u82XvR8lDVHMQto_jfBrHJXDbEslzc489w1g5haqQByImZPF3xlM8PQ0NWA"
+          "name": "user_expiry",
+          "value": "1772134777576"
         },
         {
-          "name": "user_expiry",
-          "value": "1771948582593"
+          "name": "fas_token",
+          "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiIyNmE0NzUzYS0yZTE5LTQ2M2UtOWZhOC02MTI4NjBjY2RhYWMiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MjEyOTM3NSwiZXhwIjoxNzcyMTMyOTc1LCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.z_ip8f0TxREzzdBxP0Y_UIGMn54lH-YX18z5cAPbjKY"
+        },
+        {
+          "name": "maddiDogrulamaData",
+          "value": "[]"
+        },
+        {
+          "name": "_grecaptcha",
+          "value": "09AKhCRwjPCwGeyKl4BbyOkZHRw3opLB4JbGyLnXPcFOnm7dTZeQDmUi4XmChhUS0f4aQnpu2bh83Xm3iX-3awGN-gb6YgpJtsse7UCeYezBSlhMA_fVozL5ICqH_-vRlr"
+        },
+        {
+          "name": "maddiDogrulamaMetadata",
+          "value": "{\"denetlenenId\":4,\"yil\":2024,\"denetimTuru\":\"Bobi\"}"
         },
         {
           "name": "fas_denetlenenId",
@@ -61,7 +69,7 @@
         },
         {
           "name": "persist:root",
-          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7}\",\"userReducer\":\"{\\\"id\\\":40,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":4,\\\"denetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"denetimTuru\\\":\\\"Bobi\\\",\\\"bobimi\\\":true,\\\"tfrsmi\\\":false,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":false,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 5\\\",\\\"mail\\\":\\\"test5@2ninovasyon.com\\\",\\\"token\\\":\\\"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiIyYmZlMmE4Yi1hNjQ1LTQ2YjgtODRlYi02ZjNkZDZmNGFiZGQiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MTk0MzE4MSwiZXhwIjoxNzcxOTQ2NzgxLCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.qVY1DmB_PgJVfGYWyDzvHF-rQImj28US8bg_Mk4wMwI\\\",\\\"refreshToken\\\":\\\"ptXLA598YVja/Ij/aMNOa9gzxN+V/4wm1/Dl/5sALCY=\\\",\\\"formHazirlayanOnaylayan\\\":false,\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"sonSecilenDenetlenenId\\\":4,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Bobi\\\",\\\"sonSecilenBobimi\\\":true,\\\"sonSecilenTfrsmi\\\":false,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":false,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
+          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7}\",\"userReducer\":\"{\\\"id\\\":40,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":4,\\\"denetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"denetimTuru\\\":\\\"Bobi\\\",\\\"bobimi\\\":true,\\\"tfrsmi\\\":false,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":false,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 5\\\",\\\"mail\\\":\\\"test5@2ninovasyon.com\\\",\\\"token\\\":\\\"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiIyNmE0NzUzYS0yZTE5LTQ2M2UtOWZhOC02MTI4NjBjY2RhYWMiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MjEyOTM3NSwiZXhwIjoxNzcyMTMyOTc1LCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.z_ip8f0TxREzzdBxP0Y_UIGMn54lH-YX18z5cAPbjKY\\\",\\\"refreshToken\\\":\\\"XW8oHFx9kjwnTNc+pB2XqNR9B/5ChzfK/zwAGmQxP+g=\\\",\\\"formHazirlayanOnaylayan\\\":false,\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"sonSecilenDenetlenenId\\\":4,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Bobi\\\",\\\"sonSecilenBobimi\\\":true,\\\"sonSecilenTfrsmi\\\":false,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":false,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
         }
       ]
     },
@@ -70,11 +78,11 @@
       "localStorage": [
         {
           "name": "rc::a",
-          "value": "MWVvaGZieDlmemkzcA=="
+          "value": "MWszbzkwbXVjaTZ0Zg=="
         },
         {
           "name": "rc::f",
-          "value": "0aADtQnscAq-vL7Kt9_2w732TKPdmydKPxK5cqld3-eG9nQxRDUSefJiyvV4_s0YXsHYL6vgU"
+          "value": "0aADtQnsfiZIuxXwdXaBd6CZzTQWDOTHPj8pJRKd-815a1IXQEv__4nMi5GThwxX_OqpDKQmM"
         }
       ]
     }

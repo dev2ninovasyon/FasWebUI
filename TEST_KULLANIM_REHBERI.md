@@ -22,6 +22,19 @@ E-Defter yükleme gibi ağır testleri belirli sayıda paralel worker ile çalı
 npx playwright test e-defter-load.spec.ts --workers=5
 ```
 
+### Tarayıcıyı Açık (Headed) Çalıştırma
+Testin tarayıcıyı görünür şekilde açarak çalışması için:
+```bash
+npx playwright test e-defter-load.spec.ts --workers=5 --headed
+```
+
+### PowerShell ile E-Defter XML Klasörü Vererek Çalıştırma
+`e-defter-load.spec.ts` testinde XML yolu `E_DEFTER_XML_DIR` ortam değişkeninden okunur:
+```powershell
+$env:E_DEFTER_XML_DIR='C:\Users\lenov\Desktop\Dosyalar\XML Kebir, Fatura ve PDF Kurumlar Beyannamesi\XML KEBİR DEFTERİ'
+npx playwright test e-defter-load.spec.ts --workers=5 --headed
+```
+
 ---
 
 ## 📊 Raporlama ve Hata Ayıklama
@@ -57,7 +70,7 @@ Bu test, sistemin yük altındaki performansını ve doğruluğunu ölçmek içi
 4. **Adımlı Raporlama**: HTML raporunda her aşama (Yükleme, Polling, Kontrol) ayrı adımlar olarak görünür.
 
 ### Test Verisi Hazırlığı
-`e2e/e-defter-load.spec.ts` dosyasındaki `XML_FOLDER_PATH` değişkeninin bilgisayarınızdaki XML dosyalarının bulunduğu doğru yolu gösterdiğinden emin olun.
+`e2e/e-defter-load.spec.ts` testinden önce `E_DEFTER_XML_DIR` ortam değişkenini XML klasörünüze ayarlayın.
 
 ---
 

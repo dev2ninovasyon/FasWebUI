@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -108,6 +108,12 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const [message, setMessage] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoadingPreview, setIsLoadingPreview] = useState<number | null>(null);
+  const [previewDetayKodu, setPreviewDetayKodu] = useState("");
+  const [previewHesapAdi, setPreviewHesapAdi] = useState("");
+  const [previewAciklama, setPreviewAciklama] = useState("");
+  const [previewVisibleRows, setPreviewVisibleRows] = useState<number | null>(null);
+  const [previewTotalRows, setPreviewTotalRows] = useState<number | null>(null);
+  const lastRowsSignatureRef = useRef<string>("");
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -356,6 +362,11 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         window.URL.revokeObjectURL(xmlBlobUrl);
       }
       setXmlBlobUrl(nextBlobUrl);
+      setPreviewDetayKodu("");
+      setPreviewHesapAdi("");
+      setPreviewAciklama("");
+      setPreviewVisibleRows(null);
+      setPreviewTotalRows(null);
       setIsOpen2(true);
       handleClose();
     } catch (error) {
@@ -370,13 +381,84 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     }
   };
 
-  const fetchData = async (): Promise<boolean> => {
+  const applyIframeFilter = () => {
+    if (fileType !== "E-DefterKebir") return;
+
+    const iframe = document.getElementById("defter-preview-iframe") as HTMLIFrameElement | null;
+    const doc = iframe?.contentDocument || iframe?.contentWindow?.document;
+    if (!doc) return;
+
+    const detayFilter = previewDetayKodu.toLocaleLowerCase("tr-TR").trim();
+    const hesapFilter = previewHesapAdi.toLocaleLowerCase("tr-TR").trim();
+    const aciklamaFilter = previewAciklama.toLocaleLowerCase("tr-TR").trim();
+
+    const entryTables = Array.from(doc.querySelectorAll("table.entryHeader"));
+    let total = 0;
+    let visible = 0;
+
+    entryTables.forEach((table) => {
+      const mainCode = (
+        table.querySelector("thead tr:first-child th:nth-child(3)")?.textContent || ""
+      )
+        .toLocaleLowerCase("tr-TR")
+        .trim();
+      const mainName = (
+        table.querySelector("thead tr:first-child th:nth-child(4)")?.textContent || ""
+      )
+        .toLocaleLowerCase("tr-TR")
+        .trim();
+
+      const rows = Array.from(table.querySelectorAll("tbody tr"));
+      let tableVisible = 0;
+
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll("td");
+        if (!cells || cells.length < 4) return;
+
+        total++;
+        const detayValue = (cells[2].textContent || "").toLocaleLowerCase("tr-TR");
+        const hesapValue = (cells[3].textContent || "").toLocaleLowerCase("tr-TR");
+        const aciklamaValue = (cells[5].textContent || "").toLocaleLowerCase("tr-TR");
+
+        const matchDetay =
+          !detayFilter ||
+          detayValue.includes(detayFilter) ||
+          mainCode.includes(detayFilter);
+        const matchHesap =
+          !hesapFilter ||
+          hesapValue.includes(hesapFilter) ||
+          mainName.includes(hesapFilter);
+        const matchAciklama = !aciklamaFilter || aciklamaValue.includes(aciklamaFilter);
+        const show = matchDetay && matchHesap && matchAciklama;
+
+        (row as HTMLElement).style.display = show ? "" : "none";
+        if (show) {
+          tableVisible++;
+          visible++;
+        }
+      });
+
+      (table as HTMLElement).style.display = tableVisible > 0 ? "" : "none";
+    });
+
+    setPreviewTotalRows(total);
+    setPreviewVisibleRows(visible);
+  };
+
+  useEffect(() => {
+    if (isOpen2) applyIframeFilter();
+  }, [previewDetayKodu, previewHesapAdi, previewAciklama, isOpen2]);
+
+  const fetchData = useCallback(async (): Promise<boolean> => {
     try {
       const dosyaBilgileri = await getDosyaBilgileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         fileType
       );
+
+      if (!Array.isArray(dosyaBilgileri)) return false;
+
       const newRows: DosyaType[] = dosyaBilgileri.map((dosya: DosyaType) => ({
         id: dosya.id,
         adi: dosya.adi,
@@ -387,14 +469,23 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           .join("."),
         durum: dosya.durum,
       }));
-      setRows(newRows);
+
+      const nextSignature = newRows
+        .map((r) => `${r.id}|${r.adi}|${r.olusturulmaTarihi}|${r.durum}`)
+        .join("~");
+
+      if (lastRowsSignatureRef.current !== nextSignature) {
+        setRows(newRows);
+        lastRowsSignatureRef.current = nextSignature;
+      }
+
       setControl(true);
       return newRows.some((r: DosyaType) => !isFinalStatus(r.durum));
     } catch (error) {
       console.log("Bir hata oluştu:", error);
       return false;
     }
-  };
+  }, [fileType, setRows, user.denetciId, user.denetlenenId, user.yil]);
 
   useEffect(() => {
     if (fileType === "E-DefterKebir") {
@@ -417,7 +508,13 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       }
       setControl2(!hasActive);
 
-      const nextMs = hasActive || !dosyaYuklendiMi ? 1200 : 4000;
+      const isVisible =
+        typeof document === "undefined" || document.visibilityState === "visible";
+      const nextMs = !isVisible
+        ? 15000
+        : hasActive || !dosyaYuklendiMi
+          ? 2000
+          : 8000;
       timer = setTimeout(poll, nextMs);
     };
 
@@ -427,7 +524,20 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       cancelled = true;
       if (timer) clearTimeout(timer);
     };
-  }, [fileType, user.denetciId, user.denetlenenId, user.yil, dosyaYuklendiMi]);
+  }, [dosyaYuklendiMi, fetchData, setDosyaYuklendiMi]);
+
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchData();
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [fetchData]);
 
   useEffect(() => {
     return () => {
@@ -712,6 +822,11 @@ const DosyaTable: React.FC<MyComponentProps> = ({
               window.URL.revokeObjectURL(xmlBlobUrl);
               setXmlBlobUrl(null);
             }
+            setPreviewDetayKodu("");
+            setPreviewHesapAdi("");
+            setPreviewAciklama("");
+            setPreviewVisibleRows(null);
+            setPreviewTotalRows(null);
             setIsOpen2(false);
           }}
           fullWidth
@@ -737,6 +852,44 @@ const DosyaTable: React.FC<MyComponentProps> = ({
             }}
           >
             <Stack direction="row" justifyContent="flex-end" alignItems="center">
+              {fileType === "E-DefterKebir" && (
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ mr: 2, flexWrap: "wrap" }}>
+                  <TextField
+                    size="small"
+                    label="Detay Kodu"
+                    value={previewDetayKodu}
+                    onChange={(e) => setPreviewDetayKodu(e.target.value)}
+                  />
+                  <TextField
+                    size="small"
+                    label="Hesap Adı"
+                    value={previewHesapAdi}
+                    onChange={(e) => setPreviewHesapAdi(e.target.value)}
+                  />
+                  <TextField
+                    size="small"
+                    label="Açıklama"
+                    value={previewAciklama}
+                    onChange={(e) => setPreviewAciklama(e.target.value)}
+                  />
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      setPreviewDetayKodu("");
+                      setPreviewHesapAdi("");
+                      setPreviewAciklama("");
+                    }}
+                  >
+                    Temizle
+                  </Button>
+                  <Typography variant="body2" color="text.secondary">
+                    {previewTotalRows !== null
+                      ? `Gorunen satir: ${previewVisibleRows ?? 0}/${previewTotalRows}`
+                      : "Detay kodu veya hesap adı ile arayın"}
+                  </Typography>
+                </Stack>
+              )}
               <IconButton
                 size="medium"
                 onClick={() => {
@@ -744,6 +897,11 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                     window.URL.revokeObjectURL(xmlBlobUrl);
                     setXmlBlobUrl(null);
                   }
+                  setPreviewDetayKodu("");
+                  setPreviewHesapAdi("");
+                  setPreviewAciklama("");
+                  setPreviewVisibleRows(null);
+                  setPreviewTotalRows(null);
                   setIsOpen2(false);
                 }}
               >
@@ -761,10 +919,12 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           >
             {xmlBlobUrl && (
               <iframe
+                id="defter-preview-iframe"
                 src={xmlBlobUrl}
                 width="100%"
                 height="100%"
                 loading="eager"
+                onLoad={applyIframeFilter}
                 style={{
                   display: "block",
                   width: "100%",
@@ -852,4 +1012,5 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 };
 
 export default DosyaTable;
+
 

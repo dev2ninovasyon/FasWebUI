@@ -75,3 +75,11 @@ Playwright testlerinin tarayıcıdaki tüm adımlarını, tıklamalarını ve na
 ```bash
 npm run test:e2e:ui
 ```
+
+### 🔹 Belirli E2E Testini Tarayıcı Açık (Headed) ve Paralel Çalıştırma
+`e-defter-load.spec.ts` testini 5 worker ile tarayıcıyı görünür açarak çalıştırmak için:
+```powershell
+cd c:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI
+$env:E_DEFTER_XML_DIR='C:\Users\lenov\Desktop\Dosyalar\XML Kebir, Fatura ve PDF Kurumlar Beyannamesi\XML KEBİR DEFTERİ'
+npx playwright test e-defter-load.spec.ts --workers=5 --headed
+```
