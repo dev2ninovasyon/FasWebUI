@@ -1,28 +1,29 @@
-﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+﻿"use client";
+
+import "@/lib/handsontableSetup";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Alert, Box, Grid, Typography, useTheme } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import { getVergiVarligi } from "@/api/Hesaplamalar/Hesaplamalar";
+import { getVergiVarligiTumDetay } from "@/api/Hesaplamalar/Hesaplamalar";
 import numbro from "numbro";
-import trTR from "numbro/languages/tr-TR";// register Handsontable's modulesnumbro.registerLanguage(trTR);
-numbro.setLanguage("tr-TR");
+import trTR from "numbro/languages/tr-TR";
 
-interface Veri {
-  hesapAdi: string;
-  geciciFarkVarlik: number;
-  ertelenenVergiVarlik: number;
-}
+numbro.registerLanguage(trTR);
+numbro.setLanguage("tr-TR");
 
 interface Props {
   hesaplaTiklandimi: boolean;
   onDataCount?: (count: number) => void;
 }
+
 const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -32,8 +33,8 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
   const theme = useTheme();
 
   const [rowCount, setRowCount] = useState(0);
-
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [totalGelen, setTotalGelen] = useState(0);
+  const [fetchedData, setFetchedData] = useState<any[]>([]);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -66,7 +67,7 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Geçici Farkın Nedeni
+    },
     {
       type: "numeric",
       numericFormat: {
@@ -78,7 +79,7 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Geçici Fark Varlık
+    },
     {
       type: "numeric",
       numericFormat: {
@@ -90,7 +91,7 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
       allowInvalid: false,
       readOnly: true,
       editor: false,
-    }, // Ertelenen Vergi Varlığı
+    },
   ];
 
   const afterGetColHeader = (col: any, TH: any) => {
@@ -109,31 +110,21 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
     div.style.height = "100%";
     div.style.position = "relative";
 
-    //typography body1
     TH.style.fontFamily = plus.style.fontFamily;
     TH.style.fontWeight = 500;
     TH.style.fontSize = "0.875rem";
     TH.style.lineHeight = "1.334rem";
 
-    //color
     TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
     TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
 
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
+    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
 
-    // Create span for the header text
-    let span = div.querySelector("span");
-    if (!span) {
-      span = document.createElement("span");
-      div.appendChild(span);
+    let span = div.querySelector("span.colHeader");
+    if (span) {
+      span.style.paddingRight = "25px";
     }
-    span.textContent = colHeaders[col];
-    span.style.position = "absolute";
-    span.style.marginRight = "16px";
-    span.style.left = "4px";
 
-    // Create button if it does not exist
     let button = div.querySelector("button");
     if (!button) {
       button = document.createElement("button");
@@ -146,25 +137,24 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
 
   const afterGetRowHeader = (row: any, TH: any) => {
     let div = TH.querySelector("div");
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.justifyContent = "center";
-    div.style.height = "100%";
+    if (div) {
+      div.style.whiteSpace = "normal";
+      div.style.wordWrap = "break-word";
+      div.style.display = "flex";
+      div.style.alignItems = "center";
+      div.style.justifyContent = "center";
+      div.style.height = "100%";
+    }
 
-    //typography body1
     TH.style.fontFamily = plus.style.fontFamily;
     TH.style.fontWeight = 500;
     TH.style.fontSize = "0.875rem";
     TH.style.lineHeight = "1.334rem";
 
-    //color
     TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
     TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
 
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
+    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
   };
 
   const afterRenderer = (
@@ -175,17 +165,17 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
     value: any,
     cellProperties: any
   ) => {
-    //typography body1
     TD.style.fontFamily = plus.style.fontFamily;
     TD.style.fontWeight = 500;
     TD.style.fontSize = "0.875rem";
     TD.style.lineHeight = "1.334rem";
-    //TD.style.textAlign = "left";
 
-    //color
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
+    const isTotalRow = cellProperties.instance.getDataAtCell(row, 0) === "Toplam";
 
-    if (row % 2 === 0) {
+    if (isTotalRow) {
+      TD.style.fontWeight = "bold";
+      TD.style.backgroundColor = theme.palette.primary.light;
+    } else if (row % 2 === 0) {
       TD.style.backgroundColor =
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
       TD.style.borderColor =
@@ -202,24 +192,39 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
 
   const fetchData = async () => {
     try {
-      const vergiVarligiVerileri = await getVergiVarligi(user.denetciId || 0,
+      const res = await getVergiVarligiTumDetay(
+        user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
 
-      const rowsAll: any = [];
-      vergiVarligiVerileri.forEach((veri: any) => {
-        const newRow: any = [
-          veri.hesapAdi,
-          veri.geciciFarkVarlik,
-          veri.ertelenenVergiVarligi,
-        ];
-        rowsAll.push(newRow);
-      });
+      if (res && Array.isArray(res)) {
+        setTotalGelen(res.length);
 
-      setRowCount(rowsAll.length);
-      setFetchedData(rowsAll);
-      onDataCount?.(rowsAll.length);
+        const filtered = res.filter((x: any) =>
+          (x.geciciFarkVarlik && x.geciciFarkVarlik > 0) ||
+          (x.ertelenenVergiVarligi && x.ertelenenVergiVarligi > 0)
+        );
+
+        let sumGecici = 0;
+        let sumErtelenen = 0;
+
+        const rows = filtered.map((veri: any) => {
+          sumGecici += veri.geciciFarkVarlik || 0;
+          sumErtelenen += veri.ertelenenVergiVarligi || 0;
+          return [
+            veri.hesapAdi,
+            veri.geciciFarkVarlik || 0,
+            veri.ertelenenVergiVarligi || 0,
+          ];
+        });
+
+        rows.push(["Toplam", sumGecici, sumErtelenen]);
+
+        setRowCount(rows.length);
+        setFetchedData(rows);
+        onDataCount?.(filtered.length);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -281,7 +286,6 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
         saveAs(blob, "ErtelenmisVergiHesabiHesaplama.xlsx");
-        console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
@@ -308,6 +312,14 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
 
   return (
     <>
+      <Box sx={{ mb: 1, display: "flex", justifyContent: "flex-end", gap: 1 }}>
+        <Alert severity="info" sx={{ py: 0, px: 2, fontSize: "0.75rem" }}>
+          Gelen satır sayısı: <strong>{totalGelen}</strong>
+        </Alert>
+        <Alert severity="success" sx={{ py: 0, px: 2, fontSize: "0.75rem" }}>
+          Bu tabloya düşen satır: <strong>{rowCount > 0 ? rowCount - 1 : 0}</strong>
+        </Alert>
+      </Box>
       <HotTable
         style={{
           height: "100%",
@@ -336,7 +348,7 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
           "filter_by_value",
           "filter_action_bar",
         ]}
-        licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+        licenseKey="non-commercial-and-evaluation"
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
         afterRenderer={afterRenderer}
@@ -367,4 +379,3 @@ const VergiVarlik: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) => {
 };
 
 export default VergiVarlik;
-

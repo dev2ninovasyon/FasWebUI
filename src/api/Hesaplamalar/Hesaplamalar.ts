@@ -852,6 +852,31 @@ export const getVergiVarligi = async (
   }
 };
 
+export const getVergiVarligiTumDetay = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/Hesaplamalar/VergiVarligiTumDetay?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("Vergi Varlığı Tüm Detay verileri getirilemedi");
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
 export const getVergiYukumlulugu = async (
   denetciId: number,
   yil: number,

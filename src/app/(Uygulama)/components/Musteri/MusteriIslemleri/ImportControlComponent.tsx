@@ -18,7 +18,7 @@ const loaderMap: Record<string, Loader> = {
   KidemTazminati: () => import("@/app/(Uygulama)/Hesaplamalar/KidemTazminatiBobi/page"),
   KrediHesaplama: () => import("@/app/(Uygulama)/Hesaplamalar/KrediHesaplama/page"),
   Yaslandirma: () => import("@/app/(Uygulama)/Hesaplamalar/Yaslandirma/page"),
-  ErtelenmisVergiHesabi: () => import("@/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/page"),
+  ErtelenmisVergiHesabi: () => import("@/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/VergiVarlikKontrol"),
   EnflasyonDonusumMizan: () => import("@/app/(Uygulama)/Enflasyon/DetayMizanKontrol/page"),
 };
 

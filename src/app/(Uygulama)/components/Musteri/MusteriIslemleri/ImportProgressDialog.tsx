@@ -21,6 +21,7 @@ import {
   TableRow,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -462,10 +463,9 @@ export default function ImportProgressDialog({
             .filter((y: YearBreakdownResult) => y.yil > 0)
             .sort((a: YearBreakdownResult, b: YearBreakdownResult) => a.yil - b.yil);
 
-          const toplam = parseNumber(
-            r?.toplam ?? r?.totalRecords ?? r?.TotalRecords,
-            yillar.reduce((sum, y) => sum + y.toplam, 0)
-          );
+          const toplam = yillar.length > 0
+            ? yillar.reduce((sum, y) => sum + y.toplam, 0)
+            : parseNumber(r?.toplam ?? r?.totalRecords ?? r?.TotalRecords, 0);
           const islenen = yillar.length > 0
             ? yillar.reduce((sum, y) => sum + y.islenen, 0)
             : parseNumber(r?.islenen ?? r?.processedRecords ?? r?.ProcessedRecords, 0);
