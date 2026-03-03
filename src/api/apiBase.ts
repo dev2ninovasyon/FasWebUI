@@ -1,5 +1,5 @@
-﻿//export const url = "https://betaapi.fasmart.app/api";
-export const url = "http://localhost:5000/api";
+﻿export const url = "https://betaapi.fasmart.app/api";
+//export const url = "http://localhost:5000/api";
 
 import Logger from "@/utils/Logger";
 
@@ -168,19 +168,19 @@ export async function apiFetch(
           const refreshResponse = await refreshPromise;
           (window as any)._activeRefreshPromise = undefined;
 
-            if (refreshResponse.ok) {
-              const refreshData = await refreshResponse.json().catch(() => null);
-              if (refreshData) {
-                const nextToken = refreshData.token || refreshData.Token;
-                const nextRefreshToken = refreshData.refreshToken || refreshData.RefreshToken;
-                if (nextToken) {
-                  window.sessionStorage.setItem(SESSION_ACCESS_TOKEN_KEY, nextToken);
-                }
-                if (nextRefreshToken) {
-                  window.sessionStorage.setItem(SESSION_REFRESH_TOKEN_KEY, nextRefreshToken);
-                }
+          if (refreshResponse.ok) {
+            const refreshData = await refreshResponse.json().catch(() => null);
+            if (refreshData) {
+              const nextToken = refreshData.token || refreshData.Token;
+              const nextRefreshToken = refreshData.refreshToken || refreshData.RefreshToken;
+              if (nextToken) {
+                window.sessionStorage.setItem(SESSION_ACCESS_TOKEN_KEY, nextToken);
               }
-              console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
+              if (nextRefreshToken) {
+                window.sessionStorage.setItem(SESSION_REFRESH_TOKEN_KEY, nextRefreshToken);
+              }
+            }
+            console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
 
             return await apiFetch(path, {
               ...options,
