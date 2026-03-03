@@ -30,6 +30,7 @@ import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/F
 import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import ErtelenmisVergiHesabiOrnekFisler from "./ErtelenmisVergiHesabiOrnekFisler";
 import { createVergiVarligiVeYukumlulugu } from "@/api/Hesaplamalar/Hesaplamalar";
+import ErtelenmisVergiHesabiDetayTable from "./ErtelenmisVergiHesabiDetayTable";
 
 const BCrumb = [
   {
@@ -281,6 +282,9 @@ const Page: React.FC = () => {
             lg: 12
           }}>
           <ErtelenmisVergiHesabiCard hesaplaTiklandimi={hesaplaTiklandimi} />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <Box sx={{ height: "100px" }} />
         </Grid>
         {hasData && (
           <FloatingButtonFisler
