@@ -19,7 +19,7 @@ const Page = ({ params }: { params: Promise<{ parentName: string }> }) => {
     const { setLoading } = useLoading();
 
     const [dip, setDip] = useState<string>("");
-    const [viewMode, setViewMode] = useState<"list" | "card">("list");
+    const [viewMode, setViewMode] = useState<"list" | "card">("card");
 
     function normalizeString(str: string): string {
         const turkishChars: { [key: string]: string } = {

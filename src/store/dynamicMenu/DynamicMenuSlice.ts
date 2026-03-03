@@ -3,6 +3,7 @@
 export interface DynamicMenuItem {
   id: number;
   name: string;
+  icon?: string;
   parentName?: string;
   children?: DynamicMenuItem[];
   href?: string;

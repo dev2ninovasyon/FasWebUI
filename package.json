@@ -89,6 +89,7 @@
     "lexical": "^0.39.0",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
+    "lucide-react": "^0.576.0",
     "moment": "^2.29.4",
     "next": "^16.1.6",
     "nextjs-progressloader": "^0.2.3",

@@ -1,0 +1,404 @@
+{
+  "menu": [
+    {
+      "name": "ANASAYFA",
+      "icon": "Home"
+    },
+    {
+      "name": "MÜŞTERİ",
+      "icon": "Users",
+      "children": [
+        { "name": "Müşteri İşlemleri", "icon": "UserCog" },
+        { "name": "Şirket Yönetim Kadrosu", "icon": "UsersRound" },
+        { "name": "Şubeler", "icon": "Network" },
+        { "name": "Hissedarlar", "icon": "PieChart" },
+        { "name": "İlişkili Taraflar", "icon": "GitMerge" },
+        { "name": "Müşteri Tanıma", "icon": "UserSearch" },
+        { "name": "İşletme Tanıma", "icon": "Building2" },
+        { "name": "İşletme Faaliyet ve Çevresi Tanıma", "icon": "Globe" },
+        { "name": "Teklif Hesaplama", "icon": "Calculator" },
+        { "name": "Teklif Belgesi", "icon": "FileText" },
+        { "name": "Teklif Mektubu", "icon": "Mail" },
+        { "name": "Kendi Yetkinliğini Değerlendirme", "icon": "BadgeCheck" },
+        { "name": "Müşteri Dürüstlüğünü Değerlendirme", "icon": "ShieldCheck" },
+        { "name": "Müşteri Kabul İşlemi", "icon": "UserCheck" },
+        { "name": "Sözleşme Kabul Belgesi", "icon": "FileCheck" }
+      ]
+    },
+    {
+      "name": "SÖZLEŞME",
+      "icon": "FilePen",
+      "children": [
+        { "name": "Denetim Kadrosu Atama", "icon": "UsersCog" },
+        { "name": "Bağımsız Denetim Sözleşmesi", "icon": "FileSignature" }
+      ]
+    },
+    {
+      "name": "VERİ",
+      "icon": "Database",
+      "children": [
+        { "name": "Defter / K. V. Beyannamesi Yükleme", "icon": "Upload" },
+        { "name": "Diğer Veri Yükleme", "icon": "FolderUp" },
+        {
+          "name": "Mizanlar",
+          "icon": "Sheet",
+          "children": [
+            { "name": "E-Defter Mizan Oluşturma", "icon": "Wand2" },
+            { "name": "Oluşturulmuş Mizanlar", "icon": "Files" }
+          ]
+        },
+        { "name": "Fatura", "icon": "Receipt" },
+        { "name": "E-Defter İnceleme", "icon": "BookOpen" }
+      ]
+    },
+    {
+      "name": "MÜŞTERİ BELGELERİ",
+      "icon": "Folder"
+    },
+    {
+      "name": "PLAN VE PROGRAM",
+      "icon": "ClipboardList",
+      "children": [
+        { "name": "Denetim Programı", "icon": "ListChecks" },
+        { "name": "Maddi Doğruluk Görev Atamaları", "icon": "UserPlus" },
+        { "name": "Denetim Takvimi", "icon": "Calendar" },
+        { "name": "Denetim Planı", "icon": "Map" },
+        { "name": "Denetim Ekibi Görev Tebliği", "icon": "Megaphone" },
+        {
+          "name": "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+          "icon": "Shield"
+        },
+        {
+          "name": "Etik Gerekliliklere İlişkin Bildirim ve Değerlendirme",
+          "icon": "Scale"
+        },
+        {
+          "name": "Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+          "icon": "BadgeCheck"
+        },
+        { "name": "Denetim Zamanı Bildirme", "icon": "Clock" },
+        { "name": "Sorumlu Denetçi Kimlik ve Deneyim Bildirim", "icon": "IdCard" },
+        { "name": "Sorumlu Denetçi Sorumlulukları Bildirim", "icon": "UserCheck" },
+        {
+          "name": "Denetlenen İşletmenin Tabi Olduğu Mevzuata İlişkin Değerlendirme",
+          "icon": "Gavel"
+        },
+        { "name": "Denetim Strateji Kılavuzu", "icon": "Compass" },
+        { "name": "Faaliyet Riski Belirleme Belgesi", "icon": "AlertTriangle" },
+        {
+          "name": "Beyan ve Soruşturma Sonucu Tespit Edilen Riskler",
+          "icon": "FileWarning"
+        },
+        { "name": "Denetim Riski Belirleme Belgesi", "icon": "ShieldAlert" },
+        { "name": "Finansal Tablolar Denetim Riski Belirleme", "icon": "BarChart3" },
+        { "name": "Bulgu Riski Belirleme", "icon": "Target" },
+        {
+          "name": "Denetim Planında Önemlilik",
+          "icon": "Sigma",
+          "children": [
+            { "name": "Önemlilik Ve Örneklem", "icon": "ScanSearch" },
+            { "name": "Finansal Tablo Kalemlerinde Değişim", "icon": "TrendingUp" },
+            { "name": "Fiş Büyüklüğü Analizi", "icon": "Ruler" }
+          ]
+        },
+        { "name": "Denetim Risk Değerlendirme", "icon": "ShieldQuestion" },
+        { "name": "Bilgi İşlem Muhasebe Sistemi Değerlendirme", "icon": "ServerCog" },
+        { "name": "İşletmeye İlişkin İç Kontrol Tespit Belgesi", "icon": "Lock" },
+        { "name": "Hesaplara İlişkin İç Kontrol Tespit Belgesi", "icon": "LockKeyhole" },
+        {
+          "name": "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
+          "icon": "ClipboardCheck"
+        },
+        {
+          "name": "İç Kontrol Değerlendirme Sonucuna Göre Uygulanan Denetim Teknikleri",
+          "icon": "Wrench"
+        },
+        {
+          "name": "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+          "icon": "Users"
+        },
+        { "name": "Hile Usulsüzlük ve Risk Faktörleri Belirleme", "icon": "Search" },
+        { "name": "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme", "icon": "FileSearch" },
+        { "name": "İşletme Varlıklarının Korunmasına İlişkin Değerlendirme", "icon": "Shield" }
+      ]
+    },
+    {
+      "name": "HESAPLAMALAR",
+      "icon": "Calculator",
+      "children": [
+        { "name": "Yaşlandırma", "icon": "Clock3" },
+        { "name": "Beklenen Kredi Zararı", "icon": "TrendingDown" },
+        { "name": "Kıdem Tazminatı (Bobi)", "icon": "Wallet" },
+        { "name": "Kıdem Tazminatı (Tfrs)", "icon": "WalletCards" },
+        { "name": "Amortisman", "icon": "Percent" },
+        { "name": "Kredi", "icon": "Landmark" },
+        { "name": "Çek / Senet Reeskont", "icon": "FileSpreadsheet" },
+        { "name": "Dava Karşılıkları", "icon": "Scale" },
+        { "name": "Ertelenmiş Vergi Hesabı", "icon": "FileMinus" },
+        { "name": "İlişkili Taraf Sınıflama", "icon": "Network" },
+        {
+          "name": "Vadeli Banka Mevduatı",
+          "icon": "Banknote",
+          "children": [
+            { "name": "Vadeli Banka Mevduatı Otomatik Sınıflama", "icon": "Sparkles" },
+            { "name": "Vadeli Banka Mevduatı Manuel Sınıflama", "icon": "Hand" },
+            { "name": "Vadeli Banka Mevduatı Faiz Tahakkuk", "icon": "BadgePercent" }
+          ]
+        },
+        { "name": "Hareketsiz", "icon": "PauseCircle" },
+        { "name": "Geçmiş Yıllar Kar Zarar Kontrolleri", "icon": "History" },
+        {
+          "name": "Kur Farkı Kayıtları",
+          "icon": "RefreshCw",
+          "children": [
+            { "name": "Kur Farkı", "icon": "Repeat" },
+            { "name": "Kur Farkı Kontrolleri", "icon": "CheckCheck" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DÖNÜŞÜM",
+      "icon": "RefreshCcw",
+      "children": [
+        { "name": "Fiş Girişi", "icon": "SquarePen" },
+        { "name": "Fiş Listesi", "icon": "List" },
+        { "name": "Hazır Fişler", "icon": "Package" },
+        { "name": "Dönüşüm İşlemi", "icon": "ArrowLeftRight" },
+        { "name": "Belirleme Belgesi (Bobi Frs / Tms Tfrs)", "icon": "FileCheck2" }
+      ]
+    },
+    {
+      "name": "DENETİM KANITLARI",
+      "icon": "ClipboardCheck",
+      "children": [
+        { "name": "Denetim Stratejisi Belirleme", "icon": "Compass" },
+        { "name": "Uzman Yeterliliği Değerlendirme Belgesi", "icon": "GraduationCap" },
+        { "name": "Denetim Kontrol Testleri", "icon": "TestTube" },
+        {
+          "name": "Mizan Kontrol",
+          "icon": "FileSearch",
+          "children": [
+            { "name": "Dönüşüm Mizan Kontrol", "icon": "SearchCheck" },
+            { "name": "Özet Denetim Mizan Kontrol Belgesi", "icon": "FileText" },
+            { "name": "Vuk Mizan Dönüşüm Mizan Karşılaştırma", "icon": "Split" }
+          ]
+        },
+        {
+          "name": "Finansal Tablolar",
+          "icon": "BarChart4",
+          "children": [
+            { "name": "Finansal Durum Tablosu", "icon": "Table" },
+            { "name": "Kar / Zarar Tablosu", "icon": "TrendingUp" },
+            { "name": "Nakit Akış Tablosu", "icon": "ArrowLeftRight" },
+            { "name": "Özkaynak Değişim Tablosu", "icon": "GitCompare" },
+            { "name": "Cari/Önceki/Geçmiş Dönem Dönüşüm Düzeltme Belgeleri", "icon": "FileDiff" }
+          ]
+        },
+        {
+          "name": "İşletmenin Sürekliliği ve Analitik İnceleme",
+          "icon": "Activity",
+          "children": [
+            { "name": "Önemli Süreçlerin İzlenmesi ve Risk Belirleme", "icon": "Radar" },
+            { "name": "Karşılaştırmalı Analiz", "icon": "GitCompare" },
+            { "name": "Dikey Analiz", "icon": "AlignVerticalJustifyStart" },
+            { "name": "Bilanço Değerlendirme Belgesi", "icon": "FileBarChart" },
+            { "name": "Gelir Değerlendirme Belgesi", "icon": "FileBarChart" },
+            { "name": "Oran Analizi Tespit Belgesi", "icon": "Percent" },
+            { "name": "Kullanılan Analitik Tekniklere İlişkin Belgeler", "icon": "BrainCircuit" },
+            { "name": "İşletmenin Sürekliliğine İlişkin Değerlendirme", "icon": "HeartPulse" }
+          ]
+        },
+        {
+          "name": "Önemlilik",
+          "icon": "Sigma",
+          "children": [
+            { "name": "Fiş İşlem Sayıları", "icon": "Hash" },
+            { "name": "Örneklem", "icon": "Scan" },
+            { "name": "Önemlilik Seviyesi Belirleme Kılavuzu", "icon": "BookOpenCheck" },
+            { "name": "Önemlilik Seviyesi Belirleme Ve Değerlendirme", "icon": "ClipboardPen" }
+          ]
+        },
+        {
+          "name": "Mutabakat",
+          "icon": "Handshake",
+          "children": [
+            { "name": "Mutabakat Seçimi Ve Kontrol", "icon": "ListChecks" },
+            { "name": "Doğrulama Mektuplarına Alınan Yanıtlar", "icon": "MailCheck" }
+          ]
+        },
+        { "name": "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme", "icon": "CalendarClock" },
+        {
+          "name": "Diğer Kanıtlar",
+          "icon": "Files",
+          "children": [
+            { "name": "Müşteri İşletme Yönetimi İle Yapılan Görüşme", "icon": "MessageSquare" },
+            { "name": "Müşteri İşletme Personeli İle Yapılan Görüşme", "icon": "MessageSquare" },
+            { "name": "Uygulanan Muhasebe Politikalarının Tespiti", "icon": "BookMarked" },
+            { "name": "İlişkili Taraf İnceleme", "icon": "GitMerge" },
+            { "name": "Kullanılan Tahminlere İlişkin Değerlendirme", "icon": "Lightbulb" },
+            { "name": "Satış Tahsilat Kontrol", "icon": "ShoppingCart" },
+            { "name": "Satın Alma Ödeme Kontrol", "icon": "CreditCard" },
+            { "name": "Transfer Fiyatlaması ve Örtülü Kazanç Kontrol", "icon": "Shuffle" },
+            { "name": "Sayım ve Tespit Değerlendirme", "icon": "ScanLine" },
+            { "name": "İhmal Edilen Düzeltme", "icon": "CircleX" },
+            { "name": "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme", "icon": "Scale3d" },
+            { "name": "Habersiz İşletme Ziyareti", "icon": "MapPin" },
+            { "name": "Risklere Karşı Uygulanan Denetim Prosedürleri", "icon": "ShieldPlus" },
+            { "name": "Muhasebe Hataları ve Hile Kanıtları Değerlendirme", "icon": "Bug" },
+            { "name": "Denetim Kanıtları Değerlendirme", "icon": "CheckCircle2" },
+            { "name": "Tespit Edilen Hususların Yönetim Bildirimi", "icon": "Send" },
+            { "name": "Yönetim Kurulu Faaliyet Raporu Değerlendirme", "icon": "FileText" }
+          ]
+        },
+        { "name": "Yevmiye Kayıtları Kontrol", "icon": "BookCheck" },
+        { "name": "Yönetim Tavsiye Mektubu", "icon": "MailPlus" },
+        { "name": "Fatura İnceleme", "icon": "ReceiptText" },
+        { "name": "Maddi Doğrulama Prosedürleri", "icon": "ClipboardCheck" },
+        { "name": "Benford Analizi", "icon": "LineChart" },
+        {
+          "name": "Hile ve Usulsüzlük",
+          "icon": "Siren",
+          "children": [
+            { "name": "Hile Prosedürleri", "icon": "ShieldAlert" },
+            { "name": "Muhasebe Hataları ve Hileye İlişkin Çalışmalar", "icon": "BugOff" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GENEL KURUL",
+      "icon": "Users",
+      "children": [
+        { "name": "Genel Kurul Toplantısı Görevlendirme Belgesi", "icon": "UserCog" },
+        { "name": "Genel Kurul Toplantısı Katılım Belgesi", "icon": "UserCheck" },
+        { "name": "Denetim Çalışması İzleme", "icon": "Eye" },
+        { "name": "Denetim Çalışması İzleme Sonuç", "icon": "ClipboardCheck" },
+        { "name": "Faaliyet Raporu", "icon": "FileText" }
+      ]
+    },
+    {
+      "name": "RAPOR",
+      "icon": "FileText",
+      "children": [
+        { "name": "Dipnotlar", "icon": "NotebookPen" },
+        { "name": "Bağımsız Denetçi Raporu", "icon": "FileSignature" },
+        { "name": "Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu", "icon": "FileCheck" }
+      ]
+    },
+    {
+      "name": "SÜRDÜRÜLEBİLİRLİK",
+      "icon": "Leaf",
+      "children": [
+        { "name": "Genel Bilgiler", "icon": "Info" },
+        { "name": "Çevresel Etkiler", "icon": "Trees" },
+        { "name": "Sosyal Sorumluluk", "icon": "HeartHandshake" },
+        { "name": "Kurumsal Yönetişim", "icon": "Landmark" },
+        { "name": "Ek Bilgiler", "icon": "PlusCircle" }
+      ]
+    },
+    {
+      "name": "ENFLASYON",
+      "icon": "TrendingUp",
+      "children": [
+        { "name": "Aşamalar", "icon": "Layers" },
+        { "name": "Düzeltme Katsayıları", "icon": "SlidersHorizontal" },
+        { "name": "Ortalama Ticari Kredi Faiz Oranları", "icon": "Percent" },
+        { "name": "Reel Olmayan Finansman Maaliyeti", "icon": "MinusCircle" },
+        { "name": "Önceki Dönem Vuk Enflasyon İptal Fişi", "icon": "FileX" },
+        { "name": "Stoklar Enflasyon Düzeltmesi", "icon": "Boxes" },
+        { "name": "Maddi Ve Maddi Olmayan Duran Varlıklar", "icon": "Building2" },
+        { "name": "Amortisman Haraket Tablosu", "icon": "Activity" },
+        { "name": "Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi", "icon": "Shuffle" },
+        { "name": "Proje-İnşaat Enflasyon Düzeltmesi", "icon": "Construction" },
+        { "name": "Gelir Ve Giderlere İlişkin Enflasyon Düzeltmesi", "icon": "ArrowUpDown" },
+        {
+          "name": "Net Parasal Pozisyon",
+          "icon": "Scale",
+          "children": [
+            { "name": "NPP Kayıp/Kazanç", "icon": "TrendingDown" },
+            { "name": "Ertelenen Vergi", "icon": "FileMinus" }
+          ]
+        },
+        { "name": "Enflasyon Düzeltmesi Çalışma Kağıdı", "icon": "NotebookPen" },
+        {
+          "name": "Düzeltme İşlemleri",
+          "icon": "Wrench",
+          "children": [
+            { "name": "İptal Fişi / Fiş Girişi / Fiş İşlemleri", "icon": "SquarePen" },
+            { "name": "Taşıma/Açılış Fişi", "icon": "LogIn" },
+            { "name": "Maliyet Fark Fişi Oluştur", "icon": "FilePlus" },
+            { "name": "Dönüşüm", "icon": "ArrowLeftRight" }
+          ]
+        },
+        { "name": "Sunum Endeksi", "icon": "Presentation" },
+        { "name": "Dönüşüm Mizan Kontrol", "icon": "SearchCheck" },
+        {
+          "name": "Finansal Tablolar",
+          "icon": "BarChart4",
+          "children": [
+            { "name": "Finansal Durum / Kar-Zarar / Nakit Akış / Özkaynak Değişim", "icon": "BarChart4" }
+          ]
+        },
+        {
+          "name": "Denetçi Raporu",
+          "icon": "FileSignature",
+          "children": [{ "name": "Dipnotlar / Raporlar", "icon": "NotebookPen" }]
+        }
+      ]
+    },
+    {
+      "name": "KONSOLİDASYON",
+      "icon": "Layers3",
+      "children": [
+        { "name": "Aşamalar / Tanımlamalar", "icon": "Workflow" },
+        { "name": "Birleştirilmiş Mizan", "icon": "Sheet" },
+        { "name": "Eliminasyon Fiş İşlemleri", "icon": "Scissors" },
+        { "name": "Dönüşüm İşlemi / Mizan Kontrol", "icon": "ArrowLeftRight" },
+        { "name": "Finansal Tablolar ve Raporlar", "icon": "BarChart4" }
+      ]
+    },
+    {
+      "name": "BDDK",
+      "icon": "Landmark"
+    },
+    {
+      "name": "KYS (Kalite Yönetim Sistemi)",
+      "icon": "BadgeCheck",
+      "children": [
+        { "name": "1. Belgelendirme", "icon": "Award" },
+        { "name": "2. Risk Değerlendirme Süreci", "icon": "ShieldAlert" },
+        { "name": "3. Üst Yönetim ve Liderlik Yapısı", "icon": "Crown" },
+        { "name": "4. Etik Hükümler", "icon": "Scale" },
+        { "name": "5. Müşteri İlişkisinin Kabulü ve Devam Ettirilmesi", "icon": "Handshake" },
+        { "name": "6. Denetimin Yürütülmesi", "icon": "ClipboardCheck" },
+        { "name": "7. Kaynaklar", "icon": "Boxes" },
+        { "name": "8. Bilgi ve İletişim", "icon": "Radio" },
+        { "name": "9. İzleme ve Düzeltme Süreci", "icon": "Eye" },
+        { "name": "10. Risk Matrisi", "icon": "Table2" }
+      ]
+    },
+    {
+      "name": "DENETİM DOSYA",
+      "icon": "FolderOpen",
+      "children": [
+        { "name": "Bağımsız Denetim Metodolojisi", "icon": "BookOpenCheck" },
+        { "name": "Denetim Dosya Yazdır", "icon": "Printer" }
+      ]
+    },
+    {
+      "name": "DİĞER İŞLEMLER",
+      "icon": "MoreHorizontal",
+      "children": [
+        { "name": "Arşiv", "icon": "Archive" },
+        { "name": "Denetçi Firma Bilgileri", "icon": "Building" },
+        { "name": "Üyelik Bilgileri", "icon": "IdCard" },
+        { "name": "Veri Aktarma", "icon": "ArrowRightLeft" }
+      ]
+    },
+    {
+      "name": "KULLANIM KILAVUZU",
+      "icon": "HelpCircle"
+    }
+  ]
+}

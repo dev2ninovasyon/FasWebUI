@@ -10,7 +10,7 @@ import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import KysLayout from "./KysLayout";
 
 const Page = () => {
-  const [showFilteredMenu, setShowFilteredMenu] = useState(true);
+  const [showFilteredMenu, setShowFilteredMenu] = useState(false);
 
   const handleToggle = () => {
     setShowFilteredMenu((prev) => !prev);

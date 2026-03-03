@@ -1,4 +1,5 @@
-﻿import { uniqueId } from "lodash";
+import { uniqueId } from "lodash";
+import { applyDynamicIconsToMenuItems } from "@/utils/menuIconResolver";
 
 export interface MenuitemsType {
   [x: string]: any;
@@ -49,7 +50,8 @@ export function createMenuItems(
   bddkmi?: boolean,
   yil?: number
 ): MenuitemsType[] {
-  return rol == undefined ||
+  const menuItems =
+    rol == undefined ||
     (rol.length === 1 && rol[0] === "FinansalTabloKontrol")
     ? [
       {
@@ -2360,4 +2362,6 @@ export function createMenuItems(
         href: "/KullanimKilavuzu",
       },
     ];
+
+  return applyDynamicIconsToMenuItems(menuItems);
 }

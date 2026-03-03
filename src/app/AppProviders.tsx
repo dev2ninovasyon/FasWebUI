@@ -18,6 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import SessionWarningDialog from "@/components/SessionWarning/SessionWarningDialog";
+import { resolveIconNameByMenuTitle } from "@/utils/menuIconResolver";
 import "@/app/api/index";
 import "@/utils/i18n";
 
@@ -144,6 +145,7 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
             data?.map((item: any) => ({
               id: item.id,
               name: item.name,
+              icon: resolveIconNameByMenuTitle(item.name),
               category: "MaddiDogrulama",
               href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(
                 item.name
@@ -152,6 +154,7 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
                 item.children?.map((child: any) => ({
                   id: child.id,
                   name: child.name,
+                  icon: resolveIconNameByMenuTitle(child.name),
                   parentName: item.name,
                   category: "MaddiDogrulama",
                   href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(

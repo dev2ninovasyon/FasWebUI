@@ -156,14 +156,13 @@ export default function RootLayout({
         // Cookie bazlı session varsa login'e atmadan önce tek sefer refresh dene.
         try {
           const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+          if (!currentRefreshToken) {
+            throw new Error("Refresh token yok");
+          }
           const refreshResponse = await apiFetch("/Auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-              currentRefreshToken
-                ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
-                : {}
-            ),
+            body: JSON.stringify({ refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }),
             ignoreCustomHeaders: true,
             suppressErrorLog: true,
           });
@@ -240,14 +239,14 @@ export default function RootLayout({
         // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
         try {
           const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+          if (!currentRefreshToken) {
+            console.warn("⚠️ Layout - Refresh token yok, token refresh atlandı.");
+            return;
+          }
           await apiFetch("/Auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-              currentRefreshToken
-                ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
-                : {}
-            ),
+            body: JSON.stringify({ refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }),
             suppressErrorLog: true,
           });
           console.log("✅ Layout - Cookie session refresh successful.");

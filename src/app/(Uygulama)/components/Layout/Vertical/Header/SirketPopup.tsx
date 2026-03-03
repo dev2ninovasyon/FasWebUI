@@ -103,14 +103,17 @@ const SirketPopup = () => {
 
             try {
               const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+              if (!currentRefreshToken) {
+                console.warn("⚠️ SirketPopup - Refresh token yok, token refresh atlandı.");
+                return;
+              }
               const refreshResponse = await apiFetch("/Auth/refresh", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(
-                  currentRefreshToken
-                    ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
-                    : {}
-                ),
+                body: JSON.stringify({
+                  refreshToken: currentRefreshToken,
+                  RefreshToken: currentRefreshToken,
+                }),
                 suppressErrorLog: true,
               });
               const refreshData = await refreshResponse.json().catch(() => null);

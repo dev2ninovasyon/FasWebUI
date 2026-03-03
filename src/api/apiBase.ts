@@ -145,16 +145,19 @@ export async function apiFetch(
           const refreshTokenCandidate =
             window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
             window.localStorage.getItem("fas_refreshToken");
+          if (!refreshTokenCandidate) {
+            console.warn("⚠️ Session refresh atlandı: refresh token bulunamadı.");
+            return response;
+          }
           const refreshPromise =
             activeRefreshPromise ||
             fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(
-                refreshTokenCandidate
-                  ? { refreshToken: refreshTokenCandidate, RefreshToken: refreshTokenCandidate }
-                  : {}
-              ),
+              body: JSON.stringify({
+                refreshToken: refreshTokenCandidate,
+                RefreshToken: refreshTokenCandidate,
+              }),
               credentials: "include", // HttpOnly cookie'leri gönder
             });
 

@@ -1,5 +1,6 @@
 ﻿import Image from "next/image";
 import {
+  Avatar,
   Box,
   CardContent,
   Grid,
@@ -7,6 +8,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 const icon1 = "/images/svgs/icon-connect.svg";
 const icon2 = "/images/svgs/icon-user-male.svg";
 const icon3 = "/images/svgs/icon-briefcase.svg";
@@ -27,16 +29,7 @@ function randomIcon() {
 }
 
 function randomColor() {
-  var colors = [
-    /*"primary",*/
-    /*"warning",*/
-    /*"secondary",*/
-    "error",
-    "success",
-    "info",
-  ];
-  var randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
+  return "primary";
 }
 
 interface TopCardsProps {
@@ -83,7 +76,8 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
   const MenuItem = findItemTitle(title, Menuitems, parenTitle);
 
   let TopCards: Array<{
-    icon: any;
+    iconComponent?: any;
+    iconPath?: string;
     title: string;
     href: string;
     bgcolor: string;
@@ -92,7 +86,8 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
 
   if (MenuItem && MenuItem.children && MenuItem.children.length > 0) {
     TopCards = MenuItem.children.map((child: MenuitemsType) => ({
-      icon: child.customIcon
+      iconComponent: child.icon,
+      iconPath: child.customIcon
         ? child.customIcon.replace("public", "")
         : randomIcon(),
       title: child.title || "",
@@ -133,14 +128,31 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
               }}
             >
               <Link href={topcard.href} passHref onClick={() => setLoading(true)}>
-                <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
+                <Box
+                  textAlign="center"
+                  sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.10) }}
+                >
                   <CardContent style={{ height: "180px" }}>
-                    <Image
-                      src={topcard.icon}
-                      alt={"topcard.icon"}
-                      width="50"
-                      height="50"
-                    />
+                    {topcard.iconComponent ? (
+                      <Avatar
+                        sx={{
+                          width: 50,
+                          height: 50,
+                          margin: "0 auto",
+                          backgroundColor: "transparent",
+                          color: `${topcard.bgcolor}.main`,
+                        }}
+                      >
+                        <topcard.iconComponent size={38} strokeWidth={1.5} />
+                      </Avatar>
+                    ) : (
+                      <Image
+                        src={topcard.iconPath || randomIcon()}
+                        alt={"topcard.icon"}
+                        width="50"
+                        height="50"
+                      />
+                    )}
 
                     <Typography
                       color={topcard.bgcolor + ".main"}
@@ -156,14 +168,31 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
             </Tooltip>
           ) : (
             <Link href={topcard.href} passHref onClick={() => setLoading(true)}>
-              <Box bgcolor={topcard.bgcolor + ".light"} textAlign="center">
+              <Box
+                textAlign="center"
+                sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.10) }}
+              >
                 <CardContent style={{ height: "180px" }}>
-                  <Image
-                    src={topcard.icon}
-                    alt={"topcard.icon"}
-                    width="50"
-                    height="50"
-                  />
+                  {topcard.iconComponent ? (
+                    <Avatar
+                      sx={{
+                        width: 50,
+                        height: 50,
+                        margin: "0 auto",
+                        backgroundColor: "transparent",
+                        color: `${topcard.bgcolor}.main`,
+                      }}
+                    >
+                      <topcard.iconComponent size={38} strokeWidth={1.5} />
+                    </Avatar>
+                  ) : (
+                    <Image
+                      src={topcard.iconPath || randomIcon()}
+                      alt={"topcard.icon"}
+                      width="50"
+                      height="50"
+                    />
+                  )}
 
                   <Typography
                     color={topcard.bgcolor + ".main"}

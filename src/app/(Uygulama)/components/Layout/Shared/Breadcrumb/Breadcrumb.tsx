@@ -47,7 +47,7 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   const itemsTitle = items && items.length > 0 ? items.map((item) => item.title.toUpperCase().replace(/I/g, "İ"))[0] : "";
   const MenuItemData: any = itemsTitle && Menuitems.find((item) => item.title?.toUpperCase() === itemsTitle);
   const Icon = MenuItemData && MenuItemData?.icon;
-  const itemIcon = MenuItemData && <Icon stroke={0.8} size="100%" />;
+  const itemIcon = MenuItemData && <Icon strokeWidth={0.8} size="100%" />;
 
   const handleBreadcrumbClick = (to: string) => { if (pathname !== to) setLoading(true); };
 
@@ -59,7 +59,10 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
       container
       alignItems="center"
       sx={{
-        backgroundColor: "primary.light",
+        backgroundColor: (theme: Theme) =>
+          theme.palette.mode === "dark"
+            ? "#0e121a"
+            : theme.palette.primary.light,
         borderRadius: (theme: Theme) => (theme.shape.borderRadius as number) / 4,
         p: "20px 25px",
         marginBottom: "15px",
@@ -76,7 +79,17 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
           xs: 9,
           sm: 8
         }}>
-        <Typography variant="h4">{title}</Typography>
+        <Typography
+          variant="h4"
+          sx={{
+            color: (theme: Theme) =>
+              theme.palette.mode === "dark"
+                ? theme.palette.text.primary
+                : theme.palette.text.primary,
+          }}
+        >
+          {title}
+        </Typography>
         {items && (
           <Breadcrumbs separator={null} sx={{ alignItems: "center", mt: 0.5 }} aria-label="breadcrumb">
             {items.filter((item) => item.title !== title).map((item) => (
@@ -84,9 +97,17 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
                 {item.to ? (
                   <NextLink href={item.to} passHref onClick={() => handleBreadcrumbClick(item.to)} style={{ display: "flex", alignItems: "center" }}>
                     <Typography
-                      color={item.title === subtitle ? "white" : "textPrimary"}
                       sx={{
-                        backgroundColor: item.title === subtitle ? "primary.main" : "transparent",
+                        color: (theme: Theme) =>
+                          theme.palette.mode === "dark"
+                            ? theme.palette.text.primary
+                            : theme.palette.text.primary,
+                        backgroundColor: (theme: Theme) =>
+                          item.title === subtitle
+                            ? theme.palette.mode === "dark"
+                              ? theme.palette.primary.dark
+                              : theme.palette.primary.main
+                            : "transparent",
                         px: item.title === subtitle ? 1 : 0,
                         borderRadius: (theme: Theme) => (theme.shape.borderRadius as number) / 4,
                         display: "flex", alignItems: "center", fontSize: "0.875rem"
