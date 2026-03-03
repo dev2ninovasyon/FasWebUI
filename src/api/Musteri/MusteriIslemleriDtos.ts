@@ -22,6 +22,12 @@ export interface OldDenetlenenDetayDto {
   sektor1Id?: number;
   sektor2Id?: number;
   sektor3Id?: number;
+  sektor1Adi?: string;
+  sektor2Adi?: string;
+  sektor3Adi?: string;
+  sektor1Kod?: string;
+  sektor2Kod?: string;
+  sektor3Kod?: string;
   konsolide?: boolean;
   konsolideAnaSirketmi?: boolean;
   konsolideAltSirketmi?: boolean;

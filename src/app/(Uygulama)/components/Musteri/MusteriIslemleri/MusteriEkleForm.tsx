@@ -32,6 +32,7 @@ interface Veri2 {
   adi: string;
   kirilim: number;
   parentId: number | null;
+  kod?: string;
 }
 
 interface TransferTableInfo {
@@ -458,11 +459,12 @@ const MusteriEkleForm = ({
   const fetchData2 = async () => {
     try {
       const sektorKodVerileri = await getSektorKodlari();
-      const newRows = sektorKodVerileri.map((kod: any) => ({
-        id: kod.id,
-        adi: kod.adi,
-        kirilim: kod.kirilim,
-        parentId: kod.parentId ?? null,
+      const newRows = sektorKodVerileri.map((kodObj: any) => ({
+        id: kodObj.id,
+        adi: kodObj.adi,
+        kirilim: kodObj.kirilim,
+        parentId: kodObj.parentId ?? null,
+        kod: kodObj.kod,
       }));
       if (newRows.length > 0) {
         setSektor1List(newRows.filter((item: Veri2) => item.kirilim === 1));
@@ -479,27 +481,56 @@ const MusteriEkleForm = ({
     fetchData2();
   }, []);
 
-  // Sektör adlarına göre eşleştirme
+  // Sektör adlarına/kodlarına göre eşleştirme
   useEffect(() => {
-    if (!initialData) return;
-    // Sektör adları hem camelCase hem PascalCase gelebilir
-    const sektor1Adi = initialData.sektor1Adi || initialData.Sektor1Adi;
-    const sektor2Adi = initialData.sektor2Adi || initialData.Sektor2Adi;
-    const sektor3Adi = initialData.sektor3Adi || initialData.Sektor3Adi;
+    if (!initialData || sektor3List.length === 0) return;
 
-    if (sektor1Adi && sektor1List.length > 0) {
-      const match = sektor1List.find(s => s.adi === sektor1Adi);
-      if (match) setSektor1Id(match.id);
+    const s1Adi = (initialData.sektor1Adi || initialData.Sektor1Adi || "").trim().toLocaleLowerCase("tr-TR");
+    const s2Adi = (initialData.sektor2Adi || initialData.Sektor2Adi || "").trim().toLocaleLowerCase("tr-TR");
+    const s3Adi = (initialData.sektor3Adi || initialData.Sektor3Adi || "").trim().toLocaleLowerCase("tr-TR");
+
+    const s1Kod = (initialData.sektor1Kod || initialData.Sektor1Kod || "").trim();
+    const s2Kod = (initialData.sektor2Kod || initialData.Sektor2Kod || "").trim();
+    const s3Kod = (initialData.sektor3Kod || initialData.Sektor3Kod || "").trim();
+
+    // 1. Önce Sektör 3 Koduna göre eşleştir (En kesin yöntem)
+    if (s3Kod) {
+      const match = sektor3List.find(s => (s.kod || "").trim() === s3Kod);
+      if (match) {
+        handleSelectSektor(match.id);
+        return;
+      }
     }
-    if (sektor2Adi && sektor2List.length > 0) {
-      const match = sektor2List.find(s => s.adi === sektor2Adi);
-      if (match) setSektor2Id(match.id);
+
+    // 2. Sektör 3 Adına göre eşleştir
+    if (s3Adi) {
+      const match = sektor3List.find(s => (s.adi || "").trim().toLocaleLowerCase("tr-TR") === s3Adi);
+      if (match) {
+        handleSelectSektor(match.id);
+        return;
+      }
     }
-    if (sektor3Adi && sektor3List.length > 0) {
-      const match = sektor3List.find(s => s.adi === sektor3Adi);
-      if (match) setSektor3Id(match.id);
-    }
-  }, [initialData, sektor1List, sektor2List, sektor3List]);
+
+    // 3. Kod/Ad kombinasyonu veya diğer seviyeler için fallback...
+    const findInList = (list: any[], adi: string, kod: string) => {
+      if (kod) {
+        const m = list.find(s => (s.kod || "").trim() === kod);
+        if (m) return m;
+      }
+      if (adi) {
+        const m = list.find(s => (s.adi || "").trim().toLocaleLowerCase("tr-TR") === adi);
+        if (m) return m;
+      }
+      return null;
+    };
+
+    const m1 = findInList(sektor1List, s1Adi, s1Kod);
+    if (m1) setSektor1Id(m1.id);
+
+    const m2 = findInList(sektor2List, s2Adi, s2Kod);
+    if (m2) setSektor2Id(m2.id);
+
+  }, [initialData, sektor1List, sektor2List, sektor3List, handleSelectSektor]);
 
   useEffect(() => {
     if (isHovered && textFieldRef.current) textFieldRef.current.focus();

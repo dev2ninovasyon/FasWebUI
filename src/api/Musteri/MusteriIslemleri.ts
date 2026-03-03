@@ -1202,10 +1202,12 @@ export function mapOldDenetlenenToFormData(
     sektor1Id,
     sektor2Id,
     sektor3Id,
-    // Name-based fallback used in form when ID does not match current DB
     sektor1Adi: d.sektor1Adi ?? d.Sektor1Adi ?? "",
     sektor2Adi: d.sektor2Adi ?? d.Sektor2Adi ?? "",
     sektor3Adi: d.sektor3Adi ?? d.Sektor3Adi ?? "",
+    sektor1Kod: d.sektor1Kod ?? d.Sektor1Kod ?? "",
+    sektor2Kod: d.sektor2Kod ?? d.Sektor2Kod ?? "",
+    sektor3Kod: d.sektor3Kod ?? d.Sektor3Kod ?? "",
     konsolideMi: (d.konsolide ?? d.Konsolide) ? "Evet" : "Hayır",
     konsolideTipi: d.konsolideAnaSirketmi ?? d.KonsolideAnaSirketmi
       ? "Ana Şirket"

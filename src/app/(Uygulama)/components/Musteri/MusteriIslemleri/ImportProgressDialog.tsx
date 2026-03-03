@@ -133,6 +133,7 @@ export default function ImportProgressDialog({
   const [controlDialogOpen, setControlDialogOpen] = useState(false);
   const [controlTableKey, setControlTableKey] = useState<string>("");
   const [controlYear, setControlYear] = useState<number | null>(null);
+  const [showLogs, setShowLogs] = useState(false);
   const [previousSelection, setPreviousSelection] = useState<{ denetlenenId?: number; yil?: number } | null>(null);
   const lastTerminalNotifiedRef = useRef<string | null>(null);
   const onCompletedRef = useRef(onCompleted);
@@ -812,6 +813,82 @@ export default function ImportProgressDialog({
                               </React.Fragment>
                             );
                           })}
+
+                          {jobStatus.skippedTables && jobStatus.skippedTables.length > 0 && (
+                            <>
+                              <TableRow sx={{ backgroundColor: "#fff4e5" }}>
+                                <TableCell colSpan={7}>
+                                  <Typography variant="subtitle1" sx={{ fontWeight: "bold", py: 1, color: "#663c00" }}>
+                                    Taşınamayan Veriler
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                              {jobStatus.skippedTables.map((tableKey) => {
+                                const expanded = Boolean(expandedTables[tableKey]);
+                                return (
+                                  <React.Fragment key={`skipped-${tableKey}`}>
+                                    <TableRow hover onClick={() => toggleExpanded(tableKey)} sx={{ cursor: "pointer" }}>
+                                      <TableCell sx={{ width: 56 }}>
+                                        <IconButton
+                                          size="small"
+                                          onClick={(event) => {
+                                            event.stopPropagation();
+                                            toggleExpanded(tableKey);
+                                          }}
+                                        >
+                                          {expanded ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+                                        </IconButton>
+                                      </TableCell>
+                                      <TableCell>{getTableDisplayName(tableKey)}</TableCell>
+                                      <TableCell align="right">-</TableCell>
+                                      <TableCell align="right">-</TableCell>
+                                      <TableCell align="center">-</TableCell>
+                                      <TableCell align="right">-</TableCell>
+                                      <TableCell>{renderDurum("Uyarı")}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableCell colSpan={7} sx={{ py: 0, border: 0 }}>
+                                        <Collapse in={expanded} timeout="auto" unmountOnExit>
+                                          <Paper
+                                            elevation={0}
+                                            sx={{
+                                              my: 1.5,
+                                              mx: 1,
+                                              p: 2,
+                                              backgroundColor: "#fffdfa",
+                                              border: "1px solid #ffd8a8",
+                                              borderRadius: 2
+                                            }}
+                                          >
+                                            <Typography variant="body1" sx={{ mb: 2, fontWeight: 500 }}>
+                                              Bu tablo otomatik taşınamadı. Lütfen ilgili ekrana giderek verilerinizi manuel olarak düzenleyin veya kontrol edin.
+                                            </Typography>
+                                            <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
+                                              <strong>Kaynak Bilgisi:</strong> {getManualSourceHint(tableKey)}
+                                            </Typography>
+                                            {getManualRoute(tableKey) && (
+                                              <Button
+                                                variant="contained"
+                                                color="warning"
+                                                size="medium"
+                                                href={getManualRoute(tableKey)!}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                sx={{ fontWeight: "bold", px: 3 }}
+                                                startIcon={<KeyboardArrowRightIcon />}
+                                              >
+                                                İlgili Ekrana Git
+                                              </Button>
+                                            )}
+                                          </Paper>
+                                        </Collapse>
+                                      </TableCell>
+                                    </TableRow>
+                                  </React.Fragment>
+                                );
+                              })}
+                            </>
+                          )}
                         </TableBody>
                       </Table>
                     </TableContainer>
@@ -899,69 +976,70 @@ export default function ImportProgressDialog({
 
                 {jobStatus.notifications && jobStatus.notifications.length > 0 && (
                   <Box>
-                    <h4>Ayrıntılı Log Mesajları:</h4>
                     <Box
+                      onClick={() => setShowLogs(!showLogs)}
                       sx={{
-                        maxHeight: 250,
-                        overflow: "auto",
-                        backgroundColor: "#f9f9f9",
-                        border: "1px solid #ddd",
-                        p: 1.5,
-                        borderRadius: 1,
-                        fontFamily: "monospace",
-                        fontSize: "0.8rem",
-                        lineHeight: 1.6,
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        mb: 1,
+                        "&:hover": { color: "primary.main" },
                       }}
                     >
-                      {jobStatus.notifications.map((notif: any, idx: number) => (
-                        <Box
-                          key={idx}
-                          sx={{
-                            mb: 0.5,
-                            color:
-                              notif.severity === "Error"
-                                ? "#d32f2f"
-                                : notif.severity === "Warning"
-                                  ? "#f57c00"
-                                  : "#1976d2",
-                          }}
-                        >
-                          <span style={{ color: "#999" }}>
-                            {new Date(notif.createdAt).toLocaleTimeString()}
-                          </span>{" "}
-                          <span>
-                            {notif.message}
-                            {notif.recordCount && ` [${notif.recordCount} kayıt]`}
-                          </span>
-                        </Box>
-                      ))}
+                      {showLogs ? (
+                        <KeyboardArrowDownIcon />
+                      ) : (
+                        <KeyboardArrowRightIcon />
+                      )}
+                      <Typography
+                        variant="h6"
+                        component="h4"
+                        sx={{ ml: 1, my: 0, fontSize: "1.1rem", fontWeight: 600 }}
+                      >
+                        Ayrıntılı Log Mesajları:
+                      </Typography>
                     </Box>
+                    <Collapse in={showLogs}>
+                      <Box
+                        sx={{
+                          maxHeight: 250,
+                          overflow: "auto",
+                          backgroundColor: "#f9f9f9",
+                          border: "1px solid #ddd",
+                          p: 1.5,
+                          borderRadius: 1,
+                          fontFamily: "monospace",
+                          fontSize: "0.8rem",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {jobStatus.notifications.map((notif: any, idx: number) => (
+                          <Box
+                            key={idx}
+                            sx={{
+                              mb: 0.5,
+                              color:
+                                notif.severity === "Error"
+                                  ? "#d32f2f"
+                                  : notif.severity === "Warning"
+                                    ? "#f57c00"
+                                    : "#1976d2",
+                            }}
+                          >
+                            <span style={{ color: "#999" }}>
+                              {new Date(notif.createdAt).toLocaleTimeString()}
+                            </span>{" "}
+                            <span>
+                              {notif.message}
+                              {notif.recordCount && ` [${notif.recordCount} kayıt]`}
+                            </span>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Collapse>
                   </Box>
                 )}
 
-                {jobStatus.skippedTables && jobStatus.skippedTables.length > 0 && (
-                  <Box sx={{ mt: 2 }}>
-                    <Alert severity="warning" sx={{ mb: 1 }}>
-                      Atlanan Tablolar: {jobStatus.skippedTables.join(", ")}
-                    </Alert>
-                    <Box sx={{ fontSize: "0.9rem" }}>
-                      {jobStatus.skippedTables.map((tableKey) => (
-                        <Box key={tableKey} sx={{ mb: 0.5 }}>
-                          <strong>{tableKey}</strong>: Manuel kaynak: {getManualSourceHint(tableKey)}
-                          {getManualRoute(tableKey) && (
-                            <>
-                              {" "}
-                              |{" "}
-                              <MuiLink href={getManualRoute(tableKey)!} underline="hover">
-                                İlgili Ekrana Git
-                              </MuiLink>
-                            </>
-                          )}
-                        </Box>
-                      ))}
-                    </Box>
-                  </Box>
-                )}
               </>
             )}
           </Box>

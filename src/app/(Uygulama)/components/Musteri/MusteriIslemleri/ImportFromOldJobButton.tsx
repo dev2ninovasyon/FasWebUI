@@ -17,6 +17,7 @@ import {
   Paper,
   Chip,
   Link as MuiLink,
+  Typography,
 } from "@mui/material";
 import { startImportFromOldPipelineJob, getImportPipelineJobStatus } from "@/api/Musteri/MusteriIslemleri";
 import { apiFetch } from "@/api/apiBase";
@@ -60,7 +61,7 @@ export default function ImportFromOldJobButton({
 }) {
   // Hook ile duraklamış işleri kontrol et
   const { firstPendingJob, hasPendingJobs } = usePendingImports();
-  
+
   const [jobId, setJobId] = useState<string | null>(null);
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const [loading, setLoading] = useState(false);
@@ -184,7 +185,7 @@ export default function ImportFromOldJobButton({
     return () => clearInterval(interval);
   }, [jobId, polling]);
 
- const handleErrorModalAction = async (action: "continue" | "skip" | "cancel") => {
+  const handleErrorModalAction = async (action: "continue" | "skip" | "cancel") => {
     if (!jobId) return;
     setActionInProgress(true);
 
@@ -269,6 +270,8 @@ export default function ImportFromOldJobButton({
         return "OldDb: KrediHesaplama";
       case "Yaslandirma":
         return "OldDb: YaslandirmaKayitlariV3";
+      case "ErtelenmisVergiHesabi":
+        return "OldDb: ErtelenmisVergiHesabi";
       default:
         return "OldDb ilgili kaynak tablo";
     }
@@ -290,6 +293,8 @@ export default function ImportFromOldJobButton({
         return "/Hesaplamalar/KrediHesaplama";
       case "Yaslandirma":
         return "/Hesaplamalar/Yaslandirma";
+      case "ErtelenmisVergiHesabi":
+        return "/Hesaplamalar/ErtelenmisVergiHesabi";
       default:
         return null;
     }
@@ -311,6 +316,8 @@ export default function ImportFromOldJobButton({
         return "/Hesaplamalar/KrediHesaplama";
       case "Yaslandirma":
         return "/Hesaplamalar/Yaslandirma";
+      case "ErtelenmisVergiHesabi":
+        return "/Hesaplamalar/ErtelenmisVergiHesabi";
       default:
         return null;
     }
@@ -506,6 +513,49 @@ export default function ImportFromOldJobButton({
                           </TableRow>
                         )
                       )}
+
+                      {jobStatus.skippedTables && jobStatus.skippedTables.length > 0 && (
+                        <>
+                          <TableRow sx={{ backgroundColor: "#fff4e5" }}>
+                            <TableCell colSpan={7}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: "bold", color: "#663c00" }}>
+                                Taşınamayan Veriler
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                          {jobStatus.skippedTables.map((tableKey, sIdx) => (
+                            <TableRow key={`skipped-${sIdx}`}>
+                              <TableCell>{tableKey}</TableCell>
+                              <TableCell align="right">-</TableCell>
+                              <TableCell align="right">-</TableCell>
+                              <TableCell align="right">-</TableCell>
+                              <TableCell>
+                                <Chip label="Atlandı" color="warning" size="small" />
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="caption" display="block">
+                                  Manuel kaynak: {getManualSourceHint(tableKey)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                {getManualRoute(tableKey) ? (
+                                  <Button
+                                    size="small"
+                                    variant="contained"
+                                    color="warning"
+                                    href={getManualRoute(tableKey)!}
+                                    sx={{ fontSize: "0.7rem", py: 0 }}
+                                  >
+                                    İlgili Ekrana Git
+                                  </Button>
+                                ) : (
+                                  "-"
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -559,28 +609,6 @@ export default function ImportFromOldJobButton({
               </Box>
             )}
 
-            {jobStatus?.skippedTables && jobStatus.skippedTables.length > 0 && (
-              <Box sx={{ mt: 3 }}>
-                <Alert severity="warning" sx={{ mb: 1 }}>
-                  Atlanan Tablolar: {jobStatus.skippedTables.join(", ")}
-                </Alert>
-                <Box sx={{ fontSize: "0.9rem" }}>
-                  {jobStatus.skippedTables.map((tableKey) => (
-                    <Box key={tableKey} sx={{ mb: 0.5 }}>
-                      <strong>{tableKey}</strong>: Manuel kaynak: {getManualSourceHint(tableKey)}
-                      {getManualRoute(tableKey) && (
-                        <>
-                          {" "} |{" "}
-                          <MuiLink href={getManualRoute(tableKey)!} underline="hover">
-                            İlgili Ekrana Git
-                          </MuiLink>
-                        </>
-                      )}
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            )}
           </Box>
         </DialogContent>
         <DialogActions>

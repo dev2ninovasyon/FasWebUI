@@ -56,7 +56,7 @@ const formatDate = (value?: string | null) => {
 const normalize = (value?: string | null) =>
   (value || "").toLocaleLowerCase("tr-TR").trim();
 
-type SortField = "date" | "firmaAdi";
+type SortField = "date" | "firmaAdi" | "durum";
 type SortDirection = "desc" | "asc";
 
 const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
@@ -67,8 +67,8 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [logDialogOpen, setLogDialogOpen] = useState(false);
   const [selectedLogJobId, setSelectedLogJobId] = useState<string | null>(null);
-  const [sortField, setSortField] = useState<SortField>("date");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [sortField, setSortField] = useState<SortField>("durum");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   const open = Boolean(anchorEl);
   const router = useRouter();
@@ -92,17 +92,38 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
     };
 
     return [...filteredRows].sort((a, b) => {
+      let comparison = 0;
       if (sortField === "firmaAdi") {
         const aName = normalize(a.firmaAdi);
         const bName = normalize(b.firmaAdi);
-        return sortDirection === "asc"
-          ? aName.localeCompare(bName, "tr")
-          : bName.localeCompare(aName, "tr");
+        comparison = aName.localeCompare(bName, "tr");
+        if (sortDirection === "desc") comparison *= -1;
+      } else if (sortField === "durum") {
+        const getDurumRank = (row: any) => {
+          if (row.kayitKaynagi !== "OldDbImport") return 1; // Oluşturuldu
+          const status = String(row.importSummary?.status || "").toLowerCase();
+          if (status === "waitingforuserinput") return 2; // Onay Bekliyor
+          if (status === "failed") return 3; // Taşınamadı
+          return 4; // Taşındı
+        };
+        const aVal = getDurumRank(a);
+        const bVal = getDurumRank(b);
+        comparison = aVal - bVal;
+        if (sortDirection === "desc") comparison *= -1;
+      } else {
+        const aTime = toSortDate(a);
+        const bTime = toSortDate(b);
+        comparison = aTime - bTime;
+        if (sortDirection === "desc") comparison *= -1;
       }
 
-      const aTime = toSortDate(a);
-      const bTime = toSortDate(b);
-      return sortDirection === "desc" ? bTime - aTime : aTime - bTime;
+      // Tie-breaker: Date desc (newest first)
+      if (comparison === 0) {
+        const aTime = toSortDate(a);
+        const bTime = toSortDate(b);
+        return bTime - aTime;
+      }
+      return comparison;
     });
   }, [filteredRows, sortDirection, sortField]);
 
@@ -166,6 +187,15 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
+  const handleDurumSortToggle = () => {
+    if (sortField !== "durum") {
+      setSortField("durum");
+      setSortDirection("asc");
+      return;
+    }
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
   const fetchData = async () => {
     try {
       const denetciId = user.denetciId || 0;
@@ -176,7 +206,10 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
 
       const summaryMap: Record<number, any> = {};
       (importSummaries || []).forEach((summary: any) => {
-        summaryMap[summary.companyId] = summary;
+        const cId = summary.tasinanDenetlenenId || summary.companyId;
+        if (cId) {
+          summaryMap[cId] = summary;
+        }
       });
 
       const newRows = (musteriVerileri || []).map((musteri: any) => ({
@@ -265,19 +298,27 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
                   Email
                 </Typography>
               </TableCell>
-              <TableCell>
-                <Box display="flex" alignItems="center" justifyContent="center" gap={0.5}>
-                  <Typography variant="h6">Durum</Typography>
-                  <Tooltip
-                    title="'Taşındı' durumundaki müşterilere tıklayarak taşıma logunu görüntüleyebilirsiniz."
-                    arrow
-                    placement="top"
-                  >
-                    <Box component="span" sx={{ display: "flex", alignItems: "center", color: "text.secondary", cursor: "help" }}>
-                      <IconInfoCircle size={15} />
-                    </Box>
-                  </Tooltip>
-                </Box>
+              <TableCell align="center">
+                <TableSortLabel
+                  active={sortField === "durum"}
+                  direction={sortField === "durum" ? sortDirection : "asc"}
+                  onClick={handleDurumSortToggle}
+                  hideSortIcon={false}
+                  sx={{ "& .MuiTableSortLabel-icon": { opacity: 1 } }}
+                >
+                  <Box display="flex" alignItems="center" justifyContent="center" gap={0.5}>
+                    <Typography variant="h6">Durum</Typography>
+                    <Tooltip
+                      title="'Taşındı' durumundaki müşterilere tıklayarak taşıma logunu görüntüleyebilirsiniz."
+                      arrow
+                      placement="top"
+                    >
+                      <Box component="span" sx={{ display: "flex", alignItems: "center", color: "text.secondary", cursor: "help" }}>
+                        <IconInfoCircle size={15} />
+                      </Box>
+                    </Tooltip>
+                  </Box>
+                </TableSortLabel>
               </TableCell>
               <TableCell>
                 <TableSortLabel
@@ -346,27 +387,46 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
                   </TableCell>
                   <TableCell align="center">
                     {isImported ? (
-                      <Chip
-                        size="small"
-                        color="success"
-                        label="Taşındı"
-                        onClick={() => handleOpenImportLog(logJobId)}
-                        sx={{
-                          minWidth: 90,
-                          height: 24,
-                          cursor: "pointer",
-                          fontWeight: 600,
-                          transition: "box-shadow 0.15s",
-                          "&:hover": {
-                            boxShadow: "0 0 0 3px rgba(76,175,80,0.25)",
-                          },
-                        }}
-                      />
+                      (() => {
+                        const status = String(summary?.status || "").toLowerCase();
+                        const isWaiting = status === "waitingforuserinput";
+                        const isFailed = status === "failed";
+
+                        let label = "Taşındı";
+                        let chipColor: "success" | "warning" | "error" = "success";
+
+                        if (isWaiting) {
+                          label = "Onay Bekliyor";
+                          chipColor = "warning";
+                        } else if (isFailed) {
+                          label = "Taşınamadı";
+                          chipColor = "error";
+                        }
+
+                        return (
+                          <Chip
+                            size="small"
+                            color={chipColor}
+                            label={label}
+                            onClick={() => handleOpenImportLog(logJobId)}
+                            sx={{
+                              minWidth: 100,
+                              height: 24,
+                              cursor: "pointer",
+                              fontWeight: 600,
+                              transition: "box-shadow 0.15s",
+                              "&:hover": {
+                                boxShadow: `0 0 0 3px ${isWaiting ? "rgba(255,152,0,0.25)" : isFailed ? "rgba(244,67,54,0.25)" : "rgba(76,175,80,0.25)"}`,
+                              },
+                            }}
+                          />
+                        );
+                      })()
                     ) : (
                       <Chip
                         size="small"
                         label="Oluşturuldu"
-                        sx={{ minWidth: 90, height: 24 }}
+                        sx={{ minWidth: 100, height: 24 }}
                       />
                     )}
                   </TableCell>
