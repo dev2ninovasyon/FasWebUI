@@ -68,7 +68,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
 
     const separator = url.includes("?") ? "&" : "?";
     return `${ENFLASYON_BASE_URL}${url}${separator}${authParams.toString()}`;
-  }, [user, url, retryKey, currentMode]);
+  }, [user, url, currentMode]);
 
   useEffect(() => {
     broadcastThemeToIframe();
@@ -86,7 +86,43 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
       setIsLoading(true);
       setServerError(null);
     }
-  }, [iframeSrc]);
+  }, [iframeSrc, retryKey]);
+
+  useEffect(() => {
+    if (!iframeSrc) return;
+
+    let cancelled = false;
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 5000);
+
+    const checkEnflasyonService = async () => {
+      try {
+        await fetch(`${ENFLASYON_BASE_URL}/favicon.ico`, {
+          method: "GET",
+          cache: "no-store",
+          mode: "no-cors",
+          signal: controller.signal,
+        });
+
+        if (cancelled) return;
+        setServerError(null);
+      } catch {
+        if (cancelled) return;
+        setIsLoading(false);
+        setServerError("Enflasyon servisine ulasilamadi. Lutfen baglantiyi kontrol edip tekrar deneyin.");
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+    };
+
+    checkEnflasyonService();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+      window.clearTimeout(timeoutId);
+    };
+  }, [iframeSrc, retryKey]);
 
   if (!user || !user.kullaniciAdi) {
     return (
@@ -102,7 +138,15 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
         <Alert severity="error" sx={{ width: "100%", maxWidth: 600 }}>
           <Typography variant="body1">{serverError}</Typography>
         </Alert>
-        <Button variant="outlined" color="error" onClick={() => setRetryKey((k) => k + 1)}>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => {
+            setServerError(null);
+            setIsLoading(true);
+            setRetryKey((k) => k + 1);
+          }}
+        >
           Tekrar Dene
         </Button>
       </Box>
@@ -140,7 +184,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
       <iframe
         ref={iframeRef}
         src={iframeSrc}
-        key={iframeSrc}
+        key={`${iframeSrc}-${retryKey}`}
         style={{
           background: currentMode === "dark" ? "#0f1720" : "#ffffff",
           border: "0px",
@@ -157,7 +201,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
         }}
         onError={() => {
           setIsLoading(false);
-          setServerError("Enflasyon sayfasi yuklenemedi. Lütfen tekrar deneyin.");
+          setServerError("Enflasyon sayfasi yuklenemedi. Lutfen tekrar deneyin.");
         }}
       />
     </Box>
@@ -165,3 +209,4 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
 };
 
 export default EnflasyonIframe;
+

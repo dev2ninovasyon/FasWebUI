@@ -152,6 +152,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         console.log("UserData constructed");
 
         if (typeof window !== "undefined") {
+          window.sessionStorage.removeItem("fas_logout_intent");
           if (userToken) {
             window.sessionStorage.setItem("fas_session_token", userToken);
           }

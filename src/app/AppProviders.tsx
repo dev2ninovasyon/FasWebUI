@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeSettings } from "@/utils/theme/Theme";
+import { useThemeSettings } from "@/utils/theme/Theme";
 import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { setMaddiDogrulamaItems } from "@/store/dynamicMenu/DynamicMenuSlice";
@@ -44,8 +44,14 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
     useAutoLogout(90 * 60 * 1000, 45 * 60 * 1000, 60 * 1000);
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const theme = ThemeSettings();
-  const customizer = useSelector((state: AppState) => state.customizer);
+  const theme = useThemeSettings();
+  const customizer = useSelector(
+    (state: AppState) =>
+      state.customizer ?? {
+        activeMode: "light",
+        activeDir: "ltr",
+      }
+  );
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch();

@@ -21,6 +21,8 @@ import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { apiFetch } from "@/api/apiBase";
 import Logger from "@/utils/Logger";
 
+const LOGOUT_INTENT_KEY = "fas_logout_intent";
+
 const MainWrapper = styled("div")(() => ({
   display: "flex",
   minHeight: "100dvh",
@@ -79,11 +81,20 @@ export default function RootLayout({
   const [isLoadingCompanies, setIsLoadingCompanies] = useState(false);
 
   const dispatch = useDispatch();
+  const hasLogoutIntent = () => {
+    if (typeof window === "undefined") return false;
+    return !!window.sessionStorage.getItem(LOGOUT_INTENT_KEY);
+  };
+  const clearLogoutIntent = () => {
+    if (typeof window === "undefined") return;
+    window.sessionStorage.removeItem(LOGOUT_INTENT_KEY);
+  };
 
   // Initial authentication check & Role-based flow
   useEffect(() => {
     const checkFlow = async () => {
       if (typeof window !== "undefined" && user.token) {
+        clearLogoutIntent();
         setControl(true);
         setIsChecking(false);
 
@@ -144,10 +155,15 @@ export default function RootLayout({
 
         // Cookie bazlı session varsa login'e atmadan önce tek sefer refresh dene.
         try {
+          const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
           const refreshResponse = await apiFetch("/Auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({}),
+            body: JSON.stringify(
+              currentRefreshToken
+                ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
+                : {}
+            ),
             ignoreCustomHeaders: true,
             suppressErrorLog: true,
           });
@@ -175,21 +191,32 @@ export default function RootLayout({
         setIsSelectionModalOpen(false);
         setNoCompanyWarning(false);
         setIsChecking(false);
-        router.push("/");
+        if (!control || hasLogoutIntent()) {
+          clearLogoutIntent();
+          router.push("/");
+        } else {
+          console.warn("⚠️ Layout: logout intent yok, login redirect atlandı.");
+          setControl(true);
+        }
       }
     };
 
     checkFlow();
-  }, [user.token, user.denetlenenId, user.yil, user.yetki, user.kurulumTamamlandi, router]);
+  }, [user.token, user.denetlenenId, user.yil, user.yetki, user.kurulumTamamlandi, router, control]);
 
   // Handle logout scenario
   useEffect(() => {
     if (control && !user.token) {
-      setIsWizardOpen(false);
-      setIsSelectionModalOpen(false);
-      setNoCompanyWarning(false);
-      router.push("/");
-      setControl(false);
+      if (hasLogoutIntent()) {
+        clearLogoutIntent();
+        setIsWizardOpen(false);
+        setIsSelectionModalOpen(false);
+        setNoCompanyWarning(false);
+        router.push("/");
+        setControl(false);
+      } else {
+        console.warn("⚠️ Layout: token yok ama logout intent yok, login'e yönlendirme yapılmadı.");
+      }
     }
   }, [user.token, control, router]);
   // Handle selection from MandatoryFlow
@@ -212,10 +239,15 @@ export default function RootLayout({
 
         // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
         try {
+          const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
           await apiFetch("/Auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({}),
+            body: JSON.stringify(
+              currentRefreshToken
+                ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
+                : {}
+            ),
             suppressErrorLog: true,
           });
           console.log("✅ Layout - Cookie session refresh successful.");

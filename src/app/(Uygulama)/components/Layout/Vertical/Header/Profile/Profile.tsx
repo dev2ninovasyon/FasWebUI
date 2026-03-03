@@ -18,6 +18,8 @@ import ProfileItems from "./ProfileItems";
 import { resetToNull } from "@/store/user/UserSlice";
 import { apiFetch } from "@/api/apiBase";
 
+const LOGOUT_INTENT_KEY = "fas_logout_intent";
+
 const Profile = () => {
   const dispatch = useDispatch();
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -41,6 +43,7 @@ const Profile = () => {
     }
 
     if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(LOGOUT_INTENT_KEY, "manual");
       window.localStorage.removeItem("persist:root");
       window.sessionStorage.removeItem("reduxState");
       window.localStorage.removeItem("fas_token");

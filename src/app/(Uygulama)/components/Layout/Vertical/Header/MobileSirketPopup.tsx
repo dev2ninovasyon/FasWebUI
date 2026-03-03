@@ -97,10 +97,15 @@ const MobileSirketPopup = () => {
             console.log("MobileSirketPopup - Persistence update successful.");
 
             try {
+              const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
               const refreshResponse = await apiFetch("/Auth/refresh", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({}),
+                body: JSON.stringify(
+                  currentRefreshToken
+                    ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
+                    : {}
+                ),
                 suppressErrorLog: true,
               });
               const refreshData = await refreshResponse.json().catch(() => null);

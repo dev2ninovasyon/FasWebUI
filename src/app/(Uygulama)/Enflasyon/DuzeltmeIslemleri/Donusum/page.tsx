@@ -2,7 +2,7 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, CircularProgress, Box } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
@@ -27,6 +27,20 @@ const BCrumb = [
 
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const denetimTuruNormalized = (user.denetimTuru || "").trim().toLowerCase();
+  const isBobi =
+    denetimTuruNormalized.length > 0
+      ? denetimTuruNormalized === "bobi"
+      : !!user.bobimi;
+  const enflasyonUrl = isBobi
+    ? "/EnflasyonDuzeltmesi/DonusumBobi"
+    : "/EnflasyonDuzeltmesi/Donusum";
+
+  useEffect(() => {
+    console.log("[Enflasyon/Donusum] denetimTuru:", user.denetimTuru);
+    console.log("[Enflasyon/Donusum] bobimi:", user.bobimi);
+    console.log("[Enflasyon/Donusum] selectedIframeUrl:", enflasyonUrl);
+  }, [user.denetimTuru, user.bobimi, enflasyonUrl]);
 
   return (
     <ProtectedPage allowed={user?.enflasyonmu || false}>
@@ -42,7 +56,7 @@ const Page: React.FC = () => {
               sm: 12,
               lg: 12
             }} sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
-            <EnflasyonIframe url={user.denetimTuru == "Bobi" ? "/EnflasyonDuzeltmesi/DonusumBobi" : "/EnflasyonDuzeltmesi/Donusum"} />
+            <EnflasyonIframe url={enflasyonUrl} />
           </Grid>
         </Grid>
       </PageContainer>

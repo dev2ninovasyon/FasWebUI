@@ -7,6 +7,7 @@ const LOGIN_ROUTE_PATH = "/";
 const MAINTENANCE_ROUTE_PATH = "/maintenance";
 const SESSION_ACCESS_TOKEN_KEY = "fas_session_token";
 const SESSION_REFRESH_TOKEN_KEY = "fas_session_refreshToken";
+const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 const isAuthEndpoint = (path: string) => {
   const lowerPath = path.toLowerCase();
@@ -28,12 +29,22 @@ const shouldSkipLoginRedirect = () => {
   return window.sessionStorage.getItem("fas_debug_no_login_redirect") === "1";
 };
 
+const hasLogoutIntent = () => {
+  if (typeof window === "undefined") return false;
+  return !!window.sessionStorage.getItem(LOGOUT_INTENT_KEY);
+};
+
 const redirectToLogin = () => {
   if (typeof window === "undefined") return;
+  if (!hasLogoutIntent()) {
+    console.warn("⚠️ Otomatik login redirect engellendi: logout intent yok.");
+    return;
+  }
   if (shouldSkipLoginRedirect()) {
     console.warn("🧪 Debug modu aktif: login redirect atlandı (fas_debug_no_login_redirect=1).");
     return;
   }
+  window.sessionStorage.removeItem(LOGOUT_INTENT_KEY);
   window.localStorage.removeItem("persist:root");
   window.sessionStorage.removeItem("reduxState");
   window.sessionStorage.removeItem(SESSION_ACCESS_TOKEN_KEY);
@@ -122,7 +133,6 @@ export async function apiFetch(
       // En fazla 1 kez retry: sonsuz refresh döngüsünü engelle
       if (__retryCount >= 1) {
         console.error(`❌ API 401 devam ediyor, retry sınırına ulaşıldı (${path}).`);
-        redirectToLogin();
         return response;
       }
 
@@ -132,15 +142,19 @@ export async function apiFetch(
         try {
           // Tek bir refresh isteği paylaşımı (concurrent 401 storm için)
           const activeRefreshPromise = (window as any)._activeRefreshPromise as Promise<Response> | undefined;
+          const refreshTokenCandidate =
+            window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
+            window.localStorage.getItem("fas_refreshToken");
           const refreshPromise =
             activeRefreshPromise ||
             fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                refreshToken: window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY),
-                RefreshToken: window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY),
-              }),
+              body: JSON.stringify(
+                refreshTokenCandidate
+                  ? { refreshToken: refreshTokenCandidate, RefreshToken: refreshTokenCandidate }
+                  : {}
+              ),
               credentials: "include", // HttpOnly cookie'leri gönder
             });
 
@@ -170,8 +184,7 @@ export async function apiFetch(
               __retryCount: __retryCount + 1,
             });
           } else {
-            console.error("❌ Session yenileme başarısız. Oturum kapatılıyor.");
-            redirectToLogin();
+            console.error("❌ Session yenileme başarısız. İstek login redirect olmadan sonlandırıldı.");
           }
         } catch (refreshError) {
           (window as any)._activeRefreshPromise = undefined;
