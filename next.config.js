@@ -11,7 +11,7 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   experimental: {
-    optimizePackageImports: ['@mui/material', '@mui/icons-material', '@tabler/icons-react'],
+    optimizePackageImports: ['@mui/material', '@mui/icons-material', '@tabler/icons-react', 'lucide-react'],
   },
 };
 
