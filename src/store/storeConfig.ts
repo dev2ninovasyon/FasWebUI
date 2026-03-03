@@ -6,6 +6,7 @@ import { rootReducer } from "./store";
 import {
   persistStore,
   persistReducer,
+  createTransform,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -36,11 +37,26 @@ const storage =
   typeof window !== "undefined"
     ? createWebStorage("local")
     : createPersistStore();
+
+const stripAuthTokensTransform = createTransform(
+  (inboundState: any, key) => {
+    if (key !== "userReducer" || !inboundState) {
+      return inboundState;
+    }
+
+    const { token, refreshToken, ...safeState } = inboundState;
+    return safeState;
+  },
+  (outboundState) => outboundState,
+  { whitelist: ["userReducer"] }
+);
+
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
   whitelist: ["userReducer", "customizer"],
+  transforms: [stripAuthTokensTransform],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

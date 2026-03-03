@@ -1,5 +1,7 @@
 ﻿import React, { useEffect, useState } from "react";
+import * as LucideIcons from "lucide-react";
 import {
+  Avatar,
   Card,
   CardContent,
   CardHeader,
@@ -18,6 +20,7 @@ import {
   Tooltip,
   useTheme,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { AppState } from "@/store/store";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -28,86 +31,11 @@ import { useRouter } from "next/navigation";
 import { useLoading } from "@/contexts/LoadingContext";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import Link from "next/link";
-import Image from "next/image";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
-
-
-const allIcons = [
-  "/images/svgs/denetim-kanitlari/icon/icons8-accounting-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-banknotes-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-bill-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-billing-machine-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-bitcoin-accepted-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-budget-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-business-report-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-buy-for-cash-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-buy-for-change-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-buy-for-coins-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-buy-with-card-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-card-exchange-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-card-wallet-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-cashbook-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-check-book-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-coin-in-hand-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-coin-wallet-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-collectibles-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-community-grants-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-credit-control-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-debit-card-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-debt-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-deposit-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-ethereum-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-financial-growth-analysis-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-folder-bills-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-foreclosure-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-fund-accounting-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-general-ledger-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-goal-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-hand-with-pen-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-increase-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-investment-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-invoice-50-2.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-invoice-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-ledger-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-logbook-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-magnetic-card-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-management-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-market-share-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-merchant-account-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-money-box-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-positive-dynamic-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-profit-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-receive-cash-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-refund-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-related-companies-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-rental-house-contract-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-safe-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-safe-ok-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-shopping-cart-with-money-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-split-transaction-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-study-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-tasks-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-to-do-list-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-topup-payment-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-transaction-50-2.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-transaction-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-turkish-lira-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-us-dollar-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-wallet-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-web-analytics-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-withdrawal-50.png",
-  "/images/svgs/denetim-kanitlari/icon/icons8-world-markets-50.png",
-];
-
-function getIconForCategory(index: number): string {
-  return allIcons[index % allIcons.length];
-}
-
-function getColorForCategory(categoryName: string): string {
-  const colors = ["error", "success", "info"];
-  const index = categoryName.length % colors.length;
-  return colors[index];
-}
+import {
+  resolveIconNameByMenuTitle,
+  resolveUniqueIconNamesForTitles,
+} from "@/utils/menuIconResolver";
 
 interface CalismaKagidiProps {
   parentName?: string;
@@ -119,6 +47,25 @@ interface DenetimDosyaBelgeleriDto {
   name: string;
   children?: DenetimDosyaBelgeleriDto[];
 }
+
+const lucideIconPool = Object.keys(LucideIcons)
+  .filter(
+    (key) =>
+      /^[A-Z]/.test(key) &&
+      key !== "Icon" &&
+      key !== "icons" &&
+      typeof (LucideIcons as unknown as Record<string, unknown>)[key] !== "undefined"
+  )
+  .sort();
+
+const hashString = (value: string): number => {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash << 5) - hash + value.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+};
 
 const StatusIcon: React.FC<{ status: boolean }> = ({ status }) => {
   return status ? (
@@ -136,7 +83,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
   const [calismaKagidiVerileri, setCalismaKagidiVerileri] = useState<DenetimDosyaBelgeleriDto[]>([]);
 
   // Görünümü localStorage'dan oku, yoksa "list" varsayılan yap
-  const [viewMode, setViewMode] = useState<"list" | "card">("list");
+  const [viewMode, setViewMode] = useState<"list" | "card">("card");
 
   const router = useRouter();
   const { setLoading } = useLoading();
@@ -210,6 +157,16 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
     ? calismaKagidiVerileri[0].children
     : calismaKagidiVerileri;
 
+  const uniqueIconByItemId = React.useMemo(() => {
+    const iconNames = resolveUniqueIconNamesForTitles(
+      displayData.map((item) => item.name)
+    );
+
+    return new Map<number, string>(
+      displayData.map((item, index) => [item.id, iconNames[index]])
+    );
+  }, [displayData]);
+
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "end", paddingBottom: viewMode === "list" ? "32px" : "0px", paddingRight: "10px" }}>
@@ -219,9 +176,12 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
       </Box>
       {viewMode === "card" ? (
         <Grid container spacing={3} mt={1}>
-          {displayData.map((item, index) => {
-            const bgcolor = getColorForCategory(item.name);
-            const icon = getIconForCategory(index);
+          {displayData.map((item) => {
+            const iconName =
+              uniqueIconByItemId.get(item.id) || resolveIconNameByMenuTitle(item.name);
+            const CardIcon =
+              (LucideIcons as unknown as Record<string, React.ElementType>)[iconName] ||
+              LucideIcons.FileText;
             const targetPath = parentName
               ? `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${parentName}/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`
               : `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`;
@@ -235,10 +195,27 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
                   lg: 3
                 }}>
                 <Link href={targetPath} passHref onClick={() => setLoading(true)} style={{ textDecoration: 'none' }}>
-                  <Box bgcolor={bgcolor + ".light"} textAlign="center" sx={{ borderRadius: "8px", cursor: "pointer" }}>
+                  <Box
+                    textAlign="center"
+                    sx={{
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      backgroundColor: alpha(theme.palette.primary.main, 0.10),
+                    }}
+                  >
                     <CardContent style={{ height: "180px", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                      <Image src={icon} alt={"icon"} width="50" height="50" />
-                      <Typography color={bgcolor + ".main"} mt={1} variant="subtitle1" fontWeight={600}>
+                      <Avatar
+                        sx={{
+                          width: 50,
+                          height: 50,
+                          backgroundColor: "transparent",
+                          color: theme.palette.text.primary,
+                          marginBottom: "4px",
+                        }}
+                      >
+                        <CardIcon size={38} strokeWidth={1.5} />
+                      </Avatar>
+                      <Typography color="text.primary" mt={1} variant="subtitle1" fontWeight={600}>
                         {item.name}
                       </Typography>
                     </CardContent>
@@ -348,4 +325,7 @@ const MaddiDogrulamaListe: React.FC<CalismaKagidiProps> = ({ parentName, onViewM
 };
 
 export default MaddiDogrulamaListe;
+
+
+
 

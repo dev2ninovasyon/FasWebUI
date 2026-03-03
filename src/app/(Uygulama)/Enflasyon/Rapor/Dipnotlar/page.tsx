@@ -39,7 +39,7 @@ const Page: React.FC = () => {
               sm: 12,
               lg: 12
             }} sx={{ height: "100%", position: "relative", overflow: "hidden" }}>
-            <EnflasyonIframe url={user.denetimTuru == "Bobi" ? "/EnflasyonDuzeltmesi/DipnotlarBobi" : "/EnflasyonDuzeltmesi/Dipnotlar"} />
+            <EnflasyonIframe url={user.bobimi ? "/EnflasyonDuzeltmesi/DipnotlarBobi" : "/EnflasyonDuzeltmesi/Dipnotlar"} />
           </Grid>
         </Grid>
       </PageContainer>

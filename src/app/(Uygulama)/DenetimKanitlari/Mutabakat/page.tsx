@@ -9,7 +9,7 @@ import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import MutabakatLayout from "./MutabakatLayout";
 
 const Page = () => {
-  const [showFilteredMenu, setShowFilteredMenu] = useState(true);
+  const [showFilteredMenu, setShowFilteredMenu] = useState(false);
 
   const handleToggle = () => {
     setShowFilteredMenu((prev) => !prev);

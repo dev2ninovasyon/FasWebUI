@@ -11,6 +11,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { Box, Button } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AddIcon from "@mui/icons-material/Add";
+import { resolveIconNameByMenuTitle } from "@/utils/menuIconResolver";
 
 const BCrumb = [
   {
@@ -34,7 +35,7 @@ const removeTurkishChars = (str: string | undefined | null) => {
 };
 
 const Page = () => {
-  const [viewMode, setViewMode] = useState<"list" | "card">("list");
+  const [viewMode, setViewMode] = useState<"list" | "card">("card");
   const dispatch = useDispatch();
   const user = useSelector((state: AppState) => state.userReducer);
   const dynamicMenu = useSelector((state: AppState) => state.dynamicMenu);
@@ -52,11 +53,13 @@ const Page = () => {
         const transformedData = data?.map((item: any) => ({
           id: item.id,
           name: item.name,
+          icon: resolveIconNameByMenuTitle(item.name),
           category: "MaddiDogrulama",
           href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}?title=${encodeURIComponent(item.name)}`,
           children: item.children?.map((child: any) => ({
             id: child.id,
             name: child.name,
+            icon: resolveIconNameByMenuTitle(child.name),
             parentName: item.name,
             category: "MaddiDogrulama",
             href: `/DenetimKanitlari/MaddiDogrulamaProsedurleri/${removeTurkishChars(item.name)}/${removeTurkishChars(child.name)}?title=${encodeURIComponent(child.name)}`,

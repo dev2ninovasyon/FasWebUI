@@ -1,14 +1,23 @@
 ﻿import { apiFetch, url as apiBaseUrl } from "@/api/apiBase";
 import SecureTokenManager from "@/utils/SecureTokenManager";
-import { HubConnectionBuilder, HttpTransportType, LogLevel, HubConnectionState } from "@microsoft/signalr";
+import { HubConnectionBuilder, LogLevel, HubConnectionState } from "@microsoft/signalr";
 
 let hubConnection: any = null;
+let startConnectionPromise: Promise<any> | null = null;
 let pollingInterval: NodeJS.Timeout | null = null;
 let lastNotificationTime = new Date();
 let notificationCallback: ((bildirim: any) => void) | null = null;
 let listenerRegistered = false;
 let pollingToken: string | null = null;
 let pollingDenetciId: number | null = null;
+
+const getSignalRToken = () => {
+  if (typeof window === "undefined") {
+    return SecureTokenManager.getAccessToken() || "";
+  }
+
+  return SecureTokenManager.getAccessToken() || "";
+};
 
 // Hot reload cleanup: In development, ensure old connections are cleaned up on module reload
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
@@ -84,6 +93,11 @@ let pollCallback: ((bildirim: any) => void) | null = null;
 export const startPollingBildirim = (denetciId: number, callback: (bildirim: any) => void) => {
   console.log("📡 Polling modu başlatıldı (her 5 saniyede kontrol)");
 
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+    pollingInterval = null;
+  }
+
   pollCallback = callback;
   // Polling başlarken şu anki zamanı set et, böylece eski bildirimleri göstermez
   lastNotificationTime = new Date();
@@ -135,7 +149,7 @@ export const stopPollingBildirim = () => {
 
 export const startBildirimConnection = async (denetciId: number) => {
   // Polling için token ve denetciId'yi kaydet (fallback için)
-  pollingToken = SecureTokenManager.getAccessToken() || "";
+  pollingToken = getSignalRToken();
   pollingDenetciId = denetciId;
 
   if (hubConnection && hubConnection.state === HubConnectionState.Connected) {
@@ -143,12 +157,17 @@ export const startBildirimConnection = async (denetciId: number) => {
     return hubConnection;
   }
 
-  try {
+  if (startConnectionPromise) {
+    return startConnectionPromise;
+  }
+
+  startConnectionPromise = (async () => {
     const apiUrl = getApiUrl();
     const hubUrl = `${apiUrl}/bildirim-hub`;
 
     console.log("🔌 SignalR bağlantısı başlatılıyor:", hubUrl);
-    // console.log("Token:", token?.substring(0, 20) + "...");
+    const signalRToken = getSignalRToken();
+    console.log("Token var mı:", signalRToken ? "evet" : "hayır");
     console.log("DenetçiId:", denetciId);
 
     // Use lighter reconnect strategy in development to save memory
@@ -158,36 +177,40 @@ export const startBildirimConnection = async (denetciId: number) => {
 
     hubConnection = new HubConnectionBuilder()
       .withUrl(hubUrl, {
-        accessTokenFactory: () => SecureTokenManager.getAccessToken() || "",
+        accessTokenFactory: () => getSignalRToken(),
+        withCredentials: true,
         // ⚠️ skipNegotiation: true ve transport: WebSockets zorlaması CORS/Proxy sorunlarına yol açabilir.
         // SignalR'ın en iyi transportu (WebSockets, Server-Sent Events, Long Polling) otomatik seçmesine izin verin.
       })
       .withAutomaticReconnect(reconnectStrategy)
       .configureLogging(process.env.NODE_ENV === 'development' ? LogLevel.Warning : LogLevel.Information)
       .build();
+    const activeConnection = hubConnection;
 
     // Listener'ı bağlantı kurulmadan ÖNCE kaydet
     // Bu sayede bağlantı kurulduktan hemen sonra mesajlar alınabilir
     if (notificationCallback && !listenerRegistered) {
       console.log("✅ YeniBildirim listener kaydediliyor (bağlantı öncesi)");
-      hubConnection.on("YeniBildirim", notificationCallback);
+      activeConnection.on("YeniBildirim", notificationCallback);
       listenerRegistered = true;
     }
 
     // Bağlantı olaylarını dinle
-    hubConnection.onreconnecting((error: Error | undefined) => {
+    activeConnection.onreconnecting((error: Error | undefined) => {
       console.warn("⚠️ SignalR yeniden bağlanmaya çalışıyor...", error);
     });
 
-    hubConnection.onreconnected((connectionId: string | undefined) => {
+    activeConnection.onreconnected((connectionId: string | undefined) => {
       console.log("✅ SignalR yeniden bağlandı:", connectionId);
       // Listener zaten kayıtlı olduğundan tekrar kaydetmeye gerek yok
       // SignalR otomatik olarak listener'ları korur
     });
 
-    hubConnection.onclose((error: Error | undefined) => {
+    activeConnection.onclose((error: Error | undefined) => {
       console.warn("❌ SignalR bağlantısı kapandı:", error);
-      hubConnection = null;
+      if (hubConnection === activeConnection) {
+        hubConnection = null;
+      }
       listenerRegistered = false;
 
       // Bağlantı kapanınca polling'e geç
@@ -198,27 +221,27 @@ export const startBildirimConnection = async (denetciId: number) => {
     });
 
     console.log("🔌 SignalR bağlantısı kuruluyor...");
-    await hubConnection.start();
+    await activeConnection.start();
 
-    // hubConnection, start() sonrası onclose ile null olmuş olabilir (auth/CORS hatası)
-    if (!hubConnection) {
-      throw new Error("Bağlantı kuruldu ancak hemen kapandı (onclose tetiklendi).");
+    if (activeConnection.state !== HubConnectionState.Connected) {
+      throw new Error("SignalR bağlantısı start sonrası Connected durumunda değil.");
     }
 
     console.log("✅ SignalR bağlantısı başarılı! Grup katılımı yapılıyor...");
-    console.log("📡 Connection ID:", hubConnection.connectionId);
+    console.log("📡 Connection ID:", activeConnection.connectionId);
 
     // Bağlantının hazır olması için biraz bekle
-    if (hubConnection.state === HubConnectionState.Connected) {
+    if (activeConnection.state === HubConnectionState.Connected) {
       console.log("✅ Bağlantı durumu: Connected");
-      await hubConnection.invoke("JoinDenetciGroup", denetciId);
+      await activeConnection.invoke("JoinDenetciGroup", denetciId);
       console.log("✅ SignalR bağlantısı başarılı ve gruba katılım yapıldı!");
     } else {
-      const stateValue = hubConnection.state;
+      const stateValue = activeConnection.state;
       const stateMap: { [key: number]: string } = {
         0: "Disconnected",
         1: "Connected",
-        2: "Reconnecting",
+        2: "Connecting",
+        3: "Reconnecting",
       };
       throw new Error(`Bağlantı durumu hatalı: ${stateMap[stateValue] || `Unknown(${stateValue})`}`);
     }
@@ -226,9 +249,9 @@ export const startBildirimConnection = async (denetciId: number) => {
     // Polling'i durdur (SignalR aktif oldu)
     stopPollingBildirim();
 
-    return hubConnection;
+    return activeConnection;
 
-  } catch (error) {
+  })().catch(async (error) => {
     console.error("❌ SignalR bağlantı hatası:", error);
 
     // Detaylı hata bilgisi
@@ -236,6 +259,9 @@ export const startBildirimConnection = async (denetciId: number) => {
       console.error("Hata mesajı:", error.message);
       console.error("Stack trace ilk satır:", error.stack?.split('\n')[0]);
     }
+
+    const message = error instanceof Error ? error.message : String(error || "");
+    const stoppedDuringNegotiation = message.includes("stopped during negotiation");
 
     // Hata kodu için bağlantıyı kapat ama null'a setleme
     try {
@@ -249,11 +275,16 @@ export const startBildirimConnection = async (denetciId: number) => {
     hubConnection = null;
     listenerRegistered = false;
 
-    // SignalR başarısız oldu, polling'i başlat
-    console.warn("⚠️ SignalR başarısız, polling fallback'ine geçiliyor...");
+    if (!stoppedDuringNegotiation) {
+      console.warn("⚠️ SignalR başarısız, polling fallback'ine geçiliyor...");
+    }
 
     throw error;
-  }
+  }).finally(() => {
+    startConnectionPromise = null;
+  });
+
+  return startConnectionPromise;
 };
 
 export const onYeniBildirim = (callback: (bildirim: any) => void, denetciId?: number) => {
@@ -295,7 +326,8 @@ export const getBildirimConnectionStatus = () => {
   const stateMap: { [key: number]: string } = {
     0: "Disconnected",
     1: "Connected",
-    2: "Reconnecting",
+    2: "Connecting",
+    3: "Reconnecting",
   };
 
   const connectionState = hubConnection?.state;

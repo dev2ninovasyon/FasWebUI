@@ -59,9 +59,9 @@ export default function NavCollapse({
   const [open, setOpen] = useState(false);
   const menuIcon =
     level > 1 ? (
-      <Icon stroke={1.5} size="1rem" />
+      <Icon strokeWidth={1.5} size="1rem" />
     ) : (
-      <Icon stroke={1.5} size="1.3rem" />
+      <Icon strokeWidth={1.5} size="1.3rem" />
     );
 
   const handleClick = () => {

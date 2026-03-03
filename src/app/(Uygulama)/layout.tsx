@@ -18,8 +18,10 @@ import MandatoryFlow from "./components/Layout/Mandatory/MandatoryFlow";
 import { useDispatch } from "@/store/hooks";
 import { getDenetlenenByRolForSelection, getDenetlenenByDenetciIdForSelection } from "@/api/Musteri/MusteriIslemleri";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
 import Logger from "@/utils/Logger";
+
+const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -79,11 +81,20 @@ export default function RootLayout({
   const [isLoadingCompanies, setIsLoadingCompanies] = useState(false);
 
   const dispatch = useDispatch();
+  const hasLogoutIntent = () => {
+    if (typeof window === "undefined") return false;
+    return !!window.sessionStorage.getItem(LOGOUT_INTENT_KEY);
+  };
+  const clearLogoutIntent = () => {
+    if (typeof window === "undefined") return;
+    window.sessionStorage.removeItem(LOGOUT_INTENT_KEY);
+  };
 
   // Initial authentication check & Role-based flow
   useEffect(() => {
     const checkFlow = async () => {
       if (typeof window !== "undefined" && user.token) {
+        clearLogoutIntent();
         setControl(true);
         setIsChecking(false);
 
@@ -131,32 +142,80 @@ export default function RootLayout({
           setIsLoadingCompanies(false);
         }
       } else if (typeof window !== "undefined" && !user.token) {
-        // Token yoksa login'e yönlendir
-        // ⚠️ ÖNEMLİ: Persist rehydration henüz tamamlanmamış olabilir
-        const localToken = localStorage.getItem("fas_token");
-        const localRefreshToken = localStorage.getItem("fas_refreshToken");
+        const sessionToken = window.sessionStorage.getItem("fas_session_token");
+        const sessionRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+        if (sessionToken) {
+          dispatch(setToken(sessionToken));
+          if (sessionRefreshToken) {
+            dispatch(setRefreshToken(sessionRefreshToken));
+          }
+          setIsChecking(false);
+          return;
+        }
 
-        if (!localToken) {
+        // Cookie bazlı session varsa login'e atmadan önce tek sefer refresh dene.
+        try {
+          const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+          if (!currentRefreshToken) {
+            throw new Error("Refresh token yok");
+          }
+          const refreshResponse = await apiFetch("/Auth/refresh", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }),
+            ignoreCustomHeaders: true,
+            suppressErrorLog: true,
+          });
+
+          if (refreshResponse?.ok) {
+            const refreshData = await refreshResponse.json().catch(() => null);
+            const token = refreshData?.token || refreshData?.Token;
+            const refreshToken = refreshData?.refreshToken || refreshData?.RefreshToken;
+            if (token) {
+              window.sessionStorage.setItem("fas_session_token", token);
+              dispatch(setToken(token));
+            }
+            if (refreshToken) {
+              window.sessionStorage.setItem("fas_session_refreshToken", refreshToken);
+              dispatch(setRefreshToken(refreshToken));
+            }
+            setIsChecking(false);
+            return;
+          }
+        } catch {
+          // refresh başarısızsa login'e yönlendirilecek
+        }
+
+        setIsWizardOpen(false);
+        setIsSelectionModalOpen(false);
+        setNoCompanyWarning(false);
+        setIsChecking(false);
+        if (!control || hasLogoutIntent()) {
+          clearLogoutIntent();
           router.push("/");
         } else {
-          // Fallback: persist rehydration gecikirse token'ı localStorage'dan store'a al.
-          dispatch(setToken(localToken));
-          if (localRefreshToken) {
-            dispatch(setRefreshToken(localRefreshToken));
-          }
-          console.log("⏳ Persist rehydration gecikti, token localStorage'dan store'a yüklendi.");
+          console.warn("⚠️ Layout: logout intent yok, login redirect atlandı.");
+          setControl(true);
         }
       }
     };
 
     checkFlow();
-  }, [user.token, user.denetlenenId, user.yil, user.yetki, user.kurulumTamamlandi, router]);
+  }, [user.token, user.denetlenenId, user.yil, user.yetki, user.kurulumTamamlandi, router, control]);
 
   // Handle logout scenario
   useEffect(() => {
     if (control && !user.token) {
-      router.push("/");
-      setControl(false);
+      if (hasLogoutIntent()) {
+        clearLogoutIntent();
+        setIsWizardOpen(false);
+        setIsSelectionModalOpen(false);
+        setNoCompanyWarning(false);
+        router.push("/");
+        setControl(false);
+      } else {
+        console.warn("⚠️ Layout: token yok ama logout intent yok, login'e yönlendirme yapılmadı.");
+      }
     }
   }, [user.token, control, router]);
   // Handle selection from MandatoryFlow
@@ -178,29 +237,21 @@ export default function RootLayout({
         await updateSonSecilenAyarlari(user.id, data.id, data.year);
 
         // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
-        const refreshToken = localStorage.getItem("fas_refreshToken");
-        if (refreshToken) {
-          try {
-            const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ RefreshToken: refreshToken }),
-              credentials: 'include',
-            });
-
-            if (refreshResponse.ok) {
-              const refreshData = await refreshResponse.json();
-              if (refreshData?.token) {
-                localStorage.setItem("fas_token", refreshData.token);
-                localStorage.setItem("fas_refreshToken", refreshData.refreshToken);
-                dispatch(setToken(refreshData.token));
-                dispatch(setRefreshToken(refreshData.refreshToken));
-                console.log("✅ Layout - Token refresh successful.");
-              }
-            }
-          } catch (refreshErr) {
-            console.warn("⚠️ Layout - Token refresh hatası:", refreshErr);
+        try {
+          const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+          if (!currentRefreshToken) {
+            console.warn("⚠️ Layout - Refresh token yok, token refresh atlandı.");
+            return;
           }
+          await apiFetch("/Auth/refresh", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }),
+            suppressErrorLog: true,
+          });
+          console.log("✅ Layout - Cookie session refresh successful.");
+        } catch (refreshErr) {
+          console.warn("⚠️ Layout - Token refresh hatası:", refreshErr);
         }
       }
     } catch (e) {
@@ -231,7 +282,7 @@ export default function RootLayout({
     );
   }
 
-  if (isWizardOpen || isSelectionModalOpen || noCompanyWarning) {
+  if (user.token && (isWizardOpen || isSelectionModalOpen || noCompanyWarning)) {
     return (
       <MandatoryFlow
         type={isWizardOpen ? "wizard" : noCompanyWarning ? "warning" : "selection"}

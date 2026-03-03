@@ -19,6 +19,8 @@ import YearBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Hea
 import SetupWizardModal from "../../SetupWizard/SetupWizardModal";
 import { IconAlertTriangle, IconBuildingSkyscraper, IconCalendar } from "@tabler/icons-react";
 
+const LOGOUT_INTENT_KEY = "fas_logout_intent";
+
 interface MandatoryFlowProps {
     type: "selection" | "wizard" | "warning";
     onComplete: () => void;
@@ -83,12 +85,15 @@ export default function MandatoryFlow({
     const handleLogout = () => {
         if (typeof window === "undefined") return;
 
+        window.sessionStorage.setItem(LOGOUT_INTENT_KEY, "manual");
         window.localStorage.removeItem("fas_token");
         window.localStorage.removeItem("fas_refreshToken");
         window.localStorage.removeItem("fas_denetlenenId");
         window.localStorage.removeItem("fas_yil");
         window.localStorage.removeItem("persist:root");
         window.sessionStorage.removeItem("reduxState");
+        window.sessionStorage.removeItem("fas_session_token");
+        window.sessionStorage.removeItem("fas_session_refreshToken");
 
         window.location.href = "/";
     };

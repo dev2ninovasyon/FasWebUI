@@ -16,6 +16,9 @@ import { IconMail } from "@tabler/icons-react";
 import { Stack } from "@mui/system";
 import ProfileItems from "./ProfileItems";
 import { resetToNull } from "@/store/user/UserSlice";
+import { apiFetch } from "@/api/apiBase";
+
+const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -29,8 +32,34 @@ const Profile = () => {
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
+    try {
+      await apiFetch("/Auth/logout", {
+        method: "POST",
+        suppressErrorLog: true,
+      } as any);
+    } catch {
+      // server logout başarısız olsa da local logout devam etsin
+    }
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(LOGOUT_INTENT_KEY, "manual");
+      window.localStorage.removeItem("persist:root");
+      window.sessionStorage.removeItem("reduxState");
+      window.localStorage.removeItem("fas_token");
+      window.localStorage.removeItem("fas_refreshToken");
+      window.localStorage.removeItem("fas_denetlenenId");
+      window.localStorage.removeItem("fas_yil");
+      window.localStorage.removeItem("fas_blacklisted_tokens");
+      window.sessionStorage.removeItem("fas_debug_no_login_redirect");
+      window.sessionStorage.removeItem("fas_session_token");
+      window.sessionStorage.removeItem("fas_session_refreshToken");
+    }
+
     dispatch(resetToNull(""));
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
   };
 
   return (

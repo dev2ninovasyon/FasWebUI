@@ -30,7 +30,7 @@ import {
 import { AppState } from "@/store/store";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
-import { url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
 
 const MobileSirketPopup = () => {
   // drawer top
@@ -96,32 +96,35 @@ const MobileSirketPopup = () => {
             await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
             console.log("MobileSirketPopup - Persistence update successful.");
 
-            // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
-            const refreshToken = localStorage.getItem("fas_refreshToken");
-            if (refreshToken) {
-              try {
-                const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ RefreshToken: refreshToken }),
-                  credentials: 'include',
-                });
-
-                if (refreshResponse.ok) {
-                  const refreshData = await refreshResponse.json();
-                  if (refreshData?.token) {
-                    localStorage.setItem("fas_token", refreshData.token);
-                    localStorage.setItem("fas_refreshToken", refreshData.refreshToken);
-                    dispatch(setToken(refreshData.token));
-                    dispatch(setRefreshToken(refreshData.refreshToken));
-                    console.log("✅ MobileSirketPopup - Token refresh successful.");
-                  }
-                } else {
-                  console.warn("⚠️ MobileSirketPopup - Token refresh başarısız.");
-                }
-              } catch (refreshErr) {
-                console.warn("⚠️ MobileSirketPopup - Token refresh hatası:", refreshErr);
+            try {
+              const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+              if (!currentRefreshToken) {
+                console.warn("⚠️ MobileSirketPopup - Refresh token yok, token refresh atlandı.");
+                return;
               }
+              const refreshResponse = await apiFetch("/Auth/refresh", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  refreshToken: currentRefreshToken,
+                  RefreshToken: currentRefreshToken,
+                }),
+                suppressErrorLog: true,
+              });
+              const refreshData = await refreshResponse.json().catch(() => null);
+              const nextToken = refreshData?.token || refreshData?.Token;
+              const nextRefreshToken = refreshData?.refreshToken || refreshData?.RefreshToken;
+              if (nextToken) {
+                window.sessionStorage.setItem("fas_session_token", nextToken);
+                dispatch(setToken(nextToken));
+              }
+              if (nextRefreshToken) {
+                window.sessionStorage.setItem("fas_session_refreshToken", nextRefreshToken);
+                dispatch(setRefreshToken(nextRefreshToken));
+              }
+              console.log("✅ MobileSirketPopup - Cookie session refreshed.");
+            } catch (refreshErr) {
+              console.warn("⚠️ MobileSirketPopup - Token refresh hatası:", refreshErr);
             }
           } catch (err) {
             console.error("MobileSirketPopup - Persistence update hatası:", err);

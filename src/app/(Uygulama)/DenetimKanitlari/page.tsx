@@ -11,7 +11,7 @@ import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 
 const Page = () => {
-  const [showFilteredMenu, setShowFilteredMenu] = useState(true);
+  const [showFilteredMenu, setShowFilteredMenu] = useState(false);
 
   const handleToggle = () => {
     setShowFilteredMenu((prev) => !prev);

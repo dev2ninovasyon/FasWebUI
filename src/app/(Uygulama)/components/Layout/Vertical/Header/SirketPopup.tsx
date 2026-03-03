@@ -24,15 +24,15 @@ import {
   setEnflasyonmu,
   setKonsolidemi,
   setRol,
-  setTfrsmi,
-  setYil,
   setToken,
   setRefreshToken,
+  setTfrsmi,
+  setYil,
 } from "@/store/user/UserSlice";
 import { AppState } from "@/store/store";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
-import { apiFetch, url } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
 
 const SirketPopup = () => {
   // drawer top
@@ -101,34 +101,35 @@ const SirketPopup = () => {
             await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);
             console.log("SirketPopup - Persistence update successful.");
 
-            // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
-            // Yeni token, güncel denetlenenId ve yil claim'lerini içerecek
-            const refreshToken = localStorage.getItem("fas_refreshToken");
-            if (refreshToken) {
-              try {
-                const refreshResponse = await fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ RefreshToken: refreshToken }),
-                  credentials: 'include',
-                });
-
-                if (refreshResponse.ok) {
-                  const refreshData = await refreshResponse.json();
-                  if (refreshData?.token) {
-                    // Yeni token'ları kaydet
-                    localStorage.setItem("fas_token", refreshData.token);
-                    localStorage.setItem("fas_refreshToken", refreshData.refreshToken);
-                    dispatch(setToken(refreshData.token));
-                    dispatch(setRefreshToken(refreshData.refreshToken));
-                    console.log("✅ SirketPopup - Token refresh successful, yeni claim'ler alındı.");
-                  }
-                } else {
-                  console.warn("⚠️ SirketPopup - Token refresh başarısız, eski token kullanılacak.");
-                }
-              } catch (refreshErr) {
-                console.warn("⚠️ SirketPopup - Token refresh hatası:", refreshErr);
+            try {
+              const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+              if (!currentRefreshToken) {
+                console.warn("⚠️ SirketPopup - Refresh token yok, token refresh atlandı.");
+                return;
               }
+              const refreshResponse = await apiFetch("/Auth/refresh", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  refreshToken: currentRefreshToken,
+                  RefreshToken: currentRefreshToken,
+                }),
+                suppressErrorLog: true,
+              });
+              const refreshData = await refreshResponse.json().catch(() => null);
+              const nextToken = refreshData?.token || refreshData?.Token;
+              const nextRefreshToken = refreshData?.refreshToken || refreshData?.RefreshToken;
+              if (nextToken) {
+                window.sessionStorage.setItem("fas_session_token", nextToken);
+                dispatch(setToken(nextToken));
+              }
+              if (nextRefreshToken) {
+                window.sessionStorage.setItem("fas_session_refreshToken", nextRefreshToken);
+                dispatch(setRefreshToken(nextRefreshToken));
+              }
+              console.log("✅ SirketPopup - Cookie session refreshed.");
+            } catch (refreshErr) {
+              console.warn("⚠️ SirketPopup - Token refresh hatası:", refreshErr);
             }
           } catch (err) {
             console.error("SirketPopup - Persistence update hatası:", err);

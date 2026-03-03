@@ -162,7 +162,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
         </Card>
       </Grid>
       <Dialog
-        open={isOpen}
+        open={isOpen && Boolean(pdfBlobUrl)}
         onClose={() => {
           setIsOpen(false);
           setPdfBlobUrl((prev) => {
@@ -174,7 +174,9 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
         maxWidth="xl"
       >
         <DialogContent>
-          <iframe src={pdfBlobUrl} width="100%" height="700px"></iframe>
+          {pdfBlobUrl ? (
+            <iframe src={pdfBlobUrl} width="100%" height="700px"></iframe>
+          ) : null}
         </DialogContent>
       </Dialog>
       {openCartAlert && (

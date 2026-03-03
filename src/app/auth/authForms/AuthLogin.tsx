@@ -98,8 +98,8 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
       if (response.ok) {
         // console.time("Veri İşleme ve Yönlendirme");
         const data = await response.json();
-        const userToken = data.token;
-        const userRefreshToken = data.refreshToken;
+        const userToken = data.token || data.Token;
+        const userRefreshToken = data.refreshToken || data.RefreshToken;
         const userId = data.userId || data.kullaniciId || data.Id || 0;
 
         const userDenetciId = data.denetciId || data.denetciId || 0;
@@ -151,6 +151,16 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         };
         console.log("UserData constructed");
 
+        if (typeof window !== "undefined") {
+          window.sessionStorage.removeItem("fas_logout_intent");
+          if (userToken) {
+            window.sessionStorage.setItem("fas_session_token", userToken);
+          }
+          if (userRefreshToken) {
+            window.sessionStorage.setItem("fas_session_refreshToken", userRefreshToken);
+          }
+        }
+
         if (sonSecilenDenetlenenId && sonSecilenYil && sonSecilenDenetlenenFirmaAdi) {
           Object.assign(userData, {
             denetlenenId: sonSecilenDenetlenenId,
@@ -167,11 +177,6 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           localStorage.setItem("fas_denetlenenId", sonSecilenDenetlenenId.toString());
           localStorage.setItem("fas_yil", sonSecilenYil.toString());
         }
-
-        // ✅ Token'lar artık hem backend tarafından HttpOnly Cookie olarak set ediliyor,
-        // hem de fallback (CORS sorunları) için localStorage üzerinde yedekleniyor.
-        if (userToken) localStorage.setItem("fas_token", userToken);
-        if (userRefreshToken) localStorage.setItem("fas_refreshToken", userRefreshToken);
 
         console.log("Before Dispatch");
         dispatch(setUserData(userData));

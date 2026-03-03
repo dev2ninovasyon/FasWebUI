@@ -87,13 +87,19 @@ const localStorageMock = {
 }
 vi.stubGlobal('localStorage', localStorageMock)
 
-// Mock fetch for refresh token
-global.fetch = vi.fn()
+const sessionStorageMock = {
+    getItem: vi.fn(),
+    setItem: vi.fn(),
+    removeItem: vi.fn(),
+    clear: vi.fn(),
+}
+vi.stubGlobal('sessionStorage', sessionStorageMock)
 
 describe('SirketPopup Component', () => {
     beforeEach(() => {
         vi.clearAllMocks()
         localStorageMock.getItem.mockReturnValue('mock-refresh-token')
+        sessionStorageMock.getItem.mockReturnValue('mock-refresh-token')
         reloadMock.mockClear()
     })
 
@@ -136,7 +142,7 @@ describe('SirketPopup Component', () => {
             ok: true,
             json: async () => ({ token: 'new-token', refreshToken: 'new-refresh-token' })
         }
-        vi.mocked(global.fetch).mockResolvedValue(mockRefreshResponse as any)
+        vi.mocked(apiBase.apiFetch).mockResolvedValue(mockRefreshResponse as any)
 
         const preloadedState = {
             userReducer: {
@@ -170,9 +176,7 @@ describe('SirketPopup Component', () => {
             expect(userSettingsApi.updateSonSecilenAyarlari).toHaveBeenCalledWith(1, 101, 2025)
 
             // 2. Verify Refresh Token Call
-            // url is mocked as http://mock-api.com/
-            // code does url.endsWith('/') ? ...
-            expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/Auth/refresh'), expect.anything())
+            expect(apiBase.apiFetch).toHaveBeenCalledWith('/Auth/refresh', expect.anything())
 
             // 3. Verify Role Update
             expect(roleApi.getRol).toHaveBeenCalledWith(1, 101, 2025)
@@ -180,7 +184,8 @@ describe('SirketPopup Component', () => {
             // 4. Verify LocalStorage Updates
             expect(localStorageMock.setItem).toHaveBeenCalledWith('fas_denetlenenId', '101')
             expect(localStorageMock.setItem).toHaveBeenCalledWith('fas_yil', '2025')
-            expect(localStorageMock.setItem).toHaveBeenCalledWith('fas_token', 'new-token')
+            expect(sessionStorageMock.setItem).toHaveBeenCalledWith('fas_session_token', 'new-token')
+            expect(sessionStorageMock.setItem).toHaveBeenCalledWith('fas_session_refreshToken', 'new-refresh-token')
 
             // 5. Verify Reload
             expect(reloadMock).toHaveBeenCalled()
