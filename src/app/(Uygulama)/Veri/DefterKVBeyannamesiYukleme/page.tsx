@@ -67,6 +67,11 @@ interface ProgressInfo {
   status: string;
 }
 
+interface PendingUploadRow {
+  fileName: string;
+  status: string;
+}
+
 const normalizeStatus = (status: string) =>
   (status || "").toLocaleLowerCase("tr-TR");
 
@@ -134,6 +139,8 @@ const Page: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [dosyaYuklendiMi, setDosyaYuklendiMi] = useState(true);
   const [progressInfos, setProgressInfos] = useState<ProgressInfo[]>([]);
+  const [uploadLogsByFile, setUploadLogsByFile] = useState<Record<string, string[]>>({});
+  const [pendingUploadRows, setPendingUploadRows] = useState<PendingUploadRow[]>([]);
   const [trackedFileNames, setTrackedFileNames] = useState<string[]>([]);
   const pendingCompletionRef = useRef(false);
   const sortedProgressInfos = useMemo(
@@ -148,6 +155,14 @@ const Page: React.FC = () => {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
+      const appendLog = (fileName: string, message: string) => {
+        const timestamp = new Date().toLocaleTimeString("tr-TR");
+        const line = `[${timestamp}] ${message}`;
+        setUploadLogsByFile((prev) => ({
+          ...prev,
+          [fileName]: [...(prev[fileName] || []), line],
+        }));
+      };
 
       if (fetchedData) {
         enqueueSnackbar(
@@ -182,6 +197,24 @@ const Page: React.FC = () => {
       const currentBatchNames = validFiles.map((file) => file.name);
       const allTrackedNames = Array.from(new Set([...trackedFileNames, ...currentBatchNames]));
       setTrackedFileNames(allTrackedNames);
+      setPendingUploadRows((prev) => {
+        const map = new Map<string, PendingUploadRow>(prev.map((p) => [p.fileName, p]));
+        currentBatchNames.forEach((fileName) => {
+          map.set(fileName, { fileName, status: "İşleniyor..." });
+        });
+        return Array.from(map.values());
+      });
+      setUploadLogsByFile((prev) => {
+        const next = { ...prev };
+        for (const file of validFiles) {
+          next[file.name] = [
+            ...(prev[file.name] || []),
+            `[${new Date().toLocaleTimeString("tr-TR")}] Yükleme başlatıldı. Tür: ${fileType}`,
+            `[${new Date().toLocaleTimeString("tr-TR")}] Dosya adı: ${file.name}, Boyut: ${(file.size / 1024 / 1024).toFixed(2)} MB`,
+          ];
+        }
+        return next;
+      });
 
       setProgressInfos((prev) => {
         const map = new Map<string, ProgressInfo>(prev.map((x) => [x.fileName, x]));
@@ -195,14 +228,39 @@ const Page: React.FC = () => {
         if (fileType === "KurumlarBeyannamesi") {
           // Kurumlar Beyannamesi: her dosya için ayrı istek (API bu şekilde çalışıyor)
           const uploadPromises = validFiles.map(async (file) => {
+            let lastLoggedPercentage = 0;
             try {
+              appendLog(file.name, "Sunucuya gönderim başladı.");
               const res = await uploadAndParseKurumlarBeyannamesi(
                 file,
                 user.denetciId || 0,
                 user.yil || 0,
-                user.denetlenenId || 0
+                user.denetlenenId || 0,
+                (percentage) => {
+                  if (percentage >= lastLoggedPercentage + 10 || percentage === 100) {
+                    lastLoggedPercentage = percentage;
+                    appendLog(file.name, `Yükleme ilerlemesi: %${percentage}`);
+                  }
+                  setProgressInfos((prev) =>
+                    prev.map((info) =>
+                      info.fileName === file.name
+                        ? {
+                          ...info,
+                          status: "Yükleniyor...",
+                          percentage: Math.max(info.percentage, Math.min(95, percentage)),
+                        }
+                        : info
+                    )
+                  );
+                }
               );
               if (res.success) {
+                setPendingUploadRows((prev) =>
+                  prev.map((p) =>
+                    p.fileName === file.name ? { ...p, status: "Tamamlandı" } : p
+                  )
+                );
+                appendLog(file.name, "Sunucu yanıtı alındı, parse işlemi başarılı.");
                 setProgressInfos((prev) => {
                   return prev.map((info) =>
                     info.fileName === file.name
@@ -211,9 +269,21 @@ const Page: React.FC = () => {
                   );
                 });
               } else {
+                setPendingUploadRows((prev) =>
+                  prev.map((p) =>
+                    p.fileName === file.name ? { ...p, status: "Hata Oluştu" } : p
+                  )
+                );
+                appendLog(file.name, `Hata: ${res.message || "Bilinmeyen hata"}`);
                 throw new Error(res.message);
               }
             } catch (error: any) {
+              setPendingUploadRows((prev) =>
+                prev.map((p) =>
+                  p.fileName === file.name ? { ...p, status: "Hata Oluştu" } : p
+                )
+              );
+              appendLog(file.name, `İşlem başarısız: ${error?.message || "Bilinmeyen hata"}`);
               setProgressInfos((prev) => {
                 return prev.map((info) =>
                   info.fileName === file.name
@@ -230,6 +300,7 @@ const Page: React.FC = () => {
           // Önceden her dosya için ayrı istek açılıyordu (12 dosya × 5 kullanıcı = 60 bağlantı).
           const formData = new FormData();
           validFiles.forEach((file) => formData.append("files", file));
+          validFiles.forEach((file) => appendLog(file.name, "Toplu yükleme paketine eklendi."));
 
           await axios.post(
             `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
@@ -238,6 +309,11 @@ const Page: React.FC = () => {
               headers: { "Content-Type": "multipart/form-data" },
               onUploadProgress: (event) => {
                 const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
+                if (progress % 10 === 0 || progress === 100) {
+                  currentBatchNames.forEach((fileName) =>
+                    appendLog(fileName, `Toplu gönderim ilerlemesi: %${progress}`)
+                  );
+                }
                 setProgressInfos((prev) =>
                   prev.map((info) =>
                     currentBatchNames.includes(info.fileName)
@@ -256,6 +332,16 @@ const Page: React.FC = () => {
                 ? { ...info, status: "Sıraya Alındı.", percentage: 20 }
                 : info
             )
+          );
+          setPendingUploadRows((prev) =>
+            prev.map((p) =>
+              currentBatchNames.includes(p.fileName)
+                ? { ...p, status: "İşleniyor..." }
+                : p
+            )
+          );
+          currentBatchNames.forEach((fileName) =>
+            appendLog(fileName, "Yükleme tamamlandı, dosya kuyruğa alındı.")
           );
           enqueueSnackbar("Dosyalar kuyruğa alındı. İşlem sırası geldiğinde otomatik işlenecek.", { variant: "info" });
         }
@@ -369,6 +455,21 @@ const Page: React.FC = () => {
       pendingCompletionRef.current = false;
     }
   }, [dosyaYuklendiMi, uploading]);
+
+  useEffect(() => {
+    if (!rows.length || !pendingUploadRows.length) return;
+
+    const hasServerRow = (fileName: string) =>
+      rows.some((row) => {
+        const left = (row.adi || "").toLocaleLowerCase("tr-TR").trim();
+        const right = (fileName || "").toLocaleLowerCase("tr-TR").trim();
+        return left === right || left.includes(right) || right.includes(left);
+      });
+
+    setPendingUploadRows((prev) =>
+      prev.filter((p) => !hasServerRow(p.fileName))
+    );
+  }, [rows, pendingUploadRows.length]);
 
   return (
     <PageContainer
@@ -611,6 +712,8 @@ const Page: React.FC = () => {
               dosyaYuklendiMi={dosyaYuklendiMi}
               setDosyaYuklendiMi={(deger) => setDosyaYuklendiMi(deger)}
               setRows={setRows}
+              uploadLogsByFile={uploadLogsByFile}
+              pendingUploadRows={pendingUploadRows}
             />
           </Box>
         </Grid>
