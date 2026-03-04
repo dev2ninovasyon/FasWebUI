@@ -404,15 +404,11 @@ export const getBaglantiBilgileriByTip = async (
 };
 
 export const getBaglantiBilgileriByLink = async (
-  denetciId: number,
-  denetlenenId: number,
-  kullaniciId: number,
-  yil: number,
   link: string
 ) => {
   try {
     const response = await apiFetch(
-      `/BaglantiBilgileri/BaglantiBilgileriByLink?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&kullaniciId=${kullaniciId}&link=${link}`,
+      `/BaglantiBilgileri/BaglantiBilgileriByLink?link=${encodeURIComponent(link)}`,
       {
         method: "GET",
         headers: {
