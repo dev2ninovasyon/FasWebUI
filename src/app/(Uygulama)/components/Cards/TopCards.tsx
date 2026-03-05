@@ -48,7 +48,9 @@ const TopCards: React.FC<TopCardsProps> = ({ title, parenTitle }) => {
     user.denetimTuru || undefined,
     user.enflasyonmu || undefined,
     user.konsolidemi || undefined,
-    user.bddkmi || undefined
+    user.bddkmi || undefined,
+    user.yil || undefined,
+    user.yetki || undefined
   );
 
   const findItemTitle = (

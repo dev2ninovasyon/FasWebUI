@@ -1,53 +1,56 @@
-import { url } from "@/api/apiBase";
+import {
+  addClientLog,
+  ClientLogLevel,
+  ClientLogSource,
+} from "@/utils/clientLogStore";
+
+interface LoggerMeta {
+  source?: ClientLogSource;
+  requestPath?: string;
+  statusCode?: number;
+  route?: string;
+}
 
 /**
- * Development-focused frontend logger.
- * Sends logs to backend without reading auth tokens from localStorage.
+ * Frontend logger that keeps logs in browser memory/session storage.
+ * No DB write is performed.
  */
 class Logger {
-  private static isDev = process.env.NODE_ENV === "development";
+  private static write(
+    level: ClientLogLevel,
+    message: string,
+    detail?: any,
+    meta: LoggerMeta = {}
+  ) {
+    const source = meta.source ?? "ui";
+    const route =
+      meta.route ??
+      (typeof window !== "undefined" ? window.location.pathname : "SSR");
 
-  static async error(message: string, error?: any) {
+    addClientLog({
+      level,
+      source,
+      message,
+      route,
+      requestPath: meta.requestPath,
+      statusCode: meta.statusCode,
+      detail,
+    });
+  }
+
+  static async error(message: string, error?: any, meta: LoggerMeta = {}) {
     console.error(`[Frontend Error]: ${message}`, error);
-    await this.sendToBackend("error", message, error);
+    this.write("error", message, error, meta);
   }
 
-  static async warn(message: string, context?: any) {
+  static async warn(message: string, context?: any, meta: LoggerMeta = {}) {
     console.warn(`[Frontend Warn]: ${message}`, context);
-    if (this.isDev) {
-      await this.sendToBackend("warn", message, context);
-    }
+    this.write("warn", message, context, meta);
   }
 
-  static async info(message: string, context?: any) {
+  static async info(message: string, context?: any, meta: LoggerMeta = {}) {
     console.log(`[Frontend Info]: ${message}`, context);
-    if (this.isDev) {
-      await this.sendToBackend("info", message, context);
-    }
-  }
-
-  private static async sendToBackend(level: string, message: string, detail?: any) {
-    try {
-      const logData = {
-        level,
-        message,
-        url: typeof window !== "undefined" ? window.location.href : "SSR",
-        stack: detail instanceof Error ? detail.stack : JSON.stringify(detail),
-      };
-
-      fetch(`${url.endsWith("/") ? url.slice(0, -1) : url}/Log/frontend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(logData),
-        credentials: "include",
-      }).catch(() => {
-        // Logging should never break application flow.
-      });
-    } catch {
-      // Ignore logger transport failures to avoid recursive error loops.
-    }
+    this.write("info", message, context, meta);
   }
 }
 

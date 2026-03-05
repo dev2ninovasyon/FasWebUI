@@ -25,6 +25,9 @@ const FILE_NAMES = [
     '6640804404-202412-K-000000.xml',
 ];
 
+const TEST_TIMEOUT_MS = 1800000;
+const MAX_POLLING_TIME_MS = 1200000;
+
 const resolveXmlFolderPath = (): string => {
     const userProfile = process.env.USERPROFILE ?? '';
     const envPath = process.env.E_DEFTER_XML_DIR?.trim();
@@ -72,7 +75,7 @@ for (let i = 0; i < SESSIONS.length; i++) {
         });
 
         test(`E-Defter Yükleme Testi - ${session.name} (Denetlenen ID: ${session.denetlenenId})`, async ({ page }) => {
-            test.setTimeout(600000);
+            test.setTimeout(TEST_TIMEOUT_MS);
 
             const now = () => {
                 const d = new Date();
@@ -146,11 +149,10 @@ for (let i = 0; i < SESSIONS.length; i++) {
                 console.log(`[${session.name}] Polling başladı. | Tarih: ${now()}`);
 
                 const startTime = Date.now();
-                const maxPollingTime = 1200000;
                 let isFinished = false;
                 let pollCycle = 0;
 
-                while (Date.now() - startTime < maxPollingTime) {
+                while (Date.now() - startTime < MAX_POLLING_TIME_MS) {
                     const cycleStartedAt = Date.now();
                     pollCycle++;
                     console.log(`[${session.name}] [POLL BAŞLANGIÇ] Döngü #${pollCycle} | Tarih: ${now()}`);

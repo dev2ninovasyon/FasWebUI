@@ -1,7 +1,19 @@
-﻿export const url = "https://betaapi.fasmart.app/api";
-//export const url = "http://localhost:5000/api";
-
+﻿//export const url = "https://betaapi.fasmart.app/api";
 import Logger from "@/utils/Logger";
+
+const LOCAL_API_URL = "http://localhost:5000/api";
+const BETA_API_URL = "https://betaapi.fasmart.app/api";
+const ENV_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+const ENABLE_LOCAL_BETA_FALLBACK =
+  process.env.NEXT_PUBLIC_ENABLE_LOCAL_BETA_FALLBACK === "1";
+
+const normalizeApiBaseUrl = (baseUrl: string) =>
+  (baseUrl || "").trim().replace(/\/+$/, "");
+
+export const url = normalizeApiBaseUrl(
+  ENV_API_URL ||
+    (process.env.NODE_ENV === "development" ? LOCAL_API_URL : BETA_API_URL)
+);
 
 const LOGIN_ROUTE_PATH = "/";
 const MAINTENANCE_ROUTE_PATH = "/maintenance";
@@ -15,6 +27,62 @@ const isAuthEndpoint = (path: string) => {
     lowerPath === "/auth/login" ||
     lowerPath === "/auth/refresh" ||
     lowerPath === "/auth/logout"
+  );
+};
+
+const getApiBaseUrlCandidates = () => {
+  const candidates: string[] = [];
+
+  const addCandidate = (candidate?: string | null) => {
+    if (!candidate) return;
+    const normalized = normalizeApiBaseUrl(candidate);
+    if (!normalized) return;
+    if (!candidates.includes(normalized)) {
+      candidates.push(normalized);
+    }
+  };
+
+  if (ENV_API_URL) {
+    addCandidate(ENV_API_URL);
+    return candidates;
+  }
+
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname.toLowerCase();
+    const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1";
+    const isHttps = window.location.protocol === "https:";
+
+    if (isLocalHost) {
+      addCandidate(LOCAL_API_URL);
+      if (ENABLE_LOCAL_BETA_FALLBACK) {
+        addCandidate(BETA_API_URL);
+      }
+      return candidates;
+    }
+
+    // HTTPS sayfada HTTP local backend mixed-content olarak bloklanabilir.
+    if (isHttps) {
+      addCandidate(BETA_API_URL);
+      return candidates;
+    }
+
+    addCandidate(LOCAL_API_URL);
+    addCandidate(BETA_API_URL);
+    return candidates;
+  }
+
+  addCandidate(url);
+  addCandidate(BETA_API_URL);
+
+  return candidates;
+};
+
+const isConnectionLikeError = (error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return (
+    message.includes("Failed to fetch") ||
+    message.includes("NetworkError") ||
+    message.includes("fetch failed")
   );
 };
  
@@ -32,6 +100,13 @@ const shouldSkipLoginRedirect = () => {
 const hasLogoutIntent = () => {
   if (typeof window === "undefined") return false;
   return !!window.sessionStorage.getItem(LOGOUT_INTENT_KEY);
+};
+
+const clearSessionTokens = () => {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.removeItem(SESSION_ACCESS_TOKEN_KEY);
+  window.sessionStorage.removeItem(SESSION_REFRESH_TOKEN_KEY);
+  window.localStorage.removeItem("fas_refreshToken");
 };
 
 const redirectToLogin = () => {
@@ -56,6 +131,16 @@ const redirectToMaintenance = () => {
   if (typeof window === "undefined") return;
   if (window.location.pathname === LOGIN_ROUTE_PATH) return;
   redirectTo(MAINTENANCE_ROUTE_PATH);
+};
+
+const tryRedirectToLoginOnSessionExpired = () => {
+  if (typeof window === "undefined") return;
+  if (window.location.pathname === LOGIN_ROUTE_PATH) return;
+  if (shouldSkipLoginRedirect()) {
+    console.warn("🧪 Debug modu aktif: session-expired login redirect atlandı.");
+    return;
+  }
+  redirectTo(LOGIN_ROUTE_PATH);
 };
 
 /**
@@ -87,7 +172,9 @@ export async function apiFetch(
       : "";
 
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  const fullUrl = `${url.endsWith('/') ? url.slice(0, -1) : url}${normalizedPath}`;
+  const apiBaseCandidates = getApiBaseUrlCandidates();
+  let activeApiBaseUrl = apiBaseCandidates[0] || url;
+  let fullUrl = `${activeApiBaseUrl}${normalizedPath}`;
 
   let denetlenenIdFromStorage: string | null = null;
   let yilFromStorage: string | null = null;
@@ -96,7 +183,10 @@ export async function apiFetch(
   if (typeof window !== "undefined" && !ignoreCustomHeaders) {
     denetlenenIdFromStorage = window.localStorage.getItem("fas_denetlenenId");
     yilFromStorage = window.localStorage.getItem("fas_yil");
-    sessionAccessToken = window.sessionStorage.getItem(SESSION_ACCESS_TOKEN_KEY);
+    const rawAccessToken = window.sessionStorage.getItem(SESSION_ACCESS_TOKEN_KEY);
+    if (rawAccessToken && rawAccessToken !== "undefined" && rawAccessToken !== "null") {
+      sessionAccessToken = rawAccessToken;
+    }
   }
 
   const mergedHeaders: HeadersInit = {
@@ -115,12 +205,89 @@ export async function apiFetch(
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
   try {
-    const response = await fetch(fullUrl, {
-      ...rest,
-      headers: mergedHeaders,
-      signal: controller.signal,
-      credentials: includeCredentials ? 'include' : 'omit',
-    });
+    const buildUnauthorizedError = async (response: Response, reason: string) => {
+      let unauthorizedMessage = "Oturum suresi dolmus. Lutfen tekrar giris yapin.";
+
+      try {
+        const unauthorizedText = await response.clone().text();
+        if (unauthorizedText) {
+          try {
+            const unauthorizedParsed = JSON.parse(unauthorizedText);
+            const parsedMessage =
+              unauthorizedParsed?.message ||
+              unauthorizedParsed?.Message ||
+              unauthorizedParsed?.title;
+            if (parsedMessage) {
+              unauthorizedMessage = String(parsedMessage);
+            }
+          } catch {
+            unauthorizedMessage = unauthorizedText.trim().replace(/^"+|"+$/g, "") || unauthorizedMessage;
+          }
+        }
+      } catch {
+        // no-op
+      }
+
+      Logger.warn(`API 401 - yetkisiz erisim (${normalizedPath})`, {
+        reason,
+        message: unauthorizedMessage,
+      }, {
+        source: "api",
+        requestPath: normalizedPath,
+        statusCode: 401,
+      });
+
+      clearSessionTokens();
+      tryRedirectToLoginOnSessionExpired();
+      return new Error(unauthorizedMessage);
+    };
+
+    let response: Response | undefined;
+    let lastConnectionError: unknown;
+
+    for (let i = 0; i < apiBaseCandidates.length; i++) {
+      const candidateBaseUrl = apiBaseCandidates[i];
+      activeApiBaseUrl = candidateBaseUrl;
+      fullUrl = `${candidateBaseUrl}${normalizedPath}`;
+
+      try {
+        response = await fetch(fullUrl, {
+          ...rest,
+          headers: mergedHeaders,
+          signal: controller.signal,
+          credentials: includeCredentials ? "include" : "omit",
+        });
+        break;
+      } catch (fetchError) {
+        const canTryNextBase = i < apiBaseCandidates.length - 1;
+        const isAbortError = (fetchError as any)?.name === "AbortError";
+
+        if (!canTryNextBase || isAbortError || !isConnectionLikeError(fetchError)) {
+          throw fetchError;
+        }
+
+        lastConnectionError = fetchError;
+        const nextBaseUrl = apiBaseCandidates[i + 1];
+
+        Logger.warn(
+          "API base erisim hatasi, alternatif base deneniyor",
+          {
+            failedBaseUrl: candidateBaseUrl,
+            nextBaseUrl,
+            path: normalizedPath,
+            error:
+              fetchError instanceof Error
+                ? fetchError.message
+                : String(fetchError),
+          },
+          { source: "network", requestPath: normalizedPath }
+        );
+      }
+    }
+
+    if (!response) {
+      throw lastConnectionError ?? new Error("Failed to fetch");
+    }
 
     // 🔐 GÜVENLIK: Token expiry (401)
     // Not: 403 yetki problemidir, refresh ile düzelmeyebilir; loop'a girmemesi için refresh denemiyoruz.
@@ -133,7 +300,7 @@ export async function apiFetch(
       // En fazla 1 kez retry: sonsuz refresh döngüsünü engelle
       if (__retryCount >= 1) {
         console.error(`❌ API 401 devam ediyor, retry sınırına ulaşıldı (${path}).`);
-        return response;
+        throw await buildUnauthorizedError(response, "retry-limit-reached");
       }
 
       console.warn(`⚠️ API ${response.status} hatası alındı (${path}), session yenilenmesi deneniyor...`);
@@ -142,16 +309,27 @@ export async function apiFetch(
         try {
           // Tek bir refresh isteği paylaşımı (concurrent 401 storm için)
           const activeRefreshPromise = (window as any)._activeRefreshPromise as Promise<Response> | undefined;
-          const refreshTokenCandidate =
+          const rawRefreshTokenCandidate =
             window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
             window.localStorage.getItem("fas_refreshToken");
+          const refreshTokenCandidate =
+            rawRefreshTokenCandidate &&
+            rawRefreshTokenCandidate !== "undefined" &&
+            rawRefreshTokenCandidate !== "null"
+              ? rawRefreshTokenCandidate
+              : null;
           if (!refreshTokenCandidate) {
             console.warn("⚠️ Session refresh atlandı: refresh token bulunamadı.");
-            return response;
+            Logger.warn("API 401 - refresh token bulunamadı", { path: normalizedPath }, {
+              source: "api",
+              requestPath: normalizedPath,
+              statusCode: 401,
+            });
+            throw await buildUnauthorizedError(response, "missing-refresh-token");
           }
           const refreshPromise =
             activeRefreshPromise ||
-            fetch(`${url.endsWith('/') ? url.slice(0, -1) : url}/Auth/refresh`, {
+            fetch(`${activeApiBaseUrl}/Auth/refresh`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -188,17 +366,32 @@ export async function apiFetch(
             });
           } else {
             console.error("❌ Session yenileme başarısız. İstek login redirect olmadan sonlandırıldı.");
+            Logger.warn("API 401 - session refresh başarısız", { path: normalizedPath }, {
+              source: "api",
+              requestPath: normalizedPath,
+              statusCode: 401,
+            });
           }
         } catch (refreshError) {
           (window as any)._activeRefreshPromise = undefined;
           console.error("❌ Session yenileme sırasında kritik hata:", refreshError);
+          Logger.error("API 401 - session refresh sırasında kritik hata", refreshError, {
+            source: "api",
+            requestPath: normalizedPath,
+            statusCode: 401,
+          });
         }
       }
-      return response;
+      throw await buildUnauthorizedError(response, "refresh-failed");
     }
 
     if (response.status >= 500) {
       console.error(`❌ [API] Sunucu hatası: ${response.status} (${normalizedPath})`);
+      Logger.error(`API sunucu hatası: ${response.status} (${normalizedPath})`, undefined, {
+        source: "api",
+        requestPath: normalizedPath,
+        statusCode: response.status,
+      });
       if (!isAuthEndpoint(normalizedPath)) {
         redirectToMaintenance();
       }
@@ -225,6 +418,17 @@ export async function apiFetch(
         .trim()
         .replace(/^"+|"+$/g, "");
 
+      if (response.status < 500) {
+        Logger.warn(`API yanıt hatası: ${response.status} (${normalizedPath})`, {
+          message: normalizedMessage || undefined,
+          body: parsed ?? text,
+        }, {
+          source: "api",
+          requestPath: normalizedPath,
+          statusCode: response.status,
+        });
+      }
+
       const isBaglantiByTipNoConnection =
         response.status === 400 &&
         normalizedPath.startsWith("/BaglantiBilgileri/BaglantiBilgileriByTip") &&
@@ -235,6 +439,11 @@ export async function apiFetch(
         console.info(
           `[API INFO] ${response.status} ${normalizedPath}: ${normalizedMessage}`
         );
+        Logger.info(`[API INFO] ${response.status} ${normalizedPath}: ${normalizedMessage}`, undefined, {
+          source: "api",
+          requestPath: normalizedPath,
+          statusCode: response.status,
+        });
         return undefined as any;
       }
 
@@ -259,30 +468,34 @@ export async function apiFetch(
 
     if (error.name === "AbortError") {
       console.warn(`⏱️ [API] Timeout: ${path} (${timeout}ms)`);
+      Logger.error(`API Timeout: ${path} (${timeout}ms)`, error, {
+        source: "network",
+        requestPath: normalizedPath,
+      });
       redirectToMaintenance();
       const timeoutError = new Error(`İstek zaman aşımına uğradı (${timeout}ms). İsteği yeniden deneyin.`);
-      Logger.error(`API Timeout: ${path}`, error);
       throw timeoutError;
     }
 
-    // 📝 Log error to file
-    Logger.error(`API Fetch Error: ${path}`, error);
-
     const errorMessage = error?.message || String(error);
-    const isConnectionError = errorMessage.includes("Failed to fetch") || errorMessage.includes("NetworkError") || errorMessage.includes("fetch failed");
+    const isConnectionError = isConnectionLikeError(error);
     const isUnauthorizedError = errorMessage === "Unauthorized - aborting request";
 
     if (isConnectionError) {
       redirectToMaintenance();
+      Logger.error(`API bağlantı hatası: ${path}`, { errorMessage, fullUrl }, {
+        source: "network",
+        requestPath: normalizedPath,
+      });
       const detailedError = `
 ❌ [API Connection Error]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Path: ${path}
-URL: ${url}
+URL: ${fullUrl}
 Error: Backend sunucuya bağlanılamıyor
 
 ✅ Çözüm:
-1. Backend server'ının çalıştığını kontrol edin: http://localhost:5000
+1. Backend server'ının çalıştığını kontrol edin: ${activeApiBaseUrl}
 2. Firewall/VPN ayarlarını kontrol edin
 3. Sayfayı yenileyin (F5)
 4. Tarayıcı konsolundaki tüm hataları kontrol edin
@@ -308,9 +521,17 @@ Error: Backend sunucuya bağlanılamıyor
     } else if (isUnauthorizedError) {
       // ⚠️ Token validasyonu başarısız oldu
       console.warn(`⚠️ [API] Unauthorized: ${path} - Token kontrolü başarısız`);
+      Logger.warn(`API Unauthorized: ${path}`, undefined, {
+        source: "api",
+        requestPath: normalizedPath,
+      });
       throw error;
     } else {
       console.error(`❌ [API Error] ${path}:`, errorMessage);
+      Logger.error(`API Error: ${path}`, { errorMessage }, {
+        source: "api",
+        requestPath: normalizedPath,
+      });
       throw error;
     }
   } finally {

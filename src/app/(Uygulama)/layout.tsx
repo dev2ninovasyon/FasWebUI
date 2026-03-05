@@ -48,25 +48,31 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const customizer = useSelector((state: AppState) => state.customizer);  // Global error logging for development
+  const customizer = useSelector((state: AppState) => state.customizer); // Global error logging
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      const handleError = (event: ErrorEvent) => {
-        Logger.error(`Window Error: ${event.message}`, event.error);
-      };
+    const handleError = (event: ErrorEvent) => {
+      Logger.error(`Window Error: ${event.message}`, event.error ?? {
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+      }, { source: "window" });
+    };
 
-      const handleRejection = (event: PromiseRejectionEvent) => {
-        Logger.error(`Unhandled Rejection: ${event.reason?.message || event.reason}`, event.reason);
-      };
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      Logger.error(
+        `Unhandled Rejection: ${event.reason?.message || String(event.reason)}`,
+        event.reason,
+        { source: "window" }
+      );
+    };
 
-      window.addEventListener("error", handleError);
-      window.addEventListener("unhandledrejection", handleRejection);
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleRejection);
 
-      return () => {
-        window.removeEventListener("error", handleError);
-        window.removeEventListener("unhandledrejection", handleRejection);
-      };
-    }
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener("unhandledrejection", handleRejection);
+    };
   }, []);
 
   const theme = useTheme();

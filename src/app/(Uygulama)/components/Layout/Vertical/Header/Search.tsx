@@ -31,7 +31,9 @@ const Search = () => {
     user.denetimTuru || undefined,
     user.enflasyonmu || undefined,
     user.konsolidemi || undefined,
-    user.bddkmi || undefined
+    user.bddkmi || undefined,
+    user.yil || undefined,
+    user.yetki || undefined
   );
 
   // drawer top
