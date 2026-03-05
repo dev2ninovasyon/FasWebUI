@@ -98,7 +98,7 @@ const ErtelenmisVergiHesabiCardTable: React.FC<CardTableProps> = ({
                 <TableRow>
                   <TableCell align="left" sx={{ border: "none", width: "35%" }}>
                     <Typography variant="body1">
-                      Net Vergi Yükükmlülüğü
+                      Net Vergi Yükümlülüğü
                     </Typography>
                   </TableCell>
                   <TableCell

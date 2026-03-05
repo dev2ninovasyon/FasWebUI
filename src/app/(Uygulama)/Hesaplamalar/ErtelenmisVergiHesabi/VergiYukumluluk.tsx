@@ -320,40 +320,43 @@ const VergiYukumluluk: React.FC<Props> = ({ hesaplaTiklandimi, onDataCount }) =>
           Bu tabloya düşen satır: <strong>{rowCount > 0 ? rowCount - 1 : 0}</strong>
         </Alert>
       </Box>
-      <HotTable
-        style={{
-          height: "100%",
-          width: "100%",
-          maxHeight: 342,
-          maxWidth: "100%",
-        }}
-        language={dictionary.languageCode}
-        ref={hotTableComponent}
-        data={fetchedData}
-        height={342}
-        colHeaders={colHeaders}
-        columns={columns}
-        colWidths={[80, 80, 80]}
-        stretchH="all"
-        manualColumnResize={true}
-        rowHeaders={true}
-        rowHeights={35}
-        autoWrapRow={true}
-        minRows={rowCount}
-        minCols={3}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
-          "filter_by_condition",
-          "filter_by_value",
-          "filter_action_bar",
-        ]}
-        licenseKey="non-commercial-and-evaluation"
-        afterGetColHeader={afterGetColHeader}
-        afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
-        contextMenu={["alignment", "copy"]}
-      />
+      <Box sx={{ overflowX: "auto", width: "100%" }}>
+        <Box sx={{ minWidth: 450 }}>
+          <HotTable
+            style={{
+              height: "100%",
+              width: "100%",
+              maxHeight: 342,
+            }}
+            language={dictionary.languageCode}
+            ref={hotTableComponent}
+            data={fetchedData}
+            height={342}
+            colHeaders={colHeaders}
+            columns={columns}
+            colWidths={[80, 80, 80]}
+            stretchH="all"
+            manualColumnResize={true}
+            rowHeaders={true}
+            rowHeights={35}
+            autoWrapRow={true}
+            minRows={rowCount}
+            minCols={3}
+            filters={true}
+            columnSorting={true}
+            dropdownMenu={[
+              "filter_by_condition",
+              "filter_by_value",
+              "filter_action_bar",
+            ]}
+            licenseKey="non-commercial-and-evaluation"
+            afterGetColHeader={afterGetColHeader}
+            afterGetRowHeader={afterGetRowHeader}
+            afterRenderer={afterRenderer}
+            contextMenu={["alignment", "copy"]}
+          />
+        </Box>
+      </Box>
       <Grid container marginTop={2} marginBottom={1}>
         <Grid
           size={{

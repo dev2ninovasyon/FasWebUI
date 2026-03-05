@@ -1,16 +1,20 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getDonusumMizan } from "@/api/Donusum/Donusum";
 import numbro from "numbro";
-import trTR from "numbro/languages/tr-TR";// register Handsontable's modulesnumbro.registerLanguage(trTR);
+import trTR from "numbro/languages/tr-TR";
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -116,7 +120,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -127,7 +131,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -138,7 +142,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -149,7 +153,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -160,7 +164,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -171,7 +175,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -182,7 +186,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -193,7 +197,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     {
       type: "numeric",
       numericFormat: {
-        pattern: "0,0.00",
+        pattern: "0,0",
         columnSorting: true,
         culture: "tr-TR",
       },
@@ -371,17 +375,17 @@ const DonusumMizanKontrol: React.FC<Props> = ({
         rowsAll.push(newRow);
 
         if (veri.detayKodu.length == 3) {
-          totalVukBorc += veri.vukBorc;
-          totalVukAlacak += veri.vukAlacak;
+          totalVukBorc = Number((totalVukBorc + (veri.vukBorc || 0)).toFixed(2));
+          totalVukAlacak = Number((totalVukAlacak + (veri.vukAlacak || 0)).toFixed(2));
 
-          totalFisBorc += veri.fisBorc;
-          totalFisAlacak += veri.fisAlacak;
+          totalFisBorc = Number((totalFisBorc + (veri.fisBorc || 0)).toFixed(2));
+          totalFisAlacak = Number((totalFisAlacak + (veri.fisAlacak || 0)).toFixed(2));
 
-          totalRaporBorc += veri.raporBorc;
-          totalRaporAlacak += veri.raporAlacak;
+          totalRaporBorc = Number((totalRaporBorc + (veri.raporBorc || 0)).toFixed(2));
+          totalRaporAlacak = Number((totalRaporAlacak + (veri.raporAlacak || 0)).toFixed(2));
 
-          totalBorcBakiye += veri.borcBakiye;
-          totalAlacakBakiye += veri.alacakBakiye;
+          totalBorcBakiye = Number((totalBorcBakiye + (veri.borcBakiye || 0)).toFixed(2));
+          totalAlacakBakiye = Number((totalAlacakBakiye + (veri.alacakBakiye || 0)).toFixed(2));
         }
       });
 
