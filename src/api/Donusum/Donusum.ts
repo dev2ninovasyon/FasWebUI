@@ -3,6 +3,7 @@
 import { DonusumMizanKarsilastirmaItem } from "@/app/(Uygulama)/components/DenetimKanitlari/DonusumMizanKontrol/VukMizanDonusumMizanKarsilastirma";
 
 export const DonusumIslemiYap = async (
+  denetciId: number,
   denetlenenId: number,
   yil: number,
   denetimTuru: string,
@@ -10,7 +11,7 @@ export const DonusumIslemiYap = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Donusum/DonusumIslemiYap?denetlenenId=${denetlenenId}&yil=${yil}&denetimTuru=${denetimTuru}&konsolidasyonMu=${konsolidasyonMu}`,
+      `/Donusum/DonusumIslemiYap?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}&denetimTuru=${denetimTuru}&konsolidasyonMu=${konsolidasyonMu}`,
       {
         method: "Post",
         headers: {
