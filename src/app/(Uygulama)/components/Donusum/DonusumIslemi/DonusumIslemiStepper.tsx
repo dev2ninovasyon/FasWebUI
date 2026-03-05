@@ -68,7 +68,8 @@ const DonusumIslemiStepper: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const handleDonusumIslemi = async () => {
     try {
-      const donusumIslemi = await DonusumIslemiYap(user.denetlenenId || 0,
+      const donusumIslemi = await DonusumIslemiYap(user.denetciId || 0,
+        user.denetlenenId || 0,
         user.yil || 0,
         user.denetimTuru || "",
         konsolidasyonMu

@@ -31,7 +31,7 @@ const Page: React.FC = () => {
         description="this is Dönüşüm Mizan Kontrol"
       >
         <Breadcrumb title="Dönüşüm Mizan Kontrol" items={BCrumb} />
-        <Box sx={{ 
+        <Box sx={{
           width: "calc(100% + 16px)",
           marginLeft: "-16px",
           marginRight: "-16px",

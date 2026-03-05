@@ -374,7 +374,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
 
         rowsAll.push(newRow);
 
-        if (veri.detayKodu.length == 3) {
+        if (veri.detayKodu.length > 3) {
           totalVukBorc = Number((totalVukBorc + (veri.vukBorc || 0)).toFixed(2));
           totalVukAlacak = Number((totalVukAlacak + (veri.vukAlacak || 0)).toFixed(2));
 
