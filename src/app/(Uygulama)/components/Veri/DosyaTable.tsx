@@ -57,7 +57,6 @@ interface MyComponentProps {
   dosyaYuklendiMi: boolean;
   setRows: (dosya: DosyaType[]) => void;
   setDosyaYuklendiMi: (deger: boolean) => void;
-  uploadLogsByFile?: Record<string, string[]>;
   pendingUploadRows?: { fileName: string; status: string }[];
   onlyShowFinalizedRows?: boolean;
   onServerRowsChange?: (rows: DosyaType[]) => void;
@@ -78,7 +77,6 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   dosyaYuklendiMi,
   setRows,
   setDosyaYuklendiMi,
-  uploadLogsByFile,
   pendingUploadRows,
   onlyShowFinalizedRows = false,
   onServerRowsChange,
@@ -94,6 +92,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const [selectedLogFileName, setSelectedLogFileName] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState<string>("all");
 
   // const [page, setPage] = useState(0);
   // const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -181,6 +180,40 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     // Küçük harfe çevir
     return normalized.toLowerCase();
   }
+
+  const monthOptions = [
+    { value: "01", label: "01-Ocak" },
+    { value: "02", label: "02-Şubat" },
+    { value: "03", label: "03-Mart" },
+    { value: "04", label: "04-Nisan" },
+    { value: "05", label: "05-Mayıs" },
+    { value: "06", label: "06-Haziran" },
+    { value: "07", label: "07-Temmuz" },
+    { value: "08", label: "08-Ağustos" },
+    { value: "09", label: "09-Eylül" },
+    { value: "10", label: "10-Ekim" },
+    { value: "11", label: "11-Kasım" },
+    { value: "12", label: "12-Aralık" },
+  ];
+
+  const getMonthCodeFromDefterName = (fileName?: string): string | null => {
+    if (!fileName) return null;
+
+    const normalized = fileName.trim();
+    const regexMatch = normalized.match(/-(\d{6})-[^-]+\.[^.]+$/i);
+    if (regexMatch?.[1]) {
+      const monthCode = regexMatch[1].slice(4, 6);
+      return monthCode >= "01" && monthCode <= "12" ? monthCode : null;
+    }
+
+    const parts = normalized.split("-");
+    if (parts.length > 1 && /^\d{6}$/.test(parts[1])) {
+      const monthCode = parts[1].slice(4, 6);
+      return monthCode >= "01" && monthCode <= "12" ? monthCode : null;
+    }
+
+    return null;
+  };
 
   const extractParts = (
     adi: string
@@ -337,27 +370,8 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     setAnchorEl(null);
   };
 
-  const findUiLogsByFileName = (fileName?: string) => {
-    if (!fileName || !uploadLogsByFile) return [] as string[];
-    const direct = uploadLogsByFile[fileName];
-    if (direct?.length) return direct;
-
-    const entries = Object.entries(uploadLogsByFile);
-    const matched = entries.find(([key]) =>
-      key === fileName ||
-      fileName.includes(key) ||
-      key.includes(fileName)
-    );
-
-    return matched?.[1] || [];
-  };
-
   const handlePreview = async (id: number, fileName?: string, currentStatus?: string) => {
     const sections: string[] = [];
-    const uiLogs = findUiLogsByFileName(fileName);
-    if (uiLogs.length) {
-      sections.push(`[UI Yükleme Logları]\n${uiLogs.join("\n")}`);
-    }
 
     try {
       const defterYuklemeLoglari = await getDefterYuklemeLoglari(id);
@@ -637,9 +651,20 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   //   setPage(0);
   // };
 
-  const filteredRows = rows.filter((row) =>
-    normalizeString(row.adi).includes(normalizeString(searchTerm))
-  );
+  const filteredRows = rows.filter((row) => {
+    const matchesSearch = normalizeString(row.adi).includes(normalizeString(searchTerm));
+
+    if (
+      selectedMonth === "all" ||
+      (fileType !== "E-DefterKebir" && fileType !== "E-DefterYevmiye")
+    ) {
+      return matchesSearch;
+    }
+
+    const rowMonthCode = getMonthCodeFromDefterName(row.adi);
+    const matchesMonth = rowMonthCode === selectedMonth;
+    return matchesSearch && matchesMonth;
+  });
 
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -704,18 +729,45 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
   return (
     <>
-      <Stack direction="row" alignItems="center" mb={1}>
-        <Box padding={"16px"} sx={{ flexGrow: 1 }}>
-          <Typography variant="h5">Yüklenmiş Dosya Bilgileri</Typography>
+      <Stack mb={1} spacing={1}>
+        <Box sx={{ pt: 1 }}>
+          <Typography variant="h5" textAlign="center">
+            Yüklenmiş Dosya Bilgileri
+          </Typography>
         </Box>
-        <TextField
-          placeholder="Arama"
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          fullWidth
-          sx={{ marginRight: "16px" }}
-        />
+
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          alignItems="center"
+          gap={1}
+          px={2}
+        >
+          {(fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye") && (
+            <TextField
+              select
+              label="Ay"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              size="small"
+              sx={{ minWidth: 170, width: { xs: "100%", sm: "auto" } }}
+            >
+              <MenuItem value="all">Tümü</MenuItem>
+              {monthOptions.map((month) => (
+                <MenuItem key={month.value} value={month.value}>
+                  {month.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+
+          <TextField
+            placeholder="Arama"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
+          />
+        </Stack>
       </Stack>
       <TableContainer
         sx={{

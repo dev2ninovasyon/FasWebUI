@@ -169,7 +169,6 @@ const Page: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [dosyaYuklendiMi, setDosyaYuklendiMi] = useState(true);
   const [progressInfos, setProgressInfos] = useState<ProgressInfo[]>([]);
-  const [uploadLogsByFile, setUploadLogsByFile] = useState<Record<string, string[]>>({});
   const [pendingUploadRows, setPendingUploadRows] = useState<PendingUploadRow[]>([]);
   const [trackedFileNames, setTrackedFileNames] = useState<string[]>([]);
   const pendingCompletionRef = useRef(false);
@@ -185,15 +184,6 @@ const Page: React.FC = () => {
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      const appendLog = (fileName: string, message: string) => {
-        const timestamp = new Date().toLocaleTimeString("tr-TR");
-        const line = `[${timestamp}] ${message}`;
-        setUploadLogsByFile((prev) => ({
-          ...prev,
-          [fileName]: [...(prev[fileName] || []), line],
-        }));
-      };
-
       if (fetchedData) {
         enqueueSnackbar(
           "Paylaşım bağlantınız varken yükleme yapılmamaktadır bağlantıyı kaldırıp yüklemeyi deneyiniz.",
@@ -235,17 +225,6 @@ const Page: React.FC = () => {
       const allTrackedNames = Array.from(new Set([...trackedFileNames, ...currentBatchNames]));
       setTrackedFileNames(allTrackedNames);
       setPendingUploadRows([]);
-      setUploadLogsByFile((prev) => {
-        const next = { ...prev };
-        for (const file of validFiles) {
-          next[file.name] = [
-            ...(prev[file.name] || []),
-            `[${new Date().toLocaleTimeString("tr-TR")}] Yükleme başlatıldı. Tür: ${fileType}`,
-            `[${new Date().toLocaleTimeString("tr-TR")}] Dosya adı: ${file.name}, Boyut: ${(file.size / 1024 / 1024).toFixed(2)} MB`,
-          ];
-        }
-        return next;
-      });
 
       setProgressInfos((prev) => {
         const map = new Map<string, ProgressInfo>(prev.map((x) => [x.fileName, x]));
@@ -265,19 +244,13 @@ const Page: React.FC = () => {
         if (fileType === "KurumlarBeyannamesi") {
           // Kurumlar Beyannamesi: her dosya için ayrı istek (API bu şekilde çalışıyor)
           const uploadPromises = validFiles.map(async (file) => {
-            let lastLoggedPercentage = 0;
             try {
-              appendLog(file.name, "Sunucuya gönderim başladı.");
               const res = await uploadAndParseKurumlarBeyannamesi(
                 file,
                 user.denetciId || 0,
                 user.yil || 0,
                 user.denetlenenId || 0,
                 (percentage) => {
-                  if (percentage >= lastLoggedPercentage + 10 || percentage === 100) {
-                    lastLoggedPercentage = percentage;
-                    appendLog(file.name, `Yükleme ilerlemesi: %${percentage}`);
-                  }
                   setProgressInfos((prev) =>
                     prev.map((info) =>
                       info.fileName === file.name
@@ -300,7 +273,6 @@ const Page: React.FC = () => {
                 }
               );
               if (res.success) {
-                appendLog(file.name, "Sunucu yanıtı alındı, parse işlemi başarılı.");
                 setProgressInfos((prev) => {
                   return prev.map((info) =>
                     info.fileName === file.name
@@ -315,11 +287,9 @@ const Page: React.FC = () => {
                   );
                 });
               } else {
-                appendLog(file.name, `Hata: ${res.message || "Bilinmeyen hata"}`);
                 throw new Error(res.message);
               }
             } catch (error: any) {
-              appendLog(file.name, `İşlem başarısız: ${error?.message || "Bilinmeyen hata"}`);
               setProgressInfos((prev) => {
                 return prev.map((info) =>
                   info.fileName === file.name
@@ -357,12 +327,6 @@ const Page: React.FC = () => {
             const batchFiles = fileBatches[batchIndex];
             const formData = new FormData();
             batchFiles.forEach((file) => formData.append("files", file));
-            batchFiles.forEach((file) =>
-              appendLog(
-                file.name,
-                `Toplu yükleme paketine eklendi (Part ${batchIndex + 1}/${fileBatches.length}).`
-              )
-            );
 
             await axios.post(
               `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
@@ -373,12 +337,6 @@ const Page: React.FC = () => {
                   const loaded = event.loaded || 0;
                   const batchTotal = event.total || batchFiles.reduce((sum, f) => sum + f.size, 0);
                   const progress = batchTotal ? Math.round((100 * loaded) / batchTotal) : 1;
-
-                  if (progress % 10 === 0 || progress === 100) {
-                    batchFiles.forEach((file) =>
-                      appendLog(file.name, `Toplu gönderim ilerlemesi: %${progress}`)
-                    );
-                  }
 
                   setProgressInfos((prev) =>
                     prev.map((info) =>
@@ -431,11 +389,8 @@ const Page: React.FC = () => {
                     calcCombinedProgress(100, info.processPercentage, "Sıraya Alındı.")
                   ),
                 }
-                : info
+              : info
             )
-          );
-          currentBatchNames.forEach((fileName) =>
-            appendLog(fileName, "Yükleme tamamlandı, dosya kuyruğa alındı.")
           );
           enqueueSnackbar("Dosyalar kuyruğa alındı. İşlem sırası geldiğinde otomatik işlenecek.", { variant: "info" });
         }
@@ -854,7 +809,6 @@ const Page: React.FC = () => {
               dosyaYuklendiMi={dosyaYuklendiMi}
               setDosyaYuklendiMi={(deger) => setDosyaYuklendiMi(deger)}
               setRows={setRows}
-              uploadLogsByFile={uploadLogsByFile}
               pendingUploadRows={pendingUploadRows}
               onlyShowFinalizedRows={true}
               onServerRowsChange={handleServerRowsChange}
