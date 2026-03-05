@@ -23,6 +23,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
@@ -37,6 +38,9 @@ import {
   getClientLogs,
   subscribeClientLogs,
 } from "@/utils/clientLogStore";
+import axios from "axios";
+import { url } from "@/api/apiBase";
+import { useSnackbar } from "notistack";
 
 const BCrumb = [
   {
@@ -91,6 +95,8 @@ const downloadAsJson = (logs: ClientLogEntry[]) => {
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
+  const { enqueueSnackbar } = useSnackbar();
+
   const isFasAdmin =
     user?.yetki === "FasAdmin" || user?.rol?.includes("FasAdmin") || false;
 
@@ -100,12 +106,37 @@ const Page = () => {
   const [search, setSearch] = useState("");
   const [selectedLog, setSelectedLog] = useState<ClientLogEntry | null>(null);
 
+  // Server Log State
+  const [serverLogOpen, setServerLogOpen] = useState(false);
+  const [serverLogContent, setServerLogContent] = useState("");
+  const [loadingServerLog, setLoadingServerLog] = useState(false);
+
   useEffect(() => {
     setLogs(getClientLogs());
     return subscribeClientLogs(() => {
       setLogs(getClientLogs());
     });
   }, []);
+
+  const handleFetchServerLog = async () => {
+    setLoadingServerLog(true);
+    setServerLogOpen(true);
+    try {
+      const response = await axios.get(`${url}/Audit/DownloadServerLog`, {
+        responseType: "text",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      setServerLogContent(response.data);
+    } catch (error: any) {
+      console.error("Server log fetch error:", error);
+      enqueueSnackbar("Sunucu logları getirilemedi.", { variant: "error" });
+      setServerLogOpen(false);
+    } finally {
+      setLoadingServerLog(false);
+    }
+  };
 
   const filteredLogs = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -152,6 +183,13 @@ const Page = () => {
               </Stack>
 
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                <Button
+                  variant="outlined"
+                  color="info"
+                  onClick={handleFetchServerLog}
+                >
+                  Sunucu Loglarını Getir
+                </Button>
                 <Button
                   variant="outlined"
                   onClick={() => downloadAsJson(filteredLogs)}
@@ -280,6 +318,7 @@ const Page = () => {
         </Stack>
       </PageContainer>
 
+      {/* Client Log Detail Dialog */}
       <Dialog
         open={!!selectedLog}
         onClose={() => setSelectedLog(null)}
@@ -308,6 +347,44 @@ const Page = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedLog(null)}>Kapat</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Server Log Dialog */}
+      <Dialog
+        open={serverLogOpen}
+        onClose={() => setServerLogOpen(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>Sunucu İşlem Logları (Son Dosya)</DialogTitle>
+        <DialogContent dividers>
+          {loadingServerLog ? (
+            <Box display="flex" justifyContent="center" py={10}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Paper variant="outlined" sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#d4d4d4" }}>
+              <Box
+                component="pre"
+                sx={{
+                  m: 0,
+                  overflowX: "auto",
+                  fontSize: 13,
+                  fontFamily: 'Consolas, "Courier New", monospace',
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-all",
+                  maxHeight: "70vh",
+                }}
+              >
+                {serverLogContent || "Sunucuda log dosyası bulunamadı."}
+              </Box>
+            </Paper>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFetchServerLog} disabled={loadingServerLog}>Yenile</Button>
+          <Button onClick={() => setServerLogOpen(false)}>Kapat</Button>
         </DialogActions>
       </Dialog>
     </ProtectedPage>

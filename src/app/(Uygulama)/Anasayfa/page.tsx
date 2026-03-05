@@ -26,11 +26,11 @@ export default function DashboardPage() {
   const [runTour, setRunTour] = useState(false);
 
   useEffect(() => {
-    console.time("Anasayfa Toplam Yüklenme");
+    // console.time("Anasayfa Toplam Yüklenme");
     if (user.turTamamlandi === false) {
       setRunTour(true);
     }
-    return () => console.timeEnd("Anasayfa Toplam Yüklenme");
+    return () => { /* console.timeEnd("Anasayfa Toplam Yüklenme"); */ };
   }, [user.turTamamlandi]);
 
   const handleCloseTour = async () => {
