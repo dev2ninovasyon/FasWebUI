@@ -675,12 +675,23 @@ export const createBeklenenKrediZarariHesaplanmis = async (
     );
 
     if (response.ok) {
-      return true;
+      return { success: true, message: "" };
     } else {
-      return false;
+      const errorBody = await response.json().catch(() => null);
+      return {
+        success: false,
+        message:
+          errorBody?.message ||
+          errorBody?.resultMessage ||
+          "Beklenen Kredi Zararı hesaplama isteği başarısız.",
+      };
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    return {
+      success: false,
+      message: "Beklenen Kredi Zararı hesaplama isteği sırasında bağlantı hatası oluştu.",
+    };
   }
 };
 

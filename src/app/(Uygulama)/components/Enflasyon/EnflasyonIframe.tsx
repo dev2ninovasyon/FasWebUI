@@ -88,42 +88,6 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
     }
   }, [iframeSrc, retryKey]);
 
-  useEffect(() => {
-    if (!iframeSrc) return;
-
-    let cancelled = false;
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 5000);
-
-    const checkEnflasyonService = async () => {
-      try {
-        await fetch(`${ENFLASYON_BASE_URL}/favicon.ico`, {
-          method: "GET",
-          cache: "no-store",
-          mode: "no-cors",
-          signal: controller.signal,
-        });
-
-        if (cancelled) return;
-        setServerError(null);
-      } catch {
-        if (cancelled) return;
-        setIsLoading(false);
-        setServerError("Enflasyon servisine ulasilamadi. Lutfen baglantiyi kontrol edip tekrar deneyin.");
-      } finally {
-        window.clearTimeout(timeoutId);
-      }
-    };
-
-    checkEnflasyonService();
-
-    return () => {
-      cancelled = true;
-      controller.abort();
-      window.clearTimeout(timeoutId);
-    };
-  }, [iframeSrc, retryKey]);
-
   if (!user || !user.kullaniciAdi) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>

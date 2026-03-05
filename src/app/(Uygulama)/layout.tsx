@@ -190,7 +190,7 @@ export default function RootLayout({
         setIsSelectionModalOpen(false);
         setNoCompanyWarning(false);
         setIsChecking(false);
-        if (!control || hasLogoutIntent()) {
+        if (hasLogoutIntent()) {
           clearLogoutIntent();
           router.push("/");
         } else {

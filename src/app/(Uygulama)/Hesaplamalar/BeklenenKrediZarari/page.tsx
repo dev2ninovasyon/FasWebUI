@@ -57,13 +57,28 @@ const Page: React.FC = () => {
 
   const handleHesapla = async () => {
     try {
+      if (!Number.isFinite(revizeOrani) || !Number.isFinite(iskontoOrani)) {
+        enqueueSnackbar("Lütfen geçerli bir oran giriniz.", {
+          variant: "error",
+          autoHideDuration: 5000,
+          style: {
+            backgroundColor:
+              customizer.activeMode === "dark"
+                ? theme.palette.error.light
+                : theme.palette.error.main,
+            maxWidth: "720px",
+          },
+        });
+        return;
+      }
+
       const result = await createBeklenenKrediZarariHesaplanmis(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
         revizeOrani,
         iskontoOrani
       );
-      if (result) {
+      if (result?.success) {
         setHesaplaTiklandimi(false);
         enqueueSnackbar("Beklenen Kredi Zararı Hesaplandı", {
           variant: "success",
@@ -76,7 +91,7 @@ const Page: React.FC = () => {
           },
         });
       } else {
-        enqueueSnackbar("Beklenen Kredi Zararı Hesaplanamadı", {
+        enqueueSnackbar(result?.message || "Beklenen Kredi Zararı Hesaplanamadı", {
           variant: "error",
           autoHideDuration: 5000,
           style: {
@@ -103,10 +118,9 @@ const Page: React.FC = () => {
 
   const fetchIskontoOrani = async () => {
     try {
-      const iskontoOraniVerisi = await getIskontoOrani(user.yil || 0
-      );
-
-      if (iskontoOraniVerisi) {
+      if (!user.yil || user.yil <= 0) return;
+      const iskontoOraniVerisi = await getIskontoOrani(user.yil);
+      if (iskontoOraniVerisi !== undefined && iskontoOraniVerisi !== null) {
         setIskontoOrani(iskontoOraniVerisi);
         setRevizeOrani(iskontoOraniVerisi);
       }
@@ -117,7 +131,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     fetchIskontoOrani();
-  }, []);
+  }, [user.yil]);
 
   return (
     <PageContainer
@@ -158,7 +172,7 @@ const Page: React.FC = () => {
               id="iskonto"
               type="number"
               value={iskontoOrani}
-              onChange={(e: any) => setIskontoOrani(e.target.value)}
+              onChange={(e: any) => setIskontoOrani(Number(e.target.value))}
             />
 
             <CustomFormLabel
@@ -171,7 +185,7 @@ const Page: React.FC = () => {
               id="revize"
               type="number"
               value={revizeOrani}
-              onChange={(e: any) => setRevizeOrani(e.target.value)}
+              onChange={(e: any) => setRevizeOrani(Number(e.target.value))}
             />
           </Box>
           <Box

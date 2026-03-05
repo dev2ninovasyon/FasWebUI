@@ -190,10 +190,9 @@ const Page: React.FC = () => {
 
   const fetchIskontoOrani = async () => {
     try {
-      const iskontoOraniVerisi = await getIskontoOrani(user.yil || 0
-      );
-
-      if (iskontoOraniVerisi) {
+      if (!user.yil || user.yil <= 0) return;
+      const iskontoOraniVerisi = await getIskontoOrani(user.yil);
+      if (iskontoOraniVerisi !== undefined && iskontoOraniVerisi !== null) {
         setIskontoOrani(iskontoOraniVerisi);
       }
     } catch (error) {
@@ -203,7 +202,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     fetchIskontoOrani();
-  }, []);
+  }, [user.yil]);
 
   return (
     <PageContainer

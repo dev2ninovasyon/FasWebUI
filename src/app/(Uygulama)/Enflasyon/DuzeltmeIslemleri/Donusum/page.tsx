@@ -28,10 +28,7 @@ const BCrumb = [
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const denetimTuruNormalized = (user.denetimTuru || "").trim().toLowerCase();
-  const isBobi =
-    denetimTuruNormalized.length > 0
-      ? denetimTuruNormalized === "bobi"
-      : !!user.bobimi;
+  const isBobi = !!user.bobimi || denetimTuruNormalized.includes("bobi");
   const enflasyonUrl = isBobi
     ? "/EnflasyonDuzeltmesi/DonusumBobi"
     : "/EnflasyonDuzeltmesi/Donusum";

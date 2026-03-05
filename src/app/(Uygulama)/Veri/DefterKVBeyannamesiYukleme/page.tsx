@@ -72,6 +72,9 @@ interface PendingUploadRow {
   status: string;
 }
 
+const MAX_FILES_PER_UPLOAD = 365;
+const MAX_BATCH_PAYLOAD_BYTES = 400 * 1024 * 1024;
+
 const normalizeStatus = (status: string) =>
   (status || "").toLocaleLowerCase("tr-TR");
 
@@ -172,12 +175,19 @@ const Page: React.FC = () => {
         return;
       }
 
+      if (acceptedFiles.length > MAX_FILES_PER_UPLOAD) {
+        enqueueSnackbar(
+          `Tek seferde en fazla ${MAX_FILES_PER_UPLOAD} dosya seçebilirsiniz. İlk ${MAX_FILES_PER_UPLOAD} dosya işlenecek.`,
+          { variant: "warning", autoHideDuration: 7000 }
+        );
+      }
+
       setUploading(true);
       setDosyaYuklendiMi(false);
 
       const validFiles: File[] = [];
 
-      for (const file of acceptedFiles) {
+      for (const file of acceptedFiles.slice(0, MAX_FILES_PER_UPLOAD)) {
         if (
           file.name.endsWith(".xml") ||
           file.name.endsWith(".XML") ||
@@ -296,34 +306,69 @@ const Page: React.FC = () => {
           });
           await Promise.all(uploadPromises);
         } else {
-          // RAM & Bağlantı Optimizasyonu: TÜM dosyaları tek FormData'ya ekleyip TEK HTTP isteği ile gönder.
-          // Önceden her dosya için ayrı istek açılıyordu (12 dosya × 5 kullanıcı = 60 bağlantı).
-          const formData = new FormData();
-          validFiles.forEach((file) => formData.append("files", file));
-          validFiles.forEach((file) => appendLog(file.name, "Toplu yükleme paketine eklendi."));
+          // E-Defter için çok büyük toplu yüklemelerde tek request yerine partili gönderim.
+          const fileBatches: File[][] = [];
+          let currentBatch: File[] = [];
+          let currentBatchBytes = 0;
 
-          await axios.post(
-            `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
-            formData,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
-              onUploadProgress: (event) => {
-                const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
-                if (progress % 10 === 0 || progress === 100) {
-                  currentBatchNames.forEach((fileName) =>
-                    appendLog(fileName, `Toplu gönderim ilerlemesi: %${progress}`)
-                  );
-                }
-                setProgressInfos((prev) =>
-                  prev.map((info) =>
-                    currentBatchNames.includes(info.fileName)
-                      ? { ...info, percentage: Math.round(progress * 0.2), status: "Yükleniyor..." }
-                      : info
-                  )
-                );
-              },
+          for (const file of validFiles) {
+            if (
+              currentBatch.length > 0 &&
+              currentBatchBytes + file.size > MAX_BATCH_PAYLOAD_BYTES
+            ) {
+              fileBatches.push(currentBatch);
+              currentBatch = [file];
+              currentBatchBytes = file.size;
+            } else {
+              currentBatch.push(file);
+              currentBatchBytes += file.size;
             }
-          );
+          }
+          if (currentBatch.length > 0) fileBatches.push(currentBatch);
+
+          for (let batchIndex = 0; batchIndex < fileBatches.length; batchIndex++) {
+            const batchFiles = fileBatches[batchIndex];
+            const formData = new FormData();
+            batchFiles.forEach((file) => formData.append("files", file));
+            batchFiles.forEach((file) =>
+              appendLog(
+                file.name,
+                `Toplu yükleme paketine eklendi (Part ${batchIndex + 1}/${fileBatches.length}).`
+              )
+            );
+
+            await axios.post(
+              `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
+              formData,
+              {
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (event) => {
+                  const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
+                  const overallProgress = Math.round(
+                    (((batchIndex + progress / 100) / fileBatches.length) * 20)
+                  );
+
+                  if (progress % 10 === 0 || progress === 100) {
+                    batchFiles.forEach((file) =>
+                      appendLog(file.name, `Toplu gönderim ilerlemesi: %${progress}`)
+                    );
+                  }
+
+                  setProgressInfos((prev) =>
+                    prev.map((info) =>
+                      currentBatchNames.includes(info.fileName)
+                        ? {
+                          ...info,
+                          percentage: Math.max(info.percentage, overallProgress),
+                          status: "Yükleniyor..."
+                        }
+                        : info
+                    )
+                  );
+                },
+              }
+            );
+          }
 
           // Yükleme tamamlandı — tüm dosyalar kuyruğa alındı
           setProgressInfos((prev) =>
@@ -367,6 +412,7 @@ const Page: React.FC = () => {
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     noClick: true,
+    maxFiles: MAX_FILES_PER_UPLOAD,
     accept: {
       [`application/${fileType === "E-DefterKebir" || fileType === "E-DefterYevmiye"
         ? "xml"
@@ -680,6 +726,9 @@ const Page: React.FC = () => {
                             ? "XML "
                             : "PDF "}
                           dosyası yükleyebilirsiniz.
+                        </Typography>
+                        <Typography variant="caption" sx={{ display: "block", mt: 1, color: "text.secondary" }}>
+                          Limit: Tek seferde en fazla 365 dosya.
                         </Typography>
                       </>
                     )}
