@@ -59,6 +59,8 @@ interface MyComponentProps {
   setDosyaYuklendiMi: (deger: boolean) => void;
   uploadLogsByFile?: Record<string, string[]>;
   pendingUploadRows?: { fileName: string; status: string }[];
+  onlyShowFinalizedRows?: boolean;
+  onServerRowsChange?: (rows: DosyaType[]) => void;
 }
 
 interface DosyaType {
@@ -66,6 +68,7 @@ interface DosyaType {
   adi: string;
   olusturulmaTarihi: string;
   durum: string;
+  progress?: number;
 }
 
 const DosyaTable: React.FC<MyComponentProps> = ({
@@ -77,6 +80,8 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   setDosyaYuklendiMi,
   uploadLogsByFile,
   pendingUploadRows,
+  onlyShowFinalizedRows = false,
+  onServerRowsChange,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -515,22 +520,31 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           .reverse()
           .join("."),
         durum: dosya.durum,
+        progress: Number((dosya as any).progress ?? (dosya as any).Progress ?? 0),
       }));
+      onServerRowsChange?.(serverRows);
 
       const today = new Date().toLocaleDateString("tr-TR");
-      const optimisticRows: DosyaType[] = (pendingUploadRows || [])
-        .filter(
-          (pending) =>
-            !serverRows.some((row) => sameFileName(row.adi, pending.fileName))
-        )
-        .map((pending, index) => ({
-          id: -(index + 1),
-          adi: pending.fileName,
-          olusturulmaTarihi: today,
-          durum: pending.status,
-        }));
+      const optimisticRows: DosyaType[] = onlyShowFinalizedRows
+        ? []
+        : (pendingUploadRows || [])
+            .filter(
+              (pending) =>
+                !serverRows.some((row) => sameFileName(row.adi, pending.fileName))
+            )
+            .map((pending, index) => ({
+              id: -(index + 1),
+              adi: pending.fileName,
+              olusturulmaTarihi: today,
+              durum: pending.status,
+              progress: 0,
+            }));
 
-      const newRows: DosyaType[] = [...optimisticRows, ...serverRows];
+      const displayServerRows = onlyShowFinalizedRows
+        ? serverRows.filter((row) => isFinalStatus(row.durum))
+        : serverRows;
+
+      const newRows: DosyaType[] = [...optimisticRows, ...displayServerRows];
 
       const nextSignature = newRows
         .map((r) => `${r.id}|${r.adi}|${r.olusturulmaTarihi}|${r.durum}`)
@@ -542,12 +556,14 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       }
 
       setControl(true);
-      return newRows.some((r: DosyaType) => !isFinalStatus(r.durum));
+      const hasActiveServerRows = serverRows.some((r: DosyaType) => !isFinalStatus(r.durum));
+      const hasActiveOptimisticRows = optimisticRows.some((r: DosyaType) => !isFinalStatus(r.durum));
+      return hasActiveServerRows || hasActiveOptimisticRows;
     } catch (error) {
       console.log("Bir hata oluştu:", error);
       return false;
     }
-  }, [fileType, pendingUploadRows, setRows, user.denetciId, user.denetlenenId, user.yil]);
+  }, [fileType, onServerRowsChange, onlyShowFinalizedRows, pendingUploadRows, setRows, user.denetciId, user.denetlenenId, user.yil]);
 
   useEffect(() => {
     if (fileType === "E-DefterKebir") {
