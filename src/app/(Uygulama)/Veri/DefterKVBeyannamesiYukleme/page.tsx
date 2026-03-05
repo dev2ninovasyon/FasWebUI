@@ -59,10 +59,13 @@ interface DosyaType {
   adi: string;
   olusturulmaTarihi: string;
   durum: string;
+  progress?: number;
 }
 
 interface ProgressInfo {
   fileName: string;
+  uploadPercentage: number;
+  processPercentage: number;
   percentage: number;
   status: string;
 }
@@ -74,6 +77,30 @@ interface PendingUploadRow {
 
 const MAX_FILES_PER_UPLOAD = 365;
 const MAX_BATCH_PAYLOAD_BYTES = 400 * 1024 * 1024;
+const UPLOAD_WEIGHT = 0.35;
+const PROCESS_WEIGHT = 0.65;
+
+const clampPercent = (value?: number) => {
+  if (typeof value !== "number" || Number.isNaN(value)) return 0;
+  return Math.max(0, Math.min(100, Math.round(value)));
+};
+
+const sameFileName = (a?: string, b?: string) => {
+  const left = (a || "").toLocaleLowerCase("tr-TR").trim();
+  const right = (b || "").toLocaleLowerCase("tr-TR").trim();
+  if (!left || !right) return false;
+  return left === right || left.includes(right) || right.includes(left);
+};
+
+const isFinalStatus = (status?: string) => {
+  const normalized = normalizeStatus(status || "");
+  return normalized.includes("tamamlandı") || normalized.includes("hata");
+};
+
+const calcCombinedProgress = (uploadPercentage: number, processPercentage: number, status?: string) => {
+  if (isFinalStatus(status)) return 100;
+  return clampPercent(uploadPercentage * UPLOAD_WEIGHT + processPercentage * PROCESS_WEIGHT);
+};
 
 const normalizeStatus = (status: string) =>
   (status || "").toLocaleLowerCase("tr-TR");
@@ -207,13 +234,7 @@ const Page: React.FC = () => {
       const currentBatchNames = validFiles.map((file) => file.name);
       const allTrackedNames = Array.from(new Set([...trackedFileNames, ...currentBatchNames]));
       setTrackedFileNames(allTrackedNames);
-      setPendingUploadRows((prev) => {
-        const map = new Map<string, PendingUploadRow>(prev.map((p) => [p.fileName, p]));
-        currentBatchNames.forEach((fileName) => {
-          map.set(fileName, { fileName, status: "İşleniyor..." });
-        });
-        return Array.from(map.values());
-      });
+      setPendingUploadRows([]);
       setUploadLogsByFile((prev) => {
         const next = { ...prev };
         for (const file of validFiles) {
@@ -229,7 +250,13 @@ const Page: React.FC = () => {
       setProgressInfos((prev) => {
         const map = new Map<string, ProgressInfo>(prev.map((x) => [x.fileName, x]));
         for (const name of currentBatchNames) {
-          map.set(name, { fileName: name, percentage: 0, status: "Yükleniyor..." });
+          map.set(name, {
+            fileName: name,
+            uploadPercentage: 0,
+            processPercentage: 0,
+            percentage: 0,
+            status: "Upload Ediliyor...",
+          });
         }
         return Array.from(map.values());
       });
@@ -254,50 +281,49 @@ const Page: React.FC = () => {
                   setProgressInfos((prev) =>
                     prev.map((info) =>
                       info.fileName === file.name
-                        ? {
-                          ...info,
-                          status: "Yükleniyor...",
-                          percentage: Math.max(info.percentage, Math.min(95, percentage)),
-                        }
+                        ? (() => {
+                          const nextUpload = Math.max(info.uploadPercentage, clampPercent(percentage));
+                          if (nextUpload < 100 && nextUpload < info.uploadPercentage + 2) return info;
+                          return {
+                            ...info,
+                            status: "Upload Ediliyor...",
+                            uploadPercentage: nextUpload,
+                            percentage: Math.max(
+                              info.percentage,
+                              calcCombinedProgress(nextUpload, info.processPercentage, "Upload Ediliyor...")
+                            ),
+                          };
+                        })()
                         : info
                     )
                   );
                 }
               );
               if (res.success) {
-                setPendingUploadRows((prev) =>
-                  prev.map((p) =>
-                    p.fileName === file.name ? { ...p, status: "Tamamlandı" } : p
-                  )
-                );
                 appendLog(file.name, "Sunucu yanıtı alındı, parse işlemi başarılı.");
                 setProgressInfos((prev) => {
                   return prev.map((info) =>
                     info.fileName === file.name
-                      ? { ...info, status: "Tamamlandı", percentage: 100 }
+                      ? {
+                        ...info,
+                        status: "Tamamlandı",
+                        uploadPercentage: 100,
+                        processPercentage: 100,
+                        percentage: 100,
+                      }
                       : info
                   );
                 });
               } else {
-                setPendingUploadRows((prev) =>
-                  prev.map((p) =>
-                    p.fileName === file.name ? { ...p, status: "Hata Oluştu" } : p
-                  )
-                );
                 appendLog(file.name, `Hata: ${res.message || "Bilinmeyen hata"}`);
                 throw new Error(res.message);
               }
             } catch (error: any) {
-              setPendingUploadRows((prev) =>
-                prev.map((p) =>
-                  p.fileName === file.name ? { ...p, status: "Hata Oluştu" } : p
-                )
-              );
               appendLog(file.name, `İşlem başarısız: ${error?.message || "Bilinmeyen hata"}`);
               setProgressInfos((prev) => {
                 return prev.map((info) =>
                   info.fileName === file.name
-                    ? { ...info, status: "Hata!", percentage: 0 }
+                    ? { ...info, status: "Hata!", processPercentage: 100, percentage: 100 }
                     : info
                 );
               });
@@ -305,6 +331,7 @@ const Page: React.FC = () => {
             }
           });
           await Promise.all(uploadPromises);
+          setDosyaYuklendiMi(true);
         } else {
           // E-Defter için çok büyük toplu yüklemelerde tek request yerine partili gönderim.
           const fileBatches: File[][] = [];
@@ -343,10 +370,9 @@ const Page: React.FC = () => {
               {
                 headers: { "Content-Type": "multipart/form-data" },
                 onUploadProgress: (event) => {
-                  const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 1;
-                  const overallProgress = Math.round(
-                    (((batchIndex + progress / 100) / fileBatches.length) * 20)
-                  );
+                  const loaded = event.loaded || 0;
+                  const batchTotal = event.total || batchFiles.reduce((sum, f) => sum + f.size, 0);
+                  const progress = batchTotal ? Math.round((100 * loaded) / batchTotal) : 1;
 
                   if (progress % 10 === 0 || progress === 100) {
                     batchFiles.forEach((file) =>
@@ -357,11 +383,33 @@ const Page: React.FC = () => {
                   setProgressInfos((prev) =>
                     prev.map((info) =>
                       currentBatchNames.includes(info.fileName)
-                        ? {
-                          ...info,
-                          percentage: Math.max(info.percentage, overallProgress),
-                          status: "Yükleniyor..."
-                        }
+                        ? (() => {
+                          const fileIndexInBatch = batchFiles.findIndex((f) => f.name === info.fileName);
+                          if (fileIndexInBatch < 0) return info;
+                          const bytesBeforeFileInBatch = batchFiles
+                            .slice(0, fileIndexInBatch)
+                            .reduce((sum, f) => sum + f.size, 0);
+                          const currentFile = batchFiles[fileIndexInBatch];
+                          const fileLoadedInBatch = Math.max(
+                            0,
+                            Math.min(currentFile.size, loaded - bytesBeforeFileInBatch)
+                          );
+                          const uploadPct = clampPercent((fileLoadedInBatch / currentFile.size) * 100);
+                          if (uploadPct < 100 && uploadPct < info.uploadPercentage + 2) return info;
+                          return {
+                            ...info,
+                            status: "Upload Ediliyor...",
+                            uploadPercentage: Math.max(info.uploadPercentage, uploadPct),
+                            percentage: Math.max(
+                              info.percentage,
+                              calcCombinedProgress(
+                                Math.max(info.uploadPercentage, uploadPct),
+                                info.processPercentage,
+                                "Upload Ediliyor..."
+                              )
+                            ),
+                          };
+                        })()
                         : info
                     )
                   );
@@ -374,28 +422,22 @@ const Page: React.FC = () => {
           setProgressInfos((prev) =>
             prev.map((info) =>
               currentBatchNames.includes(info.fileName)
-                ? { ...info, status: "Sıraya Alındı.", percentage: 20 }
+                ? {
+                  ...info,
+                  status: "Sıraya Alındı.",
+                  uploadPercentage: 100,
+                  percentage: Math.max(
+                    info.percentage,
+                    calcCombinedProgress(100, info.processPercentage, "Sıraya Alındı.")
+                  ),
+                }
                 : info
-            )
-          );
-          setPendingUploadRows((prev) =>
-            prev.map((p) =>
-              currentBatchNames.includes(p.fileName)
-                ? { ...p, status: "İşleniyor..." }
-                : p
             )
           );
           currentBatchNames.forEach((fileName) =>
             appendLog(fileName, "Yükleme tamamlandı, dosya kuyruğa alındı.")
           );
           enqueueSnackbar("Dosyalar kuyruğa alındı. İşlem sırası geldiğinde otomatik işlenecek.", { variant: "info" });
-        }
-
-        if (fileType === "KurumlarBeyannamesi") {
-          setUploading(false);
-          setDosyaYuklendiMi(true);
-          setControl(true);
-          return;
         }
 
         // Durum takibi DosyaTable bileşenindeki tek polling akışından yapılır.
@@ -497,6 +539,7 @@ const Page: React.FC = () => {
     if (pendingCompletionRef.current) {
       setUploading(false);
       setTrackedFileNames([]);
+      setProgressInfos([]);
       enqueueSnackbar("Tüm dosyalar işlendi.", { variant: "success" });
       pendingCompletionRef.current = false;
     }
@@ -516,6 +559,56 @@ const Page: React.FC = () => {
       prev.filter((p) => !hasServerRow(p.fileName))
     );
   }, [rows, pendingUploadRows.length]);
+
+  const handleServerRowsChange = useCallback(
+    (serverRows: DosyaType[]) => {
+      if (!trackedFileNames.length) return;
+
+      setProgressInfos((prev) =>
+        prev.map((info) => {
+          const row = serverRows.find((r) => sameFileName(r.adi, info.fileName));
+          if (!row) return info;
+
+          const nextStatus = row.durum || info.status;
+          const nextProcess = isFinalStatus(nextStatus)
+            ? 100
+            : Math.max(info.processPercentage, clampPercent(row.progress));
+          const nextUpload = Math.max(info.uploadPercentage, 100);
+          const nextCombined = Math.max(
+            info.percentage,
+            calcCombinedProgress(nextUpload, nextProcess, nextStatus)
+          );
+
+          if (
+            nextStatus === info.status &&
+            nextProcess === info.processPercentage &&
+            nextUpload === info.uploadPercentage &&
+            nextCombined === info.percentage
+          ) {
+            return info;
+          }
+
+          return {
+            ...info,
+            status: nextStatus,
+            uploadPercentage: nextUpload,
+            processPercentage: nextProcess,
+            percentage: nextCombined,
+          };
+        })
+      );
+
+      const allFinished = trackedFileNames.every((fileName) => {
+        const row = serverRows.find((r) => sameFileName(r.adi, fileName));
+        return row && isFinalStatus(row.durum);
+      });
+
+      if (allFinished) {
+        setDosyaYuklendiMi(true);
+      }
+    },
+    [trackedFileNames]
+  );
 
   return (
     <PageContainer
@@ -763,6 +856,8 @@ const Page: React.FC = () => {
               setRows={setRows}
               uploadLogsByFile={uploadLogsByFile}
               pendingUploadRows={pendingUploadRows}
+              onlyShowFinalizedRows={true}
+              onServerRowsChange={handleServerRowsChange}
             />
           </Box>
         </Grid>
