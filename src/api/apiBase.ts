@@ -1,5 +1,5 @@
-﻿//export const url = "https://betaapi.fasmart.app/api";
-export const url = "http://localhost:5000/api";
+﻿export const url = "https://betaapi.fasmart.app/api";
+//export const url = "http://localhost:5000/api";
 
 import Logger from "@/utils/Logger";
 
@@ -17,7 +17,7 @@ const isAuthEndpoint = (path: string) => {
     lowerPath === "/auth/logout"
   );
 };
-
+ 
 const redirectTo = (targetPath: string) => {
   if (typeof window === "undefined") return;
   if (window.location.pathname === targetPath) return;
