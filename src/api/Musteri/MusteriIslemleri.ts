@@ -61,6 +61,8 @@ export async function getImportPipelineJobStatus(jobId: string) {
 }
 
 import { apiFetch } from "@/api/apiBase";
+import axios from "axios";
+import { url } from "@/api/apiBase";
 
 export const createDenetlenen = async (createdMusteri: any) => {
   const response = await apiFetch(`/Denetlenen`, {
@@ -79,43 +81,77 @@ export const uploadAndParseKurumlarBeyannamesi = async (
   file: File,
   denetciId: number,
   yil: number,
-  denetlenenId: number
+  denetlenenId: number,
+  onProgress?: (percentage: number) => void
 ) => {
   try {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await apiFetch(
-      `/Veri/UploadAndParseKurumlarBeyannamesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=KurumlarBeyannamesi`,
+    const sessionAccessToken =
+      typeof window !== "undefined"
+        ? window.sessionStorage.getItem("fas_session_token")
+        : null;
+    const denetlenenIdFromStorage =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("fas_denetlenenId")
+        : null;
+    const yilFromStorage =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("fas_yil")
+        : null;
+    const clientUrl =
+      typeof window !== "undefined"
+        ? window.location.pathname + window.location.search
+        : "";
+
+    const response = await axios.post(
+      `${url}/Veri/UploadAndParseKurumlarBeyannamesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=KurumlarBeyannamesi`,
+      formData,
       {
-        method: "POST",
-        headers: {},
-        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "X-Client-Url": clientUrl,
+          ...(denetlenenIdFromStorage
+            ? { "X-Denetlenen-Id": denetlenenIdFromStorage }
+            : {}),
+          ...(yilFromStorage ? { "X-Yil": yilFromStorage } : {}),
+          ...(sessionAccessToken
+            ? { Authorization: `Bearer ${sessionAccessToken}` }
+            : {}),
+        },
+        withCredentials: true,
+        onUploadProgress: (event) => {
+          if (!onProgress) return;
+          const percentage = event.total
+            ? Math.round((event.loaded * 100) / event.total)
+            : 1;
+          onProgress(Math.max(1, Math.min(99, percentage)));
+        },
       }
     );
 
-    if (response.ok) {
-      const data = await response.json();
+    onProgress?.(100);
+
+    if (response.status >= 200 && response.status < 300) {
+      const data = response.data;
       // Backend uses GetResponseOnlyResultData which returns only the data object directly
       return {
         success: true,
         data: data,
         message: "Dosya yüklendi ve veriler çekildi."
       };
-    } else {
-      const contentType = response.headers.get("content-type");
-      let message = "Dosya yüklenirken hata oluştu.";
-      if (contentType && contentType.includes("application/json")) {
-        const errorData = await response.json();
-        message = errorData.message || errorData || message;
-      } else {
-        message = await response.text();
-      }
-      return { success: false, message: message };
     }
+
+    return { success: false, message: "Dosya yüklenirken hata oluştu." };
   } catch (error) {
     console.log("Dosya yüklenirken hata oluştu:", error);
-    return { success: false, message: "Beklenmedik bir hata oluştu." };
+    const axiosError = error as any;
+    const message =
+      axiosError?.response?.data?.message ||
+      axiosError?.response?.data ||
+      "Beklenmedik bir hata oluştu.";
+    return { success: false, message: message };
   }
 };
 

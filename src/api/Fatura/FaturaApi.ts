@@ -72,6 +72,18 @@ export type PagedResult<T> = {
   pageSize: number;
 };
 
+export type FaturaListItem = {
+  id: string;
+  faturaNumarasi?: string | null;
+  faturaTarihi: string;
+  tedarikciAd?: string | null;
+  aliciAd?: string | null;
+  tedarikciVkn?: string | null;
+  aliciVkn?: string | null;
+  paraBirimi?: string | null;
+  odenecekTutar: number;
+};
+
 // TAM grafik dönen endpoint
 export async function fetchPagedFaturalarFull(
   denetciId: number,
@@ -93,6 +105,45 @@ export async function fetchPagedFaturalarFull(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(filters),
   });
+  return res.json();
+}
+
+export async function fetchPagedFaturalarLite(
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  page: number,
+  pageSize: number,
+  tip: string,
+  filters: Record<string, string[]> = {}
+): Promise<PagedResult<FaturaListItem>> {
+  const apiurl =
+    `/Invoices/FilteredPagedLite` +
+    `?denetciId=${denetciId}&yil=${yil}` +
+    `&denetlenenId=${denetlenenId}&page=${page}&pageSize=${pageSize}` +
+    `&tip=${encodeURIComponent(tip)}`;
+
+  const res = await apiFetch(apiurl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(filters),
+  });
+  return res.json();
+}
+
+export async function fetchFaturaDetail(
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  id: string
+): Promise<Fatura> {
+  const res = await apiFetch(
+    `/Invoices/Detail/${id}?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+    { headers: { accept: "application/json" } }
+  );
+  if (!res.ok) {
+    throw new Error("Fatura detayı alınamadı");
+  }
   return res.json();
 }
 export const uploadFaturaDosyalari = async (

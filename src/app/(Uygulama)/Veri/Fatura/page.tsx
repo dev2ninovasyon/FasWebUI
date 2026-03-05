@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -25,16 +25,15 @@ type YuklemeSatiri = {
   adi: string;
   olusturulmaTarihi: string;
   tip?: string;
-  // sunucu alanları (esnek map'liyoruz):
+  status?: string;
+  needsPolling?: boolean;
   inProgress: boolean;
   total: number;
   processed: number;
   failed: number;
-  durum: string; // "processed/total"
+  durum: string;
   faturaDosyalari?: FaturaDosyaRow[];
 };
-
-
 
 const Page: React.FC = () => {
   const theme = useTheme();
@@ -91,20 +90,6 @@ const Page: React.FC = () => {
   };
 
   const mapYukleme = (x: any): YuklemeSatiri => {
-    const processed = Number(
-      x.processedFiles ?? x.ProcessedFiles ?? x.basariliDosyaSayisi ?? x.BasariliDosyaSayisi ?? 0
-    );
-    const total = Number(
-      x.totalFiles ?? x.TotalFiles ?? x.dosyaSayisi ?? x.DosyaSayisi ?? 0
-    );
-    const failed = Number(
-      x.failedFiles ?? x.FailedFiles ?? 0
-    );
-    const inProgress = Boolean(
-      (x.isInProgress ?? x.IsInProgress) ??
-      (total > 0 && processed < total)
-    );
-
     const childRaw = (x.faturaDosyalari ?? x.FaturaDosyalari ?? []) as any[];
     const faturaDosyalari: FaturaDosyaRow[] = childRaw.map((d: any) => ({
       id: d.id ?? d.Id,
@@ -115,10 +100,59 @@ const Page: React.FC = () => {
         : (d.YuklemeTarihi ? new Date(d.YuklemeTarihi).toLocaleString("tr-TR") : "")
     }));
 
+    const statusRaw = (x.status ?? x.Status ?? "Queued") as string;
+    const processedRaw = Number(
+      x.islenenDosyaSayisi ?? x.IslenenDosyaSayisi ?? x.processedFiles ?? x.ProcessedFiles ?? 0
+    );
+    const successRaw = Number(
+      x.basariliDosyaSayisi ?? x.BasariliDosyaSayisi ?? 0
+    );
+    const totalRaw = Number(
+      x.totalFiles ?? x.TotalFiles ?? x.dosyaSayisi ?? x.DosyaSayisi ?? 0
+    );
+    const failedRaw = Number(
+      x.hataDosyaSayisi ?? x.HataDosyaSayisi ?? x.failedFiles ?? x.FailedFiles ?? 0
+    );
+
+    const childSuccess = faturaDosyalari.filter((d) =>
+      d.durum.toLowerCase() === "başarılı" || d.durum.toLowerCase() === "basarili"
+    ).length;
+    const childFailed = faturaDosyalari.filter((d) =>
+      d.durum.toLowerCase() === "hatalı" || d.durum.toLowerCase() === "hatali"
+    ).length;
+    const childProcessed = childSuccess + childFailed;
+
+    const total = totalRaw > 0 ? totalRaw : faturaDosyalari.length;
+    let failed = failedRaw > 0 ? failedRaw : childFailed;
+    let success = successRaw > 0 ? successRaw : childSuccess;
+    let processed = Math.max(processedRaw, childProcessed, success + failed);
+
+    if (total > 0) {
+      failed = Math.min(failed, total);
+      success = Math.min(success, total);
+      processed = Math.min(processed, total);
+    }
+
+    let status = statusRaw;
+    if (total > 0 && processed >= total) {
+      status = failed > 0 ? (success > 0 ? "PartialSuccess" : "Failed") : "Completed";
+    }
+
+    const needsPolling = Boolean(
+      x.needsPolling ?? x.NeedsPolling ?? (status === "Queued" || status === "Processing")
+    );
+    const inProgress = Boolean(
+      (x.isInProgress ?? x.IsInProgress) ??
+      needsPolling ??
+      (total > 0 && processed < total)
+    ) || (total > 0 && processed < total);
+
     return {
       id: x.id ?? x.Id,
       adi: x.islemAdi ?? x.IslemAdi,
       tip: x.tip ?? x.Tip,
+      status,
+      needsPolling,
       olusturulmaTarihi: new Date(x.islemTarihi ?? x.IslemTarihi).toLocaleDateString("tr-TR"),
       inProgress,
       total,
@@ -150,10 +184,20 @@ const Page: React.FC = () => {
     }
   }, [user]);
 
-  // ilk açılışta 1 kez çek
   useEffect(() => { void fetchRows({ initial: true }); }, [fetchRows]);
 
-  // Dropzone
+  useEffect(() => {
+    if (!rows.some(r => r.needsPolling || r.inProgress || (r.total > 0 && r.processed < r.total))) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      void fetchRows({ tryCloseSnack: true });
+    }, 3000);
+
+    return () => window.clearInterval(intervalId);
+  }, [rows, fetchRows]);
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (!islemAdi?.trim()) { toast("Lütfen işlem adını giriniz.", "warning"); return; }
     if (acceptedFiles.length === 0) return;
@@ -173,11 +217,7 @@ const Page: React.FC = () => {
       });
 
       toast("Dosyalar yüklendi. Kuyrukta işleniyor.", "success");
-
-      // upload biter bitmez 1 kez durum çek
       void fetchRows({ tryCloseSnack: true });
-
-      // mini bir “tek-sefer kontrol” daha (ör. 15sn sonra)
       setTimeout(() => { void fetchRows({ tryCloseSnack: true }); }, 15000);
     } catch (e) {
       console.log(e);
@@ -196,11 +236,7 @@ const Page: React.FC = () => {
     <PageContainer title="Fatura Yükleme" description="Fatura yükleme ve izleme">
       <Breadcrumb title="Fatura Yükleme" items={BCrumb} />
       <Grid container spacing={3}>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 5
-          }}>
+        <Grid size={{ xs: 12, lg: 5 }}>
           <Box sx={{ height: 560, border: `1px solid ${borderColor}`, borderRadius: `${borderRadius}/5` }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="h5" p={2}>Dosya Yükle</Typography>
@@ -248,11 +284,7 @@ const Page: React.FC = () => {
           </Box>
         </Grid>
 
-        <Grid
-          size={{
-            xs: 12,
-            lg: 7
-          }}>
+        <Grid size={{ xs: 12, lg: 7 }}>
           <Box sx={{ height: smDown ? 610 : 560, border: `1px solid ${borderColor}`, borderRadius: `${borderRadius}/5` }}>
             <DosyaTable
               rows={rows}

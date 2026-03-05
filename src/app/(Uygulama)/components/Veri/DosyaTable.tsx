@@ -57,6 +57,8 @@ interface MyComponentProps {
   dosyaYuklendiMi: boolean;
   setRows: (dosya: DosyaType[]) => void;
   setDosyaYuklendiMi: (deger: boolean) => void;
+  uploadLogsByFile?: Record<string, string[]>;
+  pendingUploadRows?: { fileName: string; status: string }[];
 }
 
 interface DosyaType {
@@ -73,6 +75,8 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   dosyaYuklendiMi,
   setRows,
   setDosyaYuklendiMi,
+  uploadLogsByFile,
+  pendingUploadRows,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -82,6 +86,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const [xmlBlobUrl, setXmlBlobUrl] = useState<string | null>(null);
 
   const [defterLoglari, setDefterLoglari] = useState("");
+  const [selectedLogFileName, setSelectedLogFileName] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -134,6 +139,13 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const isProcessingStatus = (status?: string) => {
     const s = (status || "").toLocaleLowerCase("tr-TR");
     return s.includes("işleniyor");
+  };
+
+  const sameFileName = (a?: string, b?: string) => {
+    const left = (a || "").toLocaleLowerCase("tr-TR").trim();
+    const right = (b || "").toLocaleLowerCase("tr-TR").trim();
+    if (!left || !right) return false;
+    return left === right || left.includes(right) || right.includes(left);
   };
 
   function normalizeString(str: string): string {
@@ -320,15 +332,50 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     setAnchorEl(null);
   };
 
-  const handlePreview = async (id: number) => {
+  const findUiLogsByFileName = (fileName?: string) => {
+    if (!fileName || !uploadLogsByFile) return [] as string[];
+    const direct = uploadLogsByFile[fileName];
+    if (direct?.length) return direct;
+
+    const entries = Object.entries(uploadLogsByFile);
+    const matched = entries.find(([key]) =>
+      key === fileName ||
+      fileName.includes(key) ||
+      key.includes(fileName)
+    );
+
+    return matched?.[1] || [];
+  };
+
+  const handlePreview = async (id: number, fileName?: string, currentStatus?: string) => {
+    const sections: string[] = [];
+    const uiLogs = findUiLogsByFileName(fileName);
+    if (uiLogs.length) {
+      sections.push(`[UI Yükleme Logları]\n${uiLogs.join("\n")}`);
+    }
+
     try {
-      const defterYuklemeLoglari = await getDefterYuklemeLoglari(id
-      );
-      setDefterLoglari(defterYuklemeLoglari);
-      setIsOpen(true);
+      const defterYuklemeLoglari = await getDefterYuklemeLoglari(id);
+      if (typeof defterYuklemeLoglari === "string" && defterYuklemeLoglari.trim()) {
+        sections.push(`[Sunucu İşlem Logları]\n${defterYuklemeLoglari}`);
+      } else if (defterYuklemeLoglari) {
+        sections.push(
+          `[Sunucu İşlem Logları]\n${JSON.stringify(defterYuklemeLoglari, null, 2)}`
+        );
+      }
     } catch (error) {
       console.log("Defter Logları getirilemedi");
     }
+
+    if (!sections.length) {
+      sections.push(
+        `Bu dosya için detay log bulunamadı.\nDurum: ${currentStatus || "Bilinmiyor"}`
+      );
+    }
+
+    setSelectedLogFileName(fileName || `Dosya #${id}`);
+    setDefterLoglari(sections.join("\n\n------------------------------\n\n"));
+    setIsOpen(true);
   };
 
   const handlePreview2 = async () => {
@@ -459,7 +506,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
       if (!Array.isArray(dosyaBilgileri)) return false;
 
-      const newRows: DosyaType[] = dosyaBilgileri.map((dosya: DosyaType) => ({
+      const serverRows: DosyaType[] = dosyaBilgileri.map((dosya: DosyaType) => ({
         id: dosya.id,
         adi: dosya.adi,
         olusturulmaTarihi: dosya.olusturulmaTarihi
@@ -469,6 +516,21 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           .join("."),
         durum: dosya.durum,
       }));
+
+      const today = new Date().toLocaleDateString("tr-TR");
+      const optimisticRows: DosyaType[] = (pendingUploadRows || [])
+        .filter(
+          (pending) =>
+            !serverRows.some((row) => sameFileName(row.adi, pending.fileName))
+        )
+        .map((pending, index) => ({
+          id: -(index + 1),
+          adi: pending.fileName,
+          olusturulmaTarihi: today,
+          durum: pending.status,
+        }));
+
+      const newRows: DosyaType[] = [...optimisticRows, ...serverRows];
 
       const nextSignature = newRows
         .map((r) => `${r.id}|${r.adi}|${r.olusturulmaTarihi}|${r.durum}`)
@@ -485,7 +547,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       console.log("Bir hata oluştu:", error);
       return false;
     }
-  }, [fileType, setRows, user.denetciId, user.denetlenenId, user.yil]);
+  }, [fileType, pendingUploadRows, setRows, user.denetciId, user.denetlenenId, user.yil]);
 
   useEffect(() => {
     if (fileType === "E-DefterKebir") {
@@ -721,7 +783,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                     <IconButton
                       onClick={(event) => {
                         event.stopPropagation();
-                        handlePreview(row.id);
+                        handlePreview(row.id, row.adi, row.durum);
                       }}
                     >
                         <Chip
@@ -786,35 +848,38 @@ const DosyaTable: React.FC<MyComponentProps> = ({
             )} */}
           </TableBody>
         </Table>
-        {fileType == "E-DefterKebir" && (
-          <Dialog
-            open={isOpen}
-            onClose={() => setIsOpen(false)}
-            fullWidth
-            maxWidth={"md"}
-          >
-            <DialogContent className="testdialog">
-              <Stack
-                direction="row"
-                justifyContent={"space-between"}
-                alignItems="center"
-              >
+        <Dialog
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          fullWidth
+          maxWidth={"md"}
+        >
+          <DialogContent className="testdialog">
+            <Stack
+              direction="row"
+              justifyContent={"space-between"}
+              alignItems="center"
+            >
+              <Box>
                 <Typography variant="h5" py={1}>
                   İşlem Logları
                 </Typography>
-                <IconButton size="small" onClick={() => setIsOpen(false)}>
-                  <IconX size="18" />
-                </IconButton>
-              </Stack>
-            </DialogContent>
-            <Divider />
-            <DialogContent>
-              <Typography variant="body1" style={{ whiteSpace: "pre-line" }}>
-                {defterLoglari}
-              </Typography>
-            </DialogContent>
-          </Dialog>
-        )}
+                <Typography variant="caption" color="text.secondary">
+                  {selectedLogFileName}
+                </Typography>
+              </Box>
+              <IconButton size="small" onClick={() => setIsOpen(false)}>
+                <IconX size="18" />
+              </IconButton>
+            </Stack>
+          </DialogContent>
+          <Divider />
+          <DialogContent>
+            <Typography variant="body1" style={{ whiteSpace: "pre-line" }}>
+              {defterLoglari}
+            </Typography>
+          </DialogContent>
+        </Dialog>
         <Dialog
           open={isOpen2}
           onClose={() => {

@@ -41,7 +41,6 @@ import { AppState } from "@/store/store";
 import {
   previewFaturaHtmlNewTab,
   deleteYuklemeIslemleri,
-  getYuklemeDosyalari,
 } from "@/api/Fatura/FaturaApi";
 import { enqueueSnackbar } from "notistack";
 import Link from "next/link";
@@ -163,44 +162,8 @@ const DosyaTable: React.FC<{
       style: { maxWidth: 720 },
     });
 
-  const [fetchedFiles, setFetchedFiles] = React.useState<Record<string, FaturaDosyaRow[]>>({});
-  const [loadingFiles, setLoadingFiles] = React.useState<Record<string, boolean>>({});
-
   const toggleExpand = async (id: string) => {
-    const isExpanding = !expanded[id];
-    setExpanded((prev) => ({ ...prev, [id]: isExpanding }));
-
-    if (isExpanding && !fetchedFiles[id]) {
-      // Eğer prop'tan gelen veri varsa onu kullan, yoksa fetch et
-      const row = rows.find(r => r.id === id);
-      if (row?.faturaDosyalari && row.faturaDosyalari.length > 0) {
-        setFetchedFiles(prev => ({ ...prev, [id]: row.faturaDosyalari! }));
-        return;
-      }
-
-      try {
-        setLoadingFiles(prev => ({ ...prev, [id]: true }));
-        // API'den çek
-        const data = await getYuklemeDosyalari(user, id);
-
-        // Mapping
-        const mapped: FaturaDosyaRow[] = (data || []).map((d: any) => ({
-          id: d.id ?? d.Id,
-          dosyaAdi: d.dosyaAdi ?? d.DosyaAdi ?? "",
-          durum: d.durum ?? d.Durum ?? "",
-          yuklemeTarihi: d.yuklemeTarihi
-            ? new Date(d.yuklemeTarihi).toLocaleString("tr-TR")
-            : (d.YuklemeTarihi ? new Date(d.YuklemeTarihi).toLocaleString("tr-TR") : "")
-        }));
-
-        setFetchedFiles(prev => ({ ...prev, [id]: mapped }));
-      } catch (error) {
-        console.log(error);
-        toast("Dosyalar yüklenemedi", "error");
-      } finally {
-        setLoadingFiles(prev => ({ ...prev, [id]: false }));
-      }
-    }
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const checkAll = (checked: boolean) =>
@@ -441,13 +404,7 @@ const DosyaTable: React.FC<{
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {loadingFiles[row.id] ? (
-                                  <TableRow>
-                                    <TableCell colSpan={4} align="center">
-                                      <CircularProgress size={20} />
-                                    </TableCell>
-                                  </TableRow>
-                                ) : (fetchedFiles[row.id] || row.faturaDosyalari || []).map((d) => (
+                                {(row.faturaDosyalari || []).map((d) => (
                                   <TableRow key={d.id} hover>
                                     <TableCell>{d.dosyaAdi}</TableCell>
                                     <TableCell>{d.durum}</TableCell>
@@ -483,8 +440,7 @@ const DosyaTable: React.FC<{
                                     </TableCell>
                                   </TableRow>
                                 ))}
-                                {!loadingFiles[row.id] && (!fetchedFiles[row.id] && (!row.faturaDosyalari ||
-                                  row.faturaDosyalari.length === 0)) && (
+                                {(!row.faturaDosyalari || row.faturaDosyalari.length === 0) && (
                                     <TableRow>
                                       <TableCell colSpan={4}>
                                         <Typography color="text.secondary">
