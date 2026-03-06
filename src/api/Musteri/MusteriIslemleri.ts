@@ -61,8 +61,9 @@ export async function getImportPipelineJobStatus(jobId: string) {
 }
 
 import { apiFetch } from "@/api/apiBase";
-import axios from "axios";
+import axios, { AxiosProgressEvent } from "axios";
 import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig, readStoredAuthTokens } from "@/utils/authSession";
 
 export const createDenetlenen = async (createdMusteri: any) => {
   const response = await apiFetch(`/Denetlenen`, {
@@ -88,10 +89,6 @@ export const uploadAndParseKurumlarBeyannamesi = async (
     const formData = new FormData();
     formData.append("file", file);
 
-    const sessionAccessToken =
-      typeof window !== "undefined"
-        ? window.sessionStorage.getItem("fas_session_token")
-        : null;
     const denetlenenIdFromStorage =
       typeof window !== "undefined"
         ? window.localStorage.getItem("fas_denetlenenId")
@@ -108,7 +105,7 @@ export const uploadAndParseKurumlarBeyannamesi = async (
     const response = await axios.post(
       `${url}/Veri/UploadAndParseKurumlarBeyannamesi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=KurumlarBeyannamesi`,
       formData,
-      {
+      createAuthorizedAxiosConfig({
         headers: {
           "Content-Type": "multipart/form-data",
           "X-Client-Url": clientUrl,
@@ -116,19 +113,15 @@ export const uploadAndParseKurumlarBeyannamesi = async (
             ? { "X-Denetlenen-Id": denetlenenIdFromStorage }
             : {}),
           ...(yilFromStorage ? { "X-Yil": yilFromStorage } : {}),
-          ...(sessionAccessToken
-            ? { Authorization: `Bearer ${sessionAccessToken}` }
-            : {}),
         },
-        withCredentials: true,
-        onUploadProgress: (event) => {
+        onUploadProgress: (event: AxiosProgressEvent) => {
           if (!onProgress) return;
           const percentage = event.total
             ? Math.round((event.loaded * 100) / event.total)
             : 1;
           onProgress(Math.max(1, Math.min(99, percentage)));
         },
-      }
+      }, readStoredAuthTokens().accessToken)
     );
 
     onProgress?.(100);

@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { url } from "@/api/apiBase";
+import { readStoredAuthTokens } from "@/utils/authSession";
 
 export default function Maintenance() {
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
@@ -30,12 +31,8 @@ export default function Maintenance() {
 
     setIsCheckingHealth(true);
 
-    const accessToken = window.sessionStorage.getItem("fas_session_token");
-    const refreshToken =
-      window.sessionStorage.getItem("fas_session_refreshToken") ||
-      window.localStorage.getItem("fas_refreshToken");
-
-    setHasTokenIssue(!accessToken && !refreshToken);
+    const { accessToken, refreshToken } = readStoredAuthTokens();
+    setHasTokenIssue(!accessToken && !refreshToken && !user?.token);
 
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), 6000);
@@ -60,7 +57,7 @@ export default function Maintenance() {
 
   useEffect(() => {
     checkStatus();
-  }, []);
+  }, [user?.token]);
 
   return (
     <Box

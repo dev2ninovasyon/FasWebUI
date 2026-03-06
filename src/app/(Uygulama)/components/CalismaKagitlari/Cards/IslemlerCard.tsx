@@ -7,6 +7,7 @@ import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
 import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
@@ -32,9 +33,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
         url: `${url}/ArsivIslemleri/WordDosyasiIndir?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
         method: "GET",
         responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+        ...createAuthorizedAxiosConfig({}, user.token),
       });
 
       const urlFile = window.URL.createObjectURL(new Blob([response.data]));
@@ -58,9 +57,7 @@ const IslemlerCard: React.FC<Props> = ({ controller }) => {
         url: `${url}/ArsivIslemleri/PdfDosyasiGoster?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&modelAdi=${controller}`,
         method: "GET",
         responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+        ...createAuthorizedAxiosConfig({}, user.token),
       });
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });

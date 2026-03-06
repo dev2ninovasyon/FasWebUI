@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import DosyaTable from "./DosyaTable";
 import { renderWithProviders } from "@/test/test-utils";
+import { getDosyaBilgileri } from "@/api/Dosya/DosyaBilgileri";
 
 vi.mock("notistack", () => ({
   useSnackbar: () => ({
@@ -33,6 +34,35 @@ const baseRows = [
     progress: 100,
   },
 ];
+
+type TestRow = {
+  id: number;
+  adi: string;
+  olusturulmaTarihi: string;
+  durum: string;
+  progress?: number;
+};
+
+const StatefulDosyaTable = ({
+  initialRows = baseRows,
+  fileType = "E-DefterKebir",
+}: {
+  initialRows?: TestRow[];
+  fileType?: string;
+}) => {
+  const [rows, setRows] = React.useState<TestRow[]>(initialRows);
+
+  return (
+    <DosyaTable
+      rows={rows}
+      fetchedData={null}
+      fileType={fileType}
+      dosyaYuklendiMi={true}
+      setRows={(nextRows) => setRows(nextRows)}
+      setDosyaYuklendiMi={vi.fn()}
+    />
+  );
+};
 
 describe("DosyaTable month filter", () => {
   beforeEach(() => {
@@ -81,5 +111,21 @@ describe("DosyaTable month filter", () => {
       expect(screen.queryByText("202401-K-000000.xml")).not.toBeInTheDocument();
     });
     expect(screen.getByText("202402-K-000000.xml")).toBeInTheDocument();
+  });
+
+  it("formats upload timestamp with hour and minute", async () => {
+    vi.mocked(getDosyaBilgileri).mockResolvedValue([
+      {
+        id: 10,
+        adi: "6640804404-202403-K-000000.xml",
+        olusturulmaTarihi: "2026-03-06T15:15:42",
+        durum: "Tamamlandı",
+        progress: 100,
+      },
+    ] as any);
+
+    renderWithProviders(<StatefulDosyaTable initialRows={[]} />);
+
+    expect(await screen.findByText("06.03.2026 15:15")).toBeInTheDocument();
   });
 });

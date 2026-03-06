@@ -2,7 +2,6 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
-import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import React, { useState } from "react";
 import { useSelector } from "@/store/hooks";
@@ -12,16 +11,15 @@ import Header from "./components/Layout/Vertical/Header/Header";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import PageLoadingOverlay from "@/components/shared/PageLoadingOverlay";
-import { setKurulumTamamlandi, setDenetlenenId, setDenetlenenFirmaAdi, setYil, setDenetimTuru, setBobimi, setTfrsmi, setEnflasyonmu, setKonsolidemi, setRol as setStoreRol, setDenetlenen, setToken, setRefreshToken } from "@/store/user/UserSlice";
+import { setKurulumTamamlandi, setRol as setStoreRol, setDenetlenen } from "@/store/user/UserSlice";
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
 import MandatoryFlow from "./components/Layout/Mandatory/MandatoryFlow";
 import { useDispatch } from "@/store/hooks";
 import { getDenetlenenByRolForSelection, getDenetlenenByDenetciIdForSelection } from "@/api/Musteri/MusteriIslemleri";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
-import { apiFetch } from "@/api/apiBase";
+import { useAuthSession } from "@/contexts/AuthSessionContext";
 import Logger from "@/utils/Logger";
-
-const LOGOUT_INTENT_KEY = "fas_logout_intent";
+import { LOGOUT_INTENT_KEY } from "@/utils/authSession";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -38,10 +36,6 @@ const PageWrapper = styled("div")(() => ({
   width: "100%",
   backgroundColor: "transparent",
 }));
-
-interface Props {
-  children: React.ReactNode;
-}
 
 export default function RootLayout({
   children,
@@ -78,9 +72,8 @@ export default function RootLayout({
   const theme = useTheme();
   const router = useRouter();
   const user = useSelector((state: AppState) => state.userReducer);
+  const { status: authStatus, refreshSession } = useAuthSession();
   const [isSidebarHover, setIsSidebarHover] = useState(false);
-  const [control, setControl] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
   const [noCompanyWarning, setNoCompanyWarning] = useState(false);
@@ -96,150 +89,71 @@ export default function RootLayout({
     window.sessionStorage.removeItem(LOGOUT_INTENT_KEY);
   };
 
-  // Initial authentication check & Role-based flow
   useEffect(() => {
-    Logger.info("Oturum ve akış kontrolü başlatıldı.");
+    let cancelled = false;
+
     const checkFlow = async () => {
-      if (typeof window !== "undefined" && user.token) {
-        clearLogoutIntent();
-        setControl(true);
-        setIsChecking(false);
-        // If company is already selected, everything is fine
-        if (user.denetlenenId && user.yil && user.denetlenenFirmaAdi) {
-          setIsWizardOpen(false);
-          setIsSelectionModalOpen(false);
-          setNoCompanyWarning(false);
-          return;
-        }
+      if (authStatus !== "authenticated") {
+        setIsLoadingCompanies(false);
+        setIsWizardOpen(false);
+        setIsSelectionModalOpen(false);
+        setNoCompanyWarning(false);
+        return;
+      }
 
-        setIsLoadingCompanies(true);
-        try {
-          let companies = [];
-          if (user.yetki === "DenetciAdmin") {
-            companies = await getDenetlenenByDenetciIdForSelection(user.denetciId || 0);
-          } else {
-            companies = await getDenetlenenByRolForSelection(user.denetciId || 0, user.id || 0);
-          }
+      clearLogoutIntent();
 
-          const hasCompanies = companies && companies.length > 0;
-          console.log("Layout - Companies found:", companies?.length, { hasCompanies, yetki: user.yetki });
+      if (user.denetlenenId && user.yil && user.denetlenenFirmaAdi) {
+        setIsWizardOpen(false);
+        setIsSelectionModalOpen(false);
+        setNoCompanyWarning(false);
+        return;
+      }
 
-          if (user.yetki === "DenetciAdmin") {
-            if (!hasCompanies) {
-              // No companies and is Admin -> Must use Wizard
-              setIsWizardOpen(true);
-            } else {
-              // Has companies but none selected -> Mandatory Selection
-              setIsSelectionModalOpen(true);
-            }
-          } else {
-            // Not Admin
-            if (!hasCompanies) {
-              // No companies and NOT Admin -> Show Warning
-              setNoCompanyWarning(true);
-            } else {
-              // Has companies and NOT Admin -> Mandatory Selection
-              setIsSelectionModalOpen(true);
-            }
-          }
-        } catch (error) {
-          console.log("Flow check error:", error);
-        } finally {
-          setIsLoadingCompanies(false);
-        }
-      } else if (typeof window !== "undefined" && !user.token) {
-        // Redux'ta token yoksa Storage'dan kurtarmayı dene
-        const sessionToken = window.sessionStorage.getItem("fas_token");
-        const sessionRefreshToken = window.sessionStorage.getItem("fas_refreshToken");
-
-        if (sessionToken) {
-          dispatch(setToken(sessionToken));
-          if (sessionRefreshToken) {
-            dispatch(setRefreshToken(sessionRefreshToken));
-          }
-          setIsChecking(false);
-          setControl(true); // Token bulundu, render'a izin ver
-          return;
-        }
-
-        // Cookie-based session restore: HttpOnly cookie otomatik gönderilir (yeni sekme dahil)
-        try {
-          const currentRefreshToken = window.sessionStorage.getItem("fas_refreshToken")
-            || window.localStorage.getItem("fas_refreshToken");
-
-          // sessionStorage'da token yoksa bile dene — backend cookie'den okuyabilir
-          const refreshBody = currentRefreshToken
-            ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
-            : {};
-
-          const refreshResponse = await apiFetch("/Auth/refresh", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(refreshBody),
-            ignoreCustomHeaders: true,
-            suppressErrorLog: true,
-          });
-
-          if (refreshResponse?.ok) {
-            const refreshData = await refreshResponse.json().catch(() => null);
-            const token = refreshData?.token || refreshData?.Token;
-            const refreshToken = refreshData?.refreshToken || refreshData?.RefreshToken;
-            if (token) {
-              window.sessionStorage.setItem("fas_token", token);
-              dispatch(setToken(token));
-            }
-            if (refreshToken) {
-              window.sessionStorage.setItem("fas_refreshToken", refreshToken);
-              window.localStorage.setItem("fas_refreshToken", refreshToken);
-              dispatch(setRefreshToken(refreshToken));
-            }
-            setIsChecking(false);
-            setControl(true);
-            return;
-          }
-        } catch {
-          // refresh başarısız — login'e yönlendirilecek
-        }
-
-        setIsChecking(false);
-        if (hasLogoutIntent()) {
-          clearLogoutIntent();
-          router.push("/");
+      setIsLoadingCompanies(true);
+      try {
+        let companies = [];
+        if (user.yetki === "DenetciAdmin") {
+          companies = await getDenetlenenByDenetciIdForSelection(user.denetciId || 0);
         } else {
-          if (typeof window !== "undefined" && window.location.pathname !== "/") {
-            Logger.warn("Layout: Oturum yok, giriş sayfasına yönlendiriliyor.", undefined, { source: "system" });
-            router.push("/");
-          } else {
-            setControl(true);
-          }
+          companies = await getDenetlenenByRolForSelection(user.denetciId || 0, user.id || 0);
+        }
+        if (cancelled) return;
+
+        const hasCompanies = companies && companies.length > 0;
+        if (user.yetki === "DenetciAdmin") {
+          setIsWizardOpen(!hasCompanies);
+          setIsSelectionModalOpen(hasCompanies);
+          setNoCompanyWarning(false);
+        } else {
+          setNoCompanyWarning(!hasCompanies);
+          setIsSelectionModalOpen(hasCompanies);
+          setIsWizardOpen(false);
+        }
+      } catch (error) {
+        console.log("Flow check error:", error);
+      } finally {
+        if (!cancelled) {
+          setIsLoadingCompanies(false);
         }
       }
     };
 
     checkFlow();
-  }, [user.token, user.denetlenenId, user.yil, user.yetki, user.kurulumTamamlandi, router, control]);
+    return () => { cancelled = true; };
+  }, [authStatus, user.denetlenenId, user.yil, user.denetlenenFirmaAdi, user.yetki, user.denetciId, user.id]);
 
-  // Handle logout scenario
+
   useEffect(() => {
-    if (control && !user.token) {
-      if (hasLogoutIntent()) {
-        clearLogoutIntent();
-        setIsWizardOpen(false);
-        setIsSelectionModalOpen(false);
-        setNoCompanyWarning(false);
-        router.push("/");
-        setControl(false);
-      } else {
-        // If already on login page, don't redirect again to avoid loop
-        if (typeof window !== "undefined" && window.location.pathname !== "/") {
-          Logger.warn("Layout: Oturum kapandı, giriş sayfasına yönlendiriliyor.", undefined, { source: "system" });
-          router.push("/");
-        } else {
-          setControl(true);
-        }
-      }
+    if (authStatus !== "unauthenticated") return;
+    if (typeof window === 'undefined') return;
+    if (hasLogoutIntent()) clearLogoutIntent();
+    if (window.location.pathname !== '/') {
+      Logger.warn("Layout: Oturum yok, giriş sayfasına yönlendiriliyor.", undefined, { source: "system" });
+      router.replace('/');
     }
-  }, [user.token, control, router]);
+  }, [authStatus, router]);
+
   // Handle selection from MandatoryFlow
   const handleSelection = async (data: any) => {
 
@@ -257,24 +171,7 @@ export default function RootLayout({
 
       if (user.token && user.id && user.id !== 0) {
         await updateSonSecilenAyarlari(user.id, data.id, data.year);
-
-        // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
-        try {
-          const currentRefreshToken = window.sessionStorage.getItem("fas_refreshToken");
-          if (!currentRefreshToken) {
-            console.warn("⚠️ Layout - Refresh token yok, token refresh atlandı.");
-            return;
-          }
-          await apiFetch("/Auth/refresh", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }),
-            suppressErrorLog: true,
-          });
-          console.log("✅ Layout - Cookie session refresh successful.");
-        } catch (refreshErr) {
-          console.warn("⚠️ Layout - Token refresh hatası:", refreshErr);
-        }
+        await refreshSession({ forceRefresh: true });
       }
     } catch (e) {
       console.log("Layout - Error during selection processing:", e);
@@ -288,23 +185,24 @@ export default function RootLayout({
     }, 50);
   };
 
-  if (isChecking || isLoadingCompanies) {
+  const requiresMandatoryFlow =
+    authStatus === "authenticated" &&
+    (!user.denetlenenId || !user.yil || !user.denetlenenFirmaAdi);
+  const shouldHoldAppShell =
+    requiresMandatoryFlow &&
+    !isWizardOpen &&
+    !isSelectionModalOpen &&
+    !noCompanyWarning;
+
+  if (authStatus === "loading" || isLoadingCompanies || shouldHoldAppShell) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100dvh",
-          width: "100dvw",
-        }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100dvh", width: "100dvw" }}>
         <CircularProgress />
       </Box>
     );
   }
 
-  if (user.token && (isWizardOpen || isSelectionModalOpen || noCompanyWarning)) {
+  if (authStatus === "authenticated" && (isWizardOpen || isSelectionModalOpen || noCompanyWarning)) {
     return (
       <MandatoryFlow
         type={isWizardOpen ? "wizard" : noCompanyWarning ? "warning" : "selection"}
@@ -321,7 +219,7 @@ export default function RootLayout({
   }
 
   return (
-    control ? (
+    authStatus === "authenticated" ? (
       <MainWrapper>
         {/* Sidebar */}
         <Sidebar

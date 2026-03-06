@@ -39,6 +39,7 @@ import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitl
 import WarnAlertCart from "@/app/(Uygulama)/components/Alerts/WarnAlertCart";
 import { IconDotsVertical, IconEye, IconX } from "@tabler/icons-react";
 import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
 import axios from "axios";
 
@@ -69,6 +70,35 @@ interface DosyaType {
   durum: string;
   progress?: number;
 }
+
+const formatDosyaOlusturulmaTarihi = (value?: string) => {
+  if (!value) return "";
+
+  const normalized = value.trim();
+  const isoMatch = normalized.match(
+    /^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2}))?/
+  );
+
+  if (isoMatch) {
+    const [, year, month, day, hour, minute] = isoMatch;
+    return hour && minute
+      ? `${day}.${month}.${year} ${hour}:${minute}`
+      : `${day}.${month}.${year}`;
+  }
+
+  const parsed = new Date(normalized);
+  if (Number.isNaN(parsed.getTime())) {
+    return normalized;
+  }
+
+  return parsed.toLocaleString("tr-TR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 const DosyaTable: React.FC<MyComponentProps> = ({
   rows,
@@ -413,11 +443,15 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         url: `${url}/Veri/${controller}/${selectedId}`,
         method: "GET",
         responseType: "blob",
-        headers: {
-          Accept:
-            fileType === "E-DefterKebir" ? "text/html" : "application/pdf",
-          Authorization: `Bearer ${user.token}`,
-        },
+        ...createAuthorizedAxiosConfig(
+          {
+            headers: {
+              Accept:
+                fileType === "E-DefterKebir" ? "text/html" : "application/pdf",
+            },
+          },
+          user.token
+        ),
       });
 
       const xmlBlob = new Blob([response.data], {
@@ -528,31 +562,29 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       const serverRows: DosyaType[] = dosyaBilgileri.map((dosya: DosyaType) => ({
         id: dosya.id,
         adi: dosya.adi,
-        olusturulmaTarihi: dosya.olusturulmaTarihi
-          .split("T")[0]
-          .split("-")
-          .reverse()
-          .join("."),
+        olusturulmaTarihi: formatDosyaOlusturulmaTarihi(dosya.olusturulmaTarihi),
         durum: dosya.durum,
         progress: Number((dosya as any).progress ?? (dosya as any).Progress ?? 0),
       }));
       onServerRowsChange?.(serverRows);
 
-      const today = new Date().toLocaleDateString("tr-TR");
+      const today = formatDosyaOlusturulmaTarihi(new Date().toISOString());
+      const pendingRowsForTracking: DosyaType[] = (pendingUploadRows || [])
+        .filter(
+          (pending) =>
+            !serverRows.some((row) => sameFileName(row.adi, pending.fileName))
+        )
+        .map((pending, index) => ({
+          id: -(index + 1),
+          adi: pending.fileName,
+          olusturulmaTarihi: today,
+          durum: pending.status,
+          progress: 0,
+        }));
+
       const optimisticRows: DosyaType[] = onlyShowFinalizedRows
         ? []
-        : (pendingUploadRows || [])
-            .filter(
-              (pending) =>
-                !serverRows.some((row) => sameFileName(row.adi, pending.fileName))
-            )
-            .map((pending, index) => ({
-              id: -(index + 1),
-              adi: pending.fileName,
-              olusturulmaTarihi: today,
-              durum: pending.status,
-              progress: 0,
-            }));
+        : pendingRowsForTracking;
 
       const displayServerRows = onlyShowFinalizedRows
         ? serverRows.filter((row) => isFinalStatus(row.durum))
@@ -571,7 +603,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 
       setControl(true);
       const hasActiveServerRows = serverRows.some((r: DosyaType) => !isFinalStatus(r.durum));
-      const hasActiveOptimisticRows = optimisticRows.some((r: DosyaType) => !isFinalStatus(r.durum));
+      const hasActiveOptimisticRows = pendingRowsForTracking.some((r: DosyaType) => !isFinalStatus(r.durum));
       return hasActiveServerRows || hasActiveOptimisticRows;
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -698,18 +730,20 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   };
 
   const deleteSelected = async () => {
+    const deletedIds = [...selected];
     setIsDeleting(true);
     try {
       const result = await deleteDosyaBilgisiMultiple(selected || 0
       );
       if (result) {
+        setRows(rows.filter((row) => !deletedIds.includes(row.id)));
         enqueueSnackbar(`${selected.length} kayıt başarıyla silindi.`, {
           variant: "success",
           autoHideDuration: 3000,
         });
         setSelected([]);
-        fetchData();
         handleCloseConfirmPopUp();
+        void fetchData();
       } else {
         enqueueSnackbar("Dosya bilgileri silinemedi.", {
           variant: "error",

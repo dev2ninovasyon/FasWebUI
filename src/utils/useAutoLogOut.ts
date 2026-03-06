@@ -4,12 +4,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useCallback, useState } from "react";
 import { AppState } from "@/store/store";
 import { apiFetch } from "@/api/apiBase";
+import {
+  LOGOUT_INTENT_KEY,
+  buildRefreshRequestBody,
+  clearClientAuthStorage,
+  persistSessionTokens as persistAuthSessionTokens,
+  readStoredAuthTokens,
+} from "@/utils/authSession";
 
 const STORAGE_KEY = "user";
 const TIMEOUT_KEY = "user_expiry";
-const SESSION_ACCESS_TOKEN_KEY = "fas_token";
-const SESSION_REFRESH_TOKEN_KEY = "fas_refreshToken";
-const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 interface UseAutoLogoutReturn {
   showWarning: boolean;
@@ -40,37 +44,11 @@ export default function useAutoLogout(
   );
 
   const user = useSelector((state: AppState) => state.userReducer);
-  const missingRefreshTokenWarnedRef = useRef(false);
 
-  const getRefreshPayload = useCallback(() => {
-    if (typeof window === "undefined") return {};
-    const currentRefreshToken =
-      window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) || // Changed from SESSION_REFRESH_TOKEN_KEY
-      user?.refreshToken ||
-      window.localStorage.getItem("fas_refreshToken");
-
-    if (!currentRefreshToken) return {};
-
-    // session storage'da yoksa fallback token'ı senkronize et
-    if (!window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY)) {
-      window.sessionStorage.setItem(SESSION_REFRESH_TOKEN_KEY, currentRefreshToken);
-    }
-
-    return {
-      refreshToken: currentRefreshToken,
-      RefreshToken: currentRefreshToken,
-    };
+  const getRefreshRequestBody = useCallback(() => {
+    const storedRefreshToken = readStoredAuthTokens().refreshToken || user?.refreshToken;
+    return buildRefreshRequestBody(storedRefreshToken);
   }, [user?.refreshToken]);
-
-  const persistSessionTokens = useCallback((token?: string, refreshToken?: string) => {
-    if (typeof window === "undefined") return;
-    if (token) {
-      window.sessionStorage.setItem(SESSION_ACCESS_TOKEN_KEY, token);
-    }
-    if (refreshToken) {
-      window.sessionStorage.setItem(SESSION_REFRESH_TOKEN_KEY, refreshToken);
-    }
-  }, []);
 
   // 🔧 Sadece token kimliği için ref — dependency loop önleme
   const tokenRef = useRef<string | null>(null);
@@ -112,11 +90,7 @@ export default function useAutoLogout(
     localStorage.removeItem("fas_yil");
     localStorage.removeItem("fas_blacklisted_tokens");
     sessionStorage.removeItem("fas_debug_no_login_redirect");
-    // Clear all known token key variants for backward compatibility
-    sessionStorage.removeItem("fas_token");
-    sessionStorage.removeItem("fas_refreshToken");
-    sessionStorage.removeItem("fas_session_token");
-    sessionStorage.removeItem("fas_session_refreshToken");
+    clearClientAuthStorage();
 
     dispatch(resetToNull(""));
 
@@ -135,26 +109,10 @@ export default function useAutoLogout(
   // Token yenileme
   const refreshToken = useCallback(async () => {
     try {
-      // console.log("🔄 [AutoLogout] Token yenileme başladı...");
-      const refreshPayload = getRefreshPayload();
-      const hasRefreshToken =
-        typeof (refreshPayload as any)?.refreshToken === "string" &&
-        !!(refreshPayload as any).refreshToken;
-
-      if (!hasRefreshToken) {
-        if (!missingRefreshTokenWarnedRef.current) {
-          console.warn("⚠️ [AutoLogout] Refresh token bulunamadı, otomatik refresh atlandı.");
-          missingRefreshTokenWarnedRef.current = true;
-        }
-        return;
-      }
-
-      missingRefreshTokenWarnedRef.current = false;
-
       const response = await apiFetch(`/Auth/refresh`, {
         method: "POST",
         headers: { accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify(refreshPayload),
+        body: getRefreshRequestBody(),
         suppressErrorLog: true,
       } as any);
 
@@ -173,15 +131,12 @@ export default function useAutoLogout(
 
       dispatch(setToken(nextToken));
       if (nextRefreshToken) dispatch(setRefreshToken(nextRefreshToken));
-      persistSessionTokens(nextToken, nextRefreshToken);
-
-      const now = new Date().toLocaleTimeString('tr-TR');
-      // console.log(`✅[AutoLogout] Token başarıyla yenilendi(${now})`);
+      persistAuthSessionTokens(nextToken, nextRefreshToken || readStoredAuthTokens().refreshToken);
     } catch (err) {
       console.error("❌ [AutoLogout] Token refresh exception:", err);
       // Network hatası — logout yapma, sonraki denemeyi bekle
     }
-  }, [dispatch, getRefreshPayload, persistSessionTokens]);
+  }, [dispatch, getRefreshRequestBody]);
 
   // 🔧 refreshToken'ı ref'te tut — effect dependency'sinden çıkar
   const refreshTokenRef = useRef(refreshToken);
@@ -197,20 +152,10 @@ export default function useAutoLogout(
     if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
 
     try {
-      const refreshPayload = getRefreshPayload();
-      const hasRefreshToken =
-        typeof (refreshPayload as any)?.refreshToken === "string" &&
-        !!(refreshPayload as any).refreshToken;
-
-      if (!hasRefreshToken) {
-        console.warn("⚠️ Oturum devam ettirme atlandı: refresh token bulunamadı.");
-        return;
-      }
-
       const response = await apiFetch(`/Auth/refresh`, {
         method: "POST",
         headers: { accept: "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify(refreshPayload),
+        body: getRefreshRequestBody(),
       });
       if (response.ok) {
         const data = await response.json();
@@ -218,7 +163,7 @@ export default function useAutoLogout(
         const nextRefreshToken = data.refreshToken || data.RefreshToken;
         if (nextToken) dispatch(setToken(nextToken));
         if (nextRefreshToken) dispatch(setRefreshToken(nextRefreshToken));
-        persistSessionTokens(nextToken, nextRefreshToken);
+        persistAuthSessionTokens(nextToken, nextRefreshToken || readStoredAuthTokens().refreshToken);
         // console.log("✅ Oturum başarıyla devam ettirildi");
       }
     } catch (err) {
@@ -226,7 +171,7 @@ export default function useAutoLogout(
     }
 
     if (resetIdleTimerRef.current) resetIdleTimerRef.current();
-  }, [dispatch, getRefreshPayload, persistSessionTokens]);
+  }, [dispatch, getRefreshRequestBody]);
 
   // =============================================
   // ANA KURULUM: Kullanıcı giriş/çıkış durumuna göre

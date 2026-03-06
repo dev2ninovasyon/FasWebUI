@@ -108,6 +108,24 @@ describe('Notification Component', () => {
         vi.mocked(BaglantiApi.getBildirimler).mockResolvedValue([...mockBildirimler]);
     });
 
+    it('should not start notifications before company and year are selected', async () => {
+        renderWithProviders(<Notifications isSidebarHover={false} />, {
+            preloadedState: {
+                userReducer: {
+                    denetciId: 123,
+                    token: 'fake-token',
+                    denetlenenId: 0,
+                    yil: 0,
+                    id: 456,
+                },
+            },
+        });
+
+        expect(await screen.findByLabelText('show new notifications')).toBeDisabled();
+        expect(BaglantiApi.startBildirimConnection).not.toHaveBeenCalled();
+        expect(BaglantiApi.getBildirimler).not.toHaveBeenCalled();
+    });
+
     it('should render the notification bell', async () => {
         renderWithProviders(<Notifications isSidebarHover={false} />, { preloadedState });
         expect(await screen.findByLabelText('show new notifications')).toBeInTheDocument();

@@ -1,4 +1,11 @@
 ﻿import Logger from "@/utils/Logger";
+import {
+  LOGOUT_INTENT_KEY,
+  clearClientAuthStorage,
+  buildRefreshRequestBody,
+  persistSessionTokens,
+  readStoredAuthTokens,
+} from "@/utils/authSession";
 import { url } from "./apiConfig";
 
 const LOCAL_API_URL = "http://localhost:5000/api";
@@ -14,16 +21,14 @@ export { url };
 
 const LOGIN_ROUTE_PATH = "/";
 const MAINTENANCE_ROUTE_PATH = "/maintenance";
-const SESSION_ACCESS_TOKEN_KEY = "fas_token";
-const SESSION_REFRESH_TOKEN_KEY = "fas_refreshToken";
-const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 const isAuthEndpoint = (path: string) => {
   const lowerPath = path.toLowerCase();
   return (
     lowerPath === "/auth/login" ||
     lowerPath === "/auth/refresh" ||
-    lowerPath === "/auth/logout"
+    lowerPath === "/auth/logout" ||
+    lowerPath === "/auth/session"
   );
 };
 
@@ -100,10 +105,7 @@ const hasLogoutIntent = () => {
 };
 
 const clearSessionTokens = () => {
-  if (typeof window === "undefined") return;
-  window.sessionStorage.removeItem(SESSION_ACCESS_TOKEN_KEY);
-  window.sessionStorage.removeItem(SESSION_REFRESH_TOKEN_KEY);
-  window.localStorage.removeItem("fas_refreshToken");
+  clearClientAuthStorage();
 };
 
 const redirectToLogin = () => {
@@ -119,8 +121,7 @@ const redirectToLogin = () => {
   window.sessionStorage.removeItem(LOGOUT_INTENT_KEY);
   window.localStorage.removeItem("persist:root");
   window.sessionStorage.removeItem("reduxState");
-  window.sessionStorage.removeItem(SESSION_ACCESS_TOKEN_KEY);
-  window.sessionStorage.removeItem(SESSION_REFRESH_TOKEN_KEY);
+  clearClientAuthStorage();
   redirectTo(LOGIN_ROUTE_PATH);
 };
 
@@ -180,7 +181,7 @@ export async function apiFetch(
   if (typeof window !== "undefined" && !ignoreCustomHeaders) {
     denetlenenIdFromStorage = window.localStorage.getItem("fas_denetlenenId");
     yilFromStorage = window.localStorage.getItem("fas_yil");
-    const rawAccessToken = window.sessionStorage.getItem(SESSION_ACCESS_TOKEN_KEY);
+    const rawAccessToken = readStoredAuthTokens().accessToken;
     if (rawAccessToken && rawAccessToken !== "undefined" && rawAccessToken !== "null") {
       sessionAccessToken = rawAccessToken;
     }
@@ -304,37 +305,33 @@ export async function apiFetch(
 
       if (typeof window !== "undefined") {
         try {
+          type RefreshAttemptResult = {
+            ok: boolean;
+            status: number;
+            payload: any;
+          };
+
           // Tek bir refresh isteği paylaşımı (concurrent 401 storm için)
-          const activeRefreshPromise = (window as any)._activeRefreshPromise as Promise<Response> | undefined;
-          const rawRefreshTokenCandidate =
-            window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
-            window.localStorage.getItem("fas_refreshToken");
-          const refreshTokenCandidate =
-            rawRefreshTokenCandidate &&
-              rawRefreshTokenCandidate !== "undefined" &&
-              rawRefreshTokenCandidate !== "null"
-              ? rawRefreshTokenCandidate
-              : null;
-          if (!refreshTokenCandidate) {
-            console.warn("⚠️ Session refresh atlandı: refresh token bulunamadı.");
-            Logger.warn("API 401 - refresh token bulunamadı", { path: normalizedPath }, {
-              source: "api",
-              requestPath: normalizedPath,
-              statusCode: 401,
-            });
-            throw await buildUnauthorizedError(response, "missing-refresh-token");
-          }
+          const activeRefreshPromise = (window as any)
+            ._activeRefreshPromise as Promise<RefreshAttemptResult> | undefined;
+          const refreshTokenCandidate = readStoredAuthTokens().refreshToken;
           const refreshPromise =
             activeRefreshPromise ||
-            fetch(`${activeApiBaseUrl}/Auth/refresh`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                refreshToken: refreshTokenCandidate,
-                RefreshToken: refreshTokenCandidate,
-              }),
-              credentials: "include", // HttpOnly cookie'leri gönder
-            });
+            (async () => {
+              const refreshResponse = await fetch(`${activeApiBaseUrl}/Auth/refresh`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: buildRefreshRequestBody(refreshTokenCandidate),
+                credentials: "include",
+              });
+              const refreshPayload = await refreshResponse.json().catch(() => null);
+
+              return {
+                ok: refreshResponse.ok,
+                status: refreshResponse.status,
+                payload: refreshPayload,
+              };
+            })();
 
           if (!activeRefreshPromise) {
             (window as any)._activeRefreshPromise = refreshPromise;
@@ -344,15 +341,12 @@ export async function apiFetch(
           (window as any)._activeRefreshPromise = undefined;
 
           if (refreshResponse.ok) {
-            const refreshData = await refreshResponse.json().catch(() => null);
+            const refreshData = refreshResponse.payload;
             if (refreshData) {
               const nextToken = refreshData.token || refreshData.Token;
               const nextRefreshToken = refreshData.refreshToken || refreshData.RefreshToken;
-              if (nextToken) {
-                window.sessionStorage.setItem(SESSION_ACCESS_TOKEN_KEY, nextToken);
-              }
-              if (nextRefreshToken) {
-                window.sessionStorage.setItem(SESSION_REFRESH_TOKEN_KEY, nextRefreshToken);
+              if (nextToken || nextRefreshToken) {
+                persistSessionTokens(nextToken, nextRefreshToken || refreshTokenCandidate);
               }
             }
             console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
@@ -363,7 +357,10 @@ export async function apiFetch(
             });
           } else {
             console.error("❌ Session yenileme başarısız. İstek login redirect olmadan sonlandırıldı.");
-            Logger.warn("API 401 - session refresh başarısız", { path: normalizedPath }, {
+            Logger.warn("API 401 - session refresh başarısız", {
+              path: normalizedPath,
+              refreshStatus: refreshResponse.status,
+            }, {
               source: "api",
               requestPath: normalizedPath,
               statusCode: 401,

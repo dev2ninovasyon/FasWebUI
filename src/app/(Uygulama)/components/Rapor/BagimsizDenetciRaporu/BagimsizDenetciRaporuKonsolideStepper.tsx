@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 import Script from "next/script";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
 import CustomSwitch from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSwitch";
@@ -1031,11 +1032,11 @@ const BagimsizDenetciRaporuStepper = () => {
       formData.append("save", "true");
 
 
-      await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData, {
-        headers: {
-          Authorization: `Bearer ${user.token || ""}`,
-        },
-      });
+      await axios.post(
+        `${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`,
+        formData,
+        createAuthorizedAxiosConfig({}, user.token)
+      );
 
       enqueueSnackbar("Rapor arşive kaydedildi.", { /* success style */ });
     } catch (error) {

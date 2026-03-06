@@ -17,6 +17,7 @@ import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
 import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
 import { LoadingProvider } from "@/contexts/LoadingContext";
+import { AuthSessionProvider } from "@/contexts/AuthSessionContext";
 import SessionWarningDialog from "@/components/SessionWarning/SessionWarningDialog";
 import { resolveIconNameByMenuTitle } from "@/utils/menuIconResolver";
 import "@/app/api/index";
@@ -231,7 +232,9 @@ export default function AppProviders({
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <InnerProviders>{children}</InnerProviders>
+        <AuthSessionProvider>
+          <InnerProviders>{children}</InnerProviders>
+        </AuthSessionProvider>
       </PersistGate>
     </Provider>
   );
