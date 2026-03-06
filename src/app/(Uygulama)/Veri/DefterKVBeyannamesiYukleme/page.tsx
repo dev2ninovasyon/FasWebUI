@@ -24,8 +24,9 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import VeriPaylasimBaglantisiPopUp from "@/app/(Uygulama)/components/PopUp/VeriPaylasimBaglantisiPopUp";
 import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
-import axios from "axios";
+import axios, { AxiosProgressEvent } from "axios";
 import { enqueueSnackbar } from "notistack";
 
 const BCrumb = [
@@ -76,9 +77,24 @@ interface PendingUploadRow {
 }
 
 const MAX_FILES_PER_UPLOAD = 365;
-const MAX_BATCH_PAYLOAD_BYTES = 400 * 1024 * 1024;
 const UPLOAD_WEIGHT = 0.35;
 const PROCESS_WEIGHT = 0.65;
+const OPTIMISTIC_UPLOAD_CAP = 90;
+const DEFAULT_EDEFTER_UPLOAD_CONCURRENCY = 4;
+const ENV_EDEFTER_UPLOAD_CONCURRENCY =
+  typeof process !== "undefined"
+    ? process.env.NEXT_PUBLIC_EDEFTER_UPLOAD_CONCURRENCY?.trim()
+    : undefined;
+
+const parseUploadConcurrency = (value?: string) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return DEFAULT_EDEFTER_UPLOAD_CONCURRENCY;
+  return Math.max(1, Math.min(8, Math.trunc(parsed)));
+};
+
+const MAX_CONCURRENT_EDEFTER_UPLOADS = parseUploadConcurrency(
+  ENV_EDEFTER_UPLOAD_CONCURRENCY
+);
 
 const clampPercent = (value?: number) => {
   if (typeof value !== "number" || Number.isNaN(value)) return 0;
@@ -129,6 +145,24 @@ const getStatusOrder = (status: string) => {
   if (isCompletedStatus(status)) return 5;
   return 6;
 };
+const runWithConcurrencyLimit = async <T,>(
+  items: T[],
+  limit: number,
+  worker: (item: T, index: number) => Promise<void>
+) => {
+  let currentIndex = 0;
+  const runnerCount = Math.max(1, Math.min(limit, items.length));
+
+  const runners = Array.from({ length: runnerCount }, async () => {
+    while (true) {
+      const itemIndex = currentIndex++;
+      if (itemIndex >= items.length) return;
+      await worker(items[itemIndex], itemIndex);
+    }
+  });
+
+  await Promise.all(runners);
+};
 
 interface Veri {
   id: number;
@@ -172,6 +206,7 @@ const Page: React.FC = () => {
   const [pendingUploadRows, setPendingUploadRows] = useState<PendingUploadRow[]>([]);
   const [trackedFileNames, setTrackedFileNames] = useState<string[]>([]);
   const pendingCompletionRef = useRef(false);
+  const optimisticUploadTimersRef = useRef<Map<string, ReturnType<typeof setInterval>>>(new Map());
   const sortedProgressInfos = useMemo(
     () =>
       [...progressInfos].sort((a, b) => {
@@ -181,6 +216,88 @@ const Page: React.FC = () => {
       }),
     [progressInfos]
   );
+  const upsertPendingUploadRows = useCallback((fileNames: string[], status: string) => {
+    if (!fileNames.length) return;
+
+    setPendingUploadRows((prev) => {
+      const map = new Map<string, PendingUploadRow>(prev.map((row) => [row.fileName, row]));
+      for (const fileName of fileNames) {
+        map.set(fileName, { fileName, status });
+      }
+      return Array.from(map.values());
+    });
+  }, []);
+  const stopOptimisticUploadProgress = useCallback((fileNames?: string[]) => {
+    const timers = optimisticUploadTimersRef.current;
+    const namesToStop = fileNames && fileNames.length ? fileNames : Array.from(timers.keys());
+
+    for (const fileName of namesToStop) {
+      const timer = timers.get(fileName);
+      if (timer) {
+        clearInterval(timer);
+        timers.delete(fileName);
+      }
+    }
+  }, []);
+  const startOptimisticUploadProgress = useCallback((fileNames: string[]) => {
+    if (!fileNames.length) return;
+
+    setProgressInfos((prev) =>
+      prev.map((info) =>
+        fileNames.includes(info.fileName) &&
+        !isFinalStatus(info.status) &&
+        normalizeStatus(info.status).includes("upload")
+          ? {
+            ...info,
+            uploadPercentage: Math.max(info.uploadPercentage, 3),
+            percentage: Math.max(
+              info.percentage,
+              calcCombinedProgress(
+                Math.max(info.uploadPercentage, 3),
+                info.processPercentage,
+                "Upload Ediliyor..."
+              )
+            ),
+          }
+          : info
+      )
+    );
+
+    for (const fileName of fileNames) {
+      if (optimisticUploadTimersRef.current.has(fileName)) continue;
+
+      const timer = setInterval(() => {
+        setProgressInfos((prev) =>
+          prev.map((info) => {
+            if (info.fileName !== fileName) return info;
+            if (isFinalStatus(info.status) || !normalizeStatus(info.status).includes("upload")) {
+              return info;
+            }
+
+            const currentUpload = clampPercent(info.uploadPercentage);
+            if (currentUpload >= OPTIMISTIC_UPLOAD_CAP) return info;
+
+            const step = currentUpload < 20 ? 6 : currentUpload < 50 ? 4 : 2;
+            const nextUpload = Math.min(
+              OPTIMISTIC_UPLOAD_CAP,
+              Math.max(currentUpload + step, 3)
+            );
+
+            return {
+              ...info,
+              uploadPercentage: nextUpload,
+              percentage: Math.max(
+                info.percentage,
+                calcCombinedProgress(nextUpload, info.processPercentage, "Upload Ediliyor...")
+              ),
+            };
+          })
+        );
+      }, 250);
+
+      optimisticUploadTimersRef.current.set(fileName, timer);
+    }
+  }, []);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -222,9 +339,8 @@ const Page: React.FC = () => {
       }
 
       const currentBatchNames = validFiles.map((file) => file.name);
-      const allTrackedNames = Array.from(new Set([...trackedFileNames, ...currentBatchNames]));
-      setTrackedFileNames(allTrackedNames);
-      setPendingUploadRows([]);
+      setTrackedFileNames((prev) => Array.from(new Set([...prev, ...currentBatchNames])));
+      upsertPendingUploadRows(currentBatchNames, "Upload Ediliyor...");
 
       setProgressInfos((prev) => {
         const map = new Map<string, ProgressInfo>(prev.map((x) => [x.fileName, x]));
@@ -244,6 +360,7 @@ const Page: React.FC = () => {
         if (fileType === "KurumlarBeyannamesi") {
           // Kurumlar Beyannamesi: her dosya için ayrı istek (API bu şekilde çalışıyor)
           const uploadPromises = validFiles.map(async (file) => {
+            startOptimisticUploadProgress([file.name]);
             try {
               const res = await uploadAndParseKurumlarBeyannamesi(
                 file,
@@ -273,6 +390,8 @@ const Page: React.FC = () => {
                 }
               );
               if (res.success) {
+                stopOptimisticUploadProgress([file.name]);
+                upsertPendingUploadRows([file.name], "Tamamlandı");
                 setProgressInfos((prev) => {
                   return prev.map((info) =>
                     info.fileName === file.name
@@ -290,6 +409,8 @@ const Page: React.FC = () => {
                 throw new Error(res.message);
               }
             } catch (error: any) {
+              stopOptimisticUploadProgress([file.name]);
+              upsertPendingUploadRows([file.name], "Hata!");
               setProgressInfos((prev) => {
                 return prev.map((info) =>
                   info.fileName === file.name
@@ -303,108 +424,143 @@ const Page: React.FC = () => {
           await Promise.all(uploadPromises);
           setDosyaYuklendiMi(true);
         } else {
-          // E-Defter için çok büyük toplu yüklemelerde tek request yerine partili gönderim.
-          const fileBatches: File[][] = [];
-          let currentBatch: File[] = [];
-          let currentBatchBytes = 0;
+          let hasUploadFailure = false;
 
-          for (const file of validFiles) {
-            if (
-              currentBatch.length > 0 &&
-              currentBatchBytes + file.size > MAX_BATCH_PAYLOAD_BYTES
-            ) {
-              fileBatches.push(currentBatch);
-              currentBatch = [file];
-              currentBatchBytes = file.size;
-            } else {
-              currentBatch.push(file);
-              currentBatchBytes += file.size;
-            }
-          }
-          if (currentBatch.length > 0) fileBatches.push(currentBatch);
+          await runWithConcurrencyLimit(
+            validFiles,
+            MAX_CONCURRENT_EDEFTER_UPLOADS,
+            async (file) => {
+              const formData = new FormData();
+              formData.append("files", file);
 
-          for (let batchIndex = 0; batchIndex < fileBatches.length; batchIndex++) {
-            const batchFiles = fileBatches[batchIndex];
-            const formData = new FormData();
-            batchFiles.forEach((file) => formData.append("files", file));
+              setProgressInfos((prev) =>
+                prev.map((info) =>
+                  info.fileName === file.name
+                    ? {
+                      ...info,
+                      status: "Upload Ediliyor...",
+                      uploadPercentage: Math.max(info.uploadPercentage, 3),
+                      percentage: Math.max(
+                        info.percentage,
+                        calcCombinedProgress(
+                          Math.max(info.uploadPercentage, 3),
+                          info.processPercentage,
+                          "Upload Ediliyor..."
+                        )
+                      ),
+                    }
+                    : info
+                )
+              );
+              startOptimisticUploadProgress([file.name]);
 
-            await axios.post(
-              `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
-              formData,
-              {
-                headers: { "Content-Type": "multipart/form-data" },
-                onUploadProgress: (event) => {
-                  const loaded = event.loaded || 0;
-                  const batchTotal = event.total || batchFiles.reduce((sum, f) => sum + f.size, 0);
-                  const progress = batchTotal ? Math.round((100 * loaded) / batchTotal) : 1;
+              try {
+                await axios.post(
+                  `${url}/Veri/DosyaBilgileriYukle?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${fileType}`,
+                  formData,
+                  createAuthorizedAxiosConfig({
+                    headers: { "Content-Type": "multipart/form-data" },
+                    onUploadProgress: (event: AxiosProgressEvent) => {
+                      const loaded = event.loaded || 0;
+                      const total = event.total || file.size || 0;
+                      const uploadPct = total
+                        ? clampPercent((loaded / total) * 100)
+                        : 1;
 
-                  setProgressInfos((prev) =>
-                    prev.map((info) =>
-                      currentBatchNames.includes(info.fileName)
-                        ? (() => {
-                          const fileIndexInBatch = batchFiles.findIndex((f) => f.name === info.fileName);
-                          if (fileIndexInBatch < 0) return info;
-                          const bytesBeforeFileInBatch = batchFiles
-                            .slice(0, fileIndexInBatch)
-                            .reduce((sum, f) => sum + f.size, 0);
-                          const currentFile = batchFiles[fileIndexInBatch];
-                          const fileLoadedInBatch = Math.max(
-                            0,
-                            Math.min(currentFile.size, loaded - bytesBeforeFileInBatch)
-                          );
-                          const uploadPct = clampPercent((fileLoadedInBatch / currentFile.size) * 100);
-                          if (uploadPct < 100 && uploadPct < info.uploadPercentage + 2) return info;
-                          return {
-                            ...info,
-                            status: "Upload Ediliyor...",
-                            uploadPercentage: Math.max(info.uploadPercentage, uploadPct),
-                            percentage: Math.max(
-                              info.percentage,
-                              calcCombinedProgress(
-                                Math.max(info.uploadPercentage, uploadPct),
-                                info.processPercentage,
-                                "Upload Ediliyor..."
-                              )
-                            ),
-                          };
-                        })()
-                        : info
-                    )
-                  );
-                },
+                      setProgressInfos((prev) =>
+                        prev.map((info) =>
+                          info.fileName === file.name
+                            ? (() => {
+                              if (uploadPct < 100 && uploadPct < info.uploadPercentage + 2) {
+                                return info;
+                              }
+
+                              return {
+                                ...info,
+                                status: "Upload Ediliyor...",
+                                uploadPercentage: Math.max(info.uploadPercentage, uploadPct),
+                                percentage: Math.max(
+                                  info.percentage,
+                                  calcCombinedProgress(
+                                    Math.max(info.uploadPercentage, uploadPct),
+                                    info.processPercentage,
+                                    "Upload Ediliyor..."
+                                  )
+                                ),
+                              };
+                            })()
+                            : info
+                        )
+                      );
+                    },
+                  }, user.token)
+                );
+
+                stopOptimisticUploadProgress([file.name]);
+                upsertPendingUploadRows([file.name], "Sıraya Alındı.");
+                setProgressInfos((prev) =>
+                  prev.map((info) =>
+                    info.fileName === file.name
+                      ? {
+                        ...info,
+                        status: "Sıraya Alındı.",
+                        uploadPercentage: 100,
+                        percentage: Math.max(
+                          info.percentage,
+                          calcCombinedProgress(100, info.processPercentage, "Sıraya Alındı.")
+                        ),
+                      }
+                      : info
+                  )
+                );
+              } catch (fileError) {
+                hasUploadFailure = true;
+                stopOptimisticUploadProgress([file.name]);
+                upsertPendingUploadRows([file.name], "Hata!");
+                setProgressInfos((prev) =>
+                  prev.map((info) =>
+                    info.fileName === file.name
+                      ? { ...info, status: "Hata!", processPercentage: 100, percentage: 100 }
+                      : info
+                  )
+                );
               }
-            );
-          }
-
-          // Yükleme tamamlandı — tüm dosyalar kuyruğa alındı
-          setProgressInfos((prev) =>
-            prev.map((info) =>
-              currentBatchNames.includes(info.fileName)
-                ? {
-                  ...info,
-                  status: "Sıraya Alındı.",
-                  uploadPercentage: 100,
-                  percentage: Math.max(
-                    info.percentage,
-                    calcCombinedProgress(100, info.processPercentage, "Sıraya Alındı.")
-                  ),
-                }
-              : info
-            )
+            }
           );
-          enqueueSnackbar("Dosyalar kuyruğa alındı. İşlem sırası geldiğinde otomatik işlenecek.", { variant: "info" });
+
+          if (hasUploadFailure) {
+            enqueueSnackbar("Bazı dosyalar yüklenemedi. Detayları listedeki durum alanından kontrol edin.", {
+              variant: "warning",
+            });
+          } else {
+            enqueueSnackbar("Dosyalar kuyruğa alındı. İşlem sırası geldiğinde otomatik işlenecek.", {
+              variant: "info",
+            });
+          }
         }
 
         // Durum takibi DosyaTable bileşenindeki tek polling akışından yapılır.
         setControl(true);
 
       } catch (error: any) {
+        stopOptimisticUploadProgress(currentBatchNames);
+        upsertPendingUploadRows(currentBatchNames, "Hata!");
         console.log("Dosya yüklenirken hata oluştu:", error);
         enqueueSnackbar("İşlem sırasında bir hata oluştu.", { variant: "error" });
         setUploading(false);
       }
     },
-    [user.denetciId, user.yil, user.denetlenenId, fileType, fetchedData, trackedFileNames]
+    [
+      fileType,
+      fetchedData,
+      startOptimisticUploadProgress,
+      stopOptimisticUploadProgress,
+      upsertPendingUploadRows,
+      user.denetciId,
+      user.denetlenenId,
+      user.token,
+      user.yil,
+    ]
   );
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
@@ -494,6 +650,7 @@ const Page: React.FC = () => {
     if (pendingCompletionRef.current) {
       setUploading(false);
       setTrackedFileNames([]);
+      setPendingUploadRows([]);
       setProgressInfos([]);
       enqueueSnackbar("Tüm dosyalar işlendi.", { variant: "success" });
       pendingCompletionRef.current = false;
@@ -514,6 +671,11 @@ const Page: React.FC = () => {
       prev.filter((p) => !hasServerRow(p.fileName))
     );
   }, [rows, pendingUploadRows.length]);
+  useEffect(() => {
+    return () => {
+      stopOptimisticUploadProgress();
+    };
+  }, [stopOptimisticUploadProgress]);
 
   const handleServerRowsChange = useCallback(
     (serverRows: DosyaType[]) => {

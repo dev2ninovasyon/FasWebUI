@@ -17,6 +17,7 @@ import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
 import { usePathname, useRouter } from "next/navigation";
 import useAutoLogout from "@/utils/useAutoLogOut";
 import { LoadingProvider } from "@/contexts/LoadingContext";
+import { AuthSessionProvider, useAuthSession } from "@/contexts/AuthSessionContext";
 import SessionWarningDialog from "@/components/SessionWarning/SessionWarningDialog";
 import { resolveIconNameByMenuTitle } from "@/utils/menuIconResolver";
 import "@/app/api/index";
@@ -41,8 +42,11 @@ const removeTurkishChars = (str: string | undefined | null) => {
 };
 
 const InnerProviders = ({ children }: { children: React.ReactNode }) => {
+  const { status: authStatus } = useAuthSession();
   const { showWarning, secondsBeforeLogout, onKeepSession, onLogout } =
-    useAutoLogout(90 * 60 * 1000, 45 * 60 * 1000, 60 * 1000);
+    useAutoLogout(90 * 60 * 1000, 45 * 60 * 1000, 60 * 1000, {
+      enabled: authStatus === "authenticated",
+    });
 
   const user = useSelector((state: AppState) => state.userReducer);
   const theme = useThemeSettings();
@@ -56,6 +60,7 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const shouldShowSessionWarning = authStatus === "authenticated" && !!user.token && showWarning;
 
   const NOT_PROTECTED_ROUTES = [
     "/Anasayfa",
@@ -199,7 +204,7 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <SessionWarningDialog
-        open={showWarning}
+        open={shouldShowSessionWarning}
         secondsRemaining={secondsBeforeLogout}
         onKeepSession={onKeepSession}
         onLogout={onLogout}
@@ -231,7 +236,9 @@ export default function AppProviders({
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <InnerProviders>{children}</InnerProviders>
+        <AuthSessionProvider>
+          <InnerProviders>{children}</InnerProviders>
+        </AuthSessionProvider>
       </PersistGate>
     </Provider>
   );

@@ -33,6 +33,11 @@ import { AppState } from "@/store/store";
 import { getRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
 import { updateSonSecilenAyarlari } from "@/api/Kullanici/KullaniciAyarlar";
 import { apiFetch } from "@/api/apiBase";
+import {
+  buildRefreshRequestBody,
+  persistSessionTokens,
+  readStoredAuthTokens,
+} from "@/utils/authSession";
 
 const SirketPopup = () => {
   // drawer top
@@ -102,29 +107,20 @@ const SirketPopup = () => {
             console.log("SirketPopup - Persistence update successful.");
 
             try {
-              const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
-              if (!currentRefreshToken) {
-                console.warn("⚠️ SirketPopup - Refresh token yok, token refresh atlandı.");
-                return;
-              }
               const refreshResponse = await apiFetch("/Auth/refresh", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  refreshToken: currentRefreshToken,
-                  RefreshToken: currentRefreshToken,
-                }),
+                body: buildRefreshRequestBody(readStoredAuthTokens().refreshToken),
                 suppressErrorLog: true,
               });
               const refreshData = await refreshResponse.json().catch(() => null);
               const nextToken = refreshData?.token || refreshData?.Token;
               const nextRefreshToken = refreshData?.refreshToken || refreshData?.RefreshToken;
               if (nextToken) {
-                window.sessionStorage.setItem("fas_session_token", nextToken);
+                persistSessionTokens(nextToken, nextRefreshToken || readStoredAuthTokens().refreshToken);
                 dispatch(setToken(nextToken));
               }
               if (nextRefreshToken) {
-                window.sessionStorage.setItem("fas_session_refreshToken", nextRefreshToken);
                 dispatch(setRefreshToken(nextRefreshToken));
               }
               console.log("✅ SirketPopup - Cookie session refreshed.");

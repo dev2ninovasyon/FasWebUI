@@ -1,6 +1,7 @@
 ﻿import axios, { AxiosProgressEvent } from "axios";
 
 import { apiFetch, url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 import SecureTokenManager from "@/utils/SecureTokenManager";
 
 export type Taraf = {
@@ -160,13 +161,19 @@ export const uploadFaturaDosyalari = async (
     tip
   )}&islemAdi=${encodeURIComponent(islemAdi)}`;
 
-  return axios.post(`${url}/Invoices/Upload?${qs}`, form, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    withCredentials: true, // ✅ HttpOnly cookies için gerekli
-    onUploadProgress,
-  });
+  return axios.post(
+    `${url}/Invoices/Upload?${qs}`,
+    form,
+    createAuthorizedAxiosConfig(
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress,
+      },
+      user?.token
+    )
+  );
 };
 
 export const getYuklemeIslemleri = async (user: any) => {

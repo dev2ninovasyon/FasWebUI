@@ -192,7 +192,8 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
           user.denetlenenId || 0,
           user.id || 0,
           user.yil || 0,
-          tip
+          tip,
+          { notifyIfMissing: true }
         );
         if (baglantiBilgisi != undefined) {
           const newRow: Veri = {

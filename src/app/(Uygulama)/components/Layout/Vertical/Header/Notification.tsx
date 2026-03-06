@@ -133,6 +133,12 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   const shakeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const browserNotificationsRef = React.useRef<Notification[]>([]);
+  const canUseNotifications = Boolean(
+    user.token &&
+    user.denetciId &&
+    user.denetlenenId &&
+    user.yil
+  );
 
   // Tarih formatı: "Bugün 14:30" veya "Dün 09:45" veya "01 Ş 14:30"
   const formatTarih = (tarih?: string) => {
@@ -186,6 +192,11 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   };
 
   const fetchData = async () => {
+    if (!canUseNotifications) {
+      setFetchedData([]);
+      return;
+    }
+
     try {
       const bildirimler = await getBildirimler(user.denetciId || 0
       );
@@ -215,13 +226,17 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   };
 
   useEffect(() => {
+    if (!canUseNotifications) {
+      setFetchedData([]);
+      return;
+    }
+
     fetchData();
-  }, []);
+  }, [canUseNotifications, user.denetciId]);
 
   // SignalR bağlantısı
   useEffect(() => {
-    if (user.token && user.denetciId) {
-      const token = user.token as string;
+    if (canUseNotifications) {
       const denetciId = user.denetciId as number;
 
       if (process.env.NODE_ENV === 'development') {
@@ -258,7 +273,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       stopPollingBildirim();
       stopBildirimConnection();
     };
-  }, [user.token, user.denetciId]);
+  }, [canUseNotifications, user.denetciId]);
 
   // Yeni bildirim handle helper
   const handleNewNotification = (bildirim: any) => {
@@ -328,16 +343,24 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   };
 
   useEffect(() => {
+    if (!canUseNotifications) {
+      return;
+    }
+
     fetchData();
-  }, [isSidebarHover]);
+  }, [canUseNotifications, isSidebarHover]);
 
   useEffect(() => {
+    if (!canUseNotifications) {
+      return;
+    }
+
     if (anchorEl) {
       handleUpdateOkundumu();
     } else {
       fetchData();
     }
-  }, [anchorEl]);
+  }, [anchorEl, canUseNotifications]);
 
   // Bildirim sesi çal (daha yüksek ses)
   const playNotificationSound = () => {
@@ -523,6 +546,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
             aria-controls="msgs-menu"
             aria-haspopup="true"
             onClick={handleClick}
+            disabled={!canUseNotifications}
             className={isShaking ? "bell-shake" : ""}
             sx={{
               position: "relative",

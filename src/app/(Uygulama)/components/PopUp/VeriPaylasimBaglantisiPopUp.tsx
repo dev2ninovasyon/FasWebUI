@@ -151,7 +151,8 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
-        "DefterKVBeyannamesi"
+        "DefterKVBeyannamesi",
+        { notifyIfMissing: true }
       );
       if (baglantiBilgisi != undefined) {
         const newRow: Veri = {

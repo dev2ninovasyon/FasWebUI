@@ -14,6 +14,7 @@ import {
   setBddkmi
 } from "@/store/user/UserSlice";
 import { apiFetch } from "@/api/apiBase";
+import { persistSessionTokens, syncSelectionStorageFromUserData, mapAuthPayloadToUserData } from "@/utils/authSession";
 
 import { enqueueSnackbar } from "notistack";
 import { AppState } from "@/store/store";
@@ -96,90 +97,31 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
       // console.timeEnd("Login API İsteği");
 
       if (response.ok) {
-        // console.time("Veri İşleme ve Yönlendirme");
         const data = await response.json();
-        const userToken = data.token || data.Token;
-        const userRefreshToken = data.refreshToken || data.RefreshToken;
-        const userId = data.userId || data.kullaniciId || data.Id || 0;
-
-        const userDenetciId = data.denetciId || data.denetciId || 0;
-        const userDenetciFirmaAdi = data.denetciFirmaAdi || "";
-        const yetki = data.yetki;
-        const rol = data.rol;
-        const kullaniciAdi = data.kullaniciAdi;
-        const unvan = data.unvan;
-        const kurulumTamamlandi = data.kurulumTamamlandi;
-        const kurulumAdimi = data.kurulumAdimi;
-        const setupWizardProgress = data.setupWizardProgress;
-        const sonSecilenDenetlenenId = data.sonSecilenDenetlenenId;
-        const sonSecilenYil = data.sonSecilenYil;
-        const sonSecilenDenetlenenFirmaAdi = data.sonSecilenDenetlenenFirmaAdi;
-        const sonSecilenDenetimTuru = data.sonSecilenDenetimTuru;
-        const sonSecilenBobimi = data.sonSecilenBobimi;
-        const sonSecilenTfrsmi = data.sonSecilenTfrsmi;
-        const sonSecilenEnflasyonmu = data.sonSecilenEnflasyonmu;
-        const sonSecilenKonsolidemi = data.sonSecilenKonsolidemi;
-        const sonSecilenBddkmi = data.sonSecilenBddkmi;
-        const bddkmi = data.bddkmi;
-        const turTamamlandi = data.turTamamlandi;
-
-        const userData = {
-          token: userToken,
-          refreshToken: userRefreshToken,
-          id: userId,
-          denetciId: userDenetciId,
-          denetciFirmaAdi: userDenetciFirmaAdi,
-          yetki: yetki,
-          rol: rol,
-          kullaniciAdi: kullaniciAdi,
+        const userData = mapAuthPayloadToUserData(data, {
+          accessToken: data.token || data.Token,
+          refreshToken: data.refreshToken || data.RefreshToken,
           mail: email,
-          unvan: unvan,
-          kurulumTamamlandi: kurulumTamamlandi,
-          kurulumAdimi: kurulumAdimi,
-          setupWizardProgress: setupWizardProgress,
-          sonSecilenDenetlenenId: sonSecilenDenetlenenId,
-          sonSecilenYil: sonSecilenYil,
-          sonSecilenDenetlenenFirmaAdi: sonSecilenDenetlenenFirmaAdi,
-          sonSecilenDenetimTuru: sonSecilenDenetimTuru,
-          sonSecilenBobimi: sonSecilenBobimi,
-          sonSecilenTfrsmi: sonSecilenTfrsmi,
-          sonSecilenEnflasyonmu: sonSecilenEnflasyonmu,
-          sonSecilenKonsolidemi: sonSecilenKonsolidemi,
-          sonSecilenBddkmi: sonSecilenBddkmi,
-          turTamamlandi: turTamamlandi,
-          bddkmi: bddkmi
-        };
+        });
 
         if (typeof window !== "undefined") {
           window.sessionStorage.removeItem("fas_logout_intent");
-          if (userToken) {
-            window.sessionStorage.setItem("fas_token", userToken);
-          }
-          if (userRefreshToken) {
-            window.sessionStorage.setItem("fas_refreshToken", userRefreshToken);
-          }
+          persistSessionTokens(userData.token, userData.refreshToken);
         }
 
-        if (sonSecilenDenetlenenId && sonSecilenYil && sonSecilenDenetlenenFirmaAdi) {
-          localStorage.setItem("fas_denetlenenId", sonSecilenDenetlenenId.toString());
-          localStorage.setItem("fas_yil", sonSecilenYil.toString());
-        } else {
-          localStorage.removeItem("fas_denetlenenId");
-          localStorage.removeItem("fas_yil");
-        }
-
+        syncSelectionStorageFromUserData(userData);
         dispatch(setUserData(userData));
 
-        if (bddkmi === undefined) {
-          const data2 = await getDenetciOdemeBilgileri(userDenetciId);
+        if (userData.bddkmi === undefined) {
+          const data2 = await getDenetciOdemeBilgileri(userData.denetciId);
           if (data2 && data2.bddkmi !== undefined) {
             dispatch(setBddkmi(data2.bddkmi));
           }
         }
 
-        console.timeEnd("Veri İşleme ve Yönlendirme");
-        console.timeEnd("Giriş İşlemi Toplam Süre");
-        router.push("/Anasayfa");
+        const navigateToHome =
+          typeof router.replace === "function" ? router.replace.bind(router) : router.push.bind(router);
+        navigateToHome("/Anasayfa");
       } else {
         // console.timeEnd("Giriş İşlemi Toplam Süre");
         setIsLoggedIn(false);
@@ -217,7 +159,6 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         });
       }
     } catch (error: any) {
-      console.timeEnd("Giriş İşlemi Toplam Süre");
       console.log("Bir hata oluştu:", error);
       if (error.message === "Failed to fetch" || error.message.includes("Sunucuya ulaşılamıyor")) {
         enqueueSnackbar("Bağlantı hatası: Sisteme şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyiniz.", {

@@ -87,6 +87,11 @@ const BenfordChart: React.FC<Props> = ({ response, onBasamakClick }) => {
     tooltip: { shared: true, intersect: false },
   };
 
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <Grid container>
       <Grid
@@ -94,7 +99,7 @@ const BenfordChart: React.FC<Props> = ({ response, onBasamakClick }) => {
           xs: 12,
           lg: 12
         }}>
-        {(response?.dagilim ?? []).length > 0 ? (
+        {mounted && (response?.dagilim ?? []).length > 0 ? (
           <Chart options={options} series={series} type="line" height={420} width="100%" />
         ) : null}
       </Grid>

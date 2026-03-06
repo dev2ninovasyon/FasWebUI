@@ -1,4 +1,5 @@
 import { apiFetch } from "@/api/apiBase";
+import { createAuthorizedHeaders } from "@/utils/authSession";
 
 export const getAcceptedYears = async (denetlenenId: number) => {
     try {
@@ -33,11 +34,10 @@ export const firmayiKabulEt = async (
     try {
         const response = await apiFetch(`/Denetlenen/FirmayiKabulEt`, {
             method: "POST",
-            headers: {
+            headers: createAuthorizedHeaders({
                 accept: "*/*",
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
+            }, token),
             body: JSON.stringify({
                 sirketId,
                 yil,

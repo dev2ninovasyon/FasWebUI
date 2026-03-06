@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -41,74 +41,121 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
   currentId,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
-
   const [rows, setRows] = useState<Company[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const lastFetchKeyRef = useRef("");
+
+  const fetchKey = useMemo(
+    () => [user.id || 0, user.denetciId || 0, user.yetki || ""].join(":"),
+    [user.id, user.denetciId, user.yetki]
+  );
 
   const fetchData = async () => {
-    console.log("CompanyBox: fetchData başlatıldı", { yetki: user.yetki, denetciId: user.denetciId, userId: user.id });
+    setIsLoading(true);
+
     try {
-      if (user.yetki == "DenetciAdmin") {
-        const musteriVerileri = await getDenetlenenByDenetciIdForSelection(user.denetciId || 0
-        );
-        console.log("CompanyBox: DenetciAdmin verisi", musteriVerileri);
+      if (user.yetki === "DenetciAdmin") {
+        const musteriVerileri = await getDenetlenenByDenetciIdForSelection(user.denetciId || 0);
+
         if (Array.isArray(musteriVerileri)) {
-          const newRows = musteriVerileri.map((musteri: any) => ({
-            denetlenenId: musteri.id,
-            firmaAdi: musteri.firmaAdi,
-            denetimTuru: musteri.denetimTuru,
-            bobimi: musteri.bobi,
-            tfrsmi: musteri.tfrs,
-            enflasyonmu: musteri.enflasyonMu,
-            konsolidemi: musteri.konsolide,
-            label: musteri.firmaAdi,
-          }));
-          setRows(newRows);
-        } else {
-          console.warn("CompanyBox: DenetciAdmin verisi bir dizi değil!", musteriVerileri);
+          setRows(
+            musteriVerileri.map((musteri: any) => ({
+              denetlenenId: musteri.id,
+              firmaAdi: musteri.firmaAdi,
+              denetimTuru: musteri.denetimTuru,
+              bobimi: musteri.bobi,
+              tfrsmi: musteri.tfrs,
+              enflasyonmu: musteri.enflasyonMu,
+              konsolidemi: musteri.konsolide,
+              label: musteri.firmaAdi,
+            }))
+          );
+          return;
         }
       } else {
-        const musteriVerileri = await getDenetlenenByRolForSelection(user.denetciId || 0,
+        const musteriVerileri = await getDenetlenenByRolForSelection(
+          user.denetciId || 0,
           user.id || 0
         );
-        console.log("CompanyBox: Normal kullanıcı verisi", musteriVerileri);
+
         if (Array.isArray(musteriVerileri)) {
-          const newRows = musteriVerileri.map((musteri: any) => ({
-            denetlenenId: musteri.id,
-            firmaAdi: musteri.firmaAdi,
-            denetimTuru: musteri.denetimTuru,
-            bobimi: musteri.bobi,
-            tfrsmi: musteri.tfrs,
-            enflasyonmu: musteri.enflasyonMu,
-            konsolidemi: musteri.konsolide,
-            label: musteri.firmaAdi,
-          }));
-          setRows(newRows);
-        } else {
-          console.warn("CompanyBox: Normal kullanıcı verisi bir dizi değil!", musteriVerileri);
+          setRows(
+            musteriVerileri.map((musteri: any) => ({
+              denetlenenId: musteri.id,
+              firmaAdi: musteri.firmaAdi,
+              denetimTuru: musteri.denetimTuru,
+              bobimi: musteri.bobi,
+              tfrsmi: musteri.tfrs,
+              enflasyonmu: musteri.enflasyonMu,
+              konsolidemi: musteri.konsolide,
+              label: musteri.firmaAdi,
+            }))
+          );
+          return;
         }
       }
+
+      setRows([]);
     } catch (error) {
       console.log("CompanyBox fetchData hatası:", error);
+      setRows([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user.token) {
-      fetchData();
+    if (!user.denetciId || !user.yetki || (user.yetki !== "DenetciAdmin" && !user.id)) {
+      lastFetchKeyRef.current = "";
+      setRows([]);
+      return;
     }
-  }, [user.token, user.yetki, user.denetciId]);
 
-  const selectedValue = rows.find(r => r.denetlenenId === currentId) || null;
+    if (lastFetchKeyRef.current === fetchKey) {
+      return;
+    }
 
-  if (rows.length === 0 && user.token) {
-    console.log("CompanyBox: Şirket listesi henüz boş veya yüklenemedi.");
-  }
+    lastFetchKeyRef.current = fetchKey;
+    void fetchData();
+  }, [fetchKey, user.token]);
+
+  useEffect(() => {
+    if (!currentId || rows.length === 0) {
+      return;
+    }
+
+    const selectedCompany = rows.find((row) => row.denetlenenId === currentId);
+    if (!selectedCompany) {
+      return;
+    }
+
+    onSelectId(selectedCompany.denetlenenId);
+    onSelectAdi(selectedCompany.firmaAdi || "");
+    onSelectDenetimTuru(selectedCompany.denetimTuru || "");
+    onSelectBobimi(selectedCompany.bobimi || false);
+    onSelectTfrsmi(selectedCompany.tfrsmi || false);
+    onSelectEnflasyonmu(selectedCompany.enflasyonmu || false);
+    onSelectKonsolidemi(selectedCompany.konsolidemi || false);
+  }, [
+    currentId,
+    onSelectAdi,
+    onSelectBobimi,
+    onSelectDenetimTuru,
+    onSelectEnflasyonmu,
+    onSelectId,
+    onSelectKonsolidemi,
+    onSelectTfrsmi,
+    rows,
+  ]);
+
+  const selectedValue = rows.find((row) => row.denetlenenId === currentId) || null;
 
   return (
     <Autocomplete
       id="company-box"
       options={rows}
       value={selectedValue}
+      loading={isLoading}
       noOptionsText="Bulunamadı"
       fullWidth
       onChange={(event, value) => {
@@ -132,4 +179,3 @@ const CompanyBoxAutocomplete: React.FC<CompanyBoxProps> = ({
 };
 
 export default CompanyBoxAutocomplete;
-

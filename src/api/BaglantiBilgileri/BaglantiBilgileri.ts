@@ -1,6 +1,7 @@
 ﻿import { apiFetch, url as apiBaseUrl } from "@/api/apiBase";
 import SecureTokenManager from "@/utils/SecureTokenManager";
 import { HubConnectionBuilder, LogLevel, HubConnectionState } from "@microsoft/signalr";
+import { enqueueSnackbar } from "notistack";
 
 let hubConnection: any = null;
 let startConnectionPromise: Promise<any> | null = null;
@@ -10,6 +11,7 @@ let notificationCallback: ((bildirim: any) => void) | null = null;
 let listenerRegistered = false;
 let pollingToken: string | null = null;
 let pollingDenetciId: number | null = null;
+let isIntentionalConnectionStop = false;
 
 const getSignalRToken = () => {
   if (typeof window === "undefined") {
@@ -34,6 +36,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     }
     if (hubConnection) {
       try {
+        isIntentionalConnectionStop = true;
         hubConnection.stop().catch(() => { });
         hubConnection = null;
       } catch (e) { }
@@ -137,6 +140,7 @@ export const startBildirimConnection = async (denetciId: number) => {
   // Polling için token ve denetciId'yi kaydet (fallback için)
   pollingToken = getSignalRToken();
   pollingDenetciId = denetciId;
+  isIntentionalConnectionStop = false;
 
   if (hubConnection && hubConnection.state === HubConnectionState.Connected) {
     console.log("SignalR zaten bağlı, tekrar bağlanmıyor");
@@ -196,7 +200,7 @@ export const startBildirimConnection = async (denetciId: number) => {
       listenerRegistered = false;
 
       // Bağlantı kapanınca sessizce polling'e geçmeyi dene
-      if (pollingToken && pollingDenetciId && notificationCallback) {
+      if (!isIntentionalConnectionStop && pollingToken && pollingDenetciId && notificationCallback) {
         startPollingBildirim(pollingDenetciId, notificationCallback);
       }
     });
@@ -227,16 +231,17 @@ export const startBildirimConnection = async (denetciId: number) => {
     return activeConnection;
 
   })().catch(async (error) => {
-    console.error("❌ SignalR bağlantı hatası:", error);
-
-    // Detaylı hata bilgisi
-    if (error instanceof Error) {
-      console.error("Hata mesajı:", error.message);
-      console.error("Stack trace ilk satır:", error.stack?.split('\n')[0]);
-    }
-
     const message = error instanceof Error ? error.message : String(error || "");
     const stoppedDuringNegotiation = message.includes("stopped during negotiation");
+
+    if (!stoppedDuringNegotiation) {
+      console.error("❌ SignalR bağlantı hatası:", error);
+
+      if (error instanceof Error) {
+        console.error("Hata mesajı:", error.message);
+        console.error("Stack trace ilk satır:", error.stack?.split('\n')[0]);
+      }
+    }
 
     // Hata kodu için bağlantıyı kapat ama null'a setleme
     try {
@@ -249,6 +254,10 @@ export const startBildirimConnection = async (denetciId: number) => {
 
     hubConnection = null;
     listenerRegistered = false;
+
+    if (stoppedDuringNegotiation || isIntentionalConnectionStop) {
+      return null;
+    }
 
     throw error;
   }).finally(() => {
@@ -279,6 +288,7 @@ export const onYeniBildirim = (callback: (bildirim: any) => void, denetciId?: nu
 export const stopBildirimConnection = async () => {
   if (hubConnection) {
     try {
+      isIntentionalConnectionStop = true;
       await hubConnection.stop();
       hubConnection = null;
       listenerRegistered = false;
@@ -345,7 +355,10 @@ export const getBaglantiBilgileriByTip = async (
   denetlenenId: number,
   kullaniciId: number,
   yil: number,
-  tip: string
+  tip: string,
+  options?: {
+    notifyIfMissing?: boolean;
+  }
 ) => {
   try {
     const response = await apiFetch(
@@ -357,15 +370,25 @@ export const getBaglantiBilgileriByTip = async (
         },
       }
     );
+    if (!response) {
+      if (options?.notifyIfMissing) {
+        enqueueSnackbar("Paylaşım bağlantısı oluşturulmamış.", {
+          variant: "info",
+          autoHideDuration: 4000,
+        });
+      }
+      return undefined;
+    }
     if (response.ok) {
       return response.json();
     } else {
       const errorData = await response.json().catch(() => null);
       const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    throw error;
   }
 };
 

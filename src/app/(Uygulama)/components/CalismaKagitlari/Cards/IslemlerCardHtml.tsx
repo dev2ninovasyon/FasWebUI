@@ -9,6 +9,7 @@ import { AppState } from "@/store/store";
 import axios from "axios";
 import { useSelector } from "@/store/hooks";
 import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { enqueueSnackbar } from "notistack";
@@ -60,14 +61,16 @@ const IslemlerCardHtml: React.FC<Props> = ({
           html,
           save: true,
         },
-        {
-          baseURL: url,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token || ""}`,
+        createAuthorizedAxiosConfig(
+          {
+            baseURL: url,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            responseType: "blob",
           },
-          responseType: "blob",
-        }
+          user.token
+        )
       );
 
       const urlFile = window.URL.createObjectURL(new Blob([response.data]));
@@ -118,14 +121,16 @@ const IslemlerCardHtml: React.FC<Props> = ({
           html,
           save: true,
         },
-        {
-          baseURL: url,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token || ""}`,
+        createAuthorizedAxiosConfig(
+          {
+            baseURL: url,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            responseType: "blob",
           },
-          responseType: "blob",
-        }
+          user.token
+        )
       );
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
@@ -175,13 +180,15 @@ const IslemlerCardHtml: React.FC<Props> = ({
           html,
           save: true,
         },
-        {
-          baseURL: url,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token || ""}`,
+        createAuthorizedAxiosConfig(
+          {
+            baseURL: url,
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        }
+          user.token
+        )
       );
 
       enqueueSnackbar("Belge başarıyla arşive kaydedildi.", {

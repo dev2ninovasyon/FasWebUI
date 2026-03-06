@@ -28,6 +28,7 @@ import { ConfirmPopUpComponent } from "@/app/(Uygulama)/components/CalismaKagitl
 import { IconDotsVertical, IconDownload } from "@tabler/icons-react";
 import axios from "axios";
 import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
 import { deleteAllArsiv, deleteArsiv } from "@/api/Arsiv/Arsiv";
 import { enqueueSnackbar } from "notistack";
@@ -287,9 +288,7 @@ const BelgeTable: React.FC<MyComponentProps> = ({
         url: `${url}/ArsivIslemleri/Indir?path=${veri.url}`,
         method: "GET",
         responseType: "blob",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+        ...createAuthorizedAxiosConfig({}, user.token),
       });
 
       const urlFile = window.URL.createObjectURL(new Blob([response.data]));
@@ -318,14 +317,16 @@ const BelgeTable: React.FC<MyComponentProps> = ({
       const response = await axios.post(
         `${url}/ArsivIslemleri/IndirToplu`,
         paths,
-        {
-          responseType: "blob",
-          headers: {
-            accept: "*/*",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
+        createAuthorizedAxiosConfig(
+          {
+            responseType: "blob",
+            headers: {
+              accept: "*/*",
+              "Content-Type": "application/json",
+            },
           },
-        }
+          user.token
+        )
       );
 
       const urlFile = window.URL.createObjectURL(response.data);

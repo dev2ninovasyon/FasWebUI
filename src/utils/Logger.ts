@@ -5,6 +5,7 @@ import {
 } from "@/utils/clientLogStore";
 import axios from "axios";
 import { url } from "@/api/apiConfig";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
 interface LoggerMeta {
   source?: ClientLogSource;
@@ -27,14 +28,18 @@ class Logger {
   ) {
     try {
       // Non-blocking call to server
-      axios.post(`${url}/Audit/ClientLog`, {
-        level,
-        message,
-        route,
-        source,
-        detail: typeof detail === "object" ? JSON.stringify(detail, null, 2) : String(detail ?? ""),
-        timestamp: new Date().toISOString(),
-      }).catch(() => {
+      axios.post(
+        `${url}/Audit/ClientLog`,
+        {
+          level,
+          message,
+          route,
+          source,
+          detail: typeof detail === "object" ? JSON.stringify(detail, null, 2) : String(detail ?? ""),
+          timestamp: new Date().toISOString(),
+        },
+        createAuthorizedAxiosConfig()
+      ).catch(() => {
         /* Silently fail server logging to not disrupt UI */
       });
     } catch (e) {

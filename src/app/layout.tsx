@@ -11,20 +11,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://www.google.com" />
-        <link
-          rel="preconnect"
-          href="https://www.gstatic.com"
-          crossOrigin="anonymous"
-        />
-      </head>
+      <head />
       <body>
         <Script src="/libs/html-docx.js" strategy="beforeInteractive" />
-        <Script
-          src="https://www.google.com/recaptcha/api.js?render=6Ld2CyEsAAAAALNU5rSOM_Q2RAWkQ2RADbsS5NQW"
-          strategy="afterInteractive"
-        />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

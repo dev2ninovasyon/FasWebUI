@@ -50,6 +50,7 @@ import { getLogo } from "@/api/Denetci/Denetci";
 
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 import jsPDF from "jspdf";
 import Script from "next/script";
 import { base64FontBold, base64FontRegular } from "@/app/(Uygulama)/components/Rapor/BagimsizDenetciRaporu/Roboto";
@@ -809,7 +810,11 @@ const CalismaKagidiRaporu = () => {
             formData.append("modelAdi", "CalismaKagidi");
             formData.append("save", "true");
 
-            await axios.post(`${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`, formData);
+            await axios.post(
+                `${url}/ArsivIslemleri/WordDosyasiArsiveKaydet`,
+                formData,
+                createAuthorizedAxiosConfig({}, user.token)
+            );
 
             enqueueSnackbar("Çalışma kağıdı arşive kaydedildi.", { variant: "success" });
         } catch (error) {

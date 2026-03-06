@@ -30,6 +30,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ProtectedPage from "@/app/ProtectedPage";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 import {
   clearClientLogs,
   ClientLogEntry,
@@ -122,12 +123,15 @@ const Page = () => {
     setLoadingServerLog(true);
     setServerLogOpen(true);
     try {
-      const response = await axios.get(`${url}/Audit/DownloadServerLog`, {
-        responseType: "text",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
+      const response = await axios.get(
+        `${url}/Audit/DownloadServerLog`,
+        createAuthorizedAxiosConfig(
+          {
+            responseType: "text",
+          },
+          user.token
+        )
+      );
       setServerLogContent(response.data);
     } catch (error: any) {
       console.error("Server log fetch error:", error);

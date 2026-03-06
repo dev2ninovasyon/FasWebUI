@@ -1,13 +1,14 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
+import { createAuthorizedHeaders } from "@/utils/authSession";
+
 const handleBackendCall = async (token: string, endpoint: string, body: any, fallbackText: string) => {
   try {
     const response = await apiFetch(endpoint, {
       method: "POST",
-      headers: {
+      headers: createAuthorizedHeaders({
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      }, token),
       body: JSON.stringify(body),
     });
 
