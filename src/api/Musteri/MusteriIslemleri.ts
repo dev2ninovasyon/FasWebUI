@@ -1250,6 +1250,7 @@ export function mapOldDenetlenenToFormData(
       : d.konsolideAltSirketmi ?? d.KonsolideAltSirketmi
         ? "Alt Şirket"
         : "Ana Şirket",
+    enflasyonMu: d.enflasyonMu ?? d.EnflasyonMu ?? false,
   };
 }
 

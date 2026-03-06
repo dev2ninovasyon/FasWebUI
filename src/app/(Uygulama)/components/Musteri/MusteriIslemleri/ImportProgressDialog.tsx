@@ -33,7 +33,7 @@ import { apiFetch } from "@/api/apiBase";
 import ImportControlComponent from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/ImportControlComponent";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { setDenetlenenId, setYil } from "@/store/user/UserSlice";
+import { setDenetlenenId, setEnflasyonmu, setYil } from "@/store/user/UserSlice";
 
 interface ImportProgressDialogProps {
   open: boolean;
@@ -134,7 +134,7 @@ export default function ImportProgressDialog({
   const [controlTableKey, setControlTableKey] = useState<string>("");
   const [controlYear, setControlYear] = useState<number | null>(null);
   const [showLogs, setShowLogs] = useState(false);
-  const [previousSelection, setPreviousSelection] = useState<{ denetlenenId?: number; yil?: number } | null>(null);
+  const [previousSelection, setPreviousSelection] = useState<{ denetlenenId?: number; yil?: number; enflasyonmu?: boolean } | null>(null);
   const lastTerminalNotifiedRef = useRef<string | null>(null);
   const onCompletedRef = useRef(onCompleted);
   const handledTerminalRef = useRef<string | null>(null);
@@ -434,6 +434,7 @@ export default function ImportProgressDialog({
     if (isTargetModel) {
       return rawResults
         .filter((r: any) => !["Denetlened", "Denetlenen"].includes(r?.tableKey ?? r?.TableKey ?? ""))
+
         .map((r: any) => {
           const yillar: YearBreakdownResult[] = (r?.yillar ?? r?.years ?? r?.yearSummaries ?? r?.YearSummaries ?? [])
             .map((y: any) => {
@@ -613,12 +614,16 @@ export default function ImportProgressDialog({
       return;
     }
 
+    const targetEnflasyonmu = tableKey === "EnflasyonDonusumMizan";
+
     setPreviousSelection({
       denetlenenId: user?.denetlenenId,
       yil: user?.yil,
+      enflasyonmu: user?.enflasyonmu,
     });
     dispatch(setDenetlenenId(targetDenetlenenId));
     dispatch(setYil(targetYear));
+    if (targetEnflasyonmu) dispatch(setEnflasyonmu(true));
     setControlTableKey(tableKey);
     setControlYear(targetYear);
     setControlDialogOpen(true);
@@ -631,6 +636,9 @@ export default function ImportProgressDialog({
       }
       if (typeof previousSelection.yil === "number") {
         dispatch(setYil(previousSelection.yil));
+      }
+      if (typeof previousSelection.enflasyonmu === "boolean") {
+        dispatch(setEnflasyonmu(previousSelection.enflasyonmu));
       }
     }
     setControlDialogOpen(false);
