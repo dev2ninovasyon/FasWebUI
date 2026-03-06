@@ -24,11 +24,12 @@ const MAINTENANCE_ROUTE_PATH = "/maintenance";
 
 const isAuthEndpoint = (path: string) => {
   const lowerPath = path.toLowerCase();
+  // Sadece login ve refresh'te token GÖNDERME
+  // Logout ve Session auth header (Bearer token) gerektirdiği için 
+  // onları bu istisnanın dışında tutuyoruz.
   return (
     lowerPath === "/auth/login" ||
-    lowerPath === "/auth/refresh" ||
-    lowerPath === "/auth/logout" ||
-    lowerPath === "/auth/session"
+    lowerPath === "/auth/refresh"
   );
 };
 
@@ -178,9 +179,11 @@ export async function apiFetch(
   let yilFromStorage: string | null = null;
   let sessionAccessToken: string | null = null;
 
-  if (typeof window !== "undefined" && !ignoreCustomHeaders) {
-    denetlenenIdFromStorage = window.localStorage.getItem("fas_denetlenenId");
-    yilFromStorage = window.localStorage.getItem("fas_yil");
+  if (typeof window !== "undefined") {
+    if (!ignoreCustomHeaders) {
+      denetlenenIdFromStorage = window.localStorage.getItem("fas_denetlenenId");
+      yilFromStorage = window.localStorage.getItem("fas_yil");
+    }
     const rawAccessToken = readStoredAuthTokens().accessToken;
     if (rawAccessToken && rawAccessToken !== "undefined" && rawAccessToken !== "null") {
       sessionAccessToken = rawAccessToken;
@@ -291,7 +294,8 @@ export async function apiFetch(
     // Not: 403 yetki problemidir, refresh ile düzelmeyebilir; loop'a girmemesi için refresh denemiyoruz.
     if (response.status === 401) {
       // Login or Refresh endpoints themselves shouldn't trigger another refresh
-      if (isAuthEndpoint(normalizedPath)) {
+      // Aynı zamanda /auth/session da token check endpoint'i olduğu için fail olması refresh'i loop'a sokmamalıdır.
+      if (isAuthEndpoint(normalizedPath) || normalizedPath.toLowerCase() === "/auth/session" || normalizedPath.toLowerCase() === "/auth/logout") {
         return response;
       }
 

@@ -152,16 +152,22 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
             if (refreshedTokens.ok) {
               accessToken = refreshedTokens.accessToken || accessToken;
               refreshToken = refreshedTokens.refreshToken || refreshToken;
+
+              const hasSessionAfterRefresh = await tryLoadSession();
+              if (!hasSessionAfterRefresh) {
+                clearSession();
+                return false;
+              }
+              return true;
+            } else {
+              // Refresh başarısız olduysa tekrar session denemesi yapmak sadece duplicate 401 fırlatır
+              clearSession();
+              return false;
             }
           }
 
-          const hasSessionAfterRefresh = await tryLoadSession();
-          if (!hasSessionAfterRefresh) {
-            clearSession();
-            return false;
-          }
-
-          return true;
+          clearSession();
+          return false;
         } catch {
           clearSession();
           return false;
@@ -189,14 +195,6 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
     if (user?.token) {
       setStatus("authenticated");
       return;
-    }
-
-    if (status === "authenticated") {
-      return;
-    }
-
-    if (!activeBootstrapPromiseRef.current) {
-      setStatus("unauthenticated");
     }
   }, [hasBootstrapped, status, user?.token]);
 

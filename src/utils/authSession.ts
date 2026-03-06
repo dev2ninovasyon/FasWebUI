@@ -36,9 +36,6 @@ const normalizeString = (value?: string | null) => {
   return trimmedValue;
 };
 
-const shouldPersistRefreshTokenInLocalStorage =
-  typeof process !== "undefined" && process.env.NODE_ENV !== "production";
-
 export const readStoredAuthTokens = () => {
   if (typeof window === "undefined") {
     return {
@@ -48,52 +45,46 @@ export const readStoredAuthTokens = () => {
   }
 
   const accessToken = normalizeString(
+    window.localStorage.getItem(SESSION_ACCESS_TOKEN_KEY) ||
     window.sessionStorage.getItem(SESSION_ACCESS_TOKEN_KEY) ||
-      window.sessionStorage.getItem(LEGACY_SESSION_ACCESS_TOKEN_KEY)
+    window.sessionStorage.getItem(LEGACY_SESSION_ACCESS_TOKEN_KEY)
   );
 
   const refreshToken = normalizeString(
+    window.localStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
     window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
-      window.sessionStorage.getItem(LEGACY_SESSION_REFRESH_TOKEN_KEY) ||
-      window.localStorage.getItem(SESSION_REFRESH_TOKEN_KEY)
+    window.sessionStorage.getItem(LEGACY_SESSION_REFRESH_TOKEN_KEY)
   );
 
-  return {
-    accessToken,
-    refreshToken,
-  };
+  return { accessToken, refreshToken };
 };
 
-export const persistSessionTokens = (accessToken?: string | null, refreshToken?: string | null) => {
+export const persistSessionTokens = (
+  accessToken?: string | null,
+  refreshToken?: string | null
+) => {
   if (typeof window === "undefined") {
     return;
   }
 
   const normalizedAccessToken = normalizeString(accessToken);
+  if (normalizedAccessToken) {
+    window.sessionStorage.setItem(SESSION_ACCESS_TOKEN_KEY, normalizedAccessToken);
+    window.localStorage.setItem(SESSION_ACCESS_TOKEN_KEY, normalizedAccessToken);
+  } else {
+    window.sessionStorage.removeItem(SESSION_ACCESS_TOKEN_KEY);
+    window.localStorage.removeItem(SESSION_ACCESS_TOKEN_KEY);
+  }
+
   const normalizedRefreshToken = normalizeString(refreshToken);
-
-  const syncToken = (storageKey: string, value: string) => {
-    if (value) {
-      window.sessionStorage.setItem(storageKey, value);
-      return;
-    }
-
-    window.sessionStorage.removeItem(storageKey);
-  };
-
-  syncToken(SESSION_ACCESS_TOKEN_KEY, normalizedAccessToken);
-  syncToken(LEGACY_SESSION_ACCESS_TOKEN_KEY, normalizedAccessToken);
-  syncToken(SESSION_REFRESH_TOKEN_KEY, normalizedRefreshToken);
-  syncToken(LEGACY_SESSION_REFRESH_TOKEN_KEY, normalizedRefreshToken);
-
-  // Production'da source-of-truth cookie. Dev/test'te localhost cookie sorunlarina karsi
-  // yeni sekme restore fallback'i olarak refresh token localStorage'da tutulur.
-  if (normalizedRefreshToken && shouldPersistRefreshTokenInLocalStorage) {
+  if (normalizedRefreshToken) {
+    window.sessionStorage.setItem(SESSION_REFRESH_TOKEN_KEY, normalizedRefreshToken);
     window.localStorage.setItem(SESSION_REFRESH_TOKEN_KEY, normalizedRefreshToken);
     return;
   }
 
-  if (!normalizedRefreshToken || !shouldPersistRefreshTokenInLocalStorage) {
+  if (!normalizedRefreshToken) {
+    window.sessionStorage.removeItem(SESSION_REFRESH_TOKEN_KEY);
     window.localStorage.removeItem(SESSION_REFRESH_TOKEN_KEY);
   }
 };
@@ -110,9 +101,8 @@ export const clearClientAuthStorage = () => {
     LEGACY_SESSION_REFRESH_TOKEN_KEY,
   ].forEach((key) => {
     window.sessionStorage.removeItem(key);
+    window.localStorage.removeItem(key);
   });
-
-  window.localStorage.removeItem(SESSION_REFRESH_TOKEN_KEY);
 };
 
 export const getRequestAccessToken = (preferredToken?: string | null) => {
@@ -180,20 +170,25 @@ export const mapAuthPayloadToUserData = (
     normalizeString(overrides.refreshToken) ||
     normalizeString(getFirstDefined<string>(payload, "refreshToken", "RefreshToken"));
 
+  const lcDenetlenenId = typeof window !== "undefined" ? Number(window.localStorage.getItem("fas_denetlenenId")) : 0;
+  const lcYil = typeof window !== "undefined" ? Number(window.localStorage.getItem("fas_yil")) : 0;
+
   const selectedCompanyId = getFirstDefined<number>(
     payload,
     "denetlenenId",
     "DenetlenenId",
     "sonSecilenDenetlenenId",
     "SonSecilenDenetlenenId"
-  );
+  ) || (lcDenetlenenId > 0 ? lcDenetlenenId : 0);
+
   const selectedYear = getFirstDefined<number>(
     payload,
     "yil",
     "Yil",
     "sonSecilenYil",
     "SonSecilenYil"
-  );
+  ) || (lcYil > 0 ? lcYil : 0);
+
   const selectedCompanyName = getFirstDefined<string>(
     payload,
     "denetlenenFirmaAdi",
