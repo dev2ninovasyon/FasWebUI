@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { resetToNull, setUserData } from "@/store/user/UserSlice";
 import {
-  buildRefreshRequestBody,
   clearClientAuthStorage,
   mapAuthPayloadToUserData,
   persistSessionTokens,
@@ -53,10 +52,21 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
 
   const refreshTokens = useCallback(
     async (currentRefreshToken?: string | null) => {
+      if (!currentRefreshToken) {
+        return {
+          ok: false,
+          accessToken: "",
+          refreshToken: "",
+        };
+      }
+
       const refreshResponse = await apiFetch("/Auth/refresh", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: buildRefreshRequestBody(currentRefreshToken),
+        body: JSON.stringify({
+          refreshToken: currentRefreshToken,
+          RefreshToken: currentRefreshToken,
+        }),
         ignoreCustomHeaders: true,
         suppressErrorLog: true,
       });
@@ -128,26 +138,16 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
               return false;
             }
 
-            if (!accessToken) {
-              const refreshedTokens = await refreshTokens(refreshToken);
-              if (refreshedTokens.ok) {
-                accessToken = refreshedTokens.accessToken || accessToken;
-                refreshToken = refreshedTokens.refreshToken || refreshToken;
-              }
-            }
-
             applyAuthenticatedSession(sessionPayload, accessToken, refreshToken);
             return true;
           };
 
-          if (!forceRefresh) {
-            const hasActiveSession = await tryLoadSession();
-            if (hasActiveSession) {
-              return true;
-            }
+          const hasActiveSession = await tryLoadSession();
+          if (hasActiveSession) {
+            return true;
           }
 
-          if (forceRefresh || !accessToken || refreshToken) {
+          if (forceRefresh || refreshToken) {
             const refreshedTokens = await refreshTokens(refreshToken);
             if (refreshedTokens.ok) {
               accessToken = refreshedTokens.accessToken || accessToken;

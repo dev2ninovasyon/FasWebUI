@@ -156,7 +156,7 @@ export const buildRefreshRequestBody = (refreshToken?: string | null) => {
   const normalizedRefreshToken = normalizeString(refreshToken);
 
   if (!normalizedRefreshToken) {
-    return "{}";
+    return undefined;
   }
 
   return JSON.stringify({

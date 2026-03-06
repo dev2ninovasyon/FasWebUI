@@ -412,6 +412,17 @@ export async function apiFetch(
         .trim()
         .replace(/^"+|"+$/g, "");
 
+      const isBaglantiByTipNoConnection =
+        response.status === 400 &&
+        normalizedPath.startsWith("/BaglantiBilgileri/BaglantiBilgileriByTip") &&
+        normalizedMessage === "Bağlantı oluşturulmamış.";
+
+      // Beklenen iş kuralı: paylaşım bağlantısı henüz oluşturulmamış olabilir.
+      // Bu durum log üretmemeli ve akışı bozmamalıdır.
+      if (isBaglantiByTipNoConnection) {
+        return undefined as any;
+      }
+
       if (response.status < 500) {
         Logger.warn(`API yanıt hatası: ${response.status} (${normalizedPath})`, {
           message: normalizedMessage || undefined,
@@ -421,24 +432,6 @@ export async function apiFetch(
           requestPath: normalizedPath,
           statusCode: response.status,
         });
-      }
-
-      const isBaglantiByTipNoConnection =
-        response.status === 400 &&
-        normalizedPath.startsWith("/BaglantiBilgileri/BaglantiBilgileriByTip") &&
-        normalizedMessage === "Bağlantı oluşturulmamış.";
-
-      // Sadece bu özel durumda akışı bozma ve error seviyesinde loglama yapma
-      if (isBaglantiByTipNoConnection) {
-        console.info(
-          `[API INFO] ${response.status} ${normalizedPath}: ${normalizedMessage}`
-        );
-        Logger.info(`[API INFO] ${response.status} ${normalizedPath}: ${normalizedMessage}`, undefined, {
-          source: "api",
-          requestPath: normalizedPath,
-          statusCode: response.status,
-        });
-        return undefined as any;
       }
 
       if (!suppressErrorLog) {

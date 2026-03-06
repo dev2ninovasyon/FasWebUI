@@ -1,6 +1,7 @@
 ﻿import { apiFetch, url as apiBaseUrl } from "@/api/apiBase";
 import SecureTokenManager from "@/utils/SecureTokenManager";
 import { HubConnectionBuilder, LogLevel, HubConnectionState } from "@microsoft/signalr";
+import { enqueueSnackbar } from "notistack";
 
 let hubConnection: any = null;
 let startConnectionPromise: Promise<any> | null = null;
@@ -354,7 +355,10 @@ export const getBaglantiBilgileriByTip = async (
   denetlenenId: number,
   kullaniciId: number,
   yil: number,
-  tip: string
+  tip: string,
+  options?: {
+    notifyIfMissing?: boolean;
+  }
 ) => {
   try {
     const response = await apiFetch(
@@ -366,15 +370,25 @@ export const getBaglantiBilgileriByTip = async (
         },
       }
     );
+    if (!response) {
+      if (options?.notifyIfMissing) {
+        enqueueSnackbar("Paylaşım bağlantısı oluşturulmamış.", {
+          variant: "info",
+          autoHideDuration: 4000,
+        });
+      }
+      return undefined;
+    }
     if (response.ok) {
       return response.json();
     } else {
       const errorData = await response.json().catch(() => null);
       const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.log(errorMessage);
+      throw new Error(errorMessage);
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    throw error;
   }
 };
 
