@@ -52,6 +52,9 @@ const Profile = () => {
       window.localStorage.removeItem("fas_yil");
       window.localStorage.removeItem("fas_blacklisted_tokens");
       window.sessionStorage.removeItem("fas_debug_no_login_redirect");
+      // Clear all token key variants (new and legacy) for full cleanup
+      window.sessionStorage.removeItem("fas_token");
+      window.sessionStorage.removeItem("fas_refreshToken");
       window.sessionStorage.removeItem("fas_session_token");
       window.sessionStorage.removeItem("fas_session_refreshToken");
     }

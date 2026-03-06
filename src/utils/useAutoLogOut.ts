@@ -7,8 +7,8 @@ import { apiFetch } from "@/api/apiBase";
 
 const STORAGE_KEY = "user";
 const TIMEOUT_KEY = "user_expiry";
-const SESSION_ACCESS_TOKEN_KEY = "fas_session_token";
-const SESSION_REFRESH_TOKEN_KEY = "fas_session_refreshToken";
+const SESSION_ACCESS_TOKEN_KEY = "fas_token";
+const SESSION_REFRESH_TOKEN_KEY = "fas_refreshToken";
 const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 interface UseAutoLogoutReturn {
@@ -112,6 +112,9 @@ export default function useAutoLogout(
     localStorage.removeItem("fas_yil");
     localStorage.removeItem("fas_blacklisted_tokens");
     sessionStorage.removeItem("fas_debug_no_login_redirect");
+    // Clear all known token key variants for backward compatibility
+    sessionStorage.removeItem("fas_token");
+    sessionStorage.removeItem("fas_refreshToken");
     sessionStorage.removeItem("fas_session_token");
     sessionStorage.removeItem("fas_session_refreshToken");
 

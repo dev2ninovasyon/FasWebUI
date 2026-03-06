@@ -162,15 +162,20 @@ export default function RootLayout({
           return;
         }
 
+        // Cookie-based session restore: HttpOnly cookie otomatik gönderilir (yeni sekme dahil)
         try {
-          const currentRefreshToken = window.sessionStorage.getItem("fas_refreshToken");
-          if (!currentRefreshToken) {
-            throw new Error("Refresh token yok");
-          }
+          const currentRefreshToken = window.sessionStorage.getItem("fas_refreshToken")
+            || window.localStorage.getItem("fas_refreshToken");
+
+          // sessionStorage'da token yoksa bile dene — backend cookie'den okuyabilir
+          const refreshBody = currentRefreshToken
+            ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
+            : {};
+
           const refreshResponse = await apiFetch("/Auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }),
+            body: JSON.stringify(refreshBody),
             ignoreCustomHeaders: true,
             suppressErrorLog: true,
           });
@@ -185,6 +190,7 @@ export default function RootLayout({
             }
             if (refreshToken) {
               window.sessionStorage.setItem("fas_refreshToken", refreshToken);
+              window.localStorage.setItem("fas_refreshToken", refreshToken);
               dispatch(setRefreshToken(refreshToken));
             }
             setIsChecking(false);
@@ -192,7 +198,7 @@ export default function RootLayout({
             return;
           }
         } catch {
-          // refresh başarısız
+          // refresh başarısız — login'e yönlendirilecek
         }
 
         setIsChecking(false);
