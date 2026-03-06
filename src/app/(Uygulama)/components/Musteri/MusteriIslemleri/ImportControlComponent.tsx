@@ -19,7 +19,7 @@ const loaderMap: Record<string, Loader> = {
   KrediHesaplama: () => import("@/app/(Uygulama)/Hesaplamalar/KrediHesaplama/page"),
   Yaslandirma: () => import("@/app/(Uygulama)/Hesaplamalar/Yaslandirma/page"),
   ErtelenmisVergiHesabi: () => import("@/app/(Uygulama)/Hesaplamalar/ErtelenmisVergiHesabi/VergiVarlikKontrol"),
-  EnflasyonDonusumMizan: () => import("@/app/(Uygulama)/Enflasyon/DetayMizanKontrol/page"),
+  EnflasyonDonusumMizan: () => import("@/app/(Uygulama)/components/Enflasyon/EnflasyonDonusumMizanKontrol/EnflasyonDonusumMizanKontrol"),
 };
 
 export default function ImportControlComponent({ tableKey }: ImportControlComponentProps) {

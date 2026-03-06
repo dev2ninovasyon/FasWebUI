@@ -31,6 +31,7 @@ export interface OldDenetlenenDetayDto {
   konsolide?: boolean;
   konsolideAnaSirketmi?: boolean;
   konsolideAltSirketmi?: boolean;
+  enflasyonMu?: boolean;
 }
 
 export interface MusteriEkleFormData {

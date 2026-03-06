@@ -236,7 +236,10 @@ const MusteriEkleForm = ({
     try {
       setTransferTablesLoading(true);
       const tables = await getImportFromOldTransferTables();
-      setTransferTables(Array.isArray(tables) ? tables : []);
+      const filtered = Array.isArray(tables)
+        ? tables.filter((t) => t.key !== "EnflasyonDonusumMizan" || initialData?.enflasyonMu === true)
+        : [];
+      setTransferTables(filtered);
     } catch (error: any) {
       setTransferTables([]);
       enqueueSnackbar(

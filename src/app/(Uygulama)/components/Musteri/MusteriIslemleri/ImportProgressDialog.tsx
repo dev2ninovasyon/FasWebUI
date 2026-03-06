@@ -33,7 +33,8 @@ import { apiFetch } from "@/api/apiBase";
 import ImportControlComponent from "@/app/(Uygulama)/components/Musteri/MusteriIslemleri/ImportControlComponent";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { setDenetlenenId, setYil } from "@/store/user/UserSlice";
+import { setDenetlenenId, setDenetlenenFirmaAdi, setEnflasyonmu, setYil } from "@/store/user/UserSlice";
+import { useRouter } from "next/navigation";
 
 interface ImportProgressDialogProps {
   open: boolean;
@@ -47,9 +48,11 @@ interface JobStatus {
   status: string;
   errorMessage?: string;
   tasinanDenetlenenId?: number;
+  newCompanyName?: string;
   isUserInteractionPending?: boolean;
   pendingTableKey?: string;
   skippedTables?: string[];
+  effectiveYears?: number[];
   notifications?: any[];
   stageResults?: any[];
 }
@@ -59,10 +62,14 @@ const normalizeJobStatus = (raw: any): JobStatus => ({
   status: raw?.status ?? raw?.Status ?? "",
   errorMessage: raw?.errorMessage ?? raw?.ErrorMessage,
   tasinanDenetlenenId: raw?.tasinanDenetlenenId ?? raw?.TasinanDenetlenenId,
+  newCompanyName: raw?.newCompanyName ?? raw?.NewCompanyName,
   isUserInteractionPending:
     (raw?.isUserInteractionPending ?? raw?.IsUserInteractionPending ?? false) === true,
   pendingTableKey: raw?.pendingTableKey ?? raw?.PendingTableKey,
   skippedTables: raw?.skippedTables ?? raw?.SkippedTables ?? [],
+  effectiveYears: Array.isArray(raw?.effectiveYears ?? raw?.EffectiveYears)
+    ? (raw?.effectiveYears ?? raw?.EffectiveYears).filter((y: any) => Number(y) > 0).sort((a: number, b: number) => a - b)
+    : [],
   notifications: raw?.notifications ?? raw?.Notifications ?? [],
   stageResults: raw?.stageResults ?? raw?.StageResults ?? [],
 });
@@ -134,11 +141,13 @@ export default function ImportProgressDialog({
   const [controlTableKey, setControlTableKey] = useState<string>("");
   const [controlYear, setControlYear] = useState<number | null>(null);
   const [showLogs, setShowLogs] = useState(false);
-  const [previousSelection, setPreviousSelection] = useState<{ denetlenenId?: number; yil?: number } | null>(null);
+  const [previousSelection, setPreviousSelection] = useState<{ denetlenenId?: number; yil?: number; enflasyonmu?: boolean } | null>(null);
+  const [skippedNavConfirm, setSkippedNavConfirm] = useState<{ tableKey: string; year: number; route: string } | null>(null);
   const lastTerminalNotifiedRef = useRef<string | null>(null);
   const onCompletedRef = useRef(onCompleted);
   const handledTerminalRef = useRef<string | null>(null);
   const isFirstPollRef = useRef(true);
+  const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -434,6 +443,7 @@ export default function ImportProgressDialog({
     if (isTargetModel) {
       return rawResults
         .filter((r: any) => !["Denetlened", "Denetlenen"].includes(r?.tableKey ?? r?.TableKey ?? ""))
+
         .map((r: any) => {
           const yillar: YearBreakdownResult[] = (r?.yillar ?? r?.years ?? r?.yearSummaries ?? r?.YearSummaries ?? [])
             .map((y: any) => {
@@ -613,12 +623,16 @@ export default function ImportProgressDialog({
       return;
     }
 
+    const targetEnflasyonmu = tableKey === "EnflasyonDonusumMizan";
+
     setPreviousSelection({
       denetlenenId: user?.denetlenenId,
       yil: user?.yil,
+      enflasyonmu: user?.enflasyonmu,
     });
     dispatch(setDenetlenenId(targetDenetlenenId));
     dispatch(setYil(targetYear));
+    if (targetEnflasyonmu) dispatch(setEnflasyonmu(true));
     setControlTableKey(tableKey);
     setControlYear(targetYear);
     setControlDialogOpen(true);
@@ -632,11 +646,55 @@ export default function ImportProgressDialog({
       if (typeof previousSelection.yil === "number") {
         dispatch(setYil(previousSelection.yil));
       }
+      if (typeof previousSelection.enflasyonmu === "boolean") {
+        dispatch(setEnflasyonmu(previousSelection.enflasyonmu));
+      }
     }
     setControlDialogOpen(false);
     setControlTableKey("");
     setControlYear(null);
     setPreviousSelection(null);
+  };
+
+  const handleSkippedNavClick = (tableKey: string, year: number, route: string) => {
+    const targetDenetlenenId = Number(jobStatus?.tasinanDenetlenenId ?? 0);
+    const currentDenetlenenId = Number(user?.denetlenenId ?? 0);
+    const currentYil = Number(user?.yil ?? 0);
+
+    // Mevcut şirket ve yıl zaten hedefle aynıysa uyarı atla, direkt git
+    const isSameCompany = targetDenetlenenId > 0 && targetDenetlenenId === currentDenetlenenId;
+    const isSameYear = year === 0 || (year > 0 && year === currentYil);
+
+    if (isSameCompany && isSameYear) {
+      const query = new URLSearchParams();
+      if (year > 0) query.set("yil", String(year));
+      if (targetDenetlenenId > 0) query.set("denetlenenId", String(targetDenetlenenId));
+      const fullRoute = query.toString() ? `${route}?${query.toString()}` : route;
+      window.open(fullRoute, "_blank");
+      return;
+    }
+
+    setSkippedNavConfirm({ tableKey, year, route });
+  };
+
+  const handleSkippedNavConfirm = () => {
+    if (!skippedNavConfirm) return;
+    const { route, year } = skippedNavConfirm;
+    const targetDenetlenenId = Number(jobStatus?.tasinanDenetlenenId ?? 0);
+    const targetName = jobStatus?.newCompanyName ?? "";
+
+    dispatch(setDenetlenenId(targetDenetlenenId));
+    if (targetName) dispatch(setDenetlenenFirmaAdi(targetName));
+    dispatch(setYil(year));
+
+    // Yeni sekmede açmak için tam URL oluştur
+    const query = new URLSearchParams();
+    if (year > 0) query.set("yil", String(year));
+    if (targetDenetlenenId > 0) query.set("denetlenenId", String(targetDenetlenenId));
+    const fullRoute = query.toString() ? `${route}?${query.toString()}` : route;
+
+    setSkippedNavConfirm(null);
+    window.open(fullRoute, "_blank");
   };
 
   return (
@@ -825,6 +883,8 @@ export default function ImportProgressDialog({
                               </TableRow>
                               {jobStatus.skippedTables.map((tableKey) => {
                                 const expanded = Boolean(expandedTables[tableKey]);
+                                const skippedYears = (jobStatus.effectiveYears ?? []).filter((y) => y > 0).sort((a, b) => a - b);
+                                const manualRoute = getManualRoute(tableKey);
                                 return (
                                   <React.Fragment key={`skipped-${tableKey}`}>
                                     <TableRow hover onClick={() => toggleExpanded(tableKey)} sx={{ cursor: "pointer" }}>
@@ -860,26 +920,72 @@ export default function ImportProgressDialog({
                                               borderRadius: 2
                                             }}
                                           >
-                                            <Typography variant="body1" sx={{ mb: 2, fontWeight: 500 }}>
+                                            <Typography variant="body1" sx={{ mb: 1.5, fontWeight: 500 }}>
                                               Bu tablo otomatik taşınamadı. Lütfen ilgili ekrana giderek verilerinizi manuel olarak düzenleyin veya kontrol edin.
                                             </Typography>
                                             <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
                                               <strong>Kaynak Bilgisi:</strong> {getManualSourceHint(tableKey)}
                                             </Typography>
-                                            {getManualRoute(tableKey) && (
+
+                                            {/* Yıl bazlı tablo */}
+                                            {skippedYears.length > 0 && manualRoute ? (
+                                              <>
+                                                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                                  Yıl Bazlı Sonuçlar
+                                                </Typography>
+                                                <Table size="small" sx={{ mb: 1.5 }}>
+                                                  <TableHead>
+                                                    <TableRow>
+                                                      <TableCell><strong>Yıl</strong></TableCell>
+                                                      <TableCell><strong>Toplam</strong></TableCell>
+                                                      <TableCell><strong>Taşınan</strong></TableCell>
+                                                      <TableCell><strong>Süre (sn)</strong></TableCell>
+                                                      <TableCell><strong>Durum</strong></TableCell>
+                                                      <TableCell><strong>Ekran</strong></TableCell>
+                                                    </TableRow>
+                                                  </TableHead>
+                                                  <TableBody>
+                                                    {skippedYears.map((yr) => {
+                                                      const denetlenenId = Number(jobStatus?.tasinanDenetlenenId ?? 0);
+                                                      const routeWithYear = `${manualRoute}?yil=${yr}${denetlenenId > 0 ? `&denetlenenId=${denetlenenId}` : ""}`;
+                                                      return (
+                                                        <TableRow key={`${tableKey}-skipped-${yr}`}>
+                                                          <TableCell>{yr}</TableCell>
+                                                          <TableCell>-</TableCell>
+                                                          <TableCell>-</TableCell>
+                                                          <TableCell>-</TableCell>
+                                                          <TableCell>{renderDurum("Uyarı")}</TableCell>
+                                                          <TableCell>
+                                                            <Button
+                                                              size="small"
+                                                              variant="contained"
+                                                              color="warning"
+                                                              onClick={() => handleSkippedNavClick(tableKey, yr, manualRoute)}
+                                                              startIcon={<KeyboardArrowRightIcon />}
+                                                              sx={{ fontWeight: "bold", whiteSpace: "nowrap" }}
+                                                            >
+                                                              İlgili Ekrana Git
+                                                            </Button>
+                                                          </TableCell>
+                                                        </TableRow>
+                                                      );
+                                                    })}
+                                                  </TableBody>
+                                                </Table>
+                                              </>
+                                            ) : manualRoute ? (
+                                              /* Yıl bilgisi yoksa tek buton */
                                               <Button
                                                 variant="contained"
                                                 color="warning"
                                                 size="medium"
-                                                href={getManualRoute(tableKey)!}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
+                                                onClick={() => handleSkippedNavClick(tableKey, 0, manualRoute)}
                                                 sx={{ fontWeight: "bold", px: 3 }}
                                                 startIcon={<KeyboardArrowRightIcon />}
                                               >
                                                 İlgili Ekrana Git
                                               </Button>
-                                            )}
+                                            ) : null}
                                           </Paper>
                                         </Collapse>
                                       </TableCell>
@@ -1110,6 +1216,75 @@ export default function ImportProgressDialog({
             disabled={actionInProgress}
           >
             İptal Et
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* İlgili Ekrana Git - Şirket/Yıl Değişikliği Onay Diyaloğu */}
+      <Dialog
+        open={Boolean(skippedNavConfirm)}
+        onClose={() => setSkippedNavConfirm(null)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>⚠ Şirket ve Yıl Değişikliği</DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 1 }}>
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              Bu işlem{" "}
+              <strong>
+                {jobStatus?.newCompanyName ?? `ID: ${jobStatus?.tasinanDenetlenenId}`}
+              </strong>{" "}
+              şirketine{skippedNavConfirm && skippedNavConfirm.year > 0 ? (
+                <> ve <strong>{skippedNavConfirm.year}</strong> yılına</>
+              ) : null} aittir. Devam ederseniz mevcut seçili şirket ve yıl bilgileriniz aşağıdaki bilgilere göre değiştirilecektir.
+              <br /><strong>Onaylıyor musunuz?</strong>
+            </Alert>
+            <Box sx={{ bgcolor: "action.hover", borderRadius: 1, p: 2, mb: 1.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                <strong>Mevcut Şirket:</strong>{" "}
+                {user?.denetlenenFirmaAdi
+                  ? `${user.denetlenenFirmaAdi} (ID: ${user.denetlenenId})`
+                  : user?.denetlenenId
+                    ? `ID: ${user.denetlenenId}`
+                    : "Seçili şirket yok"}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Mevcut Yıl:</strong> {user?.yil ?? "-"}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", color: "warning.main", mb: 1.5 }}>
+              <KeyboardArrowRightIcon sx={{ fontSize: 32 }} />
+            </Box>
+            <Box sx={{ bgcolor: "rgba(237, 108, 2, 0.08)", borderRadius: 1, p: 2, border: "1px solid rgba(237, 108, 2, 0.3)" }}>
+              <Typography variant="body2" sx={{ mb: 0.5 }}>
+                <strong>Hedef Şirket:</strong>{" "}
+                {jobStatus?.newCompanyName
+                  ? `${jobStatus.newCompanyName} (ID: ${jobStatus.tasinanDenetlenenId})`
+                  : `ID: ${jobStatus?.tasinanDenetlenenId}`}
+              </Typography>
+              {skippedNavConfirm && skippedNavConfirm.year > 0 && (
+                <Typography variant="body2">
+                  <strong>Hedef Yıl:</strong> {skippedNavConfirm.year}
+                </Typography>
+              )}
+              <Typography variant="body2" sx={{ mt: 0.5 }}>
+                <strong>İlgili Ekran:</strong> {skippedNavConfirm ? getTableDisplayName(skippedNavConfirm.tableKey) : ""}
+              </Typography>
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSkippedNavConfirm(null)} variant="outlined">
+            İptal
+          </Button>
+          <Button
+            onClick={handleSkippedNavConfirm}
+            variant="contained"
+            color="warning"
+            startIcon={<KeyboardArrowRightIcon />}
+          >
+            Onayla ve Ekrana Git
           </Button>
         </DialogActions>
       </Dialog>
