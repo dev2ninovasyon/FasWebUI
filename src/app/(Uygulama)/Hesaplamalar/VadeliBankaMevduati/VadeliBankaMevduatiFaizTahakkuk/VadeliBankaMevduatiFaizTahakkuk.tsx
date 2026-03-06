@@ -1,14 +1,18 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Box, Button, Grid, useMediaQuery, useTheme } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Alert, Box, Button, Grid, IconButton, Snackbar, useMediaQuery, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import React, { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import {  createVadeliBankaMevduatiFaizTahakkuk,
+import {
+  createVadeliBankaMevduatiFaizTahakkuk,
   getVadeliBankaMevduatiFaizTahakkuk,
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import { enqueueSnackbar } from "notistack";
@@ -16,7 +20,8 @@ import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -53,6 +58,7 @@ const VadeliBankaMevduatiFaizTahakkuk: React.FC<Props> = ({ onDataCount }) => {
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<any[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
 
@@ -585,6 +591,7 @@ const VadeliBankaMevduatiFaizTahakkuk: React.FC<Props> = ({ onDataCount }) => {
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
       onDataCount?.(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -776,6 +783,27 @@ const VadeliBankaMevduatiFaizTahakkuk: React.FC<Props> = ({ onDataCount }) => {
           ></InfoAlertCart>
         )}
       </Grid>
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Vadeli banka mevduatı faiz tahakkuk verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };

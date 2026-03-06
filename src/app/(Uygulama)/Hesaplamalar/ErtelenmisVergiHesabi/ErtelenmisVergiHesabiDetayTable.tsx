@@ -7,7 +7,8 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Box, Grid, Typography, useTheme, Alert, Card, CardContent } from "@mui/material";
+import { Box, Grid, Typography, useTheme, Alert, Card, CardContent, IconButton, Snackbar } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
@@ -34,6 +35,7 @@ const ErtelenmisVergiHesabiDetayTable: React.FC<Props> = ({ hesaplaTiklandimi })
     const [rowCount, setRowCount] = useState(0);
     const [fetchedData, setFetchedData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [noDataOpen, setNoDataOpen] = useState(false);
 
     useEffect(() => {
         const loadStyles = async () => {
@@ -144,9 +146,11 @@ const ErtelenmisVergiHesabiDetayTable: React.FC<Props> = ({ hesaplaTiklandimi })
                 ]);
                 setFetchedData(rows);
                 setRowCount(rows.length);
+                setNoDataOpen(rows.length === 0);
             } else {
                 setFetchedData([]);
                 setRowCount(0);
+                setNoDataOpen(true);
             }
         } catch (error) {
             console.error("fetchData error:", error);
@@ -226,6 +230,27 @@ const ErtelenmisVergiHesabiDetayTable: React.FC<Props> = ({ hesaplaTiklandimi })
                     </Grid>
                 </Grid>
             </CardContent>
+            <Snackbar
+                open={noDataOpen}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            >
+                <Alert
+                    severity="warning"
+                    variant="filled"
+                    action={
+                        <IconButton
+                            size="small"
+                            color="inherit"
+                            onClick={() => setNoDataOpen(false)}
+                        >
+                            <Close fontSize="small" />
+                        </IconButton>
+                    }
+                    sx={{ width: "100%", fontSize: "14px" }}
+                >
+                    Ertelenmiş vergi hesabı verisi bulunamadı.
+                </Alert>
+            </Snackbar>
         </Card>
     );
 };

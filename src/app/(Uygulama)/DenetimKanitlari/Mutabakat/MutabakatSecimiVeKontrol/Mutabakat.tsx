@@ -1,13 +1,18 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import {  Box,
+import {
+  Alert,
+  Box,
   CircularProgress,
   Grid,
+  IconButton,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -15,7 +20,9 @@ import {  Box,
   TableRow,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Close } from "@mui/icons-material";
+import React, { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import {
@@ -27,7 +34,8 @@ import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -76,6 +84,7 @@ const Mutabakat: React.FC<Props> = ({
   const [fetchedData, setFetchedData] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
   const [openCartAlert2, setOpenCartAlert2] = useState(false);
@@ -613,6 +622,7 @@ const Mutabakat: React.FC<Props> = ({
 
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
+      setNoDataOpen(rowsAll.length === 0);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     } finally {
@@ -795,6 +805,27 @@ const Mutabakat: React.FC<Props> = ({
           <CircularProgress />
         </Box>
       )}
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Mutabakat verisi bulunamadı.
+        </Alert>
+      </Snackbar>
       {fetchedData.length > 0 && (
         <Paper
           elevation={2}

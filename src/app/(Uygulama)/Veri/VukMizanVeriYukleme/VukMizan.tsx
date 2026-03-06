@@ -1,18 +1,20 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import {   Grid, 
-  useTheme, 
-  Alert, 
-  IconButton, 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions, 
-  Button, 
+import {
+  Grid,
+  useTheme,
+  Alert,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
   CircularProgress,
   Box,
   Typography,
@@ -22,12 +24,15 @@ import {   Grid,
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Snackbar
 } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
@@ -39,7 +44,8 @@ import {
 import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 import { IconX, IconAlertTriangle } from "@tabler/icons-react";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -83,6 +89,7 @@ const VukMizan: React.FC<Props> = ({
   const [showAlert, setShowAlert] = useState(false);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [duplicateGroups, setDuplicateGroups] = useState<number[][]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCleaningSaving, setIsCleaningSaving] = useState(false);
 
@@ -455,7 +462,7 @@ const VukMizan: React.FC<Props> = ({
           ) {
             currentRowData.kod = newValue.substring(0, 3);
           }
-          
+
           // 3 haneli ise Para Birimi boş olmalı
           if (newValue.length === 3) {
             currentRowData.paraBirimi = "";
@@ -511,7 +518,7 @@ const VukMizan: React.FC<Props> = ({
       if ([3, 4].includes(prop)) {  // Borç ve Alacak sütunları
         if (typeof newValue === "string") {
           let normalized = newValue.trim();
-          
+
           // Eğer virgül varsa → Türkçe format (47.792,87 veya 47792,87)
           if (normalized.includes(',')) {
             // Bin ayırıcıları (noktaları) kaldır, virgülü noktaya çevir
@@ -519,7 +526,7 @@ const VukMizan: React.FC<Props> = ({
             normalized = normalized.replace(/\./g, '').replace(',', '.');
           }
           // Eğer sadece nokta varsa → International format (47792.87) → olduğu gibi
-          
+
           changes[i][3] = normalized;
         }
       }
@@ -563,7 +570,7 @@ const VukMizan: React.FC<Props> = ({
         .map((item: any) => {
           let obj: { [key: string]: any } = {};
           const detayHesapKodu = item[1];
-          
+
           keys.forEach((key, index) => {
             if (key === "denetciId") {
               obj[key] = user.denetciId;
@@ -717,6 +724,7 @@ const VukMizan: React.FC<Props> = ({
         rowsAll.push(newRow);
       });
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -748,7 +756,7 @@ const VukMizan: React.FC<Props> = ({
     // HotTable instance'ünden güncel verileri al (state'ten değil)
     const hotTableInstance = hotTableComponent.current?.hotInstance;
     const currentData = hotTableInstance?.getData() || fetchedData;
-    
+
     const duplicateGroups = groupDuplicateRows(currentData);
 
     if (duplicateGroups.length > 0) {
@@ -764,23 +772,23 @@ const VukMizan: React.FC<Props> = ({
     // HotTable instance'ünden güncel verileri al
     const hotTableInstance = hotTableComponent.current?.hotInstance;
     const currentData = hotTableInstance?.getData() || fetchedData;
-    
+
     // Çift satırları gruplandır
     const duplicateGroups = groupDuplicateRows(currentData);
-    
+
     // Tüm duplicate satırları flatten et
     const duplicateRowNumbers = duplicateGroups.flat();
-    
+
     // Çift satırları filtrele
     const cleanedData = currentData.filter((_: any, index: number) => !duplicateRowNumbers.includes(index + 1));
-    
+
     // HotTable'ı görsel olarak update et
     hotTableInstance?.loadData(cleanedData);
     setFetchedData(cleanedData);
-    
+
     // Loading state başla
     setIsCleaningSaving(true);
-    
+
     // Çift satırların hepsini sil mesajı göster
     enqueueSnackbar(`${duplicateRowNumbers.length} satır siliniyor, veriler kaydediliyor...`, {
       variant: "info",
@@ -793,7 +801,7 @@ const VukMizan: React.FC<Props> = ({
         maxWidth: "720px",
       },
     });
-    
+
     // Temizlenmiş veriyi kaydet
     try {
       const keys = [
@@ -807,13 +815,13 @@ const VukMizan: React.FC<Props> = ({
         "alacak",
         "paraBirimi",
       ];
-      
+
       const jsonData = cleanedData
         .filter((item: any) => item[0])
         .map((item: any) => {
           let obj: { [key: string]: any } = {};
           const detayHesapKodu = item[1];
-          
+
           keys.forEach((key, index) => {
             if (key === "denetciId") {
               obj[key] = user.denetciId;
@@ -864,7 +872,7 @@ const VukMizan: React.FC<Props> = ({
       if (result) {
         await fetchData();
         setDuplicatesControl(true);
-        
+
         enqueueSnackbar("Kaydedildi", {
           variant: "success",
           autoHideDuration: 5000,
@@ -876,7 +884,7 @@ const VukMizan: React.FC<Props> = ({
             maxWidth: "720px",
           },
         });
-        
+
         // Başarıdan sonra dialog kapat
         setShowDuplicateDialog(false);
       } else {
@@ -922,15 +930,15 @@ const VukMizan: React.FC<Props> = ({
     const checkHasData = () => {
       const hotTableInstance = hotTableComponent.current?.hotInstance;
       const currentData = hotTableInstance?.getData() || [];
-      
+
       // Boş olmayan satır sayısını kontrol et
       const hasNonEmptyRows = currentData.some((row: any) => {
         return row.some((cell: any) => cell != null && cell !== "" && cell !== undefined);
       });
-      
+
       onDataLoaded?.(hasNonEmptyRows);
     };
-    
+
     checkHasData();
   }, [fetchedData, onDataLoaded]);
 
@@ -1139,10 +1147,10 @@ const VukMizan: React.FC<Props> = ({
                       // Her grup için farklı renk (HSL color space)
                       const hue = (groupIndex * 60) % 360;
                       const backgroundColor = `hsl(${hue}, 70%, 85%)`;
-                      
+
                       return (
-                        <TableRow 
-                          key={rowNum} 
+                        <TableRow
+                          key={rowNum}
                           sx={{ backgroundColor: backgroundColor }}
                         >
                           <TableCell sx={{ fontWeight: "500" }}>
@@ -1191,9 +1199,29 @@ const VukMizan: React.FC<Props> = ({
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          VUK Mizan verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
 export default VukMizan;
-

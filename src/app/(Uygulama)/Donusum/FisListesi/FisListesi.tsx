@@ -1,22 +1,27 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Button, Grid, useTheme } from "@mui/material";
+import { Alert, Button, Grid, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
-import { enqueueSnackbar } from "notistack";import { saveAs } from "file-saver";
+import { enqueueSnackbar } from "notistack";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
-import {  getFisListesiVerileri,
+import {
+  getFisListesiVerileri,
   updateFisDurumu,
 } from "@/api/Donusum/FisListesi";
 import { IconFileTypeXls } from "@tabler/icons-react";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -42,6 +47,7 @@ const FisListesi = () => {
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   let control = "";
   let controlRowNumber = -1;
@@ -382,6 +388,7 @@ const FisListesi = () => {
       });
 
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
       setRowCount(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -560,9 +567,29 @@ const FisListesi = () => {
           Excel&apos;e Aktar
         </Button>
       </Grid>
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Fiş listesi verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 };
 
 export default FisListesi;
-

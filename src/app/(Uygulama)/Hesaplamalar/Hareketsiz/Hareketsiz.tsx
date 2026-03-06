@@ -1,10 +1,13 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import {  Button,
+import {
+  Alert,
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,11 +15,14 @@ import {  Button,
   Grid,
   IconButton,
   MenuItem,
+  Snackbar,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Close } from "@mui/icons-material";
+import React, { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import {
@@ -34,7 +40,8 @@ import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/Custom
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -83,6 +90,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip, onDataCount }) =>
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -467,9 +475,10 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip, onDataCount }) =>
           rowsAll.push(newRow);
         });
 
-          setRowCount(rowsAll.length);
-          setFetchedData(rowsAll);
-          onDataCount && onDataCount(rowsAll.length);
+        setRowCount(rowsAll.length);
+        setFetchedData(rowsAll);
+        setNoDataOpen(rowsAll.length === 0);
+        onDataCount && onDataCount(rowsAll.length);
       }
       if (tip == "Stoklar") {
         const hareketsizStoklarVerileri = await getHareketsizStoklar(user.denetciId || 0,
@@ -494,6 +503,7 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip, onDataCount }) =>
 
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
+        setNoDataOpen(rowsAll.length === 0);
         onDataCount && onDataCount(rowsAll.length);
       }
     } catch (error) {
@@ -667,6 +677,27 @@ const Hareketsiz: React.FC<Props> = ({ hesaplaTiklandimi, tip, onDataCount }) =>
           ></ExceleAktarButton>
         </Grid>
       </Grid>
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Hareketsiz stok verisi bulunamadı.
+        </Alert>
+      </Snackbar>
       <Dialog
         open={showDrawer}
         onClose={() => setShowDrawer(false)}

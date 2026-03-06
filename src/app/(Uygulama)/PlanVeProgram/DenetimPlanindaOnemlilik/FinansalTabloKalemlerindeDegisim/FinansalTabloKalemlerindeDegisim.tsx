@@ -1,14 +1,16 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react"; import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Alert, Grid, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { useEffect, useRef, useState } from "react"; import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import {  getFinansalTabloKalemlerindeDegisim,
+import {
+  getFinansalTabloKalemlerindeDegisim,
   updateFinansalTabloKalemlerindeDegisim,
 } from "@/api/PlanVeProgram/PlanVeProgram";
 import numbro from "numbro";
@@ -16,7 +18,8 @@ import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -47,6 +50,7 @@ const FinansalTabloKalemlerindeDegisim: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -370,6 +374,7 @@ const FinansalTabloKalemlerindeDegisim: React.FC<Props> = ({
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -526,9 +531,29 @@ const FinansalTabloKalemlerindeDegisim: React.FC<Props> = ({
           setOpenCartAlert={setOpenCartAlert}
         ></InfoAlertCart>
       )}
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Finansal tablo kalemlerinde değişim verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
 export default FinansalTabloKalemlerindeDegisim;
-

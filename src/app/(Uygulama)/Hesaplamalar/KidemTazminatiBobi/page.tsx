@@ -226,10 +226,12 @@ const Page: React.FC = () => {
               : theme.palette.success.main,
         },
       });
-    } catch (error) {
-      enqueueSnackbar("Kıdem Tazminatı (Bobi) Hesaplanamadı", {
+    } catch (error: any) {
+      setHesaplaTiklandimi(false);
+      const errorMsg = error?.message || "Kıdem Tazminatı (Bobi) Hesaplanamadı";
+      enqueueSnackbar(errorMsg, {
         variant: "error",
-        autoHideDuration: 5000,
+        autoHideDuration: 8000,
         style: {
           backgroundColor:
             customizer.activeMode === "dark"
@@ -322,17 +324,37 @@ const Page: React.FC = () => {
         yilFiltresi
       );
       if (kidemEkBilgiVerileri) {
-        setHesaplananKarsilik(kidemEkBilgiVerileri.hesaplananKarsilik);
         setHesaplansinMi(kidemEkBilgiVerileri.hesaplansinMi);
-        setIzinKarsiligi(kidemEkBilgiVerileri.izinKarsiligi);
         setKacGun(kidemEkBilgiVerileri.kacGun);
-        setHesap720(kidemEkBilgiVerileri.hesap720);
-        setHesap730(kidemEkBilgiVerileri.hesap730);
-        setHesap740(kidemEkBilgiVerileri.hesap740);
-        setHesap750(kidemEkBilgiVerileri.hesap750);
-        setHesap760(kidemEkBilgiVerileri.hesap760);
-        setHesap770(kidemEkBilgiVerileri.hesap770);
-        // API'den gelen sabit alan adları (ayrilan2019..2023) array'e map ediliyor
+
+        // Kıdem Karşılık Detayları (6xx)
+        setHesap620(kidemEkBilgiVerileri.hesap620 ?? 0);
+        setHesap622(kidemEkBilgiVerileri.hesap622 ?? 0);
+        setHesap630(kidemEkBilgiVerileri.hesap630 ?? 0);
+        setHesap631(kidemEkBilgiVerileri.hesap631 ?? 0);
+        setHesap632(kidemEkBilgiVerileri.hesap632 ?? 0);
+
+        // İzin Karşılık Detayları (6xxIzin)
+        setHesap620Izin(kidemEkBilgiVerileri.hesap620Izin ?? 0);
+        setHesap622Izin(kidemEkBilgiVerileri.hesap622Izin ?? 0);
+        setHesap630Izin(kidemEkBilgiVerileri.hesap630Izin ?? 0);
+        setHesap631Izin(kidemEkBilgiVerileri.hesap631Izin ?? 0);
+        setHesap632Izin(kidemEkBilgiVerileri.hesap632Izin ?? 0);
+
+        // Diğer Hesaplar (7xx)
+        setHesap720(kidemEkBilgiVerileri.hesap720 ?? 0);
+        setHesap730(kidemEkBilgiVerileri.hesap730 ?? 0);
+        setHesap740(kidemEkBilgiVerileri.hesap740 ?? 0);
+        setHesap750(kidemEkBilgiVerileri.hesap750 ?? 0);
+        setHesap760(kidemEkBilgiVerileri.hesap760 ?? 0);
+        setHesap770(kidemEkBilgiVerileri.hesap770 ?? 0);
+
+        // Ana Toplamlar (Eğer detaylar varsa useEffect zaten bunları güncelleyecek)
+        // Ancak yine de garanti olsun diye set ediyoruz
+        setHesaplananKarsilik(kidemEkBilgiVerileri.hesaplananKarsilik ?? 0);
+        setIzinKarsiligi(kidemEkBilgiVerileri.izinKarsiligi ?? 0);
+
+        // Personel ve Ayrılan Verileri
         setAyrilanlar([
           kidemEkBilgiVerileri.ayrilan2019 ?? 0,
           kidemEkBilgiVerileri.ayrilan2020 ?? 0,
@@ -355,10 +377,15 @@ const Page: React.FC = () => {
 
   const fetchData2 = async () => {
     try {
-      const kidem = await createKidemTazminatiBobiHesapla(user.denetciId || 0,
+      const kidem = await createKidemTazminatiBobiHesapla(
+        user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
+
+      if (!kidem || !kidem.kidemTazminatiSonuc) {
+        throw new Error(kidem?.message || "Hesaplama verileri alınamadı. Lütfen ek bilgileri kontrol edin.");
+      }
 
       const rows1: any = [];
       const rows2: any = [];
@@ -446,7 +473,8 @@ const Page: React.FC = () => {
       setFetchedKaydedilecekKullanilmamisIzinKarsiligi(rows9);
       setFetchedKidemTazminatiBobiOrnekFisler(rows10);
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("fetchData2 hatası:", error);
+      throw error;
     }
   };
 

@@ -1,17 +1,20 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Box, CircularProgress, useTheme } from "@mui/material";
+import { Alert, Box, CircularProgress, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getOnemlilikHesaplamaBazi } from "@/api/DenetimKanitlari/DenetimKanitlari";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -36,6 +39,7 @@ const OnemlilikHesaplamaBazi = () => {
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
   const [loading, setLoading] = useState(true);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -261,6 +265,9 @@ const OnemlilikHesaplamaBazi = () => {
 
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
+        setNoDataOpen(rowsAll.length === 0);
+      } else {
+        setNoDataOpen(true);
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -288,7 +295,7 @@ const OnemlilikHesaplamaBazi = () => {
           diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [customizer.isCollapse, customizer.SidebarWidth, customizer.MiniSidebarWidth]);
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -353,9 +360,29 @@ const OnemlilikHesaplamaBazi = () => {
           contextMenu={["alignment", "copy"]}
         />
       )}
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Önemlilik hesaplama bazı bulunamadı.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
 
 export default OnemlilikHesaplamaBazi;
-

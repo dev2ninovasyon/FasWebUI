@@ -1,17 +1,20 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { Alert, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getIliskiliTarafIncelemeHesaplari } from "@/api/DenetimKanitlari/DenetimKanitlari";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -31,6 +34,7 @@ const IliskiliTarafInceleme = () => {
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -187,15 +191,6 @@ const IliskiliTarafInceleme = () => {
     }
   };
 
-  const handleGetRowData = async (row: number) => {
-    if (hotTableComponent.current) {
-      const hotInstance = hotTableComponent.current.hotInstance;
-      const cellMeta = hotInstance.getDataAtRow(row);
-      console.log("Satır Verileri:", cellMeta);
-      return cellMeta;
-    }
-  };
-
   const fetchData = async () => {
     try {
       const iliskiliTarafIncelemeVerileri =
@@ -203,17 +198,16 @@ const IliskiliTarafInceleme = () => {
           user.denetlenenId || 0,
           user.yil || 0
         );
-      const kebirKoduAll: any = [];
       const rowsAll: any = [];
 
       iliskiliTarafIncelemeVerileri.forEach((veri: any) => {
         const newRow: any = [veri.kebirKodu, veri.hesapAdi, veri.bakiye];
-        kebirKoduAll.push(veri.kebirKodu);
         rowsAll.push(newRow);
       });
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -228,17 +222,17 @@ const IliskiliTarafInceleme = () => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [customizer.isCollapse, customizer.SidebarWidth, customizer.MiniSidebarWidth]);
 
   return (
     <>
@@ -276,9 +270,29 @@ const IliskiliTarafInceleme = () => {
         afterRenderer={afterRenderer}
         contextMenu={["alignment", "copy"]}
       />
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          İlişkili Taraf hesapları bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
 export default IliskiliTarafInceleme;
-

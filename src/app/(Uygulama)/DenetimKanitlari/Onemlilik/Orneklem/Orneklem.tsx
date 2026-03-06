@@ -1,14 +1,18 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Alert, Grid, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
-import {  getOrneklem,
+import {
+  getOrneklem,
   updateOrneklem,
 } from "@/api/DenetimKanitlari/DenetimKanitlari";
 import numbro from "numbro";
@@ -16,11 +20,19 @@ import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 import { useRouter } from "next/navigation";
-import { Box, Dialog, DialogContent, Divider, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogContent,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import OrneklemFisleriTable from "@/app/(Uygulama)/components/DenetimKanitlari/Onemlilik/OrneklemFisleriTable";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -66,6 +78,7 @@ const Orneklem: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -517,6 +530,7 @@ const Orneklem: React.FC<Props> = ({
 
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -601,7 +615,7 @@ const Orneklem: React.FC<Props> = ({
           diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [customizer.isCollapse, customizer.SidebarWidth, customizer.MiniSidebarWidth]);
 
   return (
     <>
@@ -715,9 +729,29 @@ const Orneklem: React.FC<Props> = ({
           setOpenCartAlert={setOpenCartAlert}
         ></InfoAlertCart>
       )}
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Örneklem verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
 export default Orneklem;
-

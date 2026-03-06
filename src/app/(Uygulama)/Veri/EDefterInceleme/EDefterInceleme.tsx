@@ -1,24 +1,53 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme, Box, Pagination, Typography, IconButton, Paper, CircularProgress, Backdrop } from "@mui/material";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { useEffect, useRef, useState } from "react";
+import {
+  Grid,
+  useTheme,
+  Box,
+  Pagination,
+  Typography,
+  IconButton,
+  Paper,
+  CircularProgress,
+  Backdrop,
+  Alert,
+  Snackbar,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Slide,
+} from "@mui/material";
+import { ChevronLeft, ChevronRight, Close } from "@mui/icons-material";
+import { useEffect, useRef, useState, forwardRef } from "react";
 import { enqueueSnackbar } from "notistack";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import {  getEDefterIncelemeVerileri,
+import {
+  getEDefterIncelemeVerileri,
   getEDefterIncelemeVerileriPaged,
   updateEDefterIncelemeVerisi,
 } from "@/api/Veri/EDefterInceleme";
 import { useRouter } from "next/navigation";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
+import FisDetaylari from "./FisDetaylari/[id]/FisDetaylari";
+import { width } from "@mui/system";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+const Transition = forwardRef(function Transition(
+  props: any,
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -75,6 +104,7 @@ const EDefterInceleme: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,6 +112,14 @@ const EDefterInceleme: React.FC<Props> = ({
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isFisPopupOpen, setIsFisPopupOpen] = useState(false);
+  const [selectedFisNo, setSelectedFisNo] = useState<number | undefined>(
+    undefined
+  );
+  const [selectedItemId, setSelectedItemId] = useState<number | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -395,20 +433,19 @@ const EDefterInceleme: React.FC<Props> = ({
         pageSize
       );
 
-      // Handle the response format
-      let pagedData;
-      if (response.data && response.data.items) {
-        // If the API returns wrapped response format { data: { items: [...], totalCount: X } }
-        pagedData = response.data;
-      } else if (response.items) {
-        // If the API returns direct PagedResult format { items: [...], totalCount: X }
-        pagedData = response;
-      } else {
-        // Fallback for backward compatibility
-        pagedData = response;
+      if (!response || (!response.items && !response.data)) {
+        setFetchedData([]);
+        setRowCount(0);
+        setTotalCount(0);
+        setTotalPages(1);
+        setCurrentPage(pageNum);
+        setNoDataOpen(true);
+        return;
       }
 
+      const pagedData = response.data || response;
       const rowsAll: any = [];
+
       if (Array.isArray(pagedData.items)) {
         pagedData.items.forEach((veri: any) => {
           const newRow: any = [
@@ -430,6 +467,8 @@ const EDefterInceleme: React.FC<Props> = ({
 
       rowsAll.sort((a: any, b: any) => (a[1] > b[1] ? 1 : -1));
 
+      setNoDataOpen(rowsAll.length === 0);
+
       setFetchedData(rowsAll);
       setRowCount(rowsAll.length);
       setTotalCount(pagedData.totalCount || 0);
@@ -437,12 +476,14 @@ const EDefterInceleme: React.FC<Props> = ({
         Math.max(1, Math.ceil((pagedData.totalCount || 0) / pageSize))
       );
       setCurrentPage(pageNum);
-      setIsLoading(false);
     } catch (error) {
-      console.log("Bir hata oluştu:", error);
+      console.error("Bir hata oluştu:", error);
+      setFetchedData([]);
+      setRowCount(0);
       enqueueSnackbar("Veriler yüklenirken bir hata oluştu", {
         variant: "error",
       });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -557,45 +598,47 @@ const EDefterInceleme: React.FC<Props> = ({
           ref={hotTableComponent}
           data={fetchedData}
           height={450}
-        colHeaders={colHeaders}
-        columns={columns}
-        colWidths={[0, 30, 30, 50, 70, 80, 50, 50, 50, 50, 50]}
-        stretchH="all"
-        manualColumnResize={true}
-        rowHeaders={true}
-        rowHeights={35}
-        autoWrapRow={true}
-        minRows={rowCount}
-        minCols={10}
-        hiddenColumns={{
-          columns: [0],
-        }}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
-          "filter_by_condition",
-          "filter_by_value",
-          "filter_action_bar",
-        ]}
-        licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-        afterGetColHeader={afterGetColHeader}
-        afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
-        afterChange={handleAfterChange}
-        contextMenu={{
-          items: {
+          colHeaders={colHeaders}
+          columns={columns}
+          colWidths={[0, 30, 30, 50, 70, 80, 50, 50, 50, 50, 50]}
+          stretchH="all"
+          manualColumnResize={true}
+          rowHeaders={true}
+          rowHeights={35}
+          autoWrapRow={true}
+          minRows={rowCount}
+          minCols={10}
+          hiddenColumns={{
+            columns: [0],
+          }}
+          filters={true}
+          columnSorting={true}
+          dropdownMenu={[
+            "filter_by_condition",
+            "filter_by_value",
+            "filter_action_bar",
+          ]}
+          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+          afterGetColHeader={afterGetColHeader}
+          afterGetRowHeader={afterGetRowHeader}
+          afterRenderer={afterRenderer}
+          afterChange={handleAfterChange}
+          contextMenu={{
+            items: {
               copy: {},
-            fise_git: {
-              name: "Fişe Git",
-              callback: async function (key, selection) {
-                const row = await handleGetRowData(selection[0].start.row);
-                router.push(`/Veri/EDefterInceleme/FisDetaylari/${row[1]}`);
+              fise_git: {
+                name: "Fişe Git",
+                callback: async function (key, selection) {
+                  const row = await handleGetRowData(selection[0].start.row);
+                  setSelectedItemId(row[0]);
+                  setSelectedFisNo(row[1]);
+                  setIsFisPopupOpen(true);
+                },
               },
             },
-          },
-        }}
-        copyPaste={true}
-      />
+          }}
+          copyPaste={true}
+        />
       </Box>
       {fetchedData.length > 0 && (
         <Paper
@@ -714,6 +757,58 @@ const EDefterInceleme: React.FC<Props> = ({
           </Grid>
         </Paper>
       )}
+
+      {/* Fiş Detayları Popup */}
+      <Dialog
+        fullWidth
+        maxWidth="lg"
+        open={isFisPopupOpen}
+        onClose={() => setIsFisPopupOpen(false)}
+        TransitionComponent={Transition}
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5">Fiş Detayları - Yevmiye No: {selectedFisNo}</Typography>
+          <IconButton onClick={() => setIsFisPopupOpen(false)}>
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          {selectedFisNo && (
+            <FisDetaylari
+              fisNoProp={selectedFisNo}
+              highlightId={selectedItemId}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          E-Defter verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };

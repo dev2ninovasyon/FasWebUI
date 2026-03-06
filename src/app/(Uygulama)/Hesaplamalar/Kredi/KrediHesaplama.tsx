@@ -1,12 +1,14 @@
 ﻿"use client";
 import "@/lib/handsontableSetup";
 
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { Alert, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import React, {
   useEffect,
   useState,
@@ -17,7 +19,8 @@ import React, {
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getKrediHesaplanmis } from "@/api/Hesaplamalar/Hesaplamalar";
 
-// register Handsontable's modulesinterface Veri {
+// register Handsontable's modules
+interface Veri {
   alinanKrediNumarasi: number;
   detayHesapKodu: string;
   hesapAdi: string;
@@ -63,6 +66,7 @@ const KrediHesaplama = forwardRef<any, Props>(
     const [rowCount, setRowCount] = useState(0);
 
     const [fetchedData, setFetchedData] = useState<any[]>([]);
+    const [noDataOpen, setNoDataOpen] = useState(false);
 
     useEffect(() => {
       const loadStyles = async () => {
@@ -425,6 +429,7 @@ const KrediHesaplama = forwardRef<any, Props>(
 
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
+        setNoDataOpen(rowsAll.length === 0);
         onDataCount?.(rowsAll.length);
       } catch (error) {
         console.log("Bir hata oluştu:", error);
@@ -501,6 +506,27 @@ const KrediHesaplama = forwardRef<any, Props>(
           afterRenderer={afterRenderer}
           contextMenu={["alignment", "copy"]}
         />
+        <Snackbar
+          open={noDataOpen}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        >
+          <Alert
+            severity="warning"
+            variant="filled"
+            action={
+              <IconButton
+                size="small"
+                color="inherit"
+                onClick={() => setNoDataOpen(false)}
+              >
+                <Close fontSize="small" />
+              </IconButton>
+            }
+            sx={{ width: "100%", fontSize: "14px" }}
+          >
+            Kredi hesaplama verisi bulunamadı.
+          </Alert>
+        </Snackbar>
       </>
     );
   });
