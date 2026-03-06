@@ -153,7 +153,9 @@ const SearchBoxAutocomplete = () => {
         user.denetimTuru || undefined,
         user.enflasyonmu || undefined,
         user.konsolidemi || undefined,
-        user.bddkmi || undefined
+        user.bddkmi || undefined,
+        user.yil || undefined,
+        user.yetki || undefined
       ),
     [
       user.rol,
@@ -161,6 +163,8 @@ const SearchBoxAutocomplete = () => {
       user.enflasyonmu,
       user.konsolidemi,
       user.bddkmi,
+      user.yil,
+      user.yetki,
     ]
   );
 

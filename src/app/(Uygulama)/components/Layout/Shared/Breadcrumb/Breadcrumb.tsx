@@ -41,8 +41,10 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
     user.denetimTuru || undefined,
     user.enflasyonmu || undefined,
     user.konsolidemi || undefined,
-    user.bddkmi || undefined
-  ), [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi]);
+    user.bddkmi || undefined,
+    user.yil || undefined,
+    user.yetki || undefined
+  ), [user.rol, user.denetimTuru, user.enflasyonmu, user.konsolidemi, user.bddkmi, user.yil, user.yetki]);
 
   const itemsTitle = items && items.length > 0 ? items.map((item) => item.title.toUpperCase().replace(/I/g, "İ"))[0] : "";
   const MenuItemData: any = itemsTitle && Menuitems.find((item) => item.title?.toUpperCase() === itemsTitle);

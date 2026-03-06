@@ -244,7 +244,9 @@ const FilteredMenu: React.FC<{ title: string; showStatusIcons?: boolean }> = ({
     user.denetimTuru || undefined,
     user.enflasyonmu || undefined,
     user.konsolidemi || undefined,
-    user.bddkmi || undefined
+    user.bddkmi || undefined,
+    user.yil || undefined,
+    user.yetki || undefined
   );
 
   const mainItem = Menuitems.find(

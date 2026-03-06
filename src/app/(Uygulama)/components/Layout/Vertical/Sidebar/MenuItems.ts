@@ -48,8 +48,12 @@ export function createMenuItems(
   enflasyonmu?: boolean,
   konsolidemi?: boolean,
   bddkmi?: boolean,
-  yil?: number
+  yil?: number,
+  yetki?: string
 ): MenuitemsType[] {
+  const isFasAdmin =
+    yetki === "FasAdmin" || (rol?.includes("FasAdmin") ?? false);
+
   const menuItems =
     rol == undefined ||
     (rol.length === 1 && rol[0] === "FinansalTabloKontrol")
@@ -106,6 +110,16 @@ export function createMenuItems(
             icon: IconPoint,
             href: "/DigerIslemler/VeriAktarma",
           },
+          ...(isFasAdmin
+            ? [
+              {
+                id: uniqueId(),
+                title: "Sistem Loglari",
+                icon: IconPoint,
+                href: "/DigerIslemler/SistemLoglari",
+              },
+            ]
+            : []),
         ],
       },
       {
@@ -2353,6 +2367,16 @@ export function createMenuItems(
             icon: IconPoint,
             href: "/DigerIslemler/VeriAktarma",
           },
+          ...(isFasAdmin
+            ? [
+              {
+                id: uniqueId(),
+                title: "Sistem Loglari",
+                icon: IconPoint,
+                href: "/DigerIslemler/SistemLoglari",
+              },
+            ]
+            : []),
         ],
       },
       {

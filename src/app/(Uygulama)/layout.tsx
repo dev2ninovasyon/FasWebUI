@@ -48,25 +48,31 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const customizer = useSelector((state: AppState) => state.customizer);  // Global error logging for development
+  const customizer = useSelector((state: AppState) => state.customizer); // Global error logging
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      const handleError = (event: ErrorEvent) => {
-        Logger.error(`Window Error: ${event.message}`, event.error);
-      };
+    const handleError = (event: ErrorEvent) => {
+      Logger.error(`Window Error: ${event.message}`, event.error ?? {
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+      }, { source: "window" });
+    };
 
-      const handleRejection = (event: PromiseRejectionEvent) => {
-        Logger.error(`Unhandled Rejection: ${event.reason?.message || event.reason}`, event.reason);
-      };
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      Logger.error(
+        `Unhandled Rejection: ${event.reason?.message || String(event.reason)}`,
+        event.reason,
+        { source: "window" }
+      );
+    };
 
-      window.addEventListener("error", handleError);
-      window.addEventListener("unhandledrejection", handleRejection);
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleRejection);
 
-      return () => {
-        window.removeEventListener("error", handleError);
-        window.removeEventListener("unhandledrejection", handleRejection);
-      };
-    }
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener("unhandledrejection", handleRejection);
+    };
   }, []);
 
   const theme = useTheme();
@@ -92,12 +98,12 @@ export default function RootLayout({
 
   // Initial authentication check & Role-based flow
   useEffect(() => {
+    Logger.info("Oturum ve akış kontrolü başlatıldı.");
     const checkFlow = async () => {
       if (typeof window !== "undefined" && user.token) {
         clearLogoutIntent();
         setControl(true);
         setIsChecking(false);
-
         // If company is already selected, everything is fine
         if (user.denetlenenId && user.yil && user.denetlenenFirmaAdi) {
           setIsWizardOpen(false);
@@ -142,27 +148,34 @@ export default function RootLayout({
           setIsLoadingCompanies(false);
         }
       } else if (typeof window !== "undefined" && !user.token) {
-        const sessionToken = window.sessionStorage.getItem("fas_session_token");
-        const sessionRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+        // Redux'ta token yoksa Storage'dan kurtarmayı dene
+        const sessionToken = window.sessionStorage.getItem("fas_token");
+        const sessionRefreshToken = window.sessionStorage.getItem("fas_refreshToken");
+
         if (sessionToken) {
           dispatch(setToken(sessionToken));
           if (sessionRefreshToken) {
             dispatch(setRefreshToken(sessionRefreshToken));
           }
           setIsChecking(false);
+          setControl(true); // Token bulundu, render'a izin ver
           return;
         }
 
-        // Cookie bazlı session varsa login'e atmadan önce tek sefer refresh dene.
+        // Cookie-based session restore: HttpOnly cookie otomatik gönderilir (yeni sekme dahil)
         try {
-          const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
-          if (!currentRefreshToken) {
-            throw new Error("Refresh token yok");
-          }
+          const currentRefreshToken = window.sessionStorage.getItem("fas_refreshToken")
+            || window.localStorage.getItem("fas_refreshToken");
+
+          // sessionStorage'da token yoksa bile dene — backend cookie'den okuyabilir
+          const refreshBody = currentRefreshToken
+            ? { refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }
+            : {};
+
           const refreshResponse = await apiFetch("/Auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refreshToken: currentRefreshToken, RefreshToken: currentRefreshToken }),
+            body: JSON.stringify(refreshBody),
             ignoreCustomHeaders: true,
             suppressErrorLog: true,
           });
@@ -172,30 +185,33 @@ export default function RootLayout({
             const token = refreshData?.token || refreshData?.Token;
             const refreshToken = refreshData?.refreshToken || refreshData?.RefreshToken;
             if (token) {
-              window.sessionStorage.setItem("fas_session_token", token);
+              window.sessionStorage.setItem("fas_token", token);
               dispatch(setToken(token));
             }
             if (refreshToken) {
-              window.sessionStorage.setItem("fas_session_refreshToken", refreshToken);
+              window.sessionStorage.setItem("fas_refreshToken", refreshToken);
+              window.localStorage.setItem("fas_refreshToken", refreshToken);
               dispatch(setRefreshToken(refreshToken));
             }
             setIsChecking(false);
+            setControl(true);
             return;
           }
         } catch {
-          // refresh başarısızsa login'e yönlendirilecek
+          // refresh başarısız — login'e yönlendirilecek
         }
 
-        setIsWizardOpen(false);
-        setIsSelectionModalOpen(false);
-        setNoCompanyWarning(false);
         setIsChecking(false);
         if (hasLogoutIntent()) {
           clearLogoutIntent();
           router.push("/");
         } else {
-          console.warn("⚠️ Layout: logout intent yok, login redirect atlandı.");
-          setControl(true);
+          if (typeof window !== "undefined" && window.location.pathname !== "/") {
+            Logger.warn("Layout: Oturum yok, giriş sayfasına yönlendiriliyor.", undefined, { source: "system" });
+            router.push("/");
+          } else {
+            setControl(true);
+          }
         }
       }
     };
@@ -214,7 +230,13 @@ export default function RootLayout({
         router.push("/");
         setControl(false);
       } else {
-        console.warn("⚠️ Layout: token yok ama logout intent yok, login'e yönlendirme yapılmadı.");
+        // If already on login page, don't redirect again to avoid loop
+        if (typeof window !== "undefined" && window.location.pathname !== "/") {
+          Logger.warn("Layout: Oturum kapandı, giriş sayfasına yönlendiriliyor.", undefined, { source: "system" });
+          router.push("/");
+        } else {
+          setControl(true);
+        }
       }
     }
   }, [user.token, control, router]);
@@ -238,7 +260,7 @@ export default function RootLayout({
 
         // 🔄 TOKEN REFRESH: DB güncellendikten sonra yeni token al
         try {
-          const currentRefreshToken = window.sessionStorage.getItem("fas_session_refreshToken");
+          const currentRefreshToken = window.sessionStorage.getItem("fas_refreshToken");
           if (!currentRefreshToken) {
             console.warn("⚠️ Layout - Refresh token yok, token refresh atlandı.");
             return;

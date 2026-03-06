@@ -92,6 +92,9 @@ export default function MandatoryFlow({
         window.localStorage.removeItem("fas_yil");
         window.localStorage.removeItem("persist:root");
         window.sessionStorage.removeItem("reduxState");
+        // Clear all token key variants (new and legacy) for full cleanup
+        window.sessionStorage.removeItem("fas_token");
+        window.sessionStorage.removeItem("fas_refreshToken");
         window.sessionStorage.removeItem("fas_session_token");
         window.sessionStorage.removeItem("fas_session_refreshToken");
 

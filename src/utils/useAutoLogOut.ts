@@ -7,8 +7,8 @@ import { apiFetch } from "@/api/apiBase";
 
 const STORAGE_KEY = "user";
 const TIMEOUT_KEY = "user_expiry";
-const SESSION_ACCESS_TOKEN_KEY = "fas_session_token";
-const SESSION_REFRESH_TOKEN_KEY = "fas_session_refreshToken";
+const SESSION_ACCESS_TOKEN_KEY = "fas_token";
+const SESSION_REFRESH_TOKEN_KEY = "fas_refreshToken";
 const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 interface UseAutoLogoutReturn {
@@ -45,7 +45,7 @@ export default function useAutoLogout(
   const getRefreshPayload = useCallback(() => {
     if (typeof window === "undefined") return {};
     const currentRefreshToken =
-      window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
+      window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) || // Changed from SESSION_REFRESH_TOKEN_KEY
       user?.refreshToken ||
       window.localStorage.getItem("fas_refreshToken");
 
@@ -112,6 +112,9 @@ export default function useAutoLogout(
     localStorage.removeItem("fas_yil");
     localStorage.removeItem("fas_blacklisted_tokens");
     sessionStorage.removeItem("fas_debug_no_login_redirect");
+    // Clear all known token key variants for backward compatibility
+    sessionStorage.removeItem("fas_token");
+    sessionStorage.removeItem("fas_refreshToken");
     sessionStorage.removeItem("fas_session_token");
     sessionStorage.removeItem("fas_session_refreshToken");
 
@@ -132,7 +135,7 @@ export default function useAutoLogout(
   // Token yenileme
   const refreshToken = useCallback(async () => {
     try {
-      console.log("🔄 [AutoLogout] Token yenileme başladı...");
+      // console.log("🔄 [AutoLogout] Token yenileme başladı...");
       const refreshPayload = getRefreshPayload();
       const hasRefreshToken =
         typeof (refreshPayload as any)?.refreshToken === "string" &&
@@ -173,7 +176,7 @@ export default function useAutoLogout(
       persistSessionTokens(nextToken, nextRefreshToken);
 
       const now = new Date().toLocaleTimeString('tr-TR');
-      console.log(`✅[AutoLogout] Token başarıyla yenilendi(${now})`);
+      // console.log(`✅[AutoLogout] Token başarıyla yenilendi(${now})`);
     } catch (err) {
       console.error("❌ [AutoLogout] Token refresh exception:", err);
       // Network hatası — logout yapma, sonraki denemeyi bekle
@@ -186,7 +189,7 @@ export default function useAutoLogout(
 
   // ✅ Keep session
   const keepSession = useCallback(async () => {
-    console.log("🔄 Oturum devam ettiriliyor...");
+    // console.log("🔄 Oturum devam ettiriliyor...");
     setShowWarning(false);
     setSecondsBeforeLogout(Math.ceil(warningShowBeforeRef.current / 1000));
 
@@ -216,7 +219,7 @@ export default function useAutoLogout(
         if (nextToken) dispatch(setToken(nextToken));
         if (nextRefreshToken) dispatch(setRefreshToken(nextRefreshToken));
         persistSessionTokens(nextToken, nextRefreshToken);
-        console.log("✅ Oturum başarıyla devam ettirildi");
+        // console.log("✅ Oturum başarıyla devam ettirildi");
       }
     } catch (err) {
       console.warn("⚠️ Oturum devam ettirme hatası:", err);
@@ -235,7 +238,7 @@ export default function useAutoLogout(
       if (isInitializedRef.current) {
         isInitializedRef.current = false;
         tokenRef.current = null;
-        console.log("🛑 [AutoLogout] Token temizlendi, timer'lar kapatıldı");
+        // console.log("🛑 [AutoLogout] Token temizlendi, timer'lar kapatıldı");
       }
       return;
     }
@@ -245,7 +248,7 @@ export default function useAutoLogout(
       return;
     }
 
-    console.log("✨ [AutoLogout] Kullanıcı girişi algılandı, timer'lar kuruluyor...");
+    // console.log("✨ [AutoLogout] Kullanıcı girişi algılandı, timer'lar kuruluyor...");
     isInitializedRef.current = true;
 
     const resetIdleTimer = () => {
@@ -293,15 +296,15 @@ export default function useAutoLogout(
 
     // Token yenileme zamanlayıcısı
     if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
-    console.log(`⏱️[AutoLogout] Token refresh: ${refreshIntervalMsRef.current / 1000} s`);
+    // console.log(`⏱️[AutoLogout] Token refresh: ${refreshIntervalMsRef.current / 1000} s`);
 
     const initialRefreshTimer = setTimeout(() => {
-      console.log("🔄 [AutoLogout] İlk otomatik token yenileme...");
+      // console.log("🔄 [AutoLogout] İlk otomatik token yenileme...");
       refreshTokenRef.current();
     }, 10000);
 
     refreshTimerRef.current = setInterval(() => {
-      console.log(`🔄[AutoLogout] Periyodik token yenileme(${new Date().toLocaleTimeString('tr-TR')})`);
+      // console.log(`🔄[AutoLogout] Periyodik token yenileme(${new Date().toLocaleTimeString('tr-TR')})`);
       refreshTokenRef.current();
     }, refreshIntervalMsRef.current);
 
@@ -319,10 +322,10 @@ export default function useAutoLogout(
   useEffect(() => {
     const events: (keyof WindowEventMap)[] = ["mousemove", "keydown", "click", "scroll"];
     if (showWarning && resetIdleTimerRef.current) {
-      console.log("🔴 [AutoLogout] Popup açıldı, timer durduruldu");
+      // console.log("🔴 [AutoLogout] Popup açıldı, timer durduruldu");
       events.forEach((event) => window.removeEventListener(event, resetIdleTimerRef.current!));
     } else if (!showWarning && resetIdleTimerRef.current) {
-      console.log("🟢 [AutoLogout] Popup kapandı, timer devam ediyor");
+      // console.log("🟢 [AutoLogout] Popup kapandı, timer devam ediyor");
       events.forEach((event) => window.addEventListener(event, resetIdleTimerRef.current!));
     }
   }, [showWarning]);

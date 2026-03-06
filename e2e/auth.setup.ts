@@ -14,7 +14,15 @@ for (const user of USERS) {
         const authFile = path.join(__dirname, `../playwright/.auth/${user.file}`);
 
         // 1. Login sayfasina git
-        await page.goto('/Giris');
+        // Yeni yapida login root (/) altinda. Geriye donuk uyumluluk icin /Giris fallback'i de korunur.
+        await page.goto('/');
+        await page.waitForSelector('input[id="username"]', { timeout: 60000 });
+
+        // reCAPTCHA script asenkron yüklendiği için login submit öncesi hazır olmasını bekle.
+        await page.waitForFunction(
+            () => typeof (window as any).grecaptcha !== 'undefined' && typeof (window as any).grecaptcha.execute === 'function',
+            { timeout: 60000 }
+        );
 
         // 2. Form doldurma
         await page.fill('input[id="username"]', user.email);

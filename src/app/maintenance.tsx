@@ -1,9 +1,66 @@
-﻿import { Box, Typography, Button, useMediaQuery } from "@mui/material";
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Stack,
+  CircularProgress,
+  useMediaQuery,
+} from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+import { url } from "@/api/apiBase";
 
 export default function Maintenance() {
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+  const user = useSelector((state: AppState) => state.userReducer);
+  const [isCheckingHealth, setIsCheckingHealth] = useState(true);
+  const [isApiReachable, setIsApiReachable] = useState(false);
+  const [hasTokenIssue, setHasTokenIssue] = useState(true);
+  const isFasAdmin =
+    user?.yetki === "FasAdmin" || user?.rol?.includes("FasAdmin") || false;
+  const canGoHome = isApiReachable && !hasTokenIssue;
+
+  const checkStatus = async () => {
+    if (typeof window === "undefined") return;
+
+    setIsCheckingHealth(true);
+
+    const accessToken = window.sessionStorage.getItem("fas_session_token");
+    const refreshToken =
+      window.sessionStorage.getItem("fas_session_refreshToken") ||
+      window.localStorage.getItem("fas_refreshToken");
+
+    setHasTokenIssue(!accessToken && !refreshToken);
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 6000);
+
+    try {
+      const healthResponse = await fetch(
+        url.endsWith("/") ? url.slice(0, -1) : url,
+        {
+          method: "GET",
+          credentials: "include",
+          signal: controller.signal,
+        }
+      );
+      setIsApiReachable(healthResponse.status > 0);
+    } catch {
+      setIsApiReachable(false);
+    } finally {
+      window.clearTimeout(timeoutId);
+      setIsCheckingHealth(false);
+    }
+  };
+
+  useEffect(() => {
+    checkStatus();
+  }, []);
 
   return (
     <Box
@@ -27,20 +84,51 @@ export default function Maintenance() {
         }}
       />
       <Typography align="center" variant="h1" mb={4}>
-        Bakım Modu!!!
+        Bakim Modu!!!
       </Typography>
       <Typography align="center" variant="h4" mb={4}>
-        Web Sitesi Bakım Aşamasındadır.
+        Web Sitesi Bakim Asamasindadir.
       </Typography>
-      <Button
-        color="primary"
-        variant="contained"
-        component={Link}
-        href="/Anasayfa"
-        disableElevation
-      >
-        Anasayfaya Dön
-      </Button>
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+        {!isCheckingHealth && canGoHome && (
+          <Button
+            color="primary"
+            variant="contained"
+            component={Link}
+            href="/Anasayfa"
+            disableElevation
+          >
+            Anasayfaya Don
+          </Button>
+        )}
+        {isCheckingHealth && (
+          <Button variant="outlined" disabled>
+            <CircularProgress size={16} sx={{ mr: 1 }} />
+            Durum Kontrol Ediliyor
+          </Button>
+        )}
+        {isFasAdmin && (
+          <Button
+            color="secondary"
+            variant="outlined"
+            component={Link}
+            href="/DigerIslemler/SistemLoglari"
+            disableElevation
+          >
+            Log Ekranini Ac
+          </Button>
+        )}
+        {!isCheckingHealth && !canGoHome && (
+          <Button variant="outlined" color="warning" onClick={checkStatus}>
+            Yeniden Kontrol Et
+          </Button>
+        )}
+      </Stack>
+      {!isCheckingHealth && !canGoHome && (
+        <Typography align="center" variant="body2" mt={2} color="warning.main">
+          API ulasilabilir degil veya oturum token bilgisi bulunamadi.
+        </Typography>
+      )}
     </Box>
   );
 }

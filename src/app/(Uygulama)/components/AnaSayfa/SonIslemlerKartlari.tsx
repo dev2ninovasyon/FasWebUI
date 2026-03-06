@@ -42,7 +42,7 @@ export function SonIslemlerKartlari() {
 
     const fetchData = async () => {
       try {
-        console.time("API: SonIslemler");
+        // console.time("API: SonIslemler");
         const data = await getUserRecentActions(
 
           user.id || 0,
@@ -50,7 +50,7 @@ export function SonIslemlerKartlari() {
           user.yil || 0,
           30 // server max 30 log dönsün, ekranda biz 6â€“8 gösteriyoruz
         );
-        console.timeEnd("API: SonIslemler");
+        // console.timeEnd("API: SonIslemler");
         setActions(data || []);
       } catch (err: any) {
         setError(err.message || "Son işlemler alınırken hata oluştu.");
