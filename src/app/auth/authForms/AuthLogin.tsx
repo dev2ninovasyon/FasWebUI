@@ -149,54 +149,32 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           turTamamlandi: turTamamlandi,
           bddkmi: bddkmi
         };
-        console.log("UserData constructed");
 
         if (typeof window !== "undefined") {
           window.sessionStorage.removeItem("fas_logout_intent");
           if (userToken) {
-            window.sessionStorage.setItem("fas_session_token", userToken);
+            window.sessionStorage.setItem("fas_token", userToken);
           }
           if (userRefreshToken) {
-            window.sessionStorage.setItem("fas_session_refreshToken", userRefreshToken);
+            window.sessionStorage.setItem("fas_refreshToken", userRefreshToken);
           }
         }
 
         if (sonSecilenDenetlenenId && sonSecilenYil && sonSecilenDenetlenenFirmaAdi) {
-          Object.assign(userData, {
-            denetlenenId: sonSecilenDenetlenenId,
-            denetlenenFirmaAdi: sonSecilenDenetlenenFirmaAdi,
-            yil: sonSecilenYil,
-            denetimTuru: sonSecilenDenetimTuru,
-            bobimi: sonSecilenBobimi,
-            tfrsmi: sonSecilenTfrsmi,
-            enflasyonmu: sonSecilenEnflasyonmu,
-            konsolidemi: sonSecilenKonsolidemi,
-            bddkmi: sonSecilenBddkmi
-          });
-
           localStorage.setItem("fas_denetlenenId", sonSecilenDenetlenenId.toString());
           localStorage.setItem("fas_yil", sonSecilenYil.toString());
+        } else {
+          localStorage.removeItem("fas_denetlenenId");
+          localStorage.removeItem("fas_yil");
         }
 
-        console.log("Before Dispatch");
         dispatch(setUserData(userData));
-        console.log("After Dispatch");
-        console.log("bddkmi value:", bddkmi);
 
         if (bddkmi === undefined) {
-          console.time("Ek Bilgi API İsteği (bddkmi)");
-          const data2 = await getDenetciOdemeBilgileri(
-            userDenetciId
-          );
+          const data2 = await getDenetciOdemeBilgileri(userDenetciId);
           if (data2 && data2.bddkmi !== undefined) {
             dispatch(setBddkmi(data2.bddkmi));
           }
-          console.timeEnd("Ek Bilgi API İsteği (bddkmi)");
-        }
-
-        if (!sonSecilenDenetlenenId || !sonSecilenDenetlenenFirmaAdi) {
-          localStorage.removeItem("fas_denetlenenId");
-          localStorage.removeItem("fas_yil");
         }
 
         console.timeEnd("Veri İşleme ve Yönlendirme");

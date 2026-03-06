@@ -1,24 +1,21 @@
-﻿//export const url = "https://betaapi.fasmart.app/api";
-import Logger from "@/utils/Logger";
+﻿import Logger from "@/utils/Logger";
+import { url } from "./apiConfig";
 
 const LOCAL_API_URL = "http://localhost:5000/api";
 const BETA_API_URL = "https://betaapi.fasmart.app/api";
-const ENV_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+const ENV_API_URL = typeof process !== "undefined" ? process.env.NEXT_PUBLIC_API_BASE_URL?.trim() : undefined;
 const ENABLE_LOCAL_BETA_FALLBACK =
-  process.env.NEXT_PUBLIC_ENABLE_LOCAL_BETA_FALLBACK === "1";
+  typeof process !== "undefined" && process.env.NEXT_PUBLIC_ENABLE_LOCAL_BETA_FALLBACK === "1";
 
 const normalizeApiBaseUrl = (baseUrl: string) =>
   (baseUrl || "").trim().replace(/\/+$/, "");
 
-export const url = normalizeApiBaseUrl(
-  ENV_API_URL ||
-    (process.env.NODE_ENV === "development" ? LOCAL_API_URL : BETA_API_URL)
-);
+export { url };
 
 const LOGIN_ROUTE_PATH = "/";
 const MAINTENANCE_ROUTE_PATH = "/maintenance";
-const SESSION_ACCESS_TOKEN_KEY = "fas_session_token";
-const SESSION_REFRESH_TOKEN_KEY = "fas_session_refreshToken";
+const SESSION_ACCESS_TOKEN_KEY = "fas_token";
+const SESSION_REFRESH_TOKEN_KEY = "fas_refreshToken";
 const LOGOUT_INTENT_KEY = "fas_logout_intent";
 
 const isAuthEndpoint = (path: string) => {
@@ -85,7 +82,7 @@ const isConnectionLikeError = (error: unknown) => {
     message.includes("fetch failed")
   );
 };
- 
+
 const redirectTo = (targetPath: string) => {
   if (typeof window === "undefined") return;
   if (window.location.pathname === targetPath) return;
@@ -314,8 +311,8 @@ export async function apiFetch(
             window.localStorage.getItem("fas_refreshToken");
           const refreshTokenCandidate =
             rawRefreshTokenCandidate &&
-            rawRefreshTokenCandidate !== "undefined" &&
-            rawRefreshTokenCandidate !== "null"
+              rawRefreshTokenCandidate !== "undefined" &&
+              rawRefreshTokenCandidate !== "null"
               ? rawRefreshTokenCandidate
               : null;
           if (!refreshTokenCandidate) {

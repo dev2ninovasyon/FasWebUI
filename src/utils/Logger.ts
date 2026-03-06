@@ -4,7 +4,7 @@ import {
   ClientLogSource,
 } from "@/utils/clientLogStore";
 import axios from "axios";
-import { url } from "@/api/apiBase";
+import { url } from "@/api/apiConfig";
 
 interface LoggerMeta {
   source?: ClientLogSource;

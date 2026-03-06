@@ -45,7 +45,7 @@ export default function useAutoLogout(
   const getRefreshPayload = useCallback(() => {
     if (typeof window === "undefined") return {};
     const currentRefreshToken =
-      window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) ||
+      window.sessionStorage.getItem(SESSION_REFRESH_TOKEN_KEY) || // Changed from SESSION_REFRESH_TOKEN_KEY
       user?.refreshToken ||
       window.localStorage.getItem("fas_refreshToken");
 
