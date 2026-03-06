@@ -1,16 +1,30 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Paper,
+  Snackbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -33,7 +47,8 @@ const KidemTazminatiBobiHesaplama: React.FC<Props> = ({ data, title }) => {
 
   const [rowCount, setRowCount] = useState(0);
 
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [fetchedData, setFetchedData] = useState<any[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -187,6 +202,7 @@ const KidemTazminatiBobiHesaplama: React.FC<Props> = ({ data, title }) => {
 
   useEffect(() => {
     setFetchedData(data);
+    setNoDataOpen(data.length === 0);
     setRowCount(data.length);
   }, [data]);
 
@@ -195,14 +211,14 @@ const KidemTazminatiBobiHesaplama: React.FC<Props> = ({ data, title }) => {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "99.9%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -243,6 +259,27 @@ const KidemTazminatiBobiHesaplama: React.FC<Props> = ({ data, title }) => {
         afterRenderer={afterRenderer}
         contextMenu={["alignment", "copy"]}
       />
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Kıdem tazminatı (BOBİ) hesaplama verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };

@@ -1,10 +1,12 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import {  Alert,
+import {
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -14,11 +16,14 @@ import {  Alert,
   Divider,
   Grid,
   IconButton,
+  Snackbar,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Close } from "@mui/icons-material";
+import React, { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getIliskiliTarafSiniflama } from "@/api/Hesaplamalar/Hesaplamalar";
@@ -29,7 +34,8 @@ import IliskiliTarafSiniflamaOrnekFisler from "./IliskiliTarafSiniflamaOrnekFisl
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -59,6 +65,7 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<any[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -400,6 +407,7 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
       ]);
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     } finally {
@@ -613,6 +621,27 @@ const IliskiliTarafSiniflama: React.FC<Props> = ({ hesap }) => {
           warn={warn}
           handleClick={() => setFloatingButtonTiklandimi(true)}
         />
+        <Snackbar
+          open={noDataOpen}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        >
+          <Alert
+            severity="warning"
+            variant="filled"
+            action={
+              <IconButton
+                size="small"
+                color="inherit"
+                onClick={() => setNoDataOpen(false)}
+              >
+                <Close fontSize="small" />
+              </IconButton>
+            }
+            sx={{ width: "100%", fontSize: "14px" }}
+          >
+            İlişkili taraf sınıflama verisi bulunamadı.
+          </Alert>
+        </Snackbar>
         <Dialog
           open={floatingButtonTiklandimi}
           onClose={() => setFloatingButtonTiklandimi(false)}

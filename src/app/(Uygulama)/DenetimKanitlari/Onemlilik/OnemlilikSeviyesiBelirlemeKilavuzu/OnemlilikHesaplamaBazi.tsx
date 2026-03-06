@@ -1,10 +1,12 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useTheme } from "@mui/material";
+import { Alert, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
@@ -16,7 +18,8 @@ import trTR from "numbro/languages/tr-TR";
 import { enqueueSnackbar } from "notistack";
 import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -48,6 +51,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   const [openCartAlert, setOpenCartAlert] = useState(false);
 
@@ -75,7 +79,7 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
     "Mali Tablolar İçin Genel Önemlilik Seviyesi",
     "Performans Önemliliği",
     "Kabul Edilebilir Yanlışlık Yüzdesi",
-    "Kabul Edilebilir Yanlışlık Tutarı",
+    "Kabul Edilebilir Yanlışlık Tutari",
   ];
 
   const columns = [
@@ -248,15 +252,6 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
     }
   };
 
-  const handleGetRowData = async (row: number) => {
-    if (hotTableComponent.current) {
-      const hotInstance = hotTableComponent.current.hotInstance;
-      const cellMeta = hotInstance.getDataAtRow(row);
-      console.log("Satır Verileri:", cellMeta);
-      return cellMeta;
-    }
-  };
-
   const handleAfterChange = (changes: any, source: any) => {
     if (source === "loadData") {
       return; // Skip this hook on loadData
@@ -349,6 +344,9 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
 
         setRowCount(rowsAll.length);
         setFetchedData(rowsAll);
+        setNoDataOpen(rowsAll.length === 0);
+      } else {
+        setNoDataOpen(true);
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -370,17 +368,17 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
-  }, [customizer.isCollapse]);
+  }, [customizer.isCollapse, customizer.SidebarWidth, customizer.MiniSidebarWidth]);
 
   return (
     <>
@@ -430,9 +428,29 @@ const OnemlilikHesaplamaBazi: React.FC<Props> = ({
           setOpenCartAlert={setOpenCartAlert}
         ></InfoAlertCart>
       )}
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Önemlilik hesaplama bazı bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
 export default OnemlilikHesaplamaBazi;
-

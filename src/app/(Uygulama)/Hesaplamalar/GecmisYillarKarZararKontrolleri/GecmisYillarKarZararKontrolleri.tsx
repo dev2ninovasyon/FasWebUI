@@ -1,16 +1,21 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Box, CircularProgress, Grid, useTheme } from "@mui/material";
-import { useEffect, useRef, useState } from "react";import { saveAs } from "file-saver";
+import { Alert, Box, CircularProgress, Grid, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getGecmisYilKarZararKontrol } from "@/api/Hesaplamalar/Hesaplamalar";
 import numbro from "numbro";
-import trTR from "numbro/languages/tr-TR";// register Handsontable's modulesnumbro.registerLanguage(trTR);
+import trTR from "numbro/languages/tr-TR";
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -32,6 +37,7 @@ const GecmisYillarKarZararKontrolleri = () => {
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
   const [loading, setLoading] = useState(false);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -226,6 +232,7 @@ const GecmisYillarKarZararKontrolleri = () => {
       rowsAll.push([undefined, undefined, "Toplam", totalBakiye]);
       setRowCount(rowsAll.length);
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     } finally {
@@ -381,6 +388,27 @@ const GecmisYillarKarZararKontrolleri = () => {
           ></ExceleAktarButton>
         </Grid>
       </Grid>
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Geçmiş yıllar kâr/zarar kontrolü verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };

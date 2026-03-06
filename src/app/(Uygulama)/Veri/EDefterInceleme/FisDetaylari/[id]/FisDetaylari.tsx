@@ -1,14 +1,17 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { enqueueSnackbar } from "notistack";import { saveAs } from "file-saver";
+import { enqueueSnackbar } from "notistack";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import {  getEDefterIncelemeVerileriByFisNo,
+import {
+  getEDefterIncelemeVerileriByFisNo,
   updateEDefterIncelemeVerisi,
 } from "@/api/Veri/EDefterInceleme";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
@@ -16,7 +19,8 @@ import { usePathname } from "next/navigation";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -31,13 +35,18 @@ interface Veri {
   tespitAciklama: string;
 }
 
-const FisDetaylari = () => {
+interface Props {
+  fisNoProp?: number;
+  highlightId?: number;
+}
+
+const FisDetaylari: React.FC<Props> = ({ fisNoProp, highlightId }) => {
   const hotTableComponent = useRef<any>(null);
 
   const pathname = usePathname();
   const segments = pathname.split("/");
   const idIndex = segments.indexOf("FisDetaylari") + 1;
-  const pathFisNo = parseInt(segments[idIndex]);
+  const pathFisNo = fisNoProp || parseInt(segments[idIndex]);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -245,7 +254,14 @@ const FisDetaylari = () => {
     //color
     TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
 
-    if (row % 2 === 0) {
+    const rowDataId = cellProperties.instance.getDataAtCell(row, 0);
+
+    if (highlightId && rowDataId === highlightId) {
+      TD.style.backgroundColor =
+        customizer.activeMode === "dark" ? "#3e4a2e" : "#fff9c4"; // Hafif sarı/fıstık yeşili vurgu
+      TD.style.borderColor =
+        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
+    } else if (row % 2 === 0) {
       TD.style.backgroundColor =
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
       TD.style.borderColor =

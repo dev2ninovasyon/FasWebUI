@@ -225,7 +225,7 @@ const KrediMizanKarsilastirmaTable = forwardRef<any, KrediMizanKarsilastirmaTabl
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log("ğŸ”µ Kredi Mizan API isteÄŸi baÅŸlatÄ±lÄ±yor:", {
+        console.log(" Kredi Mizan API isteği başlatılıyor:", {
           denetciId: user.denetciId,
           yil: user.yil,
           denetlenenId: user.denetlenenId,
@@ -237,7 +237,7 @@ const KrediMizanKarsilastirmaTable = forwardRef<any, KrediMizanKarsilastirmaTabl
           user.denetlenenId || 0 || 0
         );
 
-        console.log("ğŸ“Š API Response Data (Raw):", result);
+        console.log(" API Response Data (Raw):", result);
 
         let dataArray: KrediMizanKarsilastirmaRow[] = [];
 
@@ -249,12 +249,12 @@ const KrediMizanKarsilastirmaTable = forwardRef<any, KrediMizanKarsilastirmaTabl
           dataArray = result.data;
         }
 
-        console.log("ğŸ“Š Ä°ÅŸlenen veriler:", dataArray);
+        console.log(" İşlenen veriler:", dataArray);
 
         if (dataArray && dataArray.length > 0) {
           setRows(dataArray);
           onHasDifferenceChange?.(dataArray.some((row) => row.farkVar));
-          
+
           // Convert to Handsontable format
           const hotData = dataArray.map((row) => [
             row.detayKodu,
@@ -266,16 +266,16 @@ const KrediMizanKarsilastirmaTable = forwardRef<any, KrediMizanKarsilastirmaTabl
           ]);
 
           setFetchedData(hotData);
-          console.log("ğŸŸ¢ Veriler baÅŸarÄ±yla yÃ¼klendi:", dataArray.length, "satÄ±r");
+          console.log(" Veriler başarıyla yüklendi:", dataArray.length, "satır");
         } else {
           setRows([]);
           setFetchedData([]);
           onHasDifferenceChange?.(false);
-          console.warn("âš ï¸ Veri bulunamadÄ± veya boÅŸ array:", result);
+          console.warn(" Veri bulunamadı veya boş array:", result);
         }
       } catch (error) {
-        console.error("âŒ API HatasÄ±:", error);
-        enqueueSnackbar("Veri yÃ¼klenirken hata oluÅŸtu", { variant: "error" });
+        console.error(" API Hatası:", error);
+        enqueueSnackbar("Veri yüklenirken hata oluştu", { variant: "error" });
         setRows([]);
         setFetchedData([]);
         onHasDifferenceChange?.(false);
@@ -316,7 +316,7 @@ const KrediMizanKarsilastirmaTable = forwardRef<any, KrediMizanKarsilastirmaTabl
           </Box>
         ) : rows.length === 0 ? (
           <Box p={2}>
-            Kredi Mizan KarÅŸÄ±laÅŸtÄ±rmasÄ± verisi bulunmamaktadÄ±r.
+            Kredi Mizan Karşılaştırması verisi bulunmamaktadır.
           </Box>
         ) : (
           <HotTable

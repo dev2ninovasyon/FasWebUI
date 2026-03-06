@@ -1,24 +1,29 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme } from "@mui/material";
+import { Alert, Grid, IconButton, Snackbar, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { getFormat } from "@/api/Veri/base";
 import { enqueueSnackbar } from "notistack";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
-import {  createDonusturulmusMizanVerisi,
+import {
+  createDonusturulmusMizanVerisi,
   deleteDonusturulmusMizanVerisi,
   getDonusturulmusMizanVerileriByDenetciDenetlenenYil,
 } from "@/api/Veri/DonusturulmusMizan";
 import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -57,6 +62,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
 
+  const [noDataOpen, setNoDataOpen] = useState(false);
   const [duplicatesControl, setDuplicatesControl] = useState(false);
 
   const uyari = [
@@ -527,7 +533,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
       if ([3, 4, 5, 6, 7, 8, 9, 10].includes(prop)) {
         if (typeof newValue === "string") {
           let normalized = newValue.trim();
-          
+
           // Eğer virgül varsa → Türkçe format (47.792,87 veya 47792,87)
           if (normalized.includes(',')) {
             // Bin ayırıcıları (noktaları) kaldır, virgülü noktaya çevir
@@ -535,7 +541,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
             normalized = normalized.replace(/\./g, '').replace(',', '.');
           }
           // Eğer sadece nokta varsa → International format (47792.87) → olduğu gibi
-          
+
           changes[i][3] = normalized;
         }
       }
@@ -714,6 +720,7 @@ const DonusturulmusMizan: React.FC<Props> = ({
       });
 
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
       setDuplicatesControl(true);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -886,9 +893,29 @@ const DonusturulmusMizan: React.FC<Props> = ({
           ></ExceleAktarButton>
         </Grid>
       </Grid>
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Dönüştürülmüş Mizan verisi bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
 
 export default DonusturulmusMizan;
-

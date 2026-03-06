@@ -5,7 +5,8 @@ import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { Alert, IconButton, Snackbar, useMediaQuery, useTheme } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { useRouter } from "next/navigation";
@@ -53,6 +54,7 @@ const SonGirilenFisler: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [noDataOpen, setNoDataOpen] = useState(false);
 
   const [lastFisNo, setLastFisNo] = useState(1);
 
@@ -335,6 +337,7 @@ const SonGirilenFisler: React.FC<Props> = ({
       });
 
       setFetchedData(rowsAll);
+      setNoDataOpen(rowsAll.length === 0);
       setRowCount(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -384,14 +387,14 @@ const SonGirilenFisler: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);
@@ -445,6 +448,27 @@ const SonGirilenFisler: React.FC<Props> = ({
         }}
         copyPaste={true}
       />
+      <Snackbar
+        open={noDataOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity="warning"
+          variant="filled"
+          action={
+            <IconButton
+              size="small"
+              color="inherit"
+              onClick={() => setNoDataOpen(false)}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          }
+          sx={{ width: "100%", fontSize: "14px" }}
+        >
+          Son girilen fişler bulunamadı.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
