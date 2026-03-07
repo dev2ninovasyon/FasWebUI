@@ -83,6 +83,19 @@ const levelColorMap: Record<ClientLogLevel, "error" | "warning" | "info" | "defa
 
 const formatDate = (isoDate: string) => new Date(isoDate).toLocaleString("tr-TR");
 
+const downloadAsJson = (logs: ClientLogEntry[]) => {
+  const blob = new Blob([JSON.stringify(logs, null, 2)], {
+    type: "application/json",
+  });
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  a.href = objectUrl;
+  a.download = `fas-client-logs-${timestamp}.json`;
+  a.click();
+  URL.revokeObjectURL(objectUrl);
+};
+
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const { enqueueSnackbar } = useSnackbar();
@@ -278,40 +291,153 @@ const Page = () => {
         {activeTab === 1 && (
           <Stack spacing={2}>
             <Paper sx={{ p: 2 }}>
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2} justifyContent="space-between" alignItems="center">
-                <Stack direction="row" spacing={1}>
+              <Stack
+                direction={{ xs: "column", md: "row" }}
+                spacing={2}
+                justifyContent="space-between"
+                alignItems={{ xs: "stretch", md: "center" }}
+              >
+                <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
                   <Chip label={`Toplam: ${clientLogs.length}`} variant="outlined" />
-                  <Button variant="outlined" size="small" onClick={handleFetchServerLog}>Sunucu Log Dosyası</Button>
+                  <Chip label={`Error: ${clientLogs.filter((item) => item.level === "error").length}`} color="error" variant="outlined" />
+                  <Chip label={`Warn: ${clientLogs.filter((item) => item.level === "warn").length}`} color="warning" variant="outlined" />
                 </Stack>
-                <Stack direction="row" spacing={1}>
-                  <Button variant="contained" size="small" color="error" startIcon={<IconTrash size="18" />} onClick={() => clearClientLogs()}>Logları Temizle</Button>
+
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    onClick={handleFetchServerLog}
+                  >
+                    Sunucu Loglarını Getir
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<IconDownload size="18" />}
+                    onClick={() => downloadAsJson(filteredClientLogs)}
+                    disabled={filteredClientLogs.length === 0}
+                  >
+                    JSON Disa Aktar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    startIcon={<IconTrash size="18" />}
+                    onClick={() => clearClientLogs()}
+                    disabled={clientLogs.length === 0}
+                  >
+                    Loglari Temizle
+                  </Button>
                 </Stack>
               </Stack>
-              <TextField size="small" label="Loglarda ara (mesaj, path, status...)" value={search} onChange={(e) => setSearch(e.target.value)} fullWidth sx={{ mt: 2 }} />
             </Paper>
-            <TableContainer component={Paper} sx={{ maxHeight: "55vh" }}>
-              <Table stickyHeader size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Zaman</TableCell>
-                    <TableCell>Tür</TableCell>
-                    <TableCell>Mesaj</TableCell>
-                    <TableCell align="right">Ayrıntı</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredClientLogs.map((log) => (
-                    <TableRow key={log.id} hover>
-                      <TableCell sx={{ fontSize: "0.85rem" }}>{formatDate(log.timestamp)}</TableCell>
-                      <TableCell><Chip label={log.level.toUpperCase()} color={levelColorMap[log.level]} size="small" /></TableCell>
-                      <TableCell sx={{ fontSize: "0.85rem", maxWidth: 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{log.message}</TableCell>
-                      <TableCell align="right"><IconButton size="small" onClick={() => setSelectedClientLog(log)}><IconChevronRight size="18" /></IconButton></TableCell>
+
+            <Paper sx={{ p: 2 }}>
+              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+                <FormControl size="small" sx={{ minWidth: 160 }}>
+                  <InputLabel id="level-filter-label">Seviye</InputLabel>
+                  <Select
+                    labelId="level-filter-label"
+                    label="Seviye"
+                    value={levelFilter}
+                    onChange={(e) => setLevelFilter(e.target.value as "all" | ClientLogLevel)}
+                  >
+                    <MenuItem value="all">Tumu</MenuItem>
+                    <MenuItem value="error">Error</MenuItem>
+                    <MenuItem value="warn">Warn</MenuItem>
+                    <MenuItem value="info">Info</MenuItem>
+                    <MenuItem value="debug">Debug</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <FormControl size="small" sx={{ minWidth: 180 }}>
+                  <InputLabel id="source-filter-label">Kaynak</InputLabel>
+                  <Select
+                    labelId="source-filter-label"
+                    label="Kaynak"
+                    value={sourceFilter}
+                    onChange={(e) => setSourceFilter(e.target.value as "all" | ClientLogSource)}
+                  >
+                    <MenuItem value="all">Tumu</MenuItem>
+                    <MenuItem value="api">API</MenuItem>
+                    <MenuItem value="network">Network</MenuItem>
+                    <MenuItem value="ui">UI</MenuItem>
+                    <MenuItem value="window">Window</MenuItem>
+                    <MenuItem value="system">System</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  size="small"
+                  label="Mesaj/Path icinde ara"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  fullWidth
+                />
+              </Stack>
+            </Paper>
+
+            <Paper sx={{ p: 0 }}>
+              <TableContainer sx={{ maxHeight: "65vh" }}>
+                <Table stickyHeader size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Zaman</TableCell>
+                      <TableCell>Seviye</TableCell>
+                      <TableCell>Kaynak</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Route</TableCell>
+                      <TableCell>API Path</TableCell>
+                      <TableCell>Mesaj</TableCell>
+                      <TableCell align="right">Detay</TableCell>
                     </TableRow>
-                  ))}
-                  {filteredClientLogs.length === 0 && <TableRow><TableCell colSpan={4} align="center" sx={{ py: 3 }}>İstemci logu bulunamadı.</TableCell></TableRow>}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {filteredClientLogs.map((log) => (
+                      <TableRow key={log.id} hover>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>
+                          {formatDate(log.timestamp)}
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={levelLabelMap[log.level]}
+                            color={levelColorMap[log.level]}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>{sourceLabelMap[log.source]}</TableCell>
+                        <TableCell>{log.statusCode ?? "-"}</TableCell>
+                        <TableCell>{log.route ?? "-"}</TableCell>
+                        <TableCell>{log.requestPath ?? "-"}</TableCell>
+                        <TableCell sx={{ maxWidth: 420, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{log.message}</TableCell>
+                        <TableCell align="right">
+                          <Button
+                            size="small"
+                            variant="text"
+                            disabled={!log.detail}
+                            onClick={() => setSelectedClientLog(log)}
+                          >
+                            Gor
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+
+                    {filteredClientLogs.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={8}>
+                          <Box py={4} textAlign="center">
+                            <Typography color="text.secondary">
+                              Secili filtre icin log bulunamadi.
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
           </Stack>
         )}
 
@@ -361,14 +487,35 @@ const Page = () => {
       </PageContainer>
 
       {/* --- Modals / Dialogs --- */}
-      <Dialog open={!!selectedClientLog} onClose={() => setSelectedClientLog(null)} maxWidth="md" fullWidth>
-        <DialogTitle>Log Ayrıntısı</DialogTitle>
+      <Dialog
+        open={!!selectedClientLog}
+        onClose={() => setSelectedClientLog(null)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Log Detayi</DialogTitle>
         <DialogContent dividers>
-          <Box component="pre" sx={{ p: 2, bgcolor: "#f1f1f1", borderRadius: 1, overflowX: "auto", fontSize: 13, fontFamily: "monospace" }}>
-            {selectedClientLog?.message}{"\n\n"}{selectedClientLog?.detail || "Ek ayrıntı yok."}
-          </Box>
+          <Typography variant="body2" mb={2}>
+            {selectedClientLog?.message}
+          </Typography>
+          <Paper variant="outlined" sx={{ p: 2, backgroundColor: "grey.100" }}>
+            <Box
+              component="pre"
+              sx={{
+                m: 0,
+                overflowX: "auto",
+                fontSize: 12,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              {selectedClientLog?.detail || "Detay yok"}
+            </Box>
+          </Paper>
         </DialogContent>
-        <DialogActions><Button onClick={() => setSelectedClientLog(null)}>Kapat</Button></DialogActions>
+        <DialogActions>
+          <Button onClick={() => setSelectedClientLog(null)}>Kapat</Button>
+        </DialogActions>
       </Dialog>
 
       <Dialog open={!!selectedEnfLog} onClose={() => setSelectedEnfLog(null)} maxWidth="lg" fullWidth>
