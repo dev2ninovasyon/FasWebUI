@@ -178,7 +178,7 @@ export const startBildirimConnection = async (denetciId: number) => {
     // Listener'ı bağlantı kurulmadan ÖNCE kaydet
     // Bu sayede bağlantı kurulduktan hemen sonra mesajlar alınabilir
     if (notificationCallback && !listenerRegistered) {
-      activeConnection.on("YeniBildirim", notificationCallback);
+      activeConnection.on("YeniBildirim", notificationCallback);`n      activeConnection.on("yenibildirim", notificationCallback);
       listenerRegistered = true;
     }
 
@@ -274,8 +274,8 @@ export const onYeniBildirim = (callback: (bildirim: any) => void, denetciId?: nu
   // Eğer hubConnection oluşturulmuşsa listener'ı ekle
   if (hubConnection) {
     // Eski listener'ı temizle (mükerrerliği önlemek için)
-    hubConnection.off("YeniBildirim");
-    hubConnection.on("YeniBildirim", callback);
+    hubConnection.off("YeniBildirim");`n    hubConnection.off("yenibildirim");
+    hubConnection.on("YeniBildirim", callback);`n    hubConnection.on("yenibildirim", callback);
     listenerRegistered = true;
   } 
 
@@ -550,3 +550,4 @@ export const updateBildirimlerOkundumu = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+
