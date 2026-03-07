@@ -6,6 +6,7 @@ import {
   persistSessionTokens,
   readStoredAuthTokens,
 } from "@/utils/authSession";
+import { LOGOUT_REASON_KEY, LogoutReason } from "@/utils/sessionConfig";
 import { url } from "./apiConfig";
 
 const LOCAL_API_URL = "http://localhost:5000/api";
@@ -129,6 +130,7 @@ const redirectToLogin = () => {
 const redirectToMaintenance = () => {
   if (typeof window === "undefined") return;
   if (window.location.pathname === LOGIN_ROUTE_PATH) return;
+  if (window.location.pathname === MAINTENANCE_ROUTE_PATH) return;
   redirectTo(MAINTENANCE_ROUTE_PATH);
 };
 
@@ -139,7 +141,7 @@ const tryRedirectToLoginOnSessionExpired = () => {
     console.warn("🧪 Debug modu aktif: session-expired login redirect atlandı.");
     return;
   }
-  window.sessionStorage.setItem("fas_logout_reason", "server_expired");
+  window.sessionStorage.setItem(LOGOUT_REASON_KEY, LogoutReason.SERVER_EXPIRED);
   redirectTo(LOGIN_ROUTE_PATH);
 };
 

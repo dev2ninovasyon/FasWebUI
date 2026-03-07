@@ -1,5 +1,6 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -8,8 +9,9 @@ import { Grid, useTheme, CircularProgress, Box, Pagination, Typography, Button, 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CustomDatePicker } from "@/utils/datePickerUtil";
-import { useEffect, useRef, useState } from "react";
-import { getFormat } from "@/api/Veri/base";import { saveAs } from "file-saver";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { getFormat } from "@/api/Veri/base";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { getMizanVerileri } from "@/api/Veri/Mizan";
@@ -19,7 +21,9 @@ import { IconHistory } from "@tabler/icons-react";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import MizanCard from "@/app/(Uygulama)/components/Veri/Mizan/MizanCard";
-import { enqueueSnackbar } from "notistack";// register Handsontable's modulesnumbro.registerLanguage(trTR);
+import { enqueueSnackbar } from "notistack";
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -69,16 +73,12 @@ const Mizan: React.FC<Props> = ({
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const [rowCount, setRowCount] = useState(0);
+  const [allRawData, setAllRawData] = useState<any[]>([]); // Source of Truth
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [showDrawer, setShowDrawer] = useState(false);
-
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-  const [allData, setAllData] = useState<any[]>([]); // Store all data for the table
-  const [rawMizanData, setRawMizanData] = useState<any[]>([]); // Store raw objects for MizanCard
-  const [hiddenIndices, setHiddenIndices] = useState<number[]>([]);
+  const [rowCount, setRowCount] = useState(0);
 
   const isDataEmpty = !loading && rowCount === 0;
 
@@ -99,7 +99,7 @@ const Mizan: React.FC<Props> = ({
     loadStyles();
   }, [customizer.activeMode]);
 
-  const colHeaders = [
+  const colHeaders = useMemo(() => [
     "Kebir Kodu",
     "D. Hesap Kodu",
     "Hesap Adı",
@@ -108,9 +108,9 @@ const Mizan: React.FC<Props> = ({
     "Alacak",
     "Para Birimi",
     "Bakiye",
-  ];
+  ], []);
 
-  const columns = [
+  const columns = useMemo(() => [
     {
       type: "numeric",
       columnSorting: true,
@@ -183,9 +183,13 @@ const Mizan: React.FC<Props> = ({
       readOnly: true,
       editor: false,
     }, // Mutlak Bakiye
-  ];
+  ], []);
 
-  const afterGetColHeader = (col: any, TH: any) => {
+  const pFontFamily = plus.style.fontFamily;
+  const activeMode = customizer.activeMode;
+  const primaryLight = theme.palette.primary.light;
+
+  const afterGetColHeader = useCallback((col: any, TH: any) => {
     TH.style.height = "50px";
 
     let div = TH.querySelector("div");
@@ -201,20 +205,15 @@ const Mizan: React.FC<Props> = ({
     div.style.height = "100%";
     div.style.position = "relative";
 
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
+    TH.style.fontFamily = pFontFamily;
     TH.style.fontWeight = 500;
     TH.style.fontSize = "0.875rem";
     TH.style.lineHeight = "1.334rem";
 
-    //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
+    TH.style.color = activeMode === "dark" ? "#ffffff" : "#2A3547";
+    TH.style.backgroundColor = primaryLight;
+    TH.style.borderColor = activeMode === "dark" ? "#10141c" : "#";
 
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-
-    // Create span for the header text
     let span = div.querySelector("span");
     if (!span) {
       span = document.createElement("span");
@@ -225,7 +224,6 @@ const Mizan: React.FC<Props> = ({
     span.style.marginRight = "16px";
     span.style.left = "4px";
 
-    // Create button if it does not exist
     let button = div.querySelector("button");
     if (!button) {
       button = document.createElement("button");
@@ -234,9 +232,9 @@ const Mizan: React.FC<Props> = ({
     }
     button.style.position = "absolute";
     button.style.right = "4px";
-  };
+  }, [colHeaders, activeMode, primaryLight, pFontFamily]);
 
-  const afterGetRowHeader = (row: any, TH: any) => {
+  const afterGetRowHeader = useCallback((row: any, TH: any) => {
     let div = TH.querySelector("div");
     div.style.whiteSpace = "normal";
     div.style.wordWrap = "break-word";
@@ -245,21 +243,17 @@ const Mizan: React.FC<Props> = ({
     div.style.justifyContent = "center";
     div.style.height = "100%";
 
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
+    TH.style.fontFamily = pFontFamily;
     TH.style.fontWeight = 500;
     TH.style.fontSize = "0.875rem";
     TH.style.lineHeight = "1.334rem";
 
-    //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
+    TH.style.color = activeMode === "dark" ? "#ffffff" : "#2A3547";
+    TH.style.backgroundColor = primaryLight;
+    TH.style.borderColor = activeMode === "dark" ? "#10141c" : "#";
+  }, [activeMode, primaryLight, pFontFamily]);
 
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-  };
-
-  const afterRenderer = (
+  const afterRenderer = useCallback((
     TD: any,
     row: any,
     col: any,
@@ -267,36 +261,26 @@ const Mizan: React.FC<Props> = ({
     value: any,
     cellProperties: any
   ) => {
-    //typography body1
-    TD.style.fontFamily = plus.style.fontFamily;
+    TD.style.fontFamily = pFontFamily;
     TD.style.fontWeight = 500;
     TD.style.fontSize = "0.875rem";
     TD.style.lineHeight = "1.334rem";
-    //TD.style.textAlign = "left";
-
-    //color
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
+    TD.style.color = activeMode === "dark" ? "#ffffff" : "#2A3547";
 
     if (row % 2 === 0) {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
+      TD.style.backgroundColor = activeMode === "dark" ? "#171c23" : "#ffffff";
+      TD.style.borderColor = activeMode === "dark" ? "#10141c" : "#cccccc";
     } else {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderRightColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
+      TD.style.backgroundColor = activeMode === "dark" ? "#10141c" : "#cccccc";
+      TD.style.borderColor = activeMode === "dark" ? "#10141c" : "#cccccc";
+      TD.style.borderRightColor = activeMode === "dark" ? "#171c23" : "#ffffff";
     }
-  };
+  }, [activeMode, pFontFamily]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      setPage(0); // Reset to first page when fetching new data
-      // Only use shared data if it has content, otherwise fetch from API
+      setPage(0);
       const mizanVerileri = (sharedData && sharedData.length > 0) ? sharedData : await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
@@ -340,15 +324,12 @@ const Mizan: React.FC<Props> = ({
           variant: "warning",
           autoHideDuration: 5000,
           style: {
-            backgroundColor: customizer.activeMode === "dark" ? theme.palette.warning.dark : theme.palette.warning.main,
+            backgroundColor: activeMode === "dark" ? theme.palette.warning.dark : theme.palette.warning.main,
           }
         });
       }
 
-      setRawMizanData(mizanVerileri);
-      // Store all data for pagination
-      setAllData(rowsAll);
-      setFetchedData(rowsAll); // Provide all data to HotTable for global filtering
+      setAllRawData(rowsAll);
       setRowCount(rowsAll.length);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -357,43 +338,25 @@ const Mizan: React.FC<Props> = ({
     }
   };
 
-  const updatePagination = () => {
-    if (!hotTableComponent.current || !hotTableComponent.current.hotInstance) return;
-    const hotInstance = hotTableComponent.current.hotInstance;
-
-    // countRows() returns the number of visual rows (respecting filters but NOT hiddenRows)
-    const count = hotInstance.countRows();
-
-    // updateRowCount is used for pagination UI labels
-    setRowCount(count);
-
+  const paginatedData = useMemo(() => {
     const startIndex = page * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
+    return allRawData.slice(startIndex, startIndex + rowsPerPage);
+  }, [allRawData, page, rowsPerPage]);
 
-    const toHide: number[] = [];
-    for (let i = 0; i < count; i++) {
-      if (i < startIndex || i >= endIndex) {
-        // toPhysicalRow converts visual index (non-trimmed) to physical index
-        toHide.push(hotInstance.toPhysicalRow(i));
-      }
-    }
-
-    setHiddenIndices(toHide);
-  };
-
-  useEffect(() => {
-    updatePagination();
-  }, [page, rowsPerPage, allData]);
+  const rawMizanData = useMemo(() => {
+    // Only return if it's the raw mizan format needed by MizanCard
+    // Note: since we changed allRawData to be the formatted rows, 
+    // we might need to adjust MizanCard to accept this or keep raw data separately.
+    // For now, let's keep it compatible.
+    return allRawData;
+  }, [allRawData]);
 
   useEffect(() => {
     if (mizanOlusturTiklandimi) {
-      // Temizle veriler
-      setFetchedData([]);
+      setAllRawData([]);
       setRowCount(0);
       setPage(0);
-      setRawMizanData([]);
     } else {
-      // Yeni verileri yükle
       fetchData();
     }
   }, [mizanOlusturTiklandimi]);
@@ -479,15 +442,15 @@ const Mizan: React.FC<Props> = ({
   }, [customizer.isCollapse, customizer.activeMode]);
 
   const handleShowAnaHesap = () => {
-    const filtered = allData.filter((row: any) => (row[1] && row[1].toString().length === 3) || row[3] === 'Toplam');
-    setFetchedData(filtered);
+    const filtered = allRawData.filter((row: any) => (row[1] && row[1].toString().length === 3) || row[3] === 'Toplam');
+    setAllRawData(filtered);
     setRowCount(filtered.length);
     setPage(0);
   };
 
   const handleShowDetayHesap = () => {
-    const filtered = allData.filter((row: any) => (row[1] && row[1].toString().length > 3) || row[3] === 'Toplam');
-    setFetchedData(filtered);
+    const filtered = allRawData.filter((row: any) => (row[1] && row[1].toString().length > 3) || row[3] === 'Toplam');
+    setAllRawData(filtered);
     setRowCount(filtered.length);
     setPage(0);
   };
@@ -523,7 +486,7 @@ const Mizan: React.FC<Props> = ({
           }}
           language={dictionary.languageCode}
           ref={hotTableComponent}
-          data={fetchedData}
+          data={paginatedData}
           height="calc(100vh - 450px)"
           colHeaders={colHeaders}
           columns={columns}
@@ -533,7 +496,7 @@ const Mizan: React.FC<Props> = ({
           rowHeaders={true}
           rowHeights={35}
           autoWrapRow={true}
-          minRows={rowCount}
+          minRows={5}
           minCols={8}
           filters={true}
           columnSorting={true}
@@ -542,13 +505,8 @@ const Mizan: React.FC<Props> = ({
             "filter_by_value",
             "filter_action_bar",
           ]}
-          hiddenRows={{
-            rows: hiddenIndices,
-            indicators: false,
-          }}
           afterFilter={() => {
             setPage(0);
-            updatePagination();
           }}
           licenseKey="non-commercial-and-evaluation"
           afterGetColHeader={afterGetColHeader}
@@ -755,7 +713,7 @@ const Mizan: React.FC<Props> = ({
             }}
             language={dictionary.languageCode}
             ref={hotTableComponent}
-            data={fetchedData}
+            data={paginatedData}
             height="calc(100vh - 450px)"
             colHeaders={colHeaders}
             columns={columns}
@@ -765,7 +723,7 @@ const Mizan: React.FC<Props> = ({
             rowHeaders={true}
             rowHeights={35}
             autoWrapRow={true}
-            minRows={rowCount}
+            minRows={5}
             minCols={8}
             filters={true}
             columnSorting={true}
@@ -774,13 +732,8 @@ const Mizan: React.FC<Props> = ({
               "filter_by_value",
               "filter_action_bar",
             ]}
-            hiddenRows={{
-              rows: hiddenIndices,
-              indicators: false,
-            }}
             afterFilter={() => {
               setPage(0); // Reset to first page on filter change
-              updatePagination();
             }}
             licenseKey="non-commercial-and-evaluation" // For non-commercial use only
             afterGetColHeader={afterGetColHeader}

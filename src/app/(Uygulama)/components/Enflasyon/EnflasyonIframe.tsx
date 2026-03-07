@@ -117,6 +117,16 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
     );
   }
 
+  const loadTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (loadTimeoutRef.current) {
+        window.clearTimeout(loadTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <Box
       sx={{
@@ -159,7 +169,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
         }}
         onLoad={() => {
           broadcastThemeToIframe();
-          window.setTimeout(() => broadcastThemeToIframe(), 200);
+          loadTimeoutRef.current = window.setTimeout(() => broadcastThemeToIframe(), 200);
           setIsLoading(false);
           setServerError(null);
         }}
