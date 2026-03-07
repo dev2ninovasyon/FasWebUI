@@ -1,5 +1,5 @@
 ﻿"use client";
-import { Box, Typography, TextField, Button, Checkbox, FormControlLabel, useTheme } from "@mui/material";
+import { Box, Typography, TextField, Button, Checkbox, FormControlLabel, useTheme, Alert } from "@mui/material";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -49,10 +49,21 @@ export default function LoginPageClient() {
     // Random start slide
     const [currentSlide, setCurrentSlide] = useState(() => Math.floor(Math.random() * slides.length));
 
+    const [logoutReason, setLogoutReason] = useState<string | null>(null);
+
     // Eğer kullanıcı zaten giriş yapmışsa (token varsa), ana sayfaya yönlendir
     useEffect(() => {
         if (user?.token) {
             router.push("/Anasayfa");
+        }
+
+        // Logout nedenini oku ve sil
+        if (typeof window !== "undefined") {
+            const reason = window.sessionStorage.getItem("fas_logout_reason");
+            if (reason) {
+                setLogoutReason(reason);
+                window.sessionStorage.removeItem("fas_logout_reason");
+            }
         }
     }, [user?.token, router]);
 
@@ -134,11 +145,30 @@ export default function LoginPageClient() {
                                     variant="body1"
                                     sx={{
                                         color: isDark ? "rgba(255,255,255,0.7)" : "#64748b",
-                                        fontSize: "16px"
+                                        fontSize: "16px",
+                                        mb: 3
                                     }}
                                 >
                                     Devam etmek için lütfen giriş yapın.
                                 </Typography>
+
+                                {logoutReason && (
+                                    <Alert
+                                        severity={logoutReason === "manual" ? "info" : "warning"}
+                                        variant="filled"
+                                        sx={{
+                                            mb: 3,
+                                            borderRadius: 2,
+                                            fontWeight: 500,
+                                            boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+                                        }}
+                                    >
+                                        {logoutReason === "inactivity" && "30 dakikadır işlem yapılmadığı için güvenlik amacıyla oturumunuz sonlandırıldı. Lütfen tekrar giriş yapınız."}
+                                        {logoutReason === "timeout" && "Oturum süreniz dolduğu için yeniden giriş yapmanız gerekiyor."}
+                                        {logoutReason === "server_expired" && "Oturumunuzun süresi sunucu tarafında doldu. Lütfen tekrar giriş yapın."}
+                                        {logoutReason === "manual" && "Başarıyla çıkış yapıldı."}
+                                    </Alert>
+                                )}
                             </Box>
 
                             {/* Login Form */}

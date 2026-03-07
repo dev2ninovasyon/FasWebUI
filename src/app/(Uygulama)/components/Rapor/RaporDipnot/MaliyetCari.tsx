@@ -1,5 +1,6 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -7,16 +8,19 @@ import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import {  getDipnot15Maliyet,
+import {
+  getDipnot15Maliyet,
   getDipnot16Maliyet,
   updateDipnotMaliyet,
 } from "@/api/DenetimRaporu/DenetimRaporu";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -35,12 +39,14 @@ interface Props {
   dipnotKodu: number;
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (bool: boolean) => void;
+  konsolide?: boolean;
 }
 
 const MaliyetCari: React.FC<Props> = ({
   dipnotKodu,
   kaydetTiklandimi,
   setKaydetTiklandimi,
+  konsolide,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -371,50 +377,56 @@ const MaliyetCari: React.FC<Props> = ({
       if (dipnotKodu == 14 || dipnotKodu == 15) {
         const maliyetVerileri = await getDipnot15Maliyet(user.denetciId || 0,
           user.denetlenenId || 0,
-          user.yil || 0
+          user.yil || 0,
+          konsolide
         );
 
         const rowsAll: any = [];
-        maliyetVerileri
-          .filter((veri: Veri) => veri.yil == user.yil)
-          .forEach((veri: any) => {
-            const newRow: any = [
-              veri.id,
-              veri.baslik,
-              veri.donemBasi,
-              veri.girisler,
-              veri.cikislar,
-              veri.degerleme,
-              veri.transfer,
-              veri.donemSonu,
-            ];
-            rowsAll.push(newRow);
-          });
+        if (maliyetVerileri && Array.isArray(maliyetVerileri)) {
+          maliyetVerileri
+            .filter((veri: Veri) => veri.yil == user.yil)
+            .forEach((veri: any) => {
+              const newRow: any = [
+                veri.id,
+                veri.baslik,
+                veri.donemBasi,
+                veri.girisler,
+                veri.cikislar,
+                veri.degerleme,
+                veri.transfer,
+                veri.donemSonu,
+              ];
+              rowsAll.push(newRow);
+            });
+        }
         setFetchedData(rowsAll);
         setRowCount(rowsAll.length);
       }
       if (dipnotKodu == 16 || dipnotKodu == 17) {
         const maliyetVerileri = await getDipnot16Maliyet(user.denetciId || 0,
           user.denetlenenId || 0,
-          user.yil || 0
+          user.yil || 0,
+          konsolide
         );
 
         const rowsAll: any = [];
-        maliyetVerileri
-          .filter((veri: Veri) => veri.yil == user.yil)
-          .forEach((veri: any) => {
-            const newRow: any = [
-              veri.id,
-              veri.baslik,
-              veri.donemBasi,
-              veri.girisler,
-              veri.cikislar,
-              veri.degerleme,
-              veri.transfer,
-              veri.donemSonu,
-            ];
-            rowsAll.push(newRow);
-          });
+        if (maliyetVerileri && Array.isArray(maliyetVerileri)) {
+          maliyetVerileri
+            .filter((veri: Veri) => veri.yil == user.yil)
+            .forEach((veri: any) => {
+              const newRow: any = [
+                veri.id,
+                veri.baslik,
+                veri.donemBasi,
+                veri.girisler,
+                veri.cikislar,
+                veri.degerleme,
+                veri.transfer,
+                veri.donemSonu,
+              ];
+              rowsAll.push(newRow);
+            });
+        }
         setFetchedData(rowsAll);
         setRowCount(rowsAll.length);
       }
@@ -490,14 +502,14 @@ const MaliyetCari: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);

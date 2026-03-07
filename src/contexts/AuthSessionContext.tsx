@@ -12,6 +12,7 @@ import {
   readStoredAuthTokens,
   syncSelectionStorageFromUserData,
 } from "@/utils/authSession";
+import { LOGOUT_REASON_KEY, LogoutReason } from "@/utils/sessionConfig";
 
 type AuthSessionStatus = "loading" | "authenticated" | "unauthenticated";
 
@@ -22,7 +23,7 @@ interface RefreshSessionOptions {
 interface AuthSessionContextValue {
   status: AuthSessionStatus;
   refreshSession: (options?: RefreshSessionOptions) => Promise<boolean>;
-  clearSession: () => void;
+  clearSession: (reason?: LogoutReason) => void;
 }
 
 const AuthSessionContext = createContext<AuthSessionContextValue | undefined>(undefined);
@@ -39,7 +40,7 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
       const userData = mapAuthPayloadToUserData(payload, {
         accessToken,
         refreshToken,
-        mail: user.mail,
+        mail: user.mail || payload?.mail || payload?.Mail,
       });
 
       persistSessionTokens(userData.token, userData.refreshToken);
@@ -53,58 +54,57 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
   const refreshTokens = useCallback(
     async (currentRefreshToken?: string | null) => {
       if (!currentRefreshToken) {
-        return {
-          ok: false,
-          accessToken: "",
-          refreshToken: "",
-        };
+        return { ok: false, accessToken: "", refreshToken: "" };
       }
 
-      const refreshResponse = await apiFetch("/Auth/refresh", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          refreshToken: currentRefreshToken,
-          RefreshToken: currentRefreshToken,
-        }),
-        ignoreCustomHeaders: true,
-        suppressErrorLog: true,
-      });
+      try {
+        const refreshResponse = await apiFetch("/Auth/refresh", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            refreshToken: currentRefreshToken,
+            RefreshToken: currentRefreshToken,
+          }),
+          ignoreCustomHeaders: true,
+          suppressErrorLog: true,
+        });
 
-      if (!refreshResponse.ok) {
+        if (!refreshResponse.ok) {
+          return { ok: false, accessToken: "", refreshToken: currentRefreshToken || "" };
+        }
+
+        const refreshPayload = await refreshResponse.json().catch(() => null);
+        const refreshedUserData = mapAuthPayloadToUserData(refreshPayload, {
+          accessToken: refreshPayload?.token || refreshPayload?.Token,
+          refreshToken:
+            refreshPayload?.refreshToken ||
+            refreshPayload?.RefreshToken ||
+            currentRefreshToken,
+          mail: user.mail,
+        });
+
+        const nextAccessToken = refreshedUserData.token || "";
+        const nextRefreshToken = refreshedUserData.refreshToken || currentRefreshToken || "";
+
+        persistSessionTokens(nextAccessToken, nextRefreshToken);
+
         return {
-          ok: false,
-          accessToken: "",
-          refreshToken: currentRefreshToken || "",
+          ok: true,
+          accessToken: nextAccessToken,
+          refreshToken: nextRefreshToken,
         };
+      } catch (err) {
+        console.error("AuthSessionContext: refreshTokens error", err);
+        return { ok: false, accessToken: "", refreshToken: currentRefreshToken || "" };
       }
-
-      const refreshPayload = await refreshResponse.json().catch(() => null);
-      const refreshedUserData = mapAuthPayloadToUserData(refreshPayload, {
-        accessToken: refreshPayload?.token || refreshPayload?.Token,
-        refreshToken:
-          refreshPayload?.refreshToken ||
-          refreshPayload?.RefreshToken ||
-          currentRefreshToken,
-        mail: user.mail,
-      });
-
-      const nextAccessToken = refreshedUserData.token || "";
-      const nextRefreshToken =
-        refreshedUserData.refreshToken || currentRefreshToken || "";
-
-      persistSessionTokens(nextAccessToken, nextRefreshToken);
-
-      return {
-        ok: true,
-        accessToken: nextAccessToken,
-        refreshToken: nextRefreshToken,
-      };
     },
     [user.mail]
   );
 
-  const clearSession = useCallback(() => {
+  const clearSession = useCallback((reason?: LogoutReason) => {
+    if (typeof window !== "undefined" && reason) {
+      window.sessionStorage.setItem(LOGOUT_REASON_KEY, reason);
+    }
     clearClientAuthStorage();
     dispatch(resetToNull(""));
     setHasBootstrapped(true);
@@ -118,35 +118,44 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
       }
 
       const bootstrapPromise = (async () => {
-        setStatus("loading");
+        // Zaten otantikasyon varsa ve zorunlu değilse loading'e çekmeye gerek yok (UI flickersız geçiş)
+        if (status !== "authenticated") {
+          setStatus("loading");
+        }
 
         try {
           let { accessToken, refreshToken } = readStoredAuthTokens();
+
+          // Eğer token hiç yoksa doğrudan girişe atılabilir
+          if (!accessToken && !refreshToken) {
+            clearSession();
+            return false;
+          }
+
           const tryLoadSession = async () => {
-            const sessionResponse = await apiFetch("/Auth/session", {
-              method: "GET",
-              ignoreCustomHeaders: true,
-              suppressErrorLog: true,
-            });
+            try {
+              const sessionResponse = await apiFetch("/Auth/session", {
+                method: "GET",
+                ignoreCustomHeaders: true,
+                suppressErrorLog: true,
+              });
 
-            if (!sessionResponse.ok) {
+              if (!sessionResponse.ok) return false;
+
+              const sessionPayload = await sessionResponse.json().catch(() => null);
+              if (!sessionPayload) return false;
+
+              applyAuthenticatedSession(sessionPayload, accessToken, refreshToken);
+              return true;
+            } catch {
               return false;
             }
-
-            const sessionPayload = await sessionResponse.json().catch(() => null);
-            if (!sessionPayload) {
-              return false;
-            }
-
-            applyAuthenticatedSession(sessionPayload, accessToken, refreshToken);
-            return true;
           };
 
           const hasActiveSession = await tryLoadSession();
-          if (hasActiveSession) {
-            return true;
-          }
+          if (hasActiveSession) return true;
 
+          // Session load başarısızsa refresh dene
           if (forceRefresh || refreshToken) {
             const refreshedTokens = await refreshTokens(refreshToken);
             if (refreshedTokens.ok) {
@@ -155,20 +164,21 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
 
               const hasSessionAfterRefresh = await tryLoadSession();
               if (!hasSessionAfterRefresh) {
-                clearSession();
+                clearSession(LogoutReason.SERVER_EXPIRED);
                 return false;
               }
               return true;
             } else {
-              // Refresh başarısız olduysa tekrar session denemesi yapmak sadece duplicate 401 fırlatır
-              clearSession();
+              // Refresh de başarısızsa oturum bitmiştir
+              clearSession(LogoutReason.SERVER_EXPIRED);
               return false;
             }
           }
 
           clearSession();
           return false;
-        } catch {
+        } catch (err) {
+          console.error("AuthSessionContext: Bootstrap error", err);
           clearSession();
           return false;
         } finally {
@@ -180,23 +190,24 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
       activeBootstrapPromiseRef.current = bootstrapPromise;
       return bootstrapPromise;
     },
-    [applyAuthenticatedSession, clearSession, refreshTokens]
+    [status, applyAuthenticatedSession, clearSession, refreshTokens]
   );
 
-  useEffect(() => {
-    void refreshSession();
-  }, [refreshSession]);
-
+  // Initial Bootstrapping
   useEffect(() => {
     if (!hasBootstrapped) {
-      return;
+      void refreshSession();
     }
+  }, [hasBootstrapped, refreshSession]);
 
-    if (user?.token) {
+  // Sync status if user token changes manually (login)
+  useEffect(() => {
+    if (hasBootstrapped && user?.token && status !== "authenticated") {
       setStatus("authenticated");
-      return;
+    } else if (hasBootstrapped && !user?.token && status === "authenticated") {
+      setStatus("unauthenticated");
     }
-  }, [hasBootstrapped, status, user?.token]);
+  }, [hasBootstrapped, user?.token, status]);
 
   return (
     <AuthSessionContext.Provider

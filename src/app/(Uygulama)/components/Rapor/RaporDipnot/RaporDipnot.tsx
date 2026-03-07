@@ -45,12 +45,14 @@ interface RaporDipnotProps {
   tip: string;
   isClickedVarsayilanaDon: boolean;
   setIsClickedVarsayilanaDon: (bool: boolean) => void;
+  konsolide?: boolean;
 }
 
 const RaporDipnot: React.FC<RaporDipnotProps> = ({
   tip,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
+  konsolide,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -224,6 +226,7 @@ const RaporDipnot: React.FC<RaporDipnotProps> = ({
           handleUpdate={handleUpdate}
           handleClose={handleClosePopUp}
           setDipnotKoduVeriler={setDipnotKoduVeriler}
+          konsolide={konsolide}
         />
       )}
     </>
@@ -238,6 +241,7 @@ interface PopUpProps {
   handleUpdate: () => void;
   handleClose: () => void;
   setDipnotKoduVeriler: (x: Veri[]) => void;
+  konsolide?: boolean;
 }
 
 const PopUpComponent: React.FC<PopUpProps> = ({
@@ -246,6 +250,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
   handleUpdate,
   handleClose,
   setDipnotKoduVeriler,
+  konsolide,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -341,6 +346,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                             dipnotKodu={veri.dipnotKodu}
                             kaydetTiklandimi={kaydetTiklandimi}
                             setKaydetTiklandimi={setKaydetTiklandimi}
+                            konsolide={konsolide}
                           />
                         </Box>
                         <Box px={3} pt={3}>
@@ -348,6 +354,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                             dipnotKodu={veri.dipnotKodu}
                             kaydetTiklandimi={kaydetTiklandimi}
                             setKaydetTiklandimi={setKaydetTiklandimi}
+                            konsolide={konsolide}
                           />
                         </Box>
                         <Box px={3} pt={3}>
@@ -355,6 +362,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                             dipnotKodu={veri.dipnotKodu}
                             kaydetTiklandimi={kaydetTiklandimi}
                             setKaydetTiklandimi={setKaydetTiklandimi}
+                            konsolide={konsolide}
                           />
                         </Box>
                       </Box>
@@ -367,6 +375,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                             dipnotKodu={veri.dipnotKodu}
                             kaydetTiklandimi={kaydetTiklandimi}
                             setKaydetTiklandimi={setKaydetTiklandimi}
+                            konsolide={konsolide}
                           />
                         </Box>
                         <Box px={3} pt={3}>
@@ -374,6 +383,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                             dipnotKodu={veri.dipnotKodu}
                             kaydetTiklandimi={kaydetTiklandimi}
                             setKaydetTiklandimi={setKaydetTiklandimi}
+                            konsolide={konsolide}
                           />
                         </Box>
                       </Box>
@@ -388,6 +398,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                             dipnotKodu={veri.dipnotKodu}
                             kaydetTiklandimi={kaydetTiklandimi}
                             setKaydetTiklandimi={setKaydetTiklandimi}
+                            konsolide={konsolide}
                           />
                         </Box>
                         <Box px={3} pt={3}>
@@ -395,6 +406,7 @@ const PopUpComponent: React.FC<PopUpProps> = ({
                             dipnotKodu={veri.dipnotKodu}
                             kaydetTiklandimi={kaydetTiklandimi}
                             setKaydetTiklandimi={setKaydetTiklandimi}
+                            konsolide={konsolide}
                           />
                         </Box>
                       </Box>

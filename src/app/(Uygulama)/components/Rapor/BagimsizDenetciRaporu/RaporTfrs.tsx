@@ -394,19 +394,23 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot14AmortismanVerileri = await getDipnot15Amortisman(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        konsolide
       );
-      const newRows = dipnot14AmortismanVerileri.map((veri: any) => ({
-        baslik: veri.baslik,
-        yil: veri.yil,
-        donemBasi: veri.donemBasi,
-        girisler: veri.girisler,
-        cikislar: veri.cikislar,
-        degerleme: veri.degerleme,
-        transfer: veri.transfer,
-        donemSonu: veri.donemSonu,
-      }));
-      setdipnot14AmortismanRows(newRows);
+      if (dipnot14AmortismanVerileri && Array.isArray(dipnot14AmortismanVerileri)) {
+        const newRows = dipnot14AmortismanVerileri.map((veri: any) => ({
+          baslik: veri.baslik,
+          yil: veri.yil,
+          donemBasi: veri.donemBasi,
+          girisler: veri.girisler,
+          cikislar: veri.cikislar,
+          degerleme: veri.degerleme,
+          transfer: veri.transfer,
+          donemSonu: veri.donemSonu,
+        }));
+        setdipnot14AmortismanRows(newRows);
+      } else {
+        setdipnot14AmortismanRows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -420,19 +424,23 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot17AmortismanVerileri = await getDipnot16Amortisman(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        konsolide
       );
-      const newRows = dipnot17AmortismanVerileri.map((veri: any) => ({
-        baslik: veri.baslik,
-        yil: veri.yil,
-        donemBasi: veri.donemBasi,
-        girisler: veri.girisler,
-        cikislar: veri.cikislar,
-        degerleme: veri.degerleme,
-        transfer: veri.transfer,
-        donemSonu: veri.donemSonu,
-      }));
-      setdipnot17AmortismanRows(newRows);
+      if (dipnot17AmortismanVerileri && Array.isArray(dipnot17AmortismanVerileri)) {
+        const newRows = dipnot17AmortismanVerileri.map((veri: any) => ({
+          baslik: veri.baslik,
+          yil: veri.yil,
+          donemBasi: veri.donemBasi,
+          girisler: veri.girisler,
+          cikislar: veri.cikislar,
+          degerleme: veri.degerleme,
+          transfer: veri.transfer,
+          donemSonu: veri.donemSonu,
+        }));
+        setdipnot17AmortismanRows(newRows);
+      } else {
+        setdipnot17AmortismanRows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -446,19 +454,23 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot14MaliyetVerileri = await getDipnot15Maliyet(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        konsolide
       );
-      const newRows = dipnot14MaliyetVerileri.map((veri: any) => ({
-        baslik: veri.baslik,
-        yil: veri.yil,
-        donemBasi: veri.donemBasi,
-        girisler: veri.girisler,
-        cikislar: veri.cikislar,
-        degerleme: veri.degerleme,
-        transfer: veri.transfer,
-        donemSonu: veri.donemSonu,
-      }));
-      setdipnot14MaliyetRows(newRows);
+      if (dipnot14MaliyetVerileri && Array.isArray(dipnot14MaliyetVerileri)) {
+        const newRows = dipnot14MaliyetVerileri.map((veri: any) => ({
+          baslik: veri.baslik,
+          yil: veri.yil,
+          donemBasi: veri.donemBasi,
+          girisler: veri.girisler,
+          cikislar: veri.cikislar,
+          degerleme: veri.degerleme,
+          transfer: veri.transfer,
+          donemSonu: veri.donemSonu,
+        }));
+        setdipnot14MaliyetRows(newRows);
+      } else {
+        setdipnot14MaliyetRows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -472,19 +484,23 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot17MaliyetVerileri = await getDipnot16Maliyet(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        konsolide
       );
-      const newRows = dipnot17MaliyetVerileri.map((veri: any) => ({
-        baslik: veri.baslik,
-        yil: veri.yil,
-        donemBasi: veri.donemBasi,
-        girisler: veri.girisler,
-        cikislar: veri.cikislar,
-        degerleme: veri.degerleme,
-        transfer: veri.transfer,
-        donemSonu: veri.donemSonu,
-      }));
-      setdipnot17MaliyetRows(newRows);
+      if (dipnot17MaliyetVerileri && Array.isArray(dipnot17MaliyetVerileri)) {
+        const newRows = dipnot17MaliyetVerileri.map((veri: any) => ({
+          baslik: veri.baslik,
+          yil: veri.yil,
+          donemBasi: veri.donemBasi,
+          girisler: veri.girisler,
+          cikislar: veri.cikislar,
+          degerleme: veri.degerleme,
+          transfer: veri.transfer,
+          donemSonu: veri.donemSonu,
+        }));
+        setdipnot17MaliyetRows(newRows);
+      } else {
+        setdipnot17MaliyetRows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -496,15 +512,19 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot34Verileri = await getDipnot34(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        konsolide
       );
 
-      const newRows = dipnot34Verileri.map((veri: any) => ({
-        baslik: veri.baslik,
-        cariDonem: veri.cariDonem,
-        oncekiDonem: veri.oncekiDonem,
-      }));
-      setDipnot39Rows(newRows);
+      if (dipnot34Verileri && Array.isArray(dipnot34Verileri)) {
+        const newRows = dipnot34Verileri.map((veri: any) => ({
+          baslik: veri.baslik,
+          cariDonem: veri.cariDonem,
+          oncekiDonem: veri.oncekiDonem,
+        }));
+        setDipnot39Rows(newRows);
+      } else {
+        setDipnot39Rows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -516,21 +536,25 @@ const RaporTfrs: React.FC<RaporProps> = ({
       const dipnot451Verileri = await getKrediRiski(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
-        false
+        konsolide
       );
 
-      const newRows = dipnot451Verileri.map((veri: any) => ({
-        yil: veri.yil,
-        kalemAdi: veri.kalemAdi,
-        ticariAlacaklarIliskiliTaraf: veri.ticariAlacaklarIliskiliTaraf,
-        ticariAlacaklarDigerTaraf: veri.ticariAlacaklarDigerTaraf,
-        digerAlacaklarIliskiliTaraf: veri.digerAlacaklarIliskiliTaraf,
-        digerAlacaklarDigerTaraf: veri.digerAlacaklarDigerTaraf,
-        finansalYatirimlar: veri.finansalYatirimlar,
-        nakitVeNakitBenzeleri: veri.nakitVeNakitBenzeleri,
-        toplam: veri.toplam,
-      }));
-      setDipnot451Rows(newRows);
+      if (dipnot451Verileri && Array.isArray(dipnot451Verileri)) {
+        const newRows = dipnot451Verileri.map((veri: any) => ({
+          yil: veri.yil,
+          kalemAdi: veri.kalemAdi,
+          ticariAlacaklarIliskiliTaraf: veri.ticariAlacaklarIliskiliTaraf,
+          ticariAlacaklarDigerTaraf: veri.ticariAlacaklarDigerTaraf,
+          digerAlacaklarIliskiliTaraf: veri.digerAlacaklarIliskiliTaraf,
+          digerAlacaklarDigerTaraf: veri.digerAlacaklarDigerTaraf,
+          finansalYatirimlar: veri.finansalYatirimlar,
+          nakitVeNakitBenzeleri: veri.nakitVeNakitBenzeleri,
+          toplam: veri.toplam,
+        }));
+        setDipnot451Rows(newRows);
+      } else {
+        setDipnot451Rows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -576,19 +600,24 @@ const RaporTfrs: React.FC<RaporProps> = ({
     try {
       const dipnot452Verileri = await getDovizKuruRiski(user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        konsolide
       );
 
-      const newRows = dipnot452Verileri.map((veri: any) => ({
-        yil: veri.yil,
-        kalemAdi: veri.kalemAdi,
-        tlKarsiligi: veri.tlKarsiligi,
-        usd: veri.usd,
-        euro: veri.euro,
-        gbp: veri.gbp,
-        diger: veri.diger,
-      }));
-      setDipnot452Rows(newRows);
+      if (dipnot452Verileri && Array.isArray(dipnot452Verileri)) {
+        const newRows = dipnot452Verileri.map((veri: any) => ({
+          yil: veri.yil,
+          kalemAdi: veri.kalemAdi,
+          tlKarsiligi: veri.tlKarsiligi,
+          usd: veri.usd,
+          euro: veri.euro,
+          gbp: veri.gbp,
+          diger: veri.diger,
+        }));
+        setDipnot452Rows(newRows);
+      } else {
+        setDipnot452Rows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
@@ -630,18 +659,23 @@ const RaporTfrs: React.FC<RaporProps> = ({
     try {
       const dipnot453Verileri = await getDovizKuruRiskiDuyarlilikAnalizi(user.denetciId || 0,
         user.denetlenenId || 0,
-        user.yil || 0
+        user.yil || 0,
+        konsolide
       );
 
-      const newRows = dipnot453Verileri.map((veri: any) => ({
-        yil: veri.yil,
-        kalemAdi: veri.kalemAdi,
-        karZararDegerKazanmasi: veri.karZararDegerKazanmasi,
-        karZararDegerKaybetmesi: veri.karZararDegerKaybetmesi,
-        ozKaynakDegerKazanmasi: veri.ozKaynakDegerKazanmasi,
-        ozKaynakDegerKaybetmesi: veri.ozKaynakDegerKaybetmesi,
-      }));
-      setDipnot453Rows(newRows);
+      if (dipnot453Verileri && Array.isArray(dipnot453Verileri)) {
+        const newRows = dipnot453Verileri.map((veri: any) => ({
+          yil: veri.yil,
+          kalemAdi: veri.kalemAdi,
+          karZararDegerKazanmasi: veri.karZararDegerKazanmasi,
+          karZararDegerKaybetmesi: veri.karZararDegerKaybetmesi,
+          ozKaynakDegerKazanmasi: veri.ozKaynakDegerKazanmasi,
+          ozKaynakDegerKaybetmesi: veri.ozKaynakDegerKaybetmesi,
+        }));
+        setDipnot453Rows(newRows);
+      } else {
+        setDipnot453Rows([]);
+      }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }

@@ -139,6 +139,7 @@ const tryRedirectToLoginOnSessionExpired = () => {
     console.warn("🧪 Debug modu aktif: session-expired login redirect atlandı.");
     return;
   }
+  window.sessionStorage.setItem("fas_logout_reason", "server_expired");
   redirectTo(LOGIN_ROUTE_PATH);
 };
 

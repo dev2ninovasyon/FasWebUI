@@ -121,6 +121,7 @@ const Page: React.FC = () => {
                       tip={tip}
                       isClickedVarsayilanaDon={isClickedVarsayilanaDon}
                       setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                      konsolide={true}
                     />
                   </Grid>
                 </Grid>
@@ -145,6 +146,7 @@ const Page: React.FC = () => {
                       tip={tip}
                       isClickedVarsayilanaDon={isClickedVarsayilanaDon}
                       setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                      konsolide={true}
                     />
                   </Grid>
                 </Grid>
