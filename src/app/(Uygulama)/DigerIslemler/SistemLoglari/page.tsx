@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -24,28 +24,12 @@ import {
   TextField,
   Typography,
   CircularProgress,
-  Tabs,
-  Tab,
-  IconButton,
-  Alert
 } from "@mui/material";
-import {
-  IconRefresh,
-  IconBug,
-  IconTerminal2,
-  IconEye,
-  IconAlertTriangle,
-  IconChevronRight,
-  IconDownload,
-  IconTrash,
-  IconDatabase
-} from "@tabler/icons-react";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ProtectedPage from "@/app/ProtectedPage";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 import {
   clearClientLogs,
   ClientLogEntry,
@@ -57,13 +41,16 @@ import {
 import axios from "axios";
 import { url } from "@/api/apiBase";
 import { useSnackbar } from "notistack";
-import { ENFLASYON_BASE_URL } from "@/config/enflasyonConfig";
-import { generateSignature } from "@/utils/crypto";
-import { getUserRecentActions, UserActionDto } from "@/api/AnaSayfa/AnaSayfa";
 
 const BCrumb = [
-  { to: "/DigerIslemler", title: "Diğer İşlemler" },
-  { to: "/DigerIslemler/SistemLoglari", title: "Sistem Logları" },
+  {
+    to: "/DigerIslemler",
+    title: "Diger Islemler",
+  },
+  {
+    to: "/DigerIslemler/SistemLoglari",
+    title: "Sistem Loglari",
+  },
 ];
 
 const levelLabelMap: Record<ClientLogLevel, string> = {
@@ -74,14 +61,24 @@ const levelLabelMap: Record<ClientLogLevel, string> = {
 };
 
 const sourceLabelMap: Record<ClientLogSource, string> = {
-  api: "API", ui: "UI", window: "Window", network: "Network", system: "System",
+  api: "API",
+  ui: "UI",
+  window: "Window",
+  network: "Network",
+  system: "System",
 };
 
 const levelColorMap: Record<ClientLogLevel, "error" | "warning" | "info" | "default"> = {
-  error: "error", warn: "warning", info: "info", debug: "default",
+  error: "error",
+  warn: "warning",
+  info: "info",
+  debug: "default",
 };
 
-const formatDate = (isoDate: string) => new Date(isoDate).toLocaleString("tr-TR");
+const formatDate = (isoDate: string) => {
+  const date = new Date(isoDate);
+  return date.toLocaleString("tr-TR");
+};
 
 const downloadAsJson = (logs: ClientLogEntry[]) => {
   const blob = new Blob([JSON.stringify(logs, null, 2)], {
@@ -99,404 +96,239 @@ const downloadAsJson = (logs: ClientLogEntry[]) => {
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const { enqueueSnackbar } = useSnackbar();
-  const [activeTab, setActiveTab] = useState(0);
 
-  const isFasAdmin = user?.yetki === "FasAdmin" || user?.rol?.includes("FasAdmin") || false;
+  const isFasAdmin =
+    user?.yetki === "FasAdmin" || user?.rol?.includes("FasAdmin") || false;
 
-  // --- Audit (FasWebAPI) Log States ---
-  const [auditLogs, setAuditLogs] = useState<UserActionDto[]>([]);
-  const [loadingAudit, setLoadingAudit] = useState(false);
-
-  // --- Client Log States ---
-  const [clientLogs, setClientLogs] = useState<ClientLogEntry[]>([]);
+  const [logs, setLogs] = useState<ClientLogEntry[]>([]);
   const [levelFilter, setLevelFilter] = useState<"all" | ClientLogLevel>("all");
   const [sourceFilter, setSourceFilter] = useState<"all" | ClientLogSource>("all");
   const [search, setSearch] = useState("");
-  const [selectedClientLog, setSelectedClientLog] = useState<ClientLogEntry | null>(null);
+  const [selectedLog, setSelectedLog] = useState<ClientLogEntry | null>(null);
 
-  // --- Server Log State (Dialog) ---
+  // Server Log State
   const [serverLogOpen, setServerLogOpen] = useState(false);
   const [serverLogContent, setServerLogContent] = useState("");
   const [loadingServerLog, setLoadingServerLog] = useState(false);
 
-  // --- Enflasyon Log States ---
-  const [enflasyonLogs, setEnflasyonLogs] = useState<string[]>([]);
-  const [loadingEnf, setLoadingEnf] = useState(false);
-  const [enfError, setEnfError] = useState<string | null>(null);
-  const [selectedEnfLog, setSelectedEnfLog] = useState<string | null>(null);
-
-  // Audit Logları Getir
-  const fetchAuditLogs = async () => {
-    if (!user.id || !user.denetlenenId || !user.yil) return;
-    setLoadingAudit(true);
-    try {
-      const data = await getUserRecentActions(
-        user.id,
-        user.denetlenenId,
-        user.yil,
-        150
-      );
-      setAuditLogs(data || []);
-    } catch (err: any) {
-      console.error("Audit logs fetch error:", err);
-      enqueueSnackbar("Sistem işlem logları getirilemedi.", { variant: "error" });
-    } finally {
-      setLoadingAudit(false);
-    }
-  };
-
-  // Client Log Aboneliği
   useEffect(() => {
-    setClientLogs(getClientLogs());
-    return subscribeClientLogs(() => setClientLogs(getClientLogs()));
+    setLogs(getClientLogs());
+    return subscribeClientLogs(() => {
+      setLogs(getClientLogs());
+    });
   }, []);
 
-  // Sunucu Log Dosyasını Getir (FasWebAPI log-*.txt)
   const handleFetchServerLog = async () => {
     setLoadingServerLog(true);
     setServerLogOpen(true);
     try {
-      const response = await axios.get(
-        `${url}/Audit/DownloadServerLog`,
-        createAuthorizedAxiosConfig({ responseType: "text" }, user.token)
-      );
+      const response = await axios.get(`${url}/Audit/DownloadServerLog`, {
+        responseType: "text",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       setServerLogContent(response.data);
     } catch (error: any) {
-      enqueueSnackbar("Sunucu logları dosyası getirilemedi.", { variant: "error" });
+      console.error("Server log fetch error:", error);
+      enqueueSnackbar("Sunucu loglar─▒ getirilemedi.", { variant: "error" });
       setServerLogOpen(false);
     } finally {
       setLoadingServerLog(false);
     }
   };
 
-  // Enflasyon Loglarını Getir
-  const fetchEnflasyonLogs = async (type: "Latest" | "Stdout") => {
-    setLoadingEnf(true);
-    setEnfError(null);
-    try {
-      if (!user) throw new Error("Kullanıcı bilgisi bulunamadı.");
-      const signature = generateSignature(
-        user.kullaniciAdi || "",
-        (user.denetciId || 0).toString(),
-        (user.id || 0).toString(),
-        (user.denetlenenId || 0).toString(),
-        (user.yil || 0).toString()
-      );
-      const enfUrl = `${ENFLASYON_BASE_URL}/Logs/${type}?username=${user.kullaniciAdi}&denetciId=${user.denetciId}&kullaniciId=${user.id}&denetlenenId=${user.denetlenenId}&yil=${user.yil}&signature=${signature}`;
-      const response = await fetch(enfUrl, { credentials: "include" });
-      const data = await response.json();
-      if (data.success) {
-        setEnflasyonLogs(data.logs || []);
-      } else {
-        setEnfError(data.message || "Loglar alınamadı.");
-      }
-    } catch (err: any) {
-      setEnfError("Bağlantı hatası: " + err.message);
-    } finally {
-      setLoadingEnf(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === 0) fetchAuditLogs();
-    else if (activeTab === 2) fetchEnflasyonLogs("Latest");
-    else if (activeTab === 3) fetchEnflasyonLogs("Stdout");
-  }, [activeTab, user.denetlenenId, user.yil]);
-
-  const filteredClientLogs = useMemo(() => {
+  const filteredLogs = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return clientLogs.filter((log) => {
+    return logs.filter((log) => {
       if (levelFilter !== "all" && log.level !== levelFilter) return false;
       if (sourceFilter !== "all" && log.source !== sourceFilter) return false;
+
       if (!query) return true;
-      const haystack = [log.message, log.route, log.requestPath, log.statusCode?.toString(), log.detail].filter(Boolean).join(" ").toLowerCase();
+
+      const haystack = [
+        log.message,
+        log.route,
+        log.requestPath,
+        log.statusCode?.toString(),
+        log.detail,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
       return haystack.includes(query);
     });
-  }, [clientLogs, levelFilter, sourceFilter, search]);
+  }, [logs, levelFilter, sourceFilter, search]);
 
-  const getEnfLogColor = (log: string) => {
-    if (log.includes("[Error]") || log.includes("fail:") || log.includes("Exception")) return "error";
-    if (log.includes("[Warning]") || log.includes("warn:")) return "warning";
-    if (log.includes("[Information]") || log.includes("info:")) return "info";
-    return "default";
-  };
+  const errorCount = logs.filter((item) => item.level === "error").length;
+  const warnCount = logs.filter((item) => item.level === "warn").length;
 
   return (
     <ProtectedPage allowed={isFasAdmin}>
-      <Breadcrumb title="Sistem Logları" items={BCrumb} />
-      <PageContainer title="Sistem Logları" description="Tüm modüller için merkezi log takip ekranı">
-        <Paper sx={{ mb: 2 }}>
-          <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)} variant="scrollable" scrollButtons="auto" indicatorColor="primary" textColor="primary" sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tab label="Sistem İşlem Logları (FasWebAPI)" icon={<IconDatabase size="20" />} iconPosition="start" />
-            <Tab label="İstemci Logları (UI)" icon={<IconEye size="20" />} iconPosition="start" />
-            <Tab label="Enflasyon Uygulama Logları" icon={<IconBug size="20" />} iconPosition="start" />
-            <Tab label="Enflasyon Sunucu Logları" icon={<IconTerminal2 size="20" />} iconPosition="start" />
-          </Tabs>
-        </Paper>
-
-        {/* --- TAB 0: Audit Logs (FasWebAPI) --- */}
-        {activeTab === 0 && (
-          <Stack spacing={2}>
-            <Paper sx={{ p: 2 }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography variant="subtitle1" fontWeight={600}>Audit Logları (İşlem Geçmişi)</Typography>
-                <IconButton onClick={fetchAuditLogs} color="primary" disabled={loadingAudit}><IconRefresh /></IconButton>
+      <Breadcrumb title="Sistem Loglari" items={BCrumb} />
+      <PageContainer title="Sistem Loglari" description="Istemci log kayit ekrani">
+        <Stack spacing={2}>
+          <Paper sx={{ p: 2 }}>
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              spacing={2}
+              justifyContent="space-between"
+              alignItems={{ xs: "stretch", md: "center" }}
+            >
+              <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                <Chip label={`Toplam: ${logs.length}`} variant="outlined" />
+                <Chip label={`Error: ${errorCount}`} color="error" variant="outlined" />
+                <Chip label={`Warn: ${warnCount}`} color="warning" variant="outlined" />
               </Stack>
-            </Paper>
-            <TableContainer component={Paper} sx={{ maxHeight: "60vh" }}>
-              {loadingAudit ? (
-                <Box sx={{ p: 5, textAlign: "center" }}><CircularProgress /><Typography sx={{ mt: 1 }}>Veriler çekiliyor...</Typography></Box>
-              ) : (
-                <Table stickyHeader size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width="120">Tarih</TableCell>
-                      <TableCell width="150">Kullanıcı</TableCell>
-                      <TableCell>İşlem / Sayfa</TableCell>
-                      <TableCell width="100">Durum</TableCell>
-                      <TableCell align="right">Path</TableCell>
+
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                <Button
+                  variant="outlined"
+                  color="info"
+                  onClick={handleFetchServerLog}
+                >
+                  Sunucu Loglar─▒n─▒ Getir
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => downloadAsJson(filteredLogs)}
+                  disabled={filteredLogs.length === 0}
+                >
+                  JSON Disa Aktar
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => clearClientLogs()}
+                  disabled={logs.length === 0}
+                >
+                  Loglari Temizle
+                </Button>
+              </Stack>
+            </Stack>
+          </Paper>
+
+          <Paper sx={{ p: 2 }}>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+              <FormControl size="small" sx={{ minWidth: 160 }}>
+                <InputLabel id="level-filter-label">Seviye</InputLabel>
+                <Select
+                  labelId="level-filter-label"
+                  label="Seviye"
+                  value={levelFilter}
+                  onChange={(e) => setLevelFilter(e.target.value as "all" | ClientLogLevel)}
+                >
+                  <MenuItem value="all">Tumu</MenuItem>
+                  <MenuItem value="error">Error</MenuItem>
+                  <MenuItem value="warn">Warn</MenuItem>
+                  <MenuItem value="info">Info</MenuItem>
+                  <MenuItem value="debug">Debug</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl size="small" sx={{ minWidth: 180 }}>
+                <InputLabel id="source-filter-label">Kaynak</InputLabel>
+                <Select
+                  labelId="source-filter-label"
+                  label="Kaynak"
+                  value={sourceFilter}
+                  onChange={(e) => setSourceFilter(e.target.value as "all" | ClientLogSource)}
+                >
+                  <MenuItem value="all">Tumu</MenuItem>
+                  <MenuItem value="api">API</MenuItem>
+                  <MenuItem value="network">Network</MenuItem>
+                  <MenuItem value="ui">UI</MenuItem>
+                  <MenuItem value="window">Window</MenuItem>
+                  <MenuItem value="system">System</MenuItem>
+                </Select>
+              </FormControl>
+
+              <TextField
+                size="small"
+                label="Mesaj/Path icinde ara"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                fullWidth
+              />
+            </Stack>
+          </Paper>
+
+          <Paper sx={{ p: 0 }}>
+            <TableContainer sx={{ maxHeight: "65vh" }}>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Zaman</TableCell>
+                    <TableCell>Seviye</TableCell>
+                    <TableCell>Kaynak</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Route</TableCell>
+                    <TableCell>API Path</TableCell>
+                    <TableCell>Mesaj</TableCell>
+                    <TableCell align="right">Detay</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredLogs.map((log) => (
+                    <TableRow key={log.id} hover>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        {formatDate(log.timestamp)}
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={levelLabelMap[log.level]}
+                          color={levelColorMap[log.level]}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>{sourceLabelMap[log.source]}</TableCell>
+                      <TableCell>{log.statusCode ?? "-"}</TableCell>
+                      <TableCell>{log.route ?? "-"}</TableCell>
+                      <TableCell>{log.requestPath ?? "-"}</TableCell>
+                      <TableCell sx={{ maxWidth: 420 }}>{log.message}</TableCell>
+                      <TableCell align="right">
+                        <Button
+                          size="small"
+                          variant="text"
+                          disabled={!log.detail}
+                          onClick={() => setSelectedLog(log)}
+                        >
+                          Gor
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {auditLogs.map((item) => (
-                      <TableRow key={item.id} hover>
-                        <TableCell sx={{ fontSize: "0.85rem" }}>{formatDate(item.createdAt)}</TableCell>
-                        <TableCell>{item.userName}</TableCell>
-                        <TableCell>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <Chip label={item.httpMethod} size="small" variant="outlined" color={item.httpMethod === "POST" ? "primary" : "default"} />
-                            <Typography variant="body2" fontWeight={500}>{item.friendlyTitle || item.actionName}</Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={item.statusCode}
-                            size="small"
-                            color={item.isError ? "error" : "success"}
-                            variant="filled"
-                          />
-                        </TableCell>
-                        <TableCell align="right" sx={{ color: "text.secondary", fontSize: "0.75rem", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis" }}>{item.path}</TableCell>
-                      </TableRow>
-                    ))}
-                    {auditLogs.length === 0 && <TableRow><TableCell colSpan={5} align="center" sx={{ py: 3 }}>İşlem kaydı bulunamadı.</TableCell></TableRow>}
-                  </TableBody>
-                </Table>
-              )}
+                  ))}
+
+                  {filteredLogs.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={8}>
+                        <Box py={4} textAlign="center">
+                          <Typography color="text.secondary">
+                            Secili filtre icin log bulunamadi.
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
             </TableContainer>
-          </Stack>
-        )}
-
-        {/* --- TAB 1: Client Logs --- */}
-        {activeTab === 1 && (
-          <Stack spacing={2}>
-            <Paper sx={{ p: 2 }}>
-              <Stack
-                direction={{ xs: "column", md: "row" }}
-                spacing={2}
-                justifyContent="space-between"
-                alignItems={{ xs: "stretch", md: "center" }}
-              >
-                <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                  <Chip label={`Toplam: ${clientLogs.length}`} variant="outlined" />
-                  <Chip label={`Error: ${clientLogs.filter((item) => item.level === "error").length}`} color="error" variant="outlined" />
-                  <Chip label={`Warn: ${clientLogs.filter((item) => item.level === "warn").length}`} color="warning" variant="outlined" />
-                </Stack>
-
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-                  <Button
-                    variant="outlined"
-                    color="info"
-                    onClick={handleFetchServerLog}
-                  >
-                    Sunucu Loglarını Getir
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<IconDownload size="18" />}
-                    onClick={() => downloadAsJson(filteredClientLogs)}
-                    disabled={filteredClientLogs.length === 0}
-                  >
-                    JSON Disa Aktar
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    startIcon={<IconTrash size="18" />}
-                    onClick={() => clearClientLogs()}
-                    disabled={clientLogs.length === 0}
-                  >
-                    Loglari Temizle
-                  </Button>
-                </Stack>
-              </Stack>
-            </Paper>
-
-            <Paper sx={{ p: 2 }}>
-              <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-                <FormControl size="small" sx={{ minWidth: 160 }}>
-                  <InputLabel id="level-filter-label">Seviye</InputLabel>
-                  <Select
-                    labelId="level-filter-label"
-                    label="Seviye"
-                    value={levelFilter}
-                    onChange={(e) => setLevelFilter(e.target.value as "all" | ClientLogLevel)}
-                  >
-                    <MenuItem value="all">Tumu</MenuItem>
-                    <MenuItem value="error">Error</MenuItem>
-                    <MenuItem value="warn">Warn</MenuItem>
-                    <MenuItem value="info">Info</MenuItem>
-                    <MenuItem value="debug">Debug</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl size="small" sx={{ minWidth: 180 }}>
-                  <InputLabel id="source-filter-label">Kaynak</InputLabel>
-                  <Select
-                    labelId="source-filter-label"
-                    label="Kaynak"
-                    value={sourceFilter}
-                    onChange={(e) => setSourceFilter(e.target.value as "all" | ClientLogSource)}
-                  >
-                    <MenuItem value="all">Tumu</MenuItem>
-                    <MenuItem value="api">API</MenuItem>
-                    <MenuItem value="network">Network</MenuItem>
-                    <MenuItem value="ui">UI</MenuItem>
-                    <MenuItem value="window">Window</MenuItem>
-                    <MenuItem value="system">System</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <TextField
-                  size="small"
-                  label="Mesaj/Path icinde ara"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  fullWidth
-                />
-              </Stack>
-            </Paper>
-
-            <Paper sx={{ p: 0 }}>
-              <TableContainer sx={{ maxHeight: "65vh" }}>
-                <Table stickyHeader size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Zaman</TableCell>
-                      <TableCell>Seviye</TableCell>
-                      <TableCell>Kaynak</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Route</TableCell>
-                      <TableCell>API Path</TableCell>
-                      <TableCell>Mesaj</TableCell>
-                      <TableCell align="right">Detay</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredClientLogs.map((log) => (
-                      <TableRow key={log.id} hover>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>
-                          {formatDate(log.timestamp)}
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={levelLabelMap[log.level]}
-                            color={levelColorMap[log.level]}
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell>{sourceLabelMap[log.source]}</TableCell>
-                        <TableCell>{log.statusCode ?? "-"}</TableCell>
-                        <TableCell>{log.route ?? "-"}</TableCell>
-                        <TableCell>{log.requestPath ?? "-"}</TableCell>
-                        <TableCell sx={{ maxWidth: 420, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{log.message}</TableCell>
-                        <TableCell align="right">
-                          <Button
-                            size="small"
-                            variant="text"
-                            disabled={!log.detail}
-                            onClick={() => setSelectedClientLog(log)}
-                          >
-                            Gor
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-
-                    {filteredClientLogs.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={8}>
-                          <Box py={4} textAlign="center">
-                            <Typography color="text.secondary">
-                              Secili filtre icin log bulunamadi.
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </Stack>
-        )}
-
-        {/* --- TAB 2 & 3: Enflasyon Logs --- */}
-        {(activeTab === 2 || activeTab === 3) && (
-          <Stack spacing={2}>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <IconButton onClick={() => fetchEnflasyonLogs(activeTab === 2 ? "Latest" : "Stdout")} color="primary">
-                <IconRefresh />
-              </IconButton>
-            </Box>
-            {enfError && <Alert severity="error">{enfError}</Alert>}
-            <TableContainer component={Paper} sx={{ maxHeight: "65vh" }}>
-              {loadingEnf ? (
-                <Box sx={{ p: 5, textAlign: "center" }}><CircularProgress /><Typography sx={{ mt: 1 }}>Loglar çekiliyor...</Typography></Box>
-              ) : (
-                <Table stickyHeader size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width="120">Tür</TableCell>
-                      <TableCell>Mesaj</TableCell>
-                      <TableCell width="50"></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {enflasyonLogs.map((log, i) => (
-                      <TableRow key={i} hover>
-                        <TableCell>
-                          <Chip
-                            label={getEnfLogColor(log).toUpperCase()}
-                            color={getEnfLogColor(log) as any}
-                            size="small"
-                            variant="outlined"
-                          />
-                        </TableCell>
-                        <TableCell sx={{ fontFamily: "monospace", fontSize: "0.8rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "800px" }}>{log}</TableCell>
-                        <TableCell><IconButton size="small" onClick={() => setSelectedEnfLog(log)}><IconChevronRight size="18" /></IconButton></TableCell>
-                      </TableRow>
-                    ))}
-                    {enflasyonLogs.length === 0 && <TableRow><TableCell colSpan={3} align="center" sx={{ py: 3 }}>Enflasyon projesine ait log bulunamadı.</TableCell></TableRow>}
-                  </TableBody>
-                </Table>
-              )}
-            </TableContainer>
-          </Stack>
-        )}
+          </Paper>
+        </Stack>
       </PageContainer>
 
-      {/* --- Modals / Dialogs --- */}
+      {/* Client Log Detail Dialog */}
       <Dialog
-        open={!!selectedClientLog}
-        onClose={() => setSelectedClientLog(null)}
+        open={!!selectedLog}
+        onClose={() => setSelectedLog(null)}
         maxWidth="md"
         fullWidth
       >
         <DialogTitle>Log Detayi</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2" mb={2}>
-            {selectedClientLog?.message}
+            {selectedLog?.message}
           </Typography>
           <Paper variant="outlined" sx={{ p: 2, backgroundColor: "grey.100" }}>
             <Box
@@ -509,38 +341,49 @@ const Page = () => {
                 wordBreak: "break-word",
               }}
             >
-              {selectedClientLog?.detail || "Detay yok"}
+              {selectedLog?.detail || "Detay yok"}
             </Box>
           </Paper>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSelectedClientLog(null)}>Kapat</Button>
+          <Button onClick={() => setSelectedLog(null)}>Kapat</Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={!!selectedEnfLog} onClose={() => setSelectedEnfLog(null)} maxWidth="lg" fullWidth>
-        <DialogTitle>Enflasyon Log Detayı</DialogTitle>
-        <DialogContent dividers>
-          <Box component="pre" sx={{ p: 2, bgcolor: "#f1f1f1", borderRadius: 1, overflowX: "auto", fontSize: 13, whiteSpace: "pre-wrap", fontFamily: "monospace" }}>
-            {selectedEnfLog}
-          </Box>
-        </DialogContent>
-        <DialogActions><Button onClick={() => setSelectedEnfLog(null)}>Kapat</Button></DialogActions>
-      </Dialog>
-
-      <Dialog open={serverLogOpen} onClose={() => setServerLogOpen(false)} maxWidth="lg" fullWidth>
-        <DialogTitle>FasWebAPI Sunucu Log Dosyası</DialogTitle>
+      {/* Server Log Dialog */}
+      <Dialog
+        open={serverLogOpen}
+        onClose={() => setServerLogOpen(false)}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>Sunucu ─░┼şlem Loglar─▒ (Son Dosya)</DialogTitle>
         <DialogContent dividers>
           {loadingServerLog ? (
-            <Box sx={{ p: 5, textAlign: "center" }}><CircularProgress /></Box>
-          ) : (
-            <Box component="pre" sx={{ p: 2, bgcolor: "#1e1e1e", color: "#ddd", borderRadius: 1, overflowX: "auto", fontSize: 12, maxHeight: "70vh", fontFamily: "Consolas, monospace" }}>
-              {serverLogContent || "Dosya boş veya sunucuda dosya bulunamadı."}
+            <Box display="flex" justifyContent="center" py={10}>
+              <CircularProgress />
             </Box>
+          ) : (
+            <Paper variant="outlined" sx={{ p: 2, backgroundColor: "#1e1e1e", color: "#d4d4d4" }}>
+              <Box
+                component="pre"
+                sx={{
+                  m: 0,
+                  overflowX: "auto",
+                  fontSize: 13,
+                  fontFamily: 'Consolas, "Courier New", monospace',
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-all",
+                  maxHeight: "70vh",
+                }}
+              >
+                {serverLogContent || "Sunucuda log dosyas─▒ bulunamad─▒."}
+              </Box>
+            </Paper>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleFetchServerLog} color="primary">Yenile</Button>
+          <Button onClick={handleFetchServerLog} disabled={loadingServerLog}>Yenile</Button>
           <Button onClick={() => setServerLogOpen(false)}>Kapat</Button>
         </DialogActions>
       </Dialog>
