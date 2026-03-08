@@ -1,5 +1,5 @@
 ﻿import { ReactNode } from "react";
-import Forbidden from "./forbidden";
+import Forbidden from "./forbidden/page";
 
 interface ProtectedPageProps {
   children: ReactNode;

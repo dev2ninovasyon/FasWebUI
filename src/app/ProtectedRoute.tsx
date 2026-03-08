@@ -1,6 +1,6 @@
 ﻿import { ReactNode, useEffect, useState } from "react";
 import { useAuthSession } from "@/contexts/AuthSessionContext";
-import Forbidden from "./forbidden";
+import Forbidden from "./forbidden/page";
 import { useRouter } from "next/navigation";
 import { Box, CircularProgress } from "@mui/material";
 
