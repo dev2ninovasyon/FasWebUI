@@ -15,7 +15,7 @@ const Page = () => {
   const [refreshKey, setRefreshKey] = React.useState(0);
   const fetchData = React.useCallback(() => setRefreshKey((k) => k + 1), []);
 
-  // âœ… Seçilen kimlikler burada tutulacak:
+  // ✅ Seçilen kimlikler burada tutulacak:
   const [hazirlayanId, setHazirlayanId] = React.useState<number | undefined>();
   const [onaylayanId, setOnaylayanId] = React.useState<number | undefined>();
   const [kaliteKontrolId, setKaliteKontrolId] = React.useState<number | undefined>();
@@ -82,7 +82,7 @@ const Page = () => {
         </Grid>
 
         <Grid size={12}>
-          {/* âœ… IDâ€™ler tabloya prop olarak gidiyor */}
+          {/* ✅ IDâ€™ler tabloya prop olarak gidiyor */}
           <DenetimDosyaOnayTable
             hazirlayanId={hazirlayanId}
             onaylayanId={onaylayanId}

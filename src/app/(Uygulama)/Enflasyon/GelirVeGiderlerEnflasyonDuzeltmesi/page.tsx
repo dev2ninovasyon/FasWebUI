@@ -33,7 +33,7 @@ const Page: React.FC = () => {
       >
         <Breadcrumb title="Gelir Ve Giderlere İlişkin Enflasyon Düzeltmesi"
           items={BCrumb}>
-        <EkBelgeYukleButton formKodu="GelirGiderEnflasyonDÃ¼zeltmesi" />
+        <EkBelgeYukleButton formKodu="GelirGiderEnflasyonDüzeltmesi" />
       </Breadcrumb>
         <Grid container spacing={3} sx={{ height: "calc(100vh - 225px)", overflow: "hidden" }}>
           <Grid

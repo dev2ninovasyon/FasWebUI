@@ -93,7 +93,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
         {
             type: "checkbox",
             className: "htCenter",
-        }, // SeÃ§im
+        }, // Seçim
         {
             type: "numeric",
             columnSorting: true,
@@ -121,7 +121,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
             readOnly: true,
             editor: false,
             className: "htLeft",
-        }, // Hesap AdÄ±
+        }, // Hesap Adı
         {
             type: "text",
             columnSorting: true,
@@ -309,13 +309,13 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
         if (hotTableComponent.current) {
             const hotInstance = hotTableComponent.current.hotInstance;
             const cellMeta = hotInstance.getDataAtRow(row);
-            console.log("SatÄ±r Verileri:", cellMeta);
+            console.log("Satır Verileri:", cellMeta);
             return cellMeta;
         }
     };
 
     const handleAfterChange = async (changes: any, source: any) => {
-        //DeÄŸiÅŸen Cellin SatÄ±r Indexi
+        //Değişen Cellin Satır Indexi
         let changedRow = -1;
 
         if (source === "loadData") {
@@ -332,7 +332,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
                 );
                 changedRow = row;
 
-                //Cell GÃ¼ncelleme
+                //Cell Güncelleme
                 if (prop == 9) {
                     await handleUpdateEDefterIncelemeVerisi(changedRow);
 
@@ -360,12 +360,12 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
             );
             if (result) {
                 await fetchData();
-                console.log("E-Defter Ä°nceleme Verisi gÃ¼ncelleme baÅŸarÄ±lÄ±");
+                console.log("E-Defter İnceleme Verisi güncelleme başarılı");
             } else {
-                console.log("E-Defter Ä°nceleme gÃ¼ncelleme baÅŸarÄ±sÄ±z");
+                console.log("E-Defter İnceleme güncelleme başarısız");
             }
         } catch (error) {
-            console.log("Bir hata oluÅŸtu:", error);
+            console.log("Bir hata oluştu:", error);
         }
     };
 
@@ -387,13 +387,13 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
             );
             if (result) {
                 setSecilenlereTespitAciklamaKaydetTiklandimi(false);
-                console.log("E-Defter Ä°nceleme Verisi gÃ¼ncelleme baÅŸarÄ±lÄ±");
+                console.log("E-Defter İnceleme Verisi güncelleme başarılı");
             } else {
                 setSecilenlereTespitAciklamaKaydetTiklandimi(false);
-                console.log("E-Defter Ä°nceleme gÃ¼ncelleme baÅŸarÄ±sÄ±z");
+                console.log("E-Defter İnceleme güncelleme başarısız");
             }
         } catch (error) {
-            console.log("Bir hata oluÅŸtu:", error);
+            console.log("Bir hata oluştu:", error);
         }
     };
 
@@ -425,7 +425,7 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
             setFetchedData(rowsAll);
             setRowCount(rowsAll.length);
         } catch (error) {
-            console.log("Bir hata oluÅŸtu:", error);
+            console.log("Bir hata oluştu:", error);
         }
     };
 
@@ -488,9 +488,9 @@ const OrneklemFisleriTable: React.FC<Props> = ({ kebirKodu }) => {
                     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 });
                 saveAs(blob, "OrneklemFisleri.xlsx");
-                console.log("Excel dosyasÄ± baÅŸarÄ±yla oluÅŸturuldu");
+                console.log("Excel dosyası başarıyla oluşturuldu");
             } catch (error) {
-                console.log("Excel dosyasÄ± oluÅŸturulurken bir hata oluÅŸtu:", error);
+                console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
             }
         }
         createExcelFile();

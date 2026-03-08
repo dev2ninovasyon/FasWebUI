@@ -39,10 +39,10 @@ import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari
 // ğŸ”” bildirim
 import { enqueueSnackbar } from "notistack";
 
-// âœ… Gönderilen eşleşmeleri API + tip
+// ✅ Gönderilen eşleşmeleri API + tip
 import { getSentInvoiceMatches, SentInvoiceMatchRow } from "@/api/Fatura/FaturaApi";
 
-// âœ… Handsontable
+// ✅ Handsontable
 import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";interface Veri {
   id: number;
   kontrolTesti: string;

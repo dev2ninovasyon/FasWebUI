@@ -6721,33 +6721,33 @@ const RaporTfrs: React.FC<RaporProps> = ({
                   <td
                     style={{
                       textAlign:
-                        dipnot39Rows.filter(
+                        dipnot39Rows.find(
                           (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                        )[0].cariDonem == "-"
+                        )?.cariDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot39Rows.filter(
+                      dipnot39Rows.find(
                         (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                      )[0].cariDonem
+                      )?.cariDonem ?? "-"
                     }
                   </td>
                   <td
                     style={{
                       textAlign:
-                        dipnot39Rows.filter(
+                        dipnot39Rows.find(
                           (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                        )[0].oncekiDonem == "-"
+                        )?.oncekiDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot39Rows.filter(
+                      dipnot39Rows.find(
                         (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                      )[0].oncekiDonem
+                      )?.oncekiDonem ?? "-"
                     }
                   </td>
                 </tr>
@@ -6771,33 +6771,33 @@ const RaporTfrs: React.FC<RaporProps> = ({
                   <td
                     style={{
                       textAlign:
-                        dipnot39Rows.filter(
+                        dipnot39Rows.find(
                           (x) => x.baslik == "Pay Başına Kazanç"
-                        )[0].cariDonem == "-"
+                        )?.cariDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot39Rows.filter(
+                      dipnot39Rows.find(
                         (x) => x.baslik == "Pay Başına Kazanç"
-                      )[0].cariDonem
+                      )?.cariDonem ?? "-"
                     }
                   </td>
                   <td
                     style={{
                       textAlign:
-                        dipnot39Rows.filter(
+                        dipnot39Rows.find(
                           (x) => x.baslik == "Pay Başına Kazanç"
-                        )[0].oncekiDonem == "-"
+                        )?.oncekiDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot39Rows.filter(
+                      dipnot39Rows.find(
                         (x) => x.baslik == "Pay Başına Kazanç"
-                      )[0].oncekiDonem
+                      )?.oncekiDonem ?? "-"
                     }
                   </td>
                 </tr>

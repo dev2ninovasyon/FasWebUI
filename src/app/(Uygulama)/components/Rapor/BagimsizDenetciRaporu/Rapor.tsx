@@ -5126,42 +5126,42 @@ const Rapor: React.FC<RaporProps> = ({
                   <td>Şirket tarafından açılan ve halen devam eden davalar</td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                 </tr>
@@ -5169,42 +5169,42 @@ const Rapor: React.FC<RaporProps> = ({
                   <td>Şirket tarafından yürütülen icra takipleri</td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == user.yil
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == user.yil
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket tarafından yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                 </tr>
@@ -5212,42 +5212,42 @@ const Rapor: React.FC<RaporProps> = ({
                   <td>Şirket aleyhine açılan ve halen devam eden davalar</td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == user.yil
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine açılan ve halen devam eden davalar" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                 </tr>
@@ -5255,42 +5255,42 @@ const Rapor: React.FC<RaporProps> = ({
                   <td>Şirket aleyhine yürütülen icra takipleri</td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == user.yil
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == user.yil
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].adet
+                      )?.adet ?? 0
                     }
                   </td>
                   <td style={{ textAlign: "right" }}>
                     {formatNumber(
-                      dipnot25Rows.filter(
+                      dipnot25Rows.find(
                         (x) =>
                           x.baslik ==
                           "Şirket aleyhine yürütülen icra takipleri" &&
                           x.yil == (user.yil ?? 1) - 1
-                      )[0].tutar
+                      )?.tutar ?? 0
                     )}
                   </td>
                 </tr>
@@ -6412,33 +6412,33 @@ const Rapor: React.FC<RaporProps> = ({
                   <td
                     style={{
                       textAlign:
-                        dipnot34Rows.filter(
+                        dipnot34Rows.find(
                           (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                        )[0].cariDonem == "-"
+                        )?.cariDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot34Rows.filter(
+                      dipnot34Rows.find(
                         (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                      )[0].cariDonem
+                      )?.cariDonem ?? "-"
                     }
                   </td>
                   <td
                     style={{
                       textAlign:
-                        dipnot34Rows.filter(
+                        dipnot34Rows.find(
                           (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                        )[0].oncekiDonem == "-"
+                        )?.oncekiDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot34Rows.filter(
+                      dipnot34Rows.find(
                         (x) => x.baslik == "Dönem Düzeltilmiş Net Kar/Zararı"
-                      )[0].oncekiDonem
+                      )?.oncekiDonem ?? "-"
                     }
                   </td>
                 </tr>
@@ -6446,14 +6446,14 @@ const Rapor: React.FC<RaporProps> = ({
                   <td>Hisse Sayısı</td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot34Rows.filter((x) => x.baslik == "Hisse Sayısı")[0]
-                        .cariDonem
+                      dipnot34Rows.find((x) => x.baslik == "Hisse Sayısı")
+                        ?.cariDonem ?? "-"
                     }
                   </td>
                   <td style={{ textAlign: "center" }}>
                     {
-                      dipnot34Rows.filter((x) => x.baslik == "Hisse Sayısı")[0]
-                        .oncekiDonem
+                      dipnot34Rows.find((x) => x.baslik == "Hisse Sayısı")
+                        ?.oncekiDonem ?? "-"
                     }
                   </td>
                 </tr>
@@ -6462,33 +6462,33 @@ const Rapor: React.FC<RaporProps> = ({
                   <td
                     style={{
                       textAlign:
-                        dipnot34Rows.filter(
+                        dipnot34Rows.find(
                           (x) => x.baslik == "Pay Başına Kazanç"
-                        )[0].cariDonem == "-"
+                        )?.cariDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot34Rows.filter(
+                      dipnot34Rows.find(
                         (x) => x.baslik == "Pay Başına Kazanç"
-                      )[0].cariDonem
+                      )?.cariDonem ?? "-"
                     }
                   </td>
                   <td
                     style={{
                       textAlign:
-                        dipnot34Rows.filter(
+                        dipnot34Rows.find(
                           (x) => x.baslik == "Pay Başına Kazanç"
-                        )[0].oncekiDonem == "-"
+                        )?.oncekiDonem == "-"
                           ? "center"
                           : "right",
                     }}
                   >
                     {
-                      dipnot34Rows.filter(
+                      dipnot34Rows.find(
                         (x) => x.baslik == "Pay Başına Kazanç"
-                      )[0].oncekiDonem
+                      )?.oncekiDonem ?? "-"
                     }
                   </td>
                 </tr>

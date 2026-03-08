@@ -76,11 +76,7 @@ export default function SessionWarningDialog({
   useEffect(() => {
     if (open && secondsRemaining <= 0) {
       setIsCountingDown(false);
-      // Wait a moment then logout
-      const timeout = setTimeout(() => {
-        onLogout();
-      }, 500);
-      return () => clearTimeout(timeout);
+      onLogout();
     }
   }, [open, secondsRemaining, onLogout]);
 
@@ -119,6 +115,7 @@ export default function SessionWarningDialog({
       maxWidth="xs"
       fullWidth
       disableEscapeKeyDown
+      disableRestoreFocus
       PaperProps={{
         sx: {
           borderRadius: 3,

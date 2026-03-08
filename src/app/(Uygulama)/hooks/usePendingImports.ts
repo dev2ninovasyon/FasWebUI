@@ -5,7 +5,7 @@ export interface PendingImportJob {
   jobId: string;
   status: string;
   pendingTableKey: string;
-  tableDisplayName: string; // TÃ¼rkÃ§e isim
+  tableDisplayName: string; // Türkçe isim
   errorMessage: string;
   pausedAt: string;
   tasinanDenetlenenId?: number;
@@ -52,7 +52,7 @@ export const usePendingImports = () => {
         setPendingJobs([]);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Hata oluÅŸtu";
+      const errorMessage = err instanceof Error ? err.message : "Hata oluştu";
       setError(errorMessage);
       setPendingJobs([]);
     } finally {
@@ -60,7 +60,7 @@ export const usePendingImports = () => {
     }
   };
 
-  // Sayfa yÃ¼klenmesinde kontrol et
+  // Sayfa yüklenmesinde kontrol et
   useEffect(() => {
     checkPendingJobs();
   }, []);

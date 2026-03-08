@@ -15,6 +15,7 @@ import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { url } from "@/api/apiBase";
 import { readStoredAuthTokens } from "@/utils/authSession";
+import { LOGOUT_REASON_KEY } from "@/utils/sessionConfig";
 
 export default function Maintenance() {
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
@@ -24,6 +25,14 @@ export default function Maintenance() {
   const [hasTokenIssue, setHasTokenIssue] = useState(true);
   const isFasAdmin =
     user?.yetki === "FasAdmin" || user?.rol?.includes("FasAdmin") || false;
+
+  useEffect(() => {
+    // Bakım sayfasındayken eski logout nedenlerini temizle ki 
+    // giriş ekranına gidince "oturrumunuz sonlandırıldı" uyarısı çıkmasın.
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(LOGOUT_REASON_KEY);
+    }
+  }, []);
   const canGoHome = isApiReachable && !hasTokenIssue;
 
   const checkStatus = async () => {
@@ -38,16 +47,18 @@ export default function Maintenance() {
     const timeoutId = window.setTimeout(() => controller.abort(), 6000);
 
     try {
+      const baseUrl = url.endsWith("/") ? url.slice(0, -1) : url;
+      const fetchUrl = `${baseUrl}/Health`;
       const healthResponse = await fetch(
-        url.endsWith("/") ? url.slice(0, -1) : url,
+        fetchUrl,
         {
           method: "GET",
-          credentials: "include",
           signal: controller.signal,
         }
       );
-      setIsApiReachable(healthResponse.status > 0);
-    } catch {
+      setIsApiReachable(healthResponse.ok);
+    } catch (err) {
+      console.error("Health check error:", err);
       setIsApiReachable(false);
     } finally {
       window.clearTimeout(timeoutId);
@@ -57,7 +68,13 @@ export default function Maintenance() {
 
   useEffect(() => {
     checkStatus();
-  }, [user?.token]);
+  }, []);
+
+  const handleLoginClick = () => {
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem(LOGOUT_REASON_KEY);
+    }
+  };
 
   return (
     <Box
@@ -66,6 +83,11 @@ export default function Maintenance() {
       textAlign="center"
       justifyContent="center"
       alignItems="center"
+      minHeight="100vh"
+      sx={{
+        backgroundColor: (theme) =>
+          theme.palette.mode === "dark" ? "#1e1e1e" : "#f5f5f5",
+      }}
     >
       <Image
         priority
@@ -87,15 +109,16 @@ export default function Maintenance() {
         Web Sitesi Bakim Asamasindadir.
       </Typography>
       <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
-        {!isCheckingHealth && canGoHome && (
+        {!isCheckingHealth && isApiReachable && (
           <Button
             color="primary"
             variant="contained"
             component={Link}
-            href="/Anasayfa"
+            href={hasTokenIssue ? "/" : "/Anasayfa"}
+            onClick={handleLoginClick}
             disableElevation
           >
-            Anasayfaya Don
+            {hasTokenIssue ? "Giriş Ekranına Git" : "Anasayfaya Dön"}
           </Button>
         )}
         {isCheckingHealth && (
@@ -115,15 +138,20 @@ export default function Maintenance() {
             Log Ekranini Ac
           </Button>
         )}
-        {!isCheckingHealth && !canGoHome && (
+        {!isCheckingHealth && !isApiReachable && (
           <Button variant="outlined" color="warning" onClick={checkStatus}>
             Yeniden Kontrol Et
           </Button>
         )}
       </Stack>
-      {!isCheckingHealth && !canGoHome && (
-        <Typography align="center" variant="body2" mt={2} color="warning.main">
-          API ulasilabilir degil veya oturum token bilgisi bulunamadi.
+      {!isCheckingHealth && !isApiReachable && (
+        <Typography align="center" variant="body2" mt={2} color="error.main">
+          Sisteme şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyin.
+        </Typography>
+      )}
+      {!isCheckingHealth && isApiReachable && hasTokenIssue && (
+        <Typography align="center" variant="body2" mt={2} color="info.main">
+          Sistem aktif. Giriş yaparak devam edebilirsiniz.
         </Typography>
       )}
     </Box>

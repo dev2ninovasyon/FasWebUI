@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuthSession } from "@/contexts/AuthSessionContext";
 import {
     INACTIVITY_TIMEOUT,
@@ -17,6 +17,7 @@ import {
 export default function useSessionManagement() {
     const { status, clearSession, refreshSession } = useAuthSession();
     const router = useRouter();
+    const pathname = usePathname();
 
     // Dialog states
     const [showWarning, setShowWarning] = useState(false);
@@ -36,6 +37,7 @@ export default function useSessionManagement() {
         if (broadcast && broadcastChannelRef.current) {
             broadcastChannelRef.current.postMessage({ type: "LOGOUT", reason });
         }
+        setShowWarning(false);
         clearSession(reason);
         router.replace("/");
     }, [clearSession, router]);
@@ -59,7 +61,7 @@ export default function useSessionManagement() {
 
     // --- Zamanlayıcıları Başlat/Sıfırla ---
     const resetTimers = useCallback(() => {
-        if (!isLoggedIn) return;
+        if (!isLoggedIn || pathname === "/maintenance") return;
 
         // 1. Önceki tüm timer'ları temizle
         if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
@@ -115,7 +117,7 @@ export default function useSessionManagement() {
 
     // --- Aktivite Kaydı ---
     const trackActivity = useCallback(() => {
-        if (!isLoggedIn || showWarning) return;
+        if (!isLoggedIn || showWarning || pathname === "/maintenance") return;
 
         const now = Date.now();
         localStorage.setItem(LAST_ACTIVITY_KEY, now.toString());
@@ -125,7 +127,7 @@ export default function useSessionManagement() {
         }
 
         resetTimers();
-    }, [isLoggedIn, showWarning, resetTimers]);
+    }, [isLoggedIn, showWarning, pathname, resetTimers]);
 
     // --- BroadcastChannel Kurulumu ---
     useEffect(() => {
@@ -169,7 +171,7 @@ export default function useSessionManagement() {
 
     // --- Global Event Listeners ---
     useEffect(() => {
-        if (!isLoggedIn) return;
+        if (!isLoggedIn || pathname === "/maintenance") return;
 
         const events = ["mousedown", "keydown", "scroll", "touchstart", "click"];
         const handler = () => trackActivity();
@@ -182,12 +184,30 @@ export default function useSessionManagement() {
         return () => {
             events.forEach((e) => window.removeEventListener(e, handler));
         };
-    }, [isLoggedIn, trackActivity, resetTimers]);
+    }, [isLoggedIn, trackActivity, resetTimers, pathname]);
 
     // Sayfa ilk yüklendiğinde session_start yoksa oluştur (yenileme veya yeni sekme)
     useEffect(() => {
         if (isLoggedIn && !localStorage.getItem(SESSION_START_KEY)) {
             localStorage.setItem(SESSION_START_KEY, Date.now().toString());
+        }
+    }, [isLoggedIn]);
+
+    // --- Login/Logout Durumunda Reset ---
+    useEffect(() => {
+        if (!isLoggedIn) {
+            setShowWarning(false);
+            setWarningReason(null);
+
+            if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+            if (totalSessionTimerRef.current) clearTimeout(totalSessionTimerRef.current);
+            if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+
+            // Eski activity izlerini temizle
+            if (typeof window !== "undefined") {
+                localStorage.removeItem(LAST_ACTIVITY_KEY);
+                localStorage.removeItem(SESSION_START_KEY);
+            }
         }
     }, [isLoggedIn]);
 
