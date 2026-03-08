@@ -80,8 +80,8 @@ export default function SessionWarningDialog({
     }
   }, [open, secondsRemaining, onLogout]);
 
-  const minutes = Math.floor(secondsRemaining / 60);
-  const seconds = secondsRemaining % 60;
+  const minutes = Math.max(0, Math.floor(secondsRemaining / 60));
+  const seconds = Math.max(0, Math.floor(secondsRemaining % 60));
   const timeString = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
   const handleKeepSession = () => {

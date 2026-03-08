@@ -104,7 +104,7 @@ export default function useSessionManagement() {
         countdownTimerRef.current = setInterval(() => {
             const elapsed = Date.now() - startTime;
             const remaining = Math.max(0, WARNING_DURATION - elapsed);
-            const remainingSec = Math.ceil(remaining / 1000);
+            const remainingSec = Math.max(0, Math.ceil(remaining / 1000));
 
             setSecondsRemaining(remainingSec);
 

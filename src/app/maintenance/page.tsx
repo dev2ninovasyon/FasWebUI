@@ -47,7 +47,8 @@ export default function Maintenance() {
     const timeoutId = window.setTimeout(() => controller.abort(), 6000);
 
     try {
-      const baseUrl = url.endsWith("/") ? url.slice(0, -1) : url;
+      const safeUrl = url || "http://localhost:5000/api";
+      const baseUrl = safeUrl.endsWith("/") ? safeUrl.slice(0, -1) : safeUrl;
       const fetchUrl = `${baseUrl}/Health`;
       const healthResponse = await fetch(
         fetchUrl,
