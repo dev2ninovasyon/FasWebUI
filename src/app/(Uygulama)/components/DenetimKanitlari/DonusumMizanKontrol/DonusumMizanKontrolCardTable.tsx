@@ -348,8 +348,8 @@ const DonusumMizanKontrolCardTable: React.FC<Props> = ({
                         </TableCell>
                         <TableCell align="right" sx={{ border: "none" }}>
                           {row.kebirKodu < 300
-                            ? formatNumber(row.borcBakiye)
-                            : formatNumber(row.alacakBakiye)}
+                            ? formatNumber(row.borcBakiye - row.alacakBakiye)
+                            : formatNumber(row.alacakBakiye - row.borcBakiye)}
                         </TableCell>
                       </TableRow>
                     ))}

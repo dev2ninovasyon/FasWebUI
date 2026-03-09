@@ -312,6 +312,23 @@ const DonusumMizanKontrol: React.FC<Props> = ({
       TD.style.borderRightColor =
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
     }
+
+    // Torba Hesap ters bakiye kontrolü: 257.00, 268.00, 278.00 — raporBorc ≠ raporAlacak ise kırmızı
+    const rowData = fetchedData[row];
+    if (rowData) {
+      const detayKodu = rowData[1];
+      const raporBorc = rowData[8];
+      const raporAlacak = rowData[9];
+      if (
+        (detayKodu === "257.00" || detayKodu === "268.00" || detayKodu === "278.00") &&
+        raporBorc !== raporAlacak
+      ) {
+        TD.style.backgroundColor =
+          customizer.activeMode === "dark" ? "#5c1a1a" : "#ffebee";
+        TD.style.borderColor =
+          customizer.activeMode === "dark" ? "#7a2020" : "#ffcdd2";
+      }
+    }
   };
 
   const fetchData = async () => {
