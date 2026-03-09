@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState, useEffect } from "react";
 import {
@@ -30,7 +30,6 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import ProtectedPage from "@/app/ProtectedPage";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 import {
   clearClientLogs,
   ClientLogEntry,
@@ -123,19 +122,16 @@ const Page = () => {
     setLoadingServerLog(true);
     setServerLogOpen(true);
     try {
-      const response = await axios.get(
-        `${url}/Audit/DownloadServerLog`,
-        createAuthorizedAxiosConfig(
-          {
-            responseType: "text",
-          },
-          user.token
-        )
-      );
+      const response = await axios.get(`${url}/Audit/DownloadServerLog`, {
+        responseType: "text",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
       setServerLogContent(response.data);
     } catch (error: any) {
       console.error("Server log fetch error:", error);
-      enqueueSnackbar("Sunucu logları getirilemedi.", { variant: "error" });
+      enqueueSnackbar("Sunucu loglar─▒ getirilemedi.", { variant: "error" });
       setServerLogOpen(false);
     } finally {
       setLoadingServerLog(false);
@@ -192,7 +188,7 @@ const Page = () => {
                   color="info"
                   onClick={handleFetchServerLog}
                 >
-                  Sunucu Loglarını Getir
+                  Sunucu Loglar─▒n─▒ Getir
                 </Button>
                 <Button
                   variant="outlined"
@@ -361,7 +357,7 @@ const Page = () => {
         maxWidth="lg"
         fullWidth
       >
-        <DialogTitle>Sunucu İşlem Logları (Son Dosya)</DialogTitle>
+        <DialogTitle>Sunucu ─░┼şlem Loglar─▒ (Son Dosya)</DialogTitle>
         <DialogContent dividers>
           {loadingServerLog ? (
             <Box display="flex" justifyContent="center" py={10}>
@@ -381,7 +377,7 @@ const Page = () => {
                   maxHeight: "70vh",
                 }}
               >
-                {serverLogContent || "Sunucuda log dosyası bulunamadı."}
+                {serverLogContent || "Sunucuda log dosyas─▒ bulunamad─▒."}
               </Box>
             </Paper>
           )}

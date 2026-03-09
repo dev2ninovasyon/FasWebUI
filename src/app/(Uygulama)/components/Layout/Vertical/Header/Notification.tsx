@@ -246,7 +246,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       // Callback function'ı tanımla
       const handleBildirim = (bildirim: any) => {
         if (process.env.NODE_ENV === 'development') {
-          console.log("📬 Yeni bildirim");
+          console.log("📬 Yeni bildirim:", bildirim);
         }
         handleNewNotification(bildirim);
       };
@@ -385,7 +385,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       }, 350);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.log("Ses çalma hatası");
+        console.warn("Ses çalma hatası (Muhtemelen kullanıcı etkileşimi bekleniyor):", error);
       }
     }
   };
@@ -875,4 +875,5 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
 };
 
 export default Notifications;
+
 

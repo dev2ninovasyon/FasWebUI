@@ -1,6 +1,7 @@
 ﻿import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import type { Workbook } from "exceljs";interface AnalysisData {
+import type { Workbook } from "exceljs";
+interface AnalysisData {
     id: number;
     tabloAdi: string;
     kalemId: number | null;
@@ -98,7 +99,7 @@ const createWorksheet = (
 
                 // Add kalem row
                 const dataRow = worksheet.addRow([
-                    "  ".repeat(level) + row.adi,
+                    "  ".repeat(Math.max(0, level)) + row.adi,
                     row.tutarOncekiDonem,
                     row.tutarCariDonem,
                     row.mutlak,

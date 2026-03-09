@@ -63,7 +63,7 @@ const Page: React.FC = () => {
                 md: 12,
                 lg: 12
               }}>
-                 <Button
+              <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
@@ -117,6 +117,7 @@ const Page: React.FC = () => {
                     tip={tip}
                     isClickedVarsayilanaDon={isClickedVarsayilanaDon}
                     setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                    konsolide={false}
                   />
                 </Grid>
               </Grid>
@@ -141,6 +142,7 @@ const Page: React.FC = () => {
                     tip={tip}
                     isClickedVarsayilanaDon={isClickedVarsayilanaDon}
                     setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
+                    konsolide={false}
                   />
                 </Grid>
               </Grid>

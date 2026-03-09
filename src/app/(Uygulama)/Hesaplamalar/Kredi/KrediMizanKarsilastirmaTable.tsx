@@ -210,7 +210,7 @@ const KrediMizanKarsilastirmaTable = forwardRef<any, KrediMizanKarsilastirmaTabl
           customizer.activeMode === "dark" ? "#10141c" : "#e0e0e0";
       }
 
-      // Fark sÃ¼tunu (col === 4) iÃ§in kÄ±rmÄ±zÄ± renklendir
+      // Fark sütunu (col === 4) için kırmızı renklendir
       if (col === 4) {
         const currentRowData = fetchedData[row];
         const isFarkVar = currentRowData && currentRowData[5]; // farkVar is at index 5

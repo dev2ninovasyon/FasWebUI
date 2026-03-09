@@ -179,6 +179,7 @@ export const startBildirimConnection = async (denetciId: number) => {
     // Bu sayede bağlantı kurulduktan hemen sonra mesajlar alınabilir
     if (notificationCallback && !listenerRegistered) {
       activeConnection.on("YeniBildirim", notificationCallback);
+      activeConnection.on("yenibildirim", notificationCallback);
       listenerRegistered = true;
     }
 
@@ -275,9 +276,11 @@ export const onYeniBildirim = (callback: (bildirim: any) => void, denetciId?: nu
   if (hubConnection) {
     // Eski listener'ı temizle (mükerrerliği önlemek için)
     hubConnection.off("YeniBildirim");
+    hubConnection.off("yenibildirim");
     hubConnection.on("YeniBildirim", callback);
+    hubConnection.on("yenibildirim", callback);
     listenerRegistered = true;
-  } 
+  }
 
   // SignalR bağlanana kadar veya hata verirse polling'i hazırla
   if (denetciId && (!hubConnection || hubConnection.state !== HubConnectionState.Connected)) {
@@ -550,3 +553,4 @@ export const updateBildirimlerOkundumu = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+

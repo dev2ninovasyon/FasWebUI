@@ -1,5 +1,6 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -7,15 +8,18 @@ import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { enqueueSnackbar } from "notistack";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
-import {  getKrediRiski,
+import {
+  getKrediRiski,
   updateKrediRiski,
 } from "@/api/DenetimRaporu/DenetimRaporu";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -35,12 +39,14 @@ interface Props {
   dipnotKodu: number;
   kaydetTiklandimi: boolean;
   setKaydetTiklandimi: (bool: boolean) => void;
+  konsolide?: boolean;
 }
 
 const KrediRiskiCari: React.FC<Props> = ({
   dipnotKodu,
   kaydetTiklandimi,
   setKaydetTiklandimi,
+  konsolide,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -384,26 +390,29 @@ const KrediRiskiCari: React.FC<Props> = ({
       if (dipnotKodu == 381 || dipnotKodu == 45) {
         const krediRiskiVerileri = await getKrediRiski(user.denetciId || 0,
           user.denetlenenId || 0,
-          user.yil || 0
+          user.yil || 0,
+          konsolide
         );
         console.log(krediRiskiVerileri);
         const rowsAll: any = [];
-        krediRiskiVerileri
-          .filter((veri: Veri) => veri.yil == user.yil)
-          .forEach((veri: any) => {
-            const newRow: any = [
-              veri.id,
-              veri.kalemAdi,
-              veri.ticariAlacaklarIliskiliTaraf,
-              veri.ticariAlacaklarDigerTaraf,
-              veri.digerAlacaklarIliskiliTaraf,
-              veri.digerAlacaklarDigerTaraf,
-              veri.finansalYatirimlar,
-              veri.nakitVeNakitBenzeleri,
-              veri.toplam,
-            ];
-            rowsAll.push(newRow);
-          });
+        if (krediRiskiVerileri && Array.isArray(krediRiskiVerileri)) {
+          krediRiskiVerileri
+            .filter((veri: Veri) => veri.yil == user.yil)
+            .forEach((veri: any) => {
+              const newRow: any = [
+                veri.id,
+                veri.kalemAdi,
+                veri.ticariAlacaklarIliskiliTaraf,
+                veri.ticariAlacaklarDigerTaraf,
+                veri.digerAlacaklarIliskiliTaraf,
+                veri.digerAlacaklarDigerTaraf,
+                veri.finansalYatirimlar,
+                veri.nakitVeNakitBenzeleri,
+                veri.toplam,
+              ];
+              rowsAll.push(newRow);
+            });
+        }
         setFetchedData(rowsAll);
         setRowCount(rowsAll.length);
       }
@@ -479,14 +488,14 @@ const KrediRiskiCari: React.FC<Props> = ({
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
-        ? customizer.SidebarWidth - customizer.MiniSidebarWidth
-        : 0;
+          ? customizer.SidebarWidth - customizer.MiniSidebarWidth
+          : 0;
 
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
           : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-            diff,
+          diff,
       });
     }
   }, [customizer.isCollapse]);

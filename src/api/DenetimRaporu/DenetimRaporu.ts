@@ -165,7 +165,7 @@ export const getDipnot15Amortisman = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot15Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
+      `/Rapor/Dipnot15Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -191,7 +191,7 @@ export const getDipnot16Amortisman = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot16Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
+      `/Rapor/Dipnot16Amortisman?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -217,7 +217,7 @@ export const getDipnot15Maliyet = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot15Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
+      `/Rapor/Dipnot15Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -243,7 +243,7 @@ export const getDipnot16Maliyet = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot16Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
+      `/Rapor/Dipnot16Maliyet?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -315,7 +315,7 @@ export const getDipnot25 = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot25?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/Dipnot25?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -341,7 +341,7 @@ export const getDipnot34 = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/Dipnot34?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
+      `/Rapor/Dipnot34?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -367,7 +367,7 @@ export const getKrediRiski = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/KrediRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      `/Rapor/KrediRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -416,7 +416,7 @@ export const getDovizKuruRiski = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/DovizKuruRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
+      `/Rapor/DovizKuruRiski?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {
@@ -465,7 +465,7 @@ export const getDovizKuruRiskiDuyarlilikAnalizi = async (
 ) => {
   try {
     const response = await apiFetch(
-      `/Rapor/DovizKuruRiskiDuyarlilikAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidemi=${konsolidasyonMu}`,
+      `/Rapor/DovizKuruRiskiDuyarlilikAnalizi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}${konsolidasyonMu !== undefined ? `&konsolidemi=${konsolidasyonMu}` : ""}`,
       {
         method: "GET",
         headers: {

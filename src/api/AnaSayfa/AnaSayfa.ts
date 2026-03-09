@@ -66,6 +66,8 @@ export interface SirketArsivOzetDto {
   toplamSirketSayisi: number;
   toplamBoyutByte: number;
   toplamBoyutMb: number;
+  toplamModulSayisi: number;
+  aktifModulSayisi: number;
   sirketler: SirketArsivOzetItemDto[];
 }
 

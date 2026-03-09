@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { Box, Button } from "@mui/material";
-import IsletmeninSurekliliğiVeAnalitikIncelemeLayout from "./IsletmeninSurekliliğiVeAnalitikIncelemeLayout";
+import IsletmeninSurekliligiVeAnalitikIncelemeLayout from "./IsletmeninSurekliligiVeAnalitikIncelemeLayout";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
 import FilteredMenu from "@/app/(Uygulama)/components/Tables/MenuTable";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
@@ -16,7 +16,7 @@ const Page = () => {
   };
 
   return (
-    <IsletmeninSurekliliğiVeAnalitikIncelemeLayout>
+    <IsletmeninSurekliligiVeAnalitikIncelemeLayout>
       <PageContainer
         title="İşletmenin Sürekliliği ve Analitik İnceleme"
         description="this is İşletmenin Sürekliliği ve Analitik İnceleme"
@@ -45,7 +45,8 @@ const Page = () => {
           )}
         </Box>
       </PageContainer>
-    </IsletmeninSurekliliğiVeAnalitikIncelemeLayout>
+    </IsletmeninSurekliligiVeAnalitikIncelemeLayout>
+
   );
 };
 

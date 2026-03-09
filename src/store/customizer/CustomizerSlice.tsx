@@ -16,6 +16,7 @@ interface StateType {
   isLanguage?: string;
   isCardShadow?: boolean;
   borderRadius?: number | any;
+  isNotificationSound?: boolean;
 }
 
 const initialState: StateType = {
@@ -34,6 +35,7 @@ const initialState: StateType = {
   isLanguage: "tr",
   isCardShadow: true,
   borderRadius: 7,
+  isNotificationSound: true,
 };
 
 export const CustomizerSlice = createSlice({
@@ -79,6 +81,9 @@ export const CustomizerSlice = createSlice({
     setBorderRadius: (state: StateType, action) => {
       state.borderRadius = action.payload;
     },
+    setNotificationSound: (state: StateType, action) => {
+      state.isNotificationSound = action.payload;
+    },
   },
 });
 
@@ -96,6 +101,7 @@ export const {
   toggleHorizontal,
   setLanguage,
   setCardShadow,
+  setNotificationSound,
 } = CustomizerSlice.actions;
 
 export default CustomizerSlice.reducer;

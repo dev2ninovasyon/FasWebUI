@@ -194,7 +194,7 @@ const saveNoteForMonth = async (ay: string) => {
     );
   }
 
-  // âœ… UI'de gösterilecek ay listesi (tek ay)
+  // ✅ UI'de gösterilecek ay listesi (tek ay)
   const gosterilecekAylar =
     seciliAy === "Tümü" ? [] : aylar.filter((x) => x.ay === seciliAy);
 

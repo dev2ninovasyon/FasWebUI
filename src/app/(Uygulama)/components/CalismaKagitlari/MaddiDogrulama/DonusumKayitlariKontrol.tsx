@@ -138,7 +138,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                                 ))}
                             {anaHesaplar.filter(row => (row.vukBakiye ?? 0) !== 0 || (row.donusumBakiye ?? 0) !== 0 || (row.fark ?? 0) !== 0).length === 0 && (
                                 <TableRow>
-                                    <TableCell colSpan={4} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadÄ±</TableCell>
+                                    <TableCell colSpan={4} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadı</TableCell>
                                 </TableRow>
                             )}
                         </TableBody>
@@ -182,7 +182,7 @@ const DonusumKayitlariKontrol: React.FC<DonusumKayitlariProps> = ({
                             ))}
                         {donusumFisleri.filter(row => (row.borc ?? 0) !== 0 || (row.alacak ?? 0) !== 0).length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={6} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadÄ±</TableCell>
+                                <TableCell colSpan={6} align="center" sx={{ color: TEXT_COLOR }}>Veri bulunamadı</TableCell>
                             </TableRow>
                         )}
                     </TableBody>

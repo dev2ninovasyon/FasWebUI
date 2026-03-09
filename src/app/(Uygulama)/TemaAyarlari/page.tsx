@@ -14,9 +14,10 @@ import {
 } from "@mui/material";
 import WbSunnyTwoToneIcon from "@mui/icons-material/WbSunnyTwoTone";
 import DarkModeTwoToneIcon from "@mui/icons-material/DarkModeTwoTone";
-import { IconCheck } from "@tabler/icons-react";
-import { setDarkMode, setTheme } from "@/store/customizer/CustomizerSlice";
+import { IconCheck, IconVolume, IconVolumeOff } from "@tabler/icons-react";
+import { setDarkMode, setNotificationSound, setTheme } from "@/store/customizer/CustomizerSlice";
 import TemaAyarlariLayout from "./TemaAyarlariLayout";
+import { useTheme } from "@mui/material/styles";
 
 interface colors {
   id: number;
@@ -26,7 +27,7 @@ interface colors {
 }
 const Page = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
-
+  const theme = useTheme();
   const dispatch = useDispatch();
 
   const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
@@ -128,6 +129,29 @@ const Page = () => {
                 color={customizer.activeMode === "dark" ? "primary" : "inherit"}
               />
               Koyu Mod
+            </StyledBox>
+          </Stack>
+
+          <Box pt={3} />
+          {/* ------------------------------------------- */}
+          {/* ------------ Notification Sound setting ------------- */}
+          {/* ------------------------------------------- */}
+          <Typography variant="h5" gutterBottom>
+            Bildirim Ayarları
+          </Typography>
+          <Stack direction={"row"} gap={2} alignItems="center">
+            <StyledBox
+              onClick={() => dispatch(setNotificationSound(!customizer.isNotificationSound))}
+              display="flex"
+              gap={1}
+              sx={{ width: 'fit-content', minWidth: '180px' }}
+            >
+              {customizer.isNotificationSound ? (
+                <IconVolume color={theme.palette.primary.main} />
+              ) : (
+                <IconVolumeOff color="inherit" />
+              )}
+              {customizer.isNotificationSound ? "Bildirim Sesi: Açık" : "Bildirim Sesi: Kapalı"}
             </StyledBox>
           </Stack>
 

@@ -1,10 +1,10 @@
-﻿import { Box, Button, Typography, useMediaQuery } from "@mui/material";
+﻿"use client";
+
+import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Forbidden() {
-  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
-
   return (
     <Box
       display="flex"
@@ -13,19 +13,28 @@ export default function Forbidden() {
       justifyContent="center"
       alignItems="center"
     >
-      <Image
-        priority
-        src={"/images/backgrounds/forbiddenimg.png"}
-        alt="403"
-        width={500}
-        height={300}
-        style={{
+      <Box
+        sx={{
           marginTop: "8%",
-          width: smDown ? "100%" : "auto",
-          height: smDown ? "auto" : "100%",
+          width: { xs: "100%", sm: "auto" },
+          height: { xs: "auto", sm: "100%" },
           maxHeight: "500px",
+          position: "relative",
         }}
-      />
+      >
+        <Image
+          priority
+          src={"/images/backgrounds/forbiddenimg.png"}
+          alt="403"
+          width={500}
+          height={300}
+          style={{
+            width: "100%",
+            height: "auto",
+            objectFit: "contain",
+          }}
+        />
+      </Box>
       <Typography align="center" variant="h1" mb={4}>
         Hay Aksi!!!
       </Typography>

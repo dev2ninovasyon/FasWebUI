@@ -13,7 +13,7 @@ const BCrumb = [
   },
 ];
 
-export default function IsletmeninSurekliliğiVeAnalitikIncelemeLayout({
+export default function IsletmeninSurekliligiVeAnalitikIncelemeLayout({
   children,
 }: {
   children: React.ReactNode;

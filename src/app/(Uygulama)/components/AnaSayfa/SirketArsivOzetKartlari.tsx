@@ -18,10 +18,15 @@ import {
   Link,
 } from "@mui/material";
 import NextLink from "next/link";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import TouchAppIcon from "@mui/icons-material/TouchApp";
-import Image from "next/image";
 import { useTheme } from "@mui/material/styles";
+import {
+  IconBuilding,
+  IconLayoutGrid,
+  IconPackage,
+  IconHistory,
+  IconArrowRight
+} from "@tabler/icons-react";
+import Image from "next/image";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import dynamic from "next/dynamic";
@@ -158,7 +163,8 @@ export function SirketArsivOzetKartlari() {
     : donutSeries;
 
 
-  const toplamDosyaSayisi = 7;
+  // API'den gelen dinamik verileri kullanıyoruz
+  // const toplamDosyaSayisi = 7; 
 
 
 
@@ -170,61 +176,65 @@ export function SirketArsivOzetKartlari() {
       <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }} >
         Kullanıcıya tanımlı şirketlerin ve modüllerin sayısı.
       </Typography>
-      <Grid container spacing={3} columns={{ xs: 1, sm: 2, md: 4 }}>
+      <Grid container spacing={3}>
         <Grid
           size={{
             xs: 12,
             sm: 6,
-            md: 1
+            md: 3
           }}>
           <Card
             sx={{
-              borderWidth: 3,
+              borderWidth: 2,
               borderStyle: "solid",
-              borderColor: "primary.main",
+              borderColor: theme.palette.primary.main,
               width: "100%",
               height: "100%",
-              borderRadius: 3,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+              borderRadius: 4,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              p: 2,
+              p: 3,
+              transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateY(-5px)",
+                boxShadow: "0 15px 35px rgba(0,0,0,0.12)",
+              }
             }}
           >
             <CardContent>
-              <Image
-                src="/images/svgs/icon-company.svg"
-                alt="Şirket"
-                width={65}
-                height={65}
-              />
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                <IconBuilding size={48} color={theme.palette.primary.main} stroke={1.5} />
+              </Box>
               <Typography
                 color="primary.main"
-                mt={1}
                 variant="subtitle1"
-                fontWeight={600}
+                fontWeight={700}
+                sx={{ mb: 1 }}
               >
                 Şirket Sayısı
               </Typography>
-              <Typography color="primary.main" variant="h4" fontWeight={600}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                <Typography color="primary.main" variant="h3" fontWeight={800}>
+                  {data.toplamSirketSayisi}
+                </Typography>
                 <Link
-                  underline="hover"
+                  component={NextLink}
+                  href="/Denetlenen"
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1,
-                    "&:hover svg": {
-                      transform: "translateX(15px)",
-                      transition: "0.1s",
-                    },
+                    textDecoration: "none",
+                    color: theme.palette.primary.main,
+                    "&:hover": { transform: "scale(1.1)" },
+                    transition: "transform 0.2s"
                   }}
                 >
-                  <ChevronRightIcon />
-                  {data.toplamSirketSayisi}
+                  <IconArrowRight size={24} />
                 </Link>
-              </Typography>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
@@ -233,199 +243,184 @@ export function SirketArsivOzetKartlari() {
           size={{
             xs: 12,
             sm: 6,
-            md: 1
+            md: 3
           }}>
           <Card
             sx={{
-              borderWidth: 3,
+              borderWidth: 2,
               borderStyle: "solid",
-              borderColor: "orange",
+              borderColor: orange[500],
               width: "100%",
               height: "100%",
-              borderRadius: 3,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+              borderRadius: 4,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              p: 2,
+              p: 3,
+              transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateY(-5px)",
+                boxShadow: "0 15px 35px rgba(0,0,0,0.12)",
+              }
             }}
           >
             <CardContent>
-              <Image
-                src="/images/svgs/icon-modules.svg"
-                alt="Modül Sayısı"
-                width={65}
-                height={65}
-              />
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                <IconLayoutGrid size={48} color={orange[500]} stroke={1.5} />
+              </Box>
               <Typography
-                color="orange"
-                mt={1}
                 variant="subtitle1"
-                fontWeight={600}
+                fontWeight={700}
+                sx={{ mb: 1, color: orange[500] }}
               >
                 Modül Sayısı
               </Typography>
-              <Typography color="orange" variant="h4" fontWeight={600}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                <Typography sx={{ color: orange[500] }} variant="h3" fontWeight={800}>
+                  {data.toplamModulSayisi}
+                </Typography>
                 <Link
-                  color={orange[500]}
-                  underline="hover"
+                  component={NextLink}
+                  href="#"
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1,
-                    "&:hover svg": {
-                      transform: "translateX(15px)",
-                      transition: "0.1s",
-                    },
+                    textDecoration: "none",
+                    color: orange[500],
+                    "&:hover": { transform: "scale(1.1)" },
+                    transition: "transform 0.2s"
                   }}
                 >
-                  <ChevronRightIcon />
-                  8
+                  <IconArrowRight size={24} />
                 </Link>
-              </Typography>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
-
 
         <Grid
           size={{
             xs: 12,
             sm: 6,
-            md: 1
+            md: 3
           }}>
           <Card
             sx={{
-              borderWidth: 3,
+              borderWidth: 2,
               borderStyle: "solid",
-              borderColor: "green",
+              borderColor: theme.palette.success.main,
               width: "100%",
               height: "100%",
-              borderRadius: 3,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+              borderRadius: 4,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              p: 2,
+              p: 3,
+              transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateY(-5px)",
+                boxShadow: "0 15px 35px rgba(0,0,0,0.12)",
+              }
             }}
           >
             <CardContent>
-              <Image
-                src="/images/svgs/icon-active-modules.svg"
-                alt="Aktif Modüller"
-                width={65}
-                height={65}
-              />
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                <IconPackage size={48} color={theme.palette.success.main} stroke={1.5} />
+              </Box>
               <Typography
-                color="green"
-                mt={1}
                 variant="subtitle1"
-                fontWeight={600}
+                fontWeight={700}
+                sx={{ mb: 1, color: theme.palette.success.main }}
               >
                 Aktif Modüller
               </Typography>
-              <Typography color="green" variant="h4" fontWeight={600}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                <Typography sx={{ color: theme.palette.success.main }} variant="h3" fontWeight={800}>
+                  {data.aktifModulSayisi}
+                </Typography>
                 <Link
-
-                  underline="hover"
+                  component={NextLink}
+                  href="#"
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    color: "green",
-                    gap: 1,
-                    "&:hover svg": {
-                      transform: "translateX(15px)",
-                      transition: "0.1s",
-                    },
+                    textDecoration: "none",
+                    color: theme.palette.success.main,
+                    "&:hover": { transform: "scale(1.1)" },
+                    transition: "transform 0.2s"
                   }}
                 >
-                  <ChevronRightIcon />
-                  {toplamDosyaSayisi}
+                  <IconArrowRight size={24} />
                 </Link>
-              </Typography>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
-
 
         <Grid
           size={{
             xs: 12,
             sm: 6,
-            md: 1
+            md: 3
           }}>
           <Card
             sx={{
-              borderWidth: 3,
+              borderWidth: 2,
               borderStyle: "solid",
               borderColor: "#ba68c8",
               width: "100%",
               height: "100%",
-              borderRadius: 3,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+              borderRadius: 4,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              p: 2,
-              color: "#ba68c8",
+              p: 3,
+              transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+              "&:hover": {
+                transform: "translateY(-5px)",
+                boxShadow: "0 15px 35px rgba(0,0,0,0.12)",
+              }
             }}
           >
             <CardContent>
-              <Image
-                src="/images/svgs/icon-more-modules.svg"
-                alt="Daha Fazla Modül İçin.."
-                width={65}
-                height={65}
-              />
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                <IconHistory size={48} color="#ba68c8" stroke={1.5} />
+              </Box>
               <Typography
-                mt={1}
                 variant="subtitle1"
-                fontWeight={600}
-                sx={{ color: "#ba68c8" }}
+                fontWeight={700}
+                sx={{ mb: 1, color: "#ba68c8" }}
               >
-                <Link
-                  underline="hover"
-                  sx={{
-                    display: "inline-flex",   // Yan yana hizala
-                    alignItems: "center",     // Dikey ortala
-                    gap: 0.5,                   // Yazı ile ikon arası mesafe
-                    color: "#ba68c8",
-                  }}
-
-                >
-                  Daha Fazla Modül
-                  <TouchAppIcon
-                    sx={{
-                      transform: "rotate(180deg)", //Parmağı aşağı çeviriyoruz
-                      fontSize: "1.5rem",
-                      color: "#ba68c8",
-                    }} />
-                </Link>
+                Daha Fazla Modül
               </Typography>
-              <Typography variant="h6" fontWeight={600}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                 <Link
                   component={NextLink}
                   href="https://fasmart.app/denetim-araclari"
-                  underline="hover"
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1,
+                    textDecoration: "none",
                     color: "#ba68c8",
-                    "&:hover svg": {
-                      transform: "translateX(15px)",
-                      transition: "0.1s",
-                    },
+                    fontWeight: 800,
+                    fontSize: '1.2rem',
+                    gap: 1,
+                    "&:hover": { color: "#9c27b0" }
                   }}
                 >
-                  <ChevronRightIcon />
-                  FAS Modülleri
+                  FAS Modülleri <IconArrowRight size={24} />
                 </Link>
+              </Box>
+              <Typography variant="body2" sx={{ color: "#ba68c8", mt: 1, opacity: 0.8 }}>
+                Yeni özellikleri keşfedin
               </Typography>
             </CardContent>
           </Card>
