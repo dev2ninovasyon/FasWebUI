@@ -107,11 +107,22 @@ const Page = () => {
   };
 
   const collectFileUrls = (node: Veri): string[] => {
-    if (!Array.isArray(node.children)) return [];
+    // Eğer klasör objesi ise (dosya değilse), ama içi boşsa ve url (drive id) varsa
+    if (!Array.isArray(node.children) || node.children.length === 0) {
+      if (node.url && !hasExtension(node.name)) {
+        return [node.url];
+      }
+      return [];
+    }
     const urls: string[] = [];
     for (const child of node.children) {
       if (hasExtension(child.name) && child.url) urls.push(child.url);
       else urls.push(...collectFileUrls(child));
+    }
+    // Geriye dönmeden önce bu klasörün kendisi de boş bir klasör durumu yaratırsa?
+    // Kullanıcıya seçili node olarak geldiğinde child.url'leri döneriz.
+    if (urls.length === 0 && node.url && !hasExtension(node.name)) {
+      urls.push(node.url);
     }
     return urls;
   };
@@ -238,6 +249,7 @@ const Page = () => {
 
     const uniquePath = parentPath ? `${parentPath}-${index}_${node.id}` : `root-${index}_${node.id}`;
     const fileCount = countFiles(node);
+    //level > 0 && fileCount === 0
 
     // Çocuklardan sadece klasörleri al ve isme göre sırala
     const folderChildren = Array.isArray(node.children)
@@ -481,8 +493,8 @@ const Page = () => {
           {downloading
             ? "İndiriliyor..."
             : contextMenu
-            ? `${collectFileUrls(contextMenu.node).length} Dosyayı İndir`
-            : "İndir"}
+              ? `${collectFileUrls(contextMenu.node).length} Dosyayı İndir`
+              : "İndir"}
         </MenuItem>
       </Menu>
     </PageContainer>
