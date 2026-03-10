@@ -355,7 +355,14 @@ const DavaKarsiliklariHesaplama: React.FC<Props> = ({
     const hotTableInstance = hotTableComponent.current.hotInstance;
     const data = hotTableInstance.getData();
 
-    const processedData = data.map((row: any) => row.slice(0));
+    const processedData = data.map((row: any) =>
+      row.map((cell: any) => {
+        if (typeof cell === "string") {
+          return cell.replace(/^\d+\)\s+/, "");
+        }
+        return cell;
+      })
+    );
 
     const headers = hotTableInstance.getColHeader().slice(0);
 
