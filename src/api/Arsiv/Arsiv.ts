@@ -1,6 +1,30 @@
 ﻿import { apiFetch } from "@/api/apiBase";
 
 
+export const getArsivTumu = async (
+  denetciId: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/ArsivIslemleri/GetirTumu?denetciId=${denetciId}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("Arşiv getirilemedi");
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
 export const getArsiv = async (
   denetciId: number,
   yil: number,
