@@ -12,9 +12,12 @@ import {
   useTheme,
   Collapse,
   CircularProgress,
+  Menu,
+  MenuItem,
+  ListItemIcon,
 } from "@mui/material";
 import { SvgIconProps } from "@mui/material/SvgIcon";
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import {
   TreeItem,
@@ -24,16 +27,19 @@ import {
 import { useSpring, animated } from "react-spring";
 import { TransitionProps } from "@mui/material/transitions";
 import {
-  IconFileText,
   IconFolderPlus,
   IconFolderMinus,
   IconFolder,
+  IconDownload,
 } from "@tabler/icons-react";
+import axios from "axios";
+import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 import { useEffect, useState } from "react";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import BelgeTable from "@/app/(Uygulama)/components/DigerIslemler/Arsiv/BelgeTable";
-import { getArsiv } from "@/api/Arsiv/Arsiv";
+import { getArsivTumu } from "@/api/Arsiv/Arsiv";
 import WarnBox from "@/app/(Uygulama)/components/Alerts/WarnBox";
 
 const BCrumb = [
@@ -75,6 +81,12 @@ const Page = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+    node: Veri;
+  } | null>(null);
 
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
@@ -83,6 +95,66 @@ const Page = () => {
   ];
 
   const hasExtension = (name: string) => /\.[a-z0-9]{1,10}$/i.test(name);
+
+  const countFiles = (node: Veri): number => {
+    if (!Array.isArray(node.children)) return 0;
+    let count = 0;
+    for (const child of node.children) {
+      if (hasExtension(child.name)) count++;
+      else count += countFiles(child);
+    }
+    return count;
+  };
+
+  const collectFileUrls = (node: Veri): string[] => {
+    // Eğer klasör objesi ise (dosya değilse), ama içi boşsa ve url (drive id) varsa
+    if (!Array.isArray(node.children) || node.children.length === 0) {
+      if (node.url && !hasExtension(node.name)) {
+        return [node.url];
+      }
+      return [];
+    }
+    const urls: string[] = [];
+    for (const child of node.children) {
+      if (hasExtension(child.name) && child.url) urls.push(child.url);
+      else urls.push(...collectFileUrls(child));
+    }
+    // Geriye dönmeden önce bu klasörün kendisi de boş bir klasör durumu yaratırsa?
+    // Kullanıcıya seçili node olarak geldiğinde child.url'leri döneriz.
+    if (urls.length === 0 && node.url && !hasExtension(node.name)) {
+      urls.push(node.url);
+    }
+    return urls;
+  };
+
+  const downloadFolder = async (node: Veri) => {
+    const paths = collectFileUrls(node);
+    if (paths.length === 0) return;
+    try {
+      setDownloading(true);
+      const response = await axios.post(
+        `${url}/ArsivIslemleri/IndirToplu`,
+        paths,
+        createAuthorizedAxiosConfig(
+          { responseType: "blob", headers: { accept: "*/*", "Content-Type": "application/json" } },
+          user.token
+        )
+      );
+      const urlFile = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = urlFile;
+      link.setAttribute("download", `${node.name}.zip`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(urlFile), 0);
+    } catch (error) {
+      console.log("İndirme hatası:", error);
+    } finally {
+      setDownloading(false);
+      setContextMenu(null);
+    }
+  };
 
   function normalizeString(str: string): string {
     const turkishChars: { [key: string]: string } = {
@@ -176,6 +248,8 @@ const Page = () => {
     if (isFile) return null;
 
     const uniquePath = parentPath ? `${parentPath}-${index}_${node.id}` : `root-${index}_${node.id}`;
+    const fileCount = countFiles(node);
+    //level > 0 && fileCount === 0
 
     // Çocuklardan sadece klasörleri al ve isme göre sırala
     const folderChildren = Array.isArray(node.children)
@@ -190,10 +264,15 @@ const Page = () => {
         itemId={uniquePath}
         label={
           <Typography variant={level === 0 ? "h6" : "body1"}>
-            {node.name}
+            {node.name} ({fileCount})
           </Typography>
         }
         onClick={() => setSelectedRow(node)}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setContextMenu({ mouseX: e.clientX, mouseY: e.clientY, node });
+        }}
         sx={{ my: 1, p: 0 }}
       >
         {folderChildren.length > 0 &&
@@ -234,9 +313,8 @@ const Page = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const data = await getArsiv(
+      const data = await getArsivTumu(
         user.denetciId || 0,
-        user.yil || 0,
         user.denetlenenId || 0
       );
       setRows(data || []);
@@ -248,7 +326,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    if (user.denetciId && user.yil && user.denetlenenId) {
+    if (user.denetciId && user.denetlenenId) {
       if (!silTiklandimi) {
         fetchData();
       } else {
@@ -257,7 +335,7 @@ const Page = () => {
         setSearchTerm("");
       }
     }
-  }, [user.denetciId, user.yil, user.denetlenenId, silTiklandimi]);
+  }, [user.denetciId, user.denetlenenId, silTiklandimi]);
 
   return (
     <PageContainer title="Arşiv" description="this is Arşiv">
@@ -392,6 +470,33 @@ const Page = () => {
           )}
         </Grid>
       </Grid>
+      <Menu
+        open={contextMenu !== null}
+        onClose={() => setContextMenu(null)}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem
+          onClick={() => contextMenu && downloadFolder(contextMenu.node)}
+          disabled={
+            downloading ||
+            (contextMenu ? collectFileUrls(contextMenu.node).length === 0 : true)
+          }
+        >
+          <ListItemIcon>
+            {downloading ? <CircularProgress size={18} /> : <IconDownload size={18} />}
+          </ListItemIcon>
+          {downloading
+            ? "İndiriliyor..."
+            : contextMenu
+              ? `${collectFileUrls(contextMenu.node).length} Dosyayı İndir`
+              : "İndir"}
+        </MenuItem>
+      </Menu>
     </PageContainer>
   );
 };
