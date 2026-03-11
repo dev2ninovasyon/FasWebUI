@@ -13,44 +13,54 @@ for (const user of USERS) {
     setup(`authenticate ${user.email}`, async ({ page }) => {
         const authFile = path.join(__dirname, `../playwright/.auth/${user.file}`);
 
-        // 1. Login sayfasina git
-        // Yeni yapida login root (/) altinda. Geriye donuk uyumluluk icin /Giris fallback'i de korunur.
         await page.goto('/');
         await page.waitForSelector('input[id="username"]', { timeout: 60000 });
 
-        // reCAPTCHA script asenkron yüklendiği için login submit öncesi hazır olmasını bekle.
         await page.waitForFunction(
-            () => typeof (window as any).grecaptcha !== 'undefined' && typeof (window as any).grecaptcha.execute === 'function',
+            () =>
+                typeof (window as any).grecaptcha !== 'undefined' &&
+                typeof (window as any).grecaptcha.execute === 'function',
             { timeout: 60000 }
         );
 
-        // 2. Form doldurma
         await page.fill('input[id="username"]', user.email);
         await page.fill('input[id="password"]', user.pass);
-
-        // 3. Login ol
         await page.click('button[type="submit"]');
 
-        // 4. Ekranda giriş başarısız hata mesajı (snackbar) çıkarsa veya Anasayfaya yönlenmezse kontrol et
         try {
-            // Ya anasayfaya gidecek, ya da ekranda bir hata kutucuğu belirecek
             await Promise.race([
-                page.waitForURL('**/Anasayfa', { timeout: 15000 }),
-                // Projenizdeki snackbar veya hata componenti. Genelde '.SnackbarItem-message' veya role="alert" olur
-                page.waitForSelector('.SnackbarItem-message, .notistack-Snackbar', { timeout: 15000 }).then(async (el) => {
-                    if (el) {
-                        const errorMsg = await el.innerText();
-                        throw new Error(`Giriş Başarısız. Kullanıcı: ${user.email} - Neden: ${errorMsg}`);
+                page.waitForURL('**/Anasayfa', { timeout: 20000 }),
+                page.waitForFunction(
+                    () => {
+                        const sessionToken = window.sessionStorage.getItem('fas_token');
+                        const localToken = window.localStorage.getItem('fas_token');
+                        return Boolean(sessionToken || localToken);
+                    },
+                    { timeout: 20000 }
+                ),
+                page.waitForSelector('.SnackbarItem-message, .notistack-Snackbar', { timeout: 20000 }).then(async (element) => {
+                    if (!element) {
+                        return;
                     }
+
+                    const errorMessage = await element.innerText();
+                    throw new Error(`Giris basarisiz. Kullanici: ${user.email} - Neden: ${errorMessage}`);
                 })
             ]);
-        } catch (e: any) {
-            // Eğer URL'yi beklerken timeout'a da düşerse:
-            if (e.message.includes('Giriş Başarısız')) throw e;
-            throw new Error(`Ana sayfaya ulaşılamadı veya giriş başarısız oldu. Kullanıcı: ${user.email}. \nOrijinal Hata: ${e.message}`);
+        } catch (error: any) {
+            if (error.message.includes('Giris basarisiz')) {
+                throw error;
+            }
+
+            throw new Error(
+                `Ana sayfaya ulasilamadi veya giris basarisiz oldu. Kullanici: ${user.email}. Orijinal Hata: ${error.message}`
+            );
         }
 
-        // 5. Auth state'i ayrilan dosyaya kaydet
+        if (!page.url().includes('/Anasayfa')) {
+            await page.goto('/Anasayfa', { waitUntil: 'networkidle' });
+        }
+
         await page.context().storageState({ path: authFile });
     });
 }

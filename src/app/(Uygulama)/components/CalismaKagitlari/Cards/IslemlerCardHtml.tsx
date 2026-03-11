@@ -324,6 +324,7 @@ const IslemlerCardHtml: React.FC<Props> = ({
           <div style={{ width: "100%", height: "80vh", overflow: "hidden" }}>
             <iframe
               src={`${pdfBlobUrl}#navpanes=0`}
+              sandbox="allow-same-origin allow-scripts allow-forms"
               style={{ width: "100%", height: "100%", border: 0 }}
               title="preview"
             />

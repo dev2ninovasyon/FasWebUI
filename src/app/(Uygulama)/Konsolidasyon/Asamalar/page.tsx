@@ -27,7 +27,7 @@ const Page: React.FC = () => {
     <ProtectedPage allowed={user?.konsolidemi || false}>
       <PageContainer title="Aşamalar" description="this is Aşamalar">
         <Breadcrumb title="Aşamalar" items={BCrumb} />
-        <Box sx={{ 
+        <Box sx={{
           width: "calc(100% + 16px)",
           marginLeft: "-16px",
           marginRight: "-16px"
@@ -42,6 +42,7 @@ const Page: React.FC = () => {
               <iframe
                 //src={`/Konsolidasyon/Asamalar`}
                 src={`/templates/KonsolidasyonAsamalar.html`}
+                sandbox="allow-same-origin allow-scripts allow-forms"
                 style={{
                   background: theme.palette.common.white,
                   border: "0px",

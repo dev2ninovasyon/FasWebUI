@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -131,7 +131,9 @@ export default function RootLayout({
           setIsWizardOpen(false);
         }
       } catch (error) {
-        console.log("Flow check error:", error);
+        if (process.env.NODE_ENV === 'development') {
+          console.warn("Flow check error:", error);
+        }
       } finally {
         if (!cancelled) {
           setIsLoadingCompanies(false);
@@ -174,7 +176,9 @@ export default function RootLayout({
         await refreshSession({ forceRefresh: true });
       }
     } catch (e) {
-      console.log("Layout - Error during selection processing:", e);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn("Layout - Seçim işleme hatası:", e);
+      }
     }
 
     // Modal state update is not needed here as it's triggered by Redux and useEffect,

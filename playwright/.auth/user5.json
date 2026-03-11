@@ -2,33 +2,33 @@
   "cookies": [
     {
       "name": "_GRECAPTCHA",
-      "value": "09AKhCRwg9PvstdmwRTU5qVD-0BmtvNNjPZ5Bsbvgdonq0Dc3yIuLbXDjsSYLXRIl0x81llY7wXIuRdaTxW22UGTg",
+      "value": "09AKhCRwiOYUYYPxO9G9Dlip7UcI0NqwDwef8yoGY9nk_BHNHQuqOTncBcZC8A-H4nyHsVy2bLAA94gmtL5Au8G1c",
       "domain": "www.google.com",
       "path": "/recaptcha",
-      "expires": 1788273254.927148,
+      "expires": 1788733835.010593,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "fas_token",
-      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiJkNmQ1YmZjNC02YTVkLTRlYzgtOTc5Yi0wZjZkM2U0MGQxNzEiLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJZb25ldGltS3VydWx1QmFza2FuaSIsIm5iZiI6MTc3MjcyMTI1NSwiZXhwIjoxNzcyNzI0ODU1LCJpc3MiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSIsImF1ZCI6Ind3dy5mYXNhcmNoaXRlY3R1cmUuY29tIn0.22KDrfu83I0nGX3NMO6yww4y7l8-tFuV_vEnDIL1d7A",
-      "domain": "betaapi.fasmart.app",
+      "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiI5ODBiMGMxNS0yNDVmLTRhMTYtYjkwZC1mNzgyMWEwZDY0MzciLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiWW9uZXRpbUt1cnVsdUJhc2thbmkiLCJZb25ldGltS3VydWx1QmFza2FuaSJdLCJuYmYiOjE3NzMxODE4MzYsImV4cCI6MTc3MzE4NTQzNiwiaXNzIjoid3d3LmZhc2FyY2hpdGVjdHVyZS5jb20iLCJhdWQiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSJ9.yMw7T3xZ8fDXhkF-9ZOtuk_mQiFRsh-IfX7BuUC_LbA",
+      "domain": "localhost",
       "path": "/",
-      "expires": 1772726655.334651,
+      "expires": 1773185437.908435,
       "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
+      "secure": false,
+      "sameSite": "Lax"
     },
     {
       "name": "fas_refreshToken",
-      "value": "mAWHAYfMRpVrjEU1UyeQLlNbYIMb4hkobFY2qniR1Xw%3D",
-      "domain": "betaapi.fasmart.app",
+      "value": "BC4vJPr9XuJzVz2tNXTMa7EykvxdjoleNAO01tSegyQ%3D",
+      "domain": "localhost",
       "path": "/",
-      "expires": 1773326055.334751,
+      "expires": 1773786637.908504,
       "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
+      "secure": false,
+      "sameSite": "Lax"
     }
   ],
   "origins": [
@@ -36,20 +36,32 @@
       "origin": "http://localhost:3000",
       "localStorage": [
         {
-          "name": "maddiDogrulamaData",
-          "value": "[]"
+          "name": "fas_refreshToken",
+          "value": "BC4vJPr9XuJzVz2tNXTMa7EykvxdjoleNAO01tSegyQ="
         },
         {
           "name": "fas_yil",
           "value": "2024"
         },
         {
-          "name": "_grecaptcha",
-          "value": "09AKhCRwiQaRv8o1hm5_tY9M6nd3JsCb54_haWt-vrIDl6Gsl0QlKie9gtxoJeyx4L-sHK4LHBdplbdXl2ZanL5J57_MwUZ23GX0mSHxCDED0LlASH1LfYRU8eulg2JG9m"
+          "name": "fas_token",
+          "value": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlRlc3QgNSIsImt1bGxhbmljaUlkIjoiNDAiLCJrdWxsYW5pY2lBZGkiOiJUZXN0IDUiLCJqdGkiOiI5ODBiMGMxNS0yNDVmLTRhMTYtYjkwZC1mNzgyMWEwZDY0MzciLCJkZW5ldGNpSWQiOiIyIiwiZGVuZXRsZW5lbklkIjoiNCIsInlpbCI6IjIwMjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiWW9uZXRpbUt1cnVsdUJhc2thbmkiLCJZb25ldGltS3VydWx1QmFza2FuaSJdLCJuYmYiOjE3NzMxODE4MzYsImV4cCI6MTc3MzE4NTQzNiwiaXNzIjoid3d3LmZhc2FyY2hpdGVjdHVyZS5jb20iLCJhdWQiOiJ3d3cuZmFzYXJjaGl0ZWN0dXJlLmNvbSJ9.yMw7T3xZ8fDXhkF-9ZOtuk_mQiFRsh-IfX7BuUC_LbA"
         },
         {
-          "name": "user_expiry",
-          "value": "1772726655388"
+          "name": "fas_session_start",
+          "value": "1773181841461"
+        },
+        {
+          "name": "maddiDogrulamaData",
+          "value": "[]"
+        },
+        {
+          "name": "_grecaptcha",
+          "value": "09AKhCRwg9tx2wQfZ2DVi5jPwNnxVbdBrnaoMeNKW7WGh0BjMbP_qMGkr67y8wLtHB7cA7ZTLvPmKMcS82ImE3FFZKzWtx6xcVWo6CG0JX3Z6YOxH0ouRay82aGALTcU8-"
+        },
+        {
+          "name": "maddiDogrulamaMetadata",
+          "value": "{\"denetlenenId\":4,\"yil\":2024,\"denetimTuru\":\"Bobi\"}"
         },
         {
           "name": "fas_denetlenenId",
@@ -57,11 +69,7 @@
         },
         {
           "name": "persist:root",
-          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7}\",\"userReducer\":\"{\\\"id\\\":40,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":4,\\\"denetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"denetimTuru\\\":\\\"Bobi\\\",\\\"bobimi\\\":true,\\\"tfrsmi\\\":false,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":false,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 5\\\",\\\"mail\\\":\\\"test5@2ninovasyon.com\\\",\\\"formHazirlayanOnaylayan\\\":false,\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"sonSecilenDenetlenenId\\\":4,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Bobi\\\",\\\"sonSecilenBobimi\\\":true,\\\"sonSecilenTfrsmi\\\":false,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":false,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
-        },
-        {
-          "name": "maddiDogrulamaMetadata",
-          "value": "{\"denetlenenId\":4,\"yil\":2024,\"denetimTuru\":\"Bobi\"}"
+          "value": "{\"customizer\":\"{\\\"activeTheme\\\":\\\"BLUE_THEME\\\",\\\"activeMode\\\":\\\"light\\\",\\\"activeDir\\\":\\\"ltr\\\",\\\"avatarSrc\\\":\\\"/images/profile/user-1.jpg\\\",\\\"SidebarWidth\\\":270,\\\"MiniSidebarWidth\\\":87,\\\"TopbarHeight\\\":70,\\\"isLayout\\\":\\\"full\\\",\\\"isCollapse\\\":false,\\\"isSidebarHover\\\":false,\\\"isMobileSidebar\\\":false,\\\"isHorizontal\\\":false,\\\"isLanguage\\\":\\\"tr\\\",\\\"isCardShadow\\\":true,\\\"borderRadius\\\":7,\\\"isNotificationSound\\\":true}\",\"userReducer\":\"{\\\"id\\\":40,\\\"denetciId\\\":2,\\\"denetciFirmaAdi\\\":\\\"Deneme Denetçi1231356\\\",\\\"denetlenenId\\\":4,\\\"denetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"denetimTuru\\\":\\\"Bobi\\\",\\\"bobimi\\\":true,\\\"tfrsmi\\\":false,\\\"enflasyonmu\\\":true,\\\"konsolidemi\\\":false,\\\"bddkmi\\\":false,\\\"yil\\\":2024,\\\"rol\\\":[\\\"YonetimKuruluBaskani\\\",\\\"YonetimKuruluBaskani\\\"],\\\"yetki\\\":\\\"YonetimKuruluBaskani\\\",\\\"unvan\\\":\\\"Yönetim Kurulu Başkanı\\\",\\\"kullaniciAdi\\\":\\\"Test 5\\\",\\\"mail\\\":\\\"test5@2ninovasyon.com\\\",\\\"kurulumTamamlandi\\\":false,\\\"kurulumAdimi\\\":0,\\\"setupWizardProgress\\\":\\\"\\\",\\\"sonSecilenDenetlenenId\\\":4,\\\"sonSecilenYil\\\":2024,\\\"sonSecilenDenetlenenFirmaAdi\\\":\\\"ANL Gıda\\\",\\\"sonSecilenDenetimTuru\\\":\\\"Bobi\\\",\\\"sonSecilenBobimi\\\":true,\\\"sonSecilenTfrsmi\\\":false,\\\"sonSecilenEnflasyonmu\\\":true,\\\"sonSecilenKonsolidemi\\\":false,\\\"sonSecilenBddkmi\\\":false,\\\"turTamamlandi\\\":false}\",\"_persist\":\"{\\\"version\\\":1,\\\"rehydrated\\\":true}\"}"
         }
       ]
     },
@@ -70,11 +78,11 @@
       "localStorage": [
         {
           "name": "rc::a",
-          "value": "MXZ6djMzNDVjcGgxeg=="
+          "value": "Y2JqbTV6MWg1ODJpcQ=="
         },
         {
           "name": "rc::f",
-          "value": "0aALHWB155FtSQDoOQ8GN4ez1n_kTIfX2v6tYZvUau4JyxXvSNG6etwPvu5qO-WYBM6KM5AxI"
+          "value": "0aAPRO78LZkybHrGeEqrO7ndUFp5fJhn_mBR5eBoO4bFFHDFjGNRvI7NpCICcgJtJtxohae0U"
         }
       ]
     }

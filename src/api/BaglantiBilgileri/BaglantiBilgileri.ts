@@ -1,4 +1,4 @@
-﻿import { apiFetch, url as apiBaseUrl } from "@/api/apiBase";
+import { apiFetch, url as apiBaseUrl } from "@/api/apiBase";
 import SecureTokenManager from "@/utils/SecureTokenManager";
 import { HubConnectionBuilder, LogLevel, HubConnectionState } from "@microsoft/signalr";
 import { enqueueSnackbar } from "notistack";
@@ -184,14 +184,16 @@ export const startBildirimConnection = async (denetciId: number) => {
     }
 
     // Bağlantı olaylarını dinle
-    activeConnection.onreconnecting((error: Error | undefined) => {
-      console.warn("⚠️ SignalR yeniden bağlanmaya çalışıyor...", error);
+    activeConnection.onreconnecting((_error: Error | undefined) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn("⚠️ SignalR yeniden bağlanmaya çalışıyor...");
+      }
     });
 
-    activeConnection.onreconnected((connectionId: string | undefined) => {
-      console.log("✅ SignalR yeniden bağlandı:", connectionId);
-      // Listener zaten kayıtlı olduğundan tekrar kaydetmeye gerek yok
-      // SignalR otomatik olarak listener'ları korur
+    activeConnection.onreconnected((_connectionId: string | undefined) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log("✅ SignalR yeniden bağlandı.");
+      }
     });
 
     activeConnection.onclose((error: Error | undefined) => {
@@ -233,30 +235,31 @@ export const startBildirimConnection = async (denetciId: number) => {
 
   })().catch(async (error) => {
     const message = error instanceof Error ? error.message : String(error || "");
-    const stoppedDuringNegotiation = message.includes("stopped during negotiation");
 
-    if (!stoppedDuringNegotiation) {
-      console.error("❌ SignalR bağlantı hatası:", error);
+    // Beklenen/normal bağlantı kesintileri - console'a yazdırma
+    const isExpectedError =
+      message.includes("stopped during negotiation") ||
+      message.includes("stopped before the hub handshake") ||
+      message.includes("Cannot send data if the connection is not in the 'Connected' State") ||
+      message.includes("The connection was stopped") ||
+      message.includes("WebSocket closed with status code") ||
+      isIntentionalConnectionStop;
 
-      if (error instanceof Error) {
-        console.error("Hata mesajı:", error.message);
-        console.error("Stack trace ilk satır:", error.stack?.split('\n')[0]);
-      }
+    if (!isExpectedError && process.env.NODE_ENV === 'development') {
+      console.warn("⚠️ SignalR beklenmedik hata:", message);
     }
 
-    // Hata kodu için bağlantıyı kapat ama null'a setleme
+    // Hata sonrası bağlantıyı temizle
     try {
       if (hubConnection) {
         await hubConnection.stop();
       }
-    } catch (stopError) {
-      console.error("Bağlantı durdurma hatası:", stopError);
-    }
+    } catch { /* sessizce geç */ }
 
     hubConnection = null;
     listenerRegistered = false;
 
-    if (stoppedDuringNegotiation || isIntentionalConnectionStop) {
+    if (isExpectedError) {
       return null;
     }
 

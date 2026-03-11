@@ -159,6 +159,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
         ref={iframeRef}
         src={iframeSrc}
         key={`${iframeSrc}-${retryKey}`}
+        sandbox="allow-same-origin allow-scripts allow-forms"
         style={{
           background: currentMode === "dark" ? "#0f1720" : "#ffffff",
           border: "0px",

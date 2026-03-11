@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IconButton,
   Box,
@@ -419,23 +419,12 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     const targetDenetlenenId = bildirim.denetlenenId;
     const targetYil = bildirim.yil;
 
-    console.log("Bildirim tıklandı:", {
-      targetDenetlenenId,
-      targetYil,
-      currentDenetlenenId: user.denetlenenId,
-      currentYil: user.yil,
-      kaynakUrl: bildirim.kaynakUrl,
-      tip: bildirim.tip
-    });
-
     const isDifferent = !!(targetDenetlenenId && targetYil && (targetDenetlenenId !== user.denetlenenId || targetYil !== user.yil));
 
     if (isDifferent) {
-      console.log("Farklı şirket/yıl algılandı, onay kutusu açılıyor");
       setPendingBildirim(bildirim);
       setConfirmOpen(true);
     } else {
-      console.log("Aynı şirket/yıl, yönlendirme yapılıyor");
       if (bildirim.kaynakUrl) {
         router.push(bildirim.kaynakUrl);
       } else {
@@ -469,16 +458,16 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         localStorage.setItem("fas_denetlenenId", targetId.toString());
         localStorage.setItem("fas_yil", targetYil.toString());
 
-        // Rol ve DB güncellemesi 
+        // Rol ve DB güncellemesi
         try {
-          // 1. Önce DB Persist (Son Seçilen Ayarlar) - KRİTİK SIRALAMA
+          // 1. Önce DB Persist (Son Seçilen Ayarlar)
           if (user.token && user.id && user.id !== 0) {
-            console.log(`Notification - Persisting selection for user ${user.id}: Company=${targetId}, Year=${targetYil}`);
             try {
               await updateSonSecilenAyarlari(user.id, targetId, targetYil);
-              console.log("Notification - Persistence update successful.");
             } catch (err) {
-              console.error("Notification - Persistence update hatası:", err);
+              if (process.env.NODE_ENV === 'development') {
+                console.warn("Notification - Persistence update hatası:", err);
+              }
             }
           }
 
@@ -487,13 +476,16 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
             const rolVerileri = await getRol(user.id || 0, targetId, targetYil);
             if (rolVerileri) {
               dispatch(setRol(rolVerileri.rol));
-              console.log("Notification - Rol güncellendi.");
             }
           } catch (err) {
-            console.error("Notification - Rol güncelleme hatası:", err);
+            if (process.env.NODE_ENV === 'development') {
+              console.warn("Notification - Rol güncelleme hatası:", err);
+            }
           }
         } catch (innerError) {
-          console.error("Notification - Şirket detay güncelleme hatası:", innerError);
+          if (process.env.NODE_ENV === 'development') {
+            console.warn("Notification - Şirket detay güncelleme hatası:", innerError);
+          }
         }
 
         // Yönlendirme hedefi

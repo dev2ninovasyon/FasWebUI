@@ -11,7 +11,7 @@ const Page = () => {
         title="Kullanım Kılavuzu"
         description="this is Kullanım Kılavuzu"
       >
-        <Box sx={{ 
+        <Box sx={{
           width: "calc(100% + 16px)",
           marginLeft: "-16px",
           marginRight: "-16px"
@@ -25,6 +25,7 @@ const Page = () => {
               }}>
               <iframe
                 src={`/pdfs/Kullanim_Kilavuzu_hesapayarlari_temaayarlari_kullanici.pdf`}
+                sandbox="allow-same-origin allow-scripts allow-forms"
                 style={{
                   border: "0px",
                   width: "100%",
@@ -40,6 +41,7 @@ const Page = () => {
               }}>
               <iframe
                 src={`/pdfs/Kullanim_Kilavuzu_müsteri.pdf`}
+                sandbox="allow-same-origin allow-scripts allow-forms"
                 style={{
                   border: "0px",
                   width: "100%",
@@ -55,6 +57,7 @@ const Page = () => {
               }}>
               <iframe
                 src={`/pdfs/Kullanim_Kilavuzu_sozlesme.pdf`}
+                sandbox="allow-same-origin allow-scripts allow-forms"
                 style={{
                   border: "0px",
                   width: "100%",
@@ -70,6 +73,7 @@ const Page = () => {
               }}>
               <iframe
                 src={`/pdfs/Kullanim_Kilavuzu_veriyukleme.pdf`}
+                sandbox="allow-same-origin allow-scripts allow-forms"
                 style={{
                   border: "0px",
                   width: "100%",

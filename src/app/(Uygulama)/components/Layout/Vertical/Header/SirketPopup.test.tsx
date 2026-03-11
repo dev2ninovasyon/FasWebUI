@@ -124,7 +124,6 @@ describe('SirketPopup Component', () => {
         renderWithProviders(<SirketPopup />, { preloadedState })
 
         // Locate the button that opens the dialog (Chip inside IconButton)
-        // The IconButton has aria-label="show 4 new mails" in the source code (likely copy-paste error in source, but we use it to find)
         const chipButton = screen.getByRole('button', { name: /show 4 new mails/i })
         fireEvent.click(chipButton)
 
@@ -184,8 +183,8 @@ describe('SirketPopup Component', () => {
             // 4. Verify LocalStorage Updates
             expect(localStorageMock.setItem).toHaveBeenCalledWith('fas_denetlenenId', '101')
             expect(localStorageMock.setItem).toHaveBeenCalledWith('fas_yil', '2025')
-            expect(sessionStorageMock.setItem).toHaveBeenCalledWith('fas_session_token', 'new-token')
-            expect(sessionStorageMock.setItem).toHaveBeenCalledWith('fas_session_refreshToken', 'new-refresh-token')
+            expect(sessionStorageMock.setItem).toHaveBeenCalledWith('fas_token', 'new-token')
+            expect(sessionStorageMock.setItem).toHaveBeenCalledWith('fas_refreshToken', 'new-refresh-token')
 
             // 5. Verify Reload
             expect(reloadMock).toHaveBeenCalled()

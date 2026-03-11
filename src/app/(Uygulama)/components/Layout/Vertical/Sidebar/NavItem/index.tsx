@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 // mui imports
 import Chip from "@mui/material/Chip";
 import List from "@mui/material/List";
@@ -107,7 +107,7 @@ export default function NavItem({
 
   return (
     <List component="li" disablePadding key={item?.id && item.title}>
-      <Link href={item.href}>
+      <Link href={item.href} prefetch={false}>
         <ListItemStyled
           disabled={item?.disabled}
           selected={pathDirect === item?.href}
