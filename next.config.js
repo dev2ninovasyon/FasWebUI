@@ -1,3 +1,5 @@
+const path = require("path");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   modularizeImports: {
@@ -8,7 +10,7 @@ const nextConfig = {
   reactStrictMode: false,
   output: "standalone",
   turbopack: {
-    root: "c:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI",
+    root: path.resolve(__dirname),
   },
   typescript: {
     ignoreBuildErrors: false,
