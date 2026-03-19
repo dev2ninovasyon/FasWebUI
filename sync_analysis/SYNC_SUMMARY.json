@@ -1,0 +1,15 @@
+{
+  "analysisTimestamp": "2026-03-17T14:33:28.454Z",
+  "summary": {
+    "totalMenuItems": 216,
+    "totalDocuments": 741,
+    "matchedCount": 140,
+    "menuGaps": 76,
+    "documentGaps": 622,
+    "matchPercentage": 64.8
+  },
+  "filesAnalyzed": {
+    "menu": "Menuiconlist.json",
+    "documents": "../FasWebAPI/Data/JsonFiles/DenetimDosyaBelgeleri.json"
+  }
+}

@@ -1,0 +1,2214 @@
+{
+  "matched": [
+    {
+      "menuName": "MÜŞTERİ",
+      "menuPath": "MÜŞTERİ",
+      "docId": 1,
+      "docName": "MÜŞTERİ TANIMA, TEKLİF VE SÖZLEŞME BELGELERİ",
+      "formCode": "",
+      "formUrl": "/Musteri"
+    },
+    {
+      "menuName": "Şirket Yönetim Kadrosu",
+      "menuPath": "MÜŞTERİ/Şirket Yönetim Kadrosu",
+      "docId": 2,
+      "docName": "Şirket Yönetim Kadrosu",
+      "formCode": "SirketYonetimKadrosu",
+      "formUrl": "/Musteri/SirketYonetimKadrosu"
+    },
+    {
+      "menuName": "Şubeler",
+      "menuPath": "MÜŞTERİ/Şubeler",
+      "docId": 3,
+      "docName": "Şubeler",
+      "formCode": "Subeler",
+      "formUrl": "/Musteri/Subeler"
+    },
+    {
+      "menuName": "Hissedarlar",
+      "menuPath": "MÜŞTERİ/Hissedarlar",
+      "docId": 4,
+      "docName": "Hissedarlar",
+      "formCode": "Hissedarlar",
+      "formUrl": "/Musteri/Hissedarlar"
+    },
+    {
+      "menuName": "İlişkili Taraflar",
+      "menuPath": "MÜŞTERİ/İlişkili Taraflar",
+      "docId": 5,
+      "docName": "İlişkili Taraflar",
+      "formCode": "IliskiliTaraflar",
+      "formUrl": "/Musteri/IliskiliTaraflar"
+    },
+    {
+      "menuName": "Müşteri Tanıma",
+      "menuPath": "MÜŞTERİ/Müşteri Tanıma",
+      "docId": 6,
+      "docName": "Müşteri Tanıma Belgesi",
+      "formCode": "MusteriTanimaStatikBilgiler-MusteriTanimaSayisalBilgiler",
+      "formUrl": "/Musteri/MusteriTanima"
+    },
+    {
+      "menuName": "İşletme Faaliyet ve Çevresi Tanıma",
+      "menuPath": "MÜŞTERİ/İşletme Faaliyet ve Çevresi Tanıma",
+      "docId": 8,
+      "docName": "Müşteri İşletme Faaliyet ve Çevresi Tanıma Belgesi",
+      "formCode": "IsletmeFaaliyetveCevreTanima",
+      "formUrl": "/Musteri/IsletmeFaaliyetVeCevresiTanima"
+    },
+    {
+      "menuName": "Teklif Hesaplama",
+      "menuPath": "MÜŞTERİ/Teklif Hesaplama",
+      "docId": 9,
+      "docName": "Teklif Hesaplama",
+      "formCode": "TeklifHesaplama",
+      "formUrl": "/Musteri/TeklifHesaplama"
+    },
+    {
+      "menuName": "Teklif Mektubu",
+      "menuPath": "MÜŞTERİ/Teklif Mektubu",
+      "docId": 11,
+      "docName": "Bağımsız Denetim Hizmeti Teklif Mektubu",
+      "formCode": "TeklifMektubu",
+      "formUrl": "/Musteri/TeklifMektubu"
+    },
+    {
+      "menuName": "Kendi Yetkinliğini Değerlendirme",
+      "menuPath": "MÜŞTERİ/Kendi Yetkinliğini Değerlendirme",
+      "docId": 12,
+      "docName": "Denetim Kuruluşunun Kendi Yetkinliğini Değerlendirme Belgesi",
+      "formCode": "KendiYetkinliginiDegerlendirmeBelgesi",
+      "formUrl": "/Musteri/KendiYetkinliginiDegerlendirme"
+    },
+    {
+      "menuName": "Sözleşme Kabul Belgesi",
+      "menuPath": "MÜŞTERİ/Sözleşme Kabul Belgesi",
+      "docId": 14,
+      "docName": "Sözleşme Kabul Belgesi",
+      "formCode": "SozlesmeKabul",
+      "formUrl": "/Musteri/SozlesmeKabul"
+    },
+    {
+      "menuName": "SÖZLEŞME",
+      "menuPath": "SÖZLEŞME",
+      "docId": 1,
+      "docName": "MÜŞTERİ TANIMA, TEKLİF VE SÖZLEŞME BELGELERİ",
+      "formCode": "",
+      "formUrl": "/Musteri"
+    },
+    {
+      "menuName": "Denetim Kadrosu Atama",
+      "menuPath": "SÖZLEŞME/Denetim Kadrosu Atama",
+      "docId": 15,
+      "docName": "Denetim Kadrosu Atama",
+      "formCode": "",
+      "formUrl": "/Sozlesme/DenetimKadrosuAtama"
+    },
+    {
+      "menuName": "Bağımsız Denetim Sözleşmesi",
+      "menuPath": "SÖZLEŞME/Bağımsız Denetim Sözleşmesi",
+      "docId": 16,
+      "docName": "Bağımsız Denetim Sözleşmesi",
+      "formCode": "DenetimSozlesmesi",
+      "formUrl": "/Sozlesme/BagimsizDenetimSozlesmesi"
+    },
+    {
+      "menuName": "Mizanlar",
+      "menuPath": "VERİ/Mizanlar",
+      "docId": 34,
+      "docName": "Mizanlar",
+      "formCode": "mizanlar",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Oluşturulmuş Mizanlar",
+      "menuPath": "VERİ/Mizanlar/Oluşturulmuş Mizanlar",
+      "docId": 34,
+      "docName": "Mizanlar",
+      "formCode": "mizanlar",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Fatura",
+      "menuPath": "VERİ/Fatura",
+      "docId": 39,
+      "docName": "Alınan Fatura Örneklem Listesi",
+      "formCode": "alinanfaturaorneklemlistesi",
+      "formUrl": ""
+    },
+    {
+      "menuName": "MÜŞTERİ BELGELERİ",
+      "menuPath": "MÜŞTERİ BELGELERİ",
+      "docId": 31,
+      "docName": "MÜŞTERİ BELGELERİ",
+      "formCode": "",
+      "formUrl": ""
+    },
+    {
+      "menuName": "PLAN VE PROGRAM",
+      "menuPath": "PLAN VE PROGRAM",
+      "docId": 77,
+      "docName": "DENETİM PLAN VE PROGRAMI BELGELERİ",
+      "formCode": "",
+      "formUrl": "/PlanVeProgram"
+    },
+    {
+      "menuName": "Denetim Programı",
+      "menuPath": "PLAN VE PROGRAM/Denetim Programı",
+      "docId": 78,
+      "docName": "Denetim Programı",
+      "formCode": "DenetimProgrami",
+      "formUrl": "/PlanVeProgram/DenetimProgrami"
+    },
+    {
+      "menuName": "Maddi Doğruluk Görev Atamaları",
+      "menuPath": "PLAN VE PROGRAM/Maddi Doğruluk Görev Atamaları",
+      "docId": 79,
+      "docName": "Maddi Doğruluk Görev Atamaları",
+      "formCode": "MaddiDogrulukGorevAtamalari",
+      "formUrl": "/PlanVeProgram/MaddiDogrulukGorevAtamalari"
+    },
+    {
+      "menuName": "Denetim Takvimi",
+      "menuPath": "PLAN VE PROGRAM/Denetim Takvimi",
+      "docId": 80,
+      "docName": "Denetim Takvimi",
+      "formCode": "DenetimTakvimi",
+      "formUrl": "/PlanVeProgram/DenetimTakvimi"
+    },
+    {
+      "menuName": "Denetim Planı",
+      "menuPath": "PLAN VE PROGRAM/Denetim Planı",
+      "docId": 81,
+      "docName": "Genel Bağımsız Denetim Planı",
+      "formCode": "DenetimPlani",
+      "formUrl": "/PlanVeProgram/DenetimPlani"
+    },
+    {
+      "menuName": "Denetim Ekibi Görev Tebliği",
+      "menuPath": "PLAN VE PROGRAM/Denetim Ekibi Görev Tebliği",
+      "docId": 82,
+      "docName": "Denetim Ekibi Görev Tebliği",
+      "formCode": "GorevTebligi",
+      "formUrl": "/PlanVeProgram/GorevTebligi"
+    },
+    {
+      "menuName": "Sorumlu Denetçi Kimlik ve Deneyim Bildirim",
+      "menuPath": "PLAN VE PROGRAM/Sorumlu Denetçi Kimlik ve Deneyim Bildirim",
+      "docId": 87,
+      "docName": "Müşteri İşletmeye Sorumlu Denetçi Kimlik ve Deneyim Bildirim Belgesi",
+      "formCode": "MeslekiDeneyimYeterlilik",
+      "formUrl": "/PlanVeProgram/MeslekiDeneyimYeterlilik"
+    },
+    {
+      "menuName": "Sorumlu Denetçi Sorumlulukları Bildirim",
+      "menuPath": "PLAN VE PROGRAM/Sorumlu Denetçi Sorumlulukları Bildirim",
+      "docId": 88,
+      "docName": "Görevlendirilen Sorumlu Denetçi Sorumlulukları Bildirim Belgesi",
+      "formCode": "SorumlulukBildirimi",
+      "formUrl": "/PlanVeProgram/SorumlulukBildirimi"
+    },
+    {
+      "menuName": "Denetlenen İşletmenin Tabi Olduğu Mevzuata İlişkin Değerlendirme",
+      "menuPath": "PLAN VE PROGRAM/Denetlenen İşletmenin Tabi Olduğu Mevzuata İlişkin Değerlendirme",
+      "docId": 89,
+      "docName": "Denetlenen İşletmenin Tabi Olduğu Mevzuata İlişkin Değerlendirme Belgeleri",
+      "formCode": "DenetlenenIsletmeninTabiOlduguMevzuataIliskinDegerlendirme",
+      "formUrl": "/PlanVeProgram/DenetlenenIsletmeninTabiOlduguMevzuataIliskinDegerlendirme"
+    },
+    {
+      "menuName": "Beyan ve Soruşturma Sonucu Tespit Edilen Riskler",
+      "menuPath": "PLAN VE PROGRAM/Beyan ve Soruşturma Sonucu Tespit Edilen Riskler",
+      "docId": 92,
+      "docName": "Beyan ve Soruşturma Sonucu Tespit Edilen Riskler Belgesi",
+      "formCode": "TespitEdilenRiskler",
+      "formUrl": "/PlanVeProgram/TespitEdilenRiskler"
+    },
+    {
+      "menuName": "Denetim Riski Belirleme Belgesi",
+      "menuPath": "PLAN VE PROGRAM/Denetim Riski Belirleme Belgesi",
+      "docId": 93,
+      "docName": "İşletmeye İlişkin Denetim Riski Belirleme Belgesi",
+      "formCode": "DenetimRiskBelirleme",
+      "formUrl": "/PlanVeProgram/DenetimRiskBelirleme"
+    },
+    {
+      "menuName": "Finansal Tablolar Denetim Riski Belirleme",
+      "menuPath": "PLAN VE PROGRAM/Finansal Tablolar Denetim Riski Belirleme",
+      "docId": 167,
+      "docName": "Finansal Tablolar",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalTablolar"
+    },
+    {
+      "menuName": "Bulgu Riski Belirleme",
+      "menuPath": "PLAN VE PROGRAM/Bulgu Riski Belirleme",
+      "docId": 95,
+      "docName": "Bulgu Riski Belirleme Belgesi",
+      "formCode": "DogalRisk-KontrolRiski",
+      "formUrl": "/PlanVeProgram/BulguRiskiBelirleme"
+    },
+    {
+      "menuName": "Denetim Planında Önemlilik",
+      "menuPath": "PLAN VE PROGRAM/Denetim Planında Önemlilik",
+      "docId": 96,
+      "docName": "Denetim Planında Önemlilik",
+      "formCode": "",
+      "formUrl": "/PlanVeProgram/DenetimPlanindaOnemlilik"
+    },
+    {
+      "menuName": "Önemlilik Ve Örneklem",
+      "menuPath": "PLAN VE PROGRAM/Denetim Planında Önemlilik/Önemlilik Ve Örneklem",
+      "docId": 97,
+      "docName": "Denetim Planlaması Sürecinde Başlangıç Düzeyindeki Önemlilik ve Örneklem Tespit Belgesi",
+      "formCode": "OnemlilikVeOrneklem",
+      "formUrl": "/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem"
+    },
+    {
+      "menuName": "Finansal Tablo Kalemlerinde Değişim",
+      "menuPath": "PLAN VE PROGRAM/Denetim Planında Önemlilik/Finansal Tablo Kalemlerinde Değişim",
+      "docId": 98,
+      "docName": "Finansal Tablo Kalemlerinde Değişim",
+      "formCode": "FinansalTabloKalemlerindeDegisim",
+      "formUrl": "/PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim"
+    },
+    {
+      "menuName": "Fiş Büyüklüğü Analizi",
+      "menuPath": "PLAN VE PROGRAM/Denetim Planında Önemlilik/Fiş Büyüklüğü Analizi",
+      "docId": 99,
+      "docName": "Fiş Büyüklüğü Analizi",
+      "formCode": "FisBuyukluguAnalizi",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Denetim Risk Değerlendirme",
+      "menuPath": "PLAN VE PROGRAM/Denetim Risk Değerlendirme",
+      "docId": 100,
+      "docName": "Denetim Risk Değerlendirme Belgesi",
+      "formCode": "DenetimRiskDegerlendirme",
+      "formUrl": "/PlanVeProgram/DenetimRiskDegerlendirme"
+    },
+    {
+      "menuName": "İşletmeye İlişkin İç Kontrol Tespit Belgesi",
+      "menuPath": "PLAN VE PROGRAM/İşletmeye İlişkin İç Kontrol Tespit Belgesi",
+      "docId": 102,
+      "docName": "İşletmeye İlişkin İç Kontrol Tespit Belgesi",
+      "formCode": "IsletmeyeIliskinIcKontrolTespit",
+      "formUrl": "/PlanVeProgram/IsletmeyeIliskinIcKontrolTespit"
+    },
+    {
+      "menuName": "Hesaplara İlişkin İç Kontrol Tespit Belgesi",
+      "menuPath": "PLAN VE PROGRAM/Hesaplara İlişkin İç Kontrol Tespit Belgesi",
+      "docId": 103,
+      "docName": "Hesaplara İlişkin İç Kontrol Tespit Belgesi",
+      "formCode": "HesaplaraIliskinIcKontrolTespit",
+      "formUrl": "/PlanVeProgram/HesaplaraIliskinIcKontrolTespit"
+    },
+    {
+      "menuName": "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
+      "menuPath": "PLAN VE PROGRAM/İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme",
+      "docId": 104,
+      "docName": "İşletmeye İlişkin İç Kontrol Sistemi Özet Değerlendirme Belgesi",
+      "formCode": "IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
+      "formUrl": "/PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme"
+    },
+    {
+      "menuName": "İç Kontrol Değerlendirme Sonucuna Göre Uygulanan Denetim Teknikleri",
+      "menuPath": "PLAN VE PROGRAM/İç Kontrol Değerlendirme Sonucuna Göre Uygulanan Denetim Teknikleri",
+      "docId": 105,
+      "docName": "İç Kontrol Değerlendirme Sonucuna Göre Uygulanan Denetim Teknikleri Tespit Belgesi",
+      "formCode": "IcKontrolDegerlemeUnsur-IcKontrolDegerlemeAnket-IcKontrolDegerlemeTeknik",
+      "formUrl": "/PlanVeProgram/IcKontrolDegerlendirme"
+    },
+    {
+      "menuName": "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+      "menuPath": "PLAN VE PROGRAM/Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+      "docId": 651,
+      "docName": "Denetim Çalışması Öncesi Hile ve Usulsüzlük Üzerine Denetim Ekibi Görüşme Belgesi",
+      "formCode": "HileUsulsuzlukToplantiBilgileri-HileUsulsuzlukToplantidaGorusulenHususlar",
+      "formUrl": "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukEkipCalismasi"
+    },
+    {
+      "menuName": "Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+      "menuPath": "PLAN VE PROGRAM/Hile Usulsüzlük ve Risk Faktörleri Belirleme",
+      "docId": 650,
+      "docName": "Hile Usulsüzlük ve Risk Faktörleri Belirleme Belgesi",
+      "formCode": "HileUsulsuzlukBelirleme",
+      "formUrl": "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukBelirleme"
+    },
+    {
+      "menuName": "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme",
+      "menuPath": "PLAN VE PROGRAM/Hile Usulsüzlük ve Risk Faktörleri Değerlendirme",
+      "docId": 649,
+      "docName": "Hile Usulsüzlük ve Risk Faktörleri Değerlendirme Belgesi",
+      "formCode": "HileUsulsuzlukDegerlendirme",
+      "formUrl": "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukDegerlendirme"
+    },
+    {
+      "menuName": "İşletme Varlıklarının Korunmasına İlişkin Değerlendirme",
+      "menuPath": "PLAN VE PROGRAM/İşletme Varlıklarının Korunmasına İlişkin Değerlendirme",
+      "docId": 109,
+      "docName": "İşletme Varlıklarının Korunmasına İlişkin Değerlendirme Belgesi",
+      "formCode": "IsletmeVarliklarininKorunmasinaIliskinDegerlendirme",
+      "formUrl": "/PlanVeProgram/IsletmeVarliklarininKorunmasinaIliskinDegerlendirme"
+    },
+    {
+      "menuName": "HESAPLAMALAR",
+      "menuPath": "HESAPLAMALAR",
+      "docId": 157,
+      "docName": "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme Belgesi",
+      "formCode": "GercegeUygunDegerHesaplamalariDegerlendirme",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/GercegeUygunDegerHesaplamalariDegerlendirme"
+    },
+    {
+      "menuName": "Yaşlandırma",
+      "menuPath": "HESAPLAMALAR/Yaşlandırma",
+      "docId": 75,
+      "docName": "Yaşlandırma Hesaplama",
+      "formCode": "Yaslandirma",
+      "formUrl": "/Hesaplamalar/Yaslandirma"
+    },
+    {
+      "menuName": "Beklenen Kredi Zararı",
+      "menuPath": "HESAPLAMALAR/Beklenen Kredi Zararı",
+      "docId": 71,
+      "docName": "Kredi",
+      "formCode": "KrediHesaplanmis",
+      "formUrl": "/Hesaplamalar/Kredi"
+    },
+    {
+      "menuName": "Kıdem Tazminatı (Bobi)",
+      "menuPath": "HESAPLAMALAR/Kıdem Tazminatı (Bobi)",
+      "docId": 67,
+      "docName": "Kıdem Tazminatı",
+      "formCode": "",
+      "formUrl": "/Hesaplamalar/KidemTazminati"
+    },
+    {
+      "menuName": "Kıdem Tazminatı (Tfrs)",
+      "menuPath": "HESAPLAMALAR/Kıdem Tazminatı (Tfrs)",
+      "docId": 67,
+      "docName": "Kıdem Tazminatı",
+      "formCode": "",
+      "formUrl": "/Hesaplamalar/KidemTazminati"
+    },
+    {
+      "menuName": "Amortisman",
+      "menuPath": "HESAPLAMALAR/Amortisman",
+      "docId": 70,
+      "docName": "Amortisman",
+      "formCode": "AmortismanHesaplanmis",
+      "formUrl": "/Hesaplamalar/Amortisman"
+    },
+    {
+      "menuName": "Kredi",
+      "menuPath": "HESAPLAMALAR/Kredi",
+      "docId": 71,
+      "docName": "Kredi",
+      "formCode": "KrediHesaplanmis",
+      "formUrl": "/Hesaplamalar/Kredi"
+    },
+    {
+      "menuName": "Çek / Senet Reeskont",
+      "menuPath": "HESAPLAMALAR/Çek / Senet Reeskont",
+      "docId": 72,
+      "docName": "Reeskont",
+      "formCode": "CekSenetReeskontHesaplanmis",
+      "formUrl": "/Hesaplamalar/CekSenetReeskont"
+    },
+    {
+      "menuName": "Hareketsiz",
+      "menuPath": "HESAPLAMALAR/Hareketsiz",
+      "docId": 685,
+      "docName": "Hareketsiz Ticari Alacaklar",
+      "formCode": "",
+      "formUrl": ""
+    },
+    {
+      "menuName": "DÖNÜŞÜM",
+      "menuPath": "DÖNÜŞÜM",
+      "docId": 119,
+      "docName": "Vuk Mizan Dönüşüm Mizan Karşılaştırma",
+      "formCode": "VukMizanDonusumMizanKarsilastirmasi",
+      "formUrl": ""
+    },
+    {
+      "menuName": "DENETİM KANITLARI",
+      "menuPath": "DENETİM KANITLARI",
+      "docId": 112,
+      "docName": "DENETİM KANITLARI ",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari"
+    },
+    {
+      "menuName": "Denetim Stratejisi Belirleme",
+      "menuPath": "DENETİM KANITLARI/Denetim Stratejisi Belirleme",
+      "docId": 113,
+      "docName": "Denetim Stratejisi Belirleme Belgesi",
+      "formCode": "DenetimStratejisiBelirleme",
+      "formUrl": "/DenetimKanitlari/DenetimStratejisiBelirleme"
+    },
+    {
+      "menuName": "Uzman Yeterliliği Değerlendirme Belgesi",
+      "menuPath": "DENETİM KANITLARI/Uzman Yeterliliği Değerlendirme Belgesi",
+      "docId": 114,
+      "docName": "Uzman Yeterliliği Değerlendirme Belgesi",
+      "formCode": "UzmanYeterliligiDegerlendirme",
+      "formUrl": "/DenetimKanitlari/UzmanYeterliligiDegerlendirme"
+    },
+    {
+      "menuName": "Denetim Kontrol Testleri",
+      "menuPath": "DENETİM KANITLARI/Denetim Kontrol Testleri",
+      "docId": 115,
+      "docName": "Denetim Kontrol Testleri Belgesi",
+      "formCode": "DenetimKontrolTestleri",
+      "formUrl": "/DenetimKanitlari/DenetimKontrolTestleri"
+    },
+    {
+      "menuName": "Mizan Kontrol",
+      "menuPath": "DENETİM KANITLARI/Mizan Kontrol",
+      "docId": 116,
+      "docName": "Mizan Kontrol",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MizanKontrol"
+    },
+    {
+      "menuName": "Dönüşüm Mizan Kontrol",
+      "menuPath": "DENETİM KANITLARI/Mizan Kontrol/Dönüşüm Mizan Kontrol",
+      "docId": 116,
+      "docName": "Mizan Kontrol",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MizanKontrol"
+    },
+    {
+      "menuName": "Özet Denetim Mizan Kontrol Belgesi",
+      "menuPath": "DENETİM KANITLARI/Mizan Kontrol/Özet Denetim Mizan Kontrol Belgesi",
+      "docId": 118,
+      "docName": "Özet Denetim Mizan Kontrol Belgesi",
+      "formCode": "OzetDonusumMizan",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Vuk Mizan Dönüşüm Mizan Karşılaştırma",
+      "menuPath": "DENETİM KANITLARI/Mizan Kontrol/Vuk Mizan Dönüşüm Mizan Karşılaştırma",
+      "docId": 119,
+      "docName": "Vuk Mizan Dönüşüm Mizan Karşılaştırma",
+      "formCode": "VukMizanDonusumMizanKarsilastirmasi",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Finansal Tablolar",
+      "menuPath": "DENETİM KANITLARI/Finansal Tablolar",
+      "docId": 167,
+      "docName": "Finansal Tablolar",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalTablolar"
+    },
+    {
+      "menuName": "Finansal Durum Tablosu",
+      "menuPath": "DENETİM KANITLARI/Finansal Tablolar/Finansal Durum Tablosu",
+      "docId": 121,
+      "docName": "Finansal Durum Tablosu",
+      "formCode": "FinansalTabloKayitlari",
+      "formUrl": "/DenetimKanitlari/FinansalTablolar/FinansalDurumTablosu"
+    },
+    {
+      "menuName": "Nakit Akış Tablosu",
+      "menuPath": "DENETİM KANITLARI/Finansal Tablolar/Nakit Akış Tablosu",
+      "docId": 124,
+      "docName": "Nakit Akış Tablosu",
+      "formCode": "FinansalTabloKayitlari",
+      "formUrl": "/DenetimKanitlari/FinansalTablolar/NakitAkisTablosu"
+    },
+    {
+      "menuName": "Özkaynak Değişim Tablosu",
+      "menuPath": "DENETİM KANITLARI/Finansal Tablolar/Özkaynak Değişim Tablosu",
+      "docId": 123,
+      "docName": "Özkaynak Değişim Tablosu",
+      "formCode": "FinansalTabloOzkaynakKayitlari",
+      "formUrl": "/DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu"
+    },
+    {
+      "menuName": "İşletmenin Sürekliliği ve Analitik İnceleme",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme",
+      "docId": 128,
+      "docName": "İşletmenin Sürekliliği ve Analitik İnceleme ",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme"
+    },
+    {
+      "menuName": "Önemli Süreçlerin İzlenmesi ve Risk Belirleme",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/Önemli Süreçlerin İzlenmesi ve Risk Belirleme",
+      "docId": 129,
+      "docName": "Önemli Süreçlerin İzlenmesi ve Risk Belirleme Belgesi",
+      "formCode": "OnemliSureclerinIzlenmesiVeRiskBelirleme",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OnemliSureclerinIzlenmesiVeRiskBelirleme"
+    },
+    {
+      "menuName": "Karşılaştırmalı Analiz",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/Karşılaştırmalı Analiz",
+      "docId": 130,
+      "docName": "Karşılaştırmalı Analiz Tespit Belgesi",
+      "formCode": "KarsilastirmaliAnaliz",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KarsilastirmaliAnaliz"
+    },
+    {
+      "menuName": "Dikey Analiz",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/Dikey Analiz",
+      "docId": 131,
+      "docName": "Dikey Analiz Tespit Belgesi",
+      "formCode": "DikeyAnaliz",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/DikeyAnaliz"
+    },
+    {
+      "menuName": "Bilanço Değerlendirme Belgesi",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/Bilanço Değerlendirme Belgesi",
+      "docId": 133,
+      "docName": "Bilanço Değerlendirme Belgesi",
+      "formCode": "BilancoDegerlendirmeBelgesi",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/BilancoDegerlendirmeBelgesi"
+    },
+    {
+      "menuName": "Gelir Değerlendirme Belgesi",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/Gelir Değerlendirme Belgesi",
+      "docId": 134,
+      "docName": "Gelir Değerlendirme Belgesi",
+      "formCode": "GelirDegerlendirmeBelgesi",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/GelirDegerlendirmeBelgesi"
+    },
+    {
+      "menuName": "Oran Analizi Tespit Belgesi",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/Oran Analizi Tespit Belgesi",
+      "docId": 132,
+      "docName": "Oran Analizi Tespit Belgesi",
+      "formCode": "OranAnaliziTespitBelgesi",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OranAnaliziTespitBelgesi"
+    },
+    {
+      "menuName": "Kullanılan Analitik Tekniklere İlişkin Belgeler",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/Kullanılan Analitik Tekniklere İlişkin Belgeler",
+      "docId": 135,
+      "docName": "Kullanılan Analitik Tekniklere İlişkin Belgeler",
+      "formCode": "KullanilanAnalitikTekniklereIliskinBelgeler",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KullanilanAnalitikTekniklereIliskinBelgeler"
+    },
+    {
+      "menuName": "İşletmenin Sürekliliğine İlişkin Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/İşletmenin Sürekliliği ve Analitik İnceleme/İşletmenin Sürekliliğine İlişkin Değerlendirme",
+      "docId": 136,
+      "docName": "İşletmenin Sürekliliğine İlişkin Değerlendirme Belgesi",
+      "formCode": "IsletmeninSurekliligineIliskinDegerlendirme",
+      "formUrl": "/DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/IsletmeninSurekliligineIliskinDegerlendirme"
+    },
+    {
+      "menuName": "Önemlilik",
+      "menuPath": "DENETİM KANITLARI/Önemlilik",
+      "docId": 137,
+      "docName": "Önemlilik",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/Onemlilik"
+    },
+    {
+      "menuName": "Fiş İşlem Sayıları",
+      "menuPath": "DENETİM KANITLARI/Önemlilik/Fiş İşlem Sayıları",
+      "docId": 138,
+      "docName": "Fiş İşlem Sayıları",
+      "formCode": "FisIslemSayilari",
+      "formUrl": "/DenetimKanitlari/Onemlilik/FisIslemSayilari"
+    },
+    {
+      "menuName": "Örneklem",
+      "menuPath": "DENETİM KANITLARI/Önemlilik/Örneklem",
+      "docId": 39,
+      "docName": "Alınan Fatura Örneklem Listesi",
+      "formCode": "alinanfaturaorneklemlistesi",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Önemlilik Seviyesi Belirleme Kılavuzu",
+      "menuPath": "DENETİM KANITLARI/Önemlilik/Önemlilik Seviyesi Belirleme Kılavuzu",
+      "docId": 140,
+      "docName": "Önemlilik Seviyesi Belirleme Kılavuzu",
+      "formCode": "OnemlilikSeviyesiBelirlemeKilavuzu",
+      "formUrl": "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu"
+    },
+    {
+      "menuName": "Önemlilik Seviyesi Belirleme Ve Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Önemlilik/Önemlilik Seviyesi Belirleme Ve Değerlendirme",
+      "docId": 137,
+      "docName": "Önemlilik",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/Onemlilik"
+    },
+    {
+      "menuName": "Mutabakat",
+      "menuPath": "DENETİM KANITLARI/Mutabakat",
+      "docId": 142,
+      "docName": "Mutabakat",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/Mutabakat"
+    },
+    {
+      "menuName": "Mutabakat Seçimi Ve Kontrol",
+      "menuPath": "DENETİM KANITLARI/Mutabakat/Mutabakat Seçimi Ve Kontrol",
+      "docId": 143,
+      "docName": "Mutabakat Seçimi Ve Kontrol",
+      "formCode": "MutabakatKontrolKayitlari",
+      "formUrl": "/DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol"
+    },
+    {
+      "menuName": "Doğrulama Mektuplarına Alınan Yanıtlar",
+      "menuPath": "DENETİM KANITLARI/Mutabakat/Doğrulama Mektuplarına Alınan Yanıtlar",
+      "docId": 144,
+      "docName": "Doğrulama Mektuplarına Alınan Yanıtlar Değerlendirme Belgesi",
+      "formCode": "DogrulamaMektuplarinaAlinanYanitlar",
+      "formUrl": "/DenetimKanitlari/Mutabakat/DogrulamaMektuplarinaAlinanYanitlar"
+    },
+    {
+      "menuName": "Diğer Kanıtlar",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar",
+      "docId": 146,
+      "docName": "Diğer Kanıtlar",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar"
+    },
+    {
+      "menuName": "Uygulanan Muhasebe Politikalarının Tespiti",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Uygulanan Muhasebe Politikalarının Tespiti",
+      "docId": 149,
+      "docName": "Uygulanan Muhasebe Politikalarının Tespiti",
+      "formCode": "UygulananMuhasebePolitikalarininTespiti",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/UygulananMuhasebePolitikalarininTespiti"
+    },
+    {
+      "menuName": "İlişkili Taraf İnceleme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/İlişkili Taraf İnceleme",
+      "docId": 150,
+      "docName": "İlişkili Taraf İncelemeleri Kontrol Belgesi",
+      "formCode": "IliskiliTarafInceleme",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/IliskiliTarafInceleme"
+    },
+    {
+      "menuName": "Kullanılan Tahminlere İlişkin Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Kullanılan Tahminlere İlişkin Değerlendirme",
+      "docId": 151,
+      "docName": "Kullanılan Tahminlere İlişkin Değerlendirme Belgesi",
+      "formCode": "KullanilanTahminlereIliskinDegerlendirme",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/KullanilanTahminlereIliskinDegerlendirme"
+    },
+    {
+      "menuName": "Satış Tahsilat Kontrol",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Satış Tahsilat Kontrol",
+      "docId": 152,
+      "docName": "Satış Tahsilat Kontrol",
+      "formCode": "SatisTahsilatKontrol-InvoiceYevmiyeMatch",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/SatisTahsilatKontrol"
+    },
+    {
+      "menuName": "Transfer Fiyatlaması ve Örtülü Kazanç Kontrol",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Transfer Fiyatlaması ve Örtülü Kazanç Kontrol",
+      "docId": 154,
+      "docName": "Transfer Fiyatlaması Ve Örtülü Kazanç Kontrol Belgesi",
+      "formCode": "TransferFiyatlamasiOrtuluKazanc",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/TransferFiyatlamasiOrtuluKazanc"
+    },
+    {
+      "menuName": "Sayım ve Tespit Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Sayım ve Tespit Değerlendirme",
+      "docId": 155,
+      "docName": "Sayım ve Tespit Değerlendirme Belgesi",
+      "formCode": "SayimVeTespitDegerlendirme",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/SayimVeTespitDegerlendirme"
+    },
+    {
+      "menuName": "İhmal Edilen Düzeltme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/İhmal Edilen Düzeltme",
+      "docId": 156,
+      "docName": "İhmal Edilen Düzeltmeler Değerlendirme Belgesi",
+      "formCode": "IhmalEdilenDuzeltme",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/IhmalEdilenDuzeltme"
+    },
+    {
+      "menuName": "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Gerçeğe Uygun Değer Hesaplamaları Değerlendirme",
+      "docId": 157,
+      "docName": "Gerçeğe Uygun Değer Hesaplamaları Değerlendirme Belgesi",
+      "formCode": "GercegeUygunDegerHesaplamalariDegerlendirme",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/GercegeUygunDegerHesaplamalariDegerlendirme"
+    },
+    {
+      "menuName": "Habersiz İşletme Ziyareti",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Habersiz İşletme Ziyareti",
+      "docId": 158,
+      "docName": "Habersiz İşletme Ziyareti Denetim Belgesi",
+      "formCode": "HabersizIsletmeZiyareti",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/HabersizIsletmeZiyareti"
+    },
+    {
+      "menuName": "Risklere Karşı Uygulanan Denetim Prosedürleri",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Risklere Karşı Uygulanan Denetim Prosedürleri",
+      "docId": 159,
+      "docName": "Risklere Karşı Uygulanan Denetim Prosedürleri",
+      "formCode": "RisklereKarsiUygulananDenetimProsedurleri",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/RisklereKarsiUygulananDenetimProsedurleri"
+    },
+    {
+      "menuName": "Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Muhasebe Hataları ve Hile Kanıtları Değerlendirme",
+      "docId": 652,
+      "docName": "Muhasebe Hataları ve Hile Kanıtları Değerlendirme Belgesi",
+      "formCode": "MuhasebeHatalariVeHileKanitlariDegerlendirme",
+      "formUrl": "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/MuhasebeHatalariVeHileKanitlariDegerlendirme"
+    },
+    {
+      "menuName": "Denetim Kanıtları Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Denetim Kanıtları Değerlendirme",
+      "docId": 161,
+      "docName": "Denetim Kanıtları Değerlendirme Belgesi",
+      "formCode": "DenetimKanitlariDegerlendirme",
+      "formUrl": "/DenetimKanitlari/DigerKanitlar/DenetimKanitlariDegerlendirme"
+    },
+    {
+      "menuName": "Yönetim Kurulu Faaliyet Raporu Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Yönetim Kurulu Faaliyet Raporu Değerlendirme",
+      "docId": 47,
+      "docName": "Yönetim Kurulu Faaliyet Raporu",
+      "formCode": "yonetimkurulufaaliyetraporu",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Yevmiye Kayıtları Kontrol",
+      "menuPath": "DENETİM KANITLARI/Yevmiye Kayıtları Kontrol",
+      "docId": 164,
+      "docName": "Yevmiye Kayıtları Kontrol Belgesi",
+      "formCode": "YevmiyeKayitlariKontrol",
+      "formUrl": "/DenetimKanitlari/YevmiyeKayitlariKontrol"
+    },
+    {
+      "menuName": "Yönetim Tavsiye Mektubu",
+      "menuPath": "DENETİM KANITLARI/Yönetim Tavsiye Mektubu",
+      "docId": 165,
+      "docName": "Yönetim Tavsiye Mektubu",
+      "formCode": "YonetimTavsiyeMektubu",
+      "formUrl": "/DenetimKanitlari/YonetimTavsiyeMektubu"
+    },
+    {
+      "menuName": "Hile ve Usulsüzlük",
+      "menuPath": "DENETİM KANITLARI/Hile ve Usulsüzlük",
+      "docId": 647,
+      "docName": "Hile ve Usulsüzlük",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/HileVeUsulsuzluk"
+    },
+    {
+      "menuName": "Hile Prosedürleri",
+      "menuPath": "DENETİM KANITLARI/Hile ve Usulsüzlük/Hile Prosedürleri",
+      "docId": 648,
+      "docName": "Hile Prosedürleri",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri"
+    },
+    {
+      "menuName": "Muhasebe Hataları ve Hileye İlişkin Çalışmalar",
+      "menuPath": "DENETİM KANITLARI/Hile ve Usulsüzlük/Muhasebe Hataları ve Hileye İlişkin Çalışmalar",
+      "docId": 653,
+      "docName": "Muhasebe Hataları ve Hileye İlişkin Çalışmalar",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile"
+    },
+    {
+      "menuName": "GENEL KURUL",
+      "menuPath": "GENEL KURUL",
+      "docId": 20,
+      "docName": "Genel Kurul Toplantı Belgeleri",
+      "formCode": "genelkurultoplantibelgeleri",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Genel Kurul Toplantısı Görevlendirme Belgesi",
+      "menuPath": "GENEL KURUL/Genel Kurul Toplantısı Görevlendirme Belgesi",
+      "docId": 221,
+      "docName": "Denetim Raporunun Görüşüldüğü Müşteri Genel Kurul Toplantısı Görevlendirme Belgesi",
+      "formCode": "GorevlendirmeBelgesi",
+      "formUrl": "/GenelKurul/GorevlendirmeBelgesi"
+    },
+    {
+      "menuName": "Genel Kurul Toplantısı Katılım Belgesi",
+      "menuPath": "GENEL KURUL/Genel Kurul Toplantısı Katılım Belgesi",
+      "docId": 222,
+      "docName": "Denetim Raporunun Görüşüldüğü Müşteri Genel Kurul Toplantısı Katılım Belgesi",
+      "formCode": "GenelKurulToplantiBilgileri-GenelKurulToplantidaGorusulenHususlar",
+      "formUrl": "/GenelKurul/KatilimBelgesi"
+    },
+    {
+      "menuName": "Faaliyet Raporu",
+      "menuPath": "GENEL KURUL/Faaliyet Raporu",
+      "docId": 47,
+      "docName": "Yönetim Kurulu Faaliyet Raporu",
+      "formCode": "yonetimkurulufaaliyetraporu",
+      "formUrl": ""
+    },
+    {
+      "menuName": "RAPOR",
+      "menuPath": "RAPOR",
+      "docId": 47,
+      "docName": "Yönetim Kurulu Faaliyet Raporu",
+      "formCode": "yonetimkurulufaaliyetraporu",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Bağımsız Denetçi Raporu",
+      "menuPath": "RAPOR/Bağımsız Denetçi Raporu",
+      "docId": 219,
+      "docName": "Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu",
+      "formCode": "FaaliyetRaporunaIliskinBagimsizDenetciRaporu",
+      "formUrl": "/Rapor/FaaliyetRaporunaIliskinBagimsizDenetciRaporu"
+    },
+    {
+      "menuName": "Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu",
+      "menuPath": "RAPOR/Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu",
+      "docId": 219,
+      "docName": "Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu",
+      "formCode": "FaaliyetRaporunaIliskinBagimsizDenetciRaporu",
+      "formUrl": "/Rapor/FaaliyetRaporunaIliskinBagimsizDenetciRaporu"
+    },
+    {
+      "menuName": "SÜRDÜRÜLEBİLİRLİK",
+      "menuPath": "SÜRDÜRÜLEBİLİRLİK",
+      "docId": 679,
+      "docName": "SÜRDÜRÜLEBİLİRLİK RAPOR",
+      "formCode": "",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Genel Bilgiler",
+      "menuPath": "SÜRDÜRÜLEBİLİRLİK/Genel Bilgiler",
+      "docId": 680,
+      "docName": "Genel Bilgiler",
+      "formCode": "SurdurulebilirlikGenelBilgiler",
+      "formUrl": "/Surdurulebilirlik/SurdurulebilirlikGenelBilgiler"
+    },
+    {
+      "menuName": "Çevresel Etkiler",
+      "menuPath": "SÜRDÜRÜLEBİLİRLİK/Çevresel Etkiler",
+      "docId": 681,
+      "docName": "Çevresel Etkiler",
+      "formCode": "SurdurulebilirlikCevreselEtkiler",
+      "formUrl": "/Surdurulebilirlik/SurdurulebilirlikCevreselEtkiler"
+    },
+    {
+      "menuName": "Sosyal Sorumluluk",
+      "menuPath": "SÜRDÜRÜLEBİLİRLİK/Sosyal Sorumluluk",
+      "docId": 682,
+      "docName": "Sosyal Sorumluluk",
+      "formCode": "SurdurulebilirlikSosyalSorumluluk",
+      "formUrl": "/Surdurulebilirlik/SurdurulebilirlikSosyalSorumluluk"
+    },
+    {
+      "menuName": "Kurumsal Yönetişim",
+      "menuPath": "SÜRDÜRÜLEBİLİRLİK/Kurumsal Yönetişim",
+      "docId": 683,
+      "docName": "Kurumsal Yönetişim",
+      "formCode": "SurdurulebilirlikKurumsalYonetisim",
+      "formUrl": "/Surdurulebilirlik/SurdurulebilirlikKurumsalYonetisim"
+    },
+    {
+      "menuName": "Ek Bilgiler",
+      "menuPath": "SÜRDÜRÜLEBİLİRLİK/Ek Bilgiler",
+      "docId": 684,
+      "docName": "Ek Bilgiler",
+      "formCode": "SurdurulebilirlikEkBilgiler",
+      "formUrl": "/Surdurulebilirlik/SurdurulebilirlikEkBilgiler"
+    },
+    {
+      "menuName": "ENFLASYON",
+      "menuPath": "ENFLASYON",
+      "docId": 672,
+      "docName": "ENFLASYON DÜZELTMESİ",
+      "formCode": "",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Ortalama Ticari Kredi Faiz Oranları",
+      "menuPath": "ENFLASYON/Ortalama Ticari Kredi Faiz Oranları",
+      "docId": 71,
+      "docName": "Kredi",
+      "formCode": "KrediHesaplanmis",
+      "formUrl": "/Hesaplamalar/Kredi"
+    },
+    {
+      "menuName": "Stoklar Enflasyon Düzeltmesi",
+      "menuPath": "ENFLASYON/Stoklar Enflasyon Düzeltmesi",
+      "docId": 674,
+      "docName": "Stoklar Enflasyon Düzeltmesi",
+      "formCode": "StoklarEnflasyonDuzeltmesi",
+      "formUrl": "/Enflasyon/StoklarEnflasyonDuzeltmesi"
+    },
+    {
+      "menuName": "Maddi Ve Maddi Olmayan Duran Varlıklar",
+      "menuPath": "ENFLASYON/Maddi Ve Maddi Olmayan Duran Varlıklar",
+      "docId": 189,
+      "docName": "Maddi Olmayan Duran Varlıklar",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MaddiDogrulamaProsedurleri/MaddiOlmayanDuranVarliklar"
+    },
+    {
+      "menuName": "Amortisman Haraket Tablosu",
+      "menuPath": "ENFLASYON/Amortisman Haraket Tablosu",
+      "docId": 70,
+      "docName": "Amortisman",
+      "formCode": "AmortismanHesaplanmis",
+      "formUrl": "/Hesaplamalar/Amortisman"
+    },
+    {
+      "menuName": "Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi",
+      "menuPath": "ENFLASYON/Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi",
+      "docId": 675,
+      "docName": "Diğer Varlık Ve Kaynaklar Enflasyon Düzeltmesi",
+      "formCode": "DigerVarlikVeKaynaklarEnflasyonDuzeltmesi",
+      "formUrl": "/Enflasyon/DigerVarlikVeKaynaklar"
+    },
+    {
+      "menuName": "Proje-İnşaat Enflasyon Düzeltmesi",
+      "menuPath": "ENFLASYON/Proje-İnşaat Enflasyon Düzeltmesi",
+      "docId": 676,
+      "docName": "Proje-İnşaat Enflasyon Düzeltmesi",
+      "formCode": "ProjeInsaatEnflasyonDuzeltmesi",
+      "formUrl": "/Enflasyon/ProjeInsaat"
+    },
+    {
+      "menuName": "Gelir Ve Giderlere İlişkin Enflasyon Düzeltmesi",
+      "menuPath": "ENFLASYON/Gelir Ve Giderlere İlişkin Enflasyon Düzeltmesi",
+      "docId": 677,
+      "docName": "Gelir Ve Giderlere İlişkin Enflasyon Düzeltmesi",
+      "formCode": "GelirGiderEnflasyonDüzeltmesi",
+      "formUrl": "/Enflasyon/GelirVeGiderlerEnflasyonDuzeltmesi"
+    },
+    {
+      "menuName": "Ertelenen Vergi",
+      "menuPath": "ENFLASYON/Net Parasal Pozisyon/Ertelenen Vergi",
+      "docId": 191,
+      "docName": "Ertelenen Vergi Varlığı - Yükümlülüğü",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MaddiDogrulamaProsedurleri/ErtelenenVergiVarligi-Yukumlulugu"
+    },
+    {
+      "menuName": "Enflasyon Düzeltmesi Çalışma Kağıdı",
+      "menuPath": "ENFLASYON/Enflasyon Düzeltmesi Çalışma Kağıdı",
+      "docId": 678,
+      "docName": "Enflasyon Düzeltmesi",
+      "formCode": "EnflasyonDuzeltmesi",
+      "formUrl": "/Enflasyon/EnflasyonDuzeltmesiCalismaKagidi"
+    },
+    {
+      "menuName": "Dönüşüm",
+      "menuPath": "ENFLASYON/Düzeltme İşlemleri/Dönüşüm",
+      "docId": 119,
+      "docName": "Vuk Mizan Dönüşüm Mizan Karşılaştırma",
+      "formCode": "VukMizanDonusumMizanKarsilastirmasi",
+      "formUrl": ""
+    },
+    {
+      "menuName": "Dönüşüm Mizan Kontrol",
+      "menuPath": "ENFLASYON/Dönüşüm Mizan Kontrol",
+      "docId": 116,
+      "docName": "Mizan Kontrol",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MizanKontrol"
+    },
+    {
+      "menuName": "Finansal Tablolar",
+      "menuPath": "ENFLASYON/Finansal Tablolar",
+      "docId": 167,
+      "docName": "Finansal Tablolar",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalTablolar"
+    },
+    {
+      "menuName": "Denetçi Raporu",
+      "menuPath": "ENFLASYON/Denetçi Raporu",
+      "docId": 219,
+      "docName": "Faaliyet Raporuna İlişkin Bağımsız Denetçi Raporu",
+      "formCode": "FaaliyetRaporunaIliskinBagimsizDenetciRaporu",
+      "formUrl": "/Rapor/FaaliyetRaporunaIliskinBagimsizDenetciRaporu"
+    },
+    {
+      "menuName": "Dönüşüm İşlemi / Mizan Kontrol",
+      "menuPath": "KONSOLİDASYON/Dönüşüm İşlemi / Mizan Kontrol",
+      "docId": 116,
+      "docName": "Mizan Kontrol",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MizanKontrol"
+    },
+    {
+      "menuName": "Finansal Tablolar ve Raporlar",
+      "menuPath": "KONSOLİDASYON/Finansal Tablolar ve Raporlar",
+      "docId": 167,
+      "docName": "Finansal Tablolar",
+      "formCode": "",
+      "formUrl": "/DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalTablolar"
+    },
+    {
+      "menuName": "1. Belgelendirme",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/1. Belgelendirme",
+      "docId": 691,
+      "docName": "Belgelendirme",
+      "formCode": "",
+      "formUrl": "/Kys/Belgelendirme"
+    },
+    {
+      "menuName": "2. Risk Değerlendirme Süreci",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/2. Risk Değerlendirme Süreci",
+      "docId": 695,
+      "docName": "Risk Değerlendirme Süreci",
+      "formCode": "",
+      "formUrl": "/Kys/RiskDegerlendirmeSureci"
+    },
+    {
+      "menuName": "3. Üst Yönetim ve Liderlik Yapısı",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/3. Üst Yönetim ve Liderlik Yapısı",
+      "docId": 697,
+      "docName": "Üst Yönetim ve Liderlik Yapısı",
+      "formCode": "",
+      "formUrl": "/Kys/UstYonetimVeLiderlik"
+    },
+    {
+      "menuName": "4. Etik Hükümler",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/4. Etik Hükümler",
+      "docId": 700,
+      "docName": "Etik Hükümler",
+      "formCode": "",
+      "formUrl": "/Kys/EtikHukumler"
+    },
+    {
+      "menuName": "6. Denetimin Yürütülmesi",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/6. Denetimin Yürütülmesi",
+      "docId": 713,
+      "docName": "Denetimin Yürütülmesi",
+      "formCode": "",
+      "formUrl": "/Kys/DenetiminYurutulmesi"
+    },
+    {
+      "menuName": "7. Kaynaklar",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/7. Kaynaklar",
+      "docId": 720,
+      "docName": "Kaynaklar",
+      "formCode": "",
+      "formUrl": "/Kys/Kaynaklar"
+    },
+    {
+      "menuName": "8. Bilgi ve İletişim",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/8. Bilgi ve İletişim",
+      "docId": 730,
+      "docName": "Bilgi ve İletişim",
+      "formCode": "",
+      "formUrl": "/Kys/BilgiVeIletisim"
+    },
+    {
+      "menuName": "9. İzleme ve Düzeltme Süreci",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/9. İzleme ve Düzeltme Süreci",
+      "docId": 733,
+      "docName": "İzleme ve Düzeltme Süreci",
+      "formCode": "",
+      "formUrl": "/Kys/IzlemeVeDuzeltme"
+    },
+    {
+      "menuName": "10. Risk Matrisi",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/10. Risk Matrisi",
+      "docId": 741,
+      "docName": "Risk Matrisi",
+      "formCode": "KysRiskMatrisi",
+      "formUrl": "/Kys/RiskMatrisi"
+    }
+  ],
+  "unmatchedMenu": [
+    {
+      "menuName": "ANASAYFA",
+      "menuPath": "ANASAYFA",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Müşteri İşlemleri",
+      "menuPath": "MÜŞTERİ/Müşteri İşlemleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "İşletme Tanıma",
+      "menuPath": "MÜŞTERİ/İşletme Tanıma",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Teklif Belgesi",
+      "menuPath": "MÜŞTERİ/Teklif Belgesi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Müşteri Dürüstlüğünü Değerlendirme",
+      "menuPath": "MÜŞTERİ/Müşteri Dürüstlüğünü Değerlendirme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Müşteri Kabul İşlemi",
+      "menuPath": "MÜŞTERİ/Müşteri Kabul İşlemi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "VERİ",
+      "menuPath": "VERİ",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Defter / K. V. Beyannamesi Yükleme",
+      "menuPath": "VERİ/Defter / K. V. Beyannamesi Yükleme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Diğer Veri Yükleme",
+      "menuPath": "VERİ/Diğer Veri Yükleme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "E-Defter Mizan Oluşturma",
+      "menuPath": "VERİ/Mizanlar/E-Defter Mizan Oluşturma",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "E-Defter İnceleme",
+      "menuPath": "VERİ/E-Defter İnceleme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+      "menuPath": "PLAN VE PROGRAM/Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Etik Gerekliliklere İlişkin Bildirim ve Değerlendirme",
+      "menuPath": "PLAN VE PROGRAM/Etik Gerekliliklere İlişkin Bildirim ve Değerlendirme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+      "menuPath": "PLAN VE PROGRAM/Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Denetim Zamanı Bildirme",
+      "menuPath": "PLAN VE PROGRAM/Denetim Zamanı Bildirme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Denetim Strateji Kılavuzu",
+      "menuPath": "PLAN VE PROGRAM/Denetim Strateji Kılavuzu",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Faaliyet Riski Belirleme Belgesi",
+      "menuPath": "PLAN VE PROGRAM/Faaliyet Riski Belirleme Belgesi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Bilgi İşlem Muhasebe Sistemi Değerlendirme",
+      "menuPath": "PLAN VE PROGRAM/Bilgi İşlem Muhasebe Sistemi Değerlendirme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Dava Karşılıkları",
+      "menuPath": "HESAPLAMALAR/Dava Karşılıkları",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Ertelenmiş Vergi Hesabı",
+      "menuPath": "HESAPLAMALAR/Ertelenmiş Vergi Hesabı",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "İlişkili Taraf Sınıflama",
+      "menuPath": "HESAPLAMALAR/İlişkili Taraf Sınıflama",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Vadeli Banka Mevduatı",
+      "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Vadeli Banka Mevduatı Otomatik Sınıflama",
+      "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı/Vadeli Banka Mevduatı Otomatik Sınıflama",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Vadeli Banka Mevduatı Manuel Sınıflama",
+      "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı/Vadeli Banka Mevduatı Manuel Sınıflama",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Vadeli Banka Mevduatı Faiz Tahakkuk",
+      "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı/Vadeli Banka Mevduatı Faiz Tahakkuk",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Geçmiş Yıllar Kar Zarar Kontrolleri",
+      "menuPath": "HESAPLAMALAR/Geçmiş Yıllar Kar Zarar Kontrolleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Kur Farkı Kayıtları",
+      "menuPath": "HESAPLAMALAR/Kur Farkı Kayıtları",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Kur Farkı",
+      "menuPath": "HESAPLAMALAR/Kur Farkı Kayıtları/Kur Farkı",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Kur Farkı Kontrolleri",
+      "menuPath": "HESAPLAMALAR/Kur Farkı Kayıtları/Kur Farkı Kontrolleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Fiş Girişi",
+      "menuPath": "DÖNÜŞÜM/Fiş Girişi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Fiş Listesi",
+      "menuPath": "DÖNÜŞÜM/Fiş Listesi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Hazır Fişler",
+      "menuPath": "DÖNÜŞÜM/Hazır Fişler",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Dönüşüm İşlemi",
+      "menuPath": "DÖNÜŞÜM/Dönüşüm İşlemi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Belirleme Belgesi (Bobi Frs / Tms Tfrs)",
+      "menuPath": "DÖNÜŞÜM/Belirleme Belgesi (Bobi Frs / Tms Tfrs)",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Kar / Zarar Tablosu",
+      "menuPath": "DENETİM KANITLARI/Finansal Tablolar/Kar / Zarar Tablosu",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Cari/Önceki/Geçmiş Dönem Dönüşüm Düzeltme Belgeleri",
+      "menuPath": "DENETİM KANITLARI/Finansal Tablolar/Cari/Önceki/Geçmiş Dönem Dönüşüm Düzeltme Belgeleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+      "menuPath": "DENETİM KANITLARI/Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Müşteri İşletme Yönetimi İle Yapılan Görüşme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Müşteri İşletme Yönetimi İle Yapılan Görüşme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Müşteri İşletme Personeli İle Yapılan Görüşme",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Müşteri İşletme Personeli İle Yapılan Görüşme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Satın Alma Ödeme Kontrol",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Satın Alma Ödeme Kontrol",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Tespit Edilen Hususların Yönetim Bildirimi",
+      "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Tespit Edilen Hususların Yönetim Bildirimi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Fatura İnceleme",
+      "menuPath": "DENETİM KANITLARI/Fatura İnceleme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Maddi Doğrulama Prosedürleri",
+      "menuPath": "DENETİM KANITLARI/Maddi Doğrulama Prosedürleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Benford Analizi",
+      "menuPath": "DENETİM KANITLARI/Benford Analizi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Denetim Çalışması İzleme",
+      "menuPath": "GENEL KURUL/Denetim Çalışması İzleme",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Denetim Çalışması İzleme Sonuç",
+      "menuPath": "GENEL KURUL/Denetim Çalışması İzleme Sonuç",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Dipnotlar",
+      "menuPath": "RAPOR/Dipnotlar",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Aşamalar",
+      "menuPath": "ENFLASYON/Aşamalar",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Düzeltme Katsayıları",
+      "menuPath": "ENFLASYON/Düzeltme Katsayıları",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Reel Olmayan Finansman Maaliyeti",
+      "menuPath": "ENFLASYON/Reel Olmayan Finansman Maaliyeti",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Önceki Dönem Vuk Enflasyon İptal Fişi",
+      "menuPath": "ENFLASYON/Önceki Dönem Vuk Enflasyon İptal Fişi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Net Parasal Pozisyon",
+      "menuPath": "ENFLASYON/Net Parasal Pozisyon",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "NPP Kayıp/Kazanç",
+      "menuPath": "ENFLASYON/Net Parasal Pozisyon/NPP Kayıp/Kazanç",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Düzeltme İşlemleri",
+      "menuPath": "ENFLASYON/Düzeltme İşlemleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "İptal Fişi / Fiş Girişi / Fiş İşlemleri",
+      "menuPath": "ENFLASYON/Düzeltme İşlemleri/İptal Fişi / Fiş Girişi / Fiş İşlemleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Taşıma/Açılış Fişi",
+      "menuPath": "ENFLASYON/Düzeltme İşlemleri/Taşıma/Açılış Fişi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Maliyet Fark Fişi Oluştur",
+      "menuPath": "ENFLASYON/Düzeltme İşlemleri/Maliyet Fark Fişi Oluştur",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Sunum Endeksi",
+      "menuPath": "ENFLASYON/Sunum Endeksi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Finansal Durum / Kar-Zarar / Nakit Akış / Özkaynak Değişim",
+      "menuPath": "ENFLASYON/Finansal Tablolar/Finansal Durum / Kar-Zarar / Nakit Akış / Özkaynak Değişim",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Dipnotlar / Raporlar",
+      "menuPath": "ENFLASYON/Denetçi Raporu/Dipnotlar / Raporlar",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "KONSOLİDASYON",
+      "menuPath": "KONSOLİDASYON",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Aşamalar / Tanımlamalar",
+      "menuPath": "KONSOLİDASYON/Aşamalar / Tanımlamalar",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Birleştirilmiş Mizan",
+      "menuPath": "KONSOLİDASYON/Birleştirilmiş Mizan",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Eliminasyon Fiş İşlemleri",
+      "menuPath": "KONSOLİDASYON/Eliminasyon Fiş İşlemleri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "BDDK",
+      "menuPath": "BDDK",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "KYS (Kalite Yönetim Sistemi)",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "5. Müşteri İlişkisinin Kabulü ve Devam Ettirilmesi",
+      "menuPath": "KYS (Kalite Yönetim Sistemi)/5. Müşteri İlişkisinin Kabulü ve Devam Ettirilmesi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "DENETİM DOSYA",
+      "menuPath": "DENETİM DOSYA",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Bağımsız Denetim Metodolojisi",
+      "menuPath": "DENETİM DOSYA/Bağımsız Denetim Metodolojisi",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Denetim Dosya Yazdır",
+      "menuPath": "DENETİM DOSYA/Denetim Dosya Yazdır",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "DİĞER İŞLEMLER",
+      "menuPath": "DİĞER İŞLEMLER",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Arşiv",
+      "menuPath": "DİĞER İŞLEMLER/Arşiv",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Denetçi Firma Bilgileri",
+      "menuPath": "DİĞER İŞLEMLER/Denetçi Firma Bilgileri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Üyelik Bilgileri",
+      "menuPath": "DİĞER İŞLEMLER/Üyelik Bilgileri",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "Veri Aktarma",
+      "menuPath": "DİĞER İŞLEMLER/Veri Aktarma",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    },
+    {
+      "menuName": "KULLANIM KILAVUZU",
+      "menuPath": "KULLANIM KILAVUZU",
+      "status": "MISSING_IN_DOCUMENTS",
+      "action": "ADD_TO_DOCUMENTS"
+    }
+  ],
+  "unmatchedDocIds": [
+    7,
+    10,
+    13,
+    17,
+    18,
+    19,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    32,
+    33,
+    35,
+    36,
+    37,
+    38,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    68,
+    69,
+    73,
+    74,
+    76,
+    83,
+    84,
+    85,
+    86,
+    90,
+    91,
+    94,
+    101,
+    106,
+    107,
+    108,
+    110,
+    111,
+    117,
+    120,
+    122,
+    125,
+    126,
+    127,
+    139,
+    141,
+    145,
+    147,
+    148,
+    153,
+    160,
+    162,
+    163,
+    166,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    190,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    211,
+    212,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    220,
+    223,
+    224,
+    225,
+    226,
+    227,
+    228,
+    229,
+    230,
+    231,
+    232,
+    233,
+    234,
+    235,
+    236,
+    237,
+    238,
+    239,
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247,
+    248,
+    249,
+    250,
+    251,
+    252,
+    253,
+    254,
+    255,
+    256,
+    257,
+    258,
+    259,
+    260,
+    261,
+    262,
+    263,
+    264,
+    265,
+    266,
+    267,
+    268,
+    269,
+    270,
+    271,
+    272,
+    273,
+    274,
+    275,
+    276,
+    277,
+    278,
+    279,
+    280,
+    281,
+    282,
+    283,
+    284,
+    285,
+    286,
+    287,
+    288,
+    289,
+    290,
+    291,
+    292,
+    293,
+    294,
+    295,
+    296,
+    297,
+    298,
+    299,
+    300,
+    301,
+    302,
+    303,
+    304,
+    305,
+    306,
+    307,
+    308,
+    309,
+    310,
+    311,
+    312,
+    313,
+    314,
+    315,
+    316,
+    317,
+    318,
+    319,
+    320,
+    321,
+    322,
+    323,
+    324,
+    325,
+    326,
+    327,
+    328,
+    329,
+    330,
+    331,
+    332,
+    333,
+    334,
+    335,
+    336,
+    337,
+    338,
+    339,
+    340,
+    341,
+    342,
+    343,
+    344,
+    345,
+    346,
+    347,
+    348,
+    349,
+    350,
+    351,
+    352,
+    353,
+    354,
+    355,
+    356,
+    357,
+    358,
+    359,
+    360,
+    361,
+    362,
+    363,
+    364,
+    365,
+    366,
+    367,
+    368,
+    369,
+    370,
+    371,
+    372,
+    373,
+    374,
+    375,
+    376,
+    377,
+    378,
+    379,
+    380,
+    381,
+    382,
+    383,
+    384,
+    385,
+    386,
+    387,
+    388,
+    389,
+    390,
+    391,
+    392,
+    393,
+    394,
+    395,
+    396,
+    397,
+    398,
+    399,
+    400,
+    401,
+    402,
+    403,
+    404,
+    405,
+    406,
+    407,
+    408,
+    409,
+    410,
+    411,
+    412,
+    413,
+    414,
+    415,
+    416,
+    417,
+    418,
+    419,
+    420,
+    421,
+    422,
+    423,
+    424,
+    425,
+    426,
+    427,
+    428,
+    429,
+    430,
+    431,
+    432,
+    433,
+    434,
+    435,
+    436,
+    437,
+    438,
+    439,
+    440,
+    441,
+    442,
+    443,
+    444,
+    445,
+    446,
+    447,
+    448,
+    449,
+    450,
+    451,
+    452,
+    453,
+    454,
+    455,
+    456,
+    457,
+    458,
+    459,
+    460,
+    461,
+    462,
+    463,
+    464,
+    465,
+    466,
+    467,
+    468,
+    469,
+    470,
+    471,
+    472,
+    473,
+    474,
+    475,
+    476,
+    477,
+    478,
+    479,
+    480,
+    481,
+    482,
+    483,
+    484,
+    485,
+    486,
+    487,
+    488,
+    489,
+    490,
+    491,
+    492,
+    493,
+    494,
+    495,
+    496,
+    497,
+    498,
+    499,
+    500,
+    501,
+    502,
+    503,
+    504,
+    505,
+    506,
+    507,
+    508,
+    509,
+    510,
+    511,
+    512,
+    513,
+    514,
+    515,
+    516,
+    517,
+    518,
+    519,
+    520,
+    521,
+    522,
+    523,
+    524,
+    525,
+    526,
+    527,
+    528,
+    529,
+    530,
+    531,
+    532,
+    533,
+    534,
+    535,
+    536,
+    537,
+    538,
+    539,
+    540,
+    541,
+    542,
+    543,
+    544,
+    545,
+    546,
+    547,
+    548,
+    549,
+    550,
+    551,
+    552,
+    553,
+    554,
+    555,
+    556,
+    557,
+    558,
+    559,
+    560,
+    561,
+    562,
+    563,
+    564,
+    565,
+    566,
+    567,
+    568,
+    569,
+    570,
+    571,
+    572,
+    573,
+    574,
+    575,
+    576,
+    577,
+    578,
+    579,
+    580,
+    581,
+    582,
+    583,
+    584,
+    585,
+    586,
+    587,
+    588,
+    589,
+    590,
+    591,
+    592,
+    593,
+    594,
+    595,
+    596,
+    597,
+    598,
+    599,
+    600,
+    601,
+    602,
+    603,
+    604,
+    605,
+    606,
+    607,
+    608,
+    609,
+    610,
+    611,
+    612,
+    613,
+    614,
+    615,
+    616,
+    617,
+    618,
+    619,
+    620,
+    621,
+    622,
+    623,
+    624,
+    625,
+    626,
+    627,
+    628,
+    629,
+    630,
+    631,
+    632,
+    633,
+    634,
+    635,
+    636,
+    637,
+    638,
+    639,
+    640,
+    641,
+    642,
+    643,
+    644,
+    645,
+    646,
+    654,
+    655,
+    656,
+    657,
+    658,
+    659,
+    660,
+    661,
+    662,
+    663,
+    664,
+    665,
+    666,
+    667,
+    668,
+    669,
+    670,
+    671,
+    673,
+    686,
+    687,
+    688,
+    689,
+    690,
+    692,
+    693,
+    694,
+    696,
+    698,
+    699,
+    701,
+    702,
+    703,
+    704,
+    705,
+    706,
+    707,
+    708,
+    709,
+    710,
+    711,
+    712,
+    714,
+    715,
+    716,
+    717,
+    718,
+    719,
+    721,
+    722,
+    723,
+    724,
+    725,
+    726,
+    727,
+    728,
+    729,
+    731,
+    732,
+    734,
+    735,
+    736,
+    737,
+    738,
+    739,
+    740
+  ],
+  "summary": {
+    "totalMenuItems": 216,
+    "totalDocuments": 741,
+    "matchedCount": 140,
+    "menuGaps": 76,
+    "documentGaps": 622,
+    "matchPercentage": 64.8
+  }
+}

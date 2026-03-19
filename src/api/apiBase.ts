@@ -490,9 +490,12 @@ Error: Backend sunucuya bağlanılamıyor
 
 ✅ Çözüm:
 1. Backend server'ının çalıştığını kontrol edin: ${activeApiBaseUrl}
-2. Firewall/VPN ayarlarını kontrol edin
-3. Sayfayı yenileyin (F5)
-4. Tarayıcı konsolundaki tüm hataları kontrol edin
+2. Firewall/VPN ayarlarını kontrol edin (özellikle sunucu portunun dış erişime açık olduğundan ve güvenlik duvarında izin verildiğinden emin olun)
+3. Sunucuya farklı bir bilgisayardan erişiyorsanız, doğru domain veya IP adresini (örn. http(s)://sunucu-adresi:port/api) kullandığınızdan emin olun
+4. Sunucu uygulamasının 0.0.0.0 veya ilgili network interface üzerinde dinlediğinden emin olun (sadece localhost değil)
+5. Ağda proxy, VPN veya ekstra güvenlik yazılımlarının bağlantıyı engellemediğini kontrol edin
+6. Sayfayı yenileyin (F5)
+7. Tarayıcı konsolundaki tüm hataları kontrol edin
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
       console.error(detailedError);

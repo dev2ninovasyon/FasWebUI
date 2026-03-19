@@ -1,5 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import UserReducer, { setUserData, resetToNull } from '@/store/user/UserSlice'
+import UserReducer, {
+    resetToNull,
+    setDenetlenen,
+    setRefreshToken,
+    setSonSecilenBddkmi,
+    setTurTamamlandi,
+    setUserData,
+} from '@/store/user/UserSlice'
 
 describe('UserSlice', () => {
     let store: any
@@ -15,7 +22,6 @@ describe('UserSlice', () => {
     it('should have correct initial state', () => {
         const state = store.getState().user
 
-        // UserSlice has a full initial state, not an empty object
         expect(state).toHaveProperty('kullaniciAdi')
         expect(state).toHaveProperty('token')
         expect(state).toHaveProperty('denetlenenId')
@@ -25,14 +31,14 @@ describe('UserSlice', () => {
     })
 
     it('should set user data with setUserData action', () => {
-        const userData = {
-            kullaniciAdi: 'Test User',
-            yetki: 'Admin',
-            mail: 'test@example.com',
-            token: 'mock-jwt-token',
-        }
-
-        store.dispatch(setUserData(userData))
+        store.dispatch(
+            setUserData({
+                kullaniciAdi: 'Test User',
+                yetki: 'Admin',
+                mail: 'test@example.com',
+                token: 'mock-jwt-token',
+            })
+        )
 
         const state = store.getState().user
         expect(state.kullaniciAdi).toBe('Test User')
@@ -42,40 +48,85 @@ describe('UserSlice', () => {
     })
 
     it('should reset user to undefined with resetToNull action', () => {
-        const userData = {
-            kullaniciAdi: 'Test User',
-            yetki: 'Admin',
-            mail: 'test@example.com',
-            token: 'mock-jwt-token',
-        }
+        store.dispatch(
+            setUserData({
+                kullaniciAdi: 'Test User',
+                yetki: 'Admin',
+                mail: 'test@example.com',
+                token: 'mock-jwt-token',
+            })
+        )
 
-        // Set user first
-        store.dispatch(setUserData(userData))
-        expect(store.getState().user.kullaniciAdi).toBe('Test User')
-
-        // Then reset
         store.dispatch(resetToNull(''))
         const state = store.getState().user
         expect(state.kullaniciAdi).toBeUndefined()
         expect(state.token).toBeUndefined()
         expect(state.yetki).toBeUndefined()
+        expect(state.refreshToken).toBeUndefined()
     })
 
     it('should handle multiple user updates', () => {
-        const user1 = {
-            kullaniciAdi: 'User 1',
-        }
-
-        const user2 = {
-            kullaniciAdi: 'User 2',
-            yetki: 'Denetçi',
-        }
-
-        store.dispatch(setUserData(user1))
+        store.dispatch(setUserData({ kullaniciAdi: 'User 1' }))
         expect(store.getState().user.kullaniciAdi).toBe('User 1')
 
-        store.dispatch(setUserData(user2))
+        store.dispatch(
+            setUserData({
+                kullaniciAdi: 'User 2',
+                yetki: 'Denetci',
+            })
+        )
+
         expect(store.getState().user.kullaniciAdi).toBe('User 2')
-        expect(store.getState().user.yetki).toBe('Denetçi')
+        expect(store.getState().user.yetki).toBe('Denetci')
+    })
+
+    it('should map denetlenen payload fields into current selection state', () => {
+        store.dispatch(
+            setDenetlenen({
+                id: 55,
+                adi: 'ABC A.S.',
+                year: 2025,
+                denetimTuru: 'TFRS',
+                bobimi: true,
+                tfrsmi: true,
+                enflasyonmu: false,
+                konsolidemi: true,
+            })
+        )
+
+        const state = store.getState().user
+        expect(state.denetlenenId).toBe(55)
+        expect(state.denetlenenFirmaAdi).toBe('ABC A.S.')
+        expect(state.yil).toBe(2025)
+        expect(state.denetimTuru).toBe('TFRS')
+        expect(state.bobimi).toBe(true)
+        expect(state.tfrsmi).toBe(true)
+        expect(state.konsolidemi).toBe(true)
+    })
+
+    it('should update individual session and selection flags', () => {
+        store.dispatch(setRefreshToken('refresh-123'))
+        store.dispatch(setTurTamamlandi(true))
+        store.dispatch(setSonSecilenBddkmi(true))
+
+        const state = store.getState().user
+        expect(state.refreshToken).toBe('refresh-123')
+        expect(state.turTamamlandi).toBe(true)
+        expect(state.sonSecilenBddkmi).toBe(true)
+    })
+
+    it('should not reset state when resetToNull is called with a non-empty payload', () => {
+        store.dispatch(
+            setUserData({
+                kullaniciAdi: 'Persisted User',
+                token: 'token-123',
+            })
+        )
+
+        store.dispatch(resetToNull('keep-state'))
+
+        const state = store.getState().user
+        expect(state.kullaniciAdi).toBe('Persisted User')
+        expect(state.token).toBe('token-123')
     })
 })

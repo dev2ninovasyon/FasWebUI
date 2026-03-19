@@ -1,4 +1,5 @@
-﻿"use client";import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
+﻿"use client";
+import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -32,7 +33,8 @@ import KrediMizanKarsilastirmaTable from "./KrediMizanKarsilastirmaTable";
 import { FloatingButtonFisler } from "@/app/(Uygulama)/components/Hesaplamalar/FloatingButtonFisler";
 import { IconX, IconArrowsMaximize, IconArrowsMinimize } from "@tabler/icons-react";
 import KrediHesaplamaOrnekFisler from "./KrediHesaplamaOrnekFisler";
-import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";import { saveAs } from "file-saver";
+import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
+import { saveAs } from "file-saver";
 
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 const BCrumb = [
@@ -255,7 +257,7 @@ const Page: React.FC = () => {
           link: baglantiBilgisi.link,
           baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
           bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
-          tip: baglantiBilgisi.tip,
+          tip: baglantiBilgisi.tip || "",
         };
         setFetchedData(newRow);
         setHasData(true);

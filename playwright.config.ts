@@ -1,60 +1,71 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 /**
- * See https://playwright.dev/docs/test-configuration.
+ * Read environment variables from file.
+ * Varsayilan olarak local alinir, ancak "TARGET=staging npx playwright test" ile ezilebilir.
  */
+const envFile = process.env.TARGET ? `.env.${process.env.TARGET}` : '.env.local';
+dotenv.config({ path: path.resolve(__dirname, envFile) });
+
+function resolveWorkersFromCli() {
+  const inlineArg = process.argv.find((arg) => arg.startsWith('--workers='));
+  if (inlineArg) {
+    const parsed = Number(inlineArg.split('=')[1]);
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  const argIndex = process.argv.findIndex((arg) => arg === '--workers');
+  if (argIndex >= 0) {
+    const parsed = Number(process.argv[argIndex + 1]);
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return undefined;
+}
+
+const cliWorkers = resolveWorkersFromCli();
+const resolvedWorkers = process.env.CI ? 1 : Number(cliWorkers || process.env.PLAYWRIGHT_SECURITY_WORKERS || 2);
+process.env.PLAYWRIGHT_SECURITY_WORKERS = String(resolvedWorkers);
+
 export default defineConfig({
-    testDir: './e2e',
-    /* Maximum time one test can run for. */
-    timeout: 1500000,
-    /* Run tests in files in parallel */
-    fullyParallel: true,
-    /* Fail the build on CI if you accidentally left test.only in the source code. */
-    forbidOnly: !!process.env.CI,
-    /* Retry on CI only */
-    retries: process.env.CI ? 2 : 0,
-    /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
-    /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: [['html'], ['list']],
+  testDir: './tests',
+  timeout: 120000,
+  expect: {
+    timeout: 15000,
+  },
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: resolvedWorkers,
+  reporter: [
+    ['html', { outputFolder: 'tests/e2e/reports/playwright-html-report', open: 'never' }],
+    ['json', { outputFile: 'tests/e2e/reports/playwright-report.json' }],
+  ],
 
-    /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-    use: {
-        /* Base URL to use in actions like `await page.goto('/')`. */
-        baseURL: 'http://localhost:3000',
+  use: {
+    baseURL: process.env.UI_BASE_URL || 'http://localhost:3000',
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+  },
 
-        /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-        trace: 'on-first-retry',
-        video: 'on-first-retry',
-
-        /* Tarayici arayuzunu acik tut */
-        headless: true,
-
-        /* Screenshot on failure */
-        screenshot: 'only-on-failure',
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
+  ],
 
-    /* Configure projects for major browsers */
-    projects: [
-        // Setup project
-        { name: 'setup', testMatch: /.*\.setup\.ts/ },
-
-        // Chromium projeleri (Worker'lari ayirmak yerine testin kendi icinde use kisminda halledecegiz)
-        {
-            name: 'chromium',
-            use: {
-                ...devices['Desktop Chrome'],
-                // Varsayılan state testlerin içinde (use) manipüle edileceği için setup dependency konuldu
-            },
-            dependencies: ['setup'],
-        }
-    ],
-
-    /* Run your local dev server before starting the tests */
-    webServer: {
-        command: 'npm run dev',
-        url: 'http://localhost:3000',
-        reuseExistingServer: !process.env.CI,
-        timeout: 300000,
-    },
+  webServer: {
+    command: 'cmd /c "start /B dotnet run --project ../FasWebAPI/FasWebApi.csproj && node scripts/playwright-webserver.cjs"',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 300000,
+  },
 });

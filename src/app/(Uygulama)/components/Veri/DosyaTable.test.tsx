@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import DosyaTable from "./DosyaTable";
 import { renderWithProviders } from "@/test/test-utils";
-import { getDosyaBilgileri } from "@/api/Dosya/DosyaBilgileri";
+import { deleteDosyaBilgisiMultiple, getDosyaBilgileri } from "@/api/Dosya/DosyaBilgileri";
 
 vi.mock("notistack", () => ({
   useSnackbar: () => ({
@@ -127,5 +127,45 @@ describe("DosyaTable month filter", () => {
     renderWithProviders(<StatefulDosyaTable initialRows={[]} />);
 
     expect(await screen.findByText("06.03.2026 15:15")).toBeInTheDocument();
+  });
+
+  it("filters rows by search text", async () => {
+    renderWithProviders(
+      <DosyaTable
+        rows={baseRows}
+        fetchedData={null}
+        fileType="E-DefterKebir"
+        dosyaYuklendiMi={true}
+        setRows={vi.fn()}
+        setDosyaYuklendiMi={vi.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Arama"), {
+      target: { value: "202402" },
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("202401-K-000000.xml")).not.toBeInTheDocument();
+    });
+    expect(screen.getByText("202402-K-000000.xml")).toBeInTheDocument();
+  });
+
+  it("deletes selected rows after confirmation", async () => {
+    vi.mocked(deleteDosyaBilgisiMultiple).mockResolvedValue(true as any);
+
+    renderWithProviders(<StatefulDosyaTable />);
+
+    fireEvent.click(screen.getByText("202401-K-000000.xml"));
+    fireEvent.click(screen.getByRole("button", { name: /1 Kayıt Sil/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /Evet, Sil/i }));
+
+    await waitFor(() => {
+      expect(deleteDosyaBilgisiMultiple).toHaveBeenCalledWith([1]);
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("202401-K-000000.xml")).not.toBeInTheDocument();
+    });
   });
 });

@@ -61,7 +61,7 @@ const Profile = () => {
 
     dispatch(resetToNull(""));
     if (typeof window !== "undefined") {
-      window.location.href = "/";
+      window.location.assign("/");
     }
   };
 

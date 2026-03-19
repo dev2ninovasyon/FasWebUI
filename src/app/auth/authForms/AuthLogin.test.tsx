@@ -1,27 +1,29 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import AuthLogin from './AuthLogin'
 import { renderWithProviders } from '@/test/test-utils'
-import * as navigation from 'next/navigation'
 import * as apiBase from '@/api/apiBase'
 import * as notistack from 'notistack'
 
-// Hoist the mock function so it's available before vi.mock
-const { pushMock } = vi.hoisted(() => {
-    return { pushMock: vi.fn() }
+const { pushMock, replaceMock, executeRecaptchaMock } = vi.hoisted(() => {
+    return {
+        pushMock: vi.fn(),
+        replaceMock: vi.fn(),
+        executeRecaptchaMock: vi.fn(),
+    }
 })
 
-// Mocks
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
         push: pushMock,
+        replace: replaceMock,
     }),
     usePathname: () => '/auth/login',
 }))
 
 vi.mock('react-google-recaptcha-v3', () => ({
     useGoogleReCaptcha: () => ({
-        executeRecaptcha: vi.fn().mockResolvedValue('mock-captcha-token'),
+        executeRecaptcha: executeRecaptchaMock,
     }),
 }))
 
@@ -46,14 +48,12 @@ const localStorageMock = {
 vi.stubGlobal('localStorage', localStorageMock)
 
 describe('AuthLogin Component', () => {
-    // Mock console methods to prevent output noise and potential jsdom issues
-    const consoleTimeSpy = vi.spyOn(console, 'time').mockImplementation(() => { })
-    const consoleTimeEndSpy = vi.spyOn(console, 'timeEnd').mockImplementation(() => { })
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
     beforeEach(() => {
         vi.clearAllMocks()
-        consoleTimeSpy.mockClear()
-        consoleTimeEndSpy.mockClear()
+        executeRecaptchaMock.mockResolvedValue('mock-captcha-token')
+        consoleLogSpy.mockClear()
         localStorageMock.getItem.mockClear()
         localStorageMock.setItem.mockClear()
         localStorageMock.removeItem.mockClear()
@@ -82,76 +82,159 @@ describe('AuthLogin Component', () => {
     })
 
     it('submits form and navigates on success', async () => {
-        const mockData = {
-            token: 'mock-jwt-token',
-            refreshToken: 'mock-refresh-token',
-            userId: 1,
-            kullaniciAdi: 'TestUser',
-            yetki: 'Admin',
-            rol: ['Manager'],
-            bddkmi: false,
-            kurulumTamamlandi: true,
-            denetciId: 123,
-            denetciFirmaAdi: 'Test Corp',
-            unvan: 'Tester',
-            kurulumAdimi: 1,
-            setupWizardProgress: '10%',
-            sonSecilenDenetlenenId: 0,
-            sonSecilenYil: 0,
-            sonSecilenDenetlenenFirmaAdi: null,
-            sonSecilenDenetimTuru: null,
-            sonSecilenBobimi: false,
-            sonSecilenTfrsmi: false,
-            sonSecilenEnflasyonmu: false,
-            sonSecilenKonsolidemi: false,
-            sonSecilenBddkmi: false,
-            turTamamlandi: false,
-        }
-
         const mockApiResponse = {
             ok: true,
-            json: async () => mockData,
+            json: async () => ({
+                token: 'mock-jwt-token',
+                refreshToken: 'mock-refresh-token',
+                userId: 1,
+                kullaniciAdi: 'TestUser',
+                yetki: 'Admin',
+                rol: ['Manager'],
+                bddkmi: false,
+                kurulumTamamlandi: true,
+                denetciId: 123,
+                denetciFirmaAdi: 'Test Corp',
+                unvan: 'Tester',
+                kurulumAdimi: 1,
+                setupWizardProgress: '10%',
+                sonSecilenDenetlenenId: 0,
+                sonSecilenYil: 0,
+                sonSecilenDenetlenenFirmaAdi: null,
+                sonSecilenDenetimTuru: null,
+                sonSecilenBobimi: false,
+                sonSecilenTfrsmi: false,
+                sonSecilenEnflasyonmu: false,
+                sonSecilenKonsolidemi: false,
+                sonSecilenBddkmi: false,
+                turTamamlandi: false,
+            }),
         }
 
         vi.mocked(apiBase.apiFetch).mockResolvedValue(mockApiResponse as any)
 
         renderWithProviders(<AuthLogin />)
 
-        const emailInput = screen.getByPlaceholderText(/Email adresiniz/i)
-        const passwordInput = screen.getByPlaceholderText(/Şifreniz/i)
-        const submitButton = screen.getByRole('button', { name: /Giriş Yap/i })
-
-        fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
-        fireEvent.change(passwordInput, { target: { value: 'password123' } })
-        fireEvent.click(submitButton)
+        fireEvent.change(screen.getByPlaceholderText(/Email adresiniz/i), {
+            target: { value: 'test@example.com' },
+        })
+        fireEvent.change(screen.getByLabelText(/Şifre/i), {
+            target: { value: 'password123' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: /Giriş Yap/i }))
 
         await waitFor(() => {
             expect(apiBase.apiFetch).toHaveBeenCalled()
-            expect(pushMock).toHaveBeenCalledWith('/Anasayfa')
+            expect(replaceMock).toHaveBeenCalledWith('/Anasayfa')
         })
     })
 
     it('shows error on login failure', async () => {
-        const mockApiResponse = {
+        vi.mocked(apiBase.apiFetch).mockResolvedValue({
             ok: false,
             text: async () => JSON.stringify({ Message: 'Invalid credentials' }),
-        }
-
-        vi.mocked(apiBase.apiFetch).mockResolvedValue(mockApiResponse as any)
+        } as any)
 
         renderWithProviders(<AuthLogin />)
 
-        const emailInput = screen.getByPlaceholderText(/Email adresiniz/i)
-        const passwordInput = screen.getByPlaceholderText(/Şifreniz/i)
-        const submitButton = screen.getByRole('button', { name: /Giriş Yap/i })
-
-        fireEvent.change(emailInput, { target: { value: 'wrong@example.com' } })
-        fireEvent.change(passwordInput, { target: { value: 'wrongpass' } })
-        fireEvent.click(submitButton)
+        fireEvent.change(screen.getByPlaceholderText(/Email adresiniz/i), {
+            target: { value: 'wrong@example.com' },
+        })
+        fireEvent.change(screen.getByLabelText(/Şifre/i), {
+            target: { value: 'wrongpass' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: /Giriş Yap/i }))
 
         await waitFor(() => {
             expect(notistack.enqueueSnackbar).toHaveBeenCalledWith('Invalid credentials', expect.anything())
             expect(pushMock).not.toHaveBeenCalled()
+        })
+    })
+
+    it('shows error when recaptcha verification fails', async () => {
+        executeRecaptchaMock.mockRejectedValue(new Error('captcha failed'))
+
+        renderWithProviders(<AuthLogin />)
+
+        fireEvent.change(screen.getByPlaceholderText(/Email adresiniz/i), {
+            target: { value: 'test@example.com' },
+        })
+        fireEvent.change(screen.getByLabelText(/Şifre/i), {
+            target: { value: 'password123' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: /Giriş Yap/i }))
+
+        await waitFor(() => {
+            expect(notistack.enqueueSnackbar).toHaveBeenCalledWith(
+                'Güvenlik doğrulaması sırasında bir hata oluştu.',
+                expect.anything()
+            )
+            expect(apiBase.apiFetch).not.toHaveBeenCalled()
+        })
+    })
+
+    it('shows extension-specific guidance when recaptcha channel closes', async () => {
+        executeRecaptchaMock.mockRejectedValue(new Error('message channel closed'))
+
+        renderWithProviders(<AuthLogin />)
+
+        fireEvent.change(screen.getByPlaceholderText(/Email adresiniz/i), {
+            target: { value: 'test@example.com' },
+        })
+        fireEvent.change(screen.getByLabelText(/Şifre/i), {
+            target: { value: 'password123' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: /Giriş Yap/i }))
+
+        await waitFor(() => {
+            expect(notistack.enqueueSnackbar).toHaveBeenCalledWith(
+                'Tarayıcı eklentileriniz güvenlik doğrulamasını engelliyor olabilir. Lütfen reklam engelleyici veya benzeri eklentileri kapatıp tekrar deneyin.',
+                expect.anything()
+            )
+            expect(apiBase.apiFetch).not.toHaveBeenCalled()
+        })
+    })
+
+    it('shows warning when recaptcha returns an empty token', async () => {
+        executeRecaptchaMock.mockResolvedValue('')
+
+        renderWithProviders(<AuthLogin />)
+
+        fireEvent.change(screen.getByPlaceholderText(/Email adresiniz/i), {
+            target: { value: 'test@example.com' },
+        })
+        fireEvent.change(screen.getByLabelText(/Şifre/i), {
+            target: { value: 'password123' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: /Giriş Yap/i }))
+
+        await waitFor(() => {
+            expect(notistack.enqueueSnackbar).toHaveBeenCalledWith(
+                'Recaptcha doğrulaması başarısız.',
+                expect.anything()
+            )
+            expect(apiBase.apiFetch).not.toHaveBeenCalled()
+        })
+    })
+
+    it('shows connection error when login request fails with network issue', async () => {
+        vi.mocked(apiBase.apiFetch).mockRejectedValue(new Error('Failed to fetch'))
+
+        renderWithProviders(<AuthLogin />)
+
+        fireEvent.change(screen.getByPlaceholderText(/Email adresiniz/i), {
+            target: { value: 'test@example.com' },
+        })
+        fireEvent.change(screen.getByLabelText(/Şifre/i), {
+            target: { value: 'password123' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: /Giriş Yap/i }))
+
+        await waitFor(() => {
+            expect(notistack.enqueueSnackbar).toHaveBeenCalledWith(
+                'Bağlantı hatası: Sisteme şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyiniz.',
+                expect.anything()
+            )
         })
     })
 })

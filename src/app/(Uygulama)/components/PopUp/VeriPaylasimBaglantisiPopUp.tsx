@@ -151,8 +151,7 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
         user.denetlenenId || 0,
         user.id || 0,
         user.yil || 0,
-        "DefterKVBeyannamesi",
-        { notifyIfMissing: true }
+        "DefterKVBeyannamesi"
       );
       if (baglantiBilgisi != undefined) {
         const newRow: Veri = {
@@ -160,7 +159,7 @@ const VeriPaylasimBaglantisiPopUp: React.FC<
           link: baglantiBilgisi.link,
           baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
           bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
-          tip: baglantiBilgisi.tip,
+          tip: baglantiBilgisi.tip || "",
         };
 
         setFetchedData(newRow);

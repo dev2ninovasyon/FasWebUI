@@ -1,39 +1,188 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FasWebUI
 
-## Getting Started
+Bu dosya, UI testlerini nasil calistiracaginizi ve raporlari nasil acacaginizi ozetler.
 
-First, run the development server:
+## Gereksinimler
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+- Node.js ve npm
+- Bagimliliklarin kurulmus olmasi
+
+Kurulum:
+
+```powershell
+cd C:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Sik Kullanilan Komutlar
 
-Optional environment settings in `.env.local`:
+Unit testleri:
 
-- `NEXT_PUBLIC_EDEFTER_UPLOAD_CONCURRENCY=4`
-  Controls how many E-Defter files upload in parallel. Allowed range: `1-8`.
+```powershell
+npm run test
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Unit testleri watch modu:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```powershell
+npm run test:watch
+```
 
-## Learn More
+Coverage:
 
-To learn more about Next.js, take a look at the following resources:
+```powershell
+npm run test:coverage
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Tum Playwright E2E testleri:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```powershell
+npm run test:e2e
+```
 
-## Deploy on Vercel
+Playwright UI modu:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```powershell
+npm run test:e2e:ui
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Smoke E2E:
+
+```powershell
+npm run e2e:smoke
+```
+
+Tam E2E:
+
+```powershell
+npm run e2e:full
+```
+
+Staging E2E:
+
+```powershell
+npm run e2e:staging
+```
+
+Resilience testi:
+
+```powershell
+npm run test:resilience
+```
+
+RAM ve load testleri:
+
+```powershell
+npm run test:ram
+npm run test:ram:idle
+npm run test:ram:navigation
+npm run test:ram:navigation:15m
+npm run test:load:prod
+```
+
+## Security Testleri
+
+Onerilen hizli calistirma:
+
+```powershell
+npm run test:security
+```
+
+Bu komut:
+
+- local hedefte calisir
+- `2 worker` kullanir
+- security suite'i production benzeri web server ile acmaya calisir
+
+Tek browser session ile calistirma:
+
+```powershell
+npx playwright test tests/security/security.spec.ts --workers=1
+```
+
+Bu modda:
+
+- tek test uretilir
+- tek browser session kullanilir
+- tarayici test bitene kadar kapanmaz
+
+Headed debug:
+
+```powershell
+npm run test:security:headed
+```
+
+Security suite icinde kac route taranacagini gormek icin:
+
+```powershell
+npx playwright test tests/security/security.spec.ts --workers=1 --list
+```
+
+Beklenen format:
+
+```text
+Single browser session - full security scan (629 routes)
+```
+
+Not:
+
+- `629 routes` sayisi su anki dogrulanmis envanterdir.
+- Bunun `314` adedi static, `316` adedi UI uzerinden kesfedilen dinamik Maddi Dogrulama route'udur.
+- Dinamik route listesi cache olarak [tests/security/maddi-dogrulama-routes.json](/c:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/tests/security/maddi-dogrulama-routes.json) dosyasina yazilir.
+
+## Playwright Raporu Acma
+
+Security veya diger Playwright testlerinden sonra HTML raporu acmak icin:
+
+```powershell
+npx playwright show-report tests/e2e/reports/playwright-html-report
+```
+
+Ayni komut package script olarak da var:
+
+```powershell
+npm run e2e:report
+```
+
+Rapor klasoru:
+
+[tests/e2e/reports/playwright-html-report](/c:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/tests/e2e/reports/playwright-html-report)
+
+## Belirli Test Dosyalari
+
+Ana E2E spec:
+
+```powershell
+npx playwright test tests/e2e/main.spec.ts
+```
+
+Security spec:
+
+```powershell
+npx playwright test tests/security/security.spec.ts
+```
+
+Resilience spec:
+
+```powershell
+npx playwright test tests/security/resilience.spec.ts
+```
+
+Diger mevcut Playwright spec ornekleri:
+
+```powershell
+npx playwright test e2e/security/SecurityAudit.spec.ts --headed
+```
+
+```powershell
+$env:E_DEFTER_XML_DIR='C:\ornek\klasor'
+npx playwright test e2e/e-defter-load.spec.ts --workers=5 --headed
+```
+
+## Notlar
+
+- E2E testleri oncesinde hedef ortamin ayakta oldugunu dogrulayin.
+- `.next/lock` veya benzeri kilit hatalarinda eski `next` sureclerini kapatip testi tekrar calistirin.
+- Security suite icin en stabil komut `npm run test:security` komutudur.
+- Headed mod daha yavas calisir; sadece debug icin kullanin.
+- E2E yapi detaylari icin [tests/e2e/README.md](/c:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/tests/e2e/README.md) dosyasina bakin.

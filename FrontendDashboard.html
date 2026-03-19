@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang='tr'>
+<head>
+    <meta charset='UTF-8'>
+    <title>FasWebUI YÃ¼k ve Kalite Raporu</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f7f9fc; color: #333; margin: 0; padding: 20px;}
+        h1 { color: #2c3e50; text-align: center; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card { border-left: 5px solid #bdc3c7; background: #fafafa; margin-bottom: 15px; padding: 15px; border-radius: 4px; }
+        .success { border-left-color: #27ae60; }
+        .failed { border-left-color: #e74c3c; }
+        .skipped { border-left-color: #f39c12; }
+        a { color: #3498db; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>FasWebUI Frontend Dashboard</h1>
+        <p style='text-align:center;' id='gen-date'></p>
+        <div id='content'></div>
+    </div>
+    <script src='./TestResults/frontend-dashboard-data.js'></script>
+    <script>
+        if(window.__dashboardData) {
+            document.getElementById('gen-date').innerText = 'Test ZamanÄ±: ' + window.__dashboardData.generatedAt;
+            const content = document.getElementById('content');
+            window.__dashboardData.suites.forEach(suite => {
+                const card = document.createElement('div');
+                card.className = 'card ' + suite.status;
+                
+                let linkHtml = suite.reportPath ? <a href='./ + suite.reportPath + ' target='_blank'>DetaylÄ± Raporu AÃ§ (HTML)</a> : 'Rapor yok veya atlandÄ±';
+                if(suite.status === 'skipped') linkHtml = 'AtlandÄ±';
+
+                card.innerHTML = 
+                    <h3> + suite.title +  ( + suite.status.toUpperCase() + )</h3>
+                    <p> + suite.description + </p>
+                    <div style='margin-bottom:10px;'> + (suite.summary ? suite.summary.join('<br>') : '') + </div>
+                     + linkHtml + 
+                ;
+                content.appendChild(card);
+            });
+        } else {
+            document.getElementById('content').innerHTML = '<p>Veri bulunamadi. Lutfen Run-FrontendDashboard.ps1 calistirin.</p>';
+        }
+    </script>
+</body>
+</html>

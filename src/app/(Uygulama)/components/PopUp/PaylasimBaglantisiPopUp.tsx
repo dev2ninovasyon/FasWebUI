@@ -169,17 +169,20 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
         );
 
         const rowsAll: Veri[] = [];
-        baglantiBilgileri.forEach((baglanti: any) => {
-          const newRow: Veri = {
-            id: baglanti.id,
-            link: baglanti.link,
-            baslangicTarihi: formatDateTime(baglanti.baslangicTarihi),
-            bitisTarihi: formatDateTime(baglanti.bitisTarihi),
-            tip: baglanti.tip,
-          };
-
-          rowsAll.push(newRow);
-        });
+        
+        // Handle null response from API
+        if (baglantiBilgileri && Array.isArray(baglantiBilgileri)) {
+          baglantiBilgileri.forEach((baglanti: any) => {
+            const newRow: Veri = {
+              id: baglanti.id,
+              link: baglanti.link,
+              baslangicTarihi: formatDateTime(baglanti.baslangicTarihi),
+              bitisTarihi: formatDateTime(baglanti.bitisTarihi),
+              tip: baglanti.tip,
+            };
+            rowsAll.push(newRow);
+          });
+        }
 
         if (rowsAll.length > 0) {
           setFetchedDatas(rowsAll);
@@ -192,8 +195,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
           user.denetlenenId || 0,
           user.id || 0,
           user.yil || 0,
-          tip,
-          { notifyIfMissing: true }
+          tip
         );
         if (baglantiBilgisi != undefined) {
           const newRow: Veri = {
@@ -201,7 +203,7 @@ const PaylasimBaglantisiPopUp: React.FC<PaylasimBaglantisiPopUpProps> = ({
             link: baglantiBilgisi.link,
             baslangicTarihi: formatDateTime(baglantiBilgisi.baslangicTarihi),
             bitisTarihi: formatDateTime(baglantiBilgisi.bitisTarihi),
-            tip: baglantiBilgisi.tip,
+            tip: baglantiBilgisi.tip || "",
           };
 
           setFetchedData(newRow);

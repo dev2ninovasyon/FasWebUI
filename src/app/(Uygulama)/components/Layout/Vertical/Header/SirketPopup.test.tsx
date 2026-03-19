@@ -6,6 +6,9 @@ import * as apiBase from '@/api/apiBase'
 import * as userSettingsApi from '@/api/Kullanici/KullaniciAyarlar'
 import * as roleApi from '@/api/Sozlesme/DenetimKadrosuAtama'
 
+vi.spyOn(console, 'log').mockImplementation(() => {})
+vi.spyOn(console, 'error').mockImplementation(() => {})
+
 // Mocks
 // Router Mock
 vi.mock('next/navigation', () => ({
@@ -74,10 +77,6 @@ vi.mock('@/api/apiBase', () => ({
 
 // Mock Global Objects
 const reloadMock = vi.fn()
-Object.defineProperty(window, 'location', {
-    value: { reload: reloadMock },
-    writable: true
-})
 
 const localStorageMock = {
     getItem: vi.fn(),
@@ -98,6 +97,13 @@ vi.stubGlobal('sessionStorage', sessionStorageMock)
 describe('SirketPopup Component', () => {
     beforeEach(() => {
         vi.clearAllMocks()
+        Object.defineProperty(window, 'location', {
+            configurable: true,
+            value: {
+                ...window.location,
+                reload: reloadMock,
+            },
+        })
         localStorageMock.getItem.mockReturnValue('mock-refresh-token')
         sessionStorageMock.getItem.mockReturnValue('mock-refresh-token')
         reloadMock.mockClear()

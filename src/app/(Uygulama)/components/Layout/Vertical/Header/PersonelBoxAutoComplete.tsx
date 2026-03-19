@@ -88,6 +88,7 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
       options={rows}
       noOptionsText="Bulunamadı"
       fullWidth
+      size="small"
       disabled={disabled}
       value={selectedOption}
       isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -101,6 +102,13 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
           {...params}
           placeholder="Personel Seçiniz"
           aria-label="Personel Seçiniz"
+          size="small"
+          sx={{ 
+            "& .MuiInputBase-input": {
+              fontSize: "0.875rem",
+              padding: "4px 8px"
+            }
+          }}
         />
       )}
     />

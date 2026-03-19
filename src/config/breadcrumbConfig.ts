@@ -7,4 +7,6 @@
     "/Veri": "Veri İşlemleri",
     "/PlanVeProgram": "Plan ve Program",
     "/Surdurulebilirlik": "Sürdürülebilirlik",
+    "/DigerIslemler": "Diger Islemler",
+    "/DigerIslemler/TestSonuclari": "Test Sonuclari",
 };

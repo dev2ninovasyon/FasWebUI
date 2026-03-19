@@ -39,10 +39,13 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isVerifyingCaptcha, setIsVerifyingCaptcha] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const isLocalHost =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 
   const handleLogin = async () => {
     // console.time("Giriş İşlemi Toplam Süre");
-    if (!executeRecaptcha) {
+    if (!isLocalHost && !executeRecaptcha) {
       enqueueSnackbar("Recaptcha yüklenemedi, lütfen sayfayı yenileyin.", {
         variant: "warning",
         autoHideDuration: 3000,
@@ -54,9 +57,17 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
     setIsVerifyingCaptcha(true);
     let token = "";
     try {
-      // console.time("ReCAPTCHA Doğrulaması");
-      token = await executeRecaptcha("login");
-      // console.timeEnd("ReCAPTCHA Doğrulaması");
+      if (isLocalHost) {
+        token = "BYPASS_RECAPTCHA_TEST";
+      } else {
+        const runRecaptcha = executeRecaptcha;
+        if (!runRecaptcha) {
+          throw new Error("Recaptcha fonksiyonu hazir degil.");
+        }
+        // console.time("ReCAPTCHA Doğrulaması");
+        token = await runRecaptcha("login");
+        // console.timeEnd("ReCAPTCHA Doğrulaması");
+      }
     } catch (error: any) {
       console.log("Recaptcha hatası:", error);
       let errorMessage = "Güvenlik doğrulaması sırasında bir hata oluştu.";

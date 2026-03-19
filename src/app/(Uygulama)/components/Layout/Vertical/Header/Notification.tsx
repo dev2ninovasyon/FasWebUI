@@ -133,12 +133,6 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   const shakeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const browserNotificationsRef = React.useRef<Notification[]>([]);
-  const canUseNotifications = Boolean(
-    user.token &&
-    user.denetciId &&
-    user.denetlenenId &&
-    user.yil
-  );
 
   // Tarih formatı: "Bugün 14:30" veya "Dün 09:45" veya "01 Ş 14:30"
   const formatTarih = (tarih?: string) => {
@@ -192,11 +186,6 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   };
 
   const fetchData = async () => {
-    if (!canUseNotifications) {
-      setFetchedData([]);
-      return;
-    }
-
     try {
       const bildirimler = await getBildirimler(user.denetciId || 0
       );
@@ -226,17 +215,13 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   };
 
   useEffect(() => {
-    if (!canUseNotifications) {
-      setFetchedData([]);
-      return;
-    }
-
     fetchData();
-  }, [canUseNotifications, user.denetciId]);
+  }, []);
 
   // SignalR bağlantısı
   useEffect(() => {
-    if (canUseNotifications) {
+    if (user.token && user.denetciId) {
+      const token = user.token as string;
       const denetciId = user.denetciId as number;
 
       if (process.env.NODE_ENV === 'development') {
@@ -246,7 +231,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       // Callback function'ı tanımla
       const handleBildirim = (bildirim: any) => {
         if (process.env.NODE_ENV === 'development') {
-          console.log("📬 Yeni bildirim:", bildirim);
+          console.log("📬 Yeni bildirim");
         }
         handleNewNotification(bildirim);
       };
@@ -273,7 +258,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       stopPollingBildirim();
       stopBildirimConnection();
     };
-  }, [canUseNotifications, user.denetciId]);
+  }, [user.token, user.denetciId]);
 
   // Yeni bildirim handle helper
   const handleNewNotification = (bildirim: any) => {
@@ -343,24 +328,16 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   };
 
   useEffect(() => {
-    if (!canUseNotifications) {
-      return;
-    }
-
     fetchData();
-  }, [canUseNotifications, isSidebarHover]);
+  }, [isSidebarHover]);
 
   useEffect(() => {
-    if (!canUseNotifications) {
-      return;
-    }
-
     if (anchorEl) {
       handleUpdateOkundumu();
     } else {
       fetchData();
     }
-  }, [anchorEl, canUseNotifications]);
+  }, [anchorEl]);
 
   // Bildirim sesi çal (daha yüksek ses)
   const playNotificationSound = () => {
@@ -385,7 +362,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       }, 350);
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.warn("Ses çalma hatası (Muhtemelen kullanıcı etkileşimi bekleniyor):", error);
+        console.log("Ses çalma hatası");
       }
     }
   };
@@ -419,12 +396,23 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     const targetDenetlenenId = bildirim.denetlenenId;
     const targetYil = bildirim.yil;
 
+    console.log("Bildirim tıklandı:", {
+      targetDenetlenenId,
+      targetYil,
+      currentDenetlenenId: user.denetlenenId,
+      currentYil: user.yil,
+      kaynakUrl: bildirim.kaynakUrl,
+      tip: bildirim.tip
+    });
+
     const isDifferent = !!(targetDenetlenenId && targetYil && (targetDenetlenenId !== user.denetlenenId || targetYil !== user.yil));
 
     if (isDifferent) {
+      console.log("Farklı şirket/yıl algılandı, onay kutusu açılıyor");
       setPendingBildirim(bildirim);
       setConfirmOpen(true);
     } else {
+      console.log("Aynı şirket/yıl, yönlendirme yapılıyor");
       if (bildirim.kaynakUrl) {
         router.push(bildirim.kaynakUrl);
       } else {
@@ -458,16 +446,16 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         localStorage.setItem("fas_denetlenenId", targetId.toString());
         localStorage.setItem("fas_yil", targetYil.toString());
 
-        // Rol ve DB güncellemesi
+        // Rol ve DB güncellemesi 
         try {
-          // 1. Önce DB Persist (Son Seçilen Ayarlar)
+          // 1. Önce DB Persist (Son Seçilen Ayarlar) - KRİTİK SIRALAMA
           if (user.token && user.id && user.id !== 0) {
+            console.log(`Notification - Persisting selection for user ${user.id}: Company=${targetId}, Year=${targetYil}`);
             try {
               await updateSonSecilenAyarlari(user.id, targetId, targetYil);
+              console.log("Notification - Persistence update successful.");
             } catch (err) {
-              if (process.env.NODE_ENV === 'development') {
-                console.warn("Notification - Persistence update hatası:", err);
-              }
+              console.error("Notification - Persistence update hatası:", err);
             }
           }
 
@@ -476,16 +464,13 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
             const rolVerileri = await getRol(user.id || 0, targetId, targetYil);
             if (rolVerileri) {
               dispatch(setRol(rolVerileri.rol));
+              console.log("Notification - Rol güncellendi.");
             }
           } catch (err) {
-            if (process.env.NODE_ENV === 'development') {
-              console.warn("Notification - Rol güncelleme hatası:", err);
-            }
+            console.error("Notification - Rol güncelleme hatası:", err);
           }
         } catch (innerError) {
-          if (process.env.NODE_ENV === 'development') {
-            console.warn("Notification - Şirket detay güncelleme hatası:", innerError);
-          }
+          console.error("Notification - Şirket detay güncelleme hatası:", innerError);
         }
 
         // Yönlendirme hedefi
@@ -538,7 +523,6 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
             aria-controls="msgs-menu"
             aria-haspopup="true"
             onClick={handleClick}
-            disabled={!canUseNotifications}
             className={isShaking ? "bell-shake" : ""}
             sx={{
               position: "relative",
@@ -867,5 +851,4 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
 };
 
 export default Notifications;
-
 

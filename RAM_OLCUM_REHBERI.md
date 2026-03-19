@@ -1,39 +1,17 @@
-# RAM Ölçüm Rehberi
+# RAM Olcum Rehberi
 
-Bu proje için RAM ölçüm komutları `package.json` içine eklendi.
+RAM olcum komutlari kok [README.md](c:\Users\lenov\source\repos\dev2ninovasyon\FasWebUI\README.md) dosyasina tasindi.
 
-## Komutlar
+## Ciktidaki Alanlar
 
-1. Sadece build RAM ölçümü:
-
-```bash
-npm run ram:build
-```
-
-2. Sadece dev RAM ölçümü (varsayılan 120 sn):
-
-```bash
-npm run ram:dev
-```
-
-3. Build + dev toplu benchmark:
-
-```bash
-npm run ram:benchmark
-```
-
-## Çıktıdaki Alanlar
-
-- `peakNodeWorkingSetMB`: Ölçüm boyunca görülen en yüksek Node RAM.
-- `avgNodeWorkingSetMB`: Ölçüm boyunca ortalama Node RAM.
-- `durationSeconds`: Ölçüm süresi.
-- `timedOut`: Süre dolduğu için durduruldu mu (`true/false`).
-- `exitCode`: Çalıştırılan komutun çıkış kodu.
+- `peakNodeWorkingSetMB`: Olcum boyunca gorulen en yuksek Node RAM
+- `avgNodeWorkingSetMB`: Olcum boyunca ortalama Node RAM
+- `durationSeconds`: Olcum suresi
+- `timedOut`: Sure sonunda surecin zorla durdurulup durdurulmadigi
+- `exitCode`: Calistirilan komutun cikis kodu
 
 ## Notlar
 
-- `ram:dev` komutu süre sonunda süreci otomatik sonlandırır.
-- Ölçüm scriptleri:
-  - `scripts/measure-ram.ps1`
-  - `scripts/benchmark-ram.ps1`
-- Eğer kilit hatası görürsen (`.next/lock` veya `.next/dev/lock`), çalışan eski `next` sürecini kapatıp tekrar dene.
+- `ram:dev` olcumunde sure sonunda surec otomatik sonlandirilir.
+- Olcum scriptleri `scripts/measure-ram.ps1` ve `scripts/benchmark-ram.ps1` altindadir.
+- `.next/lock` veya `.next/dev/lock` gorulurse once calisan eski `next` surecini kapatin.

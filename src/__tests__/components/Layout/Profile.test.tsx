@@ -4,8 +4,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import Profile from '@/app/(Uygulama)/components/Layout/Vertical/Header/Profile/Profile'
+import { apiFetch } from '@/api/apiBase'
 
-// Mock Next.js navigation
 vi.mock('next/navigation', () => ({
     usePathname: vi.fn(() => '/dashboard'),
     useRouter: vi.fn(() => ({
@@ -15,13 +15,14 @@ vi.mock('next/navigation', () => ({
     })),
 }))
 
-// Mock ProfileItems because it uses usePathname internally which is giving issues
 vi.mock('../../../app/(Uygulama)/components/Layout/Vertical/Header/Profile/ProfileItems', () => ({
-    default: () => <div data-testid="mock-profile-items">Mock Profile Items</div>
+    default: () => <div data-testid="mock-profile-items">Mock Profile Items</div>,
 }))
 
+vi.mock('@/api/apiBase', () => ({
+    apiFetch: vi.fn(),
+}))
 
-// Mock the resetToNull action
 vi.mock('@/store/user/UserSlice', () => ({
     __esModule: true,
     default: vi.fn(() => ({})),
@@ -33,6 +34,7 @@ describe('Profile Component', () => {
 
     beforeEach(() => {
         vi.clearAllMocks()
+
         store = configureStore({
             reducer: {
                 userReducer: () => ({
@@ -55,8 +57,7 @@ describe('Profile Component', () => {
             </Provider>
         )
 
-        const avatar = screen.getByAltText('ProfileImg')
-        expect(avatar).toBeInTheDocument()
+        expect(screen.getByAltText('ProfileImg')).toBeInTheDocument()
     })
 
     it('should open popover when profile button is clicked', async () => {
@@ -66,9 +67,7 @@ describe('Profile Component', () => {
             </Provider>
         )
 
-        // IconButton has aria-label="show 11 new notifications" in the source (likely copy-paste error in source)
-        const profileButton = screen.getByLabelText('show 11 new notifications')
-        fireEvent.click(profileButton)
+        fireEvent.click(screen.getByLabelText('show 11 new notifications'))
 
         await waitFor(() => {
             expect(screen.getByText('Test User')).toBeInTheDocument()
@@ -84,11 +83,10 @@ describe('Profile Component', () => {
             </Provider>
         )
 
-        const profileButton = screen.getByLabelText('show 11 new notifications')
-        fireEvent.click(profileButton)
+        fireEvent.click(screen.getByLabelText('show 11 new notifications'))
 
         await waitFor(() => {
-            expect(screen.getByText('Çıkış')).toBeInTheDocument()
+            expect(screen.getByRole('button', { name: /\u00c7\u0131k\u0131\u015f/i })).toBeInTheDocument()
         })
     })
 
@@ -99,28 +97,28 @@ describe('Profile Component', () => {
             </Provider>
         )
 
-        const profileButton = screen.getByLabelText('show 11 new notifications')
-        fireEvent.click(profileButton)
+        fireEvent.click(screen.getByLabelText('show 11 new notifications'))
 
         await waitFor(() => {
             expect(screen.getByText('Test User')).toBeInTheDocument()
         })
 
-        // Simulate clicking outside by clicking the backdrop
         const backdrop = document.querySelector('.MuiBackdrop-root')
         if (backdrop) {
             fireEvent.click(backdrop)
         } else {
-            // Fallback to escape if backdrop not found
             fireEvent.keyDown(document, { key: 'Escape' })
         }
 
         await waitFor(() => {
-            // In MUI, the element might still be in the DOM but not visible
             const userInfo = screen.queryByText('Test User')
-            expect(userInfo).not.toBeVisible()
-        }, { timeout: 2000 })
+            if (userInfo) {
+                expect(userInfo).not.toBeVisible()
+                return
+            }
 
+            expect(userInfo).toBeNull()
+        }, { timeout: 2000 })
     })
 
     it('should format yetki correctly when camelCase', async () => {
@@ -128,7 +126,7 @@ describe('Profile Component', () => {
             reducer: {
                 userReducer: () => ({
                     kullaniciAdi: 'Test User',
-                    yetki: 'BaşDenetçi',
+                    yetki: 'Ba\u015fDenet\u00e7i',
                     mail: 'test@example.com',
                 }),
                 customizer: () => ({
@@ -143,13 +141,62 @@ describe('Profile Component', () => {
             </Provider>
         )
 
-        const profileButton = screen.getByLabelText('show 11 new notifications')
-        fireEvent.click(profileButton)
+        fireEvent.click(screen.getByLabelText('show 11 new notifications'))
 
         await waitFor(() => {
-            // The component should format "BaşDenetçi" to "Baş Denetçi"
-            const yetkiElement = screen.getByText(/Baş Denetçi/i)
-            expect(yetkiElement).toBeInTheDocument()
+            expect(screen.getByText(/Ba\u015f Denet\u00e7i/i)).toBeInTheDocument()
         })
+    })
+
+    it('should clear persisted auth state and call logout endpoint', async () => {
+        vi.mocked(apiFetch).mockResolvedValue({ ok: true } as any)
+
+        window.localStorage.setItem('persist:root', 'persisted')
+        window.localStorage.setItem('fas_token', 'token')
+        window.localStorage.setItem('fas_refreshToken', 'refresh')
+        window.localStorage.setItem('fas_denetlenenId', '1')
+        window.localStorage.setItem('fas_yil', '2025')
+        window.localStorage.setItem('fas_blacklisted_tokens', '[]')
+        window.sessionStorage.setItem('reduxState', 'state')
+        window.sessionStorage.setItem('fas_debug_no_login_redirect', '1')
+        window.sessionStorage.setItem('fas_token', 'session-token')
+        window.sessionStorage.setItem('fas_refreshToken', 'session-refresh')
+        window.sessionStorage.setItem('fas_session_token', 'session-token-2')
+        window.sessionStorage.setItem('fas_session_refreshToken', 'session-refresh-2')
+
+        render(
+            <Provider store={store}>
+                <Profile />
+            </Provider>
+        )
+
+        fireEvent.click(screen.getByLabelText('show 11 new notifications'))
+
+        await waitFor(() => {
+            expect(screen.getByRole('button', { name: /\u00c7\u0131k\u0131\u015f/i })).toBeInTheDocument()
+        })
+
+        fireEvent.click(screen.getByRole('button', { name: /\u00c7\u0131k\u0131\u015f/i }))
+
+        await waitFor(() => {
+            expect(apiFetch).toHaveBeenCalledWith('/Auth/logout', {
+                method: 'POST',
+                suppressErrorLog: true,
+            })
+        })
+
+        expect(window.localStorage.getItem('persist:root')).toBeNull()
+        expect(window.localStorage.getItem('fas_token')).toBeNull()
+        expect(window.localStorage.getItem('fas_refreshToken')).toBeNull()
+        expect(window.localStorage.getItem('fas_denetlenenId')).toBeNull()
+        expect(window.localStorage.getItem('fas_yil')).toBeNull()
+        expect(window.localStorage.getItem('fas_blacklisted_tokens')).toBeNull()
+        expect(window.sessionStorage.getItem('reduxState')).toBeNull()
+        expect(window.sessionStorage.getItem('fas_debug_no_login_redirect')).toBeNull()
+        expect(window.sessionStorage.getItem('fas_token')).toBeNull()
+        expect(window.sessionStorage.getItem('fas_refreshToken')).toBeNull()
+        expect(window.sessionStorage.getItem('fas_session_token')).toBeNull()
+        expect(window.sessionStorage.getItem('fas_session_refreshToken')).toBeNull()
+        expect(window.sessionStorage.getItem('fas_logout_intent')).toBe('manual')
     })
 })

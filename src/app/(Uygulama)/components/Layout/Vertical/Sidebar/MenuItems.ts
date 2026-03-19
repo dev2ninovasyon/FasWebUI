@@ -110,6 +110,12 @@ export function createMenuItems(
               icon: IconPoint,
               href: "/DigerIslemler/VeriAktarma",
             },
+            {
+              id: uniqueId(),
+              title: "Test Sonuçları",
+              icon: IconPoint,
+              href: "/DigerIslemler/TestSonuclari",
+            },
             ...(isFasAdmin
               ? [
                 {
@@ -2378,6 +2384,12 @@ export function createMenuItems(
               title: "Veri Aktarma",
               icon: IconPoint,
               href: "/DigerIslemler/VeriAktarma",
+            },
+            {
+              id: uniqueId(),
+              title: "Test Sonuçları",
+              icon: IconPoint,
+              href: "/DigerIslemler/TestSonuclari",
             },
             ...(isFasAdmin
               ? [

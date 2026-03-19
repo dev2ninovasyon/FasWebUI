@@ -1,0 +1,458 @@
+[
+  {
+    "menuName": "ANASAYFA",
+    "menuPath": "ANASAYFA",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Müşteri İşlemleri",
+    "menuPath": "MÜŞTERİ/Müşteri İşlemleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "İşletme Tanıma",
+    "menuPath": "MÜŞTERİ/İşletme Tanıma",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Teklif Belgesi",
+    "menuPath": "MÜŞTERİ/Teklif Belgesi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Müşteri Dürüstlüğünü Değerlendirme",
+    "menuPath": "MÜŞTERİ/Müşteri Dürüstlüğünü Değerlendirme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Müşteri Kabul İşlemi",
+    "menuPath": "MÜŞTERİ/Müşteri Kabul İşlemi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "VERİ",
+    "menuPath": "VERİ",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Defter / K. V. Beyannamesi Yükleme",
+    "menuPath": "VERİ/Defter / K. V. Beyannamesi Yükleme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Diğer Veri Yükleme",
+    "menuPath": "VERİ/Diğer Veri Yükleme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "E-Defter Mizan Oluşturma",
+    "menuPath": "VERİ/Mizanlar/E-Defter Mizan Oluşturma",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "E-Defter İnceleme",
+    "menuPath": "VERİ/E-Defter İnceleme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+    "menuPath": "PLAN VE PROGRAM/Denetçi Bağımsızlık ve Sorumluluk Taahhütnameleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Etik Gerekliliklere İlişkin Bildirim ve Değerlendirme",
+    "menuPath": "PLAN VE PROGRAM/Etik Gerekliliklere İlişkin Bildirim ve Değerlendirme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+    "menuPath": "PLAN VE PROGRAM/Mesleki Etik İlkelere Uyum, Bağımsızlık Değerlendirme ve Kontrol",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Denetim Zamanı Bildirme",
+    "menuPath": "PLAN VE PROGRAM/Denetim Zamanı Bildirme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Denetim Strateji Kılavuzu",
+    "menuPath": "PLAN VE PROGRAM/Denetim Strateji Kılavuzu",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Faaliyet Riski Belirleme Belgesi",
+    "menuPath": "PLAN VE PROGRAM/Faaliyet Riski Belirleme Belgesi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Bilgi İşlem Muhasebe Sistemi Değerlendirme",
+    "menuPath": "PLAN VE PROGRAM/Bilgi İşlem Muhasebe Sistemi Değerlendirme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Dava Karşılıkları",
+    "menuPath": "HESAPLAMALAR/Dava Karşılıkları",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Ertelenmiş Vergi Hesabı",
+    "menuPath": "HESAPLAMALAR/Ertelenmiş Vergi Hesabı",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "İlişkili Taraf Sınıflama",
+    "menuPath": "HESAPLAMALAR/İlişkili Taraf Sınıflama",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Vadeli Banka Mevduatı",
+    "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Vadeli Banka Mevduatı Otomatik Sınıflama",
+    "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı/Vadeli Banka Mevduatı Otomatik Sınıflama",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Vadeli Banka Mevduatı Manuel Sınıflama",
+    "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı/Vadeli Banka Mevduatı Manuel Sınıflama",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Vadeli Banka Mevduatı Faiz Tahakkuk",
+    "menuPath": "HESAPLAMALAR/Vadeli Banka Mevduatı/Vadeli Banka Mevduatı Faiz Tahakkuk",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Geçmiş Yıllar Kar Zarar Kontrolleri",
+    "menuPath": "HESAPLAMALAR/Geçmiş Yıllar Kar Zarar Kontrolleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Kur Farkı Kayıtları",
+    "menuPath": "HESAPLAMALAR/Kur Farkı Kayıtları",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Kur Farkı",
+    "menuPath": "HESAPLAMALAR/Kur Farkı Kayıtları/Kur Farkı",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Kur Farkı Kontrolleri",
+    "menuPath": "HESAPLAMALAR/Kur Farkı Kayıtları/Kur Farkı Kontrolleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Fiş Girişi",
+    "menuPath": "DÖNÜŞÜM/Fiş Girişi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Fiş Listesi",
+    "menuPath": "DÖNÜŞÜM/Fiş Listesi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Hazır Fişler",
+    "menuPath": "DÖNÜŞÜM/Hazır Fişler",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Dönüşüm İşlemi",
+    "menuPath": "DÖNÜŞÜM/Dönüşüm İşlemi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Belirleme Belgesi (Bobi Frs / Tms Tfrs)",
+    "menuPath": "DÖNÜŞÜM/Belirleme Belgesi (Bobi Frs / Tms Tfrs)",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Kar / Zarar Tablosu",
+    "menuPath": "DENETİM KANITLARI/Finansal Tablolar/Kar / Zarar Tablosu",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Cari/Önceki/Geçmiş Dönem Dönüşüm Düzeltme Belgeleri",
+    "menuPath": "DENETİM KANITLARI/Finansal Tablolar/Cari/Önceki/Geçmiş Dönem Dönüşüm Düzeltme Belgeleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+    "menuPath": "DENETİM KANITLARI/Bilanço Tarihinden Sonra Ortaya Çıkan Olayları Değerlendirme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Müşteri İşletme Yönetimi İle Yapılan Görüşme",
+    "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Müşteri İşletme Yönetimi İle Yapılan Görüşme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Müşteri İşletme Personeli İle Yapılan Görüşme",
+    "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Müşteri İşletme Personeli İle Yapılan Görüşme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Satın Alma Ödeme Kontrol",
+    "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Satın Alma Ödeme Kontrol",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Tespit Edilen Hususların Yönetim Bildirimi",
+    "menuPath": "DENETİM KANITLARI/Diğer Kanıtlar/Tespit Edilen Hususların Yönetim Bildirimi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Fatura İnceleme",
+    "menuPath": "DENETİM KANITLARI/Fatura İnceleme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Maddi Doğrulama Prosedürleri",
+    "menuPath": "DENETİM KANITLARI/Maddi Doğrulama Prosedürleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Benford Analizi",
+    "menuPath": "DENETİM KANITLARI/Benford Analizi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Denetim Çalışması İzleme",
+    "menuPath": "GENEL KURUL/Denetim Çalışması İzleme",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Denetim Çalışması İzleme Sonuç",
+    "menuPath": "GENEL KURUL/Denetim Çalışması İzleme Sonuç",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Dipnotlar",
+    "menuPath": "RAPOR/Dipnotlar",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Aşamalar",
+    "menuPath": "ENFLASYON/Aşamalar",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Düzeltme Katsayıları",
+    "menuPath": "ENFLASYON/Düzeltme Katsayıları",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Reel Olmayan Finansman Maaliyeti",
+    "menuPath": "ENFLASYON/Reel Olmayan Finansman Maaliyeti",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Önceki Dönem Vuk Enflasyon İptal Fişi",
+    "menuPath": "ENFLASYON/Önceki Dönem Vuk Enflasyon İptal Fişi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Net Parasal Pozisyon",
+    "menuPath": "ENFLASYON/Net Parasal Pozisyon",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "NPP Kayıp/Kazanç",
+    "menuPath": "ENFLASYON/Net Parasal Pozisyon/NPP Kayıp/Kazanç",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Düzeltme İşlemleri",
+    "menuPath": "ENFLASYON/Düzeltme İşlemleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "İptal Fişi / Fiş Girişi / Fiş İşlemleri",
+    "menuPath": "ENFLASYON/Düzeltme İşlemleri/İptal Fişi / Fiş Girişi / Fiş İşlemleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Taşıma/Açılış Fişi",
+    "menuPath": "ENFLASYON/Düzeltme İşlemleri/Taşıma/Açılış Fişi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Maliyet Fark Fişi Oluştur",
+    "menuPath": "ENFLASYON/Düzeltme İşlemleri/Maliyet Fark Fişi Oluştur",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Sunum Endeksi",
+    "menuPath": "ENFLASYON/Sunum Endeksi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Finansal Durum / Kar-Zarar / Nakit Akış / Özkaynak Değişim",
+    "menuPath": "ENFLASYON/Finansal Tablolar/Finansal Durum / Kar-Zarar / Nakit Akış / Özkaynak Değişim",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Dipnotlar / Raporlar",
+    "menuPath": "ENFLASYON/Denetçi Raporu/Dipnotlar / Raporlar",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "KONSOLİDASYON",
+    "menuPath": "KONSOLİDASYON",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Aşamalar / Tanımlamalar",
+    "menuPath": "KONSOLİDASYON/Aşamalar / Tanımlamalar",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Birleştirilmiş Mizan",
+    "menuPath": "KONSOLİDASYON/Birleştirilmiş Mizan",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Eliminasyon Fiş İşlemleri",
+    "menuPath": "KONSOLİDASYON/Eliminasyon Fiş İşlemleri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "BDDK",
+    "menuPath": "BDDK",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "KYS (Kalite Yönetim Sistemi)",
+    "menuPath": "KYS (Kalite Yönetim Sistemi)",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "5. Müşteri İlişkisinin Kabulü ve Devam Ettirilmesi",
+    "menuPath": "KYS (Kalite Yönetim Sistemi)/5. Müşteri İlişkisinin Kabulü ve Devam Ettirilmesi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "DENETİM DOSYA",
+    "menuPath": "DENETİM DOSYA",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Bağımsız Denetim Metodolojisi",
+    "menuPath": "DENETİM DOSYA/Bağımsız Denetim Metodolojisi",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Denetim Dosya Yazdır",
+    "menuPath": "DENETİM DOSYA/Denetim Dosya Yazdır",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "DİĞER İŞLEMLER",
+    "menuPath": "DİĞER İŞLEMLER",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Arşiv",
+    "menuPath": "DİĞER İŞLEMLER/Arşiv",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Denetçi Firma Bilgileri",
+    "menuPath": "DİĞER İŞLEMLER/Denetçi Firma Bilgileri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Üyelik Bilgileri",
+    "menuPath": "DİĞER İŞLEMLER/Üyelik Bilgileri",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "Veri Aktarma",
+    "menuPath": "DİĞER İŞLEMLER/Veri Aktarma",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  },
+  {
+    "menuName": "KULLANIM KILAVUZU",
+    "menuPath": "KULLANIM KILAVUZU",
+    "status": "MISSING_IN_DOCUMENTS",
+    "action": "ADD_TO_DOCUMENTS"
+  }
+]

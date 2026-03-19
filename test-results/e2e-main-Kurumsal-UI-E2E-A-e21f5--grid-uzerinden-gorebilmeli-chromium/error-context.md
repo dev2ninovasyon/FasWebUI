@@ -1,0 +1,59 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e4]:
+    - generic [ref=e6]:
+      - link "logo" [ref=e8] [cursor=pointer]:
+        - /url: /Anasayfa
+        - img "logo" [ref=e9]
+      - generic [ref=e10]:
+        - heading "Hoş Geldiniz" [level=3] [ref=e11]
+        - paragraph [ref=e12]: Devam etmek için lütfen giriş yapın.
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - generic [ref=e16]: Email
+            - generic [ref=e18]:
+              - img [ref=e20]
+              - textbox "Email" [ref=e23]:
+                - /placeholder: Email adresiniz
+                - text: test1@2ninovasyon.com
+              - group
+          - generic [ref=e24]:
+            - generic [ref=e25]: Şifre
+            - generic [ref=e27]:
+              - img [ref=e29]
+              - textbox "Şifre" [ref=e33]:
+                - /placeholder: Şifreniz
+                - text: bwI#B]WJhj
+              - group
+        - button "Giriş Yap" [ref=e35] [cursor=pointer]: Giriş Yap
+    - generic [ref=e36]:
+      - generic [ref=e37]:
+        - img "Kapsamlı Denetim Yönetimi" [ref=e38]
+        - generic [ref=e39]:
+          - heading "Kapsamlı Denetim Yönetimi" [level=2] [ref=e40]
+          - paragraph [ref=e41]: Tüm finansal denetim süreçlerinizi tek bir platformda yönetin. Kalite standartlarına uygun, izlenebilir denetim raporları oluşturun.
+      - generic [ref=e42]:
+        - img "Gelişmiş Veri Analizi" [ref=e43]
+        - generic [ref=e44]:
+          - heading "Gelişmiş Veri Analizi" [level=2] [ref=e45]
+          - paragraph [ref=e46]: Güçlü analitik araçlar ile finansal verilerinizi derinlemesine inceleyin. Akıllı raporlama sistemi ile anlamlı içgörüler elde edin.
+      - generic [ref=e47]:
+        - img "Ekip İşbirliği ve Görev Yönetimi" [ref=e48]
+        - generic [ref=e49]:
+          - heading "Ekip İşbirliği ve Görev Yönetimi" [level=2] [ref=e50]
+          - paragraph [ref=e51]: Denetim ekibinizle gerçek zamanlı işbirliği yapın. Görev atama, ilerleme takibi ve dokümantasyon yönetimi tek bir arayüzde.
+      - generic [ref=e52]:
+        - img "Kalite Yönetim Sistemi (KYS)" [ref=e53]
+        - generic [ref=e54]:
+          - heading "Kalite Yönetim Sistemi (KYS)" [level=2] [ref=e55]
+          - paragraph [ref=e56]: ISO standartlarına uygun kalite yönetim süreçlerinizi dijitalleştirin. Belge yönetimi, risk analizi ve sürekli iyileştirme.
+      - generic [ref=e57]:
+        - img "Sürdürülebilirlik Raporlaması" [ref=e58]
+        - generic [ref=e59]:
+          - heading "Sürdürülebilirlik Raporlaması" [level=2] [ref=e60]
+          - paragraph [ref=e61]: Çevresel, sosyal ve kurumsal yönetim (ESG) metriklerinizi izleyin. Sürdürülebilirlik hedeflerinizi raporlayın ve değerlendirin.
+```

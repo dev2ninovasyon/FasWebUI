@@ -1,11 +1,12 @@
-﻿// src/app/(Uygulama)/dashboard/page.tsx
+// src/app/(Uygulama)/dashboard/page.tsx
 "use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box } from "@mui/material";
-import { SonIslemlerKartlari } from "@/app/(Uygulama)/components/AnaSayfa/SonIslemlerKartlari";
-import { SirketArsivOzetKartlari } from "@/app/(Uygulama)/components/AnaSayfa/SirketArsivOzetKartlari";
+import dynamic from "next/dynamic";
+const SonIslemlerKartlari = dynamic(() => import("@/app/(Uygulama)/components/AnaSayfa/SonIslemlerKartlari").then(m => m.SonIslemlerKartlari), { ssr: false });
+const SirketArsivOzetKartlari = dynamic(() => import("@/app/(Uygulama)/components/AnaSayfa/SirketArsivOzetKartlari").then(m => m.SirketArsivOzetKartlari), { ssr: false });
 import DriverTour from "@/app/(Uygulama)/components/Dashboards/DriverTour";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "@/store/hooks";

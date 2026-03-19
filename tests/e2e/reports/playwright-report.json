@@ -1,0 +1,2821 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\lenov\\source\\repos\\dev2ninovasyon\\FasWebUI\\playwright.config.ts",
+    "rootDir": "C:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "tests/e2e/reports/playwright-html-report",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "tests/e2e/reports/playwright-report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 2,
+    "webServer": {
+      "command": "cmd /c \"start /B dotnet run --project ../FasWebAPI/FasWebApi.csproj && node scripts/playwright-webserver.cjs\"",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 300000
+    }
+  },
+  "suites": [
+    {
+      "title": "security\\security.spec.ts",
+      "file": "security/security.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Security scan - 2 parallel browsers",
+          "file": "security/security.spec.ts",
+          "line": 352,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Browser 1/2",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 1200000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 17251,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Navigating to root (login) page...\n"
+                        },
+                        {
+                          "text": "Waiting for login form (#username)...\n"
+                        },
+                        {
+                          "text": "Filling credentials for: test1@2ninovasyon.com\n"
+                        },
+                        {
+                          "text": "Login button clicked, waiting for navigation...\n"
+                        },
+                        {
+                          "text": "Loaded 50 dynamic MaddiDogrulama routes from DB seed fallback\n"
+                        },
+                        {
+                          "text": "Route inventory: 314 static + 50 dynamic = 364 total\n"
+                        },
+                        {
+                          "text": "OK /Anasayfa\n"
+                        },
+                        {
+                          "text": "OK /DenetimDosya/BagimsizDenetimMetodolojisi\n"
+                        },
+                        {
+                          "text": "OK /DenetimDosya/DenetimDosyaYazdir\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Benford\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DenetimKontrolTestleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/DenetimCalismalarininSinirlandirilmasiniDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/GercegeUygunDegerHesaplamalariDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/IhmalEdilenDuzeltme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/KullanilanTahminlereIliskinDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/MusteriIsletmePersoneliIleYapilanGorusme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/SatinAlmaOdemeKontrol\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/SayimVeTespitDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/TransferFiyatlamasiOrtuluKazanc\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/YonetimKuruluFaaliyetRaporuDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar/CariDonemDonusumDuzeltmeBelgesi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar/GecmisDonemDonusumDuzeltmeBelgesi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar/NakitAkisTablosu\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukBelirleme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukEkipCalismasi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/HileVeUsulsuzluk\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/DikeyAnaliz\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/IsletmeninSurekliligineIliskinDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KullanilanAnalitikTekniklereIliskinBelgeler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OranAnaliziTespitBelgesi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MizanKontrol/DonusumMizanKontrol\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MizanKontrol\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Mutabakat/DogrulamaMektuplarinaAlinanYanitlar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Mutabakat\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Onemlilik/Orneklem\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/YevmiyeKayitlariKontrol\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/Arsiv\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/DenetciFirmaBilgileri\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/TestSonuclari\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/VeriAktarma\n"
+                        },
+                        {
+                          "text": "OK /Donusum/FisGirisi\n"
+                        },
+                        {
+                          "text": "OK /Donusum/HazirFisler\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/AmortismanHaraketTablosu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DetayMizanKontrol\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri/Donusum\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri/FisIslemleri\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri/MaliyetDevirFisi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeKatsayilari\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/FinansalTablolar/FinansalDurumTablosu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/FinansalTablolar/NakitAkisTablosu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/FinansalTablolar\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/HataIzleme\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/NetParasalPozisyon/ErtelenenVergi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/NetParasalPozisyon\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/Rapor/DenetciRaporu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/Rapor/FaaliyetRaporu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/ReelOlmayanFinansmanMaaliyeti\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/SunumEndeksi\n"
+                        },
+                        {
+                          "text": "OK /GenelKurul/DenetimCalismasiIzleme\n"
+                        },
+                        {
+                          "text": "OK /GenelKurul/FaaliyetRaporu\n"
+                        },
+                        {
+                          "text": "OK /GenelKurul/KatilimBelgesi\n"
+                        },
+                        {
+                          "text": "OK /hangfire-monitoring\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/Amortisman\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/CekSenetReeskont\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/ErtelenmisVergiHesabi\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/Hareketsiz\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/KidemTazminatiBobi\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/Kredi\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/KurFarkiKayitlari/KurFarki\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/KurFarkiKayitlari\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/VadeliBankaMevduati\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/Yaslandirma\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/BirlestirilmisMizan\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/DonusumMizanKontrol\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/FinansalTablolar/FinansalDurumTablosu\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/FinansalTablolar/NakitAkisTablosu\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/FinansalTablolar\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/Rapor/Dipnotlar\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/Tanimlamalar\n"
+                        },
+                        {
+                          "text": "OK /Kullanici/KullaniciIslemleri/KullaniciEkle\n"
+                        },
+                        {
+                          "text": "OK /Kullanici/KullaniciSozlesmeSaatleri\n"
+                        },
+                        {
+                          "text": "OK /Kullanici/SurekliEgitimBilgileri\n"
+                        },
+                        {
+                          "text": "OK /KullanimKilavuzu\n"
+                        },
+                        {
+                          "text": "OK /Kys/Belgelendirme/BelgelendirmePolitikasi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Belgelendirme/KaliteYonetimSistemiEsasBelgesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/BilgiVeIletisim/KulturDegerlendirmesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/BilgiVeIletisim/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Kys/DenetiminYurutulmesi/DenetimKaliteGozdenGecirme\n"
+                        },
+                        {
+                          "text": "OK /Kys/DenetiminYurutulmesi/GorusFarkliliklarininCozumu\n"
+                        },
+                        {
+                          "text": "OK /Kys/DenetiminYurutulmesi/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Kys/EtikHukumler/BagimsizlikSorunlariCozumu\n"
+                        },
+                        {
+                          "text": "OK /Kys/EtikHukumler/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme/BulgularKaydi\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme/EksiklikDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme/SistemDegerlendirmesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/AdayGorusmeKontrolListesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/IdariCalisanPerformansi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/ProfesyonelCalisanPerformansi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/YeniCalisanOryantasyonKontrolListesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/DevamEdenMusteriKontrolListesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/MusteriArastirmaSorulari\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/MusteriBirakmaMektubu\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/YeniMusteriKabulKontrolListesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/RiskDegerlendirmeSureci\n"
+                        },
+                        {
+                          "text": "OK /Kys/RiskMatrisi\n"
+                        },
+                        {
+                          "text": "OK /Kys/UstYonetimVeLiderlik/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Musteri/Hissedarlar/HissedarEkle\n"
+                        },
+                        {
+                          "text": "OK /Musteri/IliskiliTaraflar/IliskiliTarafTanimla\n"
+                        },
+                        {
+                          "text": "OK /Musteri/IliskiliTaraflar\n"
+                        },
+                        {
+                          "text": "OK /Musteri/IsletmeTanima\n"
+                        },
+                        {
+                          "text": "OK /Musteri/MusteriDurustlugunuDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /Musteri/MusteriIslemleri/MusteriEkle\n"
+                        },
+                        {
+                          "text": "OK /Musteri/MusteriKabulIslemi\n"
+                        },
+                        {
+                          "text": "OK /Musteri\n"
+                        },
+                        {
+                          "text": "OK /Musteri/SirketYonetimKadrosu/SirketYonetimKadrosuEkle\n"
+                        },
+                        {
+                          "text": "OK /Musteri/Subeler\n"
+                        },
+                        {
+                          "text": "OK /Musteri/TeklifBelgesi\n"
+                        },
+                        {
+                          "text": "OK /Musteri/TeklifMektubu\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/BagimsizlikSorumlulukBeyani\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/BulguRiskiBelirleme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimProgrami\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimRiskDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimTakvimi\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetlenenIsletmeninTabiOlduguMevzuataIliskinDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/FaaliyetRiskBelirleme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/GorevTebligi\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/HileUsulsuzlukBelirleme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/HileUsulsuzlukEkipCalismasi\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/IsletmeVarliklarininKorunmasinaIliskinDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/IsletmeyeIliskinIcKontrolTespit\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/MeslekiDeneyimYeterlilik\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/TespitEdilenRiskler\n"
+                        },
+                        {
+                          "text": "OK /Rapor/Dipnotlar\n"
+                        },
+                        {
+                          "text": "OK /Rapor\n"
+                        },
+                        {
+                          "text": "OK /Sozlesme/DenetimKadrosuAtama/GorevAtamasiEkle\n"
+                        },
+                        {
+                          "text": "OK /Sozlesme\n"
+                        },
+                        {
+                          "text": "OK /Surdurulebilirlik/SurdurulebilirlikCevreselEtkiler\n"
+                        },
+                        {
+                          "text": "OK /Surdurulebilirlik/SurdurulebilirlikGenelBilgiler\n"
+                        },
+                        {
+                          "text": "OK /Surdurulebilirlik/SurdurulebilirlikSosyalSorumluluk\n"
+                        },
+                        {
+                          "text": "OK /Veri/DefterKVBeyannamesiYukleme\n"
+                        },
+                        {
+                          "text": "OK /Veri/DonusumFisleriVeriYukleme\n"
+                        },
+                        {
+                          "text": "OK /Veri/Fatura\n"
+                        },
+                        {
+                          "text": "OK /Veri/Mizanlar/OlusturulmusMizanlar\n"
+                        },
+                        {
+                          "text": "OK /Veri/Mizanlar/VukMizan\n"
+                        },
+                        {
+                          "text": "OK /Veri/VeriYukleme\n"
+                        },
+                        {
+                          "text": "OK /VeriTasimaFas\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalTablolar?title=Finansal%20Tablolar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/IliskiliTarafAciklamalari?title=%C4%B0li%C5%9Fkili%20Taraf%20A%C3%A7%C4%B1klamalar%C4%B1\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalYatirimlarveTurevAraclar?title=Finansal%20Yat%C4%B1r%C4%B1mlar%20ve%20T%C3%BCrev%20Ara%C3%A7lar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/TicariAlacaklar?title=Ticari%20Alacaklar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerAlacaklar?title=Di%C4%9Fer%20Alacaklar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/Stoklar?title=Stoklar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/ErtelenmisGiderler?title=Ertelenmi%C5%9F%20Giderler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/CanliVarliklar?title=Canl%C4%B1%20Varl%C4%B1klar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/PesinOdenmisGiderlerveErtelenmisGelirler?title=Pe%C5%9Fin%20%C3%96denmi%C5%9F%20Giderler%20ve%20Ertelenmi%C5%9F%20Gelirler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/SatisAmacliSiniflandirilanVarliklar-Yukumlulukler?title=Sat%C4%B1%C5%9F%20Ama%C3%A7l%C4%B1%20S%C4%B1n%C4%B1fland%C4%B1r%C4%B1lan%20Varl%C4%B1klar%20-%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/MaddiDuranVarliklar?title=Maddi%20Duran%20Varl%C4%B1klar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/MaddiOlmayanDuranVarliklar?title=Maddi%20Olmayan%20Duran%20Varl%C4%B1klar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/ErtelenenVergiVarligi-Yukumlulugu?title=Ertelenen%20Vergi%20Varl%C4%B1%C4%9F%C4%B1%20-%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BC%C4%9F%C3%BC\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DevamEdenInsaSozlesmelerindenBorclar?title=Devam%20Eden%20%C4%B0n%C5%9Fa%20S%C3%B6zle%C5%9Fmelerinden%20Bor%C3%A7lar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerVarlikveYukumlulukler?title=Di%C4%9Fer%20Varl%C4%B1k%20ve%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/OdenecekVergiveYukumlulukler?title=%C3%96denecek%20Vergi%20ve%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/ErtelenmisGelirler?title=Ertelenmi%C5%9F%20Gelirler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerKisaveUzunVadeliYukumlulukler?title=Di%C4%9Fer%20K%C4%B1sa%20ve%20Uzun%20Vadeli%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/MusteriSozlesmelerindenHasilat?title=M%C3%BC%C5%9Fteri%20S%C3%B6zle%C5%9Fmelerinden%20Has%C4%B1lat\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/SatislarinMaliyeti?title=Sat%C4%B1%C5%9Flar%C4%B1n%20Maliyeti\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/EsasFaaliyetlerdenDigerGelirlerveGiderler?title=Esas%20Faaliyetlerden%20Di%C4%9Fer%20Gelirler%20ve%20Giderler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/EsasFaaliyetlerdenDigerGiderler?title=Esas%20Faaliyetlerden%20Di%C4%9Fer%20Giderler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerFaaliyetlerdenGelirler-Giderler?title=Di%C4%9Fer%20Faaliyetlerden%20Gelirler%20-%20Giderler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/CalisanlaraSaglananFaydalar?title=%C3%87al%C4%B1%C5%9Fanlara%20Sa%C4%9Flanan%20Faydalar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansmanGelirleri?title=Finansman%20Gelirleri\n"
+                        },
+                        {
+                          "text": "Scanned 182 routes in browser-1\n"
+                        }
+                      ],
+                      "stderr": [
+                        {
+                          "text": "Dynamic route discovery failed: page.waitForURL: Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "browser-1 route: /Anasayfa",
+                          "duration": 288
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimDosya/BagimsizDenetimMetodolojisi",
+                          "duration": 190
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimDosya/DenetimDosyaYazdir",
+                          "duration": 103
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/Benford",
+                          "duration": 100
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DenetimKontrolTestleri",
+                          "duration": 117
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/DenetimCalismalarininSinirlandirilmasiniDegerlendirme",
+                          "duration": 117
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/GercegeUygunDegerHesaplamalariDegerlendirme",
+                          "duration": 99
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/IhmalEdilenDuzeltme",
+                          "duration": 101
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/KullanilanTahminlereIliskinDegerlendirme",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/MusteriIsletmePersoneliIleYapilanGorusme",
+                          "duration": 98
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/SatinAlmaOdemeKontrol",
+                          "duration": 186
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/SayimVeTespitDegerlendirme",
+                          "duration": 100
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/TransferFiyatlamasiOrtuluKazanc",
+                          "duration": 117
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/DigerKanitlar/YonetimKuruluFaaliyetRaporuDegerlendirme",
+                          "duration": 120
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/FinansalTablolar/CariDonemDonusumDuzeltmeBelgesi",
+                          "duration": 142
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/FinansalTablolar/GecmisDonemDonusumDuzeltmeBelgesi",
+                          "duration": 98
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/FinansalTablolar/NakitAkisTablosu",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukBelirleme",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukEkipCalismasi",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/HileVeUsulsuzluk",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/DikeyAnaliz",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/IsletmeninSurekliligineIliskinDegerlendirme",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KullanilanAnalitikTekniklereIliskinBelgeler",
+                          "duration": 103
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OranAnaliziTespitBelgesi",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/CalismaKagidiRaporu",
+                          "duration": 122
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MizanKontrol/DonusumMizanKontrol",
+                          "duration": 106
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MizanKontrol",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/Mutabakat/DogrulamaMektuplarinaAlinanYanitlar",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/Mutabakat",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeKilavuzu",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/Onemlilik/Orneklem",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/YevmiyeKayitlariKontrol",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-1 route: /DigerIslemler/Arsiv",
+                          "duration": 114
+                        },
+                        {
+                          "title": "browser-1 route: /DigerIslemler/DenetciFirmaBilgileri",
+                          "duration": 77
+                        },
+                        {
+                          "title": "browser-1 route: /DigerIslemler",
+                          "duration": 75
+                        },
+                        {
+                          "title": "browser-1 route: /DigerIslemler/TestSonuclari",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-1 route: /DigerIslemler/VeriAktarma",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /Donusum/FisGirisi",
+                          "duration": 95
+                        },
+                        {
+                          "title": "browser-1 route: /Donusum/HazirFisler",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/AmortismanHaraketTablosu",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/DetayMizanKontrol",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/DuzeltmeIslemleri/Donusum",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/DuzeltmeIslemleri/FisIslemleri",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/DuzeltmeIslemleri/MaliyetDevirFisi",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/DuzeltmeIslemleri",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/DuzeltmeKatsayilari",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/FinansalTablolar/FinansalDurumTablosu",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/FinansalTablolar/NakitAkisTablosu",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/FinansalTablolar",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/HataIzleme",
+                          "duration": 95
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/NetParasalPozisyon/ErtelenenVergi",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/NetParasalPozisyon",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon",
+                          "duration": 75
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/Rapor/DenetciRaporu",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/Rapor/FaaliyetRaporu",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/ReelOlmayanFinansmanMaaliyeti",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-1 route: /Enflasyon/SunumEndeksi",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /GenelKurul/DenetimCalismasiIzleme",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-1 route: /GenelKurul/FaaliyetRaporu",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /GenelKurul/KatilimBelgesi",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /hangfire-monitoring",
+                          "duration": 73
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/Amortisman",
+                          "duration": 96
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/CekSenetReeskont",
+                          "duration": 113
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/ErtelenmisVergiHesabi",
+                          "duration": 107
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/Hareketsiz",
+                          "duration": 99
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/KidemTazminatiBobi",
+                          "duration": 101
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/Kredi",
+                          "duration": 104
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/KurFarkiKayitlari/KurFarki",
+                          "duration": 119
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/KurFarkiKayitlari",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/VadeliBankaMevduati",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiManuelSiniflama",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /Hesaplamalar/Yaslandirma",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon/BirlestirilmisMizan",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon/DonusumMizanKontrol",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon/FinansalTablolar/FinansalDurumTablosu",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon/FinansalTablolar/NakitAkisTablosu",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon/FinansalTablolar",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon/Rapor/Dipnotlar",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /Konsolidasyon/Tanimlamalar",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /Kullanici/KullaniciIslemleri/KullaniciEkle",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /Kullanici/KullaniciSozlesmeSaatleri",
+                          "duration": 75
+                        },
+                        {
+                          "title": "browser-1 route: /Kullanici/SurekliEgitimBilgileri",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /KullanimKilavuzu",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/Belgelendirme/BelgelendirmePolitikasi",
+                          "duration": 98
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/Belgelendirme/KaliteYonetimSistemiEsasBelgesi",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/BilgiVeIletisim/KulturDegerlendirmesi",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/BilgiVeIletisim/PolitikaBeyani",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/DenetiminYurutulmesi/DenetimKaliteGozdenGecirme",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/DenetiminYurutulmesi/GorusFarkliliklarininCozumu",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/DenetiminYurutulmesi/PolitikaBeyani",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/EtikHukumler/BagimsizlikSorunlariCozumu",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/EtikHukumler/PolitikaBeyani",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/IzlemeVeDuzeltme/BulgularKaydi",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/IzlemeVeDuzeltme/EksiklikDegerlendirme",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/IzlemeVeDuzeltme",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/IzlemeVeDuzeltme/SistemDegerlendirmesi",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/Kaynaklar/AdayGorusmeKontrolListesi",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/Kaynaklar/IdariCalisanPerformansi",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/Kaynaklar",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/Kaynaklar/ProfesyonelCalisanPerformansi",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/Kaynaklar/YeniCalisanOryantasyonKontrolListesi",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/MusteriIliskisi/DevamEdenMusteriKontrolListesi",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/MusteriIliskisi/MusteriArastirmaSorulari",
+                          "duration": 114
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/MusteriIliskisi/MusteriBirakmaMektubu",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/MusteriIliskisi/PolitikaBeyani",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/MusteriIliskisi/YeniMusteriKabulKontrolListesi",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/RiskDegerlendirmeSureci",
+                          "duration": 74
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/RiskMatrisi",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /Kys/UstYonetimVeLiderlik/PolitikaBeyani",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/Hissedarlar/HissedarEkle",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/IliskiliTaraflar/IliskiliTarafTanimla",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/IliskiliTaraflar",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/IsletmeTanima",
+                          "duration": 77
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/MusteriDurustlugunuDegerlendirme",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/MusteriIslemleri/MusteriEkle",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/MusteriKabulIslemi",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/SirketYonetimKadrosu/SirketYonetimKadrosuEkle",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/Subeler",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/TeklifBelgesi",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /Musteri/TeklifMektubu",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/BagimsizlikSorumlulukBeyani",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/BulguRiskiBelirleme",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/DenetimPlanindaOnemlilik/FinansalTabloKalemlerindeDegisim",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/DenetimProgrami",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/DenetimRiskDegerlendirme",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/DenetimTakvimi",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/DenetlenenIsletmeninTabiOlduguMevzuataIliskinDegerlendirme",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/FaaliyetRiskBelirleme",
+                          "duration": 77
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/GorevTebligi",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/HileUsulsuzlukBelirleme",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/HileUsulsuzlukEkipCalismasi",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/IsletmeVarliklarininKorunmasinaIliskinDegerlendirme",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/IsletmeyeIliskinIcKontrolTespit",
+                          "duration": 96
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/MeslekiDeneyimYeterlilik",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /PlanVeProgram/TespitEdilenRiskler",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /Rapor/Dipnotlar",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-1 route: /Rapor",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-1 route: /Sozlesme/DenetimKadrosuAtama/GorevAtamasiEkle",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /Sozlesme",
+                          "duration": 109
+                        },
+                        {
+                          "title": "browser-1 route: /Surdurulebilirlik/SurdurulebilirlikCevreselEtkiler",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-1 route: /Surdurulebilirlik/SurdurulebilirlikGenelBilgiler",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-1 route: /Surdurulebilirlik/SurdurulebilirlikSosyalSorumluluk",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /Veri/DefterKVBeyannamesiYukleme",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-1 route: /Veri/DonusumFisleriVeriYukleme",
+                          "duration": 95
+                        },
+                        {
+                          "title": "browser-1 route: /Veri/Fatura",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /Veri/Mizanlar/OlusturulmusMizanlar",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-1 route: /Veri/Mizanlar/VukMizan",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-1 route: /Veri/VeriYukleme",
+                          "duration": 99
+                        },
+                        {
+                          "title": "browser-1 route: /VeriTasimaFas",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalTablolar?title=Finansal%20Tablolar",
+                          "duration": 336
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/IliskiliTarafAciklamalari?title=%C4%B0li%C5%9Fkili%20Taraf%20A%C3%A7%C4%B1klamalar%C4%B1",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalYatirimlarveTurevAraclar?title=Finansal%20Yat%C4%B1r%C4%B1mlar%20ve%20T%C3%BCrev%20Ara%C3%A7lar",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/TicariAlacaklar?title=Ticari%20Alacaklar",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerAlacaklar?title=Di%C4%9Fer%20Alacaklar",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/Stoklar?title=Stoklar",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/ErtelenmisGiderler?title=Ertelenmi%C5%9F%20Giderler",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/CanliVarliklar?title=Canl%C4%B1%20Varl%C4%B1klar",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/PesinOdenmisGiderlerveErtelenmisGelirler?title=Pe%C5%9Fin%20%C3%96denmi%C5%9F%20Giderler%20ve%20Ertelenmi%C5%9F%20Gelirler",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/SatisAmacliSiniflandirilanVarliklar-Yukumlulukler?title=Sat%C4%B1%C5%9F%20Ama%C3%A7l%C4%B1%20S%C4%B1n%C4%B1fland%C4%B1r%C4%B1lan%20Varl%C4%B1klar%20-%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/MaddiDuranVarliklar?title=Maddi%20Duran%20Varl%C4%B1klar",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/MaddiOlmayanDuranVarliklar?title=Maddi%20Olmayan%20Duran%20Varl%C4%B1klar",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/ErtelenenVergiVarligi-Yukumlulugu?title=Ertelenen%20Vergi%20Varl%C4%B1%C4%9F%C4%B1%20-%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BC%C4%9F%C3%BC",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DevamEdenInsaSozlesmelerindenBorclar?title=Devam%20Eden%20%C4%B0n%C5%9Fa%20S%C3%B6zle%C5%9Fmelerinden%20Bor%C3%A7lar",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerVarlikveYukumlulukler?title=Di%C4%9Fer%20Varl%C4%B1k%20ve%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/OdenecekVergiveYukumlulukler?title=%C3%96denecek%20Vergi%20ve%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/ErtelenmisGelirler?title=Ertelenmi%C5%9F%20Gelirler",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerKisaveUzunVadeliYukumlulukler?title=Di%C4%9Fer%20K%C4%B1sa%20ve%20Uzun%20Vadeli%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/MusteriSozlesmelerindenHasilat?title=M%C3%BC%C5%9Fteri%20S%C3%B6zle%C5%9Fmelerinden%20Has%C4%B1lat",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/SatislarinMaliyeti?title=Sat%C4%B1%C5%9Flar%C4%B1n%20Maliyeti",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/EsasFaaliyetlerdenDigerGelirlerveGiderler?title=Esas%20Faaliyetlerden%20Di%C4%9Fer%20Gelirler%20ve%20Giderler",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/EsasFaaliyetlerdenDigerGiderler?title=Esas%20Faaliyetlerden%20Di%C4%9Fer%20Giderler",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerFaaliyetlerdenGelirler-Giderler?title=Di%C4%9Fer%20Faaliyetlerden%20Gelirler%20-%20Giderler",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/CalisanlaraSaglananFaydalar?title=%C3%87al%C4%B1%C5%9Fanlara%20Sa%C4%9Flanan%20Faydalar",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-1 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansmanGelirleri?title=Finansman%20Gelirleri",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-1 summary: scanned 182 routes",
+                          "duration": 0
+                        }
+                      ],
+                      "startTime": "2026-03-13T08:31:37.484Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "383db6a520c6ba3bf4e3-3f1b6466b0d51796fa72",
+              "file": "security/security.spec.ts",
+              "line": 382,
+              "column": 9
+            },
+            {
+              "title": "Browser 2/2",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 1200000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 16311,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "OK /Bddk\n"
+                        },
+                        {
+                          "text": "OK /DenetimDosya/DenetimDosyaOnay\n"
+                        },
+                        {
+                          "text": "OK /DenetimDosya\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DenetimStratejisiBelirleme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/DenetimKanitlariDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/HabersizIsletmeZiyareti\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/IliskiliTarafInceleme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/MuhasebeHatalariVeHileKanitlariDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/MusteriIsletmeYonetimiIleYapilanGorusme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/RisklereKarsiUygulananDenetimProsedurleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/SatisTahsilatKontrol\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/TespitEdilenHususlarinYonetimeBildirimi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/DigerKanitlar/UygulananMuhasebePolitikalarininTespiti\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FaturaInceleme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar/FinansalDurumTablosu\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar/KarZararTablosu\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar/OncekiDonemDonusumDuzeltmeBelgesi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/FinansalTablolar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/MuhasebeHatalariVeHileKanitlariDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/BilancoDegerlendirmeBelgesi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/GelirDegerlendirmeBelgesi\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KarsilastirmaliAnaliz\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OnemliSureclerinIzlenmesiVeRiskBelirleme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MizanKontrol/OzetDonusumMizanKontrol\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MizanKontrol/VukMizanDonusumMizanKarsilastirma\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Onemlilik/FisIslemSayilari\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/Onemlilik\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/UzmanYeterliligiDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/YonetimTavsiyeMektubu\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/AuditLoglari\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/EnflasyonLoglari\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/SistemLoglari\n"
+                        },
+                        {
+                          "text": "OK /DigerIslemler/UyelikBilgileri\n"
+                        },
+                        {
+                          "text": "OK /Donusum/DonusumIslemi\n"
+                        },
+                        {
+                          "text": "OK /Donusum/FisListesi\n"
+                        },
+                        {
+                          "text": "OK /Donusum\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/Asamalar\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DigerVarlikVeKaynaklar\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri/FisGirisi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri/IptalFisi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri/MaliyetFarkFisi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/DuzeltmeIslemleri/TasimaFisi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/EnflasyonDuzeltmesiCalismaKagidi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/FinansalTablolar/KarZararTablosu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/FinansalTablolar/OzkaynakDegisimTablosu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/GelirVeGiderlerEnflasyonDuzeltmesi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/MaddiVeMaddiOlmayanDuranVarliklar\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/NetParasalPozisyon/NetParasalPozisyonTablosu\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/OrtalamaTicariKrediFaizOranlari\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/ProjeInsaat\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/Rapor/Dipnotlar\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/Rapor\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/StoklarEnflasyonDuzeltmesi\n"
+                        },
+                        {
+                          "text": "OK /Enflasyon/VukEnflasyonIptalFisi\n"
+                        },
+                        {
+                          "text": "OK /GenelKurul/DenetimCalismasiIzlemeSonuc\n"
+                        },
+                        {
+                          "text": "OK /GenelKurul/GorevlendirmeBelgesi\n"
+                        },
+                        {
+                          "text": "OK /GenelKurul\n"
+                        },
+                        {
+                          "text": "OK /HesapAyarlari\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/BeklenenKrediZarari\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/DavaKarsiliklari\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/GecmisYillarKarZararKontrolleri\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/IliskiliTarafSiniflama\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/KidemTazminatiTfrs\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/KrediHesaplama\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiFaizTahakkuk\n"
+                        },
+                        {
+                          "text": "OK /Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiOtomatikSiniflama\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/Asamalar\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/DonusumIslemi\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/EliminasyonFisIslemleri\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/FinansalTablolar/KarZararTablosu\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/FinansalTablolar/OzkaynakDegisimTablosu\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/FisListesi\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/Rapor/BagimsizDenetciRaporu\n"
+                        },
+                        {
+                          "text": "OK /Konsolidasyon/Rapor\n"
+                        },
+                        {
+                          "text": "OK /Kullanici/DenetciYillikTaahutname\n"
+                        },
+                        {
+                          "text": "OK /Kullanici/KullaniciIslemleri\n"
+                        },
+                        {
+                          "text": "OK /Kullanici\n"
+                        },
+                        {
+                          "text": "OK /Kullanici/SurekliEgitimBilgileri/SurekliEgitimBilgileriEkle\n"
+                        },
+                        {
+                          "text": "OK /Kys/2/RiskMatrisi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Belgelendirme/DenetimSirketininYapisi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Belgelendirme\n"
+                        },
+                        {
+                          "text": "OK /Kys/BilgiVeIletisim\n"
+                        },
+                        {
+                          "text": "OK /Kys/DenetiminYurutulmesi/CalismaKontrolFormu\n"
+                        },
+                        {
+                          "text": "OK /Kys/DenetiminYurutulmesi/DisUzmanKontrolListesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/DenetiminYurutulmesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/DenetiminYurutulmesi/UzmanCalismalarininKullanilmasi\n"
+                        },
+                        {
+                          "text": "OK /Kys/EtikHukumler\n"
+                        },
+                        {
+                          "text": "OK /Kys/EtikHukumler/YillikBagimsizlikTaahhudu\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme/DenetiminGozdenGecirilmesi\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme/MusteriSikayetKaydi\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Kys/IzlemeVeDuzeltme/SureciRehberi\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/EgitimVeGelisimKayitlari\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/IsTanimlari\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/TeknolojiSatinAlmaTalepFormu\n"
+                        },
+                        {
+                          "text": "OK /Kys/Kaynaklar/YeniHizmetSaglayiciTalepFormu\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/EtikMektubu\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/MusteriBirakmaFormu\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi\n"
+                        },
+                        {
+                          "text": "OK /Kys/MusteriIliskisi/YeniMusteriFormu\n"
+                        },
+                        {
+                          "text": "OK /Kys\n"
+                        },
+                        {
+                          "text": "OK /Kys/RiskDegerlendirmeSureci/PolitikaBeyani\n"
+                        },
+                        {
+                          "text": "OK /Kys/UstYonetimVeLiderlik\n"
+                        },
+                        {
+                          "text": "OK /Kys/UstYonetimVeLiderlik/SorumluluklarinVerilmesi\n"
+                        },
+                        {
+                          "text": "OK /Musteri/Hissedarlar\n"
+                        },
+                        {
+                          "text": "OK /Musteri/IliskiliTaraflar/MizandanIliskiliTarafTanimla\n"
+                        },
+                        {
+                          "text": "OK /Musteri/IsletmeFaaliyetVeCevresiTanima\n"
+                        },
+                        {
+                          "text": "OK /Musteri/KendiYetkinliginiDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /Musteri/MusteriIslemleri/ImportFromOld\n"
+                        },
+                        {
+                          "text": "OK /Musteri/MusteriIslemleri\n"
+                        },
+                        {
+                          "text": "OK /Musteri/MusteriTanima\n"
+                        },
+                        {
+                          "text": "OK /Musteri/SirketYonetimKadrosu\n"
+                        },
+                        {
+                          "text": "OK /Musteri/SozlesmeKabul\n"
+                        },
+                        {
+                          "text": "OK /Musteri/Subeler/SubeEkle\n"
+                        },
+                        {
+                          "text": "OK /Musteri/TeklifHesaplama\n"
+                        },
+                        {
+                          "text": "OK /MusteriBelgeleri\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/BilgiIslemMuhasebe\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimPlani\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimPlanindaOnemlilik/FisBuyukluguAnalizi\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimPlanindaOnemlilik\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimRiskBelirleme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimStratejiKilavuzu\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/DenetimZamaniBildirme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/EtikGerekliliklereIliskinBildirim\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/HesaplaraIliskinIcKontrolTespit\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/HileUsulsuzlukDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/IcKontrolDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/MaddiDogrulukGorevAtamalari\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/MeslekiEtik\n"
+                        },
+                        {
+                          "text": "OK /PlanVeProgram/SorumlulukBildirimi\n"
+                        },
+                        {
+                          "text": "OK /Rapor/BagimsizDenetciRaporu\n"
+                        },
+                        {
+                          "text": "OK /Rapor/FaaliyetRaporunaIliskinBagimsizDenetciRaporu\n"
+                        },
+                        {
+                          "text": "OK /Sozlesme/BagimsizDenetimSozlesmesi\n"
+                        },
+                        {
+                          "text": "OK /Sozlesme/DenetimKadrosuAtama\n"
+                        },
+                        {
+                          "text": "OK /Surdurulebilirlik\n"
+                        },
+                        {
+                          "text": "OK /Surdurulebilirlik/SurdurulebilirlikEkBilgiler\n"
+                        },
+                        {
+                          "text": "OK /Surdurulebilirlik/SurdurulebilirlikKurumsalYonetisim\n"
+                        },
+                        {
+                          "text": "OK /TemaAyarlari\n"
+                        },
+                        {
+                          "text": "OK /Veri/DonusturulmusMizanVeriYukleme\n"
+                        },
+                        {
+                          "text": "OK /Veri/EDefterInceleme\n"
+                        },
+                        {
+                          "text": "OK /Veri/Mizanlar/EDefterMizan\n"
+                        },
+                        {
+                          "text": "OK /Veri/Mizanlar\n"
+                        },
+                        {
+                          "text": "OK /Veri\n"
+                        },
+                        {
+                          "text": "OK /Veri/VukMizanVeriYukleme\n"
+                        },
+                        {
+                          "text": "OK /\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DipnotAciklamalari?title=Dipnot%20A%C3%A7%C4%B1klamalar%C4%B1\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/NakitveNakitBenzerleri?title=Nakit%20ve%20Nakit%20Benzerleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalVarlikveYatirimlar?title=Finansal%20Varl%C4%B1k%20ve%20Yat%C4%B1r%C4%B1mlar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/TicariBorclar?title=Ticari%20Bor%C3%A7lar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerBorclar?title=Di%C4%9Fer%20Bor%C3%A7lar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DevamEdenInsaSozlesmelerindenAlacaklar?title=Devam%20Eden%20%C4%B0n%C5%9Fa%20S%C3%B6zle%C5%9Fmelerinden%20Alacaklar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/CariDonemVergisiyleIlgiliVarliklar?title=Cari%20D%C3%B6nem%20Vergisiyle%20%C4%B0lgili%20Varl%C4%B1klar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/SozlesmeVarlikveYukumlulukleri?title=S%C3%B6zle%C5%9Fme%20Varl%C4%B1k%20ve%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerDonenDuranVarliklar?title=Di%C4%9Fer%20D%C3%B6nen%20Duran%20Varl%C4%B1klar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/YatirimAmacliGayrimenkuller?title=Yat%C4%B1r%C4%B1m%20Ama%C3%A7l%C4%B1%20Gayrimenkuller\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalYukumlulukler?title=Finansal%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/OzkaynakYontemiyleDegerlenenYatirimlar?title=%C3%96zkaynak%20Y%C3%B6ntemiyle%20De%C4%9Ferlenen%20Yat%C4%B1r%C4%B1mlar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalBorclar?title=Finansal%20Bor%C3%A7lar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/VarliklardaDegerDusuklugu?title=Varl%C4%B1klarda%20De%C4%9Fer%20D%C3%BC%C5%9F%C3%BCkl%C3%BC%C4%9F%C3%BC\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerFinansalYukumlulukler?title=Di%C4%9Fer%20Finansal%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/KisaveUzunVadeliKarsiliklar?title=Kisa%20ve%20Uzun%20Vadeli%20Karsiliklar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/SermayeYedeklerveDigerOzkaynakKalemleri?title=Sermaye%20Yedekler%20ve%20Di%C4%9Fer%20%C3%96zkaynak%20Kalemleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/Ozkaynaklar?title=%C3%96zkaynaklar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/Hasilat?title=Has%C4%B1lat\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FaaliyetGiderleri?title=Faaliyet%20Giderleri\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/EsasFaaliyetlerdenDigerGelirler?title=Esas%20Faaliyetlerden%20Di%C4%9Fer%20Gelirler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/YatirimFaaliyetlerindenGelirlerveGiderler?title=Yat%C4%B1r%C4%B1m%20Faaliyetlerinden%20Gelirler%20ve%20Giderler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/SatisAmacliEldeTutulanDuranVarliklarveDurdurulanFaaliyetler?title=Sat%C4%B1%C5%9F%20Ama%C3%A7l%C4%B1%20Elde%20Tutulan%20Duran%20Varl%C4%B1klar%20ve%20Durdurulan%20Faaliyetler\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/KarsiliklarKosulluVarlikveBorclar?title=Kar%C5%9F%C4%B1l%C4%B1klar%20Ko%C5%9Fullu%20Varl%C4%B1k%20ve%20Bor%C3%A7lar\n"
+                        },
+                        {
+                          "text": "OK /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansmanGiderleri?title=Finansman%20Giderleri\n"
+                        },
+                        {
+                          "text": "Scanned 182 routes in browser-2\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "browser-2 route: /Bddk",
+                          "duration": 235
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimDosya/DenetimDosyaOnay",
+                          "duration": 111
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimDosya",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/BilancoTarihindenSonraOrtayaCikanOlaylariDegerlendirme",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DenetimStratejisiBelirleme",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/DenetimKanitlariDegerlendirme",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/HabersizIsletmeZiyareti",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/IliskiliTarafInceleme",
+                          "duration": 149
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/MuhasebeHatalariVeHileKanitlariDegerlendirme",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/MusteriIsletmeYonetimiIleYapilanGorusme",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/RisklereKarsiUygulananDenetimProsedurleri",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/SatisTahsilatKontrol",
+                          "duration": 112
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/TespitEdilenHususlarinYonetimeBildirimi",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/DigerKanitlar/UygulananMuhasebePolitikalarininTespiti",
+                          "duration": 111
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/FaturaInceleme",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/FinansalTablolar/FinansalDurumTablosu",
+                          "duration": 102
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/FinansalTablolar/KarZararTablosu",
+                          "duration": 95
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/FinansalTablolar/OncekiDonemDonusumDuzeltmeBelgesi",
+                          "duration": 99
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/FinansalTablolar",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/HileUsulsuzlukDegerlendirme",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/HileVeUsulsuzluk/HileProsedurleri/MuhasebeHatalariVeHileKanitlariDegerlendirme",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/HileVeUsulsuzluk/MuhasebeHatalariVeHile",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/BilancoDegerlendirmeBelgesi",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/GelirDegerlendirmeBelgesi",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/KarsilastirmaliAnaliz",
+                          "duration": 95
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme/OnemliSureclerinIzlenmesiVeRiskBelirleme",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/IsletmeninSurekliligiVeAnalitikInceleme",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MizanKontrol/OzetDonusumMizanKontrol",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MizanKontrol/VukMizanDonusumMizanKarsilastirma",
+                          "duration": 96
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/Mutabakat/MutabakatSecimiVeKontrol",
+                          "duration": 104
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/Onemlilik/FisIslemSayilari",
+                          "duration": 102
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme",
+                          "duration": 98
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/Onemlilik",
+                          "duration": 77
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/UzmanYeterliligiDegerlendirme",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/YonetimTavsiyeMektubu",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /DigerIslemler/AuditLoglari",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /DigerIslemler/EnflasyonLoglari",
+                          "duration": 118
+                        },
+                        {
+                          "title": "browser-2 route: /DigerIslemler/SistemLoglari",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DigerIslemler/UyelikBilgileri",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /Donusum/DonusumIslemi",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-2 route: /Donusum/FisListesi",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-2 route: /Donusum",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/Asamalar",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/DigerVarlikVeKaynaklar",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/DuzeltmeIslemleri/FisGirisi",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/DuzeltmeIslemleri/IptalFisi",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/DuzeltmeIslemleri/MaliyetFarkFisi",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/DuzeltmeIslemleri/TasimaFisi",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/EnflasyonDuzeltmesiCalismaKagidi",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/FinansalTablolar/KarZararTablosu",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/FinansalTablolar/OzkaynakDegisimTablosu",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/GelirVeGiderlerEnflasyonDuzeltmesi",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/MaddiVeMaddiOlmayanDuranVarliklar",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/NetParasalPozisyon/NetParasalPozisyonTablosu",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/OrtalamaTicariKrediFaizOranlari",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/ProjeInsaat",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/Rapor/Dipnotlar",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/Rapor",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/StoklarEnflasyonDuzeltmesi",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /Enflasyon/VukEnflasyonIptalFisi",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /GenelKurul/DenetimCalismasiIzlemeSonuc",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /GenelKurul/GorevlendirmeBelgesi",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /GenelKurul",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /HesapAyarlari",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/BeklenenKrediZarari",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/DavaKarsiliklari",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/GecmisYillarKarZararKontrolleri",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/IliskiliTarafSiniflama",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/KidemTazminatiTfrs",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/KrediHesaplama",
+                          "duration": 91
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/KurFarkiKayitlari/KurFarkiKontrolleri",
+                          "duration": 95
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiFaizTahakkuk",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /Hesaplamalar/VadeliBankaMevduati/VadeliBankaMevduatiOtomatikSiniflama",
+                          "duration": 135
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/Asamalar",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/DonusumIslemi",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/EliminasyonFisIslemleri",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/FinansalTablolar/KarZararTablosu",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/FinansalTablolar/OzkaynakDegisimTablosu",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/FisListesi",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/Rapor/BagimsizDenetciRaporu",
+                          "duration": 99
+                        },
+                        {
+                          "title": "browser-2 route: /Konsolidasyon/Rapor",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /Kullanici/DenetciYillikTaahutname",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /Kullanici/KullaniciIslemleri",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Kullanici",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-2 route: /Kullanici/SurekliEgitimBilgileri/SurekliEgitimBilgileriEkle",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/2/RiskMatrisi",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/Belgelendirme/DenetimSirketininYapisi",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/Belgelendirme",
+                          "duration": 97
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/BilgiVeIletisim",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/DenetiminYurutulmesi/CalismaKontrolFormu",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/DenetiminYurutulmesi/DisUzmanKontrolListesi",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/DenetiminYurutulmesi",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/DenetiminYurutulmesi/UzmanCalismalarininKullanilmasi",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/EtikHukumler",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/EtikHukumler/YillikBagimsizlikTaahhudu",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/IzlemeVeDuzeltme/DenetiminGozdenGecirilmesi",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/IzlemeVeDuzeltme/MusteriSikayetKaydi",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/IzlemeVeDuzeltme/PolitikaBeyani",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/IzlemeVeDuzeltme/SureciRehberi",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/Kaynaklar/EgitimVeGelisimKayitlari",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/Kaynaklar/IsTanimlari",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/Kaynaklar/PolitikaBeyani",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/Kaynaklar/TeknolojiSatinAlmaTalepFormu",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/Kaynaklar/YeniHizmetSaglayiciTalepFormu",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/MusteriIliskisi/EtikMektubu",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/MusteriIliskisi/MusteriBirakmaFormu",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/MusteriIliskisi",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/MusteriIliskisi/YeniMusteriFormu",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /Kys",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/RiskDegerlendirmeSureci/PolitikaBeyani",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/UstYonetimVeLiderlik",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /Kys/UstYonetimVeLiderlik/SorumluluklarinVerilmesi",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/Hissedarlar",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/IliskiliTaraflar/MizandanIliskiliTarafTanimla",
+                          "duration": 134
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/IsletmeFaaliyetVeCevresiTanima",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/KendiYetkinliginiDegerlendirme",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/MusteriIslemleri/ImportFromOld",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/MusteriIslemleri",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/MusteriTanima",
+                          "duration": 93
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/SirketYonetimKadrosu",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/SozlesmeKabul",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/Subeler/SubeEkle",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /Musteri/TeklifHesaplama",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /MusteriBelgeleri",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/BilgiIslemMuhasebe",
+                          "duration": 87
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/DenetimPlani",
+                          "duration": 86
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/DenetimPlanindaOnemlilik/FisBuyukluguAnalizi",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/DenetimPlanindaOnemlilik",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/DenetimRiskBelirleme",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/DenetimStratejiKilavuzu",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/DenetimZamaniBildirme",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/EtikGerekliliklereIliskinBildirim",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/HesaplaraIliskinIcKontrolTespit",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/HileUsulsuzlukDegerlendirme",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/IcKontrolDegerlendirme",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/IsletmeyeIliskinIcKontrolSistemiOzetDegerlendirme",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/MaddiDogrulukGorevAtamalari",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/MeslekiEtik",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /PlanVeProgram/SorumlulukBildirimi",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /Rapor/BagimsizDenetciRaporu",
+                          "duration": 96
+                        },
+                        {
+                          "title": "browser-2 route: /Rapor/FaaliyetRaporunaIliskinBagimsizDenetciRaporu",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /Sozlesme/BagimsizDenetimSozlesmesi",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Sozlesme/DenetimKadrosuAtama",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-2 route: /Surdurulebilirlik",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /Surdurulebilirlik/SurdurulebilirlikEkBilgiler",
+                          "duration": 102
+                        },
+                        {
+                          "title": "browser-2 route: /Surdurulebilirlik/SurdurulebilirlikKurumsalYonetisim",
+                          "duration": 88
+                        },
+                        {
+                          "title": "browser-2 route: /TemaAyarlari",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /Veri/DonusturulmusMizanVeriYukleme",
+                          "duration": 94
+                        },
+                        {
+                          "title": "browser-2 route: /Veri/EDefterInceleme",
+                          "duration": 96
+                        },
+                        {
+                          "title": "browser-2 route: /Veri/Mizanlar/EDefterMizan",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-2 route: /Veri/Mizanlar",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /Veri",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /Veri/VukMizanVeriYukleme",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DipnotAciklamalari?title=Dipnot%20A%C3%A7%C4%B1klamalar%C4%B1",
+                          "duration": 90
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/NakitveNakitBenzerleri?title=Nakit%20ve%20Nakit%20Benzerleri",
+                          "duration": 92
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalVarlikveYatirimlar?title=Finansal%20Varl%C4%B1k%20ve%20Yat%C4%B1r%C4%B1mlar",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/TicariBorclar?title=Ticari%20Bor%C3%A7lar",
+                          "duration": 89
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerBorclar?title=Di%C4%9Fer%20Bor%C3%A7lar",
+                          "duration": 85
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DevamEdenInsaSozlesmelerindenAlacaklar?title=Devam%20Eden%20%C4%B0n%C5%9Fa%20S%C3%B6zle%C5%9Fmelerinden%20Alacaklar",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/CariDonemVergisiyleIlgiliVarliklar?title=Cari%20D%C3%B6nem%20Vergisiyle%20%C4%B0lgili%20Varl%C4%B1klar",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/SozlesmeVarlikveYukumlulukleri?title=S%C3%B6zle%C5%9Fme%20Varl%C4%B1k%20ve%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkleri",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerDonenDuranVarliklar?title=Di%C4%9Fer%20D%C3%B6nen%20Duran%20Varl%C4%B1klar",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/YatirimAmacliGayrimenkuller?title=Yat%C4%B1r%C4%B1m%20Ama%C3%A7l%C4%B1%20Gayrimenkuller",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalYukumlulukler?title=Finansal%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler",
+                          "duration": 75
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/OzkaynakYontemiyleDegerlenenYatirimlar?title=%C3%96zkaynak%20Y%C3%B6ntemiyle%20De%C4%9Ferlenen%20Yat%C4%B1r%C4%B1mlar",
+                          "duration": 82
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansalBorclar?title=Finansal%20Bor%C3%A7lar",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/VarliklardaDegerDusuklugu?title=Varl%C4%B1klarda%20De%C4%9Fer%20D%C3%BC%C5%9F%C3%BCkl%C3%BC%C4%9F%C3%BC",
+                          "duration": 79
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/DigerFinansalYukumlulukler?title=Di%C4%9Fer%20Finansal%20Y%C3%BCk%C3%BCml%C3%BCl%C3%BCkler",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/KisaveUzunVadeliKarsiliklar?title=Kisa%20ve%20Uzun%20Vadeli%20Karsiliklar",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/SermayeYedeklerveDigerOzkaynakKalemleri?title=Sermaye%20Yedekler%20ve%20Di%C4%9Fer%20%C3%96zkaynak%20Kalemleri",
+                          "duration": 78
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/Ozkaynaklar?title=%C3%96zkaynaklar",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/Hasilat?title=Has%C4%B1lat",
+                          "duration": 83
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FaaliyetGiderleri?title=Faaliyet%20Giderleri",
+                          "duration": 84
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/EsasFaaliyetlerdenDigerGelirler?title=Esas%20Faaliyetlerden%20Di%C4%9Fer%20Gelirler",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/YatirimFaaliyetlerindenGelirlerveGiderler?title=Yat%C4%B1r%C4%B1m%20Faaliyetlerinden%20Gelirler%20ve%20Giderler",
+                          "duration": 80
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/SatisAmacliEldeTutulanDuranVarliklarveDurdurulanFaaliyetler?title=Sat%C4%B1%C5%9F%20Ama%C3%A7l%C4%B1%20Elde%20Tutulan%20Duran%20Varl%C4%B1klar%20ve%20Durdurulan%20Faaliyetler",
+                          "duration": 77
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/KarsiliklarKosulluVarlikveBorclar?title=Kar%C5%9F%C4%B1l%C4%B1klar%20Ko%C5%9Fullu%20Varl%C4%B1k%20ve%20Bor%C3%A7lar",
+                          "duration": 77
+                        },
+                        {
+                          "title": "browser-2 route: /DenetimKanitlari/MaddiDogrulamaProsedurleri/FinansmanGiderleri?title=Finansman%20Giderleri",
+                          "duration": 81
+                        },
+                        {
+                          "title": "browser-2 summary: scanned 182 routes",
+                          "duration": 0
+                        }
+                      ],
+                      "startTime": "2026-03-13T08:32:27.223Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "383db6a520c6ba3bf4e3-f2ec617b4d59b356319e",
+              "file": "security/security.spec.ts",
+              "line": 382,
+              "column": 9
+            },
+            {
+              "title": "Injection attempts are blocked",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 1200000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3165,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Navigating to root (login) page...\n"
+                        },
+                        {
+                          "text": "Waiting for login form (#username)...\n"
+                        },
+                        {
+                          "text": "Filling credentials for: test1@2ninovasyon.com\n"
+                        },
+                        {
+                          "text": "Login button clicked, waiting for navigation...\n"
+                        },
+                        {
+                          "text": "Loaded 50 dynamic MaddiDogrulama routes from DB seed fallback\n"
+                        },
+                        {
+                          "text": "Route inventory: 314 static + 50 dynamic = 364 total\n"
+                        },
+                        {
+                          "text": "Navigating to root (login) page...\n"
+                        },
+                        {
+                          "text": "Waiting for login form (#username)...\n"
+                        },
+                        {
+                          "text": "OK injection attempts were blocked\n"
+                        }
+                      ],
+                      "stderr": [
+                        {
+                          "text": "Dynamic route discovery failed: page.waitForURL: Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2026-03-13T08:31:37.484Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "383db6a520c6ba3bf4e3-29410586c89058e9f9d0",
+              "file": "security/security.spec.ts",
+              "line": 388,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-13T08:31:34.242Z",
+    "duration": 69821.75,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

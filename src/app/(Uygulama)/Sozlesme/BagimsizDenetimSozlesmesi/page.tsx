@@ -465,14 +465,15 @@ const Page = () => {
             width: "95%",
             margin: "0 auto",
             justifyContent: "space-between",
+            gap: 0.5,
+            mt: 1.5,
           }}
         >
           <Grid
-            mt={3}
             size={{
               xs: 12,
-              md: 3.9,
-              lg: 3.9
+              md: 3.8,
+              lg: 3.8
             }}>
             <BelgeKontrolCard
               fetch={() => { }}
@@ -481,11 +482,10 @@ const Page = () => {
             ></BelgeKontrolCard>
           </Grid>
           <Grid
-            mt={3}
             size={{
               xs: 12,
-              md: 3.9,
-              lg: 3.9
+              md: 3.8,
+              lg: 3.8
             }}>
             <BelgeKontrolCard
               fetch={() => { }}
@@ -494,11 +494,10 @@ const Page = () => {
             ></BelgeKontrolCard>
           </Grid>
           <Grid
-            mt={3}
             size={{
               xs: 12,
-              md: 3.9,
-              lg: 3.9
+              md: 3.8,
+              lg: 3.8
             }}>
             <BelgeKontrolCard
               fetch={() => { }}

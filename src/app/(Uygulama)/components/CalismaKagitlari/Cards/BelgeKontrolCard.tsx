@@ -357,20 +357,16 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
           }}
         >
           {hazirlayan && (
-            <CardHeader title={<Typography variant="h5">Hazırlayan:</Typography>} />
+            <CardHeader title={<Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.8rem" }}>Hazırlayan:</Typography>} sx={{ p: 0.5, minHeight: "auto" }} />
           )}
           {onaylayan && (
-            <CardHeader title={<Typography variant="h5">Onaylayan:</Typography>} />
+            <CardHeader title={<Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.8rem" }}>Onaylayan:</Typography>} sx={{ p: 0.5, minHeight: "auto" }} />
           )}
           {kaliteKontrol && (
-            <CardHeader title={<Typography variant="h5">Kalite Kontrol:</Typography>} />
+            <CardHeader title={<Typography variant="caption" sx={{ fontWeight: 600, fontSize: "0.8rem" }}>Kalite Kontrol:</Typography>} sx={{ p: 0.5, minHeight: "auto" }} />
           )}
 
-          <CardContent sx={{ bgcolor: "primary.light" }}>
-            <CustomFormLabel htmlFor="name" sx={{ mt: 0 }}>
-              Personel
-            </CustomFormLabel>
-
+          <CardContent sx={{ bgcolor: "primary.light", py: 0.35, px: 1, "&:last-child": { pb: 0.35 } }}>
             <PersonelBoxAutocomplete
               initialValue={
                 hazirlayan
@@ -430,11 +426,12 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
               onSelectAdi={(x) => setSelectedAdi(x)}
             />
 
-            <CustomFormLabel htmlFor="date">Tarih</CustomFormLabel>
+            <CustomFormLabel htmlFor="date" sx={{ mb: 0.15, fontSize: "0.75rem" }}>Tarih</CustomFormLabel>
             <CustomTextField
               id="date"
               type="date"
               variant="outlined"
+              size="small"
               value={
                 hazirlayan
                   ? hazirlayanTarih ?? ""
@@ -492,7 +489,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
               (onaylayan && onaylayanId ? true : false) ||
               (kaliteKontrol && kontrolEdenId ? true : false) ? (
               <Button
-                size="medium"
+                size="small"
                 variant="outlined"
                 color="error"
                 disabled={
@@ -524,13 +521,13 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                         : true
                 }
                 onClick={handleOnayiKaldir}
-                sx={{ width: "100%", mt: 5 }}
+                sx={{ width: "100%", mt: 0.25, fontSize: "0.75rem", p: "3px 8px" }}
               >
                 Onayı Kaldır
               </Button>
             ) : (
               <Button
-                size="medium"
+                size="small"
                 variant="outlined"
                 color="primary"
                 disabled={
@@ -562,7 +559,7 @@ const BelgeKontrolCard: React.FC<CardProps> = ({
                         : true
                 }
                 onClick={handleOnayla}
-                sx={{ width: "100%", mt: 5 }}
+                sx={{ width: "100%", mt: 0.25, fontSize: "0.75rem", p: "3px 8px" }}
               >
                 Onayla
               </Button>

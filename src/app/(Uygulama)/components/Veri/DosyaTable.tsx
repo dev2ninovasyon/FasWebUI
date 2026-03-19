@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   TableContainer,
   Table,
@@ -23,6 +23,7 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  Paper,
 } from "@mui/material";
 // LoadingButton import removed
 import { useSnackbar } from "notistack";
@@ -42,6 +43,7 @@ import { url } from "@/api/apiBase";
 import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
 import axios from "axios";
+import LogFormatter from "./LogFormatter";
 
 interface Veri {
   id: number;
@@ -401,29 +403,19 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   };
 
   const handlePreview = async (id: number, fileName?: string, currentStatus?: string) => {
-    const sections: string[] = [];
-
     try {
       const defterYuklemeLoglari = await getDefterYuklemeLoglari(id);
-      if (typeof defterYuklemeLoglari === "string" && defterYuklemeLoglari.trim()) {
-        sections.push(`[Sunucu İşlem Logları]\n${defterYuklemeLoglari}`);
-      } else if (defterYuklemeLoglari) {
-        sections.push(
-          `[Sunucu İşlem Logları]\n${JSON.stringify(defterYuklemeLoglari, null, 2)}`
-        );
+      if (defterYuklemeLoglari) {
+        setDefterLoglari(defterYuklemeLoglari);
+      } else {
+        setDefterLoglari(`Bu dosya için detay log bulunamadı.\nDurum: ${currentStatus || "Bilinmiyor"}`);
       }
     } catch (error) {
       console.log("Defter Logları getirilemedi");
-    }
-
-    if (!sections.length) {
-      sections.push(
-        `Bu dosya için detay log bulunamadı.\nDurum: ${currentStatus || "Bilinmiyor"}`
-      );
+      setDefterLoglari("Loglar yüklenirken bir hata oluştu.");
     }
 
     setSelectedLogFileName(fileName || `Dosya #${id}`);
-    setDefterLoglari(sections.join("\n\n------------------------------\n\n"));
     setIsOpen(true);
   };
 
@@ -733,8 +725,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     const deletedIds = [...selected];
     setIsDeleting(true);
     try {
-      const result = await deleteDosyaBilgisiMultiple(selected || 0
-      );
+      const result = await deleteDosyaBilgisiMultiple(selected);
       if (result) {
         setRows(rows.filter((row) => !deletedIds.includes(row.id)));
         enqueueSnackbar(`${selected.length} kayıt başarıyla silindi.`, {
@@ -803,14 +794,9 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           />
         </Stack>
       </Stack>
-      <TableContainer
-        sx={{
-          mt: 0.5,
-          flexGrow: 1,
-          overflowY: "auto",
-        }}
-      >
-        <Table stickyHeader aria-label="sticky table" size="small">
+
+      <TableContainer component={Paper} sx={{ maxHeight: 600 }}>
+        <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
@@ -823,287 +809,76 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                     selected.length === filteredRows.length
                   }
                   onChange={handleSelectAllClick}
-                  inputProps={{ "aria-label": "select all desserts" }}
                 />
               </TableCell>
-              <TableCell>
-                <Typography variant="h6">Dosya Adı</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="h6">
-                  Tarih
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography textAlign={"center"} variant="h6">
-                  Durum
-                </Typography>
-              </TableCell>
-              {mdUp && <TableCell></TableCell>}
+              <TableCell>Dosya Adı</TableCell>
+              <TableCell>Yükleme Tarihi</TableCell>
+              <TableCell>Durum</TableCell>
+              <TableCell align="right">İşlemler</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRows.map((row, index) => {
+            {filteredRows.map((row) => {
               const isItemSelected = isSelected(row.id);
-              const labelId = `enhanced-table-checkbox-${index}`;
-
               return (
                 <TableRow
-                  key={index}
                   hover
                   onClick={() => handleClickRow(row.id)}
                   role="checkbox"
                   aria-checked={isItemSelected}
-                  selected={isItemSelected}
                   tabIndex={-1}
+                  key={row.id}
+                  selected={isItemSelected}
                 >
                   <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={isItemSelected}
-                      inputProps={{ "aria-labelledby": labelId }}
+                    <Checkbox checked={isItemSelected} />
+                  </TableCell>
+                  <TableCell>{row.adi}</TableCell>
+                  <TableCell>{row.olusturulmaTarihi}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={row.durum}
                       size="small"
+                      color={
+                        row.durum?.toLocaleLowerCase("tr-TR").includes("hata")
+                          ? "error"
+                          : row.durum?.toLocaleLowerCase("tr-TR").includes("tamamlandı")
+                          ? "success"
+                          : "info"
+                      }
                     />
                   </TableCell>
-                  <TableCell scope="row">
-                    <Typography variant="body1" color="textSecondary">
-                      {fileType == "E-DefterKebir" ||
-                        fileType == "E-DefterYevmiye"
-                        ? row.adi.split("-").slice(1).join("-")
-                        : row.adi}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ padding: "2px 16px" }}>
-                    <Typography
-                      textAlign={"center"}
-                      variant="body2"
-                      color="textSecondary"
-                    >
-                      {row.olusturulmaTarihi}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <IconButton
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handlePreview(row.id, row.adi, row.durum);
-                      }}
-                    >
-                        <Chip
-                          label={row.durum}
-                          sx={{
-                            backgroundColor: isFinalStatus(row.durum)
-                              ? (theme) => theme.palette.success.light
-                              : isProcessingStatus(row.durum)
-                                ? (theme) => theme.palette.info.light
-                                : isQueueStatus(row.durum)
-                                  ? (theme) => theme.palette.warning.light
-                                  : (theme) => theme.palette.error.light,
-                            color: isFinalStatus(row.durum)
-                              ? (theme) => theme.palette.success.main
-                              : isProcessingStatus(row.durum)
-                                ? (theme) => theme.palette.info.main
-                                : isQueueStatus(row.durum)
-                                  ? (theme) => theme.palette.warning.main
-                                  : (theme) => theme.palette.error.main,
-                          }}
-                        />
-                    </IconButton>
-                  </TableCell>
-                  {mdUp && (
-                    <TableCell sx={{ padding: "2px 16px" }}>
+                  <TableCell align="right">
+                    <Stack direction="row" spacing={1} justifyContent="flex-end">
                       <IconButton
                         size="small"
-                        id="basic-button"
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        onClick={(event) => handleClick(event, row.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePreview(row.id, row.adi, row.durum);
+                        }}
+                        title="İşlem Logları"
+                        color="primary"
                       >
-                        <IconDotsVertical width={18} />
+                        <IconEye size="20" />
                       </IconButton>
-
-                      <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button",
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClick(e as any, row.id);
                         }}
                       >
-                        <MenuItem onClick={() => handlePreview2()} disabled={isLoadingPreview === selectedId}>
-                          <ListItemIcon>
-                            <IconEye width={18} />
-                          </ListItemIcon>
-                          {isLoadingPreview === selectedId ? "Yükleniyor..." : "Göster"}
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                  )}
+                        <IconDotsVertical size="20" />
+                      </IconButton>
+                    </Stack>
+                  </TableCell>
                 </TableRow>
               );
             })}
-            {/* {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )} */}
           </TableBody>
         </Table>
-        <Dialog
-          open={isOpen}
-          onClose={() => setIsOpen(false)}
-          fullWidth
-          maxWidth={"md"}
-        >
-          <DialogContent className="testdialog">
-            <Stack
-              direction="row"
-              justifyContent={"space-between"}
-              alignItems="center"
-            >
-              <Box>
-                <Typography variant="h5" py={1}>
-                  İşlem Logları
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {selectedLogFileName}
-                </Typography>
-              </Box>
-              <IconButton size="small" onClick={() => setIsOpen(false)}>
-                <IconX size="18" />
-              </IconButton>
-            </Stack>
-          </DialogContent>
-          <Divider />
-          <DialogContent>
-            <Typography variant="body1" style={{ whiteSpace: "pre-line" }}>
-              {defterLoglari}
-            </Typography>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={isOpen2}
-          onClose={() => {
-            if (xmlBlobUrl) {
-              window.URL.revokeObjectURL(xmlBlobUrl);
-              setXmlBlobUrl(null);
-            }
-            setPreviewDetayKodu("");
-            setPreviewHesapAdi("");
-            setPreviewAciklama("");
-            setPreviewVisibleRows(null);
-            setPreviewTotalRows(null);
-            setIsOpen2(false);
-          }}
-          fullWidth
-          scroll="paper"
-          maxWidth={fileType === "E-DefterKebir" ? false : "xl"}
-          PaperProps={{
-            sx: {
-              height: "95vh",
-              maxHeight: "95vh",
-              display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
-            },
-          }}
-        >
-          <DialogTitle
-            sx={{
-              p: 1,
-              position: "sticky",
-              top: 0,
-              zIndex: 1,
-              bgcolor: "background.paper",
-            }}
-          >
-            <Stack direction="row" justifyContent="flex-end" alignItems="center">
-              {fileType === "E-DefterKebir" && (
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ mr: 2, flexWrap: "wrap" }}>
-                  <TextField
-                    size="small"
-                    label="Detay Kodu"
-                    value={previewDetayKodu}
-                    onChange={(e) => setPreviewDetayKodu(e.target.value)}
-                  />
-                  <TextField
-                    size="small"
-                    label="Hesap Adı"
-                    value={previewHesapAdi}
-                    onChange={(e) => setPreviewHesapAdi(e.target.value)}
-                  />
-                  <TextField
-                    size="small"
-                    label="Açıklama"
-                    value={previewAciklama}
-                    onChange={(e) => setPreviewAciklama(e.target.value)}
-                  />
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      setPreviewDetayKodu("");
-                      setPreviewHesapAdi("");
-                      setPreviewAciklama("");
-                    }}
-                  >
-                    Temizle
-                  </Button>
-                  <Typography variant="body2" color="text.secondary">
-                    {previewTotalRows !== null
-                      ? `Gorunen satir: ${previewVisibleRows ?? 0}/${previewTotalRows}`
-                      : "Detay kodu veya hesap adı ile arayın"}
-                  </Typography>
-                </Stack>
-              )}
-              <IconButton
-                size="medium"
-                onClick={() => {
-                  if (xmlBlobUrl) {
-                    window.URL.revokeObjectURL(xmlBlobUrl);
-                    setXmlBlobUrl(null);
-                  }
-                  setPreviewDetayKodu("");
-                  setPreviewHesapAdi("");
-                  setPreviewAciklama("");
-                  setPreviewVisibleRows(null);
-                  setPreviewTotalRows(null);
-                  setIsOpen2(false);
-                }}
-              >
-                <IconX size="24" />
-              </IconButton>
-            </Stack>
-          </DialogTitle>
-          <DialogContent
-            sx={{
-              p: 0,
-              overflow: "hidden",
-              flex: 1,
-              minHeight: 0,
-            }}
-          >
-            {xmlBlobUrl && (
-              <iframe
-                id="defter-preview-iframe"
-                src={xmlBlobUrl}
-                width="100%"
-                height="100%"
-                loading="eager"
-                onLoad={applyIframeFilter}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "#fff",
-                  border: "none",
-                }}
-              ></iframe>
-            )}
-          </DialogContent>
-        </Dialog>
       </TableContainer>
+
       {selected.length !== 0 && (
         <Button
           variant="outlined"
@@ -1125,38 +900,160 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           {selected.length} Kayıt Sil
         </Button>
       )}
-      {/* <Table>
-        <TableFooter
-          sx={{
+
+      {/* İşlemler Menusu */}
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem onClick={handlePreview2} disabled={isLoadingPreview !== null}>
+          <ListItemIcon>
+            <IconEye size="20" />
+          </ListItemIcon>
+          Önizleme
+        </MenuItem>
+      </Menu>
+
+      {/* İşlem Logları Dialog */}
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        fullWidth
+        maxWidth="md"
+        scroll="paper"
+      >
+        <DialogTitle sx={{ m: 0, p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h6">İşlem Logları</Typography>
+          <IconButton onClick={() => setIsOpen(false)}>
+            <IconX size="20" />
+          </IconButton>
+        </DialogTitle>
+        <Divider />
+        <DialogContent sx={{ p: 2 }}>
+          <Typography variant="subtitle2" sx={{ mb: 2, color: "text.secondary" }}>
+            {selectedLogFileName}
+          </Typography>
+          <LogFormatter logs={defterLoglari} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Dosya Önizleme Dialog */}
+      <Dialog
+        open={isOpen2}
+        onClose={() => {
+          if (xmlBlobUrl) {
+            window.URL.revokeObjectURL(xmlBlobUrl);
+            setXmlBlobUrl(null);
+          }
+          setIsOpen2(false);
+        }}
+        fullWidth
+        maxWidth={fileType === "E-DefterKebir" ? false : "xl"}
+        scroll="paper"
+        PaperProps={{
+          sx: {
+            height: "95vh",
+            maxHeight: "95vh",
             display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            border: 0,
+            flexDirection: "column",
+            overflow: "hidden",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            p: 1,
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+            bgcolor: "background.paper",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
           }}
         >
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "Hepsi", value: -1 }]}
-              count={filteredRows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-              labelRowsPerPage="Sayfa başına satır sayısı:"
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} arası / ${
-                  count !== -1 ? count : `daha fazla`
-                } satır`
+          <Box sx={{ flex: 1 }}>
+            {fileType === "E-DefterKebir" && (
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ flexWrap: "wrap" }}>
+                <TextField
+                  size="small"
+                  label="Detay Kodu"
+                  value={previewDetayKodu}
+                  onChange={(e) => setPreviewDetayKodu(e.target.value)}
+                  sx={{ width: 120 }}
+                />
+                <TextField
+                  size="small"
+                  label="Hesap Adı"
+                  value={previewHesapAdi}
+                  onChange={(e) => setPreviewHesapAdi(e.target.value)}
+                  sx={{ width: 150 }}
+                />
+                <TextField
+                  size="small"
+                  label="Açıklama"
+                  value={previewAciklama}
+                  onChange={(e) => setPreviewAciklama(e.target.value)}
+                  sx={{ width: 150 }}
+                />
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    setPreviewDetayKodu("");
+                    setPreviewHesapAdi("");
+                    setPreviewAciklama("");
+                  }}
+                >
+                  Temizle
+                </Button>
+                <Typography variant="body2" color="text.secondary">
+                  {previewTotalRows !== null
+                    ? `Görünen: ${previewVisibleRows ?? 0}/${previewTotalRows}`
+                    : ""}
+                </Typography>
+              </Stack>
+            )}
+          </Box>
+          <IconButton
+            size="medium"
+            onClick={() => {
+              if (xmlBlobUrl) {
+                window.URL.revokeObjectURL(xmlBlobUrl);
+                setXmlBlobUrl(null);
               }
-              sx={{ mt: 0.5, mr: "2px", border: 0 }}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table> */}
+              setIsOpen2(false);
+            }}
+          >
+            <IconX size="24" />
+          </IconButton>
+        </DialogTitle>
+        <Divider />
+        <DialogContent
+          sx={{
+            p: 0,
+            overflow: "hidden",
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
+          {xmlBlobUrl && (
+            <iframe
+              id="defter-preview-iframe"
+              src={xmlBlobUrl}
+              width="100%"
+              height="100%"
+              loading="eager"
+              onLoad={applyIframeFilter}
+              style={{
+                display: "block",
+                width: "100%",
+                height: "100%",
+                backgroundColor: "#fff",
+                border: "none",
+              }}
+            ></iframe>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {isConfirmPopUpOpen && (
         <ConfirmPopUpComponent
           isConfirmPopUp={isConfirmPopUpOpen}
@@ -1179,5 +1076,3 @@ const DosyaTable: React.FC<MyComponentProps> = ({
 };
 
 export default DosyaTable;
-
-

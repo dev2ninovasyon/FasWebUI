@@ -1,7 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer, { setUserData, resetToNull } from '../../store/user/UserSlice';
 import { persistReducer, persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+
+const createMemoryStorage = () => {
+    const state = new Map<string, string>();
+
+    return {
+        getItem: async (key: string) => state.get(key) ?? null,
+        setItem: async (key: string, value: string) => {
+            state.set(key, value);
+            return value;
+        },
+        removeItem: async (key: string) => {
+            state.delete(key);
+        },
+    };
+};
 
 /**
  * @file ReduxHydration.test.ts
@@ -16,7 +30,7 @@ describe('Integration: Redux Store Persistence & Hydration', () => {
 
     const persistConfig = {
         key: 'test_root',
-        storage,
+        storage: createMemoryStorage(),
     };
 
     const persistedReducer = persistReducer(persistConfig, userReducer);
@@ -63,6 +77,8 @@ describe('Integration: Redux Store Persistence & Hydration', () => {
         expect(state.id).toBeUndefined();
         expect(state.kullaniciAdi).toBeUndefined();
         expect(state.token).toBeUndefined();
+
+        persistor.pause();
     });
 
     /**

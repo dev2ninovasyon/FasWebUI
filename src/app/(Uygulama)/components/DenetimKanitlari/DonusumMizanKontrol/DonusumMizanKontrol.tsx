@@ -32,6 +32,8 @@ interface Veri {
   alacakBakiye: number;
 }
 
+type VeriSatiri = Array<string | number | undefined>;
+
 interface Props {
   konsolidasyonMu?: boolean;
   donusumIslemiYapTiklandiMi?: boolean;
@@ -52,7 +54,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
 
   const [rowCount, setRowCount] = useState(0);
 
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
+  const [fetchedData, setFetchedData] = useState<VeriSatiri[]>([]);
 
   useEffect(() => {
     const loadStyles = async () => {
