@@ -18,8 +18,8 @@ numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
-  kebirKodu: number;
-  detayKodu: number;
+  kebirKodu: string | number;
+  detayKodu: string;
   yil: number;
   hesapAdi: string;
   vukBorc: number;
@@ -55,6 +55,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
   const [rowCount, setRowCount] = useState(0);
 
   const [fetchedData, setFetchedData] = useState<VeriSatiri[]>([]);
+  const [sourceData, setSourceData] = useState<Veri[]>([]);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -316,11 +317,11 @@ const DonusumMizanKontrol: React.FC<Props> = ({
     }
 
     // Torba Hesap ters bakiye kontrolü: 257.00, 268.00, 278.00 — raporBorc ≠ raporAlacak ise kırmızı
-    const rowData = fetchedData[row];
+    const rowData = sourceData[row];
     if (rowData) {
-      const detayKodu = rowData[1];
-      const raporBorc = rowData[8];
-      const raporAlacak = rowData[9];
+      const detayKodu = rowData.detayKodu;
+      const raporBorc = rowData.raporBorc;
+      const raporAlacak = rowData.raporAlacak;
       if (
         (detayKodu === "257.00" || detayKodu === "268.00" || detayKodu === "278.00") &&
         raporBorc !== raporAlacak
@@ -352,8 +353,10 @@ const DonusumMizanKontrol: React.FC<Props> = ({
       let totalBorcBakiye = 0;
       let totalAlacakBakiye = 0;
 
-      const rowsAll: any = [];
-      donusumMizanVerileri.forEach((veri: any) => {
+      const rowsAll: VeriSatiri[] = [];
+      const normalizedRows: Veri[] = [];
+
+      donusumMizanVerileri.forEach((veri: Veri) => {
         if (
           veri.vukBorc === 0 &&
           veri.vukAlacak === 0 &&
@@ -368,43 +371,46 @@ const DonusumMizanKontrol: React.FC<Props> = ({
         }
 
         // Negatif bakiye düzeltme
-        if (veri.borcBakiye < 0) {
-          veri.alacakBakiye = Math.abs(veri.borcBakiye);
-          veri.borcBakiye = 0;
-        } else if (veri.alacakBakiye < 0) {
-          veri.borcBakiye = Math.abs(veri.alacakBakiye);
-          veri.alacakBakiye = 0;
+        const normalizedVeri = { ...veri };
+
+        if (normalizedVeri.borcBakiye < 0) {
+          normalizedVeri.alacakBakiye = Math.abs(normalizedVeri.borcBakiye);
+          normalizedVeri.borcBakiye = 0;
+        } else if (normalizedVeri.alacakBakiye < 0) {
+          normalizedVeri.borcBakiye = Math.abs(normalizedVeri.alacakBakiye);
+          normalizedVeri.alacakBakiye = 0;
         }
 
-        const newRow: any = [
-          veri.kebirKodu,
-          veri.detayKodu,
-          veri.yil,
-          veri.hesapAdi,
-          veri.vukBorc,
-          veri.vukAlacak,
-          veri.fisBorc,
-          veri.fisAlacak,
-          veri.raporBorc,
-          veri.raporAlacak,
-          veri.borcBakiye,
-          veri.alacakBakiye,
+        const newRow: VeriSatiri = [
+          normalizedVeri.kebirKodu,
+          normalizedVeri.detayKodu,
+          normalizedVeri.yil,
+          normalizedVeri.hesapAdi,
+          normalizedVeri.vukBorc,
+          normalizedVeri.vukAlacak,
+          normalizedVeri.fisBorc,
+          normalizedVeri.fisAlacak,
+          normalizedVeri.raporBorc,
+          normalizedVeri.raporAlacak,
+          normalizedVeri.borcBakiye,
+          normalizedVeri.alacakBakiye,
         ];
 
+        normalizedRows.push(normalizedVeri);
         rowsAll.push(newRow);
 
-        if (veri.detayKodu.length > 3) {
-          totalVukBorc = Number((totalVukBorc + (veri.vukBorc || 0)).toFixed(2));
-          totalVukAlacak = Number((totalVukAlacak + (veri.vukAlacak || 0)).toFixed(2));
+        if (normalizedVeri.detayKodu.length > 3) {
+          totalVukBorc = Number((totalVukBorc + (normalizedVeri.vukBorc || 0)).toFixed(2));
+          totalVukAlacak = Number((totalVukAlacak + (normalizedVeri.vukAlacak || 0)).toFixed(2));
 
-          totalFisBorc = Number((totalFisBorc + (veri.fisBorc || 0)).toFixed(2));
-          totalFisAlacak = Number((totalFisAlacak + (veri.fisAlacak || 0)).toFixed(2));
+          totalFisBorc = Number((totalFisBorc + (normalizedVeri.fisBorc || 0)).toFixed(2));
+          totalFisAlacak = Number((totalFisAlacak + (normalizedVeri.fisAlacak || 0)).toFixed(2));
 
-          totalRaporBorc = Number((totalRaporBorc + (veri.raporBorc || 0)).toFixed(2));
-          totalRaporAlacak = Number((totalRaporAlacak + (veri.raporAlacak || 0)).toFixed(2));
+          totalRaporBorc = Number((totalRaporBorc + (normalizedVeri.raporBorc || 0)).toFixed(2));
+          totalRaporAlacak = Number((totalRaporAlacak + (normalizedVeri.raporAlacak || 0)).toFixed(2));
 
-          totalBorcBakiye = Number((totalBorcBakiye + (veri.borcBakiye || 0)).toFixed(2));
-          totalAlacakBakiye = Number((totalAlacakBakiye + (veri.alacakBakiye || 0)).toFixed(2));
+          totalBorcBakiye = Number((totalBorcBakiye + (normalizedVeri.borcBakiye || 0)).toFixed(2));
+          totalAlacakBakiye = Number((totalAlacakBakiye + (normalizedVeri.alacakBakiye || 0)).toFixed(2));
         }
       });
 
@@ -423,6 +429,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
         totalAlacakBakiye,
       ]);
       setRowCount(rowsAll.length);
+      setSourceData(normalizedRows);
       setFetchedData(rowsAll);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -438,6 +445,7 @@ const DonusumMizanKontrol: React.FC<Props> = ({
       fetchData();
     } else {
       setRowCount(0);
+      setSourceData([]);
       setFetchedData([]);
     }
   }, [donusumIslemiYapTiklandiMi]);
