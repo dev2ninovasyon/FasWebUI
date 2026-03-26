@@ -1,4 +1,4 @@
-﻿// src/api/AuditLogs.ts
+// src/api/AuditLogs.ts
 import { url, apiFetch } from "@/api/apiBase";
 
 
@@ -47,6 +47,28 @@ export async function getUserRecentActions(
 
   if (!response.ok) {
     throw new Error("Son işlemler alınırken hata oluştu.");
+  }
+
+  return response.json();
+}
+
+export async function getRecentActionsByController(
+  denetlenenId: number,
+  yil: number,
+  controllerName: string,
+  actionNameFilter?: string,
+  count: number = 20
+): Promise<UserActionDto[]> {
+  const response = await apiFetch(
+    `/Audit/RecentActionsByController?denetlenenId=${denetlenenId}&yil=${yil}&controllerName=${controllerName}${actionNameFilter ? `&actionNameFilter=${actionNameFilter}` : ""}&count=${count}`,
+    {
+      method: "GET",
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("İşlem geçmişi alınırken hata oluştu.");
   }
 
   return response.json();

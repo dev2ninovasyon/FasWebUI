@@ -66,6 +66,27 @@ export interface MenuUsagePanel {
   eklenmeTarihi: string;
 }
 
+const extractHitCount = (payload: unknown): number | null => {
+  if (typeof payload === "number") {
+    return payload;
+  }
+
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+
+  const record = payload as Record<string, unknown>;
+  const candidates = [record.hitCount, record.HitCount, record.value, record.Value];
+
+  for (const candidate of candidates) {
+    if (typeof candidate === "number") {
+      return candidate;
+    }
+  }
+
+  return null;
+};
+
 export const getMenus = async (): Promise<Menu[]> => {
   try {
     const response = await apiFetch("/Menu", {
@@ -130,7 +151,8 @@ export const incrementMenuUsageView = async (menuId: number): Promise<number | n
     });
 
     if (response.ok) {
-      return response.json();
+      const payload = await response.json();
+      return extractHitCount(payload);
     }
 
     return null;

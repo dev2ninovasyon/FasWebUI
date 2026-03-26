@@ -12,8 +12,22 @@
  * - Memory leak prevention through ref cleanup
  */
 
-import { useEffect, useRef, useState } from 'react';
-import { HubConnection, HubConnectionBuilder, LogLevel, HubConnectionState } from '@microsoft/signalr';
+'use client';
+
+/**
+ * useBildirimConnection Hook
+ * Manages SignalR real-time notifications with automatic polling fallback
+ * 
+ * Benefits of Hook Pattern:
+ * - Proper cleanup with useEffect return
+ * - No module-level mutable state
+ * - Component-scoped state management
+ * - Multiple independent connections possible
+ * - Memory leak prevention through ref cleanup
+ */
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { HubConnection, HubConnectionBuilder, LogLevel, HubConnectionState, HttpTransportType } from '@microsoft/signalr';
 import SecureTokenManager from '@/utils/SecureTokenManager';
 import {
   BildirimEvent,
@@ -47,6 +61,10 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const callbackRef = useRef<BildirimCallback | null>(null);
   const lastNotificationTimeRef = useRef<Date>(new Date());
+  const connectionRetryRef = useRef<number>(0);
+  const MAX_CONNECTION_RETRIES = 2;
+
+  const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
   // State for UI
   const [status, setStatus] = useState<'disconnected' | 'connected' | 'reconnecting'>('disconnected');
@@ -62,7 +80,7 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
   /**
    * Start polling as fallback when SignalR is unavailable
    */
-  const startPolling = (callback: BildirimCallback) => {
+  const startPolling = useCallback((callback: BildirimCallback) => {
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current);
     }
@@ -100,12 +118,12 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
       ...prev,
       isPollingActive: true,
     }));
-  };
+  }, [denetciId, pollingInterval]);
 
   /**
    * Stop polling
    */
-  const stopPolling = () => {
+  const stopPolling = useCallback(() => {
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current);
       pollingIntervalRef.current = null;
@@ -116,29 +134,47 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
         isPollingActive: false,
       }));
     }
-  };
+  }, []);
 
   /**
    * Start SignalR connection
    */
-  const startConnection = async () => {
+  const startConnection = async (forceSkipNegotiation = false) => {
     // Already connected?
     if (hubConnectionRef.current?.state === HubConnectionState.Connected) {
       console.log('SignalR zaten bağlı, tekrar bağlanmıyor');
       return;
     }
 
+    if (hubConnectionRef.current?.state === HubConnectionState.Connecting) {
+      console.log('SignalR zaten bağlanıyor, tekrar denemeye gerek yok');
+      return;
+    }
+
+    if (connectionRetryRef.current >= MAX_CONNECTION_RETRIES) {
+      console.warn('⚠️ Maksimum SignalR yeniden deneme sayısına ulaşıldı. Polling\'e geçiliyor');
+      if (callbackRef.current) startPolling(callbackRef.current);
+      return;
+    }
+
     try {
       setStatus('reconnecting');
 
-      const token = SecureTokenManager.getAccessToken() || '';
       const reconnectStrategy =
         process.env.NODE_ENV === 'development' ? [0, 5000, 10000] : [0, 2000, 5000, 10000, 30000];
 
+      const hubUrl = getHubUrl();
+      const hubOptions: any = {
+        accessTokenFactory: () => SecureTokenManager.getAccessToken() || '',
+      };
+
+      if (forceSkipNegotiation) {
+        hubOptions.skipNegotiation = true;
+        hubOptions.transport = HttpTransportType.WebSockets;
+      }
+
       hubConnectionRef.current = new HubConnectionBuilder()
-        .withUrl(getHubUrl(), {
-          accessTokenFactory: () => SecureTokenManager.getAccessToken() || '',
-        })
+        .withUrl(hubUrl, hubOptions)
         .withAutomaticReconnect(reconnectStrategy)
         .configureLogging(
           process.env.NODE_ENV === 'development' ? LogLevel.Warning : LogLevel.Information
@@ -181,6 +217,7 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
 
       console.log('✅ SignalR bağlantısı başarılı ve gruba katılım yapıldı!');
 
+      connectionRetryRef.current = 0;
       setStatus('connected');
       stopPolling(); // Stop polling if SignalR is active
 
@@ -193,7 +230,6 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
       console.error('❌ SignalR bağlantı hatası:', error);
       setStatus('disconnected');
 
-      // Cleanup connection
       try {
         if (hubConnectionRef.current) {
           await hubConnectionRef.current.stop().catch(() => {});
@@ -202,6 +238,24 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
         console.error('Bağlantı durdurma hatası:', stopError);
       }
       hubConnectionRef.current = null;
+
+      // Negotiation aşamasında durdurulma hatası ise websocket fallback deneyelim.
+      const errMessage = error instanceof Error ? error.message : String(error);
+      if (!forceSkipNegotiation && errMessage.includes('negotiation')) {
+        console.warn('⚠️ Negotiation hatası algılandı, WebSocket skipNegotiation ile yeniden dene');
+        connectionRetryRef.current += 1;
+        await delay(1200);
+        await startConnection(true);
+        return;
+      }
+
+      connectionRetryRef.current += 1;
+      if (connectionRetryRef.current < MAX_CONNECTION_RETRIES) {
+        console.warn(`⚠️ SignalR yeniden deneme (deneme #${connectionRetryRef.current})`);
+        await delay(1000);
+        await startConnection(forceSkipNegotiation);
+        return;
+      }
 
       // Fallback to polling
       if (callbackRef.current) {
@@ -221,7 +275,7 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
   /**
    * Stop SignalR connection
    */
-  const stopConnection = async () => {
+  const stopConnection = useCallback(async () => {
     stopPolling();
 
     if (hubConnectionRef.current) {
@@ -241,12 +295,12 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
       signalRConnected: false,
       listenerRegistered: false,
     }));
-  };
+  }, [stopPolling]);
 
   /**
    * Register notification callback
    */
-  const registerCallback = (callback: BildirimCallback, _denetciId?: number) => {
+  const registerCallback = useCallback((callback: BildirimCallback, _denetciId?: number) => {
     callbackRef.current = callback;
 
     // If SignalR is connected, register immediately
@@ -263,7 +317,7 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
       hasCallback: true,
       listenerRegistered: hubConnectionRef.current?.state === HubConnectionState.Connected,
     }));
-  };
+  }, []);
 
   /**
    * Test SignalR connection

@@ -1,4 +1,4 @@
-﻿import Logger from "@/utils/Logger";
+import Logger from "@/utils/Logger";
 import {
   LOGOUT_INTENT_KEY,
   clearClientAuthStorage,
@@ -8,6 +8,9 @@ import {
 } from "@/utils/authSession";
 import { LOGOUT_REASON_KEY, LogoutReason } from "@/utils/sessionConfig";
 import { url } from "./apiConfig";
+
+const APP_IDENTITY_HEADER = "X-App-Identity";
+const APP_IDENTITY_SECRET = "Fas-VG-Secure-9x2PZQ-7vR8-KmLn-41Nb-Ty6S-2026-N2Dev";
 
 const LOCAL_API_URL = "http://localhost:5000/api";
 const BETA_API_URL = "https://betaapi.fasmart.app/api";
@@ -203,6 +206,7 @@ export async function apiFetch(
     ...(!isAuthEndpoint(normalizedPath) && sessionAccessToken
       ? { Authorization: `Bearer ${sessionAccessToken}` }
       : {}),
+    [APP_IDENTITY_HEADER]: APP_IDENTITY_SECRET,
   };
 
   const controller = new AbortController();
@@ -220,6 +224,9 @@ export async function apiFetch(
             const parsedMessage =
               unauthorizedParsed?.message ||
               unauthorizedParsed?.Message ||
+              unauthorizedParsed?.errorMessage ||
+              unauthorizedParsed?.ErrorMessage ||
+              unauthorizedParsed?.error ||
               unauthorizedParsed?.title;
             if (parsedMessage) {
               unauthorizedMessage = String(parsedMessage);
@@ -295,95 +302,122 @@ export async function apiFetch(
 
     // 🔐 GÜVENLIK: Token expiry (401)
     // Not: 403 yetki problemidir, refresh ile düzelmeyebilir; loop'a girmemesi için refresh denemiyoruz.
-    if (response.status === 401) {
-      // Login or Refresh endpoints themselves shouldn't trigger another refresh
-      // Aynı zamanda /auth/session da token check endpoint'i olduğu için fail olması refresh'i loop'a sokmamalıdır.
-      if (isAuthEndpoint(normalizedPath) || normalizedPath.toLowerCase() === "/auth/session" || normalizedPath.toLowerCase() === "/auth/logout") {
-        return response;
-      }
+    if (response.status === 401 || !response.ok) {
+      // 🛡️ İŞ KURALI VE ÖZEL YETKİ İSTİSNALARI: 
+      // 1. "Bağlantı bilgileri oluşturulmamış" (İş kuralı)
+      // 2. "Gecerli bir oturum veya uygulama kimligi gerekiyor" (AppIdentity hatası - login redirect'i bozmamalı)
+      // Bu mesajlar alındığında 401/400 olsa dahi logout tetiklenmemelidir.
+      try {
+        const bodyClone = (await response.clone().text()) || "";
+        const businessErrorRegex = /ba[ğg]lant[ıi].*olu[şs]turulmam[ıi][şs]|uygulama\s+kimli[ğg]i\s+gerekiyor/i;
+        
+        if (businessErrorRegex.test(bodyClone)) {
+          return response;
+        }
 
-      // En fazla 1 kez retry: sonsuz refresh döngüsünü engelle
-      if (__retryCount >= 1) {
-        console.error(`❌ API 401 devam ediyor, retry sınırına ulaşıldı (${path}).`);
-        throw await buildUnauthorizedError(response, "retry-limit-reached");
-      }
-
-      console.warn(`⚠️ API ${response.status} hatası alındı (${path}), session yenilenmesi deneniyor...`);
-
-      if (typeof window !== "undefined") {
         try {
-          type RefreshAttemptResult = {
-            ok: boolean;
-            status: number;
-            payload: any;
-          };
-
-          // Tek bir refresh isteği paylaşımı (concurrent 401 storm için)
-          const activeRefreshPromise = (window as any)
-            ._activeRefreshPromise as Promise<RefreshAttemptResult> | undefined;
-          const refreshTokenCandidate = readStoredAuthTokens().refreshToken;
-          const refreshPromise =
-            activeRefreshPromise ||
-            (async () => {
-              const refreshResponse = await fetch(`${activeApiBaseUrl}/Auth/refresh`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: buildRefreshRequestBody(refreshTokenCandidate),
-                credentials: "include",
-              });
-              const refreshPayload = await refreshResponse.json().catch(() => null);
-
-              return {
-                ok: refreshResponse.ok,
-                status: refreshResponse.status,
-                payload: refreshPayload,
-              };
-            })();
-
-          if (!activeRefreshPromise) {
-            (window as any)._activeRefreshPromise = refreshPromise;
+          const parsedBody = JSON.parse(bodyClone);
+          const businessMessage = 
+            parsedBody?.message ?? 
+            parsedBody?.Message ?? 
+            parsedBody?.errorMessage ?? 
+            parsedBody?.ErrorMessage ?? 
+            parsedBody?.error ?? 
+            "";
+          
+          if (typeof businessMessage === "string" && businessErrorRegex.test(businessMessage)) {
+            return response;
           }
+        } catch { /* ignored */ }
+      } catch { /* ignored */ }
 
-          const refreshResponse = await refreshPromise;
-          (window as any)._activeRefreshPromise = undefined;
+      if (response.status === 401) {
+        // Login or Refresh endpoints themselves shouldn't trigger another refresh
+        if (isAuthEndpoint(normalizedPath) || normalizedPath.toLowerCase() === "/auth/session" || normalizedPath.toLowerCase() === "/auth/logout") {
+          return response;
+        }
 
-          if (refreshResponse.ok) {
-            const refreshData = refreshResponse.payload;
-            if (refreshData) {
-              const nextToken = refreshData.token || refreshData.Token;
-              const nextRefreshToken = refreshData.refreshToken || refreshData.RefreshToken;
-              if (nextToken || nextRefreshToken) {
-                persistSessionTokens(nextToken, nextRefreshToken || refreshTokenCandidate);
-              }
+        // En fazla 1 kez retry: sonsuz refresh döngüsünü engelle
+        if (__retryCount >= 1) {
+          console.error(`❌ API 401 devam ediyor, retry sınırına ulaşıldı (${path}).`);
+          throw await buildUnauthorizedError(response, "retry-limit-reached");
+        }
+
+        if (typeof window !== "undefined") {
+          try {
+            type RefreshAttemptResult = {
+              ok: boolean;
+              status: number;
+              payload: any;
+            };
+
+            // Tek bir refresh isteği paylaşımı (concurrent 401 storm için)
+            const activeRefreshPromise = (window as any)
+              ._activeRefreshPromise as Promise<RefreshAttemptResult> | undefined;
+            const refreshTokenCandidate = readStoredAuthTokens().refreshToken;
+            const refreshPromise =
+              activeRefreshPromise ||
+              (async () => {
+                const refreshResponse = await fetch(`${activeApiBaseUrl}/Auth/refresh`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: buildRefreshRequestBody(refreshTokenCandidate),
+                  credentials: "include",
+                });
+                const refreshPayload = await refreshResponse.json().catch(() => null);
+
+                return {
+                  ok: refreshResponse.ok,
+                  status: refreshResponse.status,
+                  payload: refreshPayload,
+                };
+              })();
+
+            if (!activeRefreshPromise) {
+              (window as any)._activeRefreshPromise = refreshPromise;
             }
-            console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
 
-            return await apiFetch(path, {
-              ...options,
-              __retryCount: __retryCount + 1,
-            });
-          } else {
-            console.error("❌ Session yenileme başarısız. İstek login redirect olmadan sonlandırıldı.");
-            Logger.warn("API 401 - session refresh başarısız", {
-              path: normalizedPath,
-              refreshStatus: refreshResponse.status,
-            }, {
+            const refreshResponse = await refreshPromise;
+            (window as any)._activeRefreshPromise = undefined;
+
+            if (refreshResponse.ok) {
+              const refreshData = refreshResponse.payload;
+              if (refreshData) {
+                const nextToken = refreshData.token || refreshData.Token;
+                const nextRefreshToken = refreshData.refreshToken || refreshData.RefreshToken;
+                if (nextToken || nextRefreshToken) {
+                  persistSessionTokens(nextToken, nextRefreshToken || refreshTokenCandidate);
+                }
+              }
+              console.log("✅ Session başarıyla yenilendi, istek tekrar deneniyor.");
+
+              return await apiFetch(path, {
+                ...options,
+                __retryCount: __retryCount + 1,
+              });
+            } else {
+              console.error("❌ Session yenileme başarısız. İstek login redirect olmadan sonlandırıldı.");
+              Logger.warn("API 401 - session refresh başarısız", {
+                path: normalizedPath,
+                refreshStatus: refreshResponse.status,
+              }, {
+                source: "api",
+                requestPath: normalizedPath,
+                statusCode: 401,
+              });
+            }
+          } catch (refreshError) {
+            (window as any)._activeRefreshPromise = undefined;
+            console.error("❌ Session yenileme sırasında kritik hata:", refreshError);
+            Logger.error("API 401 - session refresh sırasında kritik hata", refreshError, {
               source: "api",
               requestPath: normalizedPath,
               statusCode: 401,
             });
           }
-        } catch (refreshError) {
-          (window as any)._activeRefreshPromise = undefined;
-          console.error("❌ Session yenileme sırasında kritik hata:", refreshError);
-          Logger.error("API 401 - session refresh sırasında kritik hata", refreshError, {
-            source: "api",
-            requestPath: normalizedPath,
-            statusCode: 401,
-          });
         }
+        throw await buildUnauthorizedError(response, "refresh-failed");
       }
-      throw await buildUnauthorizedError(response, "refresh-failed");
     }
 
     if (response.status >= 500) {
@@ -411,7 +445,7 @@ export async function apiFetch(
       const parsedMessage =
         typeof parsed === "string"
           ? parsed
-          : parsed?.message;
+          : (parsed?.message || parsed?.Message || parsed?.errorMessage || parsed?.ErrorMessage || parsed?.error);
       const rawMessage =
         typeof text === "string" ? text.trim().replace(/^"+|"+$/g, "") : "";
       const normalizedMessage = (parsedMessage || rawMessage || "")
@@ -419,16 +453,6 @@ export async function apiFetch(
         .trim()
         .replace(/^"+|"+$/g, "");
 
-      const isBaglantiByTipNoConnection =
-        response.status === 400 &&
-        normalizedPath.startsWith("/BaglantiBilgileri/BaglantiBilgileriByTip") &&
-        normalizedMessage === "Bağlantı oluşturulmamış.";
-
-      // Beklenen iş kuralı: paylaşım bağlantısı henüz oluşturulmamış olabilir.
-      // Bu durum log üretmemeli ve akışı bozmamalıdır.
-      if (isBaglantiByTipNoConnection) {
-        return undefined as any;
-      }
 
       if (response.status < 500) {
         Logger.warn(`API yanıt hatası: ${response.status} (${normalizedPath})`, {
@@ -452,7 +476,16 @@ export async function apiFetch(
       if (parsed && parsed.errors) {
         throw new Error(JSON.stringify(parsed.errors));
       } else {
-        throw new Error(parsed?.message || text || `HTTP ${response.status}`);
+        const errorText = parsed?.message || parsed?.Message || text || `HTTP ${response.status}`;
+        if (typeof errorText === 'string' && (
+          errorText.toLowerCase().includes('<html') || 
+          errorText.includes('System.Exception') || 
+          errorText.includes('HEADERS =======') || 
+          errorText.length > 500
+        )) {
+          throw new Error("Sunucu tarafında işlenemeyen bir hata oluştu. Detaylar için konsola bakınız.");
+        }
+        throw new Error(errorText);
       }
     }
 

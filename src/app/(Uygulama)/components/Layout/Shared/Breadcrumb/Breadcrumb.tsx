@@ -100,7 +100,14 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
           void incrementMenuUsageView(currentMenu.id).then((updatedCount) => {
             if (typeof updatedCount === "number") {
               setUsageData((prev) => (prev ? { ...prev, hitCount: updatedCount } : prev));
+              return;
             }
+
+            void getMenuUsagePanelByMenuId(currentMenu.id).then((refreshedUsage) => {
+              if (refreshedUsage) {
+                setUsageData(refreshedUsage);
+              }
+            });
           });
         }
       } else {

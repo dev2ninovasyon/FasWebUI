@@ -44,9 +44,9 @@ export const usePendingImports = () => {
     try {
       const response = await apiFetch("/DataTransfer/ImportJob/pending");
 
-      if (response && response.jobs) {
+      if (response && (response as any).jobs) {
         setPendingJobs(
-          Array.isArray(response.jobs) ? response.jobs.map(normalizePendingJob) : []
+          Array.isArray((response as any).jobs) ? (response as any).jobs.map(normalizePendingJob) : []
         );
       } else {
         setPendingJobs([]);

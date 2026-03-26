@@ -36,12 +36,16 @@ export const getBaglantiBilgileri = async (
         },
       }
     );
-    if (response.ok) {
+    if (response && response.ok) {
       return response.json();
     } else {
-      const errorData = await response.json().catch(() => null);
-      const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.error(errorMessage);
+      const errorData = await response?.json().catch(() => null);
+      const errorMessage = errorData?.message || "Bağlantı Bilgileri bulunamadı";
+      if (response?.status === 404) {
+        console.warn("Bağlantı bilgisi yok:", errorMessage);
+      } else {
+        console.warn(errorMessage);
+      }
       return null;
     }
   } catch (error) {
@@ -67,12 +71,16 @@ export const getBaglantiBilgileriByTip = async (
         },
       }
     );
-    if (response.ok) {
+    if (response && response.ok) {
       return response.json();
     } else {
-      const errorData = await response.json().catch(() => null);
-      const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.error(errorMessage);
+      const errorData = await response?.json().catch(() => null);
+      const errorMessage = errorData?.message || "Bağlantı Bilgileri bulunamadı";
+      if (response?.status === 404) {
+        console.warn("Bağlantı bilgisi yok:", errorMessage);
+      } else {
+        console.warn(errorMessage);
+      }
       return null;
     }
   } catch (error) {
@@ -98,12 +106,16 @@ export const getBaglantiBilgileriByLink = async (
         },
       }
     );
-    if (response.ok) {
+    if (response && response.ok) {
       return response.json();
     } else {
-      const errorData = await response.json().catch(() => null);
-      const errorMessage = errorData?.message || "Bağlantı Bilgileri getirilemedi";
-      console.error(errorMessage);
+      const errorData = await response?.json().catch(() => null);
+      const errorMessage = errorData?.message || "Bağlantı Bilgileri bulunamadı";
+      if (response?.status === 404) {
+        console.warn("Bağlantı bilgisi yok:", errorMessage);
+      } else {
+        console.warn(errorMessage);
+      }
       return null;
     }
   } catch (error) {

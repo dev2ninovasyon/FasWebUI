@@ -16,6 +16,8 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { IconBell, IconBellRinging } from "@tabler/icons-react";
 import { Stack } from "@mui/system";
@@ -23,13 +25,8 @@ import Scrollbar from "@/app/(Uygulama)/components/CustomScroll/Scrollbar";
 import {
   getBildirimler,
   updateBildirimlerOkundumu,
-  startBildirimConnection,
-  onYeniBildirim,
-  stopBildirimConnection,
-  startPollingBildirim,
-  stopPollingBildirim,
-  getBildirimConnectionStatus,
 } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
+import { useBildirimConnection } from "@/hooks/useBildirimConnection";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { useRouter } from "next/navigation";
@@ -111,23 +108,33 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   const [lastBildirim, setLastBildirim] = useState<Veri | null>(null);
   const [screenShake, setScreenShake] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Şirket Değiştirme Onay Diyaloğu State'leri
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingBildirim, setPendingBildirim] = useState<Veri | null>(null);
 
+  const user = useSelector((state: AppState) => state.userReducer);
+  const notificationsDisabled = !user.denetlenenId || !user.yil;
+
   const handleClick = (event: any) => {
+    if (notificationsDisabled) {
+      return;
+    }
     setanchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setanchorEl(null);
   };
-
-  const user = useSelector((state: AppState) => state.userReducer);
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const { status, bildirimState, registerCallback, startConnection, stopConnection } = useBildirimConnection({
+    denetciId: user.denetciId || 0,
+    autoConnect: false,
+  });
 
   const [fetchedData, setFetchedData] = useState<Veri[]>([]);
   const shakeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -186,9 +193,12 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   };
 
   const fetchData = async () => {
+    if (!user.denetciId || !user.denetlenenId || !user.yil) {
+      return;
+    }
+
     try {
-      const bildirimler = await getBildirimler(user.denetciId || 0
-      );
+      const bildirimler = await getBildirimler(user.denetciId);
       const rowsAll: any = [];
 
       if (bildirimler && Array.isArray(bildirimler)) {
@@ -208,139 +218,17 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
           rowsAll.push(newRow);
         });
         setFetchedData(rowsAll);
+        const newUnread = rowsAll.filter((item: any) => !item.okundumu).length;
+        setUnreadCount(newUnread);
+        document.title = newUnread > 0 ? `(${newUnread}) 🔔 FAS Denetim` : "FAS Denetim";
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // SignalR bağlantısı
-  useEffect(() => {
-    if (user.token && user.denetciId) {
-      const token = user.token as string;
-      const denetciId = user.denetciId as number;
-
-      if (process.env.NODE_ENV === 'development') {
-        console.log("📡 Bildirim bağlantısı kurulmaya çalışılıyor...");
-      }
-
-      // Callback function'ı tanımla
-      const handleBildirim = (bildirim: any) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.log("📬 Yeni bildirim");
-        }
-        handleNewNotification(bildirim);
-      };
-
-      // Listener'ı kaydet ve polling fallback sağla
-      onYeniBildirim(handleBildirim, denetciId);
-
-      // Bağlantıyı başlat
-      startBildirimConnection(denetciId)
-        .then(() => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log("🟢 SignalR modu aktif!");
-          }
-        })
-        .catch((error) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error("⚠️ SignalR başarısız, polling fallback");
-          }
-        });
-    }
-
-    return () => {
-      // Cleanup both SignalR connection AND polling to prevent memory leaks
-      stopPollingBildirim();
-      stopBildirimConnection();
-    };
-  }, [user.token, user.denetciId]);
-
-  // Yeni bildirim handle helper
-  const handleNewNotification = (bildirim: any) => {
-    const yeniBildirim: Veri = {
-      id: bildirim.id || bildirim.Id,
-      konu: bildirim.konu || bildirim.Konu,
-      aciklama: bildirim.aciklama || bildirim.Aciklama,
-      okundumu: false,
-      tarih: bildirim.tarih || bildirim.Tarih || new Date().toISOString(),
-      denetlenenId: bildirim.denetlenenId || bildirim.DenetlenenId,
-      yil: bildirim.yil || bildirim.Yil,
-      tip: bildirim.tip || bildirim.Tip,
-      kaynakUrl: bildirim.kaynakUrl || bildirim.KaynakUrl
-    };
-
-    // Sayfa başlığını güncelle
-    const newUnreadCount = fetchedData.filter((item) => !item.okundumu).length + 1;
-    setUnreadCount(newUnreadCount);
-    document.title = `(${newUnreadCount}) 🔔 YENİ BİLDİRİM - FAS Denetim`;
-
-    // İkonu ve sayfayı sallandır
-    setIsShaking(true);
-    setScreenShake(true);
-    if (shakeTimeoutRef.current) {
-      clearTimeout(shakeTimeoutRef.current);
-    }
-    shakeTimeoutRef.current = setTimeout(() => {
-      setIsShaking(false);
-      setScreenShake(false);
-    }, 1000);
-
-    // Modal aç (4 saniye sonra kapat)
-    setLastBildirim({
-      ...yeniBildirim,
-      konu: sanitizeText(bildirim.konu || ""),
-      aciklama: sanitizeText(bildirim.aciklama || "")
-    });
-    setShowModal(true);
-    if (modalTimeoutRef.current) {
-      clearTimeout(modalTimeoutRef.current);
-    }
-    modalTimeoutRef.current = setTimeout(() => {
-      setShowModal(false);
-    }, 4000);
-
-    // Ses çal (daha yüksek ve daha çok)
-    playNotificationSound();
-    playNotificationSound();
-
-    // Browser notification (izin varsa)
-    if ("Notification" in window && Notification.permission === "granted") {
-      const browserNotification = new Notification(bildirim.konu, {
-        body: bildirim.aciklama,
-        icon: "/images/svgs/icon-dot.png",
-        tag: "bildirim",
-        requireInteraction: true,
-      });
-      browserNotificationsRef.current.push(browserNotification);
-      if (browserNotificationsRef.current.length > 3) {
-        const oldest = browserNotificationsRef.current.shift();
-        oldest?.close();
-      }
-    }
-
-    // Listeye ekle (başa)
-    setFetchedData((prev) => [yeniBildirim, ...prev].slice(0, MAX_NOTIFICATION_ITEMS));
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [isSidebarHover]);
-
-  useEffect(() => {
-    if (anchorEl) {
-      handleUpdateOkundumu();
-    } else {
-      fetchData();
-    }
-  }, [anchorEl]);
-
   // Bildirim sesi çal (daha yüksek ses)
-  const playNotificationSound = () => {
+  const playNotificationSound = React.useCallback(() => {
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
@@ -365,7 +253,134 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         console.log("Ses çalma hatası");
       }
     }
-  };
+  }, []);
+
+  // Yeni bildirim handle helper
+  const handleNewNotification = React.useCallback((bildirim: any) => {
+    const yeniBildirim: Veri = {
+      id: bildirim.id || bildirim.Id,
+      konu: bildirim.konu || bildirim.Konu,
+      aciklama: bildirim.aciklama || bildirim.Aciklama,
+      okundumu: false,
+      tarih: bildirim.tarih || bildirim.Tarih || new Date().toISOString(),
+      denetlenenId: bildirim.denetlenenId || bildirim.DenetlenenId,
+      yil: bildirim.yil || bildirim.Yil,
+      tip: bildirim.tip || bildirim.Tip,
+      kaynakUrl: bildirim.kaynakUrl || bildirim.KaynakUrl,
+    };
+
+    setFetchedData((prev) => {
+      // Çift bildirim gelmesini engelle
+      if (prev.some(item => item.id === yeniBildirim.id)) {
+        return prev;
+      }
+      
+      const newFetchedData = [yeniBildirim, ...prev].slice(0, MAX_NOTIFICATION_ITEMS);
+      const newUnreadCount = newFetchedData.filter((item) => !item.okundumu).length;
+      
+      setUnreadCount(newUnreadCount);
+      document.title = `(${newUnreadCount}) 🔔 YENİ BİLDİRİM - FAS Denetim`;
+      
+      return newFetchedData;
+    });
+
+    // İkonu ve sayfayı sallandır
+    setIsShaking(true);
+    setScreenShake(true);
+    if (shakeTimeoutRef.current) {
+      clearTimeout(shakeTimeoutRef.current);
+    }
+    shakeTimeoutRef.current = setTimeout(() => {
+      setIsShaking(false);
+      setScreenShake(false);
+    }, 1000);
+
+    setLastBildirim({
+      ...yeniBildirim,
+      konu: sanitizeText(bildirim.konu || ""),
+      aciklama: sanitizeText(bildirim.aciklama || ""),
+    });
+    setShowModal(true);
+    if (modalTimeoutRef.current) {
+      clearTimeout(modalTimeoutRef.current);
+    }
+    modalTimeoutRef.current = setTimeout(() => {
+      setShowModal(false);
+    }, 4000);
+
+    setSnackbarOpen(true);
+
+    // Ses çal (daha yüksek ve daha çok)
+    playNotificationSound();
+    playNotificationSound();
+
+    // Browser notification (izin varsa)
+    if ("Notification" in window && Notification.permission === "granted") {
+      const browserNotification = new Notification(bildirim.konu, {
+        body: bildirim.aciklama,
+        icon: "/images/svgs/icon-dot.png",
+        tag: "bildirim",
+        requireInteraction: true,
+      });
+      browserNotificationsRef.current.push(browserNotification);
+      if (browserNotificationsRef.current.length > 3) {
+        const oldest = browserNotificationsRef.current.shift();
+        oldest?.close();
+      }
+    }
+  }, [playNotificationSound]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // SignalR / polling bağlantısı (useBildirimConnection hook kullanılıyor)
+  useEffect(() => {
+    if (!user.token || !user.denetciId || !user.denetlenenId || !user.yil) {
+      return;
+    }
+
+    const handleBildirim = (bildirim: any) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log("📬 Yeni bildirim");
+      }
+      handleNewNotification(bildirim);
+    };
+
+    registerCallback(handleBildirim);
+
+    startConnection()
+      .then(() => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log("🟢 Bildirim bağlantısı aktif (SignalR/polling)");
+        }
+      })
+      .catch((error) => {
+        console.error("⚠️ Bildirim bağlantısı hatası:", error);
+      });
+
+    return () => {
+      stopConnection();
+    };
+  }, [
+    user.token,
+    user.denetciId,
+    user.denetlenenId,
+    user.yil,
+    handleNewNotification,
+  ]);
+
+  useEffect(() => {
+    fetchData();
+  }, [isSidebarHover]);
+
+  useEffect(() => {
+    if (anchorEl) {
+      handleUpdateOkundumu();
+    } else {
+      fetchData();
+    }
+  }, [anchorEl]);
 
   // Tarayıcı notification izni iste
   useEffect(() => {
@@ -523,6 +538,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
             aria-controls="msgs-menu"
             aria-haspopup="true"
             onClick={handleClick}
+            disabled={notificationsDisabled}
             className={isShaking ? "bell-shake" : ""}
             sx={{
               position: "relative",
@@ -801,6 +817,21 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
           </Box>
         </Box>
       )}
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity="info"
+          sx={{ width: "100%" }}
+        >
+          {lastBildirim?.konu ? `${lastBildirim?.konu}: ${lastBildirim?.aciklama}` : "Yeni bildirim geldi."}
+        </Alert>
+      </Snackbar>
 
       {/* Şirket/Yıl Değiştirme Onay Diyaloğu */}
       <Dialog

@@ -69,7 +69,7 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
           suppressErrorLog: true,
         });
 
-        if (!refreshResponse.ok) {
+        if (!refreshResponse || !refreshResponse.ok) {
           return { ok: false, accessToken: "", refreshToken: currentRefreshToken || "" };
         }
 
@@ -140,7 +140,7 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
                 suppressErrorLog: true,
               });
 
-              if (!sessionResponse.ok) return false;
+              if (!sessionResponse || !sessionResponse.ok) return false;
 
               const sessionPayload = await sessionResponse.json().catch(() => null);
               if (!sessionPayload) return false;
@@ -202,10 +202,16 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
 
   // Sync status if user token changes manually (login)
   useEffect(() => {
-    if (hasBootstrapped && user?.token && status !== "authenticated") {
+    if (!hasBootstrapped) return;
+
+    if (user?.token && status !== "authenticated") {
       setStatus("authenticated");
-    } else if (hasBootstrapped && !user?.token && status === "authenticated") {
-      setStatus("unauthenticated");
+    } else if (!user?.token && status === "authenticated") {
+      // Sadece Redux değil, localStorage da boşsa unauthenticated'a çek
+      const { accessToken } = readStoredAuthTokens();
+      if (!accessToken) {
+        setStatus("unauthenticated");
+      }
     }
   }, [hasBootstrapped, user?.token, status]);
 

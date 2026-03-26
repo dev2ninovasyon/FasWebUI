@@ -1,4 +1,4 @@
-﻿// ImportFromOld: Kuyruğa alma ve polling
+// ImportFromOld: Kuyruğa alma ve polling
 export const startImportFromOldJob = async (params: any) => {
   // DTO: TableKey, TasinanDenetlenenId, Years, TableKeys, Yil
   const transferredId = params.TasinanDenetlenenId;
@@ -140,11 +140,93 @@ export const uploadAndParseKurumlarBeyannamesi = async (
   } catch (error) {
     console.log("Dosya yüklenirken hata oluştu:", error);
     const axiosError = error as any;
-    const message =
-      axiosError?.response?.data?.message ||
-      axiosError?.response?.data ||
-      "Beklenmedik bir hata oluştu.";
+    const responseData = axiosError?.response?.data;
+    
+    let message = "Beklenmedik bir hata oluştu.";
+    if (responseData) {
+      if (typeof responseData === 'string') {
+        if (responseData.toLowerCase().includes('<html') || responseData.includes('System.Exception') || responseData.includes('HEADERS =======') || responseData.length > 500) {
+          message = "Sunucu tarafında beklendiği gibi işlenemeyen bir hata oluştu. Detaylar için konsola bakınız.";
+        } else {
+          message = responseData;
+        }
+      } else if (responseData.message || responseData.Message) {
+        message = responseData.message || responseData.Message;
+      }
+    }
+
     return { success: false, message: message };
+  }
+};
+
+export const getMusteriTanimaDetay = async (
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/MusteriTanima/GetDetay?denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Musteri tanima detay verileri getirilemedi.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    throw error;
+  }
+};
+
+export const updateMusteriTanimaDetay = async (dto: any) => {
+  try {
+    const response = await apiFetch(`/MusteriTanima/UpdateDetay`, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dto),
+    });
+
+    let payload: any = null;
+    try {
+      payload = await response.json();
+    } catch {
+      payload = null;
+    }
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message:
+          payload?.message ||
+          payload?.Message ||
+          "Musteri tanima bilgileri kaydedilemedi.",
+      };
+    }
+
+    return {
+      success: true,
+      message:
+        payload?.message ||
+        payload?.Message ||
+        "Musteri tanima bilgileri kaydedildi.",
+      data: payload?.data ?? payload?.Data ?? payload,
+    };
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    return {
+      success: false,
+      message: "Musteri tanima bilgileri kaydedilirken hata oluştu.",
+    };
   }
 };
 

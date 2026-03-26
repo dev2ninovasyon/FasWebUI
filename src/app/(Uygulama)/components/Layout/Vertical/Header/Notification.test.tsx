@@ -4,6 +4,7 @@ import React from 'react';
 import Notifications from './Notification';
 import { renderWithProviders } from '@/test/test-utils';
 import * as BaglantiApi from '@/api/BaglantiBilgileri/BaglantiBilgileri';
+import { useBildirimConnection } from '@/hooks/useBildirimConnection';
 import * as MusteriApi from '@/api/Musteri/MusteriIslemleri';
 import * as AyarlarApi from '@/api/Kullanici/KullaniciAyarlar';
 import * as SozlesmeApi from '@/api/Sozlesme/DenetimKadrosuAtama';
@@ -56,6 +57,10 @@ vi.mock('next/navigation', () => ({
 }));
 
 // Mock APIs
+const mockRegisterCallback = vi.fn();
+const mockStartConnection = vi.fn().mockResolvedValue(null);
+const mockStopConnection = vi.fn().mockResolvedValue(null);
+
 vi.mock('@/api/BaglantiBilgileri/BaglantiBilgileri', () => ({
     getBildirimler: vi.fn(),
     updateBildirimlerOkundumu: vi.fn(),
@@ -65,6 +70,24 @@ vi.mock('@/api/BaglantiBilgileri/BaglantiBilgileri', () => ({
     startPollingBildirim: vi.fn(),
     stopPollingBildirim: vi.fn(),
     getBildirimConnectionStatus: vi.fn(),
+}));
+
+vi.mock('@/hooks/useBildirimConnection', () => ({
+    useBildirimConnection: vi.fn(() => ({
+        status: 'connected',
+        bildirimState: {
+            status: 'connected',
+            isPollingActive: false,
+            listenerRegistered: true,
+            hasCallback: true,
+            signalRConnected: true,
+            error: null,
+        },
+        registerCallback: mockRegisterCallback,
+        startConnection: mockStartConnection,
+        stopConnection: mockStopConnection,
+        testConnection: vi.fn().mockResolvedValue(true),
+    })),
 }));
 
 vi.mock('@/api/Musteri/MusteriIslemleri', () => ({
@@ -121,8 +144,8 @@ describe('Notification Component', () => {
             },
         });
 
-        expect(await screen.findByLabelText('show new notifications')).toBeDisabled();
-        expect(BaglantiApi.startBildirimConnection).not.toHaveBeenCalled();
+            expect(await screen.findByLabelText('show new notifications')).toBeDisabled();
+        expect(mockStartConnection).not.toHaveBeenCalled();
         expect(BaglantiApi.getBildirimler).not.toHaveBeenCalled();
     });
 
@@ -205,7 +228,7 @@ describe('Notification Component', () => {
 
     it('should handle real-time notification via SignalR listener', async () => {
         let signalRCallback: any;
-        vi.mocked(BaglantiApi.onYeniBildirim).mockImplementation((cb: any) => {
+        mockRegisterCallback.mockImplementation((cb: any) => {
             signalRCallback = cb;
         });
 
@@ -221,7 +244,9 @@ describe('Notification Component', () => {
             tarih: new Date().toISOString()
         };
 
-        signalRCallback(newBildirim);
+        if (signalRCallback) {
+            signalRCallback(newBildirim);
+        }
 
         const modalElements = await screen.findAllByText('SignalR Konu');
         expect(modalElements.length).toBeGreaterThanOrEqual(1);
