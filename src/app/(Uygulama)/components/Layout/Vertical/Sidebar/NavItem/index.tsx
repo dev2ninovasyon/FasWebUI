@@ -40,6 +40,46 @@ interface ItemType {
   pathDirect: string;
 }
 
+const ListItemStyled = styled(ListItemButton, {
+  shouldForwardProp: (prop) =>
+    prop !== "$level" && prop !== "$active" && prop !== "$borderRadius",
+})<{
+  $level: number;
+  $active: boolean;
+  $borderRadius: number;
+}>(({ theme, $level, $active, $borderRadius }) => ({
+  marginBottom: "2px",
+  padding: "8px 10px",
+  borderRadius: `${$borderRadius}px`,
+  backgroundColor: $level > 1 ? "inherit" : "inherit",
+  color:
+    $level > 1 && $active
+      ? `white !important`
+      : theme.palette.text.primary,
+  paddingLeft: $level > 2 ? `${$level * 15}px` : "9.15px",
+  "&:hover": {
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? theme.palette.primary.dark
+        : theme.palette.primary.main,
+    color: "white",
+  },
+  "&.Mui-selected": {
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? theme.palette.primary.dark
+        : theme.palette.primary.main,
+    color: "white",
+    "&:hover": {
+      backgroundColor:
+        theme.palette.mode === "dark"
+          ? theme.palette.primary.dark
+          : theme.palette.primary.main,
+      color: "white",
+    },
+  },
+}));
+
 export default function NavItem({
   item,
   level,
@@ -61,39 +101,6 @@ export default function NavItem({
       <Icon strokeWidth={1.5} size="1.3rem" />
     );
 
-  const ListItemStyled = styled(ListItemButton)(() => ({
-    marginBottom: "2px",
-    padding: "8px 10px",
-    borderRadius: `${customizer.borderRadius}px`,
-    backgroundColor: level > 1 ? "inherit" : "inherit",
-    color:
-      level > 1 && pathDirect === item?.href
-        ? `white !important`
-        : theme.palette.text.primary,
-    paddingLeft: hideMenu ? "9.15px" : level > 2 ? `${level * 15}px` : "9.15px",
-    "&:hover": {
-      backgroundColor:
-        customizer.activeMode === "dark"
-          ? theme.palette.primary.dark
-          : theme.palette.primary.main,
-      color: "white",
-    },
-    "&.Mui-selected": {
-      backgroundColor:
-        customizer.activeMode === "dark"
-          ? theme.palette.primary.dark
-          : theme.palette.primary.main,
-      color: "white",
-      "&:hover": {
-        backgroundColor:
-          customizer.activeMode === "dark"
-            ? theme.palette.primary.dark
-            : theme.palette.primary.main,
-        color: "white",
-      },
-    },
-  }));
-
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     // Eğer farklı bir sayfaya gidiyorsak loading göster
     if (pathDirect !== item?.href && item?.href) {
@@ -112,7 +119,10 @@ export default function NavItem({
           disabled={item?.disabled}
           selected={pathDirect === item?.href}
           onClick={handleClick}
-          data-tour-id={item?.href} // ğŸ‘ˆ Driver.js için hedef
+          $level={level}
+          $active={pathDirect === item?.href}
+          $borderRadius={customizer.borderRadius}
+          data-tour-id={item?.href}
         >
           <ListItemIcon
             sx={{

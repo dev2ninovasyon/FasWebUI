@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -125,7 +125,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         user.yil || 0
       );
 
-      setYevmiyeFisNo(standartfisListesi);
+      setYevmiyeFisNo(standartfisListesi?.message || "");
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -256,7 +256,7 @@ const EDefterMizanEnflasyonHaricStepper = () => {
         user.yil || 0
       );
 
-      setYevmiyeFisNo(fisListesi);
+      setYevmiyeFisNo(fisListesi?.message || "");
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     } finally {
@@ -299,14 +299,14 @@ const EDefterMizanEnflasyonHaricStepper = () => {
   const fetchControl = async () => {
     const type = "E-DefterHaric";
     try {
-      const programVukMizanControl = await getProgramVukMizanControl(user.denetciId || 0,
+      const result = await getProgramVukMizanControl(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         type
       );
-      if (programVukMizanControl != "") {
+      if (result?.message) {
         setControl(true);
-        setTip(programVukMizanControl);
+        setTip(result.message);
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);

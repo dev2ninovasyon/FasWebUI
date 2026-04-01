@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 
 import { useState } from "react";
 import { useSelector } from "@/store/hooks";
@@ -40,6 +40,51 @@ interface NavCollapseProps {
   onClick: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
+const ListItemStyled = styled(ListItemButton, {
+  shouldForwardProp: (prop) =>
+    prop !== "$level" && prop !== "$open" && prop !== "$active" && prop !== "$borderRadius",
+})<{
+  $level: number;
+  $open: boolean;
+  $active: boolean;
+  $borderRadius: number;
+}>(({ theme, $level, $open, $active, $borderRadius }) => ({
+  marginBottom: "2px",
+  padding: "8px 10px",
+  paddingLeft: $level > 2 ? `${$level * 15}px` : "10px",
+  backgroundColor:
+    $open && $level < 2
+      ? theme.palette.mode === "dark"
+        ? theme.palette.primary.light
+        : theme.palette.primary.main
+      : "",
+  whiteSpace: "normal",
+  textOverflow: "ellipsis",
+
+  "&:hover": {
+    backgroundColor:
+      $active || $open
+        ? theme.palette.mode === "dark"
+          ? theme.palette.primary.light
+          : theme.palette.primary.main
+        : theme.palette.mode === "dark"
+        ? theme.palette.primary.light
+        : theme.palette.primary.main,
+    color:
+      $active || $open
+        ? "white"
+        : theme.palette.primary.main,
+  },
+
+  color:
+    $open && $level < 2
+      ? "white"
+      : $level > 1 && $open
+      ? theme.palette.primary.main
+      : theme.palette.text.secondary,
+  borderRadius: `${$borderRadius}px`,
+}));
+
 // FC Component For Dropdown Menu
 export default function NavCollapse({
   menu,
@@ -78,43 +123,6 @@ export default function NavCollapse({
     });
   }, [pathname, menu.children]);
 
-  const ListItemStyled = styled(ListItemButton)(() => ({
-    marginBottom: "2px",
-    padding: "8px 10px",
-    paddingLeft: hideMenu ? "10px" : level > 2 ? `${level * 15}px` : "10px",
-    backgroundColor:
-      open && level < 2
-        ? customizer.activeMode === "dark"
-          ? theme.palette.primary.light
-          : theme.palette.primary.main
-        : "",
-    whiteSpace: "normal",
-    textOverflow: "ellipsis",
-
-    "&:hover": {
-      backgroundColor:
-        pathname.includes(menu.href) || open
-          ? customizer.activeMode === "dark"
-            ? theme.palette.primary.light
-            : theme.palette.primary.main
-          : customizer.activeMode === "dark"
-          ? theme.palette.primary.light
-          : theme.palette.primary.main,
-      color:
-        pathname.includes(menu.href) || open
-          ? "white"
-          : theme.palette.primary.main,
-    },
-
-    color:
-      open && level < 2
-        ? "white"
-        : level > 1 && open
-        ? theme.palette.primary.main
-        : theme.palette.text.secondary,
-    borderRadius: `${customizer.borderRadius}px`,
-  }));
-
   // If Menu has Children
   const submenus = menu.children?.map((item: any) => {
     if (item.children) {
@@ -149,6 +157,10 @@ export default function NavCollapse({
         onClick={handleClick}
         selected={pathWithoutLastPart === menu.href}
         key={menu?.id}
+        $level={level}
+        $open={open}
+        $active={pathWithoutLastPart === menu.href}
+        $borderRadius={customizer.borderRadius}
       >
         <ListItemIcon
           sx={{

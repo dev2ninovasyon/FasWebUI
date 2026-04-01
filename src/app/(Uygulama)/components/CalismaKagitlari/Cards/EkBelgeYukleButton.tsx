@@ -53,7 +53,7 @@ import jsPDF from "jspdf";
 
 interface EkBelgeYukleButtonProps {
   formKodu: string;
-  text?: string;
+  text?: React.ReactNode;
   fullWidth?: boolean;
   onUploaded?: () => void;
   hideButton?: boolean;

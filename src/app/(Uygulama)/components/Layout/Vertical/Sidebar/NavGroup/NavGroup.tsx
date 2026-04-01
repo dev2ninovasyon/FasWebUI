@@ -1,4 +1,4 @@
-﻿import { Divider } from "@mui/material";
+import { Divider } from "@mui/material";
 import ListSubheader from "@mui/material/ListSubheader";
 import { Theme } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
@@ -15,14 +15,14 @@ interface ItemType {
   hideMenu: string | boolean;
 }
 
-const NavGroup = ({ item, hideMenu }: ItemType) => {
-  const ListSubheaderStyle = styled((props: Theme | any) => (
-    <ListSubheader disableSticky {...props} />
-  ))(({ theme }) => ({
-    ...theme.typography.overline,
-    height: "6px",
-  }));
+const ListSubheaderStyle = styled((props: Theme | any) => (
+  <ListSubheader disableSticky {...props} />
+))(({ theme }) => ({
+  ...theme.typography.overline,
+  height: "6px",
+}));
 
+const NavGroup = ({ item, hideMenu }: ItemType) => {
   return (
     <ListSubheaderStyle>
       {/*hideMenu ? <IconDots size="14" /> : <Divider />*/}

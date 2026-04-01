@@ -37,13 +37,26 @@ import {
 } from '@/api/BaglantiBilgileri/BaglantiBilgileri.types';
 import { getBildirimler } from '@/api/BaglantiBilgileri/BaglantiBilgileri';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://betaapi.fasmart.app/api';
-const POLLING_INTERVAL = 5000; // 5 seconds
+const getApiBaseUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname.toLowerCase();
+    const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+    
+    if (isLocalHost) {
+      return 'http://localhost:5000/api';
+    }
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'https://betaapi.fasmart.app/api';
+};
+
+const API_URL = getApiBaseUrl();
+const POLLING_INTERVAL = 60000; // 60 seconds (1 minute)
 
 /**
  * Get base API URL for SignalR hub
  */
 const getHubUrl = (): string => {
+  // api prefix'ini kaldır ve /bildirim-hub ekle
   const baseUrl = API_URL.replace(/\/api$/, '').replace(/\/$/, '');
   return `${baseUrl}/bildirim-hub`;
 };

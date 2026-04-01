@@ -358,12 +358,21 @@ export async function apiFetch(
             const refreshPromise =
               activeRefreshPromise ||
               (async () => {
+                // 🛡️ GÜVENLİK: Eğer refresh token yoksa refresh denemesi yapma (direkt logout)
+                if (!refreshTokenCandidate) {
+                  throw new Error("Refresh token yok.");
+                }
+
                 const refreshResponse = await fetch(`${activeApiBaseUrl}/Auth/refresh`, {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: { 
+                    "Content-Type": "application/json",
+                    [APP_IDENTITY_HEADER]: APP_IDENTITY_SECRET 
+                  },
                   body: buildRefreshRequestBody(refreshTokenCandidate),
                   credentials: "include",
                 });
+
                 const refreshPayload = await refreshResponse.json().catch(() => null);
 
                 return {
@@ -406,14 +415,26 @@ export async function apiFetch(
                 statusCode: 401,
               });
             }
-          } catch (refreshError) {
+          } catch (refreshError: any) {
             (window as any)._activeRefreshPromise = undefined;
-            console.error("❌ Session yenileme sırasında kritik hata:", refreshError);
-            Logger.error("API 401 - session refresh sırasında kritik hata", refreshError, {
-              source: "api",
-              requestPath: normalizedPath,
-              statusCode: 401,
-            });
+            
+            // "Failed to fetch" hatalarını daha anlamlı loglayalım
+            const isConnectionError = isConnectionLikeError(refreshError);
+            const refreshErrorMessage = refreshError?.message || String(refreshError);
+
+            console.error("❌ Session yenileme sırasında kritik hata:", refreshErrorMessage);
+            
+            Logger.error(
+              isConnectionError 
+                ? "API 401 - session refresh sırasında bağlantı hatası (backend kapalı olabilir)" 
+                : "API 401 - session refresh sırasında kritik hata", 
+              refreshError, 
+              {
+                source: "api",
+                requestPath: normalizedPath,
+                statusCode: 401,
+              }
+            );
           }
         }
         throw await buildUnauthorizedError(response, "refresh-failed");

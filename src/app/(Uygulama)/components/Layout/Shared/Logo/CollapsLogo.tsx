@@ -1,4 +1,4 @@
-﻿import { FC } from "react";
+import { FC } from "react";
 import { useSelector } from "@/store/hooks";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
@@ -9,6 +9,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 const CollapseLogo = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const { setLoading } = useLoading();
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
   const LinkStyled = styled(Link)(() => ({
     height: customizer.TopbarHeight,
     width: customizer.isCollapse ? "40px" : "188px",
@@ -19,7 +20,7 @@ const CollapseLogo = () => {
 
   if (customizer.activeDir === "ltr") {
     return (
-      <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
+      <LinkStyled href="/Anasayfa" onClick={() => { if (pathname !== "/Anasayfa") setLoading(true); }}>
         {customizer.activeMode === "dark" ? (
           <Image
             src="/images/logos/fas-logov1.png"
@@ -44,7 +45,7 @@ const CollapseLogo = () => {
   }
 
   return (
-    <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
+    <LinkStyled href="/Anasayfa" onClick={() => { if (pathname !== "/Anasayfa") setLoading(true); }}>
       {customizer.activeMode === "dark" ? (
         <Image
           src="/images/logos/fas-logov1.png"

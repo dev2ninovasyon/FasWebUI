@@ -9,6 +9,10 @@ const nextConfig = {
   },
   reactStrictMode: false,
   output: "standalone",
+  onDemandEntries: {
+    maxInactiveAge: 30 * 1000,
+    pagesBufferLength: 2,
+  },
   turbopack: {
     root: path.resolve(__dirname),
   },

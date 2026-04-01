@@ -18,12 +18,14 @@ interface Props {
   controller: string;
   buildHtmlAsync?: () => Promise<string>;
   previewEndpoint?: string;
+  onBeforeAction?: () => Promise<boolean | void>;
 }
 
 const IslemlerCardHtml: React.FC<Props> = ({
   controller,
   buildHtmlAsync,
   previewEndpoint,
+  onBeforeAction,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -39,9 +41,19 @@ const IslemlerCardHtml: React.FC<Props> = ({
     }
   };
 
+  const runBeforeAction = async () => {
+    if (!onBeforeAction) return true;
+
+    const result = await onBeforeAction();
+    return result !== false;
+  };
+
   const handleDownload = async () => {
     try {
       setOpenCartAlert(true);
+      const canContinue = await runBeforeAction();
+      if (!canContinue) return;
+
       if (!buildHtmlAsync) {
         alert("Önizleme için HTML üretici (buildHtmlAsync) bulunamadı.");
         return;
@@ -102,6 +114,9 @@ const IslemlerCardHtml: React.FC<Props> = ({
   const handlePreview = async () => {
     try {
       setOpenCartAlert(true);
+      const canContinue = await runBeforeAction();
+      if (!canContinue) return;
+
       if (!buildHtmlAsync) {
         alert("Önizleme için HTML üretici (buildHtmlAsync) bulunamadı.");
         return;
@@ -161,6 +176,9 @@ const IslemlerCardHtml: React.FC<Props> = ({
   const handleArchive = async () => {
     try {
       setOpenCartAlert(true);
+      const canContinue = await runBeforeAction();
+      if (!canContinue) return;
+
       if (!buildHtmlAsync) {
         alert("Arşive kaydetme için HTML üretici (buildHtmlAsync) bulunamadı.");
         return;

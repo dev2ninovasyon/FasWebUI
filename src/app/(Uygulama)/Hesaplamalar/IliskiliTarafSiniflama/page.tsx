@@ -95,7 +95,17 @@ const Page: React.FC = () => {
             lg: 12
           }}>
           <TabContext value={tip}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <TabList
+              onChange={handleChange}
+              aria-label="lab API tabs example"
+              sx={{
+                pr: 8,
+                minHeight: 56,
+                "& .MuiTab-root": {
+                  minHeight: 56,
+                },
+              }}
+            >
               {hesaplar.map((hesap, index) => (
                 <Tab
                   key={index}
@@ -109,6 +119,7 @@ const Page: React.FC = () => {
                 position: "absolute",
                 top: 9,
                 right: 9,
+                pointerEvents: "none",
               }}
               size={{
                 xs: 12,
@@ -119,6 +130,7 @@ const Page: React.FC = () => {
                   color="info"
                   size="small"
                   onClick={() => setShowDrawer(true)}
+                  sx={{ pointerEvents: "auto" }}
                 >
                   <IconPlus width={18.25} height={18.25} />
                 </Fab>

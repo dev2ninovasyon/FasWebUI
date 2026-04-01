@@ -1,6 +1,7 @@
 ﻿import "@/lib/handsontableSetup";
 import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import {
@@ -29,7 +30,8 @@ import {
   saveHaricFisListesi,
 } from "@/api/Veri/HaricFisListesi";
 import { enqueueSnackbar } from "notistack";
-import { setCollapse } from "@/store/customizer/CustomizerSlice";interface Props {
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
+interface Props {
   hesapNo: string;
   yevmiyeFisNo: string;
   baslangicTarihi: string;
@@ -316,7 +318,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
 
       <Stack direction="row" alignItems="center" marginBottom={2} spacing={2}>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Fiş Listesi (Enflasyon Dahil)
+          Fiş Listesi 
         </Typography>
       </Stack>
 

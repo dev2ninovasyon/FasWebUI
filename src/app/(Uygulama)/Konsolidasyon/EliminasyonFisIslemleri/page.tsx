@@ -57,6 +57,7 @@ const Page: React.FC = () => {
 
   const [kod, setKod] = useState("");
   const [ad, setAd] = useState("");
+  const [transferSignal, setTransferSignal] = useState(0);
 
   const [hazirFislerTiklandimi, setHazirFislerTiklandimi] = useState(false);
 
@@ -127,6 +128,7 @@ const Page: React.FC = () => {
               filterValue={filterValue}
               setKod={setKod}
               setAd={setAd}
+              onTransfer={() => setTransferSignal((prev) => prev + 1)}
             />
           </Grid>
           <Grid
@@ -209,6 +211,7 @@ const Page: React.FC = () => {
               ad={ad}
               fisType={fisType}
               hazirFislerTiklandimi={hazirFislerTiklandimi}
+              transferSignal={transferSignal}
               genelHesapPlaniListesi={fetchedData}
               handleFilterChange={handleFilterChange}
               setHazirFislerTiklandimi={setHazirFislerTiklandimi}

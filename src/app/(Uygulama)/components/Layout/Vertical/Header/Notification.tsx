@@ -370,14 +370,10 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
     handleNewNotification,
   ]);
 
-  useEffect(() => {
-    fetchData();
-  }, [isSidebarHover]);
-
+  // Sadece menü açıldığında verileri yenile (Sidebar hover tetikleyicisi kaldırıldı)
   useEffect(() => {
     if (anchorEl) {
       handleUpdateOkundumu();
-    } else {
       fetchData();
     }
   }, [anchorEl]);

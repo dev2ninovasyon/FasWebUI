@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -101,7 +101,7 @@ const EDefterMizanEnflasyonStepper = () => {
         user.yil || 0
       );
 
-      setYevmiyeFisNo(standartfisListesi);
+      setYevmiyeFisNo(standartfisListesi?.message || "");
       setStandartFisleriGosterTiklandimi(true);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -195,7 +195,7 @@ const EDefterMizanEnflasyonStepper = () => {
         user.yil || 0
       );
 
-      setYevmiyeFisNo(fisListesi);
+      setYevmiyeFisNo(fisListesi?.message || "");
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     } finally {

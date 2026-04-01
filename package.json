@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
-    "dev:turbo": "next dev --turbo",
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next dev --turbo",
+    "dev:webpack": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next dev --webpack",
+    "dev:turbo": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next dev --turbo",
     "build": "next build",
     "start": "npm run build && next start",
     "start:e2e": "node scripts/playwright-webserver.cjs",

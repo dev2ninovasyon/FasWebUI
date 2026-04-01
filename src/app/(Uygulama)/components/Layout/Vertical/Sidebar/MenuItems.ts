@@ -2423,5 +2423,22 @@ export function createMenuItems(
         },
       ];
 
-  return applyDynamicIconsToMenuItems(menuItems);
+  const hiddenMusteriRoutes = new Set([
+    "/Musteri/SirketYonetimKadrosu",
+    "/Musteri/Hissedarlar",
+    "/Musteri/Subeler",
+    "/Musteri/IliskiliTaraflar",
+  ]);
+
+  const filterHiddenMenuItems = (items: any[]): any[] =>
+    items
+      .filter((item) => !hiddenMusteriRoutes.has(item?.href))
+      .map((item) => ({
+        ...item,
+        children: Array.isArray(item?.children)
+          ? filterHiddenMenuItems(item.children)
+          : item?.children,
+      }));
+
+  return applyDynamicIconsToMenuItems(filterHiddenMenuItems(menuItems));
 }

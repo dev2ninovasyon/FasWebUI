@@ -63,6 +63,7 @@ interface MyComponentProps {
   pendingUploadRows?: { fileName: string; status: string }[];
   onlyShowFinalizedRows?: boolean;
   onServerRowsChange?: (rows: DosyaType[]) => void;
+  openLogsFromStatusChip?: boolean;
 }
 
 interface DosyaType {
@@ -72,6 +73,42 @@ interface DosyaType {
   durum: string;
   progress?: number;
 }
+
+const normalizeStatusText = (status?: string) => {
+  if (!status) return "";
+
+  return status
+    .replace(/Ä±/g, "ı")
+    .replace(/Ä°/g, "İ")
+    .replace(/ÅŸ/g, "ş")
+    .replace(/Å/g, "Ş")
+    .replace(/Ã¼/g, "ü")
+    .replace(/Ãœ/g, "Ü")
+    .replace(/Ã¶/g, "ö")
+    .replace(/Ã–/g, "Ö")
+    .replace(/Ã§/g, "ç")
+    .replace(/Ã‡/g, "Ç")
+    .replace(/ÄŸ/g, "ğ")
+    .replace(/Ä/g, "Ğ")
+    .replace(/oluÅŸtu/g, "oluştu")
+    .replace(/tamamlandÄ±/g, "tamamlandı")
+    .replace(/sÄ±raya alÄ±ndÄ±/g, "sıraya alındı")
+    .replace(/sÄ±rada/g, "sırada")
+    .replace(/iÅŸleniyor/g, "işleniyor")
+    .toLocaleLowerCase("tr-TR")
+    .trim();
+};
+
+const isCompletedStatus = (status?: string) =>
+  normalizeStatusText(status).includes("tamamlandı");
+
+const isErrorStatus = (status?: string) => {
+  const normalized = normalizeStatusText(status);
+  return normalized.includes("hata oluştu") || normalized.includes("hata!");
+};
+
+const canOpenLogsForStatusChip = (status?: string) =>
+  isCompletedStatus(status) || isErrorStatus(status);
 
 const formatDosyaOlusturulmaTarihi = (value?: string) => {
   if (!value) return "";
@@ -112,6 +149,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   pendingUploadRows,
   onlyShowFinalizedRows = false,
   onServerRowsChange,
+  openLogsFromStatusChip = false,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -175,6 +213,10 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const isProcessingStatus = (status?: string) => {
     const s = (status || "").toLocaleLowerCase("tr-TR");
     return s.includes("işleniyor");
+  };
+
+  const canOpenLogsFromStatus = (status?: string) => {
+    return canOpenLogsForStatusChip(status);
   };
 
   const sameFileName = (a?: string, b?: string) => {
@@ -839,6 +881,15 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                     <Chip
                       label={row.durum}
                       size="small"
+                      clickable={openLogsFromStatusChip && canOpenLogsForStatusChip(row.durum)}
+                      onClick={
+                        openLogsFromStatusChip && canOpenLogsForStatusChip(row.durum)
+                          ? (e) => {
+                            e.stopPropagation();
+                            handlePreview(row.id, row.adi, row.durum);
+                          }
+                          : undefined
+                      }
                       color={
                         row.durum?.toLocaleLowerCase("tr-TR").includes("hata")
                           ? "error"
@@ -846,11 +897,16 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                           ? "success"
                           : "info"
                       }
+                      sx={
+                        openLogsFromStatusChip && canOpenLogsForStatusChip(row.durum)
+                          ? { cursor: "pointer", fontWeight: 600 }
+                          : undefined
+                      }
                     />
                   </TableCell>
                   <TableCell align="right">
                     <Stack direction="row" spacing={1} justifyContent="flex-end">
-                      <IconButton
+                      {!openLogsFromStatusChip && <IconButton
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -860,7 +916,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                         color="primary"
                       >
                         <IconEye size="20" />
-                      </IconButton>
+                      </IconButton>}
                       <IconButton
                         size="small"
                         onClick={(e) => {

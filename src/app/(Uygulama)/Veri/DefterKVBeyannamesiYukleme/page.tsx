@@ -974,6 +974,7 @@ const Page: React.FC = () => {
               pendingUploadRows={pendingUploadRows}
               onlyShowFinalizedRows={true}
               onServerRowsChange={handleServerRowsChange}
+              openLogsFromStatusChip={true}
             />
           </Box>
         </Grid>

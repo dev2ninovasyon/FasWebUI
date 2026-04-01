@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { usePathname } from "next/navigation";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -20,14 +20,26 @@ const SidebarItems: React.FC<Props> = ({ isSidebarHover }) => {
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf("/"));
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
-  const Menuitems: MenuitemsType[] = createMenuItems(
-    user.rol || undefined,
-    user.denetimTuru || undefined,
-    user.enflasyonmu || undefined,
-    user.konsolidemi || undefined,
-    user.bddkmi || undefined,
-    user.yil || undefined,
-    user.yetki || undefined
+  const Menuitems: MenuitemsType[] = React.useMemo(
+    () =>
+      createMenuItems(
+        user.rol || undefined,
+        user.denetimTuru || undefined,
+        user.enflasyonmu || undefined,
+        user.konsolidemi || undefined,
+        user.bddkmi || undefined,
+        user.yil || undefined,
+        user.yetki || undefined
+      ),
+    [
+      user.rol,
+      user.denetimTuru,
+      user.enflasyonmu,
+      user.konsolidemi,
+      user.bddkmi,
+      user.yil,
+      user.yetki,
+    ]
   );
 
   // Şirket seçilmediyse sadece ANASAYFA göster

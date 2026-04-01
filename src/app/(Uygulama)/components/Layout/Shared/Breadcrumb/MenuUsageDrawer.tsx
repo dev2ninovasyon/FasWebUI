@@ -84,7 +84,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
       onClose={onClose}
       PaperProps={{
         sx: {
-          width: { xs: "100%", sm: 720, lg: 860 },
+          width: { xs: "100%", md: "40%" },
           p: 0,
           maxWidth: "100%",
           fontFamily: "inherit",
@@ -95,9 +95,9 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
         <Box
           sx={{
             px: { xs: 2.5, md: 4 },
-            py: { xs: 2.5, md: 3 },
+            py: 2,
             display: "flex",
-            alignItems: "flex-start",
+            alignItems: "center",
             justifyContent: "space-between",
             background:
               theme.palette.mode === "dark"
@@ -106,37 +106,9 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
             borderBottom: `1px solid ${theme.palette.divider}`,
           }}
         >
-          <Stack spacing={2} sx={{ pr: 2, flex: 1 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 3,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "primary.main",
-                  backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.06)" : "rgba(25, 118, 210, 0.08)",
-                  border: `1px solid ${theme.palette.divider}`,
-                  flexShrink: 0,
-                }}
-              >
-                {icon || <Info size={22} />}
-              </Box>
-              <Stack spacing={0.25}>
-                <Typography variant="overline" sx={{ letterSpacing: 1.4, color: "text.secondary" }}>
-                  SAYFA KULLANIM REHBERİ
-                </Typography>
-                <Typography variant="h5" fontWeight={700} sx={{ lineHeight: 1.2 }}>
-                  {usageData?.baslik || `${title} nasıl kullanılır?`}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 560 }}>
-                  {usageData?.ozet || "Bu panel, ilgili ekranın ne amaçla kullanıldığını ve hangi adımlarla ilerlemeniz gerektiğini açıklar."}
-                </Typography>
-              </Stack>
-            </Stack>
-          </Stack>
+          <Typography variant="overline" sx={{ letterSpacing: 1.4, fontWeight: 700, color: "text.secondary" }}>
+            SAYFA KULLANIM REHBERİ
+          </Typography>
 
           <IconButton onClick={onClose} size="small" sx={{ color: "text.secondary" }}>
             <X size={18} />
@@ -144,6 +116,37 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
         </Box>
 
         <Box sx={{ flex: 1, p: { xs: 2.5, md: 3.5 }, overflowY: "auto", backgroundColor: "background.default" }}>
+          {!isLoading && (
+            <Box sx={{ mb: 3.5 }}>
+              <Stack direction="row" spacing={2.5} alignItems="flex-start">
+                <Box
+                  sx={{
+                    width: 56,
+                    height: 56,
+                    borderRadius: 3,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "primary.main",
+                    backgroundColor: theme.palette.mode === "dark" ? "rgba(144, 202, 249, 0.08)" : "rgba(25, 118, 210, 0.08)",
+                    border: `1px solid ${theme.palette.mode === "dark" ? "rgba(144, 202, 249, 0.15)" : "rgba(25, 118, 210, 0.15)"}`,
+                    flexShrink: 0,
+                  }}
+                >
+                  {icon || <Info size={24} />}
+                </Box>
+                <Stack spacing={0.75}>
+                  <Typography variant="h5" fontWeight={700} sx={{ lineHeight: 1.2, color: "text.primary" }}>
+                    {usageData?.baslik || `${title} nasıl kullanılır?`}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 640, lineHeight: 1.6 }}>
+                    {usageData?.ozet || "Bu panel, ilgili ekranın ne amaçla kullanıldığını ve hangi adımlarla ilerlemeniz gerektiğini açıklar."}
+                  </Typography>
+                </Stack>
+              </Stack>
+              <Divider sx={{ mt: 3 }} />
+            </Box>
+          )}
           {isLoading ? (
             <Paper variant="outlined" sx={{ ...sectionCardSx, textAlign: "center" }}>
                 <Typography variant="body2" color="text.secondary">

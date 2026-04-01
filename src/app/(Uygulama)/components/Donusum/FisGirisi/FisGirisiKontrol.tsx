@@ -1,5 +1,6 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import "handsontable/dist/handsontable.full.min.css";
 import { plus } from "@/utils/theme/Typography";
 import { useDispatch, useSelector } from "@/store/hooks";
@@ -15,7 +16,8 @@ import {
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Props {
@@ -23,6 +25,8 @@ interface Props {
   filterValue: string;
   setKod: (str: string) => void;
   setAd: (str: string) => void;
+  onTransfer?: (kod: string) => void;
+  highlightedKod?: string;
 }
 
 interface Veri {
@@ -36,6 +40,8 @@ const FisGirisiKontrol: React.FC<Props> = ({
   filterValue,
   setKod,
   setAd,
+  onTransfer,
+  highlightedKod,
 }) => {
   const hotTableComponent = useRef<any>(null);
 
@@ -202,7 +208,18 @@ const FisGirisiKontrol: React.FC<Props> = ({
     //color
     TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
 
-    if (row % 2 === 0) {
+    let rowHighlighted = false;
+    if (highlightedKod && hotTableComponent.current) {
+      const hot = hotTableComponent.current.hotInstance;
+      const rowData = hot.getDataAtRow(row);
+      rowHighlighted = String(rowData?.[0] ?? "") === String(highlightedKod);
+    }
+
+    if (rowHighlighted) {
+      TD.style.backgroundColor = "rgba(149, 208, 255, 0.35)";
+      TD.style.borderColor = "#4dabf5";
+      TD.style.fontWeight = "700";
+    } else if (row % 2 === 0) {
       TD.style.backgroundColor =
         customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
       TD.style.borderColor =
@@ -362,6 +379,9 @@ const FisGirisiKontrol: React.FC<Props> = ({
                 } else {
                   setKod(row[0]);
                   setAd(row[1]);
+                  if (onTransfer) {
+                    onTransfer(row[0]);
+                  }
                 }
               },
             },

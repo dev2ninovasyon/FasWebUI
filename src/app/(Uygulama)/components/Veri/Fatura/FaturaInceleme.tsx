@@ -15,6 +15,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Paper,
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "@/store/hooks";
@@ -28,6 +29,7 @@ import {
   FaturaListItem,
   FaturaSatiri,
   findInvoiceYevmiyeRowsByVkn,
+  previewFaturaHtmlNewTab,
 } from "@/api/Fatura/FaturaApi";
 import YevmiyeFaturaDialog from "@/app/(Uygulama)/components/Veri/Fatura/YevmiyeFaturaDialog";
 
@@ -55,6 +57,9 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
 
   const [listLoading, setListLoading] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
   const [detailCache, setDetailCache] = useState<Record<string, Fatura>>({});
 
@@ -132,32 +137,77 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
     void loadDetail();
   }, [selectedInvoiceId, detailCache, user]);
 
+  const selectedFatura: Fatura | null = selectedInvoiceId ? (detailCache[selectedInvoiceId] ?? null) : null;
+  const selectedPreviewUrl = selectedFatura?.faturaDosyaId ? previewUrls[selectedFatura.faturaDosyaId] : null;
+
+  useEffect(() => {
+    const loadPreview = async () => {
+      const dosyaId = selectedFatura?.faturaDosyaId;
+      if (!dosyaId) {
+        setPreviewError("Seçili faturada önizlenecek dosya bulunamadı.");
+        return;
+      }
+      if (previewUrls[dosyaId]) {
+        setPreviewError(null);
+        return;
+      }
+
+      setPreviewLoading(true);
+      setPreviewError(null);
+      try {
+        const blob = await previewFaturaHtmlNewTab(user, dosyaId);
+        const blobUrl = URL.createObjectURL(blob);
+        setPreviewUrls((prev) => ({ ...prev, [dosyaId]: blobUrl }));
+      } catch (e: any) {
+        setPreviewError(e?.message || "Fatura önizlemesi alınamadı.");
+      } finally {
+        setPreviewLoading(false);
+      }
+    };
+
+    if (selectedFatura?.faturaDosyaId && user?.token) {
+      void loadPreview();
+    } else if (selectedInvoiceId) {
+      setPreviewError("Seçili faturada önizlenecek dosya bulunamadı.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFatura?.faturaDosyaId, selectedInvoiceId, user?.token]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewUrls]);
+
   const masterRows = useMemo(
     () =>
       items.map((f) => [
         f.id,
         f.faturaNumarasi ?? "",
         (f.faturaTarihi || "").substring(0, 10).split("-").reverse().join("."),
-        f.tedarikciAd ?? "",
-        f.aliciAd ?? "",
+        currentTip === "Alınan" ? (f.tedarikciAd ?? "") : (f.aliciAd ?? ""),
         f.paraBirimi ?? "",
         f.odenecekTutar ?? 0,
       ]),
-    [items]
+    [items, currentTip]
   );
 
-  const masterHeaders = ["Id", "Fatura No", "Tarih", "Düzenleyen", "Alıcı", "PB", "Tutar"];
+  const masterHeaders = [
+    "Id",
+    "Fatura No",
+    "Tarih",
+    currentTip === "Alınan" ? "Düzenleyen" : "Alıcı",
+    "PB",
+    "Tutar",
+  ];
   const masterColumns = [
     { readOnly: true },
     { type: "text", readOnly: true },
     { type: "text", readOnly: true },
     { type: "text", readOnly: true },
     { type: "text", readOnly: true },
-    { type: "text", readOnly: true },
     { type: "numeric", readOnly: true, numericFormat: { pattern: "0,0.00", culture: "tr-TR" }, className: "htRight" },
   ];
-
-  const selectedFatura: Fatura | null = selectedInvoiceId ? (detailCache[selectedInvoiceId] ?? null) : null;
 
   const lineRows = useMemo(() => {
     const lines = (selectedFatura?.faturaSatirlari ?? []) as FaturaSatiri[];
@@ -365,7 +415,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
           </Button>
         </Grid>
 
-        <Grid size={12}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           {detailLoading && selectedInvoiceId ? (
             <Box display="flex" alignItems="center" justifyContent="center" height={280} gap={1} border="1px solid" borderColor="divider" borderRadius={1}>
               <CircularProgress size={22} />
@@ -380,10 +430,40 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
               hiddenColumns={{ columns: [0], indicators: false }}
               stretchH="all"
               rowHeaders
-              height={280}
+              height={420}
               licenseKey="non-commercial-and-evaluation"
             />
           )}
+        </Grid>
+
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Typography variant="subtitle1" mb={1}>
+            Fatura Önizleme
+          </Typography>
+          <Paper variant="outlined" sx={{ height: 420, overflow: "hidden" }}>
+            {previewLoading ? (
+              <Box display="flex" alignItems="center" justifyContent="center" height="100%" gap={1}>
+                <CircularProgress size={22} />
+                <Typography>Fatura önizlemesi yükleniyor...</Typography>
+              </Box>
+            ) : previewError ? (
+              <Box display="flex" alignItems="center" justifyContent="center" height="100%" px={3}>
+                <Typography color="text.secondary">{previewError}</Typography>
+              </Box>
+            ) : selectedPreviewUrl ? (
+              <iframe
+                title="Fatura Önizleme"
+                src={selectedPreviewUrl}
+                width="100%"
+                height="100%"
+                style={{ border: "none" }}
+              />
+            ) : (
+              <Box display="flex" alignItems="center" justifyContent="center" height="100%" px={3}>
+                <Typography color="text.secondary">Önizleme için bir fatura seçin.</Typography>
+              </Box>
+            )}
+          </Paper>
         </Grid>
       </Grid>
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { createContext, useContext, useState, useEffect, useTransition } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -17,14 +17,24 @@ export function LoadingProvider({ children }: { children: React.ReactNode }) {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        // Sayfa değiştiğinde loading'i kapat
+        // Sayfa değiştiğinde loading'i hemen kapat
         setIsLoading(false);
     }, [pathname, searchParams]);
+
+    // Global popstate (geri/ileri butonları) dinleyicisi
+    useEffect(() => {
+        const handlePopState = () => setIsLoading(false);
+        window.addEventListener("popstate", handlePopState);
+        return () => window.removeEventListener("popstate", handlePopState);
+    }, []);
 
     // isPending durumunu loading state'ine bağla
     useEffect(() => {
         if (isPending) {
             setIsLoading(true);
+        } else {
+            // Transition bittiğinde kapat (fallback)
+            setIsLoading(false);
         }
     }, [isPending]);
 

@@ -1,4 +1,4 @@
-﻿import { FC } from "react";
+import { FC } from "react";
 import { useSelector } from "@/store/hooks";
 import Link from "next/link";
 import { styled } from "@mui/material/styles";
@@ -9,6 +9,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 const Logo = () => {
   const customizer = useSelector((state: AppState) => state.customizer);
   const { setLoading } = useLoading();
+  const pathname = window.location.pathname;
   const LinkStyled = styled(Link)(() => ({
     height: customizer.TopbarHeight,
     overflow: "hidden",
@@ -17,7 +18,7 @@ const Logo = () => {
 
   if (customizer.activeDir === "ltr") {
     return (
-      <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
+      <LinkStyled href="/Anasayfa" onClick={() => { if (pathname !== "/Anasayfa") setLoading(true); }}>
         {customizer.activeMode === "dark" ? (
           <Image
             src="/images/logos/fas-logo-yazili-beyaz.png"
@@ -47,7 +48,7 @@ const Logo = () => {
   }
 
   return (
-    <LinkStyled href="/Anasayfa" onClick={() => setLoading(true)}>
+    <LinkStyled href="/Anasayfa" onClick={() => { if (pathname !== "/Anasayfa") setLoading(true); }}>
       {customizer.activeMode === "dark" ? (
         <Image
           src="/images/logos/fas-logo-yazili-beyaz.png"

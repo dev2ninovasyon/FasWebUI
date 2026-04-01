@@ -447,6 +447,57 @@ export const updateOnemlilikHesaplamaBazi = async (
   }
 };
 
+export const getOnemlilikExcelModel = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/DenetimKanitlari/OnemlilikExcelModel?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const updateOnemlilikExcelModel = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  json: any
+) => {
+  try {
+    const response = await apiFetch(
+      `/DenetimKanitlari/OnemlilikExcelModel?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "PUT",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(json),
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
 export const getMutabakat = async (
   denetciId: number,
   yil: number,

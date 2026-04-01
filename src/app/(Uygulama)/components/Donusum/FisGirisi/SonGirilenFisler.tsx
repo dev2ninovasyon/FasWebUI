@@ -368,16 +368,6 @@ const SonGirilenFisler: React.FC<Props> = ({
   }, [lastFisNo]);
 
   useEffect(() => {
-    const hotInstance = hotTableComponent.current.hotInstance;
-
-    hotInstance.updateSettings({
-      afterRenderer: afterRenderer2,
-    });
-
-    hotInstance.render();
-  }, [fetchedData]);
-
-  useEffect(() => {
     if (hotTableComponent.current) {
       const diff = customizer.isCollapse
         ? 0
@@ -429,7 +419,7 @@ const SonGirilenFisler: React.FC<Props> = ({
         licenseKey="non-commercial-and-evaluation" // For non-commercial use only
         afterGetColHeader={afterGetColHeader}
         afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
+        afterRenderer={afterRenderer2}
         contextMenu={{
           items: {
             fise_git: {
