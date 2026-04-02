@@ -29,22 +29,27 @@ const sectionCardSx = {
   borderRadius: 3,
 };
 
-const getEmbedUrl = (url?: string) => {
+const getVimeoEmbedUrl = (value?: string) => {
+  const url = String(value || "").trim();
+
   if (!url) {
     return null;
   }
 
+  if (/^\d+$/.test(url)) {
+    return `https://player.vimeo.com/video/${url}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
+  }
+
   try {
     const parsedUrl = new URL(url);
+    const pathParts = parsedUrl.pathname.split("/").filter(Boolean);
+    const videoId = pathParts[pathParts.length - 1];
 
-    if (parsedUrl.hostname.includes("youtube.com")) {
-      const videoId = parsedUrl.searchParams.get("v");
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-    }
-
-    if (parsedUrl.hostname.includes("youtu.be")) {
-      const videoId = parsedUrl.pathname.replace("/", "");
-      return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+    if (
+      (parsedUrl.hostname.includes("vimeo.com") || parsedUrl.hostname.includes("player.vimeo.com")) &&
+      videoId
+    ) {
+      return `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
     }
 
     return url;
@@ -64,7 +69,7 @@ const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }
 
 const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title, icon, usageData, isLoading }) => {
   const theme = useTheme();
-  const embedUrl = getEmbedUrl(usageData?.video?.url);
+  const videoEmbedUrl = getVimeoEmbedUrl(usageData?.video?.url);
   const hasUsageContent = Boolean(
     usageData?.kullanimNotu ||
       usageData?.kullanimSemasi?.onKosullar?.length ||
@@ -317,22 +322,20 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       borderRadius: 2,
                       border: `1px solid ${theme.palette.divider}`,
                       backgroundColor: "#000",
-                      "&::before": {
-                        content: '""',
-                        display: "block",
-                        paddingTop: "56.25%",
-                      },
+                      pt: "56.25%",
                     }}
                   >
                     <Box
                       component="iframe"
-                      src={embedUrl || usageData.video.url}
+                      src={videoEmbedUrl || usageData.video.url}
                       title={usageData.video.baslik || `${title} video anlatımı`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
                       allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
                       sx={{
                         position: "absolute",
-                        inset: 0,
+                        top: 0,
+                        left: 0,
                         width: "100%",
                         height: "100%",
                         border: 0,
