@@ -37,7 +37,7 @@ const getVimeoEmbedUrl = (value?: string) => {
   }
 
   if (/^\d+$/.test(url)) {
-    return `https://player.vimeo.com/video/${url}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
+    return `https://player.vimeo.com/video/${url}?badge=0&autopause=0&player_id=0&app_id=58479`;
   }
 
   try {
@@ -49,7 +49,7 @@ const getVimeoEmbedUrl = (value?: string) => {
       (parsedUrl.hostname.includes("vimeo.com") || parsedUrl.hostname.includes("player.vimeo.com")) &&
       videoId
     ) {
-      return `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
+      return `https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0&app_id=58479`;
     }
 
     return url;
