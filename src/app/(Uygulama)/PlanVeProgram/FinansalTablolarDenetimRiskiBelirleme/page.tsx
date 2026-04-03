@@ -2,8 +2,7 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import { Box, Button, Grid, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
-import { IconDotsVertical } from "@tabler/icons-react";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import FinansalTablolarDenetimRiskiBelirlemeBelge from "@/app/(Uygulama)/components/CalismaKagitlari/FinansalTablolarDenetimRiskiBelirlemeBelge";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton"
@@ -19,11 +18,6 @@ const BCrumb = [
 ];
 
 const Page = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(anchorEl);
-
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tamamlanan, setTamamlanan] = useState(0);
@@ -37,90 +31,59 @@ const Page = () => {
         title="Finansal Tablolar Denetim Riski Belirleme"
         items={BCrumb}
       >
-        <>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
+        <Box sx={{ width: "100%", px: { xs: 1, md: 0 } }}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={1.5}
+            alignItems={{ xs: "stretch", sm: "center" }}
+            justifyContent="space-between"
+            sx={{ width: "100%" }}
           >
-            <Grid
+            <Typography
+              variant="body1"
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
+                textAlign: { xs: "left", sm: "right" },
+                fontWeight: 600,
+                whiteSpace: "nowrap",
               }}
-              size={{
-                xs: 12,
-                md: 3.8,
-                lg: 3.8
-              }}>
-              <Typography
-                variant="body1"
-                sx={{
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                  textAlign: "center",
-                }}
-              >
-                {tamamlanan}/{toplam} Tamamlandı
-              </Typography>
-            </Grid>
-            <Grid
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              size={{
-                xs: 5.8,
-                md: 3.8,
-                lg: 3.8
-              }}>
-              <EkBelgeYukleButton
-                formKodu={controller}
-                fullWidth={false}           // sağda küçük buton
-                text="Belge Yükle"
-              />
-            </Grid>
-            <Grid
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              size={{
-                xs: 5.8,
-                md: 3.8,
-                lg: 3.8
-              }}>
+            >
+              {tamamlanan}/{toplam} Tamamlandı
+            </Typography>
+
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={1.5}
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
+              <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
+                <EkBelgeYukleButton
+                  formKodu={controller}
+                  fullWidth={false}
+                  text="Belge Yükle"
+                />
+              </Box>
+
               <Button
                 size="medium"
                 variant="outlined"
                 color="primary"
                 disabled={isClickedVarsayilanaDon}
                 onClick={() => setIsClickedVarsayilanaDon(true)}
-                sx={{ width: "100%" }}
+                sx={{ width: { xs: "100%", sm: "auto" }, minWidth: { sm: 160 } }}
               >
-                <Typography
-                  variant="body1"
-                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                >
+                <Typography variant="body1" sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}>
                   Varsayılana Dön
                 </Typography>
               </Button>
-            </Grid>
-          </Grid>
-        </>
+            </Stack>
+          </Stack>
+        </Box>
       </Breadcrumb>
       <PageContainer
         title="Finansal Tablolar Denetim Riski Belirleme"
         description="this is Finansal Tablolar Denetim Riski Belirleme"
       >
-        <Box>
+        <Box sx={{ width: "100%", maxWidth: "100%", overflowX: "hidden" }}>
           <FinansalTablolarDenetimRiskiBelirlemeBelge
             controller={controller}
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}

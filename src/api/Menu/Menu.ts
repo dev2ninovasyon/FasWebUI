@@ -50,6 +50,7 @@ export interface MenuUsagePanel {
   baslik?: string;
   ozet?: string;
   kullanimNotu?: string;
+  icerikHtml?: string;
   kullanimAdimlari: string[];
   dikkatEdilecekler: string[];
   sikSorulanSorular: MenuUsageQuestion[];

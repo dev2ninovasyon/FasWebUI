@@ -40,22 +40,43 @@ const getVimeoEmbedUrl = (value?: string) => {
     return `https://player.vimeo.com/video/${url}?badge=0&autopause=0&player_id=0&app_id=58479`;
   }
 
+  const iframeSrcMatch = url.match(/src=["']([^"']+)["']/i);
+  const candidateUrl = iframeSrcMatch?.[1] || url;
+
   try {
-    const parsedUrl = new URL(url);
+    const parsedUrl = new URL(candidateUrl);
     const pathParts = parsedUrl.pathname.split("/").filter(Boolean);
-    const videoId = pathParts[pathParts.length - 1];
+    const videoId = pathParts.find((item) => /^\d+$/.test(item)) || pathParts[pathParts.length - 1];
 
     if (
       (parsedUrl.hostname.includes("vimeo.com") || parsedUrl.hostname.includes("player.vimeo.com")) &&
-      videoId
+      /^\d+$/.test(videoId || "")
     ) {
       return `https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0&app_id=58479`;
     }
 
-    return url;
+    return candidateUrl;
   } catch {
-    return url;
+    return candidateUrl;
   }
+};
+
+const formatUsageDate = (value?: string) => {
+  if (!value) {
+    return "-";
+  }
+
+  const parsedDate = new Date(value);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(parsedDate);
 };
 
 const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
@@ -70,8 +91,15 @@ const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }
 const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title, icon, usageData, isLoading }) => {
   const theme = useTheme();
   const videoEmbedUrl = getVimeoEmbedUrl(usageData?.video?.url);
-  const hasUsageContent = Boolean(
+  const hasManualContent = Boolean(
     usageData?.kullanimNotu ||
+      usageData?.kullanimAdimlari?.length ||
+      usageData?.dikkatEdilecekler?.length ||
+      usageData?.sikSorulanSorular?.length
+  );
+  const hasUsageContent = Boolean(
+    hasManualContent ||
+      usageData?.kullanimNotu ||
       usageData?.kullanimSemasi?.onKosullar?.length ||
       usageData?.kullanimSemasi?.buSayfadaYapacaklariniz?.length ||
       usageData?.kullanimSemasi?.sonrakiAdimlar?.length ||
@@ -134,7 +162,6 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                     justifyContent: "center",
                     color: "primary.main",
                     backgroundColor: theme.palette.mode === "dark" ? "rgba(144, 202, 249, 0.08)" : "rgba(25, 118, 210, 0.08)",
-                    border: `1px solid ${theme.palette.mode === "dark" ? "rgba(144, 202, 249, 0.15)" : "rgba(25, 118, 210, 0.15)"}`,
                     flexShrink: 0,
                   }}
                 >
@@ -165,7 +192,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Clock3 size={16} color={theme.palette.text.secondary} />
                     <Typography variant="caption" color="text.secondary">
-                      Son güncelleme: {new Date(usageData.eklenmeTarihi).toLocaleDateString("tr-TR")}
+                      Son güncelleme: {formatUsageDate(usageData.eklenmeTarihi)}
                     </Typography>
                   </Stack>
                   <Chip label={`${usageData.hitCount} görüntüleme`} size="small" variant="outlined" />
@@ -181,7 +208,8 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                 </Paper>
               )}
 
-              {!!usageData.kullanimSemasi &&
+              {!hasManualContent &&
+                !!usageData.kullanimSemasi &&
                 (usageData.kullanimSemasi.onKosullar.length > 0 ||
                   usageData.kullanimSemasi.buSayfadaYapacaklariniz.length > 0 ||
                   usageData.kullanimSemasi.sonrakiAdimlar.length > 0 ||
@@ -299,7 +327,6 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                   </Stack>
                 </Paper>
               )}
-
               {usageData.hasVideo && usageData.video?.url && (
                 <Paper variant="outlined" sx={sectionCardSx}>
                   <SectionHeader icon={<Clapperboard size={18} />} title="Anlatım Videosu" />
@@ -320,7 +347,6 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       width: "100%",
                       overflow: "hidden",
                       borderRadius: 2,
-                      border: `1px solid ${theme.palette.divider}`,
                       backgroundColor: "#000",
                       pt: "56.25%",
                     }}
@@ -366,7 +392,6 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      border: `1px solid ${theme.palette.divider}`,
                       color: "text.secondary",
                     }}
                   >
@@ -381,7 +406,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                     </Typography>
                   </Box>
                 </Stack>
-                <Alert severity="info" variant="outlined" sx={{ borderRadius: 2 }}>
+                <Alert severity="info" sx={{ borderRadius: 2 }}>
                   Sayfa bazlı kullanım adımları, dikkat notları ve istenirse video bağlantısı tanımlandığında burada otomatik görünecek.
                 </Alert>
               </Paper>
@@ -411,7 +436,6 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  border: `1px solid ${theme.palette.divider}`,
                   color: "text.secondary",
                 }}
               >

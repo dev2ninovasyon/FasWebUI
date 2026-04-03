@@ -310,7 +310,7 @@ const CalismaKagidiRaporu = () => {
                     user.denetlenenId || 0,
                     user.yil || 0
                 );
-                data = allRiskData.filter((r: any) => normalizeString(r.finansalTabloHesaplar) === normalizeString(pName));
+                data = allRiskData.filter((r: any) => normalizeString(r.hesapAdi || r.finansalTabloHesaplar) === normalizeString(pName));
 
             } else if (
                 normalizedItemName.includes("uygulanandenetimprosedurleri") ||
@@ -988,29 +988,56 @@ const CalismaKagidiRaporu = () => {
                         <Table size="small">
                             <TableHead>
                                 <TableRow sx={{ bgcolor: theme.palette.action.hover }}>
-                                    <TableCell>Risk Alanı</TableCell>
-                                    <TableCell>Tam Olma</TableCell>
+                                    <TableCell>Kod</TableCell>
+                                    <TableCell>Hesap Adı</TableCell>
+                                    <TableCell>Bakiye (TL)</TableCell>
+                                    <TableCell>Yüzde</TableCell>
+                                    <TableCell>Fiş Sayısı</TableCell>
+                                    <TableCell>Kalem Riski</TableCell>
+                                    <TableCell>Denetçi Kanaati</TableCell>
+                                    <TableCell>Tamlık</TableCell>
                                     <TableCell>Doğruluk</TableCell>
                                     <TableCell>Var Olma</TableCell>
                                     <TableCell>Değerleme</TableCell>
-                                    <TableCell>Dönem.</TableCell>
-                                    <TableCell>Geçer.</TableCell>
+                                    <TableCell>Dönemsellik</TableCell>
+                                    <TableCell>Geçerlilik</TableCell>
                                     <TableCell>Sunum</TableCell>
+                                    <TableCell>Hile Riski</TableCell>
+                                    <TableCell>Nic. Önemli</TableCell>
+                                    <TableCell>K.Testi</TableCell>
+                                    <TableCell>Analitik</TableCell>
+                                    <TableCell>Detay</TableCell>
+                                    <TableCell>BDS Ref</TableCell>
+                                    <TableCell>Öncelikli Teknikler</TableCell>
+                                    <TableCell>Not / Risk Açıklaması</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {detail.data.map((row: any, i: number) => {
-                                    const level = (val: string) => val === "3" ? "Yüksek" : val === "2" ? "Orta" : val === "1" ? "Önemsiz" : "Yok";
                                     return (
                                         <TableRow key={row.id || i}>
-                                            <TableCell>{row.finansalTabloHesaplar}</TableCell>
-                                            <TableCell>{level(row.tamOlma)}</TableCell>
-                                            <TableCell>{level(row.dogruluk)}</TableCell>
-                                            <TableCell>{level(row.varOlma)}</TableCell>
-                                            <TableCell>{level(row.degerleme)}</TableCell>
-                                            <TableCell>{level(row.donemsellik)}</TableCell>
-                                            <TableCell>{level(row.gecerlilik)}</TableCell>
-                                            <TableCell>{level(row.sunumVeAciklama)}</TableCell>
+                                            <TableCell>{row.kebirKodu ?? "-"}</TableCell>
+                                            <TableCell>{row.hesapAdi || row.finansalTabloHesaplar || "-"}</TableCell>
+                                            <TableCell>{row.bakiyeTl ?? "-"}</TableCell>
+                                            <TableCell>{row.yuzde ?? "-"}</TableCell>
+                                            <TableCell>{row.fisSayisi ?? "-"}</TableCell>
+                                            <TableCell>{row.kalemRiski || "-"}</TableCell>
+                                            <TableCell>{row.denetciKanaati || "-"}</TableCell>
+                                            <TableCell>{row.tamlik || row.tamOlma || "-"}</TableCell>
+                                            <TableCell>{row.dogruluk || "-"}</TableCell>
+                                            <TableCell>{row.varOlma || "-"}</TableCell>
+                                            <TableCell>{row.degerleme || "-"}</TableCell>
+                                            <TableCell>{row.donemsellik || "-"}</TableCell>
+                                            <TableCell>{row.gecerlilik || "-"}</TableCell>
+                                            <TableCell>{row.sunum || row.sunumVeAciklama || "-"}</TableCell>
+                                            <TableCell>{row.hileRiski || "-"}</TableCell>
+                                            <TableCell>{row.nicelOnemlilik || "-"}</TableCell>
+                                            <TableCell>{row.kontrolTesti || "-"}</TableCell>
+                                            <TableCell>{row.analitik || "-"}</TableCell>
+                                            <TableCell>{row.detay || "-"}</TableCell>
+                                            <TableCell>{row.bdsReferans || "-"}</TableCell>
+                                            <TableCell>{row.oncelikliTeknikler || "-"}</TableCell>
+                                            <TableCell>{row.notRiskAciklamasi || "-"}</TableCell>
                                         </TableRow>
                                     );
                                 })}

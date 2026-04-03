@@ -150,9 +150,9 @@ export const createCalismaKagidiVerisi = async (
     });
 
     if (response.ok) {
-      return true;
+      return response.json();
     } else {
-      return false;
+      return null;
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);

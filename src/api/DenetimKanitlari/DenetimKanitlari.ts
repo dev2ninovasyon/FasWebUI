@@ -468,6 +468,7 @@ export const getOnemlilikExcelModel = async (
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    throw error;
   }
 };
 
@@ -495,6 +496,85 @@ export const updateOnemlilikExcelModel = async (
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    throw error;
+  }
+};
+
+export const previewOnemlilikExcelModel = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  json: any
+) => {
+  try {
+    const response = await apiFetch(
+      `/DenetimKanitlari/OnemlilikExcelModel/Preview?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(json),
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    throw error;
+  }
+};
+
+export const resetOnemlilikExcelModel = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/DenetimKanitlari/OnemlilikExcelModel?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "DELETE",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    throw error;
+  }
+};
+
+export const restorePreviousOnemlilikExcelModel = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/DenetimKanitlari/OnemlilikExcelModel/RestorePrevious?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      return response.json();
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    throw error;
   }
 };
 

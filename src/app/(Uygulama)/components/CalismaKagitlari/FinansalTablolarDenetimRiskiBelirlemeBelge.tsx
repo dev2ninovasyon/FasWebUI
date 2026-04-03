@@ -1,54 +1,71 @@
-﻿import React, { useEffect, useState, useCallback } from "react";
+"use client";
+
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   Box,
-  Checkbox,
+  Chip,
+  CircularProgress,
+  Collapse,
   Divider,
+  FormControl,
   Grid,
-  IconButton,
   MenuItem,
+  Paper,
+  Select,
+  Snackbar,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
-import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
-import { IconX } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
-import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
-import IslemlerCard from "./Cards/IslemlerCard";
 import { useSelector } from "@/store/hooks";
 import {
-  createCalismaKagidiVerisi,
   deleteAllCalismaKagidiVerileri,
-  deleteCalismaKagidiVerisiById,
   getCalismaKagidiVerileriByDenetciDenetlenenYil,
   updateCalismaKagidiVerisi,
 } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import { ConfirmPopUpComponent } from "./ConfirmPopUp";
-import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
-import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
+import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
+
+type RiskOption = 1 | 2 | 3;
 
 interface Veri {
   id: number;
-  dipnotNo: string;
-  finansalTabloHesaplar: string;
-  cari: boolean;
-  onceki: boolean;
-  gecmis: boolean;
-  tamOlma: string;
-  dogruluk: string;
-  varOlma: string;
-  degerleme: string;
-  donemsellik: string;
-  gecerlilik: string;
-  sunumVeAciklama: string;
-  onemsizRisk: boolean;
-  ciddiRisk: boolean;
-  referans: boolean;
-  kontrollerinEtkinligininTestEdilmesi: boolean;
-  analitikProsedurler: boolean;
-  detayTestler: boolean;
-  genelDenetimYaklasimi: boolean;
-  standartMi: boolean;
+  siraNo?: number | null;
+  kebirKodu?: number | null;
+  hesapAdi?: string | null;
+  bakiyeTl?: number | null;
+  yuzde?: number | null;
+  mizanPayYuzdesi?: number | null;
+  fisSayisi?: number | null;
+  kalemRiski?: string | null;
+  denetciKanaati?: string | null;
+  tamlik?: string | null;
+  dogruluk?: string | null;
+  varOlma?: string | null;
+  degerleme?: string | null;
+  donemsellik?: string | null;
+  gecerlilik?: string | null;
+  sunum?: string | null;
+  hileRiski?: string | null;
+  nicelOnemlilik?: string | null;
+  kontrolTesti?: string | null;
+  analitik?: string | null;
+  detay?: string | null;
+  bdsReferans?: string | null;
+  oncelikliTeknikler?: string | null;
+  notRiskAciklamasi?: string | null;
+  raporlamaStandardi?: string | null;
+  riskSeviyeKodu?: RiskOption | null;
+  standartmi?: boolean | null;
 }
 
 interface CalismaKagidiProps {
@@ -59,1648 +76,875 @@ interface CalismaKagidiProps {
   setToplam: (deger: number) => void;
 }
 
-const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<
-  CalismaKagidiProps
-> = ({
+const riskLabels: Record<RiskOption, string> = {
+  1: "Düşük",
+  2: "Orta",
+  3: "Yüksek",
+};
+
+const blueHeader = "#243f70";
+const borderColor = "#b7c1d6";
+
+const headerCellSx = {
+  backgroundColor: blueHeader,
+  color: "#ffffff",
+  border: `1px solid ${borderColor}`,
+  fontWeight: 800,
+  textAlign: "center",
+  whiteSpace: "nowrap",
+  py: 1.5,
+};
+
+const bodyCellBaseSx = {
+  border: `1px solid ${borderColor}`,
+  py: 0.75,
+  px: 1,
+  fontSize: "0.9rem",
+  lineHeight: 1.2,
+};
+
+const detailCardSx = {
+  p: 2,
+  borderRadius: 2,
+  background: "linear-gradient(180deg, #f7f9fd 0%, #edf2fb 100%)",
+  border: "1px solid #d8e1f2",
+  minHeight: 130,
+};
+
+const assertionCardSx = {
+  p: 2,
+  borderRadius: 2,
+  backgroundColor: "#ffffff",
+  border: "1px solid #d8e1f2",
+  height: "100%",
+};
+
+const formatNumber = (value?: number | null) => {
+  if (value === null || value === undefined) {
+    return "-";
+  }
+
+  return new Intl.NumberFormat("tr-TR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(value);
+};
+
+const formatPercent = (value?: number | null) => {
+  if (value === null || value === undefined) {
+    return "-";
+  }
+
+  return `%${formatNumber(value)}`;
+};
+
+const getRiskCode = (row: Veri): RiskOption => {
+  if (row.riskSeviyeKodu && row.riskSeviyeKodu >= 1 && row.riskSeviyeKodu <= 3) {
+    return row.riskSeviyeKodu;
+  }
+
+  const normalized = row.denetciKanaati?.toLocaleLowerCase("tr-TR");
+  if (normalized === "düşük" || normalized === "dusuk") return 1;
+  if (normalized === "orta") return 2;
+  return 3;
+};
+
+const getRiskCellColor = (value?: string | null) => {
+  const normalized = value?.toLocaleLowerCase("tr-TR") ?? "";
+
+  if (normalized.includes("yüksek") || normalized.includes("yuksek")) {
+    return { backgroundColor: "#fde1d5", color: "#a65200", fontWeight: 700 };
+  }
+
+  if (normalized.includes("orta")) {
+    return { backgroundColor: "#fdeebd", color: "#8d6400", fontWeight: 700 };
+  }
+
+  if (normalized.includes("düşük") || normalized.includes("dusuk")) {
+    return { backgroundColor: "#dff0da", color: "#41632f", fontWeight: 700 };
+  }
+
+  return {};
+};
+
+const getAssertionCellColor = (value?: string | null) => {
+  const normalized = value?.toLocaleLowerCase("tr-TR") ?? "";
+
+  if (normalized.includes("çok önemli") || normalized.includes("cok onemli")) {
+    return { backgroundColor: "#fff0ef", color: "#de1d1d", fontWeight: 800 };
+  }
+
+  if (normalized.includes("önemli") || normalized.includes("onemli")) {
+    return { backgroundColor: "#fff3cf", color: "#9a6a00", fontWeight: 700 };
+  }
+
+  return { backgroundColor: "#f8f8f8", color: "#5f6470" };
+};
+
+const getIndicatorCellColor = (value?: string | null, mode: "red" | "green" | "light" = "light") => {
+  const normalized = value?.toLocaleLowerCase("tr-TR") ?? "";
+  const active =
+    normalized.includes("var") ||
+    normalized.includes("önemli") ||
+    normalized.includes("onemli") ||
+    normalized.includes("✔");
+
+  if (!active) {
+    return {
+      backgroundColor: mode === "green" ? "#496c2f" : "#fafafa",
+      color: mode === "green" ? "#f3f5ee" : "#6f6f6f",
+      fontWeight: 700,
+    };
+  }
+
+  if (mode === "red") {
+    return { backgroundColor: "#d91010", color: "#ffffff", fontWeight: 800 };
+  }
+
+  if (mode === "green") {
+    return { backgroundColor: "#3f6428", color: "#ffffff", fontWeight: 800 };
+  }
+
+  return { backgroundColor: "#ffffff", color: "#111111", fontWeight: 700 };
+};
+
+const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> = ({
   controller,
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
   setTamamlanan,
   setToplam,
 }) => {
-    const user = useSelector((state: AppState) => state.userReducer);
-    const customizer = useSelector((state: AppState) => state.customizer);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const isCompactScreen = useMediaQuery(theme.breakpoints.down("lg"));
+  const user = useSelector((state: AppState) => state.userReducer);
+  const [veriler, setVeriler] = useState<Veri[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [savingId, setSavingId] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [warningMessage, setWarningMessage] = useState("");
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
-    const [selectedId, setSelectedId] = useState(0);
-    const [selectedDipnotNo, setSelectedDipnotNo] = useState("0");
-    const [selectedFinansalTabloHesaplar, setSelectedFinansalTabloHesaplar] =
-      useState("");
-    const [selectedCari, setSelectedCari] = useState(false);
-    const [selectedOnceki, setSelectedOnceki] = useState(false);
-    const [selectedGecmis, setSelectedGecmis] = useState(false);
-    const [selectedTamOlma, setSelectedTamOlma] = useState("0");
-    const [selectedDogruluk, setSelectedDogruluk] = useState("0");
-    const [selectedVarOlma, setSelectedVarOlma] = useState("0");
-    const [selectedDegerleme, setSelectedDegerleme] = useState("0");
-    const [selectedDonemsellik, setSelectedDonemsellik] = useState("0");
-    const [selectedGecerlilik, setSelectedGecerlilik] = useState("0");
-    const [selectedSunumVeAciklama, setSelectedSunumVeAciklama] = useState("0");
-    const [selectedOnemsizRisk, setSelectedOnemsizRisk] = useState(false);
-    const [selectedCiddiRisk, setSelectedCiddiRisk] = useState(false);
-    const [selectedReferans, setSelectedReferans] = useState(false);
-    const [
-      selectedKontrollerinEtkinligininTestEdilmesi,
-      setSelectedKontrollerinEtkinligininTestEdilmesi,
-    ] = useState(false);
-    const [selectedAnalitikProsedurler, setSelectedAnalitikProsedurler] =
-      useState(false);
-    const [selectedDetayTestler, setSelectedDetayTestler] = useState(false);
-    const [selectedGenelDenetimYaklasimi, setSelectedGenelDenetimYaklasimi] =
-      useState(false);
-    const [selectedStandartMi, setSelectedStandartMi] = useState(true);
+  const applyRows = useCallback(
+    (rows: Veri[]) => {
+      const sortedRows = [...rows].sort(
+        (a, b) => (a.siraNo || 0) - (b.siraNo || 0) || (a.kebirKodu || 0) - (b.kebirKodu || 0)
+      );
 
-    const [veriler, setVeriler] = useState<Veri[]>([]);
+      setVeriler(sortedRows);
+      setToplam(sortedRows.length);
+      setTamamlanan(sortedRows.filter((row) => row.standartmi === false).length);
+    },
+    [setTamamlanan, setToplam]
+  );
 
-    const [isNew, setIsNew] = useState(false);
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
+        controller,
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0
+      );
 
-    const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+      const resultPayload = result as { data?: Veri[]; warnings?: string[] } | Veri[] | null | undefined;
+      const rows = Array.isArray(resultPayload) ? resultPayload : (resultPayload?.data || []);
+      const warnings = Array.isArray(resultPayload) ? [] : (resultPayload?.warnings || []);
 
-    const fetchData = useCallback(async () => {
+      applyRows(rows);
+      if (warnings.length) {
+        setWarningMessage(warnings.join(" "));
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Veriler yüklenirken bir hata oluştu.");
+    } finally {
+      setLoading(false);
+    }
+  }, [applyRows, controller, user.denetciId, user.denetlenenId, user.yil]);
+
+  const handleRiskChange = useCallback(
+    async (row: Veri, riskSeviyeKodu: RiskOption) => {
+      setSavingId(row.id);
       try {
-        const calismaKagidiVerileri =
-          await getCalismaKagidiVerileriByDenetciDenetlenenYil(
-            controller || "",
-            user.denetciId || 0,
-            user.denetlenenId || 0,
-            user.yil || 0
-          );
-
-        const rowsAll: any = [];
-
-        const tamamlanan: any[] = [];
-        const toplam: any[] = [];
-
-        calismaKagidiVerileri.forEach((veri: any) => {
-          const newRow: Veri = {
-            id: veri.id,
-            dipnotNo: veri.dipnotNo,
-            finansalTabloHesaplar: veri.finansalTabloHesaplar,
-            cari: veri.cari,
-            onceki: veri.onceki,
-            gecmis: veri.gecmis,
-            tamOlma: veri.tamOlma,
-            dogruluk: veri.dogruluk,
-            varOlma: veri.varOlma,
-            degerleme: veri.degerleme,
-            donemsellik: veri.donemsellik,
-            gecerlilik: veri.gecerlilik,
-            sunumVeAciklama: veri.sunumVeAciklama,
-            onemsizRisk: veri.onemsizRisk,
-            ciddiRisk: veri.ciddiRisk,
-            referans: veri.referans,
-            kontrollerinEtkinligininTestEdilmesi:
-              veri.kontrollerinEtkinligininTestEdilmesi,
-            analitikProsedurler: veri.analitikProsedurler,
-            detayTestler: veri.detayTestler,
-            genelDenetimYaklasimi: veri.genelDenetimYaklasimi,
-            standartMi: veri.standartmi,
-          };
-          rowsAll.push(newRow);
-
-          if (newRow.standartMi) {
-            toplam.push(newRow);
-          } else {
-            tamamlanan.push(newRow);
-            toplam.push(newRow);
-          }
+        const result = await updateCalismaKagidiVerisi(controller, row.id, {
+          siraNo: row.siraNo,
+          kebirKodu: row.kebirKodu,
+          hesapAdi: row.hesapAdi,
+          bakiyeTl: row.bakiyeTl,
+          yuzde: row.yuzde,
+          mizanPayYuzdesi: row.mizanPayYuzdesi,
+          fisSayisi: row.fisSayisi,
+          raporlamaStandardi: row.raporlamaStandardi,
+          riskSeviyeKodu,
+          denetciKanaati: riskLabels[riskSeviyeKodu],
         });
-        setVeriler(rowsAll);
 
-        setToplam(toplam.length);
-        setTamamlanan(tamamlanan.length);
-      } catch (error) {
-        console.log("Bir hata oluştu:", error);
-      }
-    }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, setToplam, setTamamlanan]);
-
-    const handleCreate = async (
-      dipnotNo: string,
-      finansalTabloHesaplar: string,
-      cari: boolean,
-      onceki: boolean,
-      gecmis: boolean,
-      tamOlma: string,
-      dogruluk: string,
-      varOlma: string,
-      degerleme: string,
-      donemsellik: string,
-      gecerlilik: string,
-      sunumVeAciklama: string,
-      onemsizRisk: boolean,
-      ciddiRisk: boolean,
-      referans: boolean,
-      kontrollerinEtkinligininTestEdilmesi: boolean,
-      analitikProsedurler: boolean,
-      detayTestler: boolean,
-      genelDenetimYaklasimi: boolean
-    ) => {
-      const createdCalismaKagidiVerisi = {
-        denetlenenId: user.denetlenenId,
-        denetciId: user.denetciId,
-        yil: user.yil,
-        dipnotNo: dipnotNo,
-        finansalTabloHesaplar: finansalTabloHesaplar,
-        cari: cari,
-        onceki: onceki,
-        gecmis: gecmis,
-        tamOlma: tamOlma,
-        dogruluk: dogruluk,
-        varOlma: varOlma,
-        degerleme: degerleme,
-        donemsellik: donemsellik,
-        gecerlilik: gecerlilik,
-        sunumVeAciklama: sunumVeAciklama,
-        onemsizRisk: onemsizRisk,
-        ciddiRisk: ciddiRisk,
-        referans: referans,
-        kontrollerinEtkinligininTestEdilmesi:
-          kontrollerinEtkinligininTestEdilmesi,
-        analitikProsedurler: analitikProsedurler,
-        detayTestler: detayTestler,
-        genelDenetimYaklasimi: genelDenetimYaklasimi,
-      };
-      try {
-        const result = await createCalismaKagidiVerisi(
-          controller || "",
-          createdCalismaKagidiVerisi
-        );
-        if (result) {
-          fetchData();
-          handleClosePopUp();
-          setIsNew(false);
-        } else {
-          console.log("Çalışma Kağıdı Verisi ekleme başarısız");
+        const updatedRow = result as Veri | null | undefined;
+        if (!updatedRow) {
+          setErrorMessage("Satır güncellenemedi.");
+          return;
         }
-      } catch (error) {
-        console.log("Bir hata oluştu:", error);
-      }
-    };
 
-    const handleUpdate = async (
-      dipnotNo: string,
-      finansalTabloHesaplar: string,
-      cari: boolean,
-      onceki: boolean,
-      gecmis: boolean,
-      tamOlma: string,
-      dogruluk: string,
-      varOlma: string,
-      degerleme: string,
-      donemsellik: string,
-      gecerlilik: string,
-      sunumVeAciklama: string,
-      onemsizRisk: boolean,
-      ciddiRisk: boolean,
-      referans: boolean,
-      kontrollerinEtkinligininTestEdilmesi: boolean,
-      analitikProsedurler: boolean,
-      detayTestler: boolean,
-      genelDenetimYaklasimi: boolean
-    ) => {
-      const updatedCalismaKagidiVerisi = veriler.find(
-        (veri) => veri.id === selectedId
-      );
-      if (updatedCalismaKagidiVerisi) {
-        updatedCalismaKagidiVerisi.dipnotNo = dipnotNo;
-        updatedCalismaKagidiVerisi.finansalTabloHesaplar = finansalTabloHesaplar;
-        updatedCalismaKagidiVerisi.cari = cari;
-        updatedCalismaKagidiVerisi.onceki = onceki;
-        updatedCalismaKagidiVerisi.gecmis = gecmis;
-        updatedCalismaKagidiVerisi.tamOlma = tamOlma;
-        updatedCalismaKagidiVerisi.dogruluk = dogruluk;
-        updatedCalismaKagidiVerisi.varOlma = varOlma;
-        updatedCalismaKagidiVerisi.degerleme = degerleme;
-        updatedCalismaKagidiVerisi.donemsellik = donemsellik;
-        updatedCalismaKagidiVerisi.gecerlilik = gecerlilik;
-        updatedCalismaKagidiVerisi.sunumVeAciklama = sunumVeAciklama;
-        updatedCalismaKagidiVerisi.onemsizRisk = onemsizRisk;
-        updatedCalismaKagidiVerisi.ciddiRisk = ciddiRisk;
-        updatedCalismaKagidiVerisi.referans = referans;
-        updatedCalismaKagidiVerisi.kontrollerinEtkinligininTestEdilmesi =
-          kontrollerinEtkinligininTestEdilmesi;
-        updatedCalismaKagidiVerisi.analitikProsedurler = analitikProsedurler;
-        updatedCalismaKagidiVerisi.detayTestler = detayTestler;
-        updatedCalismaKagidiVerisi.genelDenetimYaklasimi = genelDenetimYaklasimi;
-
-        try {
-          const result = await updateCalismaKagidiVerisi(
-            controller || "",
-            selectedId,
-            updatedCalismaKagidiVerisi
+        setVeriler((currentRows) => {
+          const nextRows = currentRows.map((currentRow) =>
+            currentRow.id === row.id ? { ...currentRow, ...updatedRow } : currentRow
           );
-          if (result) {
-            fetchData();
-            handleClosePopUp();
-          } else {
-            console.log("Çalışma Kağıdı Verisi düzenleme başarısız");
-          }
-        } catch (error) {
-          console.log("Bir hata oluştu:", error);
-        }
-      }
-    };
+          const sortedRows = [...nextRows].sort(
+            (a, b) => (a.siraNo || 0) - (b.siraNo || 0) || (a.kebirKodu || 0) - (b.kebirKodu || 0)
+          );
 
-    const handleDelete = async () => {
-      try {
-        const result = await deleteCalismaKagidiVerisiById(
-          controller || "",
-          selectedId
-        );
-        if (result) {
-          fetchData();
-          handleClosePopUp();
-        } else {
-          console.log("Çalışma Kağıdı Verisi silme başarısız");
-        }
+          setToplam(sortedRows.length);
+          setTamamlanan(sortedRows.filter((currentRow) => currentRow.standartmi === false).length);
+          return sortedRows;
+        });
       } catch (error) {
-        console.log("Bir hata oluştu:", error);
+        console.error(error);
+        setErrorMessage("Satır güncellenirken bir hata oluştu.");
+      } finally {
+        setSavingId(null);
       }
-    };
+    },
+    [controller, setTamamlanan, setToplam]
+  );
 
-    const handleDeleteAll = useCallback(async () => {
-      try {
-        const result = await deleteAllCalismaKagidiVerileri(
-          controller || "",
-          user.denetciId || 0,
-          user.denetlenenId || 0,
-          user.yil || 0
-        );
-        if (result) {
-          fetchData();
-        } else {
-          console.log("Çalışma Kağıdı Verileri silme başarısız");
-        }
-      } catch (error) {
-        console.log("Bir hata oluştu:", error);
-      }
-    }, [controller, user.token, user.denetciId, user.denetlenenId, user.yil, fetchData]);
-
-
-
-    const handleCardClick = (veri: any) => {
-      setSelectedId(veri.id);
-      setSelectedDipnotNo(veri.dipnotNo);
-      setSelectedFinansalTabloHesaplar(veri.finansalTabloHesaplar);
-      setSelectedCari(veri.cari);
-      setSelectedOnceki(veri.onceki);
-      setSelectedGecmis(veri.gecmis);
-      setSelectedTamOlma(veri.tamOlma);
-      setSelectedDogruluk(veri.dogruluk);
-      setSelectedVarOlma(veri.varOlma);
-      setSelectedDegerleme(veri.degerleme);
-      setSelectedDonemsellik(veri.donemsellik);
-      setSelectedGecerlilik(veri.gecerlilik);
-      setSelectedSunumVeAciklama(veri.sunumVeAciklama);
-      setSelectedOnemsizRisk(veri.onemsizRisk);
-      setSelectedCiddiRisk(veri.ciddiRisk);
-      setSelectedReferans(veri.referans);
-      setSelectedKontrollerinEtkinligininTestEdilmesi(
-        veri.kontrollerinEtkinligininTestEdilmesi
+  const handleDeleteAll = useCallback(async () => {
+    try {
+      const result = await deleteAllCalismaKagidiVerileri(
+        controller,
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0
       );
-      setSelectedAnalitikProsedurler(veri.analitikProsedurler);
-      setSelectedDetayTestler(veri.detayTestler);
-      setSelectedGenelDenetimYaklasimi(veri.genelDenetimYaklasimi);
-      setSelectedStandartMi(veri.standartMi);
-      setIsPopUpOpen(true);
-    };
 
-    const handleNew = () => {
-      setIsNew(true);
-      setSelectedDipnotNo("");
-      setSelectedFinansalTabloHesaplar("");
-      setSelectedCari(false);
-      setSelectedOnceki(false);
-      setSelectedGecmis(false);
-      setSelectedTamOlma("0");
-      setSelectedDogruluk("0");
-      setSelectedVarOlma("0");
-      setSelectedDegerleme("0");
-      setSelectedDonemsellik("0");
-      setSelectedGecerlilik("0");
-      setSelectedSunumVeAciklama("0");
-      setSelectedOnemsizRisk(false);
-      setSelectedCiddiRisk(false);
-      setSelectedReferans(false);
-      setSelectedKontrollerinEtkinligininTestEdilmesi(false);
-      setSelectedAnalitikProsedurler(false);
-      setSelectedDetayTestler(false);
-      setSelectedGenelDenetimYaklasimi(false);
-      setIsPopUpOpen(true);
-    };
-
-    const handleClosePopUp = () => {
-      setIsNew(false);
-      setIsPopUpOpen(false);
-    };
-
-    const handleSetSelectedDipnotNo = async (value: string) => {
-      setSelectedDipnotNo(value);
-    };
-
-    const handleSetSelectedFinansalTabloHesaplar = async (value: string) => {
-      setSelectedFinansalTabloHesaplar(value);
-    };
-
-    const handleSetSelectedCari = async (value: boolean) => {
-      setSelectedCari(value);
-    };
-
-    const handleSetSelectedOnceki = async (value: boolean) => {
-      setSelectedOnceki(value);
-    };
-
-    const handleSetSelectedGecmis = async (value: boolean) => {
-      setSelectedGecmis(value);
-    };
-
-    const handleSetSelectedTamOlma = async (value: string) => {
-      setSelectedTamOlma(value);
-    };
-
-    const handleSetSelectedDogruluk = async (value: string) => {
-      setSelectedDogruluk(value);
-    };
-
-    const handleSetSelectedVarOlma = async (value: string) => {
-      setSelectedVarOlma(value);
-    };
-
-    const handleSetSelectedDegerleme = async (value: string) => {
-      setSelectedDegerleme(value);
-    };
-
-    const handleSetSelectedDonemsellik = async (value: string) => {
-      setSelectedDonemsellik(value);
-    };
-
-    const handleSetSelectedGecerlilik = async (value: string) => {
-      setSelectedGecerlilik(value);
-    };
-
-    const handleSetSelectedSunumVeAciklama = async (value: string) => {
-      setSelectedSunumVeAciklama(value);
-    };
-
-    const handleSetSelectedOnemsizRisk = async (value: boolean) => {
-      setSelectedOnemsizRisk(value);
-    };
-
-    const handleSetSelectedCiddiRisk = async (value: boolean) => {
-      setSelectedCiddiRisk(value);
-    };
-
-    const handleSetSelectedReferans = async (value: boolean) => {
-      setSelectedReferans(value);
-    };
-
-    const handleSetSelectedKontrollerinEtkinligininTestEdilmesi = async (
-      value: boolean
-    ) => {
-      setSelectedKontrollerinEtkinligininTestEdilmesi(value);
-    };
-
-    const handleSetSelectedAnalitikProsedurler = async (value: boolean) => {
-      setSelectedAnalitikProsedurler(value);
-    };
-
-    const handleSetSelectedDetayTestler = async (value: boolean) => {
-      setSelectedDetayTestler(value);
-    };
-
-    const handleSetSelectedGenelDenetimYaklasimi = async (value: boolean) => {
-      setSelectedGenelDenetimYaklasimi(value);
-    };
-
-    useEffect(() => {
-      fetchData();
-    }, [fetchData]);
-
-    useEffect(() => {
-      if (isClickedVarsayilanaDon) {
-        handleDeleteAll();
-        setIsClickedVarsayilanaDon(false);
+      if (!result) {
+        setErrorMessage("Varsayılan veriler yüklenemedi.");
+        return;
       }
-    }, [isClickedVarsayilanaDon, handleDeleteAll, setIsClickedVarsayilanaDon]);
 
-    return (
-      <>
-        <Grid container>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "center",
-            }}
-          >
-            {veriler.map((veri, index) => (
-              <Grid
-                key={index}
-                mt="20px"
-                onClick={() => handleCardClick(veri)}
-                size={{
-                  xs: 12,
-                  lg: 12
-                }}>
-                <CalismaKagidiCard
-                  title={`${index + 1}. ${veri.finansalTabloHesaplar}`}
-                  standartMi={veri.standartMi}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "end",
-            }}
-          >
-            <Grid
-              my={2}
-              sx={{
-                display: "flex",
-                justifyContent: "end",
-              }}
-              size={{
-                xs: 12,
-                lg: 1.5
-              }}>
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                onClick={() => handleNew()}
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    overflowWrap: "break-word",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  Yeni İşlem Ekle
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
-          {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-            user.rol?.includes("SorumluDenetci") ||
-            user.rol?.includes("Denetci") ||
-            user.rol?.includes("DenetciYardimcisi")) && (
-              <Grid
-                container
-                sx={{
-                  width: "95%",
-                  margin: "0 auto",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Grid
-                  mt={3}
-                  size={{
-                    xs: 12,
-                    md: 3.9,
-                    lg: 3.9
-                  }}>
-                  <BelgeKontrolCard
-                    fetch={fetchData}
-                    hazirlayan="Denetçi - Yardımcı Denetçi"
-                    controller={controller}
-                  ></BelgeKontrolCard>
-                </Grid>
-                <Grid
-                  mt={3}
-                  size={{
-                    xs: 12,
-                    md: 3.9,
-                    lg: 3.9
-                  }}>
-                  <BelgeKontrolCard
-                    fetch={fetchData}
-                    onaylayan="Sorumlu Denetçi"
-                    controller={controller}
-                  ></BelgeKontrolCard>
-                </Grid>
-                <Grid
-                  mt={3}
-                  size={{
-                    xs: 12,
-                    md: 3.9,
-                    lg: 3.9
-                  }}>
-                  <BelgeKontrolCard
-                    fetch={fetchData}
-                    kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                    controller={controller}
-                  ></BelgeKontrolCard>
-                </Grid>
-              </Grid>
-            )}
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-              gap: 1,
-            }}
-          >
-            <Grid
-              mt={5}
-              size={{
-                xs: 12,
-                lg: 12
-              }}>
-              <IslemlerCard controller={controller} />
-            </Grid>
-          </Grid>
-        </Grid>
-        {isPopUpOpen && (
-          <PopUpComponent
-            dipnotNo={selectedDipnotNo}
-            finansalTabloHesaplar={selectedFinansalTabloHesaplar}
-            cari={selectedCari}
-            onceki={selectedOnceki}
-            gecmis={selectedGecmis}
-            tamOlma={selectedTamOlma}
-            dogruluk={selectedDogruluk}
-            varOlma={selectedVarOlma}
-            degerleme={selectedDegerleme}
-            donemsellik={selectedDonemsellik}
-            gecerlilik={selectedGecerlilik}
-            sunumVeAciklama={selectedSunumVeAciklama}
-            onemsizRisk={selectedOnemsizRisk}
-            ciddiRisk={selectedCiddiRisk}
-            referans={selectedReferans}
-            kontrollerinEtkinligininTestEdilmesi={
-              selectedKontrollerinEtkinligininTestEdilmesi
-            }
-            analitikProsedurler={selectedAnalitikProsedurler}
-            detayTestler={selectedDetayTestler}
-            genelDenetimYaklasimi={selectedGenelDenetimYaklasimi}
-            standartMi={selectedStandartMi}
-            handleClose={handleClosePopUp}
-            handleSetSelectedDipnotNo={handleSetSelectedDipnotNo}
-            handleSetSelectedFinansalTabloHesaplar={
-              handleSetSelectedFinansalTabloHesaplar
-            }
-            handleSetSelectedCari={handleSetSelectedCari}
-            handleSetSelectedOnceki={handleSetSelectedOnceki}
-            handleSetSelectedGecmis={handleSetSelectedGecmis}
-            handleSetSelectedTamOlma={handleSetSelectedTamOlma}
-            handleSetSelectedDogruluk={handleSetSelectedDogruluk}
-            handleSetSelectedVarOlma={handleSetSelectedVarOlma}
-            handleSetSelectedDegerleme={handleSetSelectedDegerleme}
-            handleSetSelectedDonemsellik={handleSetSelectedDonemsellik}
-            handleSetSelectedGecerlilik={handleSetSelectedGecerlilik}
-            handleSetSelectedSunumVeAciklama={handleSetSelectedSunumVeAciklama}
-            handleSetSelectedOnemsizRisk={handleSetSelectedOnemsizRisk}
-            handleSetSelectedCiddiRisk={handleSetSelectedCiddiRisk}
-            handleSetSelectedReferans={handleSetSelectedReferans}
-            handleSetSelectedKontrollerinEtkinligininTestEdilmesi={
-              handleSetSelectedKontrollerinEtkinligininTestEdilmesi
-            }
-            handleSetSelectedAnalitikProsedurler={
-              handleSetSelectedAnalitikProsedurler
-            }
-            handleSetSelectedDetayTestler={handleSetSelectedDetayTestler}
-            handleSetSelectedGenelDenetimYaklasimi={
-              handleSetSelectedGenelDenetimYaklasimi
-            }
-            handleCreate={handleCreate}
-            handleDelete={handleDelete}
-            handleUpdate={handleUpdate}
-            isPopUpOpen={isPopUpOpen}
-            isNew={isNew}
-          />
-        )}
-      </>
-    );
+      await fetchData();
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Varsayılana dönüş sırasında bir hata oluştu.");
+    } finally {
+      setIsClickedVarsayilanaDon(false);
+    }
+  }, [controller, fetchData, setIsClickedVarsayilanaDon, user.denetciId, user.denetlenenId, user.yil]);
+
+  const toggleRow = (id: number) => {
+    setExpandedRows((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
   };
 
-export default FinansalTablolarDenetimRiskiBelirlemeBelge;
-
-interface PopUpProps {
-  dipnotNo?: string;
-  finansalTabloHesaplar?: string;
-  cari?: boolean;
-  onceki?: boolean;
-  gecmis?: boolean;
-  tamOlma?: string;
-  dogruluk?: string;
-  varOlma?: string;
-  degerleme?: string;
-  donemsellik?: string;
-  gecerlilik?: string;
-  sunumVeAciklama?: string;
-  onemsizRisk?: boolean;
-  ciddiRisk?: boolean;
-  referans?: boolean;
-  kontrollerinEtkinligininTestEdilmesi?: boolean;
-  analitikProsedurler?: boolean;
-  detayTestler?: boolean;
-  genelDenetimYaklasimi?: boolean;
-
-  standartMi?: boolean;
-
-  isPopUpOpen: boolean;
-  isNew: boolean;
-
-  handleClose: () => void;
-
-  handleSetSelectedDipnotNo: (a: string) => void;
-  handleSetSelectedFinansalTabloHesaplar: (a: string) => void;
-  handleSetSelectedCari: (a: boolean) => void;
-  handleSetSelectedOnceki: (a: boolean) => void;
-  handleSetSelectedGecmis: (a: boolean) => void;
-  handleSetSelectedTamOlma: (a: string) => void;
-  handleSetSelectedDogruluk: (a: string) => void;
-  handleSetSelectedVarOlma: (a: string) => void;
-  handleSetSelectedDegerleme: (a: string) => void;
-  handleSetSelectedDonemsellik: (a: string) => void;
-  handleSetSelectedGecerlilik: (a: string) => void;
-  handleSetSelectedSunumVeAciklama: (a: string) => void;
-  handleSetSelectedOnemsizRisk: (a: boolean) => void;
-  handleSetSelectedCiddiRisk: (a: boolean) => void;
-  handleSetSelectedReferans: (a: boolean) => void;
-  handleSetSelectedKontrollerinEtkinligininTestEdilmesi: (a: boolean) => void;
-  handleSetSelectedAnalitikProsedurler: (a: boolean) => void;
-  handleSetSelectedDetayTestler: (a: boolean) => void;
-  handleSetSelectedGenelDenetimYaklasimi: (a: boolean) => void;
-
-  handleCreate: (
-    dipnotNo: string,
-    finansalTabloHesaplar: string,
-    cari: boolean,
-    onceki: boolean,
-    gecmis: boolean,
-    tamOlma: string,
-    dogruluk: string,
-    varOlma: string,
-    degerleme: string,
-    donemsellik: string,
-    gecerlilik: string,
-    sunumVeAciklama: string,
-    onemsizRisk: boolean,
-    ciddiRisk: boolean,
-    referans: boolean,
-    kontrollerinEtkinligininTestEdilmesi: boolean,
-    analitikProsedurler: boolean,
-    detayTestler: boolean,
-    genelDenetimYaklasimi: boolean
-  ) => void;
-  handleDelete: () => void;
-  handleUpdate: (
-    dipnotNo: string,
-    finansalTabloHesaplar: string,
-    cari: boolean,
-    onceki: boolean,
-    gecmis: boolean,
-    tamOlma: string,
-    dogruluk: string,
-    varOlma: string,
-    degerleme: string,
-    donemsellik: string,
-    gecerlilik: string,
-    sunumVeAciklama: string,
-    onemsizRisk: boolean,
-    ciddiRisk: boolean,
-    referans: boolean,
-    kontrollerinEtkinligininTestEdilmesi: boolean,
-    analitikProsedurler: boolean,
-    detayTestler: boolean,
-    genelDenetimYaklasimi: boolean
-  ) => void;
-}
-
-const PopUpComponent: React.FC<PopUpProps> = ({
-  dipnotNo,
-  finansalTabloHesaplar,
-  cari,
-  onceki,
-  gecmis,
-  tamOlma,
-  dogruluk,
-  varOlma,
-  degerleme,
-  donemsellik,
-  gecerlilik,
-  sunumVeAciklama,
-  onemsizRisk,
-  ciddiRisk,
-  referans,
-  kontrollerinEtkinligininTestEdilmesi,
-  analitikProsedurler,
-  detayTestler,
-  genelDenetimYaklasimi,
-
-  standartMi,
-  isPopUpOpen,
-  isNew,
-  handleClose,
-
-  handleSetSelectedDipnotNo,
-  handleSetSelectedFinansalTabloHesaplar,
-  handleSetSelectedCari,
-  handleSetSelectedOnceki,
-  handleSetSelectedGecmis,
-  handleSetSelectedTamOlma,
-  handleSetSelectedDogruluk,
-  handleSetSelectedVarOlma,
-  handleSetSelectedDegerleme,
-  handleSetSelectedDonemsellik,
-  handleSetSelectedGecerlilik,
-  handleSetSelectedSunumVeAciklama,
-  handleSetSelectedOnemsizRisk,
-  handleSetSelectedCiddiRisk,
-  handleSetSelectedReferans,
-  handleSetSelectedKontrollerinEtkinligininTestEdilmesi,
-  handleSetSelectedAnalitikProsedurler,
-  handleSetSelectedDetayTestler,
-  handleSetSelectedGenelDenetimYaklasimi,
-
-  handleCreate,
-  handleDelete,
-  handleUpdate,
-}) => {
-  const [isConfirmPopUpOpen, setIsConfirmPopUpOpen] = useState(false);
-  const handleIsConfirm = () => {
-    setIsConfirmPopUpOpen(!isConfirmPopUpOpen);
+  const openRow = (id: number) => {
+    setExpandedRows((prev) => (prev.includes(id) ? prev : [...prev, id]));
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (isClickedVarsayilanaDon) {
+      handleDeleteAll();
+    }
+  }, [handleDeleteAll, isClickedVarsayilanaDon]);
+
+  const summaryText = useMemo(() => {
+    if (!veriler.length) {
+      return "Henüz satır oluşturulmadı.";
+    }
+
+    const standart = veriler.filter((row) => row.standartmi !== false).length;
+    const guncellenen = veriler.length - standart;
+    return `${veriler.length} satır oluşturuldu. ${guncellenen} satır denetçi kanaati ile güncellenmiş durumda.`;
+  }, [veriler]);
 
   return (
-    <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>
-      {isPopUpOpen && (
-        <>
-          <DialogContent className="testdialog" sx={{ overflow: "visible" }}>
-            <Stack
-              direction="row"
-              spacing={2}
-              justifyContent={"space-between"}
-              alignItems="center"
-            >
-              <Typography variant="h4" py={1} px={3}>
-                Düzenle
+    <Box sx={{ width: "100%", maxWidth: "100%", overflowX: "hidden" }}>
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 1.5, md: 2.5 },
+          borderRadius: 3,
+          background: "linear-gradient(135deg, #f6f8fc 0%, #eef3fb 100%)",
+          borderColor: "#d2dcee",
+        }}
+      >
+        <Stack direction={{ xs: "column", lg: "row" }} spacing={2} justifyContent="space-between">
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant={isSmallScreen ? "h6" : "h5"} sx={{ fontWeight: 800, color: blueHeader }}>
+              Finansal Tablolar Denetim Riski Belirleme Belgesi
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75, maxWidth: 900 }}>
+              Ana tabloda karar kolonları görünür. Satıra tıklayınca TFRS / BOBİ FRS beyan riski 7 boyut alanı,
+              BDS referansı, öncelikli teknikler ve risk açıklaması aşağıda açılır.
+            </Typography>
+            <Stack spacing={0.75} sx={{ mt: 1.25, maxWidth: 980 }}>
+              <Typography variant="body2" color="text.secondary">
+                Kullanım rehberi: Sayfa, mizan içindeki payı esas alarak her hesap için standart risk satırını otomatik oluşturur.
+                Satıra veya denetçi kanaati alanına tıkladığınızda 7 boyut beyan riski, BDS referansı, öncelikli teknikler ve risk açıklaması açılır.
               </Typography>
-              <IconButton size="small" onClick={handleClose}>
-                <IconX size="18" />
-              </IconButton>
+              <Typography variant="body2" color="text.secondary">
+                Formül 1: <strong>Yüzde = borç + alacak / toplam borç + alacak</strong>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Formül 2: <strong>Mizan payı &lt; %2 ise Düşük, %2 - %5 arası ise Orta, %5 üzeri ise Yüksek</strong>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Denetçi kanaati değiştirildiğinde yalnızca seçilen satır güncellenir; ilgili standart risk satırı yeniden yüklenir.
+              </Typography>
             </Stack>
-          </DialogContent>
-          <Divider />
-          <DialogContent>
-            <Box px={3} pt={3}>
-              <CustomTextField
-                id="finansalTabloHesaplar"
-                multiline
-                rows={1}
-                variant="outlined"
-                fullWidth
-                value={finansalTabloHesaplar}
-                InputProps={{
-                  style: { padding: 0 }, // Padding değerini sıfırla
-                }}
-                onChange={(e: any) =>
-                  handleSetSelectedFinansalTabloHesaplar(e.target.value)
-                }
-              />
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                Dönem
-              </Typography>
-              <Box px={3} pt={3}>
-                <Grid container spacing={2}>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Cari</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={cari}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedCari(e.target.checked);
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Önceki</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={onceki}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedOnceki(e.target.checked);
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"right"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Geçmiş</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"right"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={gecmis}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedGecmis(e.target.checked);
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                Hesabın Özü İtibarıyla Tespit Edilen Riskler
-              </Typography>
-              <Box px={3} pt={3}>
-                <Grid container spacing={2}>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 6,
-                      lg: 6
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Tam Olma</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <CustomSelect
-                          labelId="tamOlma"
-                          id="tamOlma"
-                          size="small"
-                          value={tamOlma}
-                          fullWidth
-                          onChange={(e: any) => {
-                            handleSetSelectedTamOlma(e.target.value);
-                          }}
-                          height="36px"
-                          sx={{ minWidth: 120 }}
-                        >
-                          <MenuItem value={"0"}>Yok</MenuItem>
-                          <MenuItem value={"1"}>Önemsiz</MenuItem>
-                          <MenuItem value={"2"}>Orta</MenuItem>
-                          <MenuItem value={"3"}>Yüksek</MenuItem>
-                        </CustomSelect>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 6,
-                      lg: 6
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Doğruluk</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <CustomSelect
-                          labelId="dogruluk"
-                          id="dogruluk"
-                          size="small"
-                          value={dogruluk}
-                          fullWidth
-                          onChange={(e: any) => {
-                            handleSetSelectedDogruluk(e.target.value);
-                          }}
-                          height="36px"
-                          sx={{ minWidth: 120 }}
-                        >
-                          <MenuItem value={"0"}>Yok</MenuItem>
-                          <MenuItem value={"1"}>Önemsiz</MenuItem>
-                          <MenuItem value={"2"}>Orta</MenuItem>
-                          <MenuItem value={"3"}>Yüksek</MenuItem>
-                        </CustomSelect>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 6,
-                      lg: 6
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Var Olma</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <CustomSelect
-                          labelId="varOlma"
-                          id="varOlma"
-                          size="small"
-                          value={varOlma}
-                          fullWidth
-                          onChange={(e: any) => {
-                            handleSetSelectedVarOlma(e.target.value);
-                          }}
-                          height="36px"
-                          sx={{ minWidth: 120 }}
-                        >
-                          <MenuItem value={"0"}>Yok</MenuItem>
-                          <MenuItem value={"1"}>Önemsiz</MenuItem>
-                          <MenuItem value={"2"}>Orta</MenuItem>
-                          <MenuItem value={"3"}>Yüksek</MenuItem>
-                        </CustomSelect>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 6,
-                      lg: 6
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Değerleme</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <CustomSelect
-                          labelId="degerleme"
-                          id="degerleme"
-                          size="small"
-                          value={degerleme}
-                          fullWidth
-                          onChange={(e: any) => {
-                            handleSetSelectedDegerleme(e.target.value);
-                          }}
-                          height="36px"
-                          sx={{ minWidth: 120 }}
-                        >
-                          <MenuItem value={"0"}>Yok</MenuItem>
-                          <MenuItem value={"1"}>Önemsiz</MenuItem>
-                          <MenuItem value={"2"}>Orta</MenuItem>
-                          <MenuItem value={"3"}>Yüksek</MenuItem>
-                        </CustomSelect>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 6,
-                      lg: 6
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Dönemsellik</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <CustomSelect
-                          labelId="donemsellik"
-                          id="donemsellik"
-                          size="small"
-                          value={donemsellik}
-                          fullWidth
-                          onChange={(e: any) => {
-                            handleSetSelectedDonemsellik(e.target.value);
-                          }}
-                          height="36px"
-                          sx={{ minWidth: 120 }}
-                        >
-                          <MenuItem value={"0"}>Yok</MenuItem>
-                          <MenuItem value={"1"}>Önemsiz</MenuItem>
-                          <MenuItem value={"2"}>Orta</MenuItem>
-                          <MenuItem value={"3"}>Yüksek</MenuItem>
-                        </CustomSelect>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 6,
-                      lg: 6
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Geçerlilik</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <CustomSelect
-                          labelId="gecerlilik"
-                          id="gecerlilik"
-                          size="small"
-                          value={gecerlilik}
-                          fullWidth
-                          onChange={(e: any) => {
-                            handleSetSelectedGecerlilik(e.target.value);
-                          }}
-                          height="36px"
-                          sx={{ minWidth: 120 }}
-                        >
-                          <MenuItem value={"0"}>Yok</MenuItem>
-                          <MenuItem value={"1"}>Önemsiz</MenuItem>
-                          <MenuItem value={"2"}>Orta</MenuItem>
-                          <MenuItem value={"3"}>Yüksek</MenuItem>
-                        </CustomSelect>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 6,
-                      lg: 6
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Sunum ve Açıklama</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <CustomSelect
-                          labelId="sunumVeAciklama"
-                          id="sunumVeAciklama"
-                          size="small"
-                          value={sunumVeAciklama}
-                          fullWidth
-                          onChange={(e: any) => {
-                            handleSetSelectedSunumVeAciklama(e.target.value);
-                          }}
-                          height="36px"
-                          sx={{ minWidth: 120 }}
-                        >
-                          <MenuItem value={"0"}>Yok</MenuItem>
-                          <MenuItem value={"1"}>Önemsiz</MenuItem>
-                          <MenuItem value={"2"}>Orta</MenuItem>
-                          <MenuItem value={"3"}>Yüksek</MenuItem>
-                        </CustomSelect>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                Hile ve Suistimal Riski
-              </Typography>
-              <Box px={3} pt={3}>
-                <Grid container spacing={2}>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Önemsiz Risk</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={onemsizRisk}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedOnemsizRisk(e.target.checked);
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Ciddi Risk</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={ciddiRisk}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedCiddiRisk(e.target.checked);
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-            <Box px={3} pt={3}>
-              <Typography variant="h5" p={1}>
-                Detaylı Test Prosedürleri
-              </Typography>
-              <Box px={3} pt={3}>
-                <Grid container spacing={2}>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Referans</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={referans}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedReferans(e.target.checked);
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">
-                          Kontrollerin Etkinliğinin Test Edilmesi
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={kontrollerinEtkinligininTestEdilmesi}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedKontrollerinEtkinligininTestEdilmesi(
-                              e.target.checked
-                            );
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"right"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">
-                          Analitik Prosedürler
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"right"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={analitikProsedurler}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedAnalitikProsedurler(
-                              e.target.checked
-                            );
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">Detay Testler</Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"left"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={detayTestler}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedDetayTestler(e.target.checked);
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    size={{
-                      xs: 12,
-                      sm: 4,
-                      lg: 4
-                    }}>
-                    <Grid container>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Typography variant="h6">
-                          Genel Denetim Yaklaşımı
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                        size={{
-                          xs: 6,
-                          sm: 6,
-                          lg: 6
-                        }}>
-                        <Checkbox
-                          checked={genelDenetimYaklasimi}
-                          color="primary"
-                          onChange={(e: any) => {
-                            handleSetSelectedGenelDenetimYaklasimi(
-                              e.target.checked
-                            );
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </DialogContent>
-          {!isNew ? (
-            <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
-              <Button
-                variant="outlined"
-                color="success"
-                onClick={() =>
-                  handleUpdate(
-                    dipnotNo || "",
-                    finansalTabloHesaplar || "",
-                    cari || false,
-                    onceki || false,
-                    gecmis || false,
-                    tamOlma || "0",
-                    dogruluk || "0",
-                    varOlma || "0",
-                    degerleme || "0",
-                    donemsellik || "0",
-                    gecerlilik || "0",
-                    sunumVeAciklama || "0",
-                    onemsizRisk || false,
-                    ciddiRisk || false,
-                    referans || false,
-                    kontrollerinEtkinligininTestEdilmesi || false,
-                    analitikProsedurler || false,
-                    detayTestler || false,
-                    genelDenetimYaklasimi || false
-                  )
-                }
-                sx={{ width: "20%" }}
-              >
-                Kaydet
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => handleIsConfirm()}
-                sx={{ width: "20%" }}
-              >
-                Sil
-              </Button>
-            </DialogActions>
-          ) : (
-            <DialogActions sx={{ justifyContent: "center", mb: "15px" }}>
-              <Button
-                variant="outlined"
-                color="success"
-                onClick={() =>
-                  handleCreate(
-                    dipnotNo || "",
-                    finansalTabloHesaplar || "",
-                    cari || false,
-                    onceki || false,
-                    gecmis || false,
-                    tamOlma || "0",
-                    dogruluk || "0",
-                    varOlma || "0",
-                    degerleme || "0",
-                    donemsellik || "0",
-                    gecerlilik || "0",
-                    sunumVeAciklama || "0",
-                    onemsizRisk || false,
-                    ciddiRisk || false,
-                    referans || false,
-                    kontrollerinEtkinligininTestEdilmesi || false,
-                    analitikProsedurler || false,
-                    detayTestler || false,
-                    genelDenetimYaklasimi || false
-                  )
-                }
-                sx={{ width: "20%" }}
-              >
-                Kaydet
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={handleClose}
-                sx={{ width: "20%" }}
-              >
-                Sil
-              </Button>
-            </DialogActions>
-          )}
-          {isConfirmPopUpOpen && (
-            <ConfirmPopUpComponent
-              isConfirmPopUp={isConfirmPopUpOpen}
-              handleClose={handleClose}
-              handleDelete={handleDelete}
+          </Box>
+          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ maxWidth: { xs: "100%", lg: 340 } }}>
+            <Chip
+              size="small"
+              label={summaryText}
+              sx={{
+                fontWeight: 700,
+                backgroundColor: "#e8eef9",
+                maxWidth: "100%",
+                height: "auto",
+                "& .MuiChip-label": {
+                  display: "block",
+                  whiteSpace: "normal",
+                  py: 0.75,
+                },
+              }}
             />
+          </Stack>
+        </Stack>
+      </Paper>
+
+      {isCompactScreen ? (
+        <Stack spacing={2} sx={{ mt: 3 }}>
+          {loading ? (
+            <Paper
+              variant="outlined"
+              sx={{
+                py: 6,
+                borderRadius: 3,
+                borderColor: "#cad6ea",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <CircularProgress size={30} />
+            </Paper>
+          ) : veriler.length === 0 ? (
+            <Paper
+              variant="outlined"
+              sx={{
+                py: 6,
+                borderRadius: 3,
+                borderColor: "#cad6ea",
+                textAlign: "center",
+              }}
+            >
+              Kayıt bulunamadı.
+            </Paper>
+          ) : (
+            veriler.map((row) => {
+              const isExpanded = expandedRows.includes(row.id);
+              const riskCode = getRiskCode(row);
+
+              return (
+                <Paper
+                  key={row.id}
+                  variant="outlined"
+                  sx={{
+                    borderRadius: 3,
+                    borderColor: "#cad6ea",
+                    overflow: "hidden",
+                    backgroundColor: row.standartmi === false ? "#fffaf0" : "#ffffff",
+                    boxShadow: "0 12px 30px rgba(36,63,112,0.08)",
+                  }}
+                >
+                  <Box
+                    onClick={() => toggleRow(row.id)}
+                    sx={{
+                      p: 1.5,
+                      cursor: "pointer",
+                      "&:hover": { backgroundColor: "#f4f8ff" },
+                    }}
+                  >
+                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1.5}>
+                      <Box sx={{ minWidth: 0, flex: 1 }}>
+                        <Typography variant="subtitle2" sx={{ color: blueHeader, fontWeight: 800 }}>
+                          {row.kebirKodu || "-"} - {row.hesapAdi || "-"}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          Bakiye: {formatNumber(row.bakiyeTl)} TL
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Yüzde: {formatPercent(row.yuzde)} | Fiş Sayısı: {formatNumber(row.fisSayisi)}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ pt: 0.25 }}>{isExpanded ? <IconChevronDown size={18} /> : <IconChevronRight size={18} />}</Box>
+                    </Stack>
+
+                    <Grid container spacing={1} sx={{ mt: 1 }}>
+                      <Grid size={{ xs: 6 }}>
+                        <Box sx={{ ...bodyCellBaseSx, ...getRiskCellColor(row.kalemRiski), borderRadius: 2, textAlign: "center" }}>
+                          {row.kalemRiski || "-"}
+                        </Box>
+                      </Grid>
+                      <Grid size={{ xs: 6 }}>
+                        <Box sx={{ ...bodyCellBaseSx, ...getIndicatorCellColor(row.hileRiski, "red"), borderRadius: 2, textAlign: "center" }}>
+                          {row.hileRiski || "-"}
+                        </Box>
+                      </Grid>
+                      <Grid size={{ xs: 6 }}>
+                        <Box sx={{ ...bodyCellBaseSx, ...getIndicatorCellColor(row.nicelOnemlilik, "light"), borderRadius: 2, textAlign: "center" }}>
+                          {row.nicelOnemlilik || "-"}
+                        </Box>
+                      </Grid>
+                      <Grid size={{ xs: 6 }}>
+                        <Box sx={{ ...bodyCellBaseSx, ...getIndicatorCellColor(row.kontrolTesti, "green"), borderRadius: 2, textAlign: "center" }}>
+                          {row.kontrolTesti || "-"}
+                        </Box>
+                      </Grid>
+                    </Grid>
+
+                    <Box
+                      sx={{ mt: 1.25 }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        openRow(row.id);
+                      }}
+                    >
+                      <Typography variant="caption" sx={{ display: "block", mb: 0.5, fontWeight: 700, color: blueHeader }}>
+                        Denetçi Kanaati
+                      </Typography>
+                      <FormControl size="small" fullWidth>
+                        <Select
+                          value={riskCode}
+                          disabled={savingId === row.id}
+                          onOpen={() => openRow(row.id)}
+                          onChange={(event) => handleRiskChange(row, Number(event.target.value) as RiskOption)}
+                          sx={{
+                            backgroundColor: "#ffffff",
+                            fontWeight: 700,
+                            ".MuiSelect-select": { py: 0.8 },
+                          }}
+                        >
+                          <MenuItem value={1}>Düşük</MenuItem>
+                          <MenuItem value={2}>Orta</MenuItem>
+                          <MenuItem value={3}>Yüksek</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </Box>
+
+                  <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                    <Box sx={{ p: 1.5, backgroundColor: "#f8fbff", borderTop: "1px solid #d7e3f5" }}>
+                      <Box
+                        sx={{
+                          backgroundColor: blueHeader,
+                          color: "#fff",
+                          borderRadius: 2,
+                          px: 2,
+                          py: 1.25,
+                          mb: 1.5,
+                          textAlign: "center",
+                        }}
+                      >
+                        <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+                          {row.raporlamaStandardi === "Bobi"
+                            ? "BOBİ FRS BEYAN RİSKİ (7 BOYUT)"
+                            : "TFRS BEYAN RİSKİ (7 BOYUT)"}
+                        </Typography>
+                      </Box>
+
+                      <Grid container spacing={1.25} sx={{ mb: 1.5 }}>
+                        <Grid size={{ xs: 6 }}>
+                          <Box sx={assertionCardSx}>
+                            <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.tamlik), p: 1, borderRadius: 1, textAlign: "center" }}>Tamlık</Typography>
+                            <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>{row.tamlik || "-"}</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 6 }}>
+                          <Box sx={assertionCardSx}>
+                            <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.dogruluk), p: 1, borderRadius: 1, textAlign: "center" }}>Doğruluk</Typography>
+                            <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>{row.dogruluk || "-"}</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 6 }}>
+                          <Box sx={assertionCardSx}>
+                            <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.varOlma), p: 1, borderRadius: 1, textAlign: "center" }}>Var Olma</Typography>
+                            <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>{row.varOlma || "-"}</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 6 }}>
+                          <Box sx={assertionCardSx}>
+                            <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.degerleme), p: 1, borderRadius: 1, textAlign: "center" }}>Değerleme</Typography>
+                            <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>{row.degerleme || "-"}</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 6 }}>
+                          <Box sx={assertionCardSx}>
+                            <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.donemsellik), p: 1, borderRadius: 1, textAlign: "center" }}>Dönemsellik</Typography>
+                            <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>{row.donemsellik || "-"}</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 6 }}>
+                          <Box sx={assertionCardSx}>
+                            <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.gecerlilik), p: 1, borderRadius: 1, textAlign: "center" }}>Geçerlilik</Typography>
+                            <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>{row.gecerlilik || "-"}</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
+                          <Box sx={assertionCardSx}>
+                            <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.sunum), p: 1, borderRadius: 1, textAlign: "center" }}>Sunum</Typography>
+                            <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>{row.sunum || "-"}</Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+
+                      <Stack spacing={1.25}>
+                        <Box sx={detailCardSx}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>BDS Referans</Typography>
+                          <Divider sx={{ mb: 1.25 }} />
+                          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{row.bdsReferans || "-"}</Typography>
+                        </Box>
+                        <Box sx={detailCardSx}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>Öncelikli Teknikler</Typography>
+                          <Divider sx={{ mb: 1.25 }} />
+                          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{row.oncelikliTeknikler || "-"}</Typography>
+                        </Box>
+                        <Box sx={detailCardSx}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>Not / Risk Açıklaması</Typography>
+                          <Divider sx={{ mb: 1.25 }} />
+                          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{row.notRiskAciklamasi || "-"}</Typography>
+                        </Box>
+                      </Stack>
+                    </Box>
+                  </Collapse>
+                </Paper>
+              );
+            })
           )}
-        </>
+        </Stack>
+      ) : (
+      <TableContainer
+        component={Paper}
+        variant="outlined"
+        sx={{
+          mt: 3,
+          borderRadius: 3,
+          borderColor: "#cad6ea",
+          overflowX: "auto",
+          overflowY: "auto",
+          maxWidth: "100%",
+          maxHeight: { xs: "65vh", md: "72vh" },
+          boxShadow: "0 12px 30px rgba(36,63,112,0.08)",
+          "&::-webkit-scrollbar": {
+            height: 10,
+          },
+        }}
+      >
+        <Table stickyHeader size="small" sx={{ minWidth: { xs: 1180, md: 1320, lg: 1450 } }}>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ ...headerCellSx, width: 48 }} />
+              <TableCell sx={headerCellSx}>KOD</TableCell>
+              <TableCell sx={headerCellSx}>HESAP ADI</TableCell>
+              <TableCell sx={headerCellSx}>BAKİYE (TL)</TableCell>
+              <TableCell sx={headerCellSx}>
+                Yüzde
+                <Box sx={{ fontSize: "0.8rem", opacity: 0.9, mt: 0.5 }}>
+                  borç+alacak / toplam borç+alacak
+                </Box>
+              </TableCell>
+              <TableCell sx={headerCellSx}>FİŞ SAYISI</TableCell>
+              <TableCell sx={headerCellSx}>KALEM RİSKİ</TableCell>
+              <TableCell sx={headerCellSx}>DENETÇİ KANAATİ</TableCell>
+              <TableCell sx={headerCellSx}>HİLE</TableCell>
+              <TableCell sx={headerCellSx}>NİC. ÖNEMLİ</TableCell>
+              <TableCell sx={headerCellSx}>K.TESTİ</TableCell>
+              <TableCell sx={headerCellSx}>ANALİTİK</TableCell>
+              <TableCell sx={headerCellSx}>DETAY</TableCell>
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={13} align="center" sx={{ py: 6 }}>
+                  <CircularProgress size={30} />
+                </TableCell>
+              </TableRow>
+            ) : veriler.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={13} align="center" sx={{ py: 6 }}>
+                  Kayıt bulunamadı.
+                </TableCell>
+              </TableRow>
+            ) : (
+              veriler.map((row) => {
+                const isExpanded = expandedRows.includes(row.id);
+                const riskCode = getRiskCode(row);
+
+                return (
+                  <Fragment key={row.id}>
+                    <TableRow
+                      hover
+                      onClick={() => toggleRow(row.id)}
+                      sx={{
+                        cursor: "pointer",
+                        backgroundColor: row.standartmi === false ? "#fffaf0" : "#ffffff",
+                        "&:hover": { backgroundColor: "#f4f8ff" },
+                      }}
+                    >
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", width: 48 }}>
+                        {isExpanded ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
+                      </TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, fontWeight: 700 }}>{row.kebirKodu || "-"}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, minWidth: { xs: 220, md: 320 } }}>{row.hesapAdi || "-"}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx }}>{formatNumber(row.bakiyeTl)}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx }}>{formatPercent(row.yuzde)}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center" }}>{formatNumber(row.fisSayisi)}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getRiskCellColor(row.kalemRiski) }}>
+                        {row.kalemRiski || "-"}
+                      </TableCell>
+                      <TableCell
+                        sx={{ ...bodyCellBaseSx, minWidth: { xs: 145, md: 170 } }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          openRow(row.id);
+                        }}
+                      >
+                        <FormControl size="small" fullWidth>
+                          <Select
+                            value={riskCode}
+                            disabled={savingId === row.id}
+                            onOpen={() => openRow(row.id)}
+                            onChange={(event) => handleRiskChange(row, Number(event.target.value) as RiskOption)}
+                            sx={{
+                              backgroundColor: "#ffffff",
+                              fontWeight: 700,
+                              ".MuiSelect-select": { py: 0.8 },
+                            }}
+                          >
+                            <MenuItem value={1}>Düşük</MenuItem>
+                            <MenuItem value={2}>Orta</MenuItem>
+                            <MenuItem value={3}>Yüksek</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.hileRiski, "red") }}>
+                        {row.hileRiski || "-"}
+                      </TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.nicelOnemlilik, "light") }}>
+                        {row.nicelOnemlilik || "-"}
+                      </TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.kontrolTesti, "green") }}>
+                        {row.kontrolTesti || "-"}
+                      </TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.analitik, "green") }}>
+                        {row.analitik || "-"}
+                      </TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.detay, "green") }}>
+                        {row.detay || "-"}
+                      </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                      <TableCell sx={{ p: 0, border: 0 }} colSpan={13}>
+                        <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                          <Box sx={{ p: { xs: 1.5, md: 2.5 }, backgroundColor: "#f8fbff", borderTop: "1px solid #d7e3f5" }}>
+                            <Box
+                              sx={{
+                                backgroundColor: blueHeader,
+                                color: "#fff",
+                                borderRadius: 2,
+                                px: 2,
+                                py: 1.5,
+                                mb: 2,
+                                textAlign: "center",
+                              }}
+                            >
+                              <Typography variant="h6" sx={{ fontWeight: 800 }}>
+                                {row.raporlamaStandardi === "Bobi"
+                                  ? "BOBİ FRS BEYAN RİSKİ (7 BOYUT)"
+                                  : "TFRS BEYAN RİSKİ (7 BOYUT)"}
+                              </Typography>
+                            </Box>
+
+                            <Grid container spacing={2} sx={{ mb: 2 }}>
+                              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 12 / 7 }}>
+                                <Box sx={assertionCardSx}>
+                                  <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.tamlik), p: 1, borderRadius: 1, textAlign: "center" }}>
+                                    Tamlık
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>
+                                    {row.tamlik || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 12 / 7 }}>
+                                <Box sx={assertionCardSx}>
+                                  <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.dogruluk), p: 1, borderRadius: 1, textAlign: "center" }}>
+                                    Doğruluk
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>
+                                    {row.dogruluk || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 12 / 7 }}>
+                                <Box sx={assertionCardSx}>
+                                  <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.varOlma), p: 1, borderRadius: 1, textAlign: "center" }}>
+                                    Var Olma
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>
+                                    {row.varOlma || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 12 / 7 }}>
+                                <Box sx={assertionCardSx}>
+                                  <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.degerleme), p: 1, borderRadius: 1, textAlign: "center" }}>
+                                    Değerleme
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>
+                                    {row.degerleme || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 12 / 7 }}>
+                                <Box sx={assertionCardSx}>
+                                  <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.donemsellik), p: 1, borderRadius: 1, textAlign: "center" }}>
+                                    Dönemsellik
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>
+                                    {row.donemsellik || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 12 / 7 }}>
+                                <Box sx={assertionCardSx}>
+                                  <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.gecerlilik), p: 1, borderRadius: 1, textAlign: "center" }}>
+                                    Geçerlilik
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>
+                                    {row.gecerlilik || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 12 / 7 }}>
+                                <Box sx={assertionCardSx}>
+                                  <Typography variant="subtitle2" sx={{ ...getAssertionCellColor(row.sunum), p: 1, borderRadius: 1, textAlign: "center" }}>
+                                    Sunum
+                                  </Typography>
+                                  <Typography variant="body2" sx={{ mt: 1.5, textAlign: "center", fontWeight: 700 }}>
+                                    {row.sunum || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                            </Grid>
+
+                            <Grid container spacing={2}>
+                              <Grid size={{ xs: 12, md: 3 }}>
+                                <Box sx={detailCardSx}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>
+                                    BDS Referans
+                                  </Typography>
+                                  <Divider sx={{ mb: 1.25 }} />
+                                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                                    {row.bdsReferans || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, md: 4 }}>
+                                <Box sx={detailCardSx}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>
+                                    Öncelikli Teknikler
+                                  </Typography>
+                                  <Divider sx={{ mb: 1.25 }} />
+                                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                                    {row.oncelikliTeknikler || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                              <Grid size={{ xs: 12, md: 5 }}>
+                                <Box sx={detailCardSx}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>
+                                    Not / Risk Açıklaması
+                                  </Typography>
+                                  <Divider sx={{ mb: 1.25 }} />
+                                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                                    {row.notRiskAciklamasi || "-"}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                  </Fragment>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
       )}
-    </Dialog>
+
+      {(user.rol?.includes("KaliteKontrolSorumluDenetci") ||
+        user.rol?.includes("SorumluDenetci") ||
+        user.rol?.includes("Denetci") ||
+        user.rol?.includes("DenetciYardimcisi")) && (
+        <Grid container spacing={2} sx={{ mt: 1, width: "100%", mx: 0 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <BelgeKontrolCard
+              fetch={fetchData}
+              hazirlayan="Denetçi - Yardımcı Denetçi"
+              controller={controller}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <BelgeKontrolCard
+              fetch={fetchData}
+              onaylayan="Sorumlu Denetçi"
+              controller={controller}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <BelgeKontrolCard
+              fetch={fetchData}
+              kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+              controller={controller}
+            />
+          </Grid>
+        </Grid>
+      )}
+
+      <Snackbar
+        open={Boolean(warningMessage)}
+        autoHideDuration={7000}
+        onClose={() => setWarningMessage("")}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert severity="warning" onClose={() => setWarningMessage("")} variant="filled">
+          {warningMessage}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={Boolean(errorMessage)}
+        autoHideDuration={4000}
+        onClose={() => setErrorMessage("")}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert severity="error" onClose={() => setErrorMessage("")} variant="filled">
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };
 
+export default FinansalTablolarDenetimRiskiBelirlemeBelge;
