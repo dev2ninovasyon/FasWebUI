@@ -12,7 +12,7 @@ import { url } from "./apiConfig";
 const APP_IDENTITY_HEADER = "X-App-Identity";
 const APP_IDENTITY_SECRET = "Fas-VG-Secure-9x2PZQ-7vR8-KmLn-41Nb-Ty6S-2026-N2Dev";
 
-const LOCAL_API_URL = "http://localhost:5000/api";
+const LOCAL_API_URL = "http://localhost:5080/api";
 const BETA_API_URL = "https://betaapi.fasmart.app/api";
 const ENV_API_URL = typeof process !== "undefined" ? process.env.NEXT_PUBLIC_API_BASE_URL?.trim() : undefined;
 const ENABLE_LOCAL_BETA_FALLBACK =

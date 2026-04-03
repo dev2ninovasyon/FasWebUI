@@ -68,7 +68,21 @@ interface Summary {
   };
 }
 
+const DEFAULT_LOCAL_BACKEND_BASE_URL = "http://localhost:5080";
+
+const getHangfireBaseUrl = () => {
+  const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "";
+  const normalizedConfiguredBaseUrl = configuredApiBaseUrl.trim().replace(/\/+$/, "");
+
+  if (normalizedConfiguredBaseUrl) {
+    return normalizedConfiguredBaseUrl.replace(/\/api$/i, "");
+  }
+
+  return DEFAULT_LOCAL_BACKEND_BASE_URL;
+};
+
 export default function HangfireMonitoringDashboard() {
+  const hangfireBaseUrl = getHangfireBaseUrl();
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [servers, setServers] = useState<ServerStatus[]>([]);
@@ -359,7 +373,7 @@ export default function HangfireMonitoringDashboard() {
               <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
                 <Button
                   variant="contained"
-                  href="http://localhost:5000/hangfire"
+                  href={`${hangfireBaseUrl}/hangfire`}
                   target="_blank"
                 >
                   Ana Dashboard
@@ -367,7 +381,7 @@ export default function HangfireMonitoringDashboard() {
                 <Button
                   variant="contained"
                   color="success"
-                  href="http://localhost:5000/hangfire/data-import"
+                  href={`${hangfireBaseUrl}/hangfire/data-import`}
                   target="_blank"
                 >
                   Data Import Queue
@@ -375,7 +389,7 @@ export default function HangfireMonitoringDashboard() {
                 <Button
                   variant="contained"
                   color="warning"
-                  href="http://localhost:5000/hangfire/file-import"
+                  href={`${hangfireBaseUrl}/hangfire/file-import`}
                   target="_blank"
                 >
                   File Import Queue
@@ -383,7 +397,7 @@ export default function HangfireMonitoringDashboard() {
                 <Button
                   variant="contained"
                   color="info"
-                  href="http://localhost:5000/hangfire/default"
+                  href={`${hangfireBaseUrl}/hangfire/default`}
                   target="_blank"
                 >
                   Default Queue

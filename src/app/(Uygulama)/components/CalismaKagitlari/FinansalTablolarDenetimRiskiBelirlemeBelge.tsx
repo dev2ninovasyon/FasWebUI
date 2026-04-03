@@ -91,17 +91,22 @@ const headerCellSx = {
   border: `1px solid ${borderColor}`,
   fontWeight: 800,
   textAlign: "center",
-  whiteSpace: "nowrap",
-  py: 1.5,
-};
+  whiteSpace: "normal",
+  wordBreak: "break-word",
+  lineHeight: 1.15,
+  py: 1,
+  px: 0.75,
+  fontSize: "clamp(0.62rem, 0.55rem + 0.25vw, 0.85rem)",
+} as const;
 
 const bodyCellBaseSx = {
   border: `1px solid ${borderColor}`,
-  py: 0.75,
-  px: 1,
-  fontSize: "0.9rem",
+  py: 0.65,
+  px: 0.75,
+  fontSize: "clamp(0.66rem, 0.58rem + 0.22vw, 0.88rem)",
   lineHeight: 1.2,
-};
+  wordBreak: "break-word",
+} as const;
 
 const detailCardSx = {
   p: 2,
@@ -217,7 +222,7 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
 }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const isCompactScreen = useMediaQuery(theme.breakpoints.down("lg"));
+  const isCompactScreen = useMediaQuery(theme.breakpoints.down("xl"));
   const user = useSelector((state: AppState) => state.userReducer);
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [loading, setLoading] = useState(true);
@@ -241,6 +246,7 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setWarningMessage("");
     try {
       const result = await getCalismaKagidiVerileriByDenetciDenetlenenYil(
         controller,
@@ -312,6 +318,8 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
 
   const handleDeleteAll = useCallback(async () => {
     try {
+      setExpandedRows([]);
+      setWarningMessage("Varsayılan veriler yeniden oluşturuluyor. Dönüşüm Mizan verileri kontrol ediliyor.");
       const result = await deleteAllCalismaKagidiVerileri(
         controller,
         user.denetciId || 0,
@@ -634,37 +642,46 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
           mt: 3,
           borderRadius: 3,
           borderColor: "#cad6ea",
-          overflowX: "auto",
+          overflowX: "hidden",
           overflowY: "auto",
           maxWidth: "100%",
           maxHeight: { xs: "65vh", md: "72vh" },
           boxShadow: "0 12px 30px rgba(36,63,112,0.08)",
-          "&::-webkit-scrollbar": {
-            height: 10,
-          },
         }}
       >
-        <Table stickyHeader size="small" sx={{ minWidth: { xs: 1180, md: 1320, lg: 1450 } }}>
+        <Table
+          stickyHeader
+          size="small"
+          sx={{
+            width: "100%",
+            tableLayout: "fixed",
+            "& .MuiTableCell-root": {
+              overflow: "hidden",
+            },
+          }}
+        >
           <TableHead>
             <TableRow>
-              <TableCell sx={{ ...headerCellSx, width: 48 }} />
-              <TableCell sx={headerCellSx}>KOD</TableCell>
-              <TableCell sx={headerCellSx}>HESAP ADI</TableCell>
-              <TableCell sx={headerCellSx}>BAKİYE (TL)</TableCell>
-              <TableCell sx={headerCellSx}>
+              <TableCell sx={{ ...headerCellSx, width: "2.5%" }} />
+              <TableCell sx={{ ...headerCellSx, width: "5%" }}>KOD</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "23%" }}>HESAP ADI</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "8%" }}>BAKİYE (TL)</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "10%" }}>
                 Yüzde
-                <Box sx={{ fontSize: "0.8rem", opacity: 0.9, mt: 0.5 }}>
-                  borç+alacak / toplam borç+alacak
+                <Box sx={{ fontSize: "clamp(0.55rem, 0.48rem + 0.15vw, 0.72rem)", opacity: 0.9, mt: 0.35, lineHeight: 1.1 }}>
+                  borç+alacak / toplam
+                  <br />
+                  borç+alacak
                 </Box>
               </TableCell>
-              <TableCell sx={headerCellSx}>FİŞ SAYISI</TableCell>
-              <TableCell sx={headerCellSx}>KALEM RİSKİ</TableCell>
-              <TableCell sx={headerCellSx}>DENETÇİ KANAATİ</TableCell>
-              <TableCell sx={headerCellSx}>HİLE</TableCell>
-              <TableCell sx={headerCellSx}>NİC. ÖNEMLİ</TableCell>
-              <TableCell sx={headerCellSx}>K.TESTİ</TableCell>
-              <TableCell sx={headerCellSx}>ANALİTİK</TableCell>
-              <TableCell sx={headerCellSx}>DETAY</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "6%" }}>FİŞ SAYISI</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "8%" }}>KALEM RİSKİ</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "10%" }}>DENETÇİ KANAATİ</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "5%" }}>HİLE</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "8%" }}>NİC. ÖNEMLİ</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "5%" }}>K.TESTİ</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "5%" }}>ANALİTİK</TableCell>
+              <TableCell sx={{ ...headerCellSx, width: "4.5%" }}>DETAY</TableCell>
             </TableRow>
           </TableHead>
 
@@ -697,19 +714,19 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                         "&:hover": { backgroundColor: "#f4f8ff" },
                       }}
                     >
-                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", width: 48 }}>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", width: "2.5%", px: 0.25 }}>
                         {isExpanded ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
                       </TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, fontWeight: 700 }}>{row.kebirKodu || "-"}</TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, minWidth: { xs: 220, md: 320 } }}>{row.hesapAdi || "-"}</TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx }}>{formatNumber(row.bakiyeTl)}</TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx }}>{formatPercent(row.yuzde)}</TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center" }}>{formatNumber(row.fisSayisi)}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, fontWeight: 700, textAlign: "center", whiteSpace: "nowrap" }}>{row.kebirKodu || "-"}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, whiteSpace: "normal", textOverflow: "ellipsis" }}>{row.hesapAdi || "-"}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "right", whiteSpace: "nowrap" }}>{formatNumber(row.bakiyeTl)}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", whiteSpace: "nowrap" }}>{formatPercent(row.yuzde)}</TableCell>
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", whiteSpace: "nowrap" }}>{formatNumber(row.fisSayisi)}</TableCell>
                       <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getRiskCellColor(row.kalemRiski) }}>
                         {row.kalemRiski || "-"}
                       </TableCell>
                       <TableCell
-                        sx={{ ...bodyCellBaseSx, minWidth: { xs: 145, md: 170 } }}
+                        sx={{ ...bodyCellBaseSx, px: 0.5 }}
                         onClick={(event) => {
                           event.stopPropagation();
                           openRow(row.id);
@@ -724,7 +741,8 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                             sx={{
                               backgroundColor: "#ffffff",
                               fontWeight: 700,
-                              ".MuiSelect-select": { py: 0.8 },
+                              fontSize: "clamp(0.64rem, 0.56rem + 0.18vw, 0.82rem)",
+                              ".MuiSelect-select": { py: 0.5, px: 1 },
                             }}
                           >
                             <MenuItem value={1}>Düşük</MenuItem>

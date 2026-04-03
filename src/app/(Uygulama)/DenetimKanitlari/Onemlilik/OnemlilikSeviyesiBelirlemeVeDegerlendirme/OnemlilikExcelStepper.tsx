@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  Backdrop,
   Box,
   Button,
   CircularProgress,
@@ -28,6 +29,8 @@ import {
 } from "@mui/material";
 import { IconHistory, IconRotate } from "@tabler/icons-react";
 import { enqueueSnackbar } from "notistack";
+import { saveAs } from "file-saver";
+import axios from "axios";
 import {
   getOnemlilikExcelModel,
   previewOnemlilikExcelModel,
@@ -35,6 +38,11 @@ import {
   restorePreviousOnemlilikExcelModel,
   updateOnemlilikExcelModel,
 } from "@/api/DenetimKanitlari/DenetimKanitlari";
+import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
+import { getMenus } from "@/api/Menu/Menu";
+import { url } from "@/api/apiBase";
+import { createAuthorizedAxiosConfig } from "@/utils/authSession";
+import { getKullaniciByDenetlenenYilRol, getKullaniciById } from "@/api/Kullanici/KullaniciIslemleri";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 
@@ -91,6 +99,23 @@ type WorkbookState = {
   parametreler: Parametreler;
   hesaplar: HesapGirdi[];
 };
+
+type SignaturePerson = {
+  adSoyad: string;
+  unvan?: string;
+  tarih?: string | null;
+};
+
+type DocumentMeta = {
+  referansNo?: string;
+  formKodu?: string;
+  belgeAdi?: string;
+  hazirlayan?: SignaturePerson | null;
+  onaylayan?: SignaturePerson | null;
+  kontrolEden?: SignaturePerson | null;
+};
+
+type ChangedCellMap = Record<string, true>;
 
 const steps = [
   "P0 - Parametreler",
@@ -149,15 +174,42 @@ const Section = ({
   </Paper>
 );
 
+const tableScrollSx = {
+  maxHeight: "42vh",
+  overflow: "auto",
+  border: "1px solid #dbe3f0",
+  borderRadius: 2,
+  backgroundColor: "#fff",
+};
+
+const FORM_KODU = "OnemlilikSeviyesiKayitlari";
+const FORM_TITLE = "Önemlilik Seviyesi Belirleme ve Değerlendirme";
+const FORM_URL = "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme";
+
+const getRiskLevelStyles = (value?: string | null) => {
+  const risk = (value || "").toLowerCase();
+  if (risk.includes("yüksek")) {
+    return { backgroundColor: "#fde2e0", color: "#b42318", fontWeight: 800 };
+  }
+  if (risk.includes("orta")) {
+    return { backgroundColor: "#fff1cc", color: "#b7791f", fontWeight: 800 };
+  }
+  return { backgroundColor: "#e6f4ea", color: "#2f6f44", fontWeight: 800 };
+};
+
 export interface OnemlilikExcelStepperRef {
-  handleReset: () => void;
-  handleRestorePrevious: () => void;
+  handleReset: () => Promise<void>;
+  handleRestorePrevious: () => Promise<void>;
+  handleOpenPreview: () => Promise<void>;
+  handleExcelDownload: () => Promise<void>;
+  handleWordDownload: () => Promise<void>;
 }
 
 const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [stepLoading, setStepLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [previewing, setPreviewing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -165,14 +217,119 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   const [previewWorkbook, setPreviewWorkbook] = useState<Workbook | null>(null);
   const [draftState, setDraftState] = useState<WorkbookState | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pdfPreviewOpen, setPdfPreviewOpen] = useState(false);
+  const [pdfBlobUrl, setPdfBlobUrl] = useState("");
+  const [documentMeta, setDocumentMeta] = useState<DocumentMeta | null>(null);
+  const [toolbarActionLoading, setToolbarActionLoading] = useState<null | "back" | "next" | "restore" | "reset">(null);
+  const [changedCells, setChangedCells] = useState<ChangedCellMap>({});
+  const currentWorkbook = previewWorkbook ?? savedWorkbook;
   const previewTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previewSeqRef = useRef(0);
+  const stepLoadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const changedCellsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previousWorkbookRef = useRef<Workbook | null>(null);
 
   const getErrorMessage = (error: unknown, fallback: string) => {
     if (error instanceof Error && error.message) {
       return error.message;
     }
     return fallback;
+  };
+
+  const revokeBlobUrl = (value?: string | null) => {
+    if (value && value.startsWith("blob:")) {
+      window.URL.revokeObjectURL(value);
+    }
+  };
+
+  const getChangedCellKey = (section: string, rowKey: string | number, field: string) => `${section}:${rowKey}:${field}`;
+
+  const getChangedCellSx = (key: string, baseSx?: Record<string, any>) => ({
+    ...(baseSx || {}),
+    transition: "background-color .45s ease, box-shadow .45s ease",
+    ...(changedCells[key]
+      ? {
+          backgroundColor: "#fff4a3",
+          boxShadow: "inset 0 0 0 2px rgba(245, 158, 11, 0.45)",
+        }
+      : {}),
+  });
+
+  const formatDate = (value?: string | null) => {
+    if (!value) {
+      return "-";
+    }
+
+    const normalized = value.includes("T") ? value.split("T")[0] : value;
+    const [year, month, day] = normalized.split("-");
+    return year && month && day ? `${day}.${month}.${year}` : normalized;
+  };
+
+  const resolvePerson = async (id?: number | null, fallbackTip?: string) => {
+    if (id) {
+      const userData = await getKullaniciById(id);
+      if (userData) {
+        return {
+          adSoyad: userData.personelAdi || userData.kullaniciAdi || "-",
+          unvan: userData.unvan || "",
+        };
+      }
+    }
+
+    if (!fallbackTip) {
+      return null;
+    }
+
+    const fallbackPeople = await getKullaniciByDenetlenenYilRol(user.denetlenenId || 0, user.yil || 0, fallbackTip);
+    const fallbackUser = fallbackPeople?.[0];
+    if (!fallbackUser) {
+      return null;
+    }
+
+    return {
+      adSoyad: fallbackUser.personelAdi || fallbackUser.kullaniciAdi || "-",
+      unvan: fallbackUser.unvan || "",
+    };
+  };
+
+  const loadDocumentMeta = async () => {
+    try {
+      const [formData, menus] = await Promise.all([
+        getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(
+          user.denetciId || 0,
+          user.denetlenenId || 0,
+          user.yil || 0,
+          FORM_KODU
+        ),
+        getMenus(),
+      ]);
+
+      const matchedMenu = menus.find(
+        (menu) => menu.formKodu === FORM_KODU || menu.formUrl === FORM_URL
+      );
+
+      const [hazirlayan, onaylayan, kontrolEden] = await Promise.all([
+        resolvePerson(formData?.hazirlayanId, "Hazırlayan"),
+        resolvePerson(formData?.onaylayanId, "Onaylayan"),
+        resolvePerson(formData?.kontrolEdenId, "Kalite Kontrol"),
+      ]);
+
+      setDocumentMeta({
+        referansNo: matchedMenu?.referansNo || "",
+        formKodu: matchedMenu?.formKodu || FORM_KODU,
+        belgeAdi: matchedMenu?.belgeAdi || FORM_TITLE,
+        hazirlayan: hazirlayan ? { ...hazirlayan, tarih: formData?.hazirlanmaTarihi } : null,
+        onaylayan: onaylayan ? { ...onaylayan, tarih: formData?.onaylanmaTarihi } : null,
+        kontrolEden: kontrolEden ? { ...kontrolEden, tarih: formData?.kontrolTarihi } : null,
+      });
+    } catch (error) {
+      console.log("Belge meta bilgisi yüklenemedi", error);
+      setDocumentMeta({
+        referansNo: "",
+        formKodu: FORM_KODU,
+        belgeAdi: FORM_TITLE,
+      });
+    }
   };
 
   const syncFromWorkbook = (workbook: Workbook) => {
@@ -227,13 +384,84 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
 
   useEffect(() => {
     loadWorkbook();
+    loadDocumentMeta();
 
     return () => {
       if (previewTimerRef.current) {
         clearTimeout(previewTimerRef.current);
       }
+      if (stepLoadingTimerRef.current) {
+        clearTimeout(stepLoadingTimerRef.current);
+      }
+      if (changedCellsTimerRef.current) {
+        clearTimeout(changedCellsTimerRef.current);
+      }
+      revokeBlobUrl(pdfBlobUrl);
     };
   }, []);
+
+  useEffect(() => {
+    if (!currentWorkbook) {
+      return;
+    }
+
+    const previousWorkbook = previousWorkbookRef.current;
+    if (!previousWorkbook) {
+      previousWorkbookRef.current = currentWorkbook;
+      return;
+    }
+
+    const nextChangedCells: ChangedCellMap = {};
+
+    previousWorkbook.hesapDagitimSatirlari.forEach((previousRow) => {
+      const nextRow = currentWorkbook.hesapDagitimSatirlari.find((item) => item.kebirKodu === previousRow.kebirKodu);
+      if (!nextRow) {
+        return;
+      }
+
+      [
+        "agirlikTutari",
+        "agirlikOraniYuzde",
+        "sabitPay",
+        "kalanTutar",
+        "dagitilanPay",
+        "nihaiOnemlilik",
+        "performansOnemliligi",
+        "riskSeviyesi",
+      ].forEach((field) => {
+        if (String(previousRow[field] ?? "") !== String(nextRow[field] ?? "")) {
+          nextChangedCells[getChangedCellKey("m2", nextRow.kebirKodu, field)] = true;
+        }
+      });
+    });
+
+    previousWorkbook.denetimRiskiSatirlari.forEach((previousRow) => {
+      const nextRow = currentWorkbook.denetimRiskiSatirlari.find((item) => item.kebirKodu === previousRow.kebirKodu);
+      if (!nextRow) {
+        return;
+      }
+
+      ["oyr", "ter", "guvenDuzeyi", "orneklemeYuzdesi", "hesapOnemlilikTutari", "onerilenYaklasim"].forEach((field) => {
+        if (String(previousRow[field] ?? "") !== String(nextRow[field] ?? "")) {
+          nextChangedCells[getChangedCellKey("m3", nextRow.kebirKodu, field)] = true;
+        }
+      });
+    });
+
+    previousWorkbookRef.current = currentWorkbook;
+
+    if (!Object.keys(nextChangedCells).length) {
+      return;
+    }
+
+    setChangedCells(nextChangedCells);
+    if (changedCellsTimerRef.current) {
+      clearTimeout(changedCellsTimerRef.current);
+    }
+    changedCellsTimerRef.current = setTimeout(() => {
+      setChangedCells({});
+    }, 1800);
+  }, [currentWorkbook]);
 
   useEffect(() => {
     if (!draftState || !savedWorkbook) {
@@ -256,6 +484,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   }, [draftState, savedWorkbook]);
 
   const handleReset = async () => {
+    setToolbarActionLoading("reset");
     try {
       const data = await resetOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0);
       if (!data) {
@@ -268,10 +497,17 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
       enqueueSnackbar("Program varsayılanlarına dönüldü.", { variant: "success" });
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error, "Program varsayılanlarına dönülemedi."), { variant: "error" });
+    } finally {
+      setToolbarActionLoading(null);
     }
   };
 
   const handleRestorePrevious = async () => {
+    if (savedWorkbook?.birOncekiHesaplamaVar !== true) {
+      return;
+    }
+
+    setToolbarActionLoading("restore");
     try {
       const data = await restorePreviousOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0);
       if (!data) {
@@ -283,12 +519,280 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
       enqueueSnackbar("Bir önceki hesaplamaya dönüldü.", { variant: "success" });
     } catch (error) {
       enqueueSnackbar(getErrorMessage(error, "Bir önceki hesaplama geri yüklenemedi."), { variant: "error" });
+    } finally {
+      setToolbarActionLoading(null);
+    }
+  };
+
+  const escapeHtml = (value: unknown) =>
+    String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;");
+
+  const buildTableHtml = (title: string, headers: string[], rows: (string | number)[][], color: string) => `
+    <section style="margin-top:24px;">
+      <div style="background:${color};color:#fff;padding:10px 14px;font-weight:700;border-radius:8px 8px 0 0;">${escapeHtml(title)}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr>
+            ${headers.map((header) => `<th style="border:1px solid #d6deef;padding:8px;background:#eef3fb;text-align:left;">${escapeHtml(header)}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((row) => `<tr>${row.map((cell) => `<td style="border:1px solid #d6deef;padding:8px;vertical-align:top;">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}
+        </tbody>
+      </table>
+    </section>
+  `;
+
+  const buildHtmlAsync = async () => {
+    const workbook = previewWorkbook ?? savedWorkbook;
+    if (!workbook) {
+      return "";
+    }
+    const meta = documentMeta ?? {
+      referansNo: "",
+      formKodu: FORM_KODU,
+      belgeAdi: FORM_TITLE,
+    };
+
+    const paramRows = Object.entries(workbook.parametreler).map(([alan, deger]) => [
+      alan,
+      typeof deger === "number" ? formatMoney(deger) : String(deger ?? "-"),
+    ]);
+
+    const genelRows = workbook.genelOnemlilikSatirlari.map((row) => [
+      row.kriter,
+      formatMoney(row.tutar),
+      plain.format(row.secilenOranYuzde),
+      formatMoney(row.hamOnemlilik),
+      plain.format(row.agirlikKatsayisi),
+      formatMoney(row.agirlikliOnemlilik),
+    ]);
+
+    const dagitimRows = workbook.hesapDagitimSatirlari.map((row) => [
+      row.kebirKodu,
+      row.hesapAdi,
+      formatMoney(row.mizanTutari),
+      row.riskK,
+      formatMoney(row.nihaiOnemlilik),
+      formatMoney(row.performansOnemliligi),
+      row.riskSeviyesi,
+    ]);
+
+    const riskRows = workbook.denetimRiskiSatirlari.map((row) => [
+      row.kebirKodu,
+      row.hesapAdi,
+      plain.format(row.dogalRisk),
+      plain.format(row.kontrolRiski),
+      formatPercent(row.oyr, 100),
+      formatPercent(row.ter, 100),
+      row.orneklemeYuzdesi,
+      row.onerilenYaklasim,
+    ]);
+    const approvalRows = [
+      ["Hazırlayan", meta.hazirlayan],
+      ["Onaylayan", meta.onaylayan],
+      ["Kalite Kontrol", meta.kontrolEden],
+    ] as const;
+
+    return `
+      <!doctype html>
+      <html lang="tr">
+      <head>
+        <meta charset="utf-8" />
+        <title>Önemlilik Seviyesi Belirleme ve Değerlendirme</title>
+      </head>
+      <body style="font-family:Calibri, Arial, sans-serif;color:#1f2937;padding:24px;">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px;border-bottom:2px solid #d6deef;padding-bottom:14px;">
+          <div style="font-size:12px;color:#475569;">
+            <div><strong>Referans No:</strong> ${escapeHtml(meta.referansNo || "-")}</div>
+            <div style="margin-top:4px;"><strong>Form Kodu:</strong> ${escapeHtml(meta.formKodu || FORM_KODU)}</div>
+            <div style="margin-top:4px;"><strong>Belge:</strong> ${escapeHtml(meta.belgeAdi || FORM_TITLE)}</div>
+            <div style="margin-top:4px;"><strong>Sayfa:</strong> 1 / 1</div>
+          </div>
+        </div>
+        <h1 style="margin:0 0 6px;font-size:22px;color:#1f3a6d;">Önemlilik Seviyesi Belirleme ve Değerlendirme</h1>
+        <div style="margin-bottom:18px;color:#475569;">Firma: ${escapeHtml(workbook.parametreler.firmaAdi)} | Yıl: ${escapeHtml(workbook.parametreler.denetimYili)}</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+          ${[
+            ["Genel Önemlilik", workbook.ozet.genelOnemlilik],
+            ["Performans Önemliliği", workbook.ozet.performansOnemliligi],
+            ["De Minimis", workbook.ozet.deMinimis],
+            ["Hesap Sabit Pay", workbook.ozet.hesapSabitPayTutari],
+          ].map(([label, value]) => `
+            <div style="min-width:180px;border:1px solid #d6deef;border-radius:10px;padding:12px;background:#f8fbff;">
+              <div style="font-size:12px;color:#475569;">${escapeHtml(label)}</div>
+              <div style="font-size:18px;font-weight:700;color:#1f3a6d;">${escapeHtml(formatMoney(Number(value)))}</div>
+            </div>
+          `).join("")}
+        </div>
+        ${buildTableHtml("Parametre Özeti", ["Alan", "Değer"], paramRows, "#1f3a6d")}
+        ${buildTableHtml("Genel Önemlilik", ["Kriter", "Tutar", "Seçilen Oran %", "Ham Önemlilik", "Ağırlık", "Ağırlıklı Önemlilik"], genelRows, "#c00000")}
+        ${buildTableHtml("Hesap Dağıtım", ["Kebir", "Hesap Adı", "Mizan Tutarı", "Risk K", "Nihai Önemlilik", "PM", "Risk Seviyesi"], dagitimRows, "#c45d0a")}
+        ${buildTableHtml("Denetim Riski", ["Kebir", "Hesap Adı", "Doğal Risk", "Kontrol Riski", "ÖYR", "TER", "Örnekleme %", "Yaklaşım"], riskRows, "#5b1c9d")}
+        <section style="margin-top:28px;border:1px solid #d6deef;border-radius:10px;overflow:hidden;">
+          <div style="background:#1f3a6d;color:#fff;padding:10px 14px;font-weight:700;">Belge Onay Bilgileri</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <thead>
+              <tr>
+                ${["Rol", "Ad Soyad", "Unvan", "Tarih"].map((header) => `<th style="border:1px solid #d6deef;padding:8px;background:#eef3fb;text-align:left;">${escapeHtml(header)}</th>`).join("")}
+              </tr>
+            </thead>
+            <tbody>
+              ${approvalRows.map(([label, person]) => `
+                <tr>
+                  <td style="border:1px solid #d6deef;padding:8px;font-weight:700;">${escapeHtml(label)}</td>
+                  <td style="border:1px solid #d6deef;padding:8px;">${escapeHtml(person?.adSoyad || "-")}</td>
+                  <td style="border:1px solid #d6deef;padding:8px;">${escapeHtml(person?.unvan || "-")}</td>
+                  <td style="border:1px solid #d6deef;padding:8px;">${escapeHtml(formatDate(person?.tarih))}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </section>      </body>
+      </html>
+    `;
+  };
+
+  const handleOpenPreview = async () => {
+    try {
+      const html = await buildHtmlAsync();
+      const response = await axios.post(
+        "/ArsivIslemleri/PreviewFromHtml",
+        {
+          denetciId: user.denetciId,
+          yil: user.yil,
+          denetlenenId: user.denetlenenId,
+          title: "OnemlilikSeviyesiBelirlemeVeDegerlendirme",
+          html,
+          save: true,
+        },
+        createAuthorizedAxiosConfig(
+          {
+            baseURL: url,
+            headers: { "Content-Type": "application/json" },
+            responseType: "blob",
+          },
+          user.token
+        )
+      );
+
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      const nextPdfUrl = window.URL.createObjectURL(pdfBlob);
+      setPdfBlobUrl((prev) => {
+        revokeBlobUrl(prev);
+        return nextPdfUrl;
+      });
+      setPdfPreviewOpen(true);
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, "PDF önizleme oluşturulamadı."), { variant: "error" });
+    }
+  };
+
+  const handleExcelDownload = async () => {
+    const workbook = previewWorkbook ?? savedWorkbook;
+    if (!workbook) {
+      enqueueSnackbar("İndirilecek önizleme verisi bulunamadı.", { variant: "warning" });
+      return;
+    }
+
+    try {
+      const { default: ExcelJS } = await import("exceljs");
+      const excel = new ExcelJS.Workbook();
+      excel.creator = "FAS Denetim";
+      excel.created = new Date();
+
+      const toSheetRows = (rows: Row[]) =>
+        rows.map((row) =>
+          Object.fromEntries(
+            Object.entries(row).map(([key, value]) => [key, value ?? ""])
+          )
+        );
+
+      const addObjectSheet = (sheetName: string, rows: Record<string, any>[]) => {
+        const worksheet = excel.addWorksheet(sheetName);
+        if (!rows.length) {
+          worksheet.addRow(["Veri bulunamadı"]);
+          return;
+        }
+
+        const headers = Object.keys(rows[0]);
+        worksheet.addRow(headers);
+        rows.forEach((row) => worksheet.addRow(headers.map((header) => row[header])));
+        const headerRow = worksheet.getRow(1);
+        headerRow.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        headerRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F3A6D" } };
+        worksheet.views = [{ state: "frozen", ySplit: 1 }];
+        worksheet.columns = headers.map((header) => ({
+          key: header,
+          width: Math.min(Math.max(header.length + 6, 16), 34),
+        }));
+      };
+
+      addObjectSheet("Parametreler", Object.entries(workbook.parametreler).map(([alan, deger]) => ({ alan, deger })));
+      addObjectSheet("Finansal Veriler", toSheetRows(workbook.finansalVeriler));
+      addObjectSheet("Genel Onemlilik", toSheetRows(workbook.genelOnemlilikSatirlari));
+      addObjectSheet("Ozet", [workbook.ozet]);
+      addObjectSheet("Hesap Dagitim", toSheetRows(workbook.hesapDagitimSatirlari));
+      addObjectSheet("Denetim Riski", toSheetRows(workbook.denetimRiskiSatirlari));
+
+      const buffer = await excel.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, `OnemlilikSeviyesiBelirleme_${user.yil || "rapor"}.xlsx`);
+      enqueueSnackbar("Excel dosyası indirildi.", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, "Excel dosyası oluşturulamadı."), { variant: "error" });
+    }
+  };
+
+  const handleWordDownload = async () => {
+    try {
+      const html = await buildHtmlAsync();
+      const response = await axios.post(
+        "/ArsivIslemleri/WordDosyasiIndirHtml",
+        {
+          denetciId: user.denetciId,
+          yil: user.yil,
+          denetlenenId: user.denetlenenId,
+          title: "OnemlilikSeviyesiBelirlemeVeDegerlendirme",
+          html,
+          save: true,
+        },
+        createAuthorizedAxiosConfig(
+          {
+            baseURL: url,
+            headers: { "Content-Type": "application/json" },
+            responseType: "blob",
+          },
+          user.token
+        )
+      );
+
+      const urlFile = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = urlFile;
+      link.setAttribute("download", `OnemlilikSeviyesiBelirleme_${user.yil || "rapor"}.docx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(urlFile), 0);
+      enqueueSnackbar("Word dosyası indirildi.", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar(getErrorMessage(error, "Word dosyası oluşturulamadı."), { variant: "error" });
     }
   };
 
   useImperativeHandle(ref, () => ({
     handleReset,
     handleRestorePrevious,
+    handleOpenPreview,
+    handleExcelDownload,
+    handleWordDownload,
   }));
 
   const updateParam = (key: keyof Parametreler, value: any) => {
@@ -307,7 +811,6 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   };
 
   const hesapMap = useMemo(() => new Map(draftState?.hesaplar.map((item) => [item.kebirKodu, item]) ?? []), [draftState]);
-  const currentWorkbook = previewWorkbook ?? savedWorkbook;
 
   const hasPendingChanges = useMemo(() => {
     if (!draftState || !savedWorkbook) {
@@ -316,6 +819,28 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
 
     return JSON.stringify(toPayload(draftState)) !== JSON.stringify(toPayload(buildState(savedWorkbook)));
   }, [draftState, savedWorkbook]);
+  const hasPreviousCalculation = savedWorkbook?.birOncekiHesaplamaVar === true;
+
+  const calculationInProgress = previewing || saving;
+
+  const changeStep = (nextStep: number) => {
+    if (nextStep === activeStep) {
+      return;
+    }
+
+    if (stepLoadingTimerRef.current) {
+      clearTimeout(stepLoadingTimerRef.current);
+    }
+
+    setToolbarActionLoading(nextStep > activeStep ? "next" : "back");
+    setStepLoading(true);
+    setActiveStep(nextStep);
+
+    stepLoadingTimerRef.current = setTimeout(() => {
+      setStepLoading(false);
+      setToolbarActionLoading(null);
+    }, 350);
+  };
 
   const diffSummary = useMemo(() => {
     if (!savedWorkbook || !currentWorkbook) {
@@ -397,10 +922,9 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   };
 
   const p0 = (
-    <Section title="TNB AKADEMI | PARAMETRE PANELI" color="#1f3a6d">
       <Stack spacing={3}>
-        <TableContainer>
-          <Table size="small">
+        <TableContainer sx={{ ...tableScrollSx, maxHeight: "32vh" }}>
+          <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ background: "#2f6fb0", color: "#fff", fontWeight: 800 }}>Alan</TableCell>
@@ -444,8 +968,8 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
           </Table>
         </TableContainer>
 
-        <TableContainer>
-          <Table size="small">
+        <TableContainer sx={{ ...tableScrollSx, maxHeight: "30vh" }}>
+          <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 {["#", "Kod", "Hesaplama Bazı", "Tutar (TL)", "Mizan Kaynağı", "Notlar"].map((title) => (
@@ -473,14 +997,13 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
           </Table>
         </TableContainer>
       </Stack>
-    </Section>
   );
 
   const m1 = (
     <Stack spacing={3}>
       <Section title="BOLUM 2: GENEL ONEMLILIK (M)" color="#c00000" subtitle="Seçilen oran veya önceki parametreler değiştiğinde sonuçlar anlık güncellenir.">
-        <TableContainer>
-          <Table size="small">
+        <TableContainer sx={{ ...tableScrollSx, maxHeight: "42vh" }}>
+          <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 {["#", "Kriter", "Tutar", "Seçilen Oran %", "Ham Önemlilik", "Ağırlık", "Ağırlıklı Önemlilik"].map((title) => (
@@ -537,8 +1060,8 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   );
 
   const m2 = (
-    <Section title="BOLUM 4: HESAP BAZINDA ONEMLILIK DAGITIMI" color="#c45d0a" subtitle="Risk K veya mizan değiştiğinde ilgili satır ve toplamlar anlık güncellenir.">
-      <TableContainer>
+    <Section title="BÖLÜM 4: HESAP BAZINDA ÖNEMLİLİK DAĞITIMI" color="#c45d0a" subtitle="Risk K veya mizan değiştiğinde ilgili satır ve toplamlar anlık güncellenir.">
+      <TableContainer sx={{ ...tableScrollSx, maxHeight: "52vh" }}>
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
@@ -564,14 +1087,14 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
                       <MenuItem value={3}>3</MenuItem>
                     </TextField>
                   </TableCell>
-                  <TableCell sx={{ background: "#ffe8da" }}>{formatMoney(row.agirlikTutari)}</TableCell>
-                  <TableCell sx={{ background: "#fff7cc" }}>{formatPercent(row.agirlikOraniYuzde)}</TableCell>
-                  <TableCell sx={{ background: "#e8f1ff" }}>{formatMoney(row.sabitPay)}</TableCell>
-                  <TableCell sx={{ background: "#e8f1ff" }}>{formatMoney(row.kalanTutar)}</TableCell>
-                  <TableCell sx={{ background: "#dff1d8" }}>{formatMoney(row.dagitilanPay)}</TableCell>
-                  <TableCell sx={{ background: "#ffe8da" }}>{formatMoney(row.nihaiOnemlilik)}</TableCell>
-                  <TableCell sx={{ background: "#dff1d8" }}>{formatMoney(row.performansOnemliligi)}</TableCell>
-                  <TableCell>{row.riskSeviyesi}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "agirlikTutari"), { background: "#ffe8da" })}>{formatMoney(row.agirlikTutari)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "agirlikOraniYuzde"), { background: "#fff7cc" })}>{formatPercent(row.agirlikOraniYuzde)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "sabitPay"), { background: "#e8f1ff" })}>{formatMoney(row.sabitPay)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "kalanTutar"), { background: "#e8f1ff" })}>{formatMoney(row.kalanTutar)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "dagitilanPay"), { background: "#dff1d8" })}>{formatMoney(row.dagitilanPay)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "nihaiOnemlilik"), { background: "#ffe8da" })}>{formatMoney(row.nihaiOnemlilik)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "performansOnemliligi"), { background: "#dff1d8" })}>{formatMoney(row.performansOnemliligi)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "riskSeviyesi"), getRiskLevelStyles(row.riskSeviyesi))}>{row.riskSeviyesi}</TableCell>
                 </TableRow>
               );
             })}
@@ -584,8 +1107,8 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   const m3 = (
     <Section title="DENETIM RISKI MODELI" color="#5b1c9d" subtitle="Doğal risk ve kontrol riski değiştiğinde önerilen yaklaşım anlık güncellenir.">
       <Stack spacing={3}>
-        <TableContainer>
-          <Table size="small">
+        <TableContainer sx={{ ...tableScrollSx, maxHeight: "26vh" }}>
+          <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 {["#", "Kavram", "Simge", "Formül", "Değer", "Açıklama"].map((title) => (
@@ -608,7 +1131,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
           </Table>
         </TableContainer>
 
-        <TableContainer>
+        <TableContainer sx={{ ...tableScrollSx, maxHeight: "48vh" }}>
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
@@ -630,12 +1153,12 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
                     <TableCell sx={{ background: "#fff7cc" }}>
                       <TextField fullWidth variant="standard" value={plain.format(editable?.kontrolRiski ?? row.kontrolRiski)} onChange={(e) => updateHesap(row.kebirKodu, { kontrolRiski: parseDecimal(e.target.value) })} />
                     </TableCell>
-                    <TableCell sx={{ background: "#ffe8da" }}>{formatPercent(row.oyr, 100)}</TableCell>
-                    <TableCell sx={{ background: "#ffe8da" }}>{formatPercent(row.ter, 100)}</TableCell>
-                    <TableCell sx={{ background: "#dff1d8" }}>{formatPercent(row.guvenDuzeyi, 100)}</TableCell>
-                    <TableCell sx={{ background: "#fff7cc" }}>{row.orneklemeYuzdesi}</TableCell>
-                    <TableCell sx={{ background: "#ffe8da" }}>{formatMoney(row.hesapOnemlilikTutari)}</TableCell>
-                    <TableCell>{row.onerilenYaklasim}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "oyr"), { background: "#ffe8da" })}>{formatPercent(row.oyr, 100)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "ter"), { background: "#ffe8da" })}>{formatPercent(row.ter, 100)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "guvenDuzeyi"), { background: "#dff1d8" })}>{formatPercent(row.guvenDuzeyi, 100)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "orneklemeYuzdesi"), { background: "#fff7cc" })}>{row.orneklemeYuzdesi}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "hesapOnemlilikTutari"), { background: "#ffe8da" })}>{formatMoney(row.hesapOnemlilikTutari)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "onerilenYaklasim"))}>{row.onerilenYaklasim}</TableCell>
                   </TableRow>
                 );
               })}
@@ -648,13 +1171,94 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
 
   return (
     <Box sx={{ fontFamily: "'Plus Jakarta Sans', Helvetica, Arial, sans-serif" }}>
+      <Backdrop
+        open={calculationInProgress || stepLoading}
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 20,
+          backgroundColor: "rgba(15, 23, 42, 0.36)",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        <CircularProgress color="inherit" />
+        <Paper
+          elevation={0}
+          sx={{
+            px: 3,
+            py: 2,
+            borderRadius: 3,
+            textAlign: "center",
+            minWidth: { xs: 280, sm: 360 },
+            maxWidth: "90vw",
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 800, color: "#1f3a6d", mb: 0.5 }}>
+            {stepLoading ? "Adım yükleniyor" : saving ? "Hesaplama kaydediliyor" : "Hesaplama yapiliyor"}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "#475569" }}>
+            {stepLoading
+              ? "Seçilen bölüm hazırlanıyor. Lütfen bekleyin."
+              : saving
+              ? "Önemlilik seviyeleri yeniden hesaplanıp kaydediliyor. Lütfen bekleyin."
+              : "Girdiğiniz değerlere göre önizleme hesaplanıyor. Sonuçlar birazdan güncellenecek."}
+          </Typography>
+        </Paper>
+      </Backdrop>
       {previewing ? <Alert severity="info" sx={{ mb: 2, borderRadius: 3 }}>Değişiklikler hesaplanıyor...</Alert> : null}
 
-      <Paper sx={{ borderRadius: 3, border: "1px solid #dbe3f0", overflow: "hidden", mb: 3, background: "linear-gradient(180deg,#f8fbff 0%,#eef5ff 100%)" }}>
+      <Paper
+        sx={{
+          borderRadius: 3,
+          border: "1px solid #dbe3f0",
+          overflow: "hidden",
+          mb: 3,
+          background: "linear-gradient(180deg,#f8fbff 0%,#eef5ff 100%)",
+          position: "sticky",
+          top: { xs: 8, md: 12 },
+          zIndex: 11,
+        }}
+      >
         <Stepper activeStep={activeStep} alternativeLabel sx={{ p: 3 }}>
           {steps.map((label, index) => (
-            <Step key={label} onClick={() => setActiveStep(index)}>
-              <StepLabel>{label}</StepLabel>
+            <Step
+              key={label}
+              onClick={() => changeStep(index)}
+              sx={{
+                cursor: "pointer",
+                "& .MuiStepLabel-root": {
+                  borderRadius: 2,
+                  transition: "all .18s ease",
+                },
+                "& .MuiStepLabel-label": {
+                  transition: "color .18s ease, transform .18s ease",
+                },
+                "&:hover .MuiStepLabel-root": {
+                  backgroundColor: index === activeStep ? "rgba(25, 118, 210, 0.08)" : "rgba(36, 63, 112, 0.06)",
+                },
+                "&:hover .MuiStepLabel-label": {
+                  color: "#1f3a6d",
+                  transform: "translateY(-1px)",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                },
+                "&:hover .MuiStepIcon-root": {
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
+              <StepLabel
+                sx={{
+                  cursor: "pointer",
+                  px: 1,
+                  py: 0.5,
+                  "& .MuiStepLabel-label": {
+                    fontWeight: index === activeStep ? 800 : 600,
+                  },
+                }}
+              >
+                {label}
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -665,13 +1269,39 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
       <Paper sx={{ borderRadius: 3, border: "1px solid #dbe3f0", boxShadow: "0 12px 28px rgba(15,23,42,.06)", position: "sticky", bottom: 16, mt: 3, p: 2, zIndex: 10 }}>
         <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" spacing={2}>
           <Stack direction="row" spacing={1} flexWrap="wrap">
-            <Button variant="outlined" disabled={activeStep === 0} onClick={() => setActiveStep((x) => x - 1)}>Geri</Button>
-            <Button variant="outlined" disabled={activeStep === steps.length - 1} onClick={() => setActiveStep((x) => x + 1)}>İleri</Button>
-            <Button variant="outlined" color="secondary" startIcon={<IconHistory size={18} />} onClick={handleRestorePrevious} disabled={!savedWorkbook?.birOncekiHesaplamaVar}>
-              Bir Önceki Hesaplamaya Dön
+            <Button
+              variant="outlined"
+              disabled={activeStep === 0 || stepLoading}
+              onClick={() => changeStep(activeStep - 1)}
+              startIcon={toolbarActionLoading === "back" ? <CircularProgress size={16} color="inherit" /> : null}
+            >
+              {toolbarActionLoading === "back" ? "Yükleniyor..." : "Geri"}
             </Button>
-            <Button variant="outlined" color="secondary" startIcon={<IconRotate size={18} />} onClick={handleReset}>
-              Program Varsayılanına Dön
+            <Button
+              variant="outlined"
+              disabled={activeStep === steps.length - 1 || stepLoading}
+              onClick={() => changeStep(activeStep + 1)}
+              startIcon={toolbarActionLoading === "next" ? <CircularProgress size={16} color="inherit" /> : null}
+            >
+              {toolbarActionLoading === "next" ? "Yükleniyor..." : "İleri"}
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              startIcon={toolbarActionLoading === "restore" ? <CircularProgress size={16} color="inherit" /> : <IconHistory size={18} />}
+              onClick={handleRestorePrevious}
+              disabled={!hasPreviousCalculation || toolbarActionLoading !== null}
+            >
+              {toolbarActionLoading === "restore" ? "Yükleniyor..." : "Bir Önceki Hesaplamaya Dön"}
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              startIcon={toolbarActionLoading === "reset" ? <CircularProgress size={16} color="inherit" /> : <IconRotate size={18} />}
+              onClick={handleReset}
+              disabled={toolbarActionLoading !== null || saving}
+            >
+              {toolbarActionLoading === "reset" ? "Yükleniyor..." : "Program Varsayılanına Dön"}
             </Button>
           </Stack>
           <Button variant="contained" onClick={openConfirm} disabled={saving || previewing || !hasPendingChanges} startIcon={saving ? <CircularProgress size={18} color="inherit" /> : null}>
@@ -705,8 +1335,56 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
           <Button variant="contained" onClick={confirmSave} disabled={saving}>Onayla ve Kaydet</Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={pdfPreviewOpen && Boolean(pdfBlobUrl)}
+        onClose={() => {
+          setPdfPreviewOpen(false);
+          revokeBlobUrl(pdfBlobUrl);
+          setPdfBlobUrl("");
+        }}
+        maxWidth={false}
+        fullWidth
+        PaperProps={{
+          sx: {
+            width: "min(1200px, 96vw)",
+            height: "90vh",
+            maxWidth: "none",
+          },
+        }}
+      >
+        <DialogTitle>PDF Önizleme</DialogTitle>
+        <DialogContent dividers sx={{ p: 0, overflow: "hidden" }}>
+          {pdfBlobUrl ? (
+            <Box
+              component="iframe"
+              src={`${pdfBlobUrl}#navpanes=0`}
+              title="Önemlilik PDF Önizleme"
+              sx={{ width: "100%", height: "100%", minHeight: "78vh", border: 0 }}
+            />
+          ) : (
+            <Stack alignItems="center" justifyContent="center" sx={{ minHeight: "50vh" }}>
+              <CircularProgress />
+            </Stack>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setPdfPreviewOpen(false);
+              revokeBlobUrl(pdfBlobUrl);
+              setPdfBlobUrl("");
+            }}
+          >
+            Kapat
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 });
 
 export default OnemlilikExcelStepper;
+
+
+
+

@@ -72,7 +72,7 @@ const Page = () => {
                 sx={{ width: { xs: "100%", sm: "auto" }, minWidth: { sm: 160 } }}
               >
                 <Typography variant="body1" sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}>
-                  Varsayılana Dön
+                  {isClickedVarsayilanaDon ? "Varsayılan Yükleniyor..." : "Varsayılana Dön"}
                 </Typography>
               </Button>
             </Stack>
