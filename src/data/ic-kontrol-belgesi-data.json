@@ -1,0 +1,974 @@
+{
+  "belgeTipi": "İşletmeye İlişkin İç Kontrol Tespit Belgesi",
+  "toplamSoru": 44,
+  "sorular": [
+    {
+      "sira": 1,
+      "bolum": "B1",
+      "altBolum": "Genel",
+      "soruMetni": "Şirketin iç kontrol birimi var mı?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "İç kontrol birimi mevcut olup sistemli şekilde çalışmaktadır.",
+          "denetimAksiyonu": "Sistemin etkinliğini test et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "İç kontrol birimi yoktur. Kontrollerden sorumlu kişiler belirlenmemiştir.",
+          "denetimAksiyonu": "Yönetimi ve kontrol ortamını değerlendir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 2,
+      "bolum": "B1",
+      "altBolum": "Genel",
+      "soruMetni": "İç kontrol politikaları yazılı hale getirilmiş midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Kontrol politikaları belgelenmiş ve iletişim sağlanmıştır.",
+          "denetimAksiyonu": "Politika dokümantasyonunu gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Kontrol politikaları yazılı olmayıp ancak uygulanmaktadır.",
+          "denetimAksiyonu": "Politika belgeleştirilmesini öner",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 3,
+      "bolum": "B1",
+      "altBolum": "Genel",
+      "soruMetni": "İç kontrol sistemi düzenli olarak gözden geçirilmiş midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Sistem yıllık veya periyodik olarak değerlendirilmektedir.",
+          "denetimAksiyonu": "Gözden geçirme raporu ve bulguları kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "İç kontrol sistemi düzenli olarak gözden geçirilmemektedir.",
+          "denetimAksiyonu": "Periyodik gözden geçirme mekanizması oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 4,
+      "bolum": "B1",
+      "altBolum": "Genel",
+      "soruMetni": "Personel için iç kontrol eğitimi düzenlenmiş midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Personel düzenli olarak iç kontrol prosedürleri konusunda eğitilmektedir.",
+          "denetimAksiyonu": "Eğitim programı ve katılım kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Personele iç kontrol konusunda eğitim verilmemektedir.",
+          "denetimAksiyonu": "Eğitim programı oluştur ve uygula",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 5,
+      "bolum": "B2",
+      "altBolum": "Kontrol Ortamı",
+      "soruMetni": "Etik kurallar belirlenmiş ve iletişim sağlanmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Etik kurallar yazılı olayak tüm personele iletişim sağlamıştır.",
+          "denetimAksiyonu": "Etik kurallar belgesini ve dağıtım kayıtlarını kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Etik kurallar resmi olarak belirlenmemiş ve iletişim sağlanmamıştır.",
+          "denetimAksiyonu": "Etik kurallar belirle ve iletişim sağla",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 6,
+      "bolum": "B2",
+      "altBolum": "Kontrol Ortamı",
+      "soruMetni": "Yönetimin dürüstlüğü ve etikliği gözlemlenebilir midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Yönetim tarafından etik davranış gösterilmektedir.",
+          "denetimAksiyonu": "Yönetim kararları ve davranışlarını gözlemle",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Yönetim tarafından etik olmayan davranışlar gözlemlenmiştir.",
+          "denetimAksiyonu": "Yönetimi uyar ve gözlemleri belgele",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 7,
+      "bolum": "B2",
+      "altBolum": "Kontrol Ortamı",
+      "soruMetni": "Personel tayininde liyakat ölçütü uygulanmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Personel tayininde liyakat ve yeterlilik ölçütleri uygulanmaktadır.",
+          "denetimAksiyonu": "Personel dosyalarını ve niteliklerini kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Personel tayininde liyakat ölçütleri uygulanmamaktadır.",
+          "denetimAksiyonu": "Tayin prosedürleri oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 8,
+      "bolum": "B2",
+      "altBolum": "Kontrol Ortamı",
+      "soruMetni": "Yönetim yapısı ve sorumluluklar açıkça tanımlanmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Örgütsel yapı ve sorumluluklar açık şekilde tanımlanmıştır.",
+          "denetimAksiyonu": "Örgüt şeması ve iş tanımlarını gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Yönetim yapısı belirsiz ve sorumluluklar tanımlanmamıştır.",
+          "denetimAksiyonu": "Örgütsel yapı ve sorumlulukları netleştir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 9,
+      "bolum": "B3",
+      "altBolum": "Risk Değerlendirmesi",
+      "soruMetni": "Riskleri tanımlayan bir sistem mevcut mudur?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Risk tanımlama sistemi resmi olarak uygulanmaktadır.",
+          "denetimAksiyonu": "Risk tanımlama prosesini ve kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Riskleri tanımlamaya yönelik resmi bir sistem yoktur.",
+          "denetimAksiyonu": "Risk tanımlama sistemi oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 10,
+      "bolum": "B3",
+      "altBolum": "Risk Değerlendirmesi",
+      "soruMetni": "Belirtilen riskler için uygun kontroller tanımlanmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Her risk için uygun kontrollerle ilişkilendirilmiştir.",
+          "denetimAksiyonu": "Risk-kontrol eşleştirmesini gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Bazı risklere karşı yeterli kontroller tanımlanmamıştır.",
+          "denetimAksiyonu": "Eksik kontrolleri tanımla ve uygula",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 11,
+      "bolum": "B4",
+      "altBolum": "Kontrol Faaliyetleri",
+      "soruMetni": "İşlemlerin yetkilendirilmesi protokolü var mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "İşlemlerin yetkilendirilmesi prosedürü tanımlanmış ve uygulanmaktadır.",
+          "denetimAksiyonu": "Yetkilendirme prosedürü ve örnek işlem kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "İşlemlerin yetkilendirilmesi sistematik olarak yürütülmemektedir.",
+          "denetimAksiyonu": "Yetkilendirme prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 12,
+      "bolum": "B4",
+      "altBolum": "Kontrol Faaliyetleri",
+      "soruMetni": "İşlevlerin ayrılması ilkesi uygulanmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "İşlevler arasında uygun ayrılık bulunmaktadır.",
+          "denetimAksiyonu": "İş tanımları ve sorumluluk dağılımını kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Önemli işlevlerin ayrılması sağlanmamıştır.",
+          "denetimAksiyonu": "İşlevleri ayır ve sorumlulukları tanımla",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 13,
+      "bolum": "B4",
+      "altBolum": "Kontrol Faaliyetleri",
+      "soruMetni": "Sistem erişim kontrolleri tanımlanmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Sistem erişim kontrolleri tanımlanmış ve uygulanmaktadır.",
+          "denetimAksiyonu": "Erişim kontrol listeleri ve yetkilendirmeleri incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Sistem erişim kontrolleri tanımlanmamıştır.",
+          "denetimAksiyonu": "Erişim kontrolleri tanımla ve uygula",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 14,
+      "bolum": "B5",
+      "altBolum": "Bilgi ve İletişim",
+      "soruMetni": "Mali bilgiler zamanında raporlanmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Mali bilgiler düzenli olarak hazırlanıp raporlanmaktadır.",
+          "denetimAksiyonu": "Raporlama frekansı ve zamanlamasını kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Mali bilgiler gecikmiş veya düzensiz raporlanmaktadır.",
+          "denetimAksiyonu": "Raporlama süreçleri iyileştir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 15,
+      "bolum": "B5",
+      "altBolum": "Bilgi ve İletişim",
+      "soruMetni": "Muhasebe kayıtları doğru ve eksiksiz midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Muhasebe kayıtları doğru, eksiksiz ve zamanında tutulmaktadır.",
+          "denetimAksiyonu": "Muhasebe kayıtlarını ve belgelerini kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Muhasebe kayıtlarında hata veya eksiklik bulunmaktadır.",
+          "denetimAksiyonu": "Muhasebe sistemi ve kontrolleri iyileştir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 16,
+      "bolum": "B5",
+      "altBolum": "Bilgi ve İletişim",
+      "soruMetni": "Hazırlanan raporlar yönetim ve diğer mahalleye iletilmiş midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Raporlar hazırlandıktan sonra ilgililere zamanında iletilmektedir.",
+          "denetimAksiyonu": "Raporlama ve dağıtım kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Raporlar düzensiz şekilde veya geç iletilmektedir.",
+          "denetimAksiyonu": "Raporlama dağıtım prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 17,
+      "bolum": "B6",
+      "altBolum": "İzleme",
+      "soruMetni": "İç denetim veya bağımsız denetim yapılmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Düzenli olarak iç denetim veya bağımsız denetim yapılmaktadır.",
+          "denetimAksiyonu": "Denetim raporları ve bulguları gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "İç denetim veya bağımsız denetim yapılmamaktadır.",
+          "denetimAksiyonu": "Denetim mekanizması oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 18,
+      "bolum": "B6",
+      "altBolum": "İzleme",
+      "soruMetni": "Denetim bulguları izlenmiş ve düzeltici işlemler alınmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Denetim bulguları takip edilmiş ve gerekli düzeltmeler yapılmıştır.",
+          "denetimAksiyonu": "Bulguların düzeltilmesini doğrula",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Denetim bulguları takip edilmemiş veya göz ardı edilmiştir.",
+          "denetimAksiyonu": "Bulguların izlenmesi ve düzeltilmesi sağla",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 19,
+      "bolum": "B6",
+      "altBolum": "İzleme",
+      "soruMetni": "Denetçiye yönelik talimatlar yazılı olarak verilmiş midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Denetçinin görevleri ve sorumlulukları yazılı talimatlarla belirtilmiştir.",
+          "denetimAksiyonu": "Denetçi talimatlarını ve kapsamını gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Denetçiye yazılı talimatlar verilmemiştir.",
+          "denetimAksiyonu": "Denetçi görev ve sorumlulukları tanımla",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 20,
+      "bolum": "B7",
+      "altBolum": "Mali Raporlama",
+      "soruMetni": "Mali tabloların hazırlanmasında kullanılan muhasebe politikaları uygun mudur?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Muhasebe politikaları TFRS'ye uygun ve uygulanmaktadır.",
+          "denetimAksiyonu": "Muhasebe politikaları ve muhasebe uygulamalarını karşılaştır",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Muhasebe politikaları uygun değil veya tutarsız uygulanmaktadır.",
+          "denetimAksiyonu": "Muhasebe politikaları gözden geçir ve uyumlu hale getir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 21,
+      "bolum": "B7",
+      "altBolum": "Mali Raporlama",
+      "soruMetni": "Mali tabloların uygunluğunun değerlendirmesi yapılmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Mali tablolar düzenli olarak uygunluk açısından değerlendirilmektedir.",
+          "denetimAksiyonu": "Uygunluk değerlendirmesi kayıtlarını gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Mali tablolar uygunluk açısından düzenli olarak değerlendirilmemektedir.",
+          "denetimAksiyonu": "Uygunluk değerlendirmesi prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 22,
+      "bolum": "B7",
+      "altBolum": "Mali Raporlama",
+      "soruMetni": "Mali tablo dipnotları tam ve anlaşılır mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Dipnotlar mali tablolardaki tüm önemli konuları kapsamakta ve açık olmaktadır.",
+          "denetimAksiyonu": "Dipnotların eksiksizliğini ve anlaşılırlığını kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Dipnotlar eksik veya muğlak ifadeler içermektedir.",
+          "denetimAksiyonu": "Dipnotları iyileştir ve netleştir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 23,
+      "bolum": "B8",
+      "altBolum": "Bilgi Sistemi",
+      "soruMetni": "Muhasebe sistemi yeterli mi? muhasebecilerin teknik altyapıyı kullanır mı?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Muhasebe sistemi yeterli ve personel teknik altyapıyı etkin kullanmaktadır.",
+          "denetimAksiyonu": "Sistem özelliklerini ve personel yetkinliğini kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Muhasebe sistemi yetersiz veya personel teknik altyapıyı yetersiz kullanmaktadır.",
+          "denetimAksiyonu": "Sistem ve eğitim iyileştirmesi sağla",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 24,
+      "bolum": "B8",
+      "altBolum": "Bilgi Sistemi",
+      "soruMetni": "Veri güvenliği ve yedekleme prosedürleri uygulanmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Veri güvenliği ve yedekleme prosedürleri tanımlanmış ve uygulanmaktadır.",
+          "denetimAksiyonu": "Güvenlik prosedürleri ve yedekleme kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Veri güvenliği ve yedekleme prosedürleri tanımlanmamıştır.",
+          "denetimAksiyonu": "Veri güvenliği ve yedekleme prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 25,
+      "bolum": "B9",
+      "altBolum": "Hile Riski",
+      "soruMetni": "Hileli işlemleri tespit etme mekanizması mevcut mudur?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Hileli işlemleri tespit etmek için belirlenmiş prosedürler bulunmaktadır.",
+          "denetimAksiyonu": "Tespit mekanizmasını ve uygulamalarını gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Hileli işlemleri tespit etme mekanizması tanımlanmamıştır.",
+          "denetimAksiyonu": "Hile tespit mekanizması oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 26,
+      "bolum": "B9",
+      "altBolum": "Hile Riski",
+      "soruMetni": "Hileli işlemler vakası olmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Geçmişte hileli işlemler tespit edilmiştir.",
+          "denetimAksiyonu": "Hile olaylarını ve alınan tedbirleri gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Hileli işlem vakası öğrenilmemiştir.",
+          "denetimAksiyonu": "Kontrollerin etkinliğini doğrula",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 27,
+      "bolum": "B10",
+      "altBolum": "Satış ve Hazine",
+      "soruMetni": "Satış işlemleri için belirlenmiş prosedürler var mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Satış işlemleri yazılı prosedürle kontrol edilmektedir.",
+          "denetimAksiyonu": "Satış prosedürü ve uygulamaları gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Satış işlemleri için yazılı prosedür bulunmamaktadır.",
+          "denetimAksiyonu": "Satış prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 28,
+      "bolum": "B10",
+      "altBolum": "Satış ve Hazine",
+      "soruMetni": "Tahsilat işlemleri protokolü uygulanmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Tahsilat işlemleri için tanımlanmış prosedür uygulanmaktadır.",
+          "denetimAksiyonu": "Tahsilat prosedürü ve kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Tahsilat işlemleri düzensiz şekilde yürütülmektedir.",
+          "denetimAksiyonu": "Tahsilat prosedürü oluştur ve uygula",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 29,
+      "bolum": "B10",
+      "altBolum": "Satış ve Hazine",
+      "soruMetni": "Ödeme işlemleri için önsel ve sonsal kontroller var mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Ödeme işlemleri yazılı prosedürle kontrol edilmektedir.",
+          "denetimAksiyonu": "Ödeme kontrollerini test et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Ödeme işlemleri kontrolsüz şekilde yapılmaktadır.",
+          "denetimAksiyonu": "Ödeme kontrol prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 30,
+      "bolum": "B11",
+      "altBolum": "Varlıklar",
+      "soruMetni": "Depo/kasa kontrolleri tanımlanmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Depo ve kasa kontrolleri belirlenmiş ve uygulanmaktadır.",
+          "denetimAksiyonu": "Depo ve kasa kontrol prosedürlerini gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Depo ve kasa kontrolleri tanımlanmamıştır.",
+          "denetimAksiyonu": "Depo ve kasa kontrol prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 31,
+      "bolum": "B11",
+      "altBolum": "Varlıklar",
+      "soruMetni": "Varlıkların fiziksel sayımı düzenli olarak yapılmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Varlıklar yıllık veya periyodik olarak fiziksel sayıma tabi tutulmaktadır.",
+          "denetimAksiyonu": "Sayım prosedürü ve kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Varlıkların fiziksel sayımı düzenli olarak yapılmamaktadır.",
+          "denetimAksiyonu": "Periyodik sayım prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 32,
+      "bolum": "B11",
+      "altBolum": "Varlıklar",
+      "soruMetni": "Sabit kıymetlerin muhasebeleştirilmesi ve kullanım ömrü uygun mudur?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Sabit kıymetler muhasebe politikalarına uygun şekilde muhasebeleştirilmektedir.",
+          "denetimAksiyonu": "Sabit kıymet muhasebesi ve amortisman hesaplamalarını kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Sabit kıymet muhasebesi veya amortisman hesaplaması uygun değildir.",
+          "denetimAksiyonu": "Sabit kıymet muhasebesi prosedürü iyileştir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 33,
+      "bolum": "B12",
+      "altBolum": "Borçlar",
+      "soruMetni": "Borç tanımlama prosedürü tanımlanmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Borçlar tanımlama prosedürü belirlenmiş ve uygulanmaktadır.",
+          "denetimAksiyonu": "Borç tanımlama prosedürü ve kayıtlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Borç tanımlama prosedürü tanımlanmamıştır.",
+          "denetimAksiyonu": "Borç tanımlama prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 34,
+      "bolum": "B12",
+      "altBolum": "Borçlar",
+      "soruMetni": "Borçlar periodik olarak doğrulanmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Borçlar periodik olarak doğrulama (confirmation) yoluyla kontrol edilmektedir.",
+          "denetimAksiyonu": "Doğrulama kayıtlarını ve sonuçlarını gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Borçlar periodik olarak doğrulanmamaktadır.",
+          "denetimAksiyonu": "Borç doğrulama prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 35,
+      "bolum": "B13",
+      "altBolum": "Özkaynaklar",
+      "soruMetni": "Özkaynaklar kontrol edilmekte midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Özkaynaklar işlemleri muhasebe politikalarına uygun kontrol edilmektedir.",
+          "denetimAksiyonu": "Özkaynaklar değişiklikleri ve kontrolleri gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Özkaynaklar işlemleri kontrol edilmemektedir.",
+          "denetimAksiyonu": "Özkaynaklar kontrol prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 36,
+      "bolum": "B14",
+      "altBolum": "Muhasebe Tahmini ve Değerleme",
+      "soruMetni": "Muhasebe tahminleri uygun değerlemeler üzerine kurulu mudur?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Muhasebe tahminleri uygun veriler ve teknikler kullanılarak yapılmaktadır.",
+          "denetimAksiyonu": "Tahminler ve değerleme prosedürlerini gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Muhasebe tahminleri ve değerlemeler uygun prosedür olmadan yapılmaktadır.",
+          "denetimAksiyonu": "Tahmin ve değerleme prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 37,
+      "bolum": "B14",
+      "altBolum": "Muhasebe Tahmini ve Değerleme",
+      "soruMetni": "Muhasebe tahminlerindeki değişiklikler belgelenmiş midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Tahminlerdeki değişiklikler belgelenmiş ve dipnotlarda açıklanmıştır.",
+          "denetimAksiyonu": "Tahmin değişiklikleri ve dipnotları kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Orta",
+          "aciklamaMetni": "Tahminlerdeki değişiklikler belgelenmemiştir.",
+          "denetimAksiyonu": "Tahmin değişikliklerini belgele",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 38,
+      "bolum": "B15",
+      "altBolum": "İlişkili Taraf İşlemleri",
+      "soruMetni": "İlişkili taraf işlemleri tanımlanmış ve kontrolü sağlanmış mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "İlişkili taraf işlemleri tanımlanmış, kontrol edilmiş ve raporlanmıştır.",
+          "denetimAksiyonu": "İlişkili taraf işlemlerini ve raporlamasını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "İlişkili taraf işlemleri tanımlanmamış veya raporlanmamıştır.",
+          "denetimAksiyonu": "İlişkili taraf işlemleri tanımla ve raporla",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 39,
+      "bolum": "B16",
+      "altBolum": "Raporlama ve Açıklama Yükümlülüğü",
+      "soruMetni": "Mali tablolar düzenli olarak hazırlanıp açıklanmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Mali tablolar düzenli olarak hazırlanmakta ve gerekli açıklamalarla raporlanmaktadır.",
+          "denetimAksiyonu": "Mali tablo hazırlama ve açıklama prosedürlerini gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Mali tablolar düzenli olarak hazırlanmamakta veya açıklamalar yetersizdir.",
+          "denetimAksiyonu": "Mali tablo hazırlama prosedürü iyileştir",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 40,
+      "bolum": "B16",
+      "altBolum": "Raporlama ve Açıklama Yükümlülüğü",
+      "soruMetni": "Mali tablolar bağımsız denetçi tarafından gözden geçirilmiş midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Mali tablolar bağımsız denetçi tarafından denetim kapsamına alınmıştır.",
+          "denetimAksiyonu": "Denetim raporu ve denetçi görüşünü gözden geçir",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Mali tablolar bağımsız denetçi tarafından denetim kapsamına alınmamıştır.",
+          "denetimAksiyonu": "Denetim yazı ve süreci başlat",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 41,
+      "bolum": "B17",
+      "altBolum": "Yönetim ve Gözetim",
+      "soruMetni": "Yönetim kurulu düzenli olarak mali raporları gözden geçirmekte midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Yönetim kurulu mali raporları periyodik olarak gözden geçirmektedir.",
+          "denetimAksiyonu": "Yönetim kurulu toplantı tutanaklarını ve kararlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Kritik",
+          "aciklamaMetni": "Yönetim kurulu mali raporları gözden geçirmemektedir.",
+          "denetimAksiyonu": "Mali rapor gözden geçirme prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 42,
+      "bolum": "B17",
+      "altBolum": "Yönetim ve Gözetim",
+      "soruMetni": "Yönetim tarafından iç kontrolün etkinliğinin değerlemesi yapılmakta mıdır?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Yönetim düzenli olarak iç kontrol sistem etkinliğini değerlendirmektedir.",
+          "denetimAksiyonu": "Yönetim değerleme raporlarını incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Yönetim iç kontrol etkinliğini değerlendirmemektedir.",
+          "denetimAksiyonu": "İç kontrol değerleme prosedürü ve programı oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 43,
+      "bolum": "B18",
+      "altBolum": "Kaynaklar",
+      "soruMetni": "İş gücü (personel) yeterli ve yetkin midir?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Personel sayısı ve nitelikleri görevleri yapmak için yeterlidir.",
+          "denetimAksiyonu": "Personel dosyaları ve niteliklerini kontrol et",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Personel sayısı veya yetkinliği yeterli değildir.",
+          "denetimAksiyonu": "Personel ihtiyacı değerlendir ve işe alma süreci başlat",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    },
+    {
+      "sira": 44,
+      "bolum": "B18",
+      "altBolum": "Kaynaklar",
+      "soruMetni": "Muhasebe kaydının kontrolü ve kayıt yönetimi uygun mudur?",
+      "yanıtlar": {
+        "evet": {
+          "yanit": "evet",
+          "riskSeviyesi": "Düşük",
+          "aciklamaMetni": "Muhasebe kaydı ve belgeler uygun şekilde korunmakta ve yönetilmektedir.",
+          "denetimAksiyonu": "Muhasebe kayıt ve belge yönetimini incele",
+          "ilgiliBDS": "BDS 315"
+        },
+        "hayir": {
+          "yanit": "hayir",
+          "riskSeviyesi": "Yüksek",
+          "aciklamaMetni": "Muhasebe kaydı ve belgeler uygun şekilde korunmamakta ve yönetilmemektedir.",
+          "denetimAksiyonu": "Muhasebe kayıt ve belge yönetim prosedürü oluştur",
+          "ilgiliBDS": "BDS 315"
+        }
+      }
+    }
+  ]
+}

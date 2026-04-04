@@ -19,6 +19,7 @@ import { persistSessionTokens, syncSelectionStorageFromUserData, mapAuthPayloadT
 import { enqueueSnackbar } from "notistack";
 import { AppState } from "@/store/store";
 import { getDenetciOdemeBilgileri } from "@/api/Denetci/Denetci";
+import Link from "next/link";
 
 interface loginType {
   title?: string;
@@ -259,6 +260,14 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           </Box>
 
         </Stack>
+        
+        {/* Forgot Password Link */}
+        <Box mb={2} display="flex" justifyContent="flex-end">
+          <Link href="/auth/forgot-password" style={{ textDecoration: "none" }}>
+            <Typography sx={{ color: "primary.main", fontSize: "0.9rem", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>Şifremi Unuttum?</Typography>
+          </Link>
+        </Box>
+
         <Box>
           <Button
             type="submit"

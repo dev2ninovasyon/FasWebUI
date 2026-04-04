@@ -176,7 +176,7 @@ const EnflasyonIframe: React.FC<Props> = ({ url }) => {
         }}
         onError={() => {
           setIsLoading(false);
-          setServerError("Enflasyon sayfasi yuklenemedi. Lutfen tekrar deneyin.");
+          setServerError("Enflasyon sayfası yüklenemedi. Lütfen tekrar deneyin.");
         }}
       />
     </Box>

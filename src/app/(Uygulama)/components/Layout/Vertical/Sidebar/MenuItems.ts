@@ -168,36 +168,6 @@ export function createMenuItems(
               href: "/Musteri/MusteriIslemleri",
             },
             {
-              id: uniqueId(),
-              title: "Şirket Yönetim Kadrosu",
-              formKodu: "SirketYonetimKadrosu",
-              customIcon:
-                "public/images/svgs/musteri/sirket-yonetim-kadrosu.svg",
-              icon: IconPoint,
-              href: "/Musteri/SirketYonetimKadrosu",
-            },
-            {
-              id: uniqueId(),
-              title: "Şubeler",
-              formKodu: "Subeler",
-              customIcon: "public/images/svgs/musteri/subeler.svg",
-              icon: IconPoint,
-              href: "/Musteri/Subeler",
-            },
-            {
-              id: uniqueId(),
-              title: "Hissedarlar",
-              formKodu: "Hissedarlar",
-              customIcon: "public/images/svgs/musteri/hissedarlar.svg",
-              icon: IconPoint,
-              href: "/Musteri/Hissedarlar",
-            },
-            {
-              id: uniqueId(),
-              title: "İlişkili Taraflar",
-              formKodu: "IliskiliTaraflar",
-              customIcon: "public/images/svgs/musteri/iliskili-taraflar.svg",
-              icon: IconPoint,
               href: "/Musteri/IliskiliTaraflar",
             },
             {
@@ -2423,12 +2393,8 @@ export function createMenuItems(
         },
       ];
 
-  const hiddenMusteriRoutes = new Set([
-    "/Musteri/SirketYonetimKadrosu",
-    "/Musteri/Hissedarlar",
-    "/Musteri/Subeler",
-    "/Musteri/IliskiliTaraflar",
-  ]);
+  // These pages have been removed - no longer hidden routes needed
+  const hiddenMusteriRoutes = new Set<string>();
 
   const filterHiddenMenuItems = (items: any[]): any[] =>
     items

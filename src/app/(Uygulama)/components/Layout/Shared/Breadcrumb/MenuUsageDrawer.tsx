@@ -1,6 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   Box,
   Chip,
@@ -12,6 +15,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { ChevronDown } from "lucide-react";
 import { BookOpen, CircleHelp, Clapperboard, Clock3, Info, Lightbulb, ListChecks, X } from "lucide-react";
 import { MenuUsagePanel } from "@/api/Menu/Menu";
 
@@ -91,6 +95,22 @@ const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }
 const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title, icon, usageData, isLoading }) => {
   const theme = useTheme();
   const videoEmbedUrl = getVimeoEmbedUrl(usageData?.video?.url);
+
+  // Debug logging for FAQ data
+  useEffect(() => {
+    if (open && usageData) {
+      console.log("[MenuUsageDrawer Debug]", {
+        baslik: usageData.baslik,
+        sikSorulanSorularLength: usageData.sikSorulanSorular?.length || 0,
+        sikSorulanSorular: usageData.sikSorulanSorular,
+        kullanimNotu: usageData.kullanimNotu?.substring(0, 100),
+        kullanimAdimlariLength: usageData.kullanimAdimlari?.length || 0,
+        dikkatEdileceklerLength: usageData.dikkatEdilecekler?.length || 0,
+        hasVideo: usageData.hasVideo,
+        videoUrl: usageData.video?.url?.substring(0, 100),
+      });
+    }
+  }, [open, usageData]);
   const hasManualContent = Boolean(
     usageData?.kullanimNotu ||
       usageData?.kullanimAdimlari?.length ||
@@ -280,15 +300,15 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                   </Paper>
                 )}
 
-              {usageData.kullanimAdimlari.length > 0 && (
+              {usageData.kullanimAdimlari && usageData.kullanimAdimlari.length > 0 && (
                 <Paper variant="outlined" sx={sectionCardSx}>
                   <SectionHeader icon={<ListChecks size={18} />} title="Adım Adım Nasıl Kullanılır?" />
                   <Stack spacing={1.25}>
                     {usageData.kullanimAdimlari.map((step, index) => (
-                      <Stack key={`${index}-${step}`} direction="row" spacing={1.5} alignItems="flex-start">
+                      <Stack key={`step-${index}-${step?.substring(0, 20) || index}`} direction="row" spacing={1.5} alignItems="flex-start">
                         <Chip label={index + 1} size="small" color="primary" sx={{ minWidth: 32 }} />
-                        <Typography variant="body2" sx={{ lineHeight: 1.7, pt: 0.2 }}>
-                          {step}
+                        <Typography variant="body2" sx={{ lineHeight: 1.7, pt: 0.2, whiteSpace: "pre-wrap" }}>
+                          {step || `Adım ${index + 1}`}
                         </Typography>
                       </Stack>
                     ))}
@@ -296,33 +316,47 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                 </Paper>
               )}
 
-              {usageData.dikkatEdilecekler.length > 0 && (
+              {usageData.dikkatEdilecekler && usageData.dikkatEdilecekler.length > 0 && (
                 <Paper variant="outlined" sx={sectionCardSx}>
                   <SectionHeader icon={<Lightbulb size={18} />} title="Dikkat Edilecekler" />
                   <Stack spacing={1}>
                     {usageData.dikkatEdilecekler.map((note, index) => (
-                      <Alert key={`${index}-${note}`} severity="info" variant="outlined">
-                        {note}
+                      <Alert key={`note-${index}-${note?.substring(0, 20) || index}`} severity="info" variant="outlined">
+                        {note || `Not ${index + 1}`}
                       </Alert>
                     ))}
                   </Stack>
                 </Paper>
               )}
 
-              {usageData.sikSorulanSorular.length > 0 && (
+              {usageData.sikSorulanSorular && usageData.sikSorulanSorular.length > 0 && (
                 <Paper variant="outlined" sx={sectionCardSx}>
                   <SectionHeader icon={<CircleHelp size={18} />} title="Sık Sorulan Sorular" />
-                  <Stack spacing={1.5}>
+                  <Stack spacing={0}>
                     {usageData.sikSorulanSorular.map((item, index) => (
-                      <Box key={`${index}-${item.soru || "faq"}`}>
-                        <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>
-                          {item.soru}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                          {item.cevap}
-                        </Typography>
-                        {index < usageData.sikSorulanSorular.length - 1 && <Divider sx={{ mt: 1.5 }} />}
-                      </Box>
+                      <Accordion key={`faq-${index}-${item?.soru?.substring(0, 20) || index}`} sx={{ 
+                        backgroundColor: "transparent",
+                        backgroundImage: "none",
+                        boxShadow: "none",
+                        borderBottom: index < usageData.sikSorulanSorular.length - 1 ? `1px solid ${theme.palette.divider}` : "none",
+                        "&:before": {
+                          display: "none",
+                        },
+                        "&.Mui-expanded": {
+                          margin: 0,
+                        }
+                      }}>
+                        <AccordionSummary expandIcon={<ChevronDown size={18} />} sx={{ py: 1 }}>
+                          <Typography variant="body2" fontWeight={700} sx={{ color: "text.primary" }}>
+                            {item?.soru || `Soru ${index + 1}`}
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ pt: 0, pb: 1.5 }}>
+                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+                            {item?.cevap || "Cevap yükleniyor..."}
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
                     ))}
                   </Stack>
                 </Paper>
@@ -336,7 +370,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                     </Typography>
                   )}
                   {!!usageData.video.aciklama && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
                       {usageData.video.aciklama}
                     </Typography>
                   )}
