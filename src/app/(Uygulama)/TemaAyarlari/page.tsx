@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -26,6 +27,7 @@ interface colors {
   disp2?: string;
 }
 const Page = () => {
+  usePageTitle("Tema Ayarları");
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
   const dispatch = useDispatch();

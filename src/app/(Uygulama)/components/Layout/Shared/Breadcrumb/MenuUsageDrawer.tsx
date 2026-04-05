@@ -10,7 +10,6 @@ import {
   Divider,
   Drawer,
   IconButton,
-  Paper,
   Stack,
   Typography,
   useTheme,
@@ -30,7 +29,7 @@ interface MenuUsageDrawerProps {
 
 const sectionCardSx = {
   p: 2.5,
-  borderRadius: 3,
+  borderRadius: 1,
 };
 
 const getVimeoEmbedUrl = (value?: string) => {
@@ -200,14 +199,14 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
             </Box>
           )}
           {isLoading ? (
-            <Paper variant="outlined" sx={{ ...sectionCardSx, textAlign: "center" }}>
+            <Box sx={{ ...sectionCardSx, textAlign: "center" }}>
                 <Typography variant="body2" color="text.secondary">
                 Kullanım bilgisi yükleniyor...
               </Typography>
-            </Paper>
+            </Box>
           ) : usageData && hasUsageContent ? (
             <Stack spacing={2}>
-              <Paper variant="outlined" sx={{ ...sectionCardSx, backgroundColor: "background.paper" }}>
+              <Box sx={{ ...sectionCardSx, backgroundColor: "background.paper" }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Clock3 size={16} color={theme.palette.text.secondary} />
@@ -217,15 +216,15 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                   </Stack>
                   <Chip label={`${usageData.hitCount} görüntüleme`} size="small" variant="outlined" />
                 </Stack>
-              </Paper>
+              </Box>
 
               {!!usageData.kullanimNotu && (
-                <Paper variant="outlined" sx={sectionCardSx}>
+                <Box sx={sectionCardSx}>
                   <SectionHeader icon={<BookOpen size={18} />} title="Genel Açıklama" />
                   <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>
                     {usageData.kullanimNotu}
                   </Typography>
-                </Paper>
+                </Box>
               )}
 
               {!hasManualContent &&
@@ -234,7 +233,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                   usageData.kullanimSemasi.buSayfadaYapacaklariniz.length > 0 ||
                   usageData.kullanimSemasi.sonrakiAdimlar.length > 0 ||
                   usageData.kullanimSemasi.hataRiskiYuksekAlanlar.length > 0) && (
-                  <Paper variant="outlined" sx={sectionCardSx}>
+                  <Box sx={sectionCardSx}>
                     <SectionHeader icon={<Info size={18} />} title="Kullanım Şeması" />
                     <Stack spacing={2}>
                       {usageData.kullanimSemasi.onKosullar.length > 0 && (
@@ -297,11 +296,11 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                         </Box>
                       )}
                     </Stack>
-                  </Paper>
+                  </Box>
                 )}
 
               {usageData.kullanimAdimlari && usageData.kullanimAdimlari.length > 0 && (
-                <Paper variant="outlined" sx={sectionCardSx}>
+                <Box sx={sectionCardSx}>
                   <SectionHeader icon={<ListChecks size={18} />} title="Adım Adım Nasıl Kullanılır?" />
                   <Stack spacing={1.25}>
                     {usageData.kullanimAdimlari.map((step, index) => (
@@ -313,11 +312,11 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       </Stack>
                     ))}
                   </Stack>
-                </Paper>
+                </Box>
               )}
 
               {usageData.dikkatEdilecekler && usageData.dikkatEdilecekler.length > 0 && (
-                <Paper variant="outlined" sx={sectionCardSx}>
+                <Box sx={sectionCardSx}>
                   <SectionHeader icon={<Lightbulb size={18} />} title="Dikkat Edilecekler" />
                   <Stack spacing={1}>
                     {usageData.dikkatEdilecekler.map((note, index) => (
@@ -326,11 +325,11 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       </Alert>
                     ))}
                   </Stack>
-                </Paper>
+                </Box>
               )}
 
               {usageData.sikSorulanSorular && usageData.sikSorulanSorular.length > 0 && (
-                <Paper variant="outlined" sx={sectionCardSx}>
+                <Box sx={sectionCardSx}>
                   <SectionHeader icon={<CircleHelp size={18} />} title="Sık Sorulan Sorular" />
                   <Stack spacing={0}>
                     {usageData.sikSorulanSorular.map((item, index) => (
@@ -359,10 +358,10 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       </Accordion>
                     ))}
                   </Stack>
-                </Paper>
+                </Box>
               )}
               {usageData.hasVideo && usageData.video?.url && (
-                <Paper variant="outlined" sx={sectionCardSx}>
+                <Box sx={sectionCardSx}>
                   <SectionHeader icon={<Clapperboard size={18} />} title="Anlatım Videosu" />
                   {!!usageData.video.baslik && (
                     <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
@@ -402,13 +401,12 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       }}
                     />
                   </Box>
-                </Paper>
+                </Box>
               )}
             </Stack>
           ) : usageData ? (
             <Stack spacing={2}>
-              <Paper
-                variant="outlined"
+              <Box
                 sx={{
                   ...sectionCardSx,
                   background:
@@ -443,11 +441,10 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                 <Alert severity="info" sx={{ borderRadius: 2 }}>
                   Sayfa bazlı kullanım adımları, dikkat notları ve istenirse video bağlantısı tanımlandığında burada otomatik görünecek.
                 </Alert>
-              </Paper>
+              </Box>
             </Stack>
           ) : (
-            <Paper
-              variant="outlined"
+            <Box
               sx={{
                 ...sectionCardSx,
                 mt: 2,
@@ -481,7 +478,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
               <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 520, mx: "auto", lineHeight: 1.8 }}>
                 Rehber kaydı oluşturulduğunda bu alan otomatik olarak adımlar, dikkat notları ve varsa video anlatımı ile dolacaktır.
               </Typography>
-            </Paper>
+            </Box>
           )}
         </Box>
       </Box>

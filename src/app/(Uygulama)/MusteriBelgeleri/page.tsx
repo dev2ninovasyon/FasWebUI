@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
@@ -72,6 +73,7 @@ interface Veri {
 }
 
 const Page = () => {
+  usePageTitle("Müşteri Belgeleri");
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
   const user = useSelector((state: AppState) => state.userReducer);
 

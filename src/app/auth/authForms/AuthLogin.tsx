@@ -263,7 +263,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
         
         {/* Forgot Password Link */}
         <Box mb={2} display="flex" justifyContent="flex-end">
-          <Link href="/auth/forgot-password" style={{ textDecoration: "none" }}>
+          <Link href={`/auth/forgot-password${email ? `?email=${encodeURIComponent(email)}` : ""}`} style={{ textDecoration: "none" }}>
             <Typography sx={{ color: "primary.main", fontSize: "0.9rem", cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>Şifremi Unuttum?</Typography>
           </Link>
         </Box>

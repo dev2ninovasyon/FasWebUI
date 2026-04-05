@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import SozlesmeLayout from "./SozlesmeLayout";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
@@ -9,6 +10,7 @@ import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import React, { useState } from "react";
 
 const Page = () => {
+  usePageTitle("Sözleşme");
   const [showFilteredMenu, setShowFilteredMenu] = useState(false);
 
   const handleToggle = () => {

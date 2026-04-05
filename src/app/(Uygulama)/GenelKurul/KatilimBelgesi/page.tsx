@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box, Button, Grid, Typography, useMediaQuery } from "@mui/material";
@@ -24,6 +25,7 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  usePageTitle("Genel Kurul Toplantısı Katılım Belgesi");
   const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);

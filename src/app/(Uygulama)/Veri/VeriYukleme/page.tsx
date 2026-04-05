@@ -1,5 +1,6 @@
 "use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { 

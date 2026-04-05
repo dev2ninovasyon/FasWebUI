@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Grid } from "@mui/material";
@@ -22,6 +23,7 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  usePageTitle("E-Defter İnceleme");
   const user = useSelector((state: AppState) => state.userReducer);
 
   const [hesapNo, setHesapNo] = useState("");

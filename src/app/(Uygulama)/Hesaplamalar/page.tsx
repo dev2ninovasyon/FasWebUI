@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import React, { useState } from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { Box, Button } from "@mui/material";
@@ -9,6 +10,7 @@ import FilteredMenu from "@/app/(Uygulama)/components/Tables/MenuTable";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 
 const Page = () => {
+  usePageTitle("Hesaplamalar");
   const [showFilteredMenu, setShowFilteredMenu] = useState(false);
 
   const handleToggle = () => {

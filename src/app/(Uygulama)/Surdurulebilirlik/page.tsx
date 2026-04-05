@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import KysLayout from "./SurdurulebilirlikLayout";
 import React, { useState } from "react";
@@ -9,6 +10,7 @@ import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 
 const Page = () => {
+  usePageTitle("Sürdürülebilirlik");
   const [showFilteredMenu, setShowFilteredMenu] = useState(false);
 
   const handleToggle = () => {

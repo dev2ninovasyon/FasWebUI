@@ -17,6 +17,7 @@ import RTL from "./(Uygulama)/components/Layout/Shared/Customizer/RTL";
 import { usePathname, useRouter } from "next/navigation";
 import useSessionManagement from "@/utils/useSessionManagement";
 import { LoadingProvider } from "@/contexts/LoadingContext";
+import { PageTitleProvider } from "@/contexts/PageTitleContext";
 import { AuthSessionProvider, useAuthSession } from "@/contexts/AuthSessionContext";
 import SessionWarningDialog from "@/components/SessionWarning/SessionWarningDialog";
 import { resolveIconNameByMenuTitle } from "@/utils/menuIconResolver";
@@ -220,10 +221,12 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
         <SnackbarProvider anchorOrigin={{ vertical: "top", horizontal: "right" }}>
           <ThemeProvider theme={theme}>
             <LoadingProvider>
-              <RTL direction={customizer.activeDir}>
-                <CssBaseline />
-                {children}
-              </RTL>
+              <PageTitleProvider>
+                <RTL direction={customizer.activeDir}>
+                  <CssBaseline />
+                  {children}
+                </RTL>
+              </PageTitleProvider>
             </LoadingProvider>
           </ThemeProvider>
         </SnackbarProvider>

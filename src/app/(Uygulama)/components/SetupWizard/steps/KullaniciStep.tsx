@@ -11,6 +11,8 @@ import { InputAdornment } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getKullaniciByDenetciId, createKullanici, updateKullanici, deleteKullaniciById } from "@/api/Kullanici/KullaniciIslemleri";
+import PasswordPolicyChecker from "@/app/(Uygulama)/components/PasswordPolicyChecker";
+import EmailWarning from "@/app/(Uygulama)/components/EmailWarning";
 
 interface KullaniciStepProps {
     data?: any[];
@@ -635,6 +637,7 @@ function KullaniciEkleFormWrapper({ onSave, onCancel, initialData, onError }: { 
                                 }}
                             />
                         </form>
+                        <PasswordPolicyChecker password={sifre} email={email} showEmail={true} />
                     </Grid>
                 )}
 

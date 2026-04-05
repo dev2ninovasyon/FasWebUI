@@ -168,9 +168,6 @@ export function createMenuItems(
               href: "/Musteri/MusteriIslemleri",
             },
             {
-              href: "/Musteri/IliskiliTaraflar",
-            },
-            {
               id: uniqueId(),
               title: "Müşteri Tanıma",
               formKodu:

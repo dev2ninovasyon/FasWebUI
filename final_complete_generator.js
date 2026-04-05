@@ -42,7 +42,6 @@ const menuTree = [
     { title: "Şirket Yönetim Kadrosu", href: "/Musteri/SirketYonetimKadrosu", formKodu: "SirketYonetimKadrosu" },
     { title: "Şubeler", href: "/Musteri/Subeler", formKodu: "Subeler" },
     { title: "Hissedarlar", href: "/Musteri/Hissedarlar", formKodu: "Hissedarlar" },
-    { title: "İlişkili Taraflar", href: "/Musteri/IliskiliTaraflar", formKodu: "IliskiliTaraflar" },
     { title: "Müşteri Tanıma", href: "/Musteri/MusteriTanima", formKodu: "MusteriTanimaStatikBilgiler-MusteriTanimaSayisalBilgiler" },
     { title: "İşletme Tanıma", href: "/Musteri/IsletmeTanima", formKodu: "IsletmeTanimaBelgesi" },
     { title: "İşletme Faaliyet ve Çevresi Tanıma", href: "/Musteri/IsletmeFaaliyetVeCevresiTanima", formKodu: "IsletmeFaaliyetveCevreTanima" },

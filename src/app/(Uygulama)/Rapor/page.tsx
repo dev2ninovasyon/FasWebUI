@@ -1,11 +1,13 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { Box } from "@mui/material";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
 import RaporLayout from "./RaporLayout";
 
 const Page = () => {
+  usePageTitle("Rapor");
   return (
     <RaporLayout>
       <PageContainer title="Rapor" description="this is Rapor">

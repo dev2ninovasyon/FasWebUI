@@ -5,6 +5,7 @@ import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
+import { usePageTitle } from "@/hooks/usePageTitle";
 const SonIslemlerKartlari = dynamic(() => import("@/app/(Uygulama)/components/AnaSayfa/SonIslemlerKartlari").then(m => m.SonIslemlerKartlari), { ssr: false });
 const SirketArsivOzetKartlari = dynamic(() => import("@/app/(Uygulama)/components/AnaSayfa/SirketArsivOzetKartlari").then(m => m.SirketArsivOzetKartlari), { ssr: false });
 import DriverTour from "@/app/(Uygulama)/components/Dashboards/DriverTour";
@@ -22,6 +23,7 @@ const BCrumb = [
 ];
 
 export default function DashboardPage() {
+  usePageTitle("Ana Sayfa");
   const user = useSelector((state: AppState) => state.userReducer);
   const dispatch = useDispatch();
   const [runTour, setRunTour] = useState(false);

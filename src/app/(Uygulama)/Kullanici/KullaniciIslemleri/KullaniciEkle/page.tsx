@@ -6,6 +6,7 @@ import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/Par
 import { Grid } from "@mui/material";
 import KullaniciEkleForm from "@/app/(Uygulama)/components/Kullanici/KullaniciIslemleri/KullaniciEkleForm";
 import ProtectedRoute from "@/app/ProtectedRoute";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const BCrumb = [
   {
@@ -23,6 +24,8 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  usePageTitle("Kullanıcı Ekle");
+
   return (
     <ProtectedRoute allowedRoles={["DenetciAdmin"]}>
       <PageContainer

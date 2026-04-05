@@ -27,6 +27,7 @@ import {
   updateBildirimlerOkundumu,
 } from "@/api/BaglantiBilgileri/BaglantiBilgileri";
 import { useBildirimConnection } from "@/hooks/useBildirimConnection";
+import { usePageTitleContext } from "@/contexts/PageTitleContext";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { useRouter } from "next/navigation";
@@ -220,12 +221,15 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
         setFetchedData(rowsAll);
         const newUnread = rowsAll.filter((item: any) => !item.okundumu).length;
         setUnreadCount(newUnread);
-        document.title = newUnread > 0 ? `(${newUnread}) 🔔 FAS Denetim` : "FAS Denetim";
+        setUnreadNotifications(newUnread);
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
   };
+
+  // Obter contexto de título
+  const { setUnreadNotifications } = usePageTitleContext();
 
   // Bildirim sesi çal (daha yüksek ses)
   const playNotificationSound = React.useCallback(() => {
@@ -279,7 +283,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       const newUnreadCount = newFetchedData.filter((item) => !item.okundumu).length;
       
       setUnreadCount(newUnreadCount);
-      document.title = `(${newUnreadCount}) 🔔 YENİ BİLDİRİM - FAS Denetim`;
+      setUnreadNotifications(newUnreadCount);
       
       return newFetchedData;
     });

@@ -5,8 +5,10 @@ import { Box } from "@mui/material";
 import KullaniciLayout from "./KullaniciLayout";
 import KullaniciTopCard from "@/app/(Uygulama)/components/Cards/KullaniciTopCard";
 import ProtectedRoute from "@/app/ProtectedRoute";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Page = () => {
+  usePageTitle("Kullanıcı");
   return (
     <KullaniciLayout>
       <PageContainer title="Kullanıcı" description="this is Kullanıcı">

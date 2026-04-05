@@ -1,4 +1,4 @@
-﻿import { Grid, Button, InputAdornment, IconButton } from "@mui/material";
+﻿import { Grid, Button, InputAdornment, IconButton, Alert } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createKullanici } from "@/api/Kullanici/KullaniciIslemleri";
@@ -8,6 +8,8 @@ import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import UnvanBoxAutocomplete from "@/app/(Uygulama)/components/Sozlesme/DenetimKadrosuAtama/AutoCompleteBox/UnvanBoxAutoComplete";
 import { IconLock, IconLockOpen } from "@tabler/icons-react";
+import PasswordPolicyChecker from "@/app/(Uygulama)/components/PasswordPolicyChecker";
+import EmailWarning from "@/app/(Uygulama)/components/EmailWarning";
 
 const KullaniciEkleForm = () => {
   const [bdScilNo, setBdSicilNo] = useState("");
@@ -155,6 +157,7 @@ const KullaniciEkleForm = () => {
             fullWidth
             onChange={(e: any) => setEmail(e.target.value)}
           />
+          <EmailWarning showEmail={false} />
         </Grid>
         <Grid
           display="flex"
@@ -245,6 +248,7 @@ const KullaniciEkleForm = () => {
               }}
             />
           </form>
+          <PasswordPolicyChecker password={sifre} email={email} showEmail={true} />
         </Grid>
         <Grid
           size={{

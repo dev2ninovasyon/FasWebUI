@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Box } from "@mui/material";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import TopCards from "@/app/(Uygulama)/components/Cards/TopCards";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -21,6 +22,7 @@ const BCrumb = [
 ];
 
 const Page = () => {
+  usePageTitle("Finansal Tablolar");
   const user = useSelector((state: AppState) => state.userReducer);
 
   return (

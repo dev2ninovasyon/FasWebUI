@@ -4,6 +4,7 @@ import { apiFetch } from "@/api/apiBase";
 import { passwordRules, validatePassword } from "@/utils/passwordPolicy";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
+import PasswordPolicyChecker from "@/components/PasswordPolicy/PasswordPolicyChecker";
 import {
   Alert,
   Box,
@@ -60,25 +61,54 @@ export default function ResetPasswordForm() {
       }
 
       try {
+        console.log(
+          "🔐 [ResetPasswordForm] VALIDATE TOKEN ÇAĞRISI: Token=",
+          token,
+          "Token Length=",
+          token.length
+        );
+
+        const requestBody = JSON.stringify({ token });
+        console.log("📤 [ResetPasswordForm] REQUEST BODY:", requestBody);
+
         const response = await apiFetch("/Auth/validate-reset-password-token", {
           method: "POST",
           headers: {
             accept: "*/*",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ token }),
+          body: requestBody,
           suppressErrorLog: true,
         });
+
+        console.log(
+          "📥 [ResetPasswordForm] RESPONSE STATUS:",
+          response.status,
+          response.statusText
+        );
+
+        // Response headers'ı kontrol et
+        const contentType = response.headers.get("content-type");
+        console.log("📋 [ResetPasswordForm] RESPONSE CONTENT-TYPE:", contentType);
 
         let parsed: any = null;
         let errorMessage = "Baglanti dogrulanamadi.";
 
         // Response OK değilse, text veya JSON read
         if (!response.ok) {
+          let text = "";
           try {
-            const text = await response.text();
-            
-            // Text'i JSON'a çevirmeyi dene
+            text = await response.text();
+            console.log("❌ [ResetPasswordForm] ERROR RESPONSE TEXT:", text, "Length:", text.length);
+          } catch (readError) {
+            console.log("❌ [ResetPasswordForm] RESPONSE TEXT READ ERROR:", readError);
+            errorMessage = "Response okunamadi.";
+            setValidation({ checked: true, valid: false, message: errorMessage });
+            return;
+          }
+
+          // Text'i JSON'a çevirmeyi dene
+          if (text) {
             try {
               const errorParsed = JSON.parse(text);
               errorMessage = errorParsed?.message || errorParsed?.Message || text.substring(0, 100);
@@ -86,10 +116,11 @@ export default function ResetPasswordForm() {
               // JSON değilse, text'in ilk 100 karakterini mesaj yap
               errorMessage = text.substring(0, 100) || "Sunucu hatasi.";
             }
-          } catch {
-            errorMessage = "Yanit ayristirilamadi.";
+          } else {
+            errorMessage = "Sunucu boş yanıt verdi.";
           }
-          
+
+          console.log("❌ [ResetPasswordForm] VALIDATION FAILED:", errorMessage);
           setValidation({ checked: true, valid: false, message: errorMessage });
           return;
         }
@@ -208,13 +239,22 @@ export default function ResetPasswordForm() {
       <Box display="flex" flexDirection="column" gap={2}>
         <Alert severity="error">{validation.message}</Alert>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Link href="/login">
+          <Link href="/">
             <Button
               variant="text"
               startIcon={<IconArrowLeft size={18} />}
               size="small"
+              sx={{
+                color: "primary.main",
+                fontWeight: 500,
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  backgroundColor: "rgba(33, 150, 243, 0.08)",
+                  transform: "translateX(-2px)",
+                }
+              }}
             >
-              Girişe Geri Dön
+              Girişe Dön
             </Button>
           </Link>
         </Box>
@@ -228,13 +268,22 @@ export default function ResetPasswordForm() {
         <Box display="flex" flexDirection="column" gap={2}>
           <Alert severity="success">{successMessage}</Alert>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Link href="/login">
+            <Link href="/">
               <Button
                 variant="text"
                 startIcon={<IconArrowLeft size={18} />}
                 size="small"
+                sx={{
+                  color: "primary.main",
+                  fontWeight: 500,
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    backgroundColor: "rgba(33, 150, 243, 0.08)",
+                    transform: "translateX(-2px)",
+                  }
+                }}
               >
-                Girişe Geri Dön
+                Girişe Dön
               </Button>
             </Link>
           </Box>
@@ -262,6 +311,9 @@ export default function ResetPasswordForm() {
                   ),
                 }}
               />
+              
+              {/* Şifre Politikası Göstergesi */}
+              <PasswordPolicyChecker password={newPassword} email={email} showEmail={true} />
             </Box>
 
             <Box>

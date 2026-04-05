@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import { Box, Button, Grid, Typography } from "@mui/material";
@@ -25,6 +26,7 @@ const BCrumb = [
 ];
 
 const Page: React.FC = () => {
+  usePageTitle("Denetim Çalışması İzleme");
   const [islem, setIslem] = useState("");
   const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
 

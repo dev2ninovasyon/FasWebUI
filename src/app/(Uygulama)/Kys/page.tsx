@@ -1,6 +1,7 @@
 ﻿
 "use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import React, { useState } from "react";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { Box, Button } from "@mui/material";
@@ -10,6 +11,7 @@ import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import KysLayout from "./KysLayout";
 
 const Page = () => {
+  usePageTitle("Kalite Yönetim Sistemi");
   const [showFilteredMenu, setShowFilteredMenu] = useState(false);
 
   const handleToggle = () => {

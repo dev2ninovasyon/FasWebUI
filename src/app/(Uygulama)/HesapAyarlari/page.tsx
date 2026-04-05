@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -33,6 +34,7 @@ interface avatars {
 }
 
 const Page = () => {
+  usePageTitle("Hesap Ayarları");
   const user = useSelector((state: AppState) => state.userReducer);
 
   const customizer = useSelector((state: AppState) => state.customizer);

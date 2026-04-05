@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import React, { useEffect, useState } from "react";
@@ -27,8 +28,7 @@ interface Veri {
   paraBirimi: string;
 }
 
-const Page: React.FC = () => {
-  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+const Page: React.FC = () => {  usePageTitle("Dönüştürülüş Mizan Veri Yüklüme");  const smDown = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const customizer = useSelector((state: AppState) => state.customizer);
 

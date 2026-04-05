@@ -1,10 +1,12 @@
 ﻿"use client";
 
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { Grid, Box } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import KullanimKilavuzuLayout from "./KullanimKilavuzuLayout";
 
 const Page = () => {
+  usePageTitle("Kullanım Kılavuzu");
   return (
     <KullanimKilavuzuLayout>
       <PageContainer

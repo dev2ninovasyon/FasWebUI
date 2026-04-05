@@ -133,7 +133,38 @@ export const getMenuUsagePanelByMenuId = async (menuId: number): Promise<MenuUsa
       },
     });
     if (response.ok) {
-      return response.json();
+      const data = await response.json();
+      
+      // Map PascalCase backend response to camelCase frontend interface
+      return {
+        id: data.Id || data.id,
+        menuId: data.MenuId || data.menuId,
+        baslik: data.Baslik || data.baslik,
+        ozet: data.Ozet || data.ozet,
+        kullanimNotu: data.KullanimNotu || data.kullanimNotu,
+        icerikHtml: data.IcerikHtml || data.icerikHtml,
+        kullanimAdimlari: data.KullanimAdimlari || data.kullanimAdimlari || [],
+        dikkatEdilecekler: data.DikkatEdilecekler || data.dikkatEdilecekler || [],
+        sikSorulanSorular: (data.SikSorulanSorular || data.sikSorulanSorular || []).map((q: any) => ({
+          soru: q.Soru || q.soru,
+          cevap: q.Cevap || q.cevap,
+        })),
+        kullanimSemasi: {
+          onKosullar: data.KullanimSemasi?.OnKosullar || data.kullanimSemasi?.onKosullar || [],
+          buSayfadaYapacaklariniz: data.KullanimSemasi?.BuSayfadaYapacaklariniz || data.kullanimSemasi?.buSayfadaYapacaklariniz || [],
+          sonrakiAdimlar: data.KullanimSemasi?.SonrakiAdimlar || data.kullanimSemasi?.sonrakiAdimlar || [],
+          hataRiskiYuksekAlanlar: data.KullanimSemasi?.HataRiskiYuksekAlanlar || data.kullanimSemasi?.hataRiskiYuksekAlanlar || [],
+        },
+        video: data.Video ? {
+          url: data.Video.Url || data.Video.url,
+          baslik: data.Video.Baslik || data.Video.baslik,
+          aciklama: data.Video.Aciklama || data.Video.aciklama,
+        } : null,
+        hasVideo: data.HasVideo || data.hasVideo || false,
+        hitCount: data.HitCount || data.hitCount || 0,
+        ekleyenKullaniciId: data.EkleyenKullaniciId || data.ekleyenKullaniciId,
+        eklenmeTarihi: data.EklenmeTarihi || data.eklenmeTarihi,
+      };
     }
     return null;
   } catch (error) {
