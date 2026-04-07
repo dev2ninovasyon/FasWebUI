@@ -2,8 +2,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { HotTable } from "@handsontable/react";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import "handsontable/dist/handsontable.full.min.css";
-import { plus } from "@/utils/theme/Typography";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import {
   Typography,
   Box,
@@ -260,27 +261,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
     }, // Alacak
   ];
 
-  const afterGetColHeader = (col: any, TH: any) => {
-    TH.style.height = "70px";
-    TH.style.fontFamily = plus.style.fontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-  };
 
-  const afterRenderer = (TD: any, row: any, col: any, prop: any, value: any) => {
-    TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontSize = "0.875rem";
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    if (row % 2 === 0) {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-    } else {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#f5f5f5";
-    }
-  };
 
   return (
     <>
@@ -336,7 +317,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
         </Backdrop>
 
         <div onClick={handleHeaderClick}>
-          <HotTable
+          <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
             ref={hotTableComponent}
             data={fetchedData}
             colHeaders={colHeaders}
@@ -349,8 +330,6 @@ const HaricFisListesiTable: React.FC<Props> = ({
             manualColumnResize={true}
             hiddenColumns={{ columns: [0] }}
             licenseKey="non-commercial-and-evaluation"
-            afterGetColHeader={afterGetColHeader}
-            afterRenderer={afterRenderer}
             language={dictionary.languageCode}
             filters={true}
             dropdownMenu={true}

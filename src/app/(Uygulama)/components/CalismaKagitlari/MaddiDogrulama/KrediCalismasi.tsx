@@ -2,7 +2,10 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import "@/utils/languages/handsontable.tr-TR";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "@/store/hooks";
@@ -12,7 +15,8 @@ import {
     KrediHesaplamaData,
 } from "@/api/CalismaKagitlari/KrediCalismasi";
 import { useLoading } from "@/contexts/LoadingContext";
-import { enqueueSnackbar } from "notistack";interface Props {
+import { enqueueSnackbar } from "notistack";
+interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
@@ -214,19 +218,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     borderRadius: "0px",
                     border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
                     mb: 4,
-                    backgroundColor: theme.palette.background.paper,
-                    "& .handsontable th": {
-                        backgroundColor: `${theme.palette.primary.main} !important`,
-                        color: "white !important",
-                        fontWeight: "bold !important",
-                        textAlign: "center !important",
-                        verticalAlign: "bottom !important",
-                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
-                        whiteSpace: "pre-line !important",
-                        lineHeight: "1.2 !important",
-                        padding: "6px !important",
-                    },
-                    "& .handsontable td": {
+                    backgroundColor: theme.palette.background.paper,                    "& .handsontable td": {
                         backgroundColor: theme.palette.background.paper,
                         color: theme.palette.text.primary,
                         border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
@@ -246,7 +238,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     }
                 }}
             >
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                     ref={hotTableComponent}
                     data={data}
                     columns={columns}
@@ -290,19 +282,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     minHeight: "400px",
                     borderRadius: "0px",
                     border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
-                    backgroundColor: theme.palette.background.paper,
-                    "& .handsontable th": {
-                        backgroundColor: `${theme.palette.primary.main} !important`,
-                        color: "white !important",
-                        fontWeight: "bold !important",
-                        textAlign: "center !important",
-                        verticalAlign: "middle !important",
-                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
-                        whiteSpace: "pre-line !important",
-                        lineHeight: "1.2 !important",
-                        padding: "10px !important",
-                    },
-                    "& .handsontable td": {
+                    backgroundColor: theme.palette.background.paper,                    "& .handsontable td": {
                         backgroundColor: theme.palette.background.paper,
                         color: theme.palette.text.primary,
                         border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
@@ -314,7 +294,7 @@ const KrediCalismasi: React.FC<Props> = ({ parentName, childName, dipnotNo, isRe
                     }
                 }}
             >
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                     ref={detailHotTableComponent}
                     data={detailData}
                     columns={detailColumns}

@@ -43,7 +43,11 @@ import { enqueueSnackbar } from "notistack";
 import { getSentInvoiceMatches, SentInvoiceMatchRow } from "@/api/Fatura/FaturaApi";
 
 // ✅ Handsontable
-import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";interface Veri {
+import { HotTable } from "@handsontable/react";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
+interface Veri {
   id: number;
   kontrolTesti: string;
   kontrolAmaci: string;
@@ -678,7 +682,7 @@ const SatisCalismaKagidiBelge: React.FC<CalismaKagidiProps> = ({
                 }
               />
               <CardContent>
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                   ref={hotRef}
                   data={matchesMatrix}
                   colHeaders={matchesHeaders}

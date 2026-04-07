@@ -2,7 +2,10 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import "@/utils/languages/handsontable.tr-TR";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "@/store/hooks";
@@ -11,7 +14,8 @@ import {
     getDegerlemeveDegerDusukluguKontrolleri,
 } from "@/api/CalismaKagitlari/DegerlemeveDegerDusukluguKontrolleri";
 import { useLoading } from "@/contexts/LoadingContext";
-import { enqueueSnackbar } from "notistack";interface Props {
+import { enqueueSnackbar } from "notistack";
+interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
@@ -105,14 +109,7 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
                     overflow: "hidden",
                     borderRadius: "0px",
                     border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
-                    backgroundColor: theme.palette.background.paper,
-                    "& .handsontable th": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: "white",
-                        fontWeight: 'bold',
-                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
-                    },
-                    "& .handsontable td": {
+                    backgroundColor: theme.palette.background.paper,                    "& .handsontable td": {
                         backgroundColor: theme.palette.background.paper,
                         color: theme.palette.text.primary,
                         border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
@@ -122,7 +119,7 @@ const DegerlemeveDegerDusukluguKontrolleri: React.FC<Props> = ({
                     }
                 }}
             >
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                     data={processedData}
                     columns={columns}
                     colHeaders={true}

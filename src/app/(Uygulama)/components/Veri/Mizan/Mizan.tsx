@@ -1,8 +1,9 @@
-﻿import "@/lib/handsontableSetup";
+import "@/lib/handsontableSetup";
 import { HotTable } from "@handsontable/react";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import "handsontable/dist/handsontable.full.min.css";
-import { plus } from "@/utils/theme/Typography";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme, CircularProgress, Box, Pagination, Typography, Button, Fab, Tooltip, Stack } from "@mui/material";
@@ -185,97 +186,9 @@ const Mizan: React.FC<Props> = ({
     }, // Mutlak Bakiye
   ], []);
 
-  const pFontFamily = plus.style.fontFamily;
   const activeMode = customizer.activeMode;
-  const primaryLight = theme.palette.primary.light;
 
-  const afterGetColHeader = useCallback((col: any, TH: any) => {
-    TH.style.height = "50px";
 
-    let div = TH.querySelector("div");
-    if (!div) {
-      div = document.createElement("div");
-      TH.appendChild(div);
-    }
-
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.height = "100%";
-    div.style.position = "relative";
-
-    TH.style.fontFamily = pFontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    TH.style.color = activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = primaryLight;
-    TH.style.borderColor = activeMode === "dark" ? "#10141c" : "#";
-
-    let span = div.querySelector("span");
-    if (!span) {
-      span = document.createElement("span");
-      div.appendChild(span);
-    }
-    span.textContent = colHeaders[col];
-    span.style.position = "absolute";
-    span.style.marginRight = "16px";
-    span.style.left = "4px";
-
-    let button = div.querySelector("button");
-    if (!button) {
-      button = document.createElement("button");
-      button.style.display = "none";
-      div.appendChild(button);
-    }
-    button.style.position = "absolute";
-    button.style.right = "4px";
-  }, [colHeaders, activeMode, primaryLight, pFontFamily]);
-
-  const afterGetRowHeader = useCallback((row: any, TH: any) => {
-    let div = TH.querySelector("div");
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.justifyContent = "center";
-    div.style.height = "100%";
-
-    TH.style.fontFamily = pFontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    TH.style.color = activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = primaryLight;
-    TH.style.borderColor = activeMode === "dark" ? "#10141c" : "#";
-  }, [activeMode, primaryLight, pFontFamily]);
-
-  const afterRenderer = useCallback((
-    TD: any,
-    row: any,
-    col: any,
-    prop: any,
-    value: any,
-    cellProperties: any
-  ) => {
-    TD.style.fontFamily = pFontFamily;
-    TD.style.fontWeight = 500;
-    TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
-    TD.style.color = activeMode === "dark" ? "#ffffff" : "#2A3547";
-
-    if (row % 2 === 0) {
-      TD.style.backgroundColor = activeMode === "dark" ? "#171c23" : "#ffffff";
-      TD.style.borderColor = activeMode === "dark" ? "#10141c" : "#cccccc";
-    } else {
-      TD.style.backgroundColor = activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderColor = activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderRightColor = activeMode === "dark" ? "#171c23" : "#ffffff";
-    }
-  }, [activeMode, pFontFamily]);
 
   const fetchData = async () => {
     try {
@@ -477,7 +390,7 @@ const Mizan: React.FC<Props> = ({
             <CircularProgress />
           </Box>
         )}
-        <HotTable
+        <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
           style={{
             height: "100%",
             width: "100%",
@@ -509,9 +422,6 @@ const Mizan: React.FC<Props> = ({
             setPage(0);
           }}
           licenseKey="non-commercial-and-evaluation"
-          afterGetColHeader={afterGetColHeader}
-          afterGetRowHeader={afterGetRowHeader}
-          afterRenderer={afterRenderer}
           contextMenu={["alignment", "copy"]}
         />
       </Box>
@@ -704,7 +614,7 @@ const Mizan: React.FC<Props> = ({
               <CircularProgress />
             </Box>
           )}
-          <HotTable
+          <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
             style={{
               height: "100%",
               width: "100%",
@@ -736,9 +646,6 @@ const Mizan: React.FC<Props> = ({
               setPage(0); // Reset to first page on filter change
             }}
             licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-            afterGetColHeader={afterGetColHeader}
-            afterGetRowHeader={afterGetRowHeader}
-            afterRenderer={afterRenderer}
             contextMenu={["alignment", "copy"]}
           />
         </Box>

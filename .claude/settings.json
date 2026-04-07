@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(node -e \"const pkg = require\\('./node_modules/handsontable/package.json'\\); console.log\\(pkg.version\\);\")",
+      "Bash(grep -l \"HotTable\" src/app/**/**/**/**/**/*.tsx src/app/**/**/**/*.tsx src/app/**/**/*.tsx)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -l \"afterGetColHeader\\\\|afterGetRowHeader\" /c/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/src/app/\\\\\\(Uygulama\\\\\\)/**/*.tsx)",
+      "Bash(find /c/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/src -name \"*.tsx\" -exec grep -l \"afterGetColHeader\\\\|afterGetRowHeader\" {} \\\\;)",
+      "Bash(find /c/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/src -name \"*.tsx\" -exec grep -l \"HotTable\\\\|new Handsontable\" {} \\\\; cat /tmp/hotfiles.txt)",
+      "Bash(python3 /tmp/process_handsontable.py)",
+      "Bash(python /tmp/process_handsontable.py)",
+      "Bash(python process_handsontable.py)"
+    ],
+    "additionalDirectories": [
+      "\\tmp",
+      "c:\\tmp"
+    ]
+  }
+}

@@ -1,8 +1,9 @@
-﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";
+import "@/lib/handsontableSetup";
+import Handsontable from "handsontable";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import "handsontable/dist/handsontable.full.min.css";
-import { plus } from "@/utils/theme/Typography";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
@@ -72,7 +73,8 @@ const VukMizan: React.FC<Props> = ({
   onLoadingChange,
   onDataLoaded,
 }) => {
-  const hotTableComponent = useRef<any>(null);
+  const hotTableContainer = useRef<HTMLDivElement>(null);
+  const hotTableInstanceRef = useRef<Handsontable | null>(null);
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -289,79 +291,7 @@ const VukMizan: React.FC<Props> = ({
     }, // Para Birimi
   ];
 
-  const afterGetColHeader = (col: any, TH: any) => {
-    TH.style.height = "50px";
 
-    let div = TH.querySelector("div");
-    if (!div) {
-      div = document.createElement("div");
-      TH.appendChild(div);
-    }
-
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.height = "100%";
-    div.style.position = "relative";
-
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
-
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-
-    // Create span for the header text
-    let span = div.querySelector("span");
-    if (!span) {
-      span = document.createElement("span");
-      div.appendChild(span);
-    }
-    span.textContent = colHeaders[col];
-    span.style.position = "absolute";
-    span.style.marginRight = "16px";
-    span.style.left = "4px";
-
-    // Create button if it does not exist
-    let button = div.querySelector("button");
-    if (!button) {
-      button = document.createElement("button");
-      button.style.display = "none";
-      div.appendChild(button);
-    }
-    button.style.position = "absolute";
-    button.style.right = "4px";
-  };
-
-  const afterGetRowHeader = (row: any, TH: any) => {
-    let div = TH.querySelector("div");
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.justifyContent = "center";
-    div.style.height = "100%";
-
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
-
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-  };
 
   const afterRenderer = (
     TD: any,
@@ -371,29 +301,7 @@ const VukMizan: React.FC<Props> = ({
     value: any,
     cellProperties: any
   ) => {
-    //typography body1
-    TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontWeight = 500;
-    TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
     //TD.style.textAlign = "left";
-
-    //color
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-
-    if (row % 2 === 0) {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-    } else {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderRightColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-    }
 
     if (row <= endRow && (value == undefined || value == null || value == "")) {
       TD.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
@@ -401,9 +309,8 @@ const VukMizan: React.FC<Props> = ({
   };
 
   const handleGetRowData = async (row: number) => {
-    if (hotTableComponent.current) {
-      const hotInstance = hotTableComponent.current.hotInstance;
-      const cellMeta = hotInstance.getDataAtRow(row);
+    if (hotTableInstanceRef.current) {
+      const cellMeta = hotTableInstanceRef.current.getDataAtRow(row);
       console.log("Satır Verileri:", cellMeta);
       return cellMeta;
     }
@@ -458,7 +365,7 @@ const VukMizan: React.FC<Props> = ({
         if (newValue && typeof newValue === "string" && newValue.length >= 3) {
           if (
             newValue.substring(0, 3) !==
-            hotTableComponent.current?.hotInstance.getDataAtCell(row, 0)
+            hotTableInstanceRef.current?.getDataAtCell(row, 0)
           ) {
             currentRowData.kod = newValue.substring(0, 3);
           }
@@ -472,7 +379,7 @@ const VukMizan: React.FC<Props> = ({
         if (
           matched?.adi &&
           matched.adi !==
-          hotTableComponent.current?.hotInstance.getDataAtCell(row, 2)
+          hotTableInstanceRef.current?.getDataAtCell(row, 2)
         ) {
           currentRowData.adi = matched.adi;
         }
@@ -482,24 +389,24 @@ const VukMizan: React.FC<Props> = ({
     }
 
     // Toplu hücre güncellemeleri (tek render tetikler)
-    hotTableComponent.current?.hotInstance.batch(() => {
+    hotTableInstanceRef.current?.batch(() => {
       rowsToUpdate.forEach((data, row) => {
         if (data.kod !== undefined) {
-          hotTableComponent.current?.hotInstance.setDataAtCell(
+          hotTableInstanceRef.current?.setDataAtCell(
             row,
             0,
             data.kod
           );
         }
         if (data.adi !== undefined) {
-          hotTableComponent.current?.hotInstance.setDataAtCell(
+          hotTableInstanceRef.current?.setDataAtCell(
             row,
             2,
             data.adi
           );
         }
         if (data.paraBirimi !== undefined) {
-          hotTableComponent.current?.hotInstance.setDataAtCell(
+          hotTableInstanceRef.current?.setDataAtCell(
             row,
             5,
             data.paraBirimi
@@ -537,9 +444,7 @@ const VukMizan: React.FC<Props> = ({
     onLoadingChange?.(true);
     setIsLoading(true);
     try {
-      // HotTable'dan güncel verileri al (state'ten değil)
-      const hotTableInstance = hotTableComponent.current?.hotInstance;
-      let dataToSave = hotTableInstance?.getData() || fetchedData;
+      let dataToSave = hotTableInstanceRef.current?.getData() || fetchedData;
 
       // Eğer cleanDuplicates true ise, çift kayıtları temizle
       if (cleanDuplicates) {
@@ -754,7 +659,7 @@ const VukMizan: React.FC<Props> = ({
 
   const handleCheckDuplicatesBeforeSave = async () => {
     // HotTable instance'ünden güncel verileri al (state'ten değil)
-    const hotTableInstance = hotTableComponent.current?.hotInstance;
+    const hotTableInstance = hotTableInstanceRef.current;
     const currentData = hotTableInstance?.getData() || fetchedData;
 
     const duplicateGroups = groupDuplicateRows(currentData);
@@ -770,8 +675,7 @@ const VukMizan: React.FC<Props> = ({
 
   const handleCleanAndSave = async () => {
     // HotTable instance'ünden güncel verileri al
-    const hotTableInstance = hotTableComponent.current?.hotInstance;
-    const currentData = hotTableInstance?.getData() || fetchedData;
+    const currentData = hotTableInstanceRef.current?.getData() || fetchedData;
 
     // Çift satırları gruplandır
     const duplicateGroups = groupDuplicateRows(currentData);
@@ -783,7 +687,7 @@ const VukMizan: React.FC<Props> = ({
     const cleanedData = currentData.filter((_: any, index: number) => !duplicateRowNumbers.includes(index + 1));
 
     // HotTable'ı görsel olarak update et
-    hotTableInstance?.loadData(cleanedData);
+    hotTableInstanceRef.current?.loadData(cleanedData);
     setFetchedData(cleanedData);
 
     // Loading state başla
@@ -928,12 +832,15 @@ const VukMizan: React.FC<Props> = ({
   // HotTable'daki veri değişikliğini izle ve parent'a bildir
   useEffect(() => {
     const checkHasData = () => {
-      const hotTableInstance = hotTableComponent.current?.hotInstance;
-      const currentData = hotTableInstance?.getData() || [];
-
+      const currentData = hotTableInstanceRef.current?.getData() || fetchedData;
       // Boş olmayan satır sayısını kontrol et
       const hasNonEmptyRows = currentData.some((row: any) => {
-        return row.some((cell: any) => cell != null && cell !== "" && cell !== undefined);
+        if (Array.isArray(row)) {
+          return row.some((cell: any) => cell != null && cell !== "" && cell !== undefined);
+        } else if (row && typeof row === 'object') {
+          return Object.values(row).some((cell: any) => cell != null && cell !== "" && cell !== undefined);
+        }
+        return false;
       });
 
       onDataLoaded?.(hasNonEmptyRows);
@@ -943,7 +850,8 @@ const VukMizan: React.FC<Props> = ({
   }, [fetchedData, onDataLoaded]);
 
   const handleDownload = () => {
-    const hotTableInstance = hotTableComponent.current.hotInstance;
+    const hotTableInstance = hotTableInstanceRef.current;
+    if (!hotTableInstance) return;
     const data = hotTableInstance.getData();
 
     const processedData = data.map((row: any) => row);
@@ -994,18 +902,25 @@ const VukMizan: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (hotTableComponent.current) {
+    if (hotTableInstanceRef.current) {
+      hotTableInstanceRef.current.updateSettings({
+        theme: customizer.activeMode === "dark" ? 'ht-theme-horizon-dark' : 'ht-theme-horizon',
+      });
+    }
+  }, [customizer.activeMode]);
+
+  useEffect(() => {
+    if (hotTableInstanceRef.current && hotTableContainer.current) {
       const diff = customizer.isCollapse
         ? 0
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
           ? customizer.SidebarWidth - customizer.MiniSidebarWidth
           : 0;
 
-      hotTableComponent.current.hotInstance.updateSettings({
+      hotTableInstanceRef.current.updateSettings({
         width: customizer.isCollapse
           ? "100%"
-          : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-          diff,
+          : hotTableContainer.current.clientWidth - diff,
       });
     }
   }, [
@@ -1013,6 +928,56 @@ const VukMizan: React.FC<Props> = ({
     customizer.SidebarWidth,
     customizer.MiniSidebarWidth,
   ]);
+
+  useEffect(() => {
+    if (hotTableContainer.current && !hotTableInstanceRef.current) {
+      hotTableInstanceRef.current = new Handsontable(hotTableContainer.current, {
+        data: fetchedData,
+        colHeaders: colHeaders,
+        columns: columns,
+        language: dictionary.languageCode,
+        theme: customizer.activeMode === "dark" ? 'ht-theme-horizon-dark' : 'ht-theme-horizon',
+        height: 684,
+        colWidths: [45, 45, 60, 55, 55, 45],
+        stretchH: 'all',
+        manualColumnResize: true,
+        rowHeaders: true,
+        rowHeights: 35,
+        autoWrapRow: true,
+        minRows: rowCount,
+        minCols: 8,
+        filters: true,
+        columnSorting: true,
+        dropdownMenu: [
+          'filter_by_condition',
+          'filter_by_value',
+          'filter_action_bar',
+        ],
+        licenseKey: 'non-commercial-and-evaluation',
+        afterRenderer: afterRenderer,
+        contextMenu: [
+          'row_above',
+          'row_below',
+          'remove_row',
+          'alignment',
+          'copy',
+        ],
+        afterPaste: afterPaste,
+        afterChange: handleAfterChange,
+        beforeChange: handleBeforeChange,
+        afterCreateRow: handleCreateRow,
+        afterRemoveRow: handleAfterRemoveRow,
+        copyPaste: true,
+      });
+    }
+
+    return () => {
+      if (hotTableInstanceRef.current) {
+        hotTableInstanceRef.current.destroy();
+        hotTableInstanceRef.current = null;
+      }
+    };
+  }, [fetchedData, rowCount, colHeaders, columns, dictionary, customizer, afterRenderer]);
 
   return (
     <>
@@ -1037,50 +1002,14 @@ const VukMizan: React.FC<Props> = ({
           {duplicateMessage}
         </Alert>
       )}
-      <HotTable
+      <div
+        ref={hotTableContainer}
         style={{
           height: "100%",
           width: "100%",
           maxHeight: 684,
           maxWidth: "100%",
         }}
-        language={dictionary.languageCode}
-        ref={hotTableComponent}
-        data={fetchedData}
-        height={684}
-        colHeaders={colHeaders}
-        columns={columns}
-        colWidths={[45, 45, 60, 55, 55, 45]}
-        stretchH="all"
-        manualColumnResize={true}
-        rowHeaders={true}
-        rowHeights={35}
-        autoWrapRow={true}
-        minRows={rowCount}
-        minCols={8}
-        filters={true}
-        columnSorting={true}
-        dropdownMenu={[
-          "filter_by_condition",
-          "filter_by_value",
-          "filter_action_bar",
-        ]}
-        licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-        afterGetColHeader={afterGetColHeader}
-        afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
-        afterPaste={afterPaste} // Add afterPaste hook
-        afterChange={handleAfterChange} // Add afterChange hook
-        beforeChange={handleBeforeChange} // Add beforeChange hook
-        afterCreateRow={handleCreateRow} // Add createRow hook
-        afterRemoveRow={handleAfterRemoveRow} // Add afterRemoveRow hook
-        contextMenu={[
-          "row_above",
-          "row_below",
-          "remove_row",
-          "alignment",
-          "copy",
-        ]}
       />
       <Grid container marginTop={2}>
         <Grid

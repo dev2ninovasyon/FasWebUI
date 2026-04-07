@@ -1,9 +1,11 @@
 ﻿"use client";
 import "@/lib/handsontableSetup";
 
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import "handsontable/dist/handsontable.full.min.css";
-import { plus } from "@/utils/theme/Typography";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { useTheme, Box, Alert, Button } from "@mui/material";
@@ -21,7 +23,8 @@ import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 import { useRouter } from "next/navigation";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -143,100 +146,8 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
       []
     );
 
-    const afterGetColHeader = (col: any, TH: any) => {
-      TH.style.height = "55px";
 
-      let div = TH.querySelector("div");
-      if (!div) {
-        div = document.createElement("div");
-        TH.appendChild(div);
-      }
 
-      div.style.whiteSpace = "normal";
-      div.style.wordWrap = "break-word";
-      div.style.display = "flex";
-      div.style.alignItems = "center";
-      div.style.height = "100%";
-      div.style.position = "relative";
-
-      TH.style.fontFamily = plus.style.fontFamily;
-      TH.style.fontWeight = "500";
-      TH.style.fontSize = "0.875rem";
-      TH.style.lineHeight = "1.334rem";
-
-      TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-      TH.style.backgroundColor = theme.palette.primary.light;
-      TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-
-      let span = div.querySelector("span");
-      if (!span) {
-        span = document.createElement("span");
-        div.appendChild(span);
-      }
-      span.style.position = "absolute";
-      span.style.marginRight = "16px";
-      span.style.left = "4px";
-
-      let button = div.querySelector("button");
-      if (!button) {
-        button = document.createElement("button");
-        button.style.display = "none";
-        div.appendChild(button);
-      }
-      button.style.position = "absolute";
-      button.style.right = "4px";
-    };
-
-    const afterGetRowHeader = (row: any, TH: any) => {
-      let div = TH.querySelector("div");
-      if (!div) return;
-
-      div.style.whiteSpace = "normal";
-      div.style.wordWrap = "break-word";
-      div.style.display = "flex";
-      div.style.alignItems = "center";
-      div.style.justifyContent = "center";
-      div.style.height = "100%";
-
-      TH.style.fontFamily = plus.style.fontFamily;
-      TH.style.fontWeight = "500";
-      TH.style.fontSize = "0.875rem";
-      TH.style.lineHeight = "1.334rem";
-
-      TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-      TH.style.backgroundColor = theme.palette.primary.light;
-      TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-    };
-
-    const afterRenderer = (
-      TD: any,
-      row: any,
-      col: any,
-      prop: any,
-      value: any,
-      cellProperties: any
-    ) => {
-      TD.style.fontFamily = plus.style.fontFamily;
-      TD.style.fontWeight = "500";
-      TD.style.fontSize = "0.875rem";
-      TD.style.lineHeight = "1.334rem";
-
-      TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-
-      if (row % 2 === 0) {
-        TD.style.backgroundColor =
-          customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-        TD.style.borderColor =
-          customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      } else {
-        TD.style.backgroundColor =
-          customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-        TD.style.borderColor =
-          customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-        TD.style.borderRightColor =
-          customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-      }
-    };
 
     const fetchData = async () => {
       try {
@@ -338,7 +249,7 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
             backgroundColor: (theme) => theme.palette.background.paper,
           }}
         >
-          <HotTable
+          <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
             style={{
               height: "100%",
               width: "100%",
@@ -367,9 +278,6 @@ const KrediHesaplamaBakiye = forwardRef<any, Props>(
             ]}
             licenseKey="non-commercial-and-evaluation"
             stretchH="all"
-            afterGetColHeader={afterGetColHeader}
-            afterGetRowHeader={afterGetRowHeader}
-            afterRenderer={afterRenderer}
             contextMenu={["alignment", "copy"]}
           />
 

@@ -1,9 +1,12 @@
-﻿"use client";
+"use client";
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { HotTable } from "@handsontable/react";import Handsontable from "handsontable";
-import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";
+import Handsontable from "handsontable";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import "@/utils/languages/handsontable.tr-TR";
 
 import { Box, Typography, Button, Snackbar, Alert, CircularProgress, useTheme } from "@mui/material";
@@ -15,7 +18,8 @@ import {
     createCekSenetReeskontVerisi,
 } from "@/api/Veri/CekSenetReeskont";
 
-// Handsontable modüllerini kaydetinterface Props {
+// Handsontable modüllerini kaydet
+interface Props {
     dipnotNo: string;
     isReport?: boolean;
 }
@@ -29,6 +33,7 @@ const CekSenetTablosu: React.FC<Props> = ({
     const [veriler, setVeriler] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const user = useSelector((state: AppState) => state.userReducer);
+    const customizer = useSelector((state: AppState) => state.customizer);
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" as "success" | "error" });
 
     const fetchData = useCallback(async () => {
@@ -105,17 +110,7 @@ const CekSenetTablosu: React.FC<Props> = ({
                 border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
                 borderRadius: '0px',
                 backgroundColor: theme.palette.background.paper,
-                overflow: 'hidden',
-                "& .handsontable th": {
-                    backgroundColor: `${theme.palette.primary.main} !important`,
-                    color: "white !important",
-                    fontWeight: "bold !important",
-                    textAlign: "center !important",
-                    verticalAlign: "middle !important",
-                    padding: "8px !important",
-                    border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
-                },
-                "& .handsontable td": {
+                overflow: 'hidden',                "& .handsontable td": {
                     backgroundColor: theme.palette.background.paper,
                     color: theme.palette.text.primary,
                     border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
@@ -124,7 +119,7 @@ const CekSenetTablosu: React.FC<Props> = ({
                     backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
                 }
             }}>
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                     ref={hotRef}
                     data={veriler}
                     language="tr-TR"

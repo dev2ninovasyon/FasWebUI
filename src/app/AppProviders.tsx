@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
@@ -21,6 +21,7 @@ import { PageTitleProvider } from "@/contexts/PageTitleContext";
 import { AuthSessionProvider, useAuthSession } from "@/contexts/AuthSessionContext";
 import SessionWarningDialog from "@/components/SessionWarning/SessionWarningDialog";
 import { resolveIconNameByMenuTitle } from "@/utils/menuIconResolver";
+import GlobalStyles from "@mui/material/GlobalStyles";
 import "@/app/api/index";
 import "@/utils/i18n";
 
@@ -220,6 +221,75 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
       >
         <SnackbarProvider anchorOrigin={{ vertical: "top", horizontal: "right" }}>
           <ThemeProvider theme={theme}>
+            <GlobalStyles styles={{
+              '.ht-theme-horizon': {
+                '--ht-interactive-active-color': `${theme.palette.primary.main} !important`,
+                '--ht-primary-color': `${theme.palette.primary.main} !important`,
+                '--ht-colors-primary-500': `${theme.palette.primary.main} !important`,
+                '--ht-colors-primary-600': `${theme.palette.primary.main} !important`,
+                '--ht-colors-success-500': `${theme.palette.primary.main} !important`,
+                '--ht-colors-success-600': `${theme.palette.primary.main} !important`,
+                '--ht-button-primary-background-color': `transparent !important`,
+              },
+              '.ht-theme-horizon .changeType': {
+                backgroundImage: 'none !important',
+                display: 'flex !important',
+                alignItems: 'center !important',
+                justifyContent: 'center !important',
+                transition: 'transform 0.2s ease !important',
+                backgroundColor: 'transparent !important',
+                borderRadius: '0 !important',
+                border: 'none !important',
+                outline: 'none !important',
+                boxShadow: 'none !important'
+              },
+              '.ht-theme-horizon .changeType:hover, .ht-theme-horizon .changeType:focus, .ht-theme-horizon .changeType:active': {
+                backgroundColor: 'transparent !important',
+                transform: 'scale(1.3) !important',
+                border: 'none !important',
+                outline: 'none !important',
+                boxShadow: 'none !important'
+              },
+              '.ht-theme-horizon .changeType::before, .ht-theme-horizon .changeType:hover::before': {
+                content: '""',
+                display: 'block !important',
+                width: '12px !important',
+                height: '12px !important',
+                backgroundColor: 'currentColor !important',
+                maskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3'/%3E%3C/svg%3E")`,
+                WebkitMaskImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3'/%3E%3C/svg%3E")`,
+                maskSize: 'contain !important',
+                WebkitMaskSize: 'contain !important',
+                maskRepeat: 'no-repeat !important',
+                WebkitMaskRepeat: 'no-repeat !important',
+              },
+              '.ht-theme-horizon .htFiltersMenuCondition a': {
+                color: `${theme.palette.primary.main} !important`,
+                fontWeight: 'bold !important'
+              },
+              '.ht-theme-horizon .htUIBtn': {
+                backgroundColor: `transparent !important`,
+                borderColor: `${theme.palette.primary.main} !important`,
+                color: `black !important`,
+                borderWidth: '1px !important',
+                borderStyle: 'solid !important',
+                boxShadow: 'none !important'
+              },
+              '.ht-theme-horizon .htUIBtn:hover': {
+                backgroundColor: `rgba(0,0,0,0.05) !important`,
+                color: `black !important`
+              },
+              '.ht-theme-horizon .htUIBtn.htUIBtn-primary': {
+                backgroundColor: `transparent !important`,
+                borderColor: `${theme.palette.primary.main} !important`,
+                color: `black !important`
+              },
+              // Sadece seçili durumlarda (aktif/highlight) tablodan gelen temanın rengini almasını sağlayan blok:
+              '.handsontable th.ht__active_highlight, .handsontable th.ht__highlight': {
+                backgroundColor: `${theme.palette.primary.light} !important`,
+                color: `${theme.palette.primary.main} !important`
+              }
+            }} />
             <LoadingProvider>
               <PageTitleProvider>
                 <RTL direction={customizer.activeDir}>

@@ -1,7 +1,9 @@
 ﻿"use client";
 import "@/lib/handsontableSetup";
 import { HotTable } from "@handsontable/react";
-import "handsontable/dist/handsontable.full.min.css";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import {
   Box,
   Grid,
@@ -345,7 +347,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
           <Typography>Fatura listesi yükleniyor...</Typography>
         </Box>
       ) : (
-        <HotTable
+        <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
           ref={hotRef}
           data={masterRows}
           colHeaders={masterHeaders}
@@ -422,7 +424,7 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
               <Typography>Fatura detayı yükleniyor...</Typography>
             </Box>
           ) : (
-            <HotTable
+            <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
               ref={linesRef}
               data={lineRows}
               colHeaders={lineHeaders}

@@ -1,10 +1,13 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import "handsontable/dist/handsontable.full.min.css";
-import { plus } from "@/utils/theme/Typography";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import {  Box,
+import {
+  Box,
   Button,
   Grid,
   Paper,
@@ -13,7 +16,8 @@ import {  Box,
   useTheme,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { enqueueSnackbar } from "notistack";import { saveAs } from "file-saver";
+import { enqueueSnackbar } from "notistack";
+import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { usePathname } from "next/navigation";
 import { IconFileTypeXls } from "@tabler/icons-react";
@@ -26,7 +30,8 @@ import {
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -168,114 +173,8 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
     }, // Açıklama
   ];
 
-  const afterGetColHeader = (col: any, TH: any) => {
-    TH.style.height = "50px";
 
-    let div = TH.querySelector("div");
-    if (!div) {
-      div = document.createElement("div");
-      TH.appendChild(div);
-    }
 
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.height = "100%";
-    div.style.position = "relative";
-
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
-
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-
-    // Create span for the header text
-    let span = div.querySelector("span");
-    if (!span) {
-      span = document.createElement("span");
-      div.appendChild(span);
-    }
-    span.textContent = colHeaders[col];
-    span.style.position = "absolute";
-    span.style.marginRight = "16px";
-    span.style.left = "4px";
-
-    // Create button if it does not exist
-    let button = div.querySelector("button");
-    if (!button) {
-      button = document.createElement("button");
-      button.style.display = "none";
-      div.appendChild(button);
-    }
-    button.style.position = "absolute";
-    button.style.right = "4px";
-  };
-
-  const afterGetRowHeader = (row: any, TH: any) => {
-    let div = TH.querySelector("div");
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.justifyContent = "center";
-    div.style.height = "100%";
-
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    //color
-    TH.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-    TH.style.backgroundColor = theme.palette.primary.light;
-    //customizer.activeMode === "dark" ? "#253662" : "#ECF2FF";
-
-    TH.style.borderColor = customizer.activeMode === "dark" ? "#10141c" : "#";
-  };
-
-  const afterRenderer = (
-    TD: any,
-    row: any,
-    col: any,
-    prop: any,
-    value: any,
-    cellProperties: any
-  ) => {
-    //typography body1
-    TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontWeight = 500;
-    TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
-    TD.style.whiteSpace = "nowrap";
-    TD.style.overflow = "hidden";
-    //TD.style.textAlign = "left";
-
-    //color
-    TD.style.color = customizer.activeMode === "dark" ? "#ffffff" : "#2A3547";
-
-    if (row % 2 === 0) {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-    } else {
-      TD.style.backgroundColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderColor =
-        customizer.activeMode === "dark" ? "#10141c" : "#cccccc";
-      TD.style.borderRightColor =
-        customizer.activeMode === "dark" ? "#171c23" : "#ffffff";
-    }
-  };
 
   const handleGetRowData = async (row: number) => {
     if (hotTableComponent.current) {
@@ -573,7 +472,7 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
           xs: 12,
           lg: 12
         }}>
-        <HotTable
+        <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
           style={{
             height: "100%",
             width: "100%",
@@ -605,9 +504,6 @@ const FisDetaylari: React.FC<Props> = ({ genelHesapPlaniListesi }) => {
             "filter_action_bar",
           ]}
           licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-          afterGetColHeader={afterGetColHeader}
-          afterGetRowHeader={afterGetRowHeader}
-          afterRenderer={afterRenderer}
           afterChange={handleAfterChange}
           beforeChange={handleBeforeChange}
           copyPaste={true}

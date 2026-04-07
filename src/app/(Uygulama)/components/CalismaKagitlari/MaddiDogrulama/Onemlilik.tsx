@@ -1,7 +1,9 @@
-﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import "handsontable/dist/handsontable.full.min.css";
-import { plus } from "@/utils/theme/Typography";
+import "@/lib/handsontableSetup";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { useTheme, Box, Typography } from "@mui/material";
@@ -11,7 +13,8 @@ import { getOnemlilikByDipnot } from "@/api/DenetimKanitlari/DenetimKanitlari";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 
-// register Handsontable's modulesnumbro.registerLanguage(trTR);
+// register Handsontable's modules
+numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
 interface Veri {
@@ -152,108 +155,9 @@ const Onemlilik: React.FC<Props> = ({ dipnot, isReport }) => {
     }, // Tespit Açıklama
   ];
 
-  const afterGetColHeader = (col: any, TH: any) => {
-    TH.style.height = "50px";
 
-    let div = TH.querySelector("div");
-    if (!div) {
-      div = document.createElement("div");
-      TH.appendChild(div);
-    }
 
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.height = "100%";
-    div.style.position = "relative";
 
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    //color
-    TH.style.color = "white";
-    TH.style.backgroundColor = theme.palette.primary.main;
-
-    TH.style.borderColor = theme.palette.mode === 'dark' ? theme.palette.grey[700] : "#e0e0e0";
-
-    // Create span for the header text
-    let span = div.querySelector("span");
-    if (!span) {
-      span = document.createElement("span");
-      div.appendChild(span);
-    }
-    span.textContent = colHeaders[col];
-    span.style.position = "absolute";
-    span.style.marginRight = "16px";
-    span.style.left = "4px";
-
-    // Create button if it does not exist
-    let button = div.querySelector("button");
-    if (!button) {
-      button = document.createElement("button");
-      button.style.display = "none";
-      div.appendChild(button);
-    }
-    button.style.position = "absolute";
-    button.style.right = "4px";
-  };
-
-  const afterGetRowHeader = (row: any, TH: any) => {
-    let div = TH.querySelector("div");
-    div.style.whiteSpace = "normal";
-    div.style.wordWrap = "break-word";
-    div.style.display = "flex";
-    div.style.alignItems = "center";
-    div.style.justifyContent = "center";
-    div.style.height = "100%";
-
-    //typography body1
-    TH.style.fontFamily = plus.style.fontFamily;
-    TH.style.fontWeight = 500;
-    TH.style.fontSize = "0.875rem";
-    TH.style.lineHeight = "1.334rem";
-
-    //color
-    TH.style.color = theme.palette.text.primary;
-    TH.style.backgroundColor = theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.primary.light;
-
-    TH.style.borderColor = theme.palette.mode === 'dark' ? theme.palette.grey[700] : "#e0e0e0";
-  };
-
-  const afterRenderer = (
-    TD: any,
-    row: any,
-    col: any,
-    prop: any,
-    value: any,
-    cellProperties: any
-  ) => {
-    //typography body1
-    TD.style.fontFamily = plus.style.fontFamily;
-    TD.style.fontWeight = 500;
-    TD.style.fontSize = "0.875rem";
-    TD.style.lineHeight = "1.334rem";
-    //TD.style.textAlign = "left";
-
-    //color
-    TD.style.color = theme.palette.text.primary;
-
-    const ZEBRA_ROW = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB";
-    const BG_PAPER = theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#FFFFFF";
-    const BORDER_COLOR = theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#e0e0e0';
-
-    if (row % 2 === 0) {
-      TD.style.backgroundColor = BG_PAPER;
-      TD.style.borderColor = BORDER_COLOR;
-    } else {
-      TD.style.backgroundColor = ZEBRA_ROW;
-      TD.style.borderColor = BORDER_COLOR;
-    }
-  };
 
   const handleGetRowData = async (row: number) => {
     if (hotTableComponent.current) {
@@ -325,7 +229,7 @@ const Onemlilik: React.FC<Props> = ({ dipnot, isReport }) => {
       <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
         Önemlilik
       </Typography>
-      <HotTable
+      <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
         style={{
           height: isReport ? "auto" : "100%",
           width: "100%",
@@ -357,9 +261,6 @@ const Onemlilik: React.FC<Props> = ({ dipnot, isReport }) => {
         ]}
         manualColumnResize={!isReport}
         licenseKey="non-commercial-and-evaluation" // For non-commercial use only
-        afterGetColHeader={afterGetColHeader}
-        afterGetRowHeader={afterGetRowHeader}
-        afterRenderer={afterRenderer}
         contextMenu={isReport ? false : ["alignment", "copy"]}
         readOnly={isReport}
       />

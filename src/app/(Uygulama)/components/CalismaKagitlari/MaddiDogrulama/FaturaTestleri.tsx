@@ -2,14 +2,18 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState } from "react";
-import { HotTable } from "@handsontable/react";import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import { Box, useTheme, Typography, CircularProgress } from "@mui/material";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getFaturaTestleri, faturaTestiGuncelle, FaturaTestleriSatir } from "@/api/CalismaKagitlari/FaturaTestleri";
 import { enqueueSnackbar } from "notistack";
-import moment from "moment";const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isReport?: boolean }) => {
+import moment from "moment";
+const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isReport?: boolean }) => {
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
@@ -88,21 +92,7 @@ import moment from "moment";const FaturaTestleriTablo = ({ dipnotNo, isReport }
                     overflow: "hidden",
                     "& .handsontable": {
                         fontFamily: "inherit",
-                    },
-                    "& .handsontable th": {
-                        backgroundColor: `${theme.palette.primary.main} !important`,
-                        color: `white !important`,
-                        fontWeight: "bold",
-                        fontSize: "13px",
-                        whiteSpace: "normal",
-                        lineHeight: "1.2 !important",
-                        padding: "8px 4px !important",
-                        verticalAlign: "middle !important",
-                        height: "45px !important",
-                        zIndex: 100,
-                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'} !important`,
-                    },
-                    "& .handsontable td": {
+                    },                    "& .handsontable td": {
                         backgroundColor: theme.palette.background.paper,
                         color: theme.palette.text.primary,
                         fontSize: "13px",
@@ -116,7 +106,7 @@ import moment from "moment";const FaturaTestleriTablo = ({ dipnotNo, isReport }
                     "& ::-webkit-scrollbar-thumb": { backgroundColor: "#ccc", borderRadius: "4px" }
                 }}
             >
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                     data={data.length > 0 ? data : [{}, {}, {}]}
                     afterChange={handleAfterChange}
                     colHeaders={[

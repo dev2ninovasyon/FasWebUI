@@ -375,3 +375,210 @@ export const upsertFisBuyukluguAylikNot = async (
     console.log("Bir hata oluştu:", error);
   }
 };
+
+// ===== BULGU RİSKİ BELİRLEME — YENİ STEPPER API'ı =====
+
+/**
+ * Bulgu Riski Belirleme draft'ı kaydeder (ilk açılış)
+ */
+export const createBulguRiskiBelirlemeDraft = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/BulguRiskiBelirlemeBelge/SaveBulguRiskiBelirleme`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify({
+          denetciId,
+          denetlenenId,
+          yil,
+          tamamMi: false,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error("Draft kaydedilemedi");
+    }
+  } catch (error) {
+    console.error("Draft oluşturma hatası:", error);
+    throw error;
+  }
+};
+
+/**
+ * Bulgu Riski Belirleme verilerini tam olarak kaydetme (stepper form'dan)
+ */
+export const saveBulguRiskiBelirlemeFull = async (request: any) => {
+  try {
+    const response = await apiFetch(
+      `/BulguRiskiBelirlemeBelge/SaveBulguRiskiBelirleme`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify(request),
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error("Veri kaydedilemedi");
+    }
+  } catch (error) {
+    console.error("Kaydetme hatası:", error);
+    throw error;
+  }
+};
+
+/**
+ * Kayıtlı Bulgu Riski verisini getir
+ */
+export const getBulguRiskiBelirlemeFull = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/BulguRiskiBelirlemeBelge/GetBulguRiskiBelirleme?denetciId=${denetciId}&denetlenenId=${denetlenenId}&yil=${yil}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.log("Bulgu Riski verileri getirilemedi");
+      return null;
+    }
+  } catch (error) {
+    console.error("Veri getirme hatası:", error);
+    return null;
+  }
+};
+
+/**
+ * Önemlilik Hesapla (Adım 1)
+ */
+export const hesaplaOnemlilik = async (netSatislar: number) => {
+  try {
+    const response = await apiFetch(
+      `/BulguRiskiBelirlemeBelge/HesaplaOnemlilik?netSatislar=${netSatislar}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error("Önemlilik hesaplama hatası:", error);
+  }
+};
+
+/**
+ * Doğal Risk Hesapla (Adım 2)
+ */
+export const hesaplaDoğalRisk = async (
+  denetimId: number,
+  sirketId: number,
+  faktörler: any[]
+) => {
+  try {
+    const response = await apiFetch(
+      `/BulguRiskiBelirlemeBelge/HesaplaDoğalRisk?denetimId=${denetimId}&sirketId=${sirketId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify(faktörler),
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error("Doğal Risk hesaplama hatası:", error);
+  }
+};
+
+/**
+ * Kontrol Riski Hesapla (Adım 3)
+ */
+export const hesaplaKontrolRiski = async (
+  denetimId: number,
+  sirketId: number,
+  kontroller: any[]
+) => {
+  try {
+    const response = await apiFetch(
+      `/BulguRiskiBelirlemeBelge/HesaplaKontrolRiski?denetimId=${denetimId}&sirketId=${sirketId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify(kontroller),
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error("Kontrol Riski hesaplama hatası:", error);
+  }
+};
+
+/**
+ * OR ve Prosedür Hesapla (Adım 4)
+ */
+export const hesaplaOrVeProsedur = async (
+  dr: number,
+  kr: number,
+  kdr: number = 0.05
+) => {
+  try {
+    const response = await apiFetch(
+      `/BulguRiskiBelirlemeBelge/HesaplaOrVeProsedur?dr=${dr}&kr=${kr}&kdr=${kdr}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch (error) {
+    console.error("OR hesaplama hatası:", error);
+  }
+};
+

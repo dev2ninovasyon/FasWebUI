@@ -9,3 +9,17 @@
 .grecaptcha-badge {
   visibility: hidden !important;
 }
+
+/* Handsontable header dropdown arrow fix - Replace 3 dots with arrow */
+.ht-theme-horizon .changeType {
+  background-image: none !important;
+}
+.ht-theme-horizon .changeType::before {
+  content: '▼' !important;
+  font-size: 10px !important;
+  color: inherit !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+

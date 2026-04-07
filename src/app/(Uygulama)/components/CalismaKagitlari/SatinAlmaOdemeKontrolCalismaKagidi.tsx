@@ -34,7 +34,10 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 // en üst importlara ekle:
 import { enqueueSnackbar } from "notistack";
-import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 
 // API
 import {
@@ -43,7 +46,8 @@ import {
   // varsa: getSentInvoiceMatches, SentInvoiceMatchRow
 } from "@/api/Fatura/FaturaApi";
 
-// Handsontable modülleriinterface Veri {
+// Handsontable modülleri
+interface Veri {
   id: number;
   kontrolTesti: string;
   kontrolAmaci: string;
@@ -739,7 +743,7 @@ const receivedColumns: any[] = [
         }
       />
       <CardContent>
-        <HotTable
+        <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
           ref={rcvHotRef}
           data={receivedMatrix}
           colHeaders={receivedHeaders}

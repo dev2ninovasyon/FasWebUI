@@ -15,7 +15,10 @@ import {
     CircularProgress,
     useTheme,
 } from "@mui/material";
-import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import {
@@ -26,7 +29,8 @@ import {
     DavaKarsiliklariSummary
 } from "@/api/CalismaKagitlari/DavaKarsiliklariCalismasi";
 import { enqueueSnackbar } from "notistack";
-import "@/utils/languages/handsontable.tr-TR";const fmt = (n: any) =>
+import "@/utils/languages/handsontable.tr-TR";
+const fmt = (n: any) =>
     Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 interface Props {
@@ -189,20 +193,7 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
                 border: `1px solid ${BORDER_COLOR}`,
                 borderRadius: "0px",
                 backgroundColor: BG_PAPER,
-                overflow: "hidden",
-                "& .handsontable th": {
-                    backgroundColor: `${HEADER_BG} !important`,
-                    color: `white !important`,
-                    fontWeight: "bold",
-                    padding: "8px 4px !important",
-                    fontSize: "13px",
-                    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.2)'} !important`,
-                    whiteSpace: "normal",
-                    lineHeight: "1.2 !important",
-                    verticalAlign: "middle !important",
-                    height: "45px !important"
-                },
-                "& .handsontable td": {
+                overflow: "hidden",                "& .handsontable td": {
                     backgroundColor: BG_PAPER,
                     color: TEXT_COLOR,
                     border: `1px solid ${BORDER_COLOR} !important`,
@@ -211,7 +202,7 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
                     backgroundColor: ZEBRA_ROW,
                 }
             }}>
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                     data={data}
                     afterChange={handleAfterChange}
                     autoColumnSize={true}

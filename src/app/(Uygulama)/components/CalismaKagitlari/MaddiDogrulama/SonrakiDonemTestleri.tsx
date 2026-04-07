@@ -2,7 +2,10 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
-import { HotTable } from "@handsontable/react";import "handsontable/dist/handsontable.full.min.css";
+import { HotTable } from "@handsontable/react";
+import 'handsontable/styles/handsontable.css';
+import 'handsontable/styles/ht-theme-horizon.css';
+import 'handsontable/styles/ht-icons-main.css';
 import "@/utils/languages/handsontable.tr-TR";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useSelector } from "@/store/hooks";
@@ -17,7 +20,8 @@ import {
 } from "@/api/CalismaKagitlari/SonrakiDonemTestleri";
 import { useLoading } from "@/contexts/LoadingContext";
 import { enqueueSnackbar } from "notistack";
-import moment from "moment";interface Props {
+import moment from "moment";
+interface Props {
     parentName: string;
     childName: string;
     dipnotNo: string;
@@ -213,14 +217,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                     overflow: "hidden",
                     borderRadius: "0px",
                     border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
-                    backgroundColor: theme.palette.background.paper,
-                    "& .handsontable th": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: "white",
-                        fontWeight: 'bold',
-                        border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
-                    },
-                    "& .handsontable td": {
+                    backgroundColor: theme.palette.background.paper,                    "& .handsontable td": {
                         backgroundColor: theme.palette.background.paper,
                         color: theme.palette.text.primary,
                         border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#ddd'}`,
@@ -230,7 +227,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                     }
                 }}
             >
-                <HotTable
+                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
                     ref={hotTableComponent}
                     data={data}
                     columns={columns}
