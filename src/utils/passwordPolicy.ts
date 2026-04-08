@@ -16,6 +16,7 @@ const commonWeakPasswords = [
   "iloveyou",
   "000000",
   "111111",
+  "fas",
 ];
 
 const sequentialPatterns = [

@@ -2,14 +2,15 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
-import { HotTable } from "@handsontable/react";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
-import "@/utils/languages/handsontable.tr-TR";
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { Box, Typography, useTheme } from "@mui/material";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
     getSonrakiDonemTestleri,
     sonrakiDonemTestleriSatirEkle,
@@ -37,6 +38,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
+    const dispatch = useDispatch();
     const { setLoading: setGlobalLoading } = useLoading();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<(MaddiDogrulukTahsilatKayitlari & { selected?: boolean })[]>([]);
@@ -99,6 +101,24 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
     useEffect(() => {
         fetchData();
     }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+
+    loadStyles();
+  }, [customizer.activeMode]);
+
 
     const handleSatirEkle = async () => {
         if (!user.denetlenenId || !user.yil) return;
@@ -227,7 +247,7 @@ const SonrakiDonemTestleri = forwardRef<any, Props>(({
                     }
                 }}
             >
-                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                     ref={hotTableComponent}
                     data={data}
                     columns={columns}

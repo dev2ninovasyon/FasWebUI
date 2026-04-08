@@ -1,10 +1,11 @@
 ﻿import "@/lib/handsontableSetup";
-import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import React, { useEffect, useState, useRef } from "react";
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import {
   Typography,
   Box,
@@ -317,7 +318,7 @@ const HaricFisListesiTable: React.FC<Props> = ({
         </Backdrop>
 
         <div onClick={handleHeaderClick}>
-          <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+          <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
             ref={hotTableComponent}
             data={fetchedData}
             colHeaders={colHeaders}
@@ -332,7 +333,8 @@ const HaricFisListesiTable: React.FC<Props> = ({
             licenseKey="non-commercial-and-evaluation"
             language={dictionary.languageCode}
             filters={true}
-            dropdownMenu={true}
+            dropdownMenu={["filter_by_condition", "filter_by_value", "filter_action_bar"]}
+          columnSorting={true}
           />
         </div>
       </Box>

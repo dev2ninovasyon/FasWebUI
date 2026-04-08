@@ -3,15 +3,15 @@
 import { apiFetch } from "@/api/apiBase";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
-import { Box, Button, InputAdornment, Link as MuiLink, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Button, InputAdornment, Stack, Typography, useTheme } from "@mui/material";
 import { IconArrowLeft, IconMail, IconSend } from "@tabler/icons-react";
 import Link from "next/link";
 import { enqueueSnackbar } from "notistack";
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 const defaultSuccessMessage =
-  "Eğer e-posta adresi sistemde kayıtlıysa, şifre sıfırlama bağlantısı gönderilecektir";
+  "Eğer e-posta adresi sistemde kayıtlıysa, şifre sıfırlama bağlantısı gönderilecektir.";
 
 export default function ForgotPasswordForm() {
   const theme = useTheme();
@@ -21,7 +21,6 @@ export default function ForgotPasswordForm() {
   const [submittedEmail, setSubmittedEmail] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // URL parametrisinden email'i oku ve form alanını doldur
   useEffect(() => {
     const emailParam = searchParams.get("email");
     if (emailParam) {
@@ -40,7 +39,10 @@ export default function ForgotPasswordForm() {
     }
 
     if (!emailIsValid) {
-      enqueueSnackbar("Lütfen geçerli bir e-posta adresi girin.", { variant: "warning", autoHideDuration: 4000 });
+      enqueueSnackbar("Lütfen geçerli bir e-posta adresi girin.", {
+        variant: "warning",
+        autoHideDuration: 4000,
+      });
       return;
     }
 
@@ -68,7 +70,7 @@ export default function ForgotPasswordForm() {
           const rawText = await response.clone().text();
           errorMessage = rawText || errorMessage;
         } catch {
-          // If we can't read the response, use default message
+          // Varsayılan mesaj kullanılacak.
         }
       }
 
@@ -76,10 +78,10 @@ export default function ForgotPasswordForm() {
         throw new Error(errorMessage);
       }
 
-      const successMessage = errorMessage || defaultSuccessMessage;
-      setSuccessMessage(successMessage);
+      const nextSuccessMessage = errorMessage || defaultSuccessMessage;
+      setSuccessMessage(nextSuccessMessage);
       setSubmittedEmail(email.trim());
-      enqueueSnackbar(successMessage, { variant: "success", autoHideDuration: 5000 });
+      enqueueSnackbar(nextSuccessMessage, { variant: "success", autoHideDuration: 5000 });
     } catch (error: any) {
       enqueueSnackbar(error?.message || "Şifre sıfırlama bağlantısı gönderilemedi.", {
         variant: "error",
@@ -118,7 +120,8 @@ export default function ForgotPasswordForm() {
           </Box>
 
           <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.7 }}>
-            Şifre sıfırlama bağlantısını kayıtlı e-posta adresinize göndereceğiz. Linke tıklayarak yeni şifrenizi güvenli şekilde belirleyebilirsiniz.
+            Şifre sıfırlama bağlantısını kayıtlı e-posta adresinize göndereceğiz. Linke tıklayarak
+            yeni şifrenizi güvenli şekilde belirleyebilirsiniz.
           </Typography>
 
           {successMessage ? (
@@ -135,7 +138,8 @@ export default function ForgotPasswordForm() {
                 Mail gönderimi tamamlandı
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                {submittedEmail || email.trim()} adresini kontrol edin. Mail birkaç dakika içinde gelmezse spam klasörüne de bakın.
+                {submittedEmail || email.trim()} adresini kontrol edin. Mail birkaç dakika içinde gelmezse
+                spam klasörüne de bakın.
               </Typography>
             </Box>
           ) : null}
@@ -167,7 +171,7 @@ export default function ForgotPasswordForm() {
               "&:hover": {
                 backgroundColor: "rgba(33, 150, 243, 0.08)",
                 transform: "translateX(-2px)",
-              }
+              },
             }}
           >
             Girişe Dön

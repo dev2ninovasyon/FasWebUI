@@ -1,26 +1,28 @@
 "use client";
 
 import { apiFetch } from "@/api/apiBase";
-import { passwordRules, validatePassword } from "@/utils/passwordPolicy";
 import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import PasswordPolicyChecker from "@/components/PasswordPolicy/PasswordPolicyChecker";
+import { validatePassword } from "@/utils/passwordPolicy";
 import {
   Alert,
   Box,
   Button,
   CircularProgress,
+  IconButton,
   InputAdornment,
-  Link as MuiLink,
+  Popover,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
-import { IconArrowLeft, IconKey, IconLock } from "@tabler/icons-react";
+import { IconArrowLeft, IconInfoCircle, IconKey, IconLock } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface ValidationState {
   checked: boolean;
@@ -40,14 +42,37 @@ export default function ResetPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validation, setValidation] = useState<ValidationState>({ checked: false, valid: false });
   const [successMessage, setSuccessMessage] = useState("");
+  const [policyAnchorEl, setPolicyAnchorEl] = useState<HTMLElement | null>(null);
+  const passwordFieldRef = useRef<HTMLDivElement | null>(null);
+
   const passwordValidationMessage = useMemo(
     () => (newPassword ? validatePassword(newPassword, email) : ""),
     [email, newPassword]
   );
+
   const passwordsMatch = useMemo(
     () => !confirmPassword || newPassword === confirmPassword,
     [newPassword, confirmPassword]
   );
+
+  const isPolicyOpen = Boolean(policyAnchorEl);
+
+  const handlePolicyOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setPolicyAnchorEl(event.currentTarget);
+  };
+
+  const handlePolicyClose = () => {
+    setPolicyAnchorEl(null);
+  };
+
+  useEffect(() => {
+    if (newPassword && passwordFieldRef.current) {
+      setPolicyAnchorEl(passwordFieldRef.current);
+      return;
+    }
+
+    setPolicyAnchorEl(null);
+  }, [newPassword]);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -61,75 +86,49 @@ export default function ResetPasswordForm() {
       }
 
       try {
-        console.log(
-          "🔐 [ResetPasswordForm] VALIDATE TOKEN ÇAĞRISI: Token=",
-          token,
-          "Token Length=",
-          token.length
-        );
-
-        const requestBody = JSON.stringify({ token });
-        console.log("📤 [ResetPasswordForm] REQUEST BODY:", requestBody);
-
         const response = await apiFetch("/Auth/validate-reset-password-token", {
           method: "POST",
           headers: {
             accept: "*/*",
             "Content-Type": "application/json",
           },
-          body: requestBody,
+          body: JSON.stringify({ token }),
           suppressErrorLog: true,
         });
 
-        console.log(
-          "📥 [ResetPasswordForm] RESPONSE STATUS:",
-          response.status,
-          response.statusText
-        );
-
-        // Response headers'ı kontrol et
-        const contentType = response.headers.get("content-type");
-        console.log("📋 [ResetPasswordForm] RESPONSE CONTENT-TYPE:", contentType);
-
         let parsed: any = null;
-        let errorMessage = "Baglanti dogrulanamadi.";
+        let errorMessage = "Bağlantı doğrulanamadı.";
 
-        // Response OK değilse, text veya JSON read
         if (!response.ok) {
           let text = "";
+
           try {
             text = await response.text();
-            console.log("❌ [ResetPasswordForm] ERROR RESPONSE TEXT:", text, "Length:", text.length);
-          } catch (readError) {
-            console.log("❌ [ResetPasswordForm] RESPONSE TEXT READ ERROR:", readError);
-            errorMessage = "Response okunamadi.";
+          } catch {
+            errorMessage = "Yanıt okunamadı.";
             setValidation({ checked: true, valid: false, message: errorMessage });
             return;
           }
 
-          // Text'i JSON'a çevirmeyi dene
           if (text) {
             try {
               const errorParsed = JSON.parse(text);
               errorMessage = errorParsed?.message || errorParsed?.Message || text.substring(0, 100);
             } catch {
-              // JSON değilse, text'in ilk 100 karakterini mesaj yap
-              errorMessage = text.substring(0, 100) || "Sunucu hatasi.";
+              errorMessage = text.substring(0, 100) || "Sunucu hatası.";
             }
           } else {
             errorMessage = "Sunucu boş yanıt verdi.";
           }
 
-          console.log("❌ [ResetPasswordForm] VALIDATION FAILED:", errorMessage);
           setValidation({ checked: true, valid: false, message: errorMessage });
           return;
         }
 
-        // Response OK ise, JSON oku
         try {
           parsed = await response.json();
         } catch {
-          errorMessage = "Yanit ayristirilamadi.";
+          errorMessage = "Yanıt ayrıştırılamadı.";
         }
 
         setValidation({
@@ -141,7 +140,7 @@ export default function ResetPasswordForm() {
         setValidation({
           checked: true,
           valid: false,
-          message: error?.message || "Baglanti dogrulanirken bir hata olustu.",
+          message: error?.message || "Bağlantı doğrulanırken bir hata oluştu.",
         });
       }
     };
@@ -153,22 +152,34 @@ export default function ResetPasswordForm() {
     event.preventDefault();
 
     if (!validation.valid) {
-      enqueueSnackbar("Şifre sıfırlama bağlantısı geçerli değil.", { variant: "warning", autoHideDuration: 4000 });
+      enqueueSnackbar("Şifre sıfırlama bağlantısı geçerli değil.", {
+        variant: "warning",
+        autoHideDuration: 4000,
+      });
       return;
     }
 
     if (!newPassword || !confirmPassword) {
-      enqueueSnackbar("Lütfen yeni şifrenizi ve tekrarını girin.", { variant: "warning", autoHideDuration: 4000 });
+      enqueueSnackbar("Lütfen yeni şifrenizi ve tekrarını girin.", {
+        variant: "warning",
+        autoHideDuration: 4000,
+      });
       return;
     }
 
     if (!passwordsMatch) {
-      enqueueSnackbar("Şifreler birbiriyle uyuşmuyor.", { variant: "warning", autoHideDuration: 4000 });
+      enqueueSnackbar("Şifreler birbiriyle uyuşmuyor.", {
+        variant: "warning",
+        autoHideDuration: 4000,
+      });
       return;
     }
 
     if (passwordValidationMessage) {
-      enqueueSnackbar(passwordValidationMessage, { variant: "warning", autoHideDuration: 5000 });
+      enqueueSnackbar(passwordValidationMessage, {
+        variant: "warning",
+        autoHideDuration: 5000,
+      });
       return;
     }
 
@@ -251,7 +262,7 @@ export default function ResetPasswordForm() {
                 "&:hover": {
                   backgroundColor: "rgba(33, 150, 243, 0.08)",
                   transform: "translateX(-2px)",
-                }
+                },
               }}
             >
               Girişe Dön
@@ -280,7 +291,7 @@ export default function ResetPasswordForm() {
                   "&:hover": {
                     backgroundColor: "rgba(33, 150, 243, 0.08)",
                     transform: "translateX(-2px)",
-                  }
+                  },
                 }}
               >
                 Girişe Dön
@@ -290,8 +301,14 @@ export default function ResetPasswordForm() {
         </Box>
       ) : (
         <form onSubmit={handleSubmit}>
-          <Stack spacing={2.5}>
-            <Box>
+          <Stack spacing={1.5}>
+            {email ? (
+              <Alert severity="info" sx={{ borderRadius: 3 }}>
+                {email} hesabı için yeni şifre belirliyorsunuz.
+              </Alert>
+            ) : null}
+
+            <Box ref={passwordFieldRef}>
               <CustomFormLabel htmlFor="new-password">Yeni Şifre</CustomFormLabel>
               <CustomTextField
                 id="new-password"
@@ -309,11 +326,17 @@ export default function ResetPasswordForm() {
                       <IconLock size={20} />
                     </InputAdornment>
                   ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Tooltip title="Şifre kriterlerini göster">
+                        <IconButton edge="end" size="small" onClick={handlePolicyOpen}>
+                          <IconInfoCircle size={18} />
+                        </IconButton>
+                      </Tooltip>
+                    </InputAdornment>
+                  ),
                 }}
               />
-              
-              {/* Şifre Politikası Göstergesi */}
-              <PasswordPolicyChecker password={newPassword} email={email} showEmail={true} />
             </Box>
 
             <Box>
@@ -338,32 +361,17 @@ export default function ResetPasswordForm() {
               />
             </Box>
 
-            {!passwordsMatch && confirmPassword && (
-              <Alert severity="warning">Şifreler uyuşmuyor</Alert>
-            )}
+            {!passwordsMatch && confirmPassword ? (
+              <Alert severity="warning" sx={{ py: 0.5 }}>
+                Şifreler uyuşmuyor
+              </Alert>
+            ) : null}
 
-            {passwordValidationMessage && (
-              <Alert severity="warning">{passwordValidationMessage}</Alert>
-            )}
-
-            <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.6 }}>
-              Şifre kriterleri:
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-              {passwordRules.map((rule: string, index: number) => (
-                <Typography
-                  key={index}
-                  variant="body2"
-                  sx={{
-                    color: "text.secondary",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  • {rule}
-                </Typography>
-              ))}
-            </Box>
+            {passwordValidationMessage ? (
+              <Alert severity="warning" sx={{ py: 0.5 }}>
+                {passwordValidationMessage}
+              </Alert>
+            ) : null}
 
             <Button
               type="submit"
@@ -376,23 +384,52 @@ export default function ResetPasswordForm() {
             >
               {isSubmitting ? "Güncelleniyor..." : "Şifre Güncelle"}
             </Button>
+
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Link href="/login">
+                <Button
+                  variant="text"
+                  startIcon={<IconArrowLeft size={18} />}
+                  size="small"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 500,
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                      backgroundColor: "rgba(33, 150, 243, 0.08)",
+                      transform: "translateX(-2px)",
+                    },
+                  }}
+                >
+                  Girişe Dön
+                </Button>
+              </Link>
+            </Box>
           </Stack>
         </form>
       )}
 
-      {!successMessage && (
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mt: 3 }}>
-          <Link href="/login">
-            <Button
-              variant="text"
-              startIcon={<IconArrowLeft size={18} />}
-              size="small"
-            >
-              Girişe Geri Dön
-            </Button>
-          </Link>
+      <Popover
+        open={isPolicyOpen}
+        anchorEl={policyAnchorEl}
+        onClose={handlePolicyClose}
+        anchorOrigin={{ vertical: "center", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "left" }}
+        PaperProps={{
+          sx: {
+            ml: 1,
+            width: { xs: "calc(100vw - 48px)", sm: 420 },
+            maxWidth: 420,
+            borderRadius: 3,
+            boxShadow: "0 20px 50px rgba(15, 23, 42, 0.18)",
+            overflow: "hidden",
+          },
+        }}
+      >
+        <Box sx={{ p: 1 }}>
+          <PasswordPolicyChecker password={newPassword} email={email} showEmail={true} borderless />
         </Box>
-      )}
+      </Popover>
     </>
   );
 }

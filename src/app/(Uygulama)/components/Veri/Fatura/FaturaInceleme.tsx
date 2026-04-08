@@ -1,9 +1,9 @@
 ﻿"use client";
 import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
 import {
   Box,
   Grid,
@@ -20,8 +20,9 @@ import {
   Paper,
 } from "@mui/material";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { enqueueSnackbar, closeSnackbar } from "notistack";
 import { saveAs } from "file-saver";
 import {
@@ -46,6 +47,8 @@ const LOADING_SNACK_KEY = "yevmiye-fetching";
 
 const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => {
   const user = useSelector((s: AppState) => s.userReducer);
+  const customizer = useSelector((s: AppState) => s.customizer);
+  const dispatch = useDispatch();
   const hotRef = useRef<any>(null);
   const linesRef = useRef<any>(null);
 
@@ -228,6 +231,24 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
     ]);
   }, [selectedFatura]);
 
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+
+    loadStyles();
+  }, [customizer.activeMode]);
+
+
   const lineHeaders = ["Id", "Açıklama", "Miktar", "Birim", "Fiyat", "Toplam", "V.Kodu", "V.Türü", "Oran", "Matrah", "Vergi"];
   const lineColumns = [
     { readOnly: true },
@@ -347,7 +368,8 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
           <Typography>Fatura listesi yükleniyor...</Typography>
         </Box>
       ) : (
-        <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+        <CustomHotTable dropdownMenu={["filter_by_condition", "filter_by_value", "filter_action_bar"]}
+          columnSorting={true} filters={true}  theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
           ref={hotRef}
           data={masterRows}
           colHeaders={masterHeaders}
@@ -424,7 +446,8 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
               <Typography>Fatura detayı yükleniyor...</Typography>
             </Box>
           ) : (
-            <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+            <CustomHotTable dropdownMenu={["filter_by_condition", "filter_by_value", "filter_action_bar"]}
+          columnSorting={true} filters={true}  theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
               ref={linesRef}
               data={lineRows}
               colHeaders={lineHeaders}

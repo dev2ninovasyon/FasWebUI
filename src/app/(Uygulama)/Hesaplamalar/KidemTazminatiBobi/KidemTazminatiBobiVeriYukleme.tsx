@@ -1,10 +1,11 @@
 ﻿"use client";
 import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme, Button, Typography, Stack, Box, useMediaQuery, Fab, Tooltip } from "@mui/material";
@@ -929,7 +930,7 @@ const KidemTazminatiBobiVeriYukleme: React.FC<Props> = ({
           </Button>
         </Box>
       </Box>
-      <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+      <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
         style={{
           height: "100%",
           width: "100%",

@@ -1,11 +1,11 @@
 "use client";
 
 import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Box, Grid, Typography, useTheme, Alert, Card, CardContent, IconButton, Snackbar } from "@mui/material";
@@ -155,7 +155,7 @@ const ErtelenmisVergiHesabiDetayTable: React.FC<Props> = ({ hesaplaTiklandimi })
                 {loading ? (
                     <Typography>Yükleniyor...</Typography>
                 ) : (
-                    <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                    <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                         ref={hotTableComponent}
                         data={fetchedData}
                         colHeaders={colHeaders}
@@ -168,7 +168,7 @@ const ErtelenmisVergiHesabiDetayTable: React.FC<Props> = ({ hesaplaTiklandimi })
                         licenseKey="non-commercial-and-evaluation"
                         columnSorting={true}
                         filters={true}
-                        dropdownMenu={true}
+                        dropdownMenu={["filter_by_condition", "filter_by_value", "filter_action_bar"]}
                         contextMenu={["alignment", "copy"]}
                     />
                 )}

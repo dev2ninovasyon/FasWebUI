@@ -1,9 +1,10 @@
 ﻿import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Grid, useTheme } from "@mui/material";
@@ -410,7 +411,7 @@ const MaliyetOnceki: React.FC<Props> = ({
 
   return (
     <>
-      <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+      <CustomHotTable dropdownMenu={["filter_by_condition", "filter_by_value", "filter_action_bar"]} filters={true}  theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
         style={{
           height: "100%",
           width: "100%",

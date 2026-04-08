@@ -35,6 +35,14 @@ import {
   registerPlugin,
 } from "handsontable/plugins";
 
+// Global CSS Imports - Yüklenir bir kez
+import "handsontable/styles/handsontable.css";
+import "handsontable/styles/ht-theme-horizon.css";
+import "handsontable/styles/ht-icons-main.css";
+
+// Dil Desteği
+import "@/utils/languages/handsontable.tr-TR";
+
 declare global {
   var __HOT_SELECTED_MODULES_REGISTERED__: boolean | undefined;
 }

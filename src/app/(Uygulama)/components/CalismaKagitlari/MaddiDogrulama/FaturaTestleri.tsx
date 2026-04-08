@@ -1,15 +1,17 @@
 ﻿"use client";
 import "@/lib/handsontableSetup";
+import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 
 import React, { useEffect, useState } from "react";
-import { HotTable } from "@handsontable/react";
-import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { Box, useTheme, Typography, CircularProgress } from "@mui/material";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { getFaturaTestleri, faturaTestiGuncelle, FaturaTestleriSatir } from "@/api/CalismaKagitlari/FaturaTestleri";
 import { enqueueSnackbar } from "notistack";
 import moment from "moment";
@@ -17,6 +19,7 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
+    const dispatch = useDispatch();
     const [data, setData] = useState<FaturaTestleriSatir[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -59,6 +62,24 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
     useEffect(() => {
         fetchData();
     }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
+
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+
+    loadStyles();
+  }, [customizer.activeMode]);
+
 
     const handleAfterChange = async (changes: any) => {
         if (!changes) return;
@@ -106,7 +127,7 @@ const FaturaTestleriTablo = ({ dipnotNo, isReport }: { dipnotNo: string, isRepor
                     "& ::-webkit-scrollbar-thumb": { backgroundColor: "#ccc", borderRadius: "4px" }
                 }}
             >
-                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                     data={data.length > 0 ? data : [{}, {}, {}]}
                     afterChange={handleAfterChange}
                     colHeaders={[

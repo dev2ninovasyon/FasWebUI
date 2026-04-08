@@ -2,14 +2,15 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
-import "@/utils/languages/handsontable.tr-TR";
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { Box, Button, Typography, useTheme } from "@mui/material";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
     getStokDonemsellikTesti,
     updateStokDonemsellikTesti,
@@ -34,6 +35,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
+    const dispatch = useDispatch();
     const { setLoading: setGlobalLoading } = useLoading();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<StokDonemsellikTestiData[]>([]);
@@ -58,6 +60,24 @@ const StokDonemsellikTesti: React.FC<Props> = ({
     useEffect(() => {
         fetchData();
     }, [user.denetlenenId]);
+
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+
+    loadStyles();
+  }, [customizer.activeMode]);
+
 
     const handleVarsayilanaDon = async () => {
         setLoading(true);
@@ -146,7 +166,7 @@ const StokDonemsellikTesti: React.FC<Props> = ({
                 }}
             >
                 {/* Tablo her zaman render edilir (başlıklar için) */}
-                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                     ref={hotTableComponent}
                     data={data}
                     columns={columns}

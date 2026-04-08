@@ -16,11 +16,12 @@ import CalismaKagidiCard from "./Cards/CalismaKagidiCard";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
 import IslemlerCard from "./Cards/IslemlerCard";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import {
   createCalismaKagidiVerisi,
   deleteAllCalismaKagidiVerileri,
@@ -34,10 +35,10 @@ import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/Cus
 import { FloatingButtonCalismaKagitlari } from "./FloatingButtonCalismaKagitlari";
 // en üst importlara ekle:
 import { enqueueSnackbar } from "notistack";
-import { HotTable } from "@handsontable/react";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
 
 // API
 import {
@@ -77,6 +78,23 @@ const SatinAlmaOdemeKontrolCalismaKagidi: React.FC<CalismaKagidiProps> = ({
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+    loadStyles();
+  }, [customizer.activeMode]);
 
   const [selectedGroupId, setSelectedGroupId] = useState(0);
   const [selectedGroupIslem, setSelectedGroupIslem] = useState("");
@@ -743,7 +761,8 @@ const receivedColumns: any[] = [
         }
       />
       <CardContent>
-        <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+        <CustomHotTable dropdownMenu={["filter_by_condition", "filter_by_value", "filter_action_bar"]}
+          columnSorting={true} filters={true}  theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
           ref={rcvHotRef}
           data={receivedMatrix}
           colHeaders={receivedHeaders}
@@ -882,6 +901,8 @@ const PopUpComponent: React.FC<PopUpProps> = ({
       textFieldRef.current.blur();
     }
   }, [isHovered]);
+
+
 
   return (
     <Dialog fullWidth maxWidth={"md"} open={isPopUpOpen} onClose={handleClose}>

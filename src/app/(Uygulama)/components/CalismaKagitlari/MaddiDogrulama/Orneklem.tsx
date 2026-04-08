@@ -1,9 +1,10 @@
 import "@/lib/handsontableSetup";
-import { HotTable } from "@handsontable/react";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { useTheme, Box, Typography } from "@mui/material";
@@ -325,7 +326,7 @@ const Orneklem: React.FC<Props> = ({ dipnot, isReport }) => {
       <Typography variant="h6" sx={{ color: "#2C3E50", fontWeight: "bold", mb: 3 }}>
         Örneklem
       </Typography>
-      <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+      <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
         style={{
           height: isReport ? "auto" : "100%",
           width: "100%",

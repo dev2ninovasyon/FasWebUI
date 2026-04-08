@@ -2,14 +2,15 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef } from "react";
-import { HotTable } from "@handsontable/react";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
-import "@/utils/languages/handsontable.tr-TR";
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+
 import { Box, Typography, useTheme, Divider } from "@mui/material";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
     getKidemTazminatiCalismasi,
     KidemTazminatiHesaplamaSonuclari,
@@ -32,6 +33,7 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
+    const dispatch = useDispatch();
     const { setLoading: setGlobalLoading } = useLoading();
     const [loading, setLoading] = useState(false);
     const [dataBobi, setDataBobi] = useState<KidemTazminatiHesaplamaSonuclari[]>([]);
@@ -87,6 +89,24 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
         fetchData();
     }, [user.denetlenenId, user.yil, resolvedDipnotNo]);
 
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+
+    loadStyles();
+  }, [customizer.activeMode]);
+
+
     if (isReport && !loading && dataBobi.length === 0 && dataOncekiBobi.length === 0) return null;
 
     const columns = [
@@ -122,7 +142,7 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
                         }
                     }}
                 >
-                    <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                    <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                         data={dataBobi}
                         columns={columns}
                         colHeaders={true}
@@ -163,7 +183,7 @@ const KidemTazminatiCalismasi: React.FC<Props> = ({
                         borderRadius: "8px",
                         border: `1px solid ${theme.palette.divider}`,                    }}
                 >
-                    <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                    <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                         data={dataOncekiBobi}
                         columns={columns}
                         colHeaders={true}

@@ -49,6 +49,7 @@
     "@emotion/styled": "^11.14.1",
     "@google/genai": "^1.29.0",
     "@google/generative-ai": "^0.24.0",
+    "@handsontable/react": "^16.2.0",
     "@lexical/code": "^0.39.0",
     "@lexical/history": "^0.39.0",
     "@lexical/html": "^0.39.0",

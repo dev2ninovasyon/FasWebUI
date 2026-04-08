@@ -12,7 +12,7 @@ const slides = [
     image: "/login-assets/login-bg-2.png",
     title: "Kapsamli Denetim Yonetimi",
     description:
-      "Tum finansal denetim sureclerinizi tek bir platformda yonetin. Kalite standartlarina uygun, izlenebilir denetim raporlari olusturun.",
+      "Tüm finansal denetim süreçlerinizi tek bir platformda yönetin. Kalite standartlarına uygun, izlenebilir denetim raporları oluşturun.",
   },
   {
     image: "/login-assets/login-bg-3.png",
@@ -93,8 +93,8 @@ export default function AuthPageShell({
         <Box
           sx={{
             display: "flex",
-            height: "100vh",
-            overflow: "hidden",
+            minHeight: "100vh",
+            overflow: { xs: "auto", lg: "hidden" },
             flexDirection: { xs: "column-reverse", lg: "row" },
           }}
         >
@@ -103,27 +103,28 @@ export default function AuthPageShell({
               flex: { xs: 2, lg: 3 },
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
+              justifyContent: { xs: "flex-start", lg: "center" },
               alignItems: "center",
-              p: { xs: 3, sm: 4, lg: 6 },
+              p: { xs: 3, sm: 4, lg: 4 },
               backgroundColor: panelBgColor,
               position: "relative",
               zIndex: 10,
               minHeight: { xs: "auto", lg: "100vh" },
+              overflowY: "auto",
             }}
           >
-            <Box sx={{ width: "100%", maxWidth: "420px" }}>
-              <Box display="flex" alignItems="center" justifyContent="flex-start" mb={5}>
+            <Box sx={{ width: "100%", maxWidth: { xs: "100%", sm: "420px" }, py: { xs: 2, lg: 0 } }}>
+              <Box display="flex" alignItems="center" justifyContent="flex-start" mb={3}>
                 <Logo />
               </Box>
 
-              <Box mb={4}>
+              <Box mb={2}>
                 <Typography
                   variant="h3"
                   sx={{
                     fontWeight: 700,
                     color: isDark ? "#fff" : "#0f172a",
-                    mb: 1,
+                    mb: 0.5,
                   }}
                 >
                   {title}
@@ -132,8 +133,8 @@ export default function AuthPageShell({
                   variant="body1"
                   sx={{
                     color: isDark ? "rgba(255,255,255,0.7)" : "#64748b",
-                    fontSize: "16px",
-                    mb: 3,
+                    fontSize: "15px",
+                    mb: 2,
                   }}
                 >
                   {description}

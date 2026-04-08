@@ -401,6 +401,8 @@ export const getTransferredDenetlenenIdsByDenetciId = async (denetciId: number):
     if (!isTransferredStatus) return;
 
     const rawId =
+      summary?.sourceLegacyDenetlenenId ??
+      summary?.SourceLegacyDenetlenenId ??
       summary?.tasinanDenetlenenId ??
       summary?.TasinanDenetlenenId;
 

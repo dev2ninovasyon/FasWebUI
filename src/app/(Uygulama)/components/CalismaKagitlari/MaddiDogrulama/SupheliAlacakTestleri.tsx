@@ -2,17 +2,18 @@
 import "@/lib/handsontableSetup";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { HotTable } from "@handsontable/react";
+import CustomHotTable from "@/components/HotTableWrapper";
 import Handsontable from "handsontable";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
-import "@/utils/languages/handsontable.tr-TR";
+
+
+
+
 
 import { Box, Typography, Button, Snackbar, Alert, CircularProgress, useTheme } from "@mui/material";
 import { IconDeviceFloppy } from "@tabler/icons-react";
-import { useSelector } from "@/store/hooks";
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
     getSupheliAlacakTestleri,
     saveAllSupheliAlacakTestleri,
@@ -40,6 +41,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
     const [loading, setLoading] = useState(true);
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
+    const dispatch = useDispatch();
     const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" as "success" | "error" });
 
     const [resolvedDipnotNo, setResolvedDipnotNo] = useState(dipnotNo);
@@ -113,6 +115,24 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+
+    loadStyles();
+  }, [customizer.activeMode]);
+
 
     const showSnackbar = (message: string, severity: "success" | "error") => {
         setSnackbar({ open: true, message, severity });
@@ -220,7 +240,7 @@ const SupheliAlacakTestleri: React.FC<Props> = ({
                     backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : "#F9FAFB",
                 }
             }}>
-                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                     ref={hotRef}
                     data={veriler}
                     language="tr-TR"

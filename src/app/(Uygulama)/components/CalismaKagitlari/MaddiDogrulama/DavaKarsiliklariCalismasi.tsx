@@ -15,12 +15,13 @@ import {
     CircularProgress,
     useTheme,
 } from "@mui/material";
-import { HotTable } from "@handsontable/react";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
-import { useSelector } from "@/store/hooks";
+import CustomHotTable from "@/components/HotTableWrapper";
+
+
+
+import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
     getDavaKarsiliklariData,
     updateDavaKarsiliklari,
@@ -29,7 +30,7 @@ import {
     DavaKarsiliklariSummary
 } from "@/api/CalismaKagitlari/DavaKarsiliklariCalismasi";
 import { enqueueSnackbar } from "notistack";
-import "@/utils/languages/handsontable.tr-TR";
+
 const fmt = (n: any) =>
     Number(n ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -44,6 +45,7 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
     const theme = useTheme();
     const user = useSelector((state: AppState) => state.userReducer);
     const customizer = useSelector((state: AppState) => state.customizer);
+    const dispatch = useDispatch();
 
     const [data, setData] = useState<DavaKarsiliklariSatir[]>([]);
     const [summary, setSummary] = useState<DavaKarsiliklariSummary | null>(null);
@@ -89,6 +91,24 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
             handleVarsayilanaDon();
         }
     }, [isClickedVarsayilanaDon]);
+
+  useEffect(() => {
+    const loadStyles = async () => {
+      dispatch(setCollapse(true));
+      if (customizer.activeMode === "dark") {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
+        );
+      } else {
+        await import(
+          "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
+        );
+      }
+    };
+
+    loadStyles();
+  }, [customizer.activeMode]);
+
 
     const handleAfterChange = async (changes: any, source: string) => {
         if (!changes || !user.token || source === "loadData") return;
@@ -202,7 +222,7 @@ const DavaKarsiliklariCalismasi = ({ dipnotNo, isClickedVarsayilanaDon, setIsCli
                     backgroundColor: ZEBRA_ROW,
                 }
             }}>
-                <HotTable theme={customizer.activeMode === "dark" ? "horizon-dark" : "horizon"}
+                <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
                     data={data}
                     afterChange={handleAfterChange}
                     autoColumnSize={true}
