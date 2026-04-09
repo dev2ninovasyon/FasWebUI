@@ -158,19 +158,26 @@ export default function ForgotPasswordForm() {
         </Stack>
       </form>
 
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mt: 4 }}>
-        <Link href="/">
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", mt: 4 }}>
+        <Link href="/" style={{ textDecoration: "none" }}>
           <Button
             variant="text"
             startIcon={<IconArrowLeft size={18} />}
             size="small"
             sx={{
-              color: "primary.main",
-              fontWeight: 500,
-              transition: "all 0.2s ease",
+              px: 0,
+              minWidth: 0,
+              color: "text.secondary",
+              fontWeight: 400,
+              textTransform: "none",
+              backgroundColor: "transparent",
               "&:hover": {
-                backgroundColor: "rgba(33, 150, 243, 0.08)",
-                transform: "translateX(-2px)",
+                backgroundColor: "transparent",
+                color: "text.primary",
+                textDecoration: "underline",
+              },
+              "&.Mui-focusVisible": {
+                backgroundColor: "transparent",
               },
             }}
           >

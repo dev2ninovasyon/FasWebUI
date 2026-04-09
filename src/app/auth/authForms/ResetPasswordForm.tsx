@@ -12,10 +12,11 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
-  Popover,
+  Popper,
   Stack,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { IconArrowLeft, IconInfoCircle, IconKey, IconLock } from "@tabler/icons-react";
@@ -35,6 +36,7 @@ export default function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const token = searchParams.get("token")?.trim() || "";
   const email = searchParams.get("email")?.trim() || "";
   const [newPassword, setNewPassword] = useState("");
@@ -44,6 +46,7 @@ export default function ResetPasswordForm() {
   const [successMessage, setSuccessMessage] = useState("");
   const [policyAnchorEl, setPolicyAnchorEl] = useState<HTMLElement | null>(null);
   const passwordFieldRef = useRef<HTMLDivElement | null>(null);
+  const passwordInputRef = useRef<HTMLInputElement | null>(null);
 
   const passwordValidationMessage = useMemo(
     () => (newPassword ? validatePassword(newPassword, email) : ""),
@@ -58,21 +61,34 @@ export default function ResetPasswordForm() {
   const isPolicyOpen = Boolean(policyAnchorEl);
 
   const handlePolicyOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setPolicyAnchorEl(event.currentTarget);
+    event.preventDefault();
+    setPolicyAnchorEl(passwordFieldRef.current ?? event.currentTarget);
+    requestAnimationFrame(() => {
+      passwordInputRef.current?.focus();
+    });
   };
 
   const handlePolicyClose = () => {
     setPolicyAnchorEl(null);
   };
 
+  const handleConfirmPasswordFocus = () => {
+    if (isMobile) {
+      handlePolicyClose();
+    }
+  };
+
   useEffect(() => {
-    if (newPassword && passwordFieldRef.current) {
+    const shouldAutoOpenPolicy =
+      !!newPassword && passwordFieldRef.current && (!isMobile || !!passwordValidationMessage);
+
+    if (shouldAutoOpenPolicy) {
       setPolicyAnchorEl(passwordFieldRef.current);
       return;
     }
 
     setPolicyAnchorEl(null);
-  }, [newPassword]);
+  }, [isMobile, newPassword, passwordValidationMessage]);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -249,19 +265,26 @@ export default function ResetPasswordForm() {
     return (
       <Box display="flex" flexDirection="column" gap={2}>
         <Alert severity="error">{validation.message}</Alert>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Link href="/">
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+          <Link href="/" style={{ textDecoration: "none" }}>
             <Button
               variant="text"
               startIcon={<IconArrowLeft size={18} />}
               size="small"
               sx={{
-                color: "primary.main",
-                fontWeight: 500,
-                transition: "all 0.2s ease",
+                px: 0,
+                minWidth: 0,
+                color: "text.secondary",
+                fontWeight: 400,
+                textTransform: "none",
+                backgroundColor: "transparent",
                 "&:hover": {
-                  backgroundColor: "rgba(33, 150, 243, 0.08)",
-                  transform: "translateX(-2px)",
+                  backgroundColor: "transparent",
+                  color: "text.primary",
+                  textDecoration: "underline",
+                },
+                "&.Mui-focusVisible": {
+                  backgroundColor: "transparent",
                 },
               }}
             >
@@ -278,19 +301,26 @@ export default function ResetPasswordForm() {
       {successMessage ? (
         <Box display="flex" flexDirection="column" gap={2}>
           <Alert severity="success">{successMessage}</Alert>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Link href="/">
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+            <Link href="/" style={{ textDecoration: "none" }}>
               <Button
                 variant="text"
                 startIcon={<IconArrowLeft size={18} />}
                 size="small"
                 sx={{
-                  color: "primary.main",
-                  fontWeight: 500,
-                  transition: "all 0.2s ease",
+                  px: 0,
+                  minWidth: 0,
+                  color: "text.secondary",
+                  fontWeight: 400,
+                  textTransform: "none",
+                  backgroundColor: "transparent",
                   "&:hover": {
-                    backgroundColor: "rgba(33, 150, 243, 0.08)",
-                    transform: "translateX(-2px)",
+                    backgroundColor: "transparent",
+                    color: "text.primary",
+                    textDecoration: "underline",
+                  },
+                  "&.Mui-focusVisible": {
+                    backgroundColor: "transparent",
                   },
                 }}
               >
@@ -314,6 +344,7 @@ export default function ResetPasswordForm() {
                 id="new-password"
                 variant="outlined"
                 fullWidth
+                inputRef={passwordInputRef}
                 placeholder="Yeni şifreniz"
                 type="password"
                 disabled={isSubmitting}
@@ -329,7 +360,12 @@ export default function ResetPasswordForm() {
                   endAdornment: (
                     <InputAdornment position="end">
                       <Tooltip title="Şifre kriterlerini göster">
-                        <IconButton edge="end" size="small" onClick={handlePolicyOpen}>
+                        <IconButton
+                          edge="end"
+                          size="small"
+                          onMouseDown={(event) => event.preventDefault()}
+                          onClick={handlePolicyOpen}
+                        >
                           <IconInfoCircle size={18} />
                         </IconButton>
                       </Tooltip>
@@ -350,6 +386,7 @@ export default function ResetPasswordForm() {
                 disabled={isSubmitting}
                 required
                 value={confirmPassword}
+                onFocus={handleConfirmPasswordFocus}
                 onChange={(event: any) => setConfirmPassword(event.target.value)}
                 InputProps={{
                   startAdornment: (
@@ -385,19 +422,26 @@ export default function ResetPasswordForm() {
               {isSubmitting ? "Güncelleniyor..." : "Şifre Güncelle"}
             </Button>
 
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Link href="/login">
+            <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+              <Link href="/login" style={{ textDecoration: "none" }}>
                 <Button
                   variant="text"
                   startIcon={<IconArrowLeft size={18} />}
                   size="small"
                   sx={{
-                    color: "primary.main",
-                    fontWeight: 500,
-                    transition: "all 0.2s ease",
+                    px: 0,
+                    minWidth: 0,
+                    color: "text.secondary",
+                    fontWeight: 400,
+                    textTransform: "none",
+                    backgroundColor: "transparent",
                     "&:hover": {
-                      backgroundColor: "rgba(33, 150, 243, 0.08)",
-                      transform: "translateX(-2px)",
+                      backgroundColor: "transparent",
+                      color: "text.primary",
+                      textDecoration: "underline",
+                    },
+                    "&.Mui-focusVisible": {
+                      backgroundColor: "transparent",
                     },
                   }}
                 >
@@ -409,27 +453,37 @@ export default function ResetPasswordForm() {
         </form>
       )}
 
-      <Popover
+      <Popper
         open={isPolicyOpen}
         anchorEl={policyAnchorEl}
-        onClose={handlePolicyClose}
-        anchorOrigin={{ vertical: "center", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "left" }}
-        PaperProps={{
-          sx: {
-            ml: 1,
-            width: { xs: "calc(100vw - 48px)", sm: 420 },
-            maxWidth: 420,
+        placement={isMobile ? "top-start" : "right-start"}
+        modifiers={[
+          {
+            name: "offset",
+            options: {
+              offset: isMobile ? [0, -8] : [12, 0],
+            },
+          },
+        ]}
+        sx={{
+          zIndex: theme.zIndex.modal + 1,
+          pointerEvents: "none",
+        }}
+      >
+        <Box
+          sx={{
+            p: 1,
+            width: isMobile ? "min(calc(100vw - 32px), 420px)" : 420,
+            maxWidth: isMobile ? "calc(100vw - 32px)" : 420,
             borderRadius: 3,
             boxShadow: "0 20px 50px rgba(15, 23, 42, 0.18)",
             overflow: "hidden",
-          },
-        }}
-      >
-        <Box sx={{ p: 1 }}>
+            bgcolor: "background.paper",
+          }}
+        >
           <PasswordPolicyChecker password={newPassword} email={email} showEmail={true} borderless />
         </Box>
-      </Popover>
+      </Popper>
     </>
   );
 }
