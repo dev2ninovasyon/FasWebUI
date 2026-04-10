@@ -36,21 +36,41 @@ import {
   kaydetBilgiIslemMuhasebe,
 } from "@/api/CalismaKagitlari/BilgiIslemMuhasebe";
 import BelgeKontrolCard from "./Cards/BelgeKontrolCard";
-import IslemlerCard from "./Cards/IslemlerCard";
+import IslemlerCardHtml from "./Cards/IslemlerCardHtml";
 
 // ─────────────────────────────────────────────
 //  Yardımcı: Risk rengini döner
 // ─────────────────────────────────────────────
-function getRiskColor(risk: string | null): "error" | "warning" | "info" | "default" | "primary" | "secondary" | "success" {
+type MuiChipColor = "error" | "warning" | "info" | "success" | "default";
+
+function getRiskColor(risk: string | null): MuiChipColor {
   if (!risk) return "default";
   switch (risk.toUpperCase()) {
     case "KRİTİK": return "error";
     case "YÜKSEK": return "warning";
-    case "ORTA": return "info";
-    case "DÜŞÜK": return "success";
-    case "BİLGİ": return "default";
-    default: return "default";
+    case "ORTA":   return "info";
+    case "DÜŞÜK":  return "success";
+    default:       return "default";
   }
+}
+
+function escapeHtml(value: string | null | undefined): string {
+  return (value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function riskChipClass(seviye: string | null): string {
+  if (!seviye) return "";
+  const s = seviye.toUpperCase();
+  if (s.includes("KRİT") || s.includes("KRIT")) return "chip chip-error";
+  if (s.includes("YÜKS") || s.includes("YUKS")) return "chip chip-warn";
+  if (s === "ORTA") return "chip chip-info";
+  if (s.includes("DÜŞÜ") || s.includes("DUSU")) return "chip chip-ok";
+  return "chip";
 }
 
 // ─────────────────────────────────────────────
@@ -209,6 +229,89 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
     HIZLI_REFERANS_RISKLER.includes((r.riskSeviyesi ?? "").toUpperCase())
   );
 
+  const buildHtmlAsync = async () => {
+    const createdAt = new Date().toLocaleString("tr-TR");
+    const tableRows = mainRows
+      .map((row, idx) => {
+        const localState = localChanges[row.id];
+        const currentDurum = localState?.durum ?? row.durum ?? "Evet";
+        const currentTespit =
+          localState?.tespit ??
+          (currentDurum === "Hayır"
+            ? row.hayirIcerik ?? ""
+            : row.evetIcerik ?? "");
+        const tespitValue = currentDurum === "Hayır" ? currentTespit : "";
+
+        return `
+          <tr>
+            <td>${escapeHtml(String(row.satirNo ?? idx + 1))}</td>
+            <td><span class="${riskChipClass(row.riskSeviyesi)}">${escapeHtml(
+              row.riskSeviyesi ?? "—"
+            )}</span></td>
+            <td>${escapeHtml(row.islem)}</td>
+            <td>${escapeHtml(currentDurum)}</td>
+            <td>${escapeHtml(tespitValue)}</td>
+            <td>${escapeHtml(row.bdsReferansi)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    return `
+      <!DOCTYPE html>
+      <html lang="tr">
+      <head>
+        <meta charset="utf-8" />
+        <title>BİLGİ İŞLEM VE MUHASEBE SİSTEMİNE İLİŞKİN DEĞERLENDİRME BELGESİ</title>
+        <style>
+          @page { size: A4; margin: 2cm; }
+          * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          body { font-family: Arial, sans-serif; font-size: 10px; color: #1a202c; }
+          .doc-header { border-bottom: 2px solid #2b6cb0; padding-bottom: 12px; margin-bottom: 16px; }
+          .doc-title { font-size: 14px; font-weight: 700; color: #2b6cb0; text-transform: uppercase; }
+          .doc-meta { font-size: 10px; color: #555; margin-top: 4px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+          th { background: #f1f5f9; font-weight: 700; border: 1px solid #cbd5e0; padding: 5px 6px; text-align: left; }
+          td { border: 1px solid #e2e8f0; padding: 4px 6px; vertical-align: top; }
+          tr:nth-child(even) td { background: #f8fafc; }
+          .chip { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 600; border: 1px solid; }
+          .chip-error { background:#fdf2f2; color:#b91c1c; border-color:#fca5a5; }
+          .chip-warn { background:#fffbeb; color:#b45309; border-color:#fcd34d; }
+          .chip-info { background:#eff6ff; color:#1d4ed8; border-color:#93c5fd; }
+          .chip-ok { background:#f0fdf4; color:#15803d; border-color:#86efac; }
+          .doc-footer { margin-top: 24px; font-size: 9px; color: #999; border-top: 1px solid #e2e8f0; padding-top: 8px; display: flex; justify-content: space-between; }
+          .page-number::before { content: "Sayfa " counter(page); }
+        </style>
+      </head>
+      <body>
+        <div class="doc-header">
+          <div class="doc-title">BİLGİ İŞLEM VE MUHASEBE SİSTEMİNE İLİŞKİN DEĞERLENDİRME BELGESİ</div>
+          <div class="doc-meta">Denetlenen: ${escapeHtml(
+            user.denetlenenFirmaAdi
+          )} &nbsp;|&nbsp; Yıl: ${escapeHtml(String(user.yil ?? ""))}</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:4%;">No</th>
+              <th style="width:10%;">Risk</th>
+              <th style="width:31%;">Soru</th>
+              <th style="width:10%;">Yanıt (Evet/Hayır)</th>
+              <th style="width:33%;">Açıklama/Tespit</th>
+              <th style="width:12%;">BDS Ref.</th>
+            </tr>
+          </thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+        <div class="doc-footer">
+          <span>Oluşturulma: ${escapeHtml(createdAt)}</span>
+          <span class="page-number"></span>
+        </div>
+      </body>
+      </html>
+    `;
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
@@ -248,9 +351,8 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
             cursor: "pointer",
             bgcolor:
               theme.palette.mode === "dark"
-                ? theme.palette.grey[900]
-                : theme.palette.primary.main,
-            color: "#fff",
+                ? theme.palette.grey[800]
+                : theme.palette.grey[100],
             "&:hover": { opacity: 0.92 },
           }}
         >
@@ -278,7 +380,7 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
               bgcolor:
                 theme.palette.mode === "dark"
                   ? theme.palette.grey[800]
-                  : "#f0f7ff",
+                  : theme.palette.grey[50],
               borderBottom: `1px solid ${theme.palette.divider}`,
             }}
           >
@@ -358,14 +460,6 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
                               ? "rgba(255,255,255,0.02)"
                               : "rgba(0,0,0,0.01)",
                         },
-                        border: isKritik
-                          ? `1px solid ${theme.palette.error.light}`
-                          : undefined,
-                        bgcolor: !isEvet
-                          ? theme.palette.mode === "dark"
-                            ? "rgba(211,47,47,0.08)"
-                            : "rgba(211,47,47,0.04)"
-                          : undefined,
                         verticalAlign: "top",
                       }}
                     >
@@ -380,6 +474,7 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
                       <TableCell align="center">
                         <Chip
                           label={row.riskSeviyesi ?? "—"}
+                          variant="outlined"
                           color={getRiskColor(row.riskSeviyesi)}
                           size="small"
                           sx={{ fontSize: "0.65rem" }}
@@ -409,12 +504,11 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
                             control={
                               <Radio
                                 size="small"
-                                color="success"
                                 sx={{ py: 0.25 }}
                               />
                             }
                             label={
-                              <Typography variant="caption" color="success.main">
+                              <Typography variant="caption">
                                 Evet
                               </Typography>
                             }
@@ -424,12 +518,11 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
                             control={
                               <Radio
                                 size="small"
-                                color="error"
                                 sx={{ py: 0.25 }}
                               />
                             }
                             label={
-                              <Typography variant="caption" color="error.main">
+                              <Typography variant="caption">
                                 Hayır
                               </Typography>
                             }
@@ -447,14 +540,14 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
                               borderRadius: 1,
                               bgcolor:
                                 theme.palette.mode === "dark"
-                                  ? "rgba(211,47,47,0.15)"
-                                  : "rgba(211,47,47,0.07)",
-                              border: `1px dashed ${theme.palette.error.light}`,
+                                  ? "rgba(255,255,255,0.05)"
+                                  : theme.palette.grey[50],
+                              border: `1px dashed ${theme.palette.divider}`,
                             }}
                           >
                             <Typography
                               variant="caption"
-                              color="error.main"
+                              color="text.secondary"
                               fontWeight={600}
                             >
                               ⚠ HAYIR → AKSİYON GEREKLİ
@@ -492,7 +585,7 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
                           variant="caption"
                           sx={{
                             whiteSpace: "pre-wrap",
-                            color: "primary.main",
+                            color: "text.secondary",
                             fontSize: "0.7rem",
                           }}
                         >
@@ -549,7 +642,7 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
           mb: 3,
           borderRadius: 2,
           overflow: "hidden",
-          border: `1px solid ${theme.palette.warning.light}`,
+          border: `1px solid ${theme.palette.divider}`,
         }}
       >
         <Box
@@ -564,7 +657,7 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
             bgcolor:
               theme.palette.mode === "dark"
                 ? theme.palette.grey[800]
-                : theme.palette.warning.light,
+                : theme.palette.grey[50],
             "&:hover": { opacity: 0.9 },
           }}
         >
@@ -680,21 +773,36 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
           }}
           spacing={2}
         >
-          <Grid item xs={12} md={3.9}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 4,
+            }}
+          >
             <BelgeKontrolCard
               fetch={fetchData}
               hazirlayan="Denetçi - Yardımcı Denetçi"
               controller={CONTROLLER}
             />
           </Grid>
-          <Grid item xs={12} md={3.9}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 4,
+            }}
+          >
             <BelgeKontrolCard
               fetch={fetchData}
               onaylayan="Sorumlu Denetçi"
               controller={CONTROLLER}
             />
           </Grid>
-          <Grid item xs={12} md={3.9}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 4,
+            }}
+          >
             <BelgeKontrolCard
               fetch={fetchData}
               kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
@@ -705,7 +813,10 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
       )}
 
       <Box mt={5}>
-        <IslemlerCard controller={CONTROLLER} />
+        <IslemlerCardHtml
+          controller={CONTROLLER}
+          buildHtmlAsync={buildHtmlAsync}
+        />
       </Box>
     </Box>
   );

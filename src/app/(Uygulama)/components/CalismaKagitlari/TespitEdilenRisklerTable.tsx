@@ -29,7 +29,7 @@ import {
   TespitEdilenRisklerRow,
 } from "@/api/CalismaKagitlari/TespitEdilenRiskler";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
-import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
+import IslemlerCardHtml from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCardHtml";
 
 interface LocalChange {
   gerceklik: boolean;
@@ -47,6 +47,15 @@ interface Props {
   setIsClickedVarsayilanaDon: (v: boolean) => void;
   setTamamlanan: (n: number) => void;
   setToplam: (n: number) => void;
+}
+
+function escapeHtml(value: string | null | undefined): string {
+  return (value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 const BOOL_COLS = [
@@ -107,11 +116,18 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
   // Varsayılana dön
   useEffect(() => {
     if (!isClickedVarsayilanaDon) return;
+    const denetciId = user.denetciId;
+    const denetlenenId = user.denetlenenId;
+    const yil = user.yil;
+    if (!denetciId || !denetlenenId || !yil) {
+      setIsClickedVarsayilanaDon(false);
+      return;
+    }
     const doVarsayilan = async () => {
       const ok = await varsayilanaDonTespitEdilenRiskler(
-        user.denetciId,
-        user.denetlenenId,
-        user.yil
+        denetciId,
+        denetlenenId,
+        yil
       );
       if (ok) {
         enqueueSnackbar("Varsayılan değerlere döndü", { variant: "success" });
@@ -143,6 +159,7 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
   };
 
   const handleKaydet = async () => {
+    if (!user.denetciId || !user.denetlenenId || !user.yil) return;
     setSaving(true);
     const satirlar = rows.map((row) => {
       const ch = localChanges[row.id];
@@ -175,7 +192,93 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
     setSaving(false);
   };
 
-  const isReadOnly = user.rol === "KaliteKontrol" || user.rol === "SorumluDenetci";
+  const isReadOnly =
+    user.rol?.includes("KaliteKontrol") || user.rol?.includes("SorumluDenetci");
+
+  const buildHtmlAsync = async () => {
+    const createdAt = new Date().toLocaleString("tr-TR");
+    const boolValue = (value: boolean | undefined) => (value ? "✔" : "—");
+    const tableRows = rows
+      .map((row, idx) => {
+        const ch = localChanges[row.id];
+        return `
+          <tr>
+            <td>${escapeHtml(String(row.satirNo ?? idx + 1))}</td>
+            <td>${escapeHtml(row.islem)}</td>
+            <td>${escapeHtml(row.tespit)}</td>
+            <td class="center">${boolValue(ch?.gerceklik ?? row.gerceklik ?? true)}</td>
+            <td class="center">${boolValue(ch?.tamOlma ?? row.tamOlma ?? true)}</td>
+            <td class="center">${boolValue(ch?.varOlma ?? row.varOlma ?? true)}</td>
+            <td class="center">${boolValue(
+              ch?.dogrulukDonemsellik ?? row.dogrulukDonemsellik ?? true
+            )}</td>
+            <td class="center">${boolValue(ch?.degerleme ?? row.degerleme ?? true)}</td>
+            <td class="center">${boolValue(ch?.siniflama ?? row.siniflama ?? true)}</td>
+            <td>${escapeHtml(
+              ch?.uygulananDenetimTeknikleri ?? row.uygulananDenetimTeknikleri
+            )}</td>
+            <td>${escapeHtml(ch?.ilgiliBdsStandart ?? row.ilgiliBdsStandart)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    return `
+      <!DOCTYPE html>
+      <html lang="tr">
+      <head>
+        <meta charset="utf-8" />
+        <title>BEYAN VE SORUŞTURMA SONUCU TESPİT EDİLEN RİSKLER BELGESİ</title>
+        <style>
+          @page { size: A4 landscape; margin: 1.5cm 1cm; }
+          * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          body { font-family: Arial, sans-serif; font-size: 10px; color: #1a202c; }
+          .doc-header { border-bottom: 2px solid #2b6cb0; padding-bottom: 12px; margin-bottom: 16px; }
+          .doc-title { font-size: 14px; font-weight: 700; color: #2b6cb0; text-transform: uppercase; }
+          .doc-meta { font-size: 10px; color: #555; margin-top: 4px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 16px; table-layout: fixed; }
+          th { background: #f1f5f9; font-weight: 700; border: 1px solid #cbd5e0; padding: 5px 6px; text-align: left; }
+          td { border: 1px solid #e2e8f0; padding: 4px 6px; vertical-align: top; }
+          tr:nth-child(even) td { background: #f8fafc; }
+          .center { text-align: center; }
+          .doc-footer { margin-top: 24px; font-size: 9px; color: #999; border-top: 1px solid #e2e8f0; padding-top: 8px; display: flex; justify-content: space-between; }
+          .page-number::before { content: "Sayfa " counter(page); }
+        </style>
+      </head>
+      <body>
+        <div class="doc-header">
+          <div class="doc-title">BEYAN VE SORUŞTURMA SONUCU TESPİT EDİLEN RİSKLER BELGESİ</div>
+          <div class="doc-meta">Denetlenen: ${escapeHtml(
+            user.denetlenenFirmaAdi
+          )} &nbsp;|&nbsp; Yıl: ${escapeHtml(String(user.yil ?? ""))}</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:4%;">No</th>
+              <th style="width:18%;">Tespit Edilen Risk</th>
+              <th style="width:14%;">Etkilenen Hesap Grubu</th>
+              <th style="width:3%;">G</th>
+              <th style="width:3%;">T</th>
+              <th style="width:3%;">V</th>
+              <th style="width:3%;">D</th>
+              <th style="width:3%;">De</th>
+              <th style="width:3%;">S</th>
+              <th style="width:28%;">Uygulanan Denetim Teknikleri</th>
+              <th style="width:18%;">İlgili BDS</th>
+            </tr>
+          </thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+        <div class="doc-footer">
+          <span>FAS Denetim Sistemi</span>
+          <span>Oluşturulma: ${escapeHtml(createdAt)}</span>
+          <span class="page-number"></span>
+        </div>
+      </body>
+      </html>
+    `;
+  };
 
   if (loading) {
     return (
@@ -201,21 +304,21 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
       <TableContainer component={Paper} variant="outlined">
         <Table size="small" sx={{ tableLayout: "fixed" }}>
           <TableHead>
-            <TableRow sx={{ bgcolor: "primary.main" }}>
-              <TableCell sx={{ color: "white", width: 40, fontWeight: 700 }}>No</TableCell>
-              <TableCell sx={{ color: "white", width: "25%", fontWeight: 700 }}>Tespit Edilen Risk</TableCell>
-              <TableCell sx={{ color: "white", width: "18%", fontWeight: 700 }}>Etkilenen Hesap Grubu</TableCell>
+            <TableRow sx={{ bgcolor: "grey.100" }}>
+              <TableCell sx={{ width: 40, fontWeight: 700 }}>No</TableCell>
+              <TableCell sx={{ width: "25%", fontWeight: 700 }}>Tespit Edilen Risk</TableCell>
+              <TableCell sx={{ width: "18%", fontWeight: 700 }}>Etkilenen Hesap Grubu</TableCell>
               {BOOL_COLS.map((col) => (
                 <Tooltip key={col.key} title={col.tooltip} arrow>
                   <TableCell
                     align="center"
-                    sx={{ color: "white", width: 44, fontWeight: 700, cursor: "help", px: 0.5 }}
+                    sx={{ width: 44, fontWeight: 700, cursor: "help", px: 0.5 }}
                   >
                     {col.label}
                   </TableCell>
                 </Tooltip>
               ))}
-              <TableCell sx={{ color: "white", fontWeight: 700 }}>Detay</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Detay</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -270,7 +373,7 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
                       <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                         <Box sx={{ p: 2, bgcolor: "grey.50", display: "flex", gap: 2, flexWrap: "wrap" }}>
                           <Box sx={{ flex: "1 1 300px", minWidth: 0 }}>
-                            <Typography variant="caption" fontWeight={700} color="primary" gutterBottom display="block">
+                            <Typography variant="caption" fontWeight={700} color="text.secondary" gutterBottom display="block">
                               Uygulanan Denetim Teknikleri
                             </Typography>
                             <TextField
@@ -286,7 +389,7 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
                             />
                           </Box>
                           <Box sx={{ flex: "1 1 280px", minWidth: 0 }}>
-                            <Typography variant="caption" fontWeight={700} color="primary" gutterBottom display="block">
+                            <Typography variant="caption" fontWeight={700} color="text.secondary" gutterBottom display="block">
                               İlgili BDS / Standart
                             </Typography>
                             <TextField
@@ -328,7 +431,10 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
       )}
 
       <BelgeKontrolCard controller="TespitEdilenRiskler" />
-      <IslemlerCard controller="TespitEdilenRiskler" />
+      <IslemlerCardHtml
+        controller="TespitEdilenRiskler"
+        buildHtmlAsync={buildHtmlAsync}
+      />
     </Box>
   );
 };

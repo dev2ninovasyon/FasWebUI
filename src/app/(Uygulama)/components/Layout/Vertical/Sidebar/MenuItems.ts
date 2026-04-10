@@ -42,6 +42,59 @@ import {
   IconAddressBook,
 } from "@tabler/icons-react";
 
+const hesaplamalarMenuSirasi = new Map<string, number>([
+  ["/Hesaplamalar/Yaslandirma", 1000],
+  ["/Hesaplamalar/BeklenenKrediZarari", 1001],
+  ["/Hesaplamalar/ErtelenmisVergiHesabi", 1002],
+]);
+
+const hesaplamalarMenuEtiketleri = new Map<string, string>([
+  ["/Hesaplamalar/Amortisman", "Amortisman"],
+  ["/Hesaplamalar/BeklenenKrediZarari", "Beklenen Kredi Zarari"],
+  ["/Hesaplamalar/CekSenetReeskont", "Cek Senet Reeskont"],
+  ["/Hesaplamalar/DavaKarsiliklari", "Dava Karsiliklari"],
+  ["/Hesaplamalar/ErtelenmisVergiHesabi", "Ertelenmis Vergi Hesabi"],
+  ["/Hesaplamalar/GecmisYillarKarZararKontrolleri", "Gecmis Yillar Kar Zarar Kontrolleri"],
+  ["/Hesaplamalar/Hareketsiz", "Hareketsiz"],
+  ["/Hesaplamalar/IliskiliTarafSiniflama", "Iliskili Taraf Siniflama"],
+  ["/Hesaplamalar/KidemTazminatiBobi", "Kidem Tazminati Bobi"],
+  ["/Hesaplamalar/KidemTazminatiTfrs", "Kidem Tazminati Tfrs"],
+  ["/Hesaplamalar/Kredi", "Kredi"],
+  ["/Hesaplamalar/KurFarkiKayitlari", "Kur Farki Kayitlari"],
+  ["/Hesaplamalar/VadeliBankaMevduati", "Vadeli Banka Mevduati"],
+  ["/Hesaplamalar/Yaslandirma", "Yaslandirma"],
+]);
+
+const hesaplamalarMenuCollator = new Intl.Collator("tr", {
+  sensitivity: "base",
+});
+
+const sortHesaplamalarChildren = (children: MenuitemsType[]) =>
+  [...children].sort((a, b) => {
+    const siraA = hesaplamalarMenuSirasi.get(a.href || "") ?? Number.NEGATIVE_INFINITY;
+    const siraB = hesaplamalarMenuSirasi.get(b.href || "") ?? Number.NEGATIVE_INFINITY;
+
+    if (siraA !== siraB) {
+      return siraA - siraB;
+    }
+
+    const etiketA = hesaplamalarMenuEtiketleri.get(a.href || "") || a.title || "";
+    const etiketB = hesaplamalarMenuEtiketleri.get(b.href || "") || b.title || "";
+
+    return hesaplamalarMenuCollator.compare(etiketA, etiketB);
+  });
+
+const sortDonusumChildren = (children: MenuitemsType[]) => {
+  const fisGirisiItems = children.filter(
+    (item) => item.href === "/Donusum/FisGirisi"
+  );
+  const digerItems = children.filter(
+    (item) => item.href !== "/Donusum/FisGirisi"
+  );
+
+  return [...fisGirisiItems, ...digerItems];
+};
+
 export function createMenuItems(
   rol?: string[],
   denetimTuru?: string,
@@ -590,7 +643,7 @@ export function createMenuItems(
           title: "HESAPLAMALAR",
           icon: IconCalculator,
           href: "/Hesaplamalar",
-          children: [
+          children: sortHesaplamalarChildren([
             {
               id: uniqueId(),
               title: "Yaşlandırma",
@@ -743,14 +796,14 @@ export function createMenuItems(
                 },
               ],
             },
-          ],
+          ]),
         },
         {
           id: uniqueId(),
           title: "DÖNÜŞÜM",
           icon: IconRepeat,
           href: "/Donusum",
-          children: [
+          children: sortDonusumChildren([
             {
               id: uniqueId(),
               title: "Fiş Girişi",
@@ -793,7 +846,7 @@ export function createMenuItems(
                   ? "/Donusum/BobiFrs/BelirlemeBelgesi"
                   : "/Donusum/TmsTfrs/BelirlemeBelgesi",
             },
-          ],
+          ]),
         },
         { id: uniqueId(), navlabel: true, subheader: "DENETİM" },
 

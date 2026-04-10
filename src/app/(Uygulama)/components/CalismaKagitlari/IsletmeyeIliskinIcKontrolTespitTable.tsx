@@ -32,7 +32,7 @@ import {
   IsletmeyeIliskinIcKontrolTespitRow,
 } from "@/api/CalismaKagitlari/IsletmeyeIliskinIcKontrolTespit";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
-import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
+import IslemlerCardHtml from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCardHtml";
 
 interface LocalChange {
   durum: string;
@@ -46,16 +46,36 @@ interface Props {
   setToplam: (n: number) => void;
 }
 
-const RISK_CHIP: Record<string, "error" | "warning" | "info" | "success" | "default"> = {
-  Kritik: "error",
-  Yüksek: "warning",
-  Orta: "info",
-  Düşük: "success",
-};
+type MuiChipColor = "error" | "warning" | "info" | "success" | "default";
 
-function getRiskColor(seviye: string | null) {
+function getRiskColor(seviye: string | null): MuiChipColor {
   if (!seviye) return "default";
-  return RISK_CHIP[seviye] ?? "default";
+  const map: Record<string, MuiChipColor> = {
+    Kritik: "error",
+    Yüksek: "warning",
+    Orta:   "info",
+    Düşük:  "success",
+  };
+  return map[seviye] ?? "default";
+}
+
+function escapeHtml(value: string | null | undefined): string {
+  return (value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function riskChipClass(seviye: string | null): string {
+  if (!seviye) return "";
+  const s = seviye.toUpperCase();
+  if (s.includes("KRİT") || s.includes("KRIT")) return "chip chip-error";
+  if (s.includes("YÜKS") || s.includes("YUKS")) return "chip chip-warn";
+  if (s === "ORTA") return "chip chip-info";
+  if (s.includes("DÜŞÜ") || s.includes("DUSU")) return "chip chip-ok";
+  return "chip";
 }
 
 const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
@@ -100,11 +120,18 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
 
   useEffect(() => {
     if (!isClickedVarsayilanaDon) return;
+    const denetciId = user.denetciId;
+    const denetlenenId = user.denetlenenId;
+    const yil = user.yil;
+    if (!denetciId || !denetlenenId || !yil) {
+      setIsClickedVarsayilanaDon(false);
+      return;
+    }
     const doVarsayilan = async () => {
       const ok = await varsayilanaDonIsletmeyeIliskinIcKontrolTespit(
-        user.denetciId,
-        user.denetlenenId,
-        user.yil
+        denetciId,
+        denetlenenId,
+        yil
       );
       if (ok) {
         enqueueSnackbar("Varsayılan değerlere döndü", { variant: "success" });
@@ -137,6 +164,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
   };
 
   const handleKaydet = async () => {
+    if (!user.denetciId || !user.denetlenenId || !user.yil) return;
     setSaving(true);
     const satirlar = rows.map((row) => {
       const ch = localChanges[row.id];
@@ -161,7 +189,8 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
     setSaving(false);
   };
 
-  const isReadOnly = user.rol === "KaliteKontrol" || user.rol === "SorumluDenetci";
+  const isReadOnly =
+    user.rol?.includes("KaliteKontrol") || user.rol?.includes("SorumluDenetci");
 
   // Group rows by Konu (AltBölüm)
   const groups: Record<string, IsletmeyeIliskinIcKontrolTespitRow[]> = {};
@@ -170,6 +199,102 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
     if (!groups[key]) groups[key] = [];
     groups[key].push(row);
   });
+
+  const buildHtmlAsync = async () => {
+    const createdAt = new Date().toLocaleString("tr-TR");
+    const groupRowsHtml = Object.entries(groups)
+      .map(([konu, groupRows]) => {
+        const itemRows = groupRows
+          .map((row, idx) => {
+            const ch = localChanges[row.id] ?? {
+              durum: row.durum ?? "Evet",
+              tespit: row.tespit ?? "",
+            };
+            const isEvet = ch.durum === "Evet";
+            const riskSeviye = isEvet
+              ? row.evetRiskSeviyesi
+              : row.hayirRiskSeviyesi;
+
+            return `
+              <tr>
+                <td>${escapeHtml(String(row.satirNo ?? idx + 1))}</td>
+                <td>${escapeHtml(row.islem)}</td>
+                <td>${escapeHtml(ch.durum)}</td>
+                <td><span class="${riskChipClass(riskSeviye)}">${escapeHtml(
+                  riskSeviye ?? "—"
+                )}</span></td>
+                <td>${escapeHtml(ch.tespit)}</td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        return `
+          <tr class="group-header">
+            <td colspan="5">${escapeHtml(konu)}</td>
+          </tr>
+          ${itemRows}
+        `;
+      })
+      .join("");
+
+    return `
+      <!DOCTYPE html>
+      <html lang="tr">
+      <head>
+        <meta charset="utf-8" />
+        <title>İŞLETMEYE İLİŞKİN İÇ KONTROL TESPİT BELGESİ</title>
+        <style>
+          @page { size: A4; margin: 2cm 1.5cm; }
+          * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          body { font-family: Arial, sans-serif; font-size: 10px; color: #1a202c; }
+          .doc-header { border-bottom: 2px solid #2b6cb0; padding-bottom: 12px; margin-bottom: 16px; }
+          .doc-title { font-size: 14px; font-weight: 700; color: #2b6cb0; text-transform: uppercase; }
+          .doc-meta { font-size: 10px; color: #555; margin-top: 4px; }
+          .bds-note { margin-bottom: 12px; font-size: 10px; color: #4a5568; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+          th { background: #f1f5f9; font-weight: 700; border: 1px solid #cbd5e0; padding: 5px 6px; text-align: left; }
+          td { border: 1px solid #e2e8f0; padding: 4px 6px; vertical-align: top; }
+          tr:nth-child(even) td { background: #f8fafc; }
+          .group-header td { background: #f8f9fa !important; font-weight: 700; font-size: 10px; }
+          .chip { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 600; border: 1px solid; }
+          .chip-error { background:#fdf2f2; color:#b91c1c; border-color:#fca5a5; }
+          .chip-warn { background:#fffbeb; color:#b45309; border-color:#fcd34d; }
+          .chip-info { background:#eff6ff; color:#1d4ed8; border-color:#93c5fd; }
+          .chip-ok { background:#f0fdf4; color:#15803d; border-color:#86efac; }
+          .doc-footer { margin-top: 24px; font-size: 9px; color: #999; border-top: 1px solid #e2e8f0; padding-top: 8px; display: flex; justify-content: space-between; }
+          .page-number::before { content: "Sayfa " counter(page); }
+        </style>
+      </head>
+      <body>
+        <div class="doc-header">
+          <div class="doc-title">İŞLETMEYE İLİŞKİN İÇ KONTROL TESPİT BELGESİ</div>
+          <div class="doc-meta">Denetlenen: ${escapeHtml(
+            user.denetlenenFirmaAdi
+          )} &nbsp;|&nbsp; Yıl: ${escapeHtml(String(user.yil ?? ""))}</div>
+        </div>
+        <div class="bds-note"><strong>BDS Referansları:</strong> BDS 315, BDS 240, BDS 265, BDS 330, BDS 501</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:5%;">No</th>
+              <th style="width:40%;">Kontrol Sorusu</th>
+              <th style="width:12%;">Yanıt</th>
+              <th style="width:15%;">Risk Seviyesi</th>
+              <th style="width:28%;">Tespit / Açıklama</th>
+            </tr>
+          </thead>
+          <tbody>${groupRowsHtml}</tbody>
+        </table>
+        <div class="doc-footer">
+          <span>FAS Denetim Sistemi</span>
+          <span>Oluşturulma: ${escapeHtml(createdAt)}</span>
+          <span class="page-number"></span>
+        </div>
+      </body>
+      </html>
+    `;
+  };
 
   if (loading) {
     return (
@@ -193,10 +318,10 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
       <Paper variant="outlined" sx={{ p: 1.5 }}>
         <Typography variant="caption" color="text.secondary">
           <strong>RİSK KRİTERİ:</strong>&nbsp;
-          <Chip label="Kritik" color="error" size="small" sx={{ mx: 0.5 }} /> Görevler ayrılığı / hile / varlık güvenliği &nbsp;|&nbsp;
-          <Chip label="Yüksek" color="warning" size="small" sx={{ mx: 0.5 }} /> Kritik kontrol eksikliği &nbsp;|&nbsp;
-          <Chip label="Orta" color="info" size="small" sx={{ mx: 0.5 }} /> Kontrol zafiyeti &nbsp;|&nbsp;
-          <Chip label="Düşük" color="success" size="small" sx={{ mx: 0.5 }} /> Standart prosedür yeterli
+          <Chip label="Kritik" color="error" variant="outlined" size="small" sx={{ mx: 0.5 }} /> Görevler ayrılığı / hile / varlık güvenliği &nbsp;|&nbsp;
+          <Chip label="Yüksek" color="warning" variant="outlined" size="small" sx={{ mx: 0.5 }} /> Kritik kontrol eksikliği &nbsp;|&nbsp;
+          <Chip label="Orta" color="info" variant="outlined" size="small" sx={{ mx: 0.5 }} /> Kontrol zafiyeti &nbsp;|&nbsp;
+          <Chip label="Düşük" color="success" variant="outlined" size="small" sx={{ mx: 0.5 }} /> Standart prosedür yeterli
         </Typography>
       </Paper>
 
@@ -207,12 +332,14 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
             variant="subtitle2"
             sx={{
               fontWeight: 700,
-              color: "primary.main",
-              bgcolor: "primary.50",
+              color: "text.secondary",
+              bgcolor: "grey.50",
               px: 2,
               py: 0.75,
               borderRadius: 1,
               mb: 0.5,
+              border: "1px solid",
+              borderColor: "divider",
             }}
           >
             {konu}
@@ -310,7 +437,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
                           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                             <Box sx={{ p: 2, bgcolor: "grey.50", display: "flex", gap: 2, flexWrap: "wrap" }}>
                               <Box sx={{ flex: "1 1 300px", minWidth: 0 }}>
-                                <Typography variant="caption" fontWeight={700} color="primary" display="block" gutterBottom>
+                                <Typography variant="caption" fontWeight={700} color="text.secondary" display="block" gutterBottom>
                                   Denetim Aksiyonu &amp; Risk Kriteri
                                 </Typography>
                                 <Typography variant="body2" sx={{ whiteSpace: "pre-line", lineHeight: 1.6, fontSize: "0.8rem" }}>
@@ -318,7 +445,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
                                 </Typography>
                               </Box>
                               <Box sx={{ flex: "0 0 200px", minWidth: 0 }}>
-                                <Typography variant="caption" fontWeight={700} color="primary" display="block" gutterBottom>
+                                <Typography variant="caption" fontWeight={700} color="text.secondary" display="block" gutterBottom>
                                   İlgili BDS / Standart
                                 </Typography>
                                 <Typography variant="body2" sx={{ whiteSpace: "pre-line", lineHeight: 1.6, fontSize: "0.8rem" }}>
@@ -327,13 +454,14 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
                               </Box>
                               {!isEvet && (
                                 <Box sx={{ flex: "1 1 200px", minWidth: 0 }}>
-                                  <Typography variant="caption" fontWeight={700} color="error" display="block" gutterBottom>
+                                  <Typography variant="caption" fontWeight={700} color="text.secondary" display="block" gutterBottom>
                                     Hayır Seçildiğinde Risk
                                   </Typography>
                                   <Tooltip title={row.hayirDenetimAksiyonu ?? ""} arrow>
                                     <Chip
                                       label={row.hayirRiskSeviyesi ?? "—"}
                                       color={getRiskColor(row.hayirRiskSeviyesi)}
+                                      variant="outlined"
                                       size="small"
                                     />
                                   </Tooltip>
@@ -368,7 +496,10 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
       )}
 
       <BelgeKontrolCard controller="IsletmeyeIliskinIcKontrolTespit" />
-      <IslemlerCard controller="IsletmeyeIliskinIcKontrolTespit" />
+      <IslemlerCardHtml
+        controller="IsletmeyeIliskinIcKontrolTespit"
+        buildHtmlAsync={buildHtmlAsync}
+      />
     </Box>
   );
 };

@@ -130,10 +130,19 @@ const redirectToLogin = () => {
   redirectTo(LOGIN_ROUTE_PATH);
 };
 
+const isDebugNoRedirect = () => {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem("fas_debug_no_maintenance_redirect") === "1";
+};
+
 const redirectToMaintenance = () => {
   if (typeof window === "undefined") return;
   if (window.location.pathname === LOGIN_ROUTE_PATH) return;
   if (window.location.pathname === MAINTENANCE_ROUTE_PATH) return;
+  if (isDebugNoRedirect()) {
+    console.warn("🔧 [DEBUG] maintenance redirect atlandı (fas_debug_no_maintenance_redirect=1)");
+    return;
+  }
   redirectTo(MAINTENANCE_ROUTE_PATH);
 };
 
@@ -448,9 +457,8 @@ export async function apiFetch(
         requestPath: normalizedPath,
         statusCode: response.status,
       });
-      if (!isAuthEndpoint(normalizedPath)) {
-        redirectToMaintenance();
-      }
+      // 500 hatası için maintenance redirect yok — hata bileşen seviyesinde ele alınır.
+      // Sadece bağlantı kopukluğu (network down) maintenance'a yönlendirir.
     }
 
     // 400+ response: log and parse body
