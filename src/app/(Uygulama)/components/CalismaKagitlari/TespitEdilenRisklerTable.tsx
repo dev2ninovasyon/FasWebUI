@@ -28,7 +28,7 @@ import {
   varsayilanaDonTespitEdilenRiskler,
   TespitEdilenRisklerRow,
 } from "@/api/CalismaKagitlari/TespitEdilenRiskler";
-import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
+import FormOnayBolumu from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/FormOnayBolumu";
 import IslemlerCardHtml from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCardHtml";
 
 interface LocalChange {
@@ -430,7 +430,11 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
         </Box>
       )}
 
-      <BelgeKontrolCard controller="TespitEdilenRiskler" />
+      <FormOnayBolumu
+        controller="TespitEdilenRiskler"
+        onHazirlayanChange={fetchData}
+        onOnaylayanChange={fetchData}
+      />
       <IslemlerCardHtml
         controller="TespitEdilenRiskler"
         buildHtmlAsync={buildHtmlAsync}
