@@ -5,11 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { Box, Button, Grid, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { useState } from "react";
-import { useSelector } from "@/store/hooks";
-import { AppState } from "@/store/store";
-import { CreateGroupPopUp } from "@/app/(Uygulama)/components/CalismaKagitlari/CreateGroupPopUp";
-import { createCalismaKagidiVerisi } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import SecimliCalismaKagidiBelge from "@/app/(Uygulama)/components/CalismaKagitlari/SecimliCalismaKagidiBelge";
+import BilgiIslemMuhasebeTable from "@/app/(Uygulama)/components/CalismaKagitlari/BilgiIslemMuhasebeTable";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const BCrumb = [
@@ -29,57 +25,18 @@ const Page = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
 
-  const [islem, setIslem] = useState("");
-  const [isCreatePopUpOpen, setIsCreatePopUpOpen] = useState(false);
-
-  const [isClickedYeniGrupEkle, setIsClickedYeniGrupEkle] = useState(false);
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
 
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
-  const user = useSelector((state: AppState) => state.userReducer);
   const controller = "BilgiIslemMuhasebe";
-  const grupluMu = false;
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-  };
-
-
-
-  const handleOpen = () => {
-    setIsCreatePopUpOpen(true);
-    setIsClickedYeniGrupEkle(true);
-    handleMenuClose();
-  };
-
-  const handleCreateGroup = async (islem: string) => {
-    const createdCalismaKagidiGrubu = {
-      denetlenenId: user.denetlenenId,
-      denetciId: user.denetciId,
-      yil: user.yil,
-      islem: islem,
-      tespit: "",
-    };
-
-    try {
-      const result = await createCalismaKagidiVerisi(
-        controller || "",
-        createdCalismaKagidiGrubu
-      );
-      if (result) {
-        setIsCreatePopUpOpen(false);
-        setIsClickedYeniGrupEkle(false);
-      } else {
-        console.log("Çalışma Kağıdı Verisi ekleme başarısız");
-      }
-    } catch (error) {
-      console.log("Bir hata oluştu:", error);
-    }
   };
   return (
     <>
@@ -129,11 +86,6 @@ const Page = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  {grupluMu && (
-                    <MenuItem onClick={handleOpen}>
-                      Yeni Grup Ekle
-                    </MenuItem>
-                  )}
                   <MenuItem onClick={handleMenuClose}>
                     Belge Yükle
                   </MenuItem>
@@ -165,8 +117,8 @@ const Page = () => {
                 }}
                 size={{
                   xs: 12,
-                  md: grupluMu ? 2.8 : 3.8,
-                  lg: grupluMu ? 2.8 : 3.8
+                  md: 3.8,
+                  lg: 3.8
                 }}>
                 <Typography
                   variant="body1"
@@ -179,37 +131,6 @@ const Page = () => {
                   {tamamlanan}/{toplam} Tamamlandı
                 </Typography>
               </Grid>
-              {grupluMu && (
-                <Grid
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  size={{
-                    xs: 3.8,
-                    md: grupluMu ? 2.8 : 3.8,
-                    lg: grupluMu ? 2.8 : 3.8
-                  }}>
-                  <Button
-                    size="medium"
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => handleOpen()}
-                    sx={{ width: "100%" }}
-                  >
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        overflowWrap: "break-word",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      Yeni Grup Ekle
-                    </Typography>{" "}
-                  </Button>
-                </Grid>
-              )}
               <Grid
                 sx={{
                   display: "flex",
@@ -218,8 +139,8 @@ const Page = () => {
                 }}
                 size={{
                   xs: 5.8,
-                  md: grupluMu ? 2.8 : 3.8,
-                  lg: grupluMu ? 2.8 : 3.8
+                  md: 3.8,
+                  lg: 3.8
                 }}>
                 <EkBelgeYukleButton
                   formKodu={controller}
@@ -235,8 +156,8 @@ const Page = () => {
                 }}
                 size={{
                   xs: 5.8,
-                  md: grupluMu ? 2.8 : 3.8,
-                  lg: grupluMu ? 2.8 : 3.8
+                  md: 3.8,
+                  lg: 3.8
                 }}>
                 <Button
                   size="medium"
@@ -256,15 +177,6 @@ const Page = () => {
               </Grid>
             </Grid>)
           )}
-          {isCreatePopUpOpen && (
-            <CreateGroupPopUp
-              islem={islem}
-              setIslem={setIslem}
-              isPopUpOpen={isCreatePopUpOpen}
-              setIsPopUpOpen={setIsCreatePopUpOpen}
-              handleCreateGroup={handleCreateGroup}
-            />
-          )}
         </>
       </Breadcrumb>
       <PageContainer
@@ -272,10 +184,7 @@ const Page = () => {
         description="this is Bilgi İşlem Muhasebe"
       >
         <Box>
-          <SecimliCalismaKagidiBelge
-            controller={controller}
-            grupluMu={grupluMu}
-            isClickedYeniGrupEkle={isClickedYeniGrupEkle}
+          <BilgiIslemMuhasebeTable
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}

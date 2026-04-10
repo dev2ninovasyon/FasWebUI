@@ -5,7 +5,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import { Box, Button, Grid, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { useState } from "react";
-import TespitEdilenRisklerBelge from "@/app/(Uygulama)/components/CalismaKagitlari/TespitEdilenRisklerBelge";
+import TespitEdilenRisklerTable from "@/app/(Uygulama)/components/CalismaKagitlari/TespitEdilenRisklerTable";
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const BCrumb = [
@@ -119,8 +119,7 @@ const Page = () => {
         description="this is Tespit Edilen Riskler"
       >
         <Box>
-          <TespitEdilenRisklerBelge
-            controller={controller}
+          <TespitEdilenRisklerTable
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}
