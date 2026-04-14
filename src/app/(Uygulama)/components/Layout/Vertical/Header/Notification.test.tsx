@@ -108,7 +108,7 @@ const mockBildirimler = [
         konu: 'Konu 1',
         aciklama: 'Açıklama 1',
         okundumu: false,
-        tarih: new Date().toISOString(),
+        tarih: new Date(),
         denetlenenId: 1,
         yil: 2024,
         tip: 'Amortisman'

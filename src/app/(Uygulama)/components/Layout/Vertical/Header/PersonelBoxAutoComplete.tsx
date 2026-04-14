@@ -34,11 +34,16 @@ const PersonelBoxAutocomplete: React.FC<PerosnelBoxProps> = ({
 
   const fetchData = async () => {
     try {
+      if (!tip?.trim()) {
+        setRows([]);
+        return;
+      }
+
       const personelVerileri = await getKullaniciByDenetlenenYilRol(user.denetlenenId || 0,
         user.yil || 0,
-        tip || ""
+        tip
       );
-      const newRows = personelVerileri.map((musteri: any) => ({
+      const newRows = (personelVerileri ?? []).map((musteri: any) => ({
         id: musteri.id,
         personelAdi: musteri.personelAdi,
         label: musteri.personelAdi,

@@ -18,10 +18,21 @@ export interface IsletmeyeIliskinIcKontrolTespitRow {
   standartmi: boolean | null;
 }
 
+export interface IsletmeyeIliskinIcKontrolTespitSayfaRow {
+  id: number;
+  sheetKod: string | null;
+  sheetAdi: string | null;
+  sira: number | null;
+  veriJson: string | null;
+  standartmi: boolean | null;
+}
+
 export interface IsletmeyeIliskinIcKontrolTespitSatirDto {
   id: number;
   durum: string;
+  islem: string | null;
   tespit: string | null;
+  ilgiliBds: string | null;
 }
 
 export interface IsletmeyeIliskinIcKontrolTespitKaydetDto {
@@ -63,6 +74,25 @@ export const kaydetIsletmeyeIliskinIcKontrolTespit = async (
   } catch (error) {
     console.error("IsletmeyeIliskinIcKontrolTespit kaydetme hatası:", error);
     return false;
+  }
+};
+
+export const getIsletmeyeIliskinIcKontrolTespitSayfalariByDenetlenen = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number
+): Promise<IsletmeyeIliskinIcKontrolTespitSayfaRow[]> => {
+  try {
+    const response = await apiFetch(
+      `/IsletmeyeIliskinIcKontrolTespit/sayfalar?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      { method: "GET", headers: { accept: "application/json" } }
+    );
+    if (response.ok) return response.json();
+    console.error("IsletmeyeIliskinIcKontrolTespit sayfa verileri getirilemedi");
+    return [];
+  } catch (error) {
+    console.error("IsletmeyeIliskinIcKontrolTespit sayfa getirme hatası:", error);
+    return [];
   }
 };
 

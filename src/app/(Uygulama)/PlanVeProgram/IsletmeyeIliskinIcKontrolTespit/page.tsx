@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
+import ParentCard from "@/app/(Uygulama)/components/Layout/Shared/ParentCard/ParentCard";
 import { Box, Button, Grid, Typography, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { useState } from "react";
@@ -30,6 +31,7 @@ const Page = () => {
   const [toplam, setToplam] = useState(0);
 
   const controller = "IsletmeyeIliskinIcKontrolTespit";
+  
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -47,9 +49,8 @@ const Page = () => {
             (<Grid
               container
               sx={{
-                width: "95%",
+                width: "100%",
                 height: "100%",
-                margin: "0 auto",
                 justifyContent: "space-between",
                 alignItems: "center",
               }}
@@ -103,9 +104,8 @@ const Page = () => {
             (<Grid
               container
               sx={{
-                width: "95%",
+                width: "100%",
                 height: "100%",
-                margin: "0 auto",
                 justifyContent: "space-between",
               }}
             >
@@ -140,12 +140,14 @@ const Page = () => {
                 size={{
                   xs: 5.8,
                   md: 3.8,
-                  lg: 3.8
-                }}>
+                  lg: 3.8,
+                }}
+              >
                 <EkBelgeYukleButton
                   formKodu={controller}
-                  fullWidth={false}
+                  fullWidth={true}
                   text="Belge Yükle"
+                  sx={{ height: 40, textTransform: "none" }}
                 />
               </Grid>
               <Grid
@@ -157,22 +159,23 @@ const Page = () => {
                 size={{
                   xs: 5.8,
                   md: 3.8,
-                  lg: 3.8
-                }}>
+                  lg: 3.8,
+                }}
+              >
                 <Button
                   size="medium"
                   variant="outlined"
                   color="primary"
                   disabled={isClickedVarsayilanaDon}
                   onClick={() => setIsClickedVarsayilanaDon(true)}
-                  sx={{ width: "100%" }}
+                  sx={{
+                    width: "100%",
+                    height: 40,
+                    textTransform: "none",
+                    whiteSpace: "nowrap",
+                  }}
                 >
-                  <Typography
-                    variant="body1"
-                    sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
-                  >
-                    Varsayılana Dön
-                  </Typography>
+                  Varsayılana Dön
                 </Button>
               </Grid>
             </Grid>)
@@ -183,7 +186,13 @@ const Page = () => {
         title="İşletmeye İlişkin İç Kontrol Tespit"
         description="this is İşletmeye İlişkin İç Kontrol Tespit"
       >
-        <Box>
+        <Box
+          sx={{
+            width: "100%",
+            justifyContent: "space-between",
+            mb: 3,
+          }}
+        >
           <IsletmeyeIliskinIcKontrolTespitTable
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}

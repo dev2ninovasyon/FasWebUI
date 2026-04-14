@@ -28,6 +28,35 @@ export interface TespitEdilenRisklerSatirDto {
   ilgiliBdsStandart: string | null;
 }
 
+export interface TespitEdilenRisklerAddSatirDto {
+  denetciId: number;
+  denetlenenId: number;
+  yil: number;
+  islem: string;
+  tespit: string;
+  gerceklik: boolean;
+  tamOlma: boolean;
+  varOlma: boolean;
+  dogrulukDonemsellik: boolean;
+  degerleme: boolean;
+  siniflama: boolean;
+  uygulananDenetimTeknikleri: string | null;
+  ilgiliBdsStandart: string | null;
+}
+
+export interface TespitEdilenRisklerUpdateSatirDto {
+  islem: string;
+  tespit: string;
+  gerceklik: boolean;
+  tamOlma: boolean;
+  varOlma: boolean;
+  dogrulukDonemsellik: boolean;
+  degerleme: boolean;
+  siniflama: boolean;
+  uygulananDenetimTeknikleri: string | null;
+  ilgiliBdsStandart: string | null;
+}
+
 export interface TespitEdilenRisklerKaydetDto {
   denetciId: number;
   denetlenenId: number;
@@ -81,6 +110,92 @@ export const kaydetTespitEdilenRiskler = async (
     return response.ok;
   } catch (error) {
     console.error("TespitEdilenRiskler kaydetme hatası:", error);
+    return false;
+  }
+};
+
+/**
+ * Yeni satır ekler
+ */
+export const addSatirTespitEdilenRiskler = async (
+  dto: TespitEdilenRisklerAddSatirDto
+): Promise<boolean> => {
+  try {
+    const response = await apiFetch(`/TespitEdilenRiskler`, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        DenetciId: dto.denetciId,
+        DenetlenenId: dto.denetlenenId,
+        Yil: dto.yil,
+        Islem: dto.islem,
+        Tespit: dto.tespit,
+        Gerceklik: dto.gerceklik,
+        TamOlma: dto.tamOlma,
+        VarOlma: dto.varOlma,
+        DogrulukDonemsellik: dto.dogrulukDonemsellik,
+        Degerleme: dto.degerleme,
+        Siniflama: dto.siniflama,
+        UygulananDenetimTeknikleri: dto.uygulananDenetimTeknikleri,
+        IlgiliBdsStandart: dto.ilgiliBdsStandart,
+      }),
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("TespitEdilenRiskler satır ekleme hatası:", error);
+    return false;
+  }
+};
+
+/**
+ * Tek satırı günceller
+ */
+export const updateSatirTespitEdilenRiskler = async (
+  id: number,
+  dto: TespitEdilenRisklerUpdateSatirDto
+): Promise<boolean> => {
+  try {
+    const response = await apiFetch(`/TespitEdilenRiskler/satir/${id}`, {
+      method: "PUT",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Islem: dto.islem,
+        Tespit: dto.tespit,
+        Gerceklik: dto.gerceklik,
+        TamOlma: dto.tamOlma,
+        VarOlma: dto.varOlma,
+        DogrulukDonemsellik: dto.dogrulukDonemsellik,
+        Degerleme: dto.degerleme,
+        Siniflama: dto.siniflama,
+        UygulananDenetimTeknikleri: dto.uygulananDenetimTeknikleri,
+        IlgiliBdsStandart: dto.ilgiliBdsStandart,
+      }),
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("TespitEdilenRiskler satır güncelleme hatası:", error);
+    return false;
+  }
+};
+
+/**
+ * Tek satırı siler
+ */
+export const deleteSatirTespitEdilenRiskler = async (id: number): Promise<boolean> => {
+  try {
+    const response = await apiFetch(`/TespitEdilenRiskler/${id}`, {
+      method: "DELETE",
+      headers: { accept: "application/json" },
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("TespitEdilenRiskler satır silme hatası:", error);
     return false;
   }
 };

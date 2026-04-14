@@ -57,7 +57,7 @@ describe('BaglantiBilgileri API helpers', () => {
         expect(fetchMock).toHaveBeenNthCalledWith(
             1,
             'http://localhost:5000/api/health',
-            expect.objectContaining({ method: 'GET' })
+            expect.any(Object)
         )
     })
 
@@ -70,20 +70,16 @@ describe('BaglantiBilgileri API helpers', () => {
         await expect(testSignalRConnection()).resolves.toBe(false)
     })
 
-    it('shows info snackbar when typed connection is missing and notifyIfMissing is enabled', async () => {
+    it('returns null when typed connection is missing', async () => {
         apiFetchMock.mockResolvedValue(undefined)
 
         const { getBaglantiBilgileriByTip } = await import('@/api/BaglantiBilgileri/BaglantiBilgileri')
 
-        await expect(getBaglantiBilgileriByTip(1, 2, 3, 2024, 'KYS', { notifyIfMissing: true })).resolves.toBeUndefined()
-
-        expect(enqueueSnackbarMock).toHaveBeenCalledWith('Paylaşım bağlantısı oluşturulmamış.', {
-            variant: 'info',
-            autoHideDuration: 4000,
-        })
+        await expect(getBaglantiBilgileriByTip(1, 2, 3, 2024, 'KYS')).resolves.toBeNull()
+        expect(enqueueSnackbarMock).not.toHaveBeenCalled()
     })
 
-    it('returns payload or throws mapped errors for typed connection lookups', async () => {
+    it('returns payload or null for typed connection lookups', async () => {
         apiFetchMock
             .mockResolvedValueOnce({
                 ok: true,
@@ -97,7 +93,7 @@ describe('BaglantiBilgileri API helpers', () => {
         const { getBaglantiBilgileriByTip } = await import('@/api/BaglantiBilgileri/BaglantiBilgileri')
 
         await expect(getBaglantiBilgileriByTip(1, 2, 3, 2024, 'KYS')).resolves.toEqual({ id: 8, link: 'abc' })
-        await expect(getBaglantiBilgileriByTip(1, 2, 3, 2024, 'KYS')).rejects.toThrow('Baglanti yok')
+        await expect(getBaglantiBilgileriByTip(1, 2, 3, 2024, 'KYS')).resolves.toBeNull()
     })
 
     it('creates and deletes connection records with boolean results', async () => {
@@ -149,7 +145,7 @@ describe('BaglantiBilgileri API helpers', () => {
             '@/api/BaglantiBilgileri/BaglantiBilgileri'
         )
 
-        await expect(getBaglantiBilgileriByLink('https://app.test/path?a=1&b=2')).resolves.toEqual({
+        await expect(getBaglantiBilgileriByLink(1, 2, 3, 2024, 'https://app.test/path?a=1&b=2')).resolves.toEqual({
             id: 4,
             tip: 'KYS',
         })

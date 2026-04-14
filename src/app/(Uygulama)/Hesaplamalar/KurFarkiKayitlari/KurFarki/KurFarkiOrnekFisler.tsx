@@ -37,6 +37,86 @@ interface Props {
   setkaydetTiklandimi(bool: boolean): void;
 }
 
+const AYNI_KALACAK_HESAPLAR = new Set([
+  "102",
+  "300",
+  "301",
+  "302",
+  "303",
+  "400",
+  "401",
+  "402",
+]);
+
+const KUR_FARKI_HESAP_ADLARI: Record<string, string> = {
+  "646": "Kambiyo Kârları",
+  "649": "Diğer Olağan Gelir ve Kârlar",
+  "656": "Kambiyo Zararları",
+  "659": "Diğer Olağan Gider ve Zararlar",
+};
+
+const getHesapPrefix = (hesapKodu: string) =>
+  String(hesapKodu || "").trim().split(".")[0].slice(0, 3);
+
+const getKurFarkiHesapKodu = (detayKodu: string) => {
+  const trimmedDetayKodu = String(detayKodu || "").trim();
+
+  if (trimmedDetayKodu.startsWith("646")) {
+    return trimmedDetayKodu.replace(/^646/, "649");
+  }
+
+  if (trimmedDetayKodu.startsWith("656")) {
+    return trimmedDetayKodu.replace(/^656/, "659");
+  }
+
+  return trimmedDetayKodu;
+};
+
+const getKurFarkiHesapAdi = (hesapKodu: string, mevcutHesapAdi: string) => {
+  const hesapPrefix = getHesapPrefix(hesapKodu);
+  return KUR_FARKI_HESAP_ADLARI[hesapPrefix] || mevcutHesapAdi;
+};
+
+const duzenleKurFarkiFisleri = (fisler: any[]) => {
+  const fislarMap = new Map<number, any[]>();
+
+  fisler.forEach((fis) => {
+    const mevcutFis = fislarMap.get(fis.yevmiyeNo) || [];
+    mevcutFis.push(fis);
+    fislarMap.set(fis.yevmiyeNo, mevcutFis);
+  });
+
+  return fisler.map((fis) => {
+    const detayKodu = String(fis.detayKodu || "").trim();
+    const hesapPrefix = getHesapPrefix(detayKodu);
+
+    if (hesapPrefix !== "646" && hesapPrefix !== "656") {
+      return fis;
+    }
+
+    const fisSatirlari = fislarMap.get(fis.yevmiyeNo) || [];
+    const karsiHesaplar = fisSatirlari
+      .map((satir) => getHesapPrefix(satir.detayKodu))
+      .filter((prefix) => prefix && prefix !== "646" && prefix !== "656");
+
+    const ayniKalacakMi = karsiHesaplar.some((prefix) =>
+      AYNI_KALACAK_HESAPLAR.has(prefix)
+    );
+
+    if (ayniKalacakMi) {
+      return fis;
+    }
+
+    const yeniDetayKodu = getKurFarkiHesapKodu(detayKodu);
+
+    return {
+      ...fis,
+      detayKodu: yeniDetayKodu,
+      hesapAdi: getKurFarkiHesapAdi(yeniDetayKodu, fis.hesapAdi),
+    };
+  });
+};
+
 const KurFarkiOrnekFisler: React.FC<Props> = ({
   kaydetTiklandimi,
   setkaydetTiklandimi,
@@ -293,13 +373,17 @@ const KurFarkiOrnekFisler: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
-      const kurFarkiOrnekFisVerileri = await getKurFarkiOrnekFisler(user.denetciId || 0,
+      const kurFarkiOrnekFisVerileri = await getKurFarkiOrnekFisler(
+        user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0
       );
+      const duzenlenmisFisler = duzenleKurFarkiFisleri(
+        kurFarkiOrnekFisVerileri || []
+      );
 
       const rowsAll: any = [];
-      kurFarkiOrnekFisVerileri.forEach((veri: any) => {
+      duzenlenmisFisler.forEach((veri: any) => {
         const newRow: any = [
           true,
           veri.yevmiyeNo,

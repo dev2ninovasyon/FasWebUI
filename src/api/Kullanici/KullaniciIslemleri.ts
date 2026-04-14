@@ -62,9 +62,14 @@ export const getKullaniciByDenetlenenYilRol = async (
   yil: number,
   tip: string
 ) => {
+  const normalizedTip = tip?.trim();
+  if (!normalizedTip) {
+    return [];
+  }
+
   try {
     const response = await apiFetch(
-      `/Kullanici/DenetlenenYilRol?denetlenenId=${denetlenenId}&yil=${yil}&tip=${tip}`,
+      `/Kullanici/DenetlenenYilRol?denetlenenId=${denetlenenId}&yil=${yil}&tip=${encodeURIComponent(normalizedTip)}`,
       {
         method: "GET",
         headers: {
@@ -76,9 +81,11 @@ export const getKullaniciByDenetlenenYilRol = async (
       return response.json();
     } else {
       console.log("Kullanicilar getirilemedi");
+      return [];
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    return [];
   }
 };
 

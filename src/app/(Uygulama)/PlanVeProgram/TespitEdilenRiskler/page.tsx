@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -26,99 +26,171 @@ const Page = () => {
   const menuOpen = Boolean(anchorEl);
 
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
-
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
 
   const controller = "TespitEdilenRiskler";
 
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <Breadcrumb title="Tespit Edilen Riskler" items={BCrumb}>
         <>
-          <Grid
-            container
-            sx={{
-              width: "95%",
-              height: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-            }}
-          >
+          {isMobile ? (
             <Grid
+              container
               sx={{
-                display: "flex",
+                width: "100%",
+                height: "100%",
+                justifyContent: "space-between",
                 alignItems: "center",
-                justifyContent: "flex-end",
               }}
-              size={{
-                xs: 12,
-                md: 3.8,
-                lg: 3.8
-              }}>
-              <Typography
-                variant="body1"
+            >
+              <Grid size={8}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                    textAlign: "left",
+                  }}
+                >
+                  {tamamlanan}/{toplam} Tamamlandı
+                </Typography>
+              </Grid>
+              <Grid sx={{ display: "flex", justifyContent: "flex-end" }} size={4}>
+                <IconButton
+                  onClick={handleMenuOpen}
+                  size="small"
+                  aria-label="menu"
+                  aria-controls={menuOpen ? 'breadcrumb-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen ? 'true' : undefined}
+                >
+                  <IconDotsVertical />
+                </IconButton>
+                <Menu
+                  id="breadcrumb-menu"
+                  anchorEl={anchorEl}
+                  open={menuOpen}
+                  onClose={handleMenuClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleMenuClose}>
+                    Belge Yükle
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => { setIsClickedVarsayilanaDon(true); handleMenuClose(); }}
+                    disabled={isClickedVarsayilanaDon}
+                  >
+                    Varsayılana Dön
+                  </MenuItem>
+                </Menu>
+              </Grid>
+            </Grid>
+          ) : (
+            <Grid
+              container
+              sx={{
+                width: "100%",
+                height: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid
                 sx={{
-                  overflowWrap: "break-word",
-                  wordWrap: "break-word",
-                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
                 }}
-              >
-                {tamamlanan}/{toplam} Tamamlandı
-              </Typography>
-            </Grid>
-            <Grid
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              size={{
-                xs: 5.8,
-                md: 3.8,
-                lg: 3.8
-              }}>
-              <EkBelgeYukleButton
-                formKodu={controller}
-                fullWidth={false}           // sağda küçük buton
-                text="Belge Yükle"
-              />
-            </Grid>
-            <Grid
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              size={{
-                xs: 5.8,
-                md: 3.8,
-                lg: 3.8
-              }}>
-              <Button
-                size="medium"
-                variant="outlined"
-                color="primary"
-                disabled={isClickedVarsayilanaDon}
-                onClick={() => setIsClickedVarsayilanaDon(true)}
-                sx={{ width: "100%" }}
+                size={{
+                  xs: 12,
+                  md: 3.8,
+                  lg: 3.8
+                }}
               >
                 <Typography
                   variant="body1"
-                  sx={{ overflowWrap: "break-word", wordWrap: "break-word" }}
+                  sx={{
+                    overflowWrap: "break-word",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                  }}
+                >
+                  {tamamlanan}/{toplam} Tamamlandı
+                </Typography>
+              </Grid>
+              <Grid
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                size={{
+                  xs: 5.8,
+                  md: 3.8,
+                  lg: 3.8,
+                }}
+              >
+                <EkBelgeYukleButton
+                  formKodu={controller}
+                  fullWidth={true}
+                  text="Belge Yükle"
+                  sx={{ height: 40, textTransform: "none" }}
+                />
+              </Grid>
+              <Grid
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                size={{
+                  xs: 5.8,
+                  md: 3.8,
+                  lg: 3.8,
+                }}
+              >
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  disabled={isClickedVarsayilanaDon}
+                  onClick={() => setIsClickedVarsayilanaDon(true)}
+                  sx={{
+                    width: "100%",
+                    height: 40,
+                    textTransform: "none",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   Varsayılana Dön
-                </Typography>
-              </Button>
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </>
       </Breadcrumb>
       <PageContainer
         title="Tespit Edilen Riskler"
         description="this is Tespit Edilen Riskler"
       >
-        <Box>
+        <Box
+          sx={{
+            width: "100%",
+            justifyContent: "space-between",
+            mb: 3,
+          }}
+        >
           <TespitEdilenRisklerTable
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}

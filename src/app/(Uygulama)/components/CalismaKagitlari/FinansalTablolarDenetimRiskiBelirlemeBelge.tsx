@@ -1,12 +1,18 @@
 "use client";
 
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Alert,
   Box,
+  Button,
   Chip,
   CircularProgress,
   Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   FormControl,
   Grid,
@@ -21,11 +27,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronRight, IconDeviceFloppy } from "@tabler/icons-react";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import {
@@ -68,6 +75,12 @@ interface Veri {
   standartmi?: boolean | null;
 }
 
+interface LocalChange {
+  bdsReferans: string;
+  oncelikliTeknikler: string;
+  notRiskAciklamasi: string;
+}
+
 interface CalismaKagidiProps {
   controller: string;
   isClickedVarsayilanaDon: boolean;
@@ -75,6 +88,51 @@ interface CalismaKagidiProps {
   setTamamlanan: (deger: number) => void;
   setToplam: (deger: number) => void;
 }
+
+const isActive = (value?: string | null): boolean => {
+  const n = value?.toLocaleLowerCase("tr-TR") ?? "";
+  return n.includes("var") || n.includes("önemli") || n.includes("onemli") || n.includes("✔");
+};
+
+/**
+ * Kendi local state'ini tutan TextField — yalnızca blur'da parent'a bildirir.
+ * Büyük listelerde her tuş vuruşunda tüm tabloyu yeniden render ettirmez.
+ */
+const EditableTextField = React.memo(
+  ({
+    value,
+    onCommit,
+    minRows = 3,
+    fontSize = "0.8rem",
+  }: {
+    value: string;
+    onCommit: (val: string) => void;
+    minRows?: number;
+    fontSize?: string;
+  }) => {
+    const [draft, setDraft] = React.useState(value);
+
+    // Dışarıdan gelen değer değiştiğinde (ör. varsayılana dön) sync et
+    React.useEffect(() => {
+      setDraft(value);
+    }, [value]);
+
+    return (
+      <TextField
+        size="small"
+        multiline
+        minRows={minRows}
+        fullWidth
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={() => onCommit(draft)}
+        onClick={(e) => e.stopPropagation()}
+        sx={{ "& .MuiInputBase-root": { fontSize, backgroundColor: "#fff" } }}
+      />
+    );
+  }
+);
+EditableTextField.displayName = "EditableTextField";
 
 const riskLabels: Record<RiskOption, string> = {
   1: "Düşük",
@@ -224,12 +282,20 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const isCompactScreen = useMediaQuery(theme.breakpoints.down("xl"));
   const user = useSelector((state: AppState) => state.userReducer);
+  const router = useRouter();
   const [veriler, setVeriler] = useState<Veri[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<number | null>(null);
+  const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
+  const [showInfo, setShowInfo] = useState(false);
+  const [localChanges, setLocalChanges] = useState<Record<number, LocalChange>>({});
+  const [initialSnapshot, setInitialSnapshot] = useState<Record<number, LocalChange>>({});
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [targetUrl, setTargetUrl] = useState<string | null>(null);
 
   const applyRows = useCallback(
     (rows: Veri[]) => {
@@ -238,10 +304,19 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
       );
 
       setVeriler(sortedRows);
-      setToplam(sortedRows.length);
-      setTamamlanan(sortedRows.filter((row) => row.standartmi === false).length);
+
+      const snap: Record<number, LocalChange> = {};
+      sortedRows.forEach((row) => {
+        snap[row.id] = {
+          bdsReferans: row.bdsReferans ?? "",
+          oncelikliTeknikler: row.oncelikliTeknikler ?? "",
+          notRiskAciklamasi: row.notRiskAciklamasi ?? "",
+        };
+      });
+      setLocalChanges(snap);
+      setInitialSnapshot(snap);
     },
-    [setTamamlanan, setToplam]
+    []
   );
 
   const fetchData = useCallback(async () => {
@@ -298,13 +373,9 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
           const nextRows = currentRows.map((currentRow) =>
             currentRow.id === row.id ? { ...currentRow, ...updatedRow } : currentRow
           );
-          const sortedRows = [...nextRows].sort(
+          return [...nextRows].sort(
             (a, b) => (a.siraNo || 0) - (b.siraNo || 0) || (a.kebirKodu || 0) - (b.kebirKodu || 0)
           );
-
-          setToplam(sortedRows.length);
-          setTamamlanan(sortedRows.filter((currentRow) => currentRow.standartmi === false).length);
-          return sortedRows;
         });
       } catch (error) {
         console.error(error);
@@ -313,7 +384,7 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
         setSavingId(null);
       }
     },
-    [controller, setTamamlanan, setToplam]
+    [controller]
   );
 
   const handleDeleteAll = useCallback(async () => {
@@ -349,6 +420,104 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
     setExpandedRows((prev) => (prev.includes(id) ? prev : [...prev, id]));
   };
 
+  const dirtyRowIds = useMemo(
+    () =>
+      Object.keys(localChanges)
+        .map(Number)
+        .filter((id) => {
+          const cur = localChanges[id];
+          const ini = initialSnapshot[id];
+          if (!cur || !ini) return false;
+          return (
+            cur.bdsReferans !== ini.bdsReferans ||
+            cur.oncelikliTeknikler !== ini.oncelikliTeknikler ||
+            cur.notRiskAciklamasi !== ini.notRiskAciklamasi
+          );
+        }),
+    [localChanges, initialSnapshot]
+  );
+
+  const dirtyRef = useRef(dirtyRowIds);
+  useEffect(() => {
+    dirtyRef.current = dirtyRowIds;
+  }, [dirtyRowIds]);
+
+  const handleSave = async () => {
+    if (!dirtyRowIds.length) return;
+    setSaving(true);
+    try {
+      await Promise.all(
+        dirtyRowIds.map((id) => {
+          const row = veriler.find((r) => r.id === id);
+          const local = localChanges[id];
+          if (!row || !local) return Promise.resolve();
+          return updateCalismaKagidiVerisi(controller, id, {
+            siraNo: row.siraNo,
+            kebirKodu: row.kebirKodu,
+            hesapAdi: row.hesapAdi,
+            bakiyeTl: row.bakiyeTl,
+            yuzde: row.yuzde,
+            mizanPayYuzdesi: row.mizanPayYuzdesi,
+            fisSayisi: row.fisSayisi,
+            raporlamaStandardi: row.raporlamaStandardi,
+            riskSeviyeKodu: row.riskSeviyeKodu,
+            denetciKanaati: row.denetciKanaati,
+            bdsReferans: local.bdsReferans,
+            oncelikliTeknikler: local.oncelikliTeknikler,
+            notRiskAciklamasi: local.notRiskAciklamasi,
+          });
+        })
+      );
+      setInitialSnapshot({ ...localChanges });
+      setOpenSnackbar(true);
+    } catch {
+      setErrorMessage("Kayıt sırasında bir hata oluştu.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Tarayıcı kapat/yenile koruması
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (dirtyRef.current.length > 0) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, []);
+
+  // Sayfa içi link tıklama koruması
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest("a");
+      if (anchor && anchor.href && dirtyRef.current.length > 0) {
+        try {
+          const dest = new URL(anchor.href);
+          const curr = new URL(window.location.href);
+          if (dest.origin === curr.origin && dest.pathname.replace(/\/$/, "") !== curr.pathname.replace(/\/$/, "")) {
+            e.preventDefault();
+            e.stopPropagation();
+            setTargetUrl(anchor.href);
+            setConfirmDialogOpen(true);
+          }
+        } catch {
+          // URL parse hatası
+        }
+      }
+    };
+    window.addEventListener("click", handler, true);
+    return () => window.removeEventListener("click", handler, true);
+  }, []);
+
+  // veriler değiştiğinde tamamlanan/toplam sayaçlarını güncelle
+  useEffect(() => {
+    setToplam(veriler.length);
+    setTamamlanan(veriler.filter((row) => row.standartmi === false).length);
+  }, [veriler, setTamamlanan, setToplam]);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -374,7 +543,7 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
       <Paper
         variant="outlined"
         sx={{
-          p: { xs: 1.5, md: 2.5 },
+          p: { xs: 1.25, md: 1.5 },
           borderRadius: 3,
           background: "linear-gradient(135deg, #f6f8fc 0%, #eef3fb 100%)",
           borderColor: "#d2dcee",
@@ -382,28 +551,40 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
       >
         <Stack direction={{ xs: "column", lg: "row" }} spacing={2} justifyContent="space-between">
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant={isSmallScreen ? "h6" : "h5"} sx={{ fontWeight: 800, color: blueHeader }}>
-              Finansal Tablolar Denetim Riski Belirleme Belgesi
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75, maxWidth: 900 }}>
-              Ana tabloda karar kolonları görünür. Satıra tıklayınca TFRS / BOBİ FRS beyan riski 7 boyut alanı,
-              BDS referansı, öncelikli teknikler ve risk açıklaması aşağıda açılır.
-            </Typography>
-            <Stack spacing={0.75} sx={{ mt: 1.25, maxWidth: 980 }}>
-              <Typography variant="body2" color="text.secondary">
-                Kullanım rehberi: Sayfa, mizan içindeki payı esas alarak her hesap için standart risk satırını otomatik oluşturur.
-                Satıra veya denetçi kanaati alanına tıkladığınızda 7 boyut beyan riski, BDS referansı, öncelikli teknikler ve risk açıklaması açılır.
+            <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap">
+              <Typography variant={isSmallScreen ? "h6" : "h5"} sx={{ fontWeight: 800, color: blueHeader }}>
+                Finansal Tablolar Denetim Riski Belirleme Belgesi
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Formül 1: <strong>Yüzde = borç + alacak / toplam borç + alacak</strong>
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Formül 2: <strong>Mizan payı &lt; %2 ise Düşük, %2 - %5 arası ise Orta, %5 üzeri ise Yüksek</strong>
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Denetçi kanaati değiştirildiğinde yalnızca seçilen satır güncellenir; ilgili standart risk satırı yeniden yüklenir.
+              <Typography
+                variant="caption"
+                onClick={() => setShowInfo((v) => !v)}
+                sx={{
+                  cursor: "pointer",
+                  color: blueHeader,
+                  opacity: 0.65,
+                  userSelect: "none",
+                  "&:hover": { opacity: 1 },
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {showInfo ? "▲ kapat" : "▼ bilgi"}
               </Typography>
             </Stack>
+
+            <Collapse in={showInfo} timeout="auto">
+              <Stack spacing={0.5} sx={{ mt: 0.75, maxWidth: 980 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Satıra tıklayınca TFRS / BOBİ FRS beyan riski 7 boyut alanı, BDS referansı, öncelikli teknikler ve risk açıklaması açılır.
+                  Metin alanları doğrudan düzenlenebilir; değişiklikler Kaydet butonuyla kaydedilir.
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Formül 1: <strong>Yüzde = borç + alacak / toplam borç + alacak</strong>
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Formül 2: <strong>Mizan payı &lt;%2 → Düşük · %2–%5 → Orta · %5+ → Yüksek</strong>
+                </Typography>
+              </Stack>
+            </Collapse>
           </Box>
           <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ maxWidth: { xs: "100%", lg: 340 } }}>
             <Chip
@@ -425,8 +606,47 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
         </Stack>
       </Paper>
 
+      {/* ── Kaydet çubuğu ── */}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1100,
+          bgcolor: "background.paper",
+          pt: 1,
+          pb: 0.75,
+          px: 2,
+          mx: -2,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          mt: 0.75,
+        }}
+      >
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+          <Typography
+            variant="caption"
+            sx={{ fontWeight: 600, color: dirtyRowIds.length > 0 ? "warning.dark" : "text.secondary" }}
+          >
+            {dirtyRowIds.length > 0
+              ? `${dirtyRowIds.length} satırda kaydedilmemiş değişiklik`
+              : "Tüm değişiklikler kaydedildi"}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={saving ? <CircularProgress size={14} color="inherit" /> : <IconDeviceFloppy size={16} />}
+            disabled={saving || dirtyRowIds.length === 0}
+            onClick={handleSave}
+          >
+            Kaydet
+          </Button>
+        </Stack>
+      </Box>
+
       {isCompactScreen ? (
-        <Stack spacing={2} sx={{ mt: 3 }}>
+        <Stack spacing={2} sx={{ mt: 1.5 }}>
           {loading ? (
             <Paper
               variant="outlined"
@@ -499,8 +719,8 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 6 }}>
-                        <Box sx={{ ...bodyCellBaseSx, ...getIndicatorCellColor(row.hileRiski, "red"), borderRadius: 2, textAlign: "center" }}>
-                          {row.hileRiski || "-"}
+                        <Box sx={{ ...bodyCellBaseSx, borderRadius: 2, textAlign: "center" }}>
+                          {isActive(row.hileRiski) ? "✓" : "-"}
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 6 }}>
@@ -509,8 +729,8 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 6 }}>
-                        <Box sx={{ ...bodyCellBaseSx, ...getIndicatorCellColor(row.kontrolTesti, "green"), borderRadius: 2, textAlign: "center" }}>
-                          {row.kontrolTesti || "-"}
+                        <Box sx={{ ...bodyCellBaseSx, borderRadius: 2, textAlign: "center", color: isActive(row.kontrolTesti) ? "#3f6428" : undefined, fontWeight: isActive(row.kontrolTesti) ? 800 : undefined }}>
+                          {isActive(row.kontrolTesti) ? "✓" : "-"}
                         </Box>
                       </Grid>
                     </Grid>
@@ -614,17 +834,32 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                         <Box sx={detailCardSx}>
                           <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>BDS Referans</Typography>
                           <Divider sx={{ mb: 1.25 }} />
-                          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{row.bdsReferans || "-"}</Typography>
+                          <EditableTextField
+                            value={localChanges[row.id]?.bdsReferans ?? row.bdsReferans ?? ""}
+                            onCommit={(val) => setLocalChanges((prev) => ({ ...prev, [row.id]: { ...prev[row.id], bdsReferans: val } }))}
+                            minRows={2}
+                            fontSize="0.78rem"
+                          />
                         </Box>
                         <Box sx={detailCardSx}>
                           <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>Öncelikli Teknikler</Typography>
                           <Divider sx={{ mb: 1.25 }} />
-                          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{row.oncelikliTeknikler || "-"}</Typography>
+                          <EditableTextField
+                            value={localChanges[row.id]?.oncelikliTeknikler ?? row.oncelikliTeknikler ?? ""}
+                            onCommit={(val) => setLocalChanges((prev) => ({ ...prev, [row.id]: { ...prev[row.id], oncelikliTeknikler: val } }))}
+                            minRows={2}
+                            fontSize="0.78rem"
+                          />
                         </Box>
                         <Box sx={detailCardSx}>
                           <Typography variant="subtitle2" sx={{ fontWeight: 800, color: blueHeader, mb: 1 }}>Not / Risk Açıklaması</Typography>
                           <Divider sx={{ mb: 1.25 }} />
-                          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>{row.notRiskAciklamasi || "-"}</Typography>
+                          <EditableTextField
+                            value={localChanges[row.id]?.notRiskAciklamasi ?? row.notRiskAciklamasi ?? ""}
+                            onCommit={(val) => setLocalChanges((prev) => ({ ...prev, [row.id]: { ...prev[row.id], notRiskAciklamasi: val } }))}
+                            minRows={2}
+                            fontSize="0.78rem"
+                          />
                         </Box>
                       </Stack>
                     </Box>
@@ -639,13 +874,13 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
         component={Paper}
         variant="outlined"
         sx={{
-          mt: 3,
+          mt: 1.5,
           borderRadius: 3,
           borderColor: "#cad6ea",
           overflowX: "hidden",
           overflowY: "auto",
           maxWidth: "100%",
-          maxHeight: { xs: "65vh", md: "72vh" },
+          maxHeight: { xs: "calc(100vh - 260px)", md: "calc(100vh - 220px)" },
           boxShadow: "0 12px 30px rgba(36,63,112,0.08)",
         }}
       >
@@ -751,20 +986,20 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                           </Select>
                         </FormControl>
                       </TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.hileRiski, "red") }}>
-                        {row.hileRiski || "-"}
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center" }}>
+                        {isActive(row.hileRiski) ? "✓" : "-"}
                       </TableCell>
                       <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.nicelOnemlilik, "light") }}>
                         {row.nicelOnemlilik || "-"}
                       </TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.kontrolTesti, "green") }}>
-                        {row.kontrolTesti || "-"}
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", color: isActive(row.kontrolTesti) ? "#3f6428" : undefined, fontWeight: isActive(row.kontrolTesti) ? 800 : undefined }}>
+                        {isActive(row.kontrolTesti) ? "✓" : "-"}
                       </TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.analitik, "green") }}>
-                        {row.analitik || "-"}
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", color: isActive(row.analitik) ? "#3f6428" : undefined, fontWeight: isActive(row.analitik) ? 800 : undefined }}>
+                        {isActive(row.analitik) ? "✓" : "-"}
                       </TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.detay, "green") }}>
-                        {row.detay || "-"}
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", color: isActive(row.detay) ? "#3f6428" : undefined, fontWeight: isActive(row.detay) ? 800 : undefined }}>
+                        {isActive(row.detay) ? "✓" : "-"}
                       </TableCell>
                     </TableRow>
 
@@ -870,9 +1105,15 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                                     BDS Referans
                                   </Typography>
                                   <Divider sx={{ mb: 1.25 }} />
-                                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                                    {row.bdsReferans || "-"}
-                                  </Typography>
+                                  <EditableTextField
+                                    value={localChanges[row.id]?.bdsReferans ?? row.bdsReferans ?? ""}
+                                    onCommit={(val) =>
+                                      setLocalChanges((prev) => ({
+                                        ...prev,
+                                        [row.id]: { ...prev[row.id], bdsReferans: val },
+                                      }))
+                                    }
+                                  />
                                 </Box>
                               </Grid>
                               <Grid size={{ xs: 12, md: 4 }}>
@@ -881,9 +1122,15 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                                     Öncelikli Teknikler
                                   </Typography>
                                   <Divider sx={{ mb: 1.25 }} />
-                                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                                    {row.oncelikliTeknikler || "-"}
-                                  </Typography>
+                                  <EditableTextField
+                                    value={localChanges[row.id]?.oncelikliTeknikler ?? row.oncelikliTeknikler ?? ""}
+                                    onCommit={(val) =>
+                                      setLocalChanges((prev) => ({
+                                        ...prev,
+                                        [row.id]: { ...prev[row.id], oncelikliTeknikler: val },
+                                      }))
+                                    }
+                                  />
                                 </Box>
                               </Grid>
                               <Grid size={{ xs: 12, md: 5 }}>
@@ -892,9 +1139,15 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                                     Not / Risk Açıklaması
                                   </Typography>
                                   <Divider sx={{ mb: 1.25 }} />
-                                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
-                                    {row.notRiskAciklamasi || "-"}
-                                  </Typography>
+                                  <EditableTextField
+                                    value={localChanges[row.id]?.notRiskAciklamasi ?? row.notRiskAciklamasi ?? ""}
+                                    onCommit={(val) =>
+                                      setLocalChanges((prev) => ({
+                                        ...prev,
+                                        [row.id]: { ...prev[row.id], notRiskAciklamasi: val },
+                                      }))
+                                    }
+                                  />
                                 </Box>
                               </Grid>
                             </Grid>
@@ -915,7 +1168,7 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
         user.rol?.includes("SorumluDenetci") ||
         user.rol?.includes("Denetci") ||
         user.rol?.includes("DenetciYardimcisi")) && (
-        <Grid container spacing={2} sx={{ mt: 1, width: "100%", mx: 0 }}>
+        <Grid container spacing={2} sx={{ mt: 4, width: "100%", mx: 0 }}>
           <Grid size={{ xs: 12, md: 4 }}>
             <BelgeKontrolCard
               fetch={fetchData}
@@ -939,6 +1192,44 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
           </Grid>
         </Grid>
       )}
+
+      {/* Başarı mesajı */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success" variant="filled">
+          Değişiklikler başarıyla kaydedildi.
+        </Alert>
+      </Snackbar>
+
+      {/* Navigasyon uyarısı */}
+      <Dialog open={confirmDialogOpen} onClose={() => setConfirmDialogOpen(false)}>
+        <DialogTitle>Kaydedilmemiş Değişiklikler</DialogTitle>
+        <DialogContent>
+          <Typography>
+            {dirtyRowIds.length} satırda kaydedilmemiş değişiklik bulunuyor.
+            Sayfadan çıkmak istediğinizden emin misiniz?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialogOpen(false)}>İptal</Button>
+          <Button
+            color="error"
+            onClick={() => {
+              setConfirmDialogOpen(false);
+              if (targetUrl) {
+                router.push(targetUrl);
+                setTargetUrl(null);
+              }
+            }}
+          >
+            Çıkış
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={Boolean(warningMessage)}
