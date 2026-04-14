@@ -120,15 +120,16 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
       setAudioStatus('WAITING');
     });
 
-    rec.addEventListener('result', (event: SpeechRecognitionEvent) => {
+    rec.addEventListener('result', (event: Event) => {
+      const speechEvent = event as SpeechRecognitionEvent;
       hasReceivedResultRef.current = true;
       let interim = '';
       let final = '';
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
+      for (let i = speechEvent.resultIndex; i < speechEvent.results.length; ++i) {
+        if (speechEvent.results[i].isFinal) {
+          final += speechEvent.results[i][0].transcript;
         } else {
-          interim += event.results[i][0].transcript;
+          interim += speechEvent.results[i][0].transcript;
         }
       }
       if (final) {
@@ -146,7 +147,8 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
       }
     });
 
-    rec.addEventListener('error', (event: SpeechRecognitionErrorEvent) => {
+    rec.addEventListener('error', (rawEvent: Event) => {
+      const event = rawEvent as SpeechRecognitionErrorEvent;
       if (event.error === 'aborted' || event.error === 'no-speech') {
         isStoppingRef.current = true;
         return;
@@ -322,11 +324,11 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
         
         <Tooltip title={isRecording ? "Durdurmak için dokunun" : "Sesle Yazmayı Başlat"} arrow>
           <IconButton
-            component={motion.button}
+            component={motion.button as any}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             size="small"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent) => {
               e.preventDefault();
               e.stopPropagation();
               toggleRecording();
@@ -334,17 +336,17 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
             sx={{
               position: 'relative',
               zIndex: 1,
-              width: 44,
-              height: 44,
+              width: 36,
+              height: 36,
               bgcolor: isRecording ? errorColor : primaryColor,
               color: theme.palette.common.white,
-              boxShadow: theme.shadows[4],
+              boxShadow: theme.shadows[2],
               '&:hover': {
                 bgcolor: isRecording ? theme.palette.error.dark : theme.palette.primary.dark,
               }
             }}
           >
-            {isRecording ? <MicOff size={22} /> : <Mic size={22} />}
+            {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
           </IconButton>
         </Tooltip>
       </div>

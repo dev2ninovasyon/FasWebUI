@@ -28,7 +28,9 @@ const StyledTextField = styled((props: any) => {
   },
 }));
 
-const CustomTextField = (props: TextFieldProps) => {
+type CustomTextFieldProps = TextFieldProps & { disableVoice?: boolean };
+
+const CustomTextField = ({ disableVoice, ...props }: CustomTextFieldProps) => {
   const theme = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isListening, setIsListening] = React.useState(false);
@@ -64,7 +66,7 @@ const CustomTextField = (props: TextFieldProps) => {
   };
 
   const { InputProps, multiline, ...otherProps } = props;
-  const showVoiceAdornment = multiline && !props.disabled;
+  const showVoiceAdornment = multiline && !props.disabled && !disableVoice;
   const resolvedValue = hasExternalValue
     ? `${props.value ?? ""}${interim ? `${props.value ? " " : ""}${interim}` : ""}`
     : undefined;

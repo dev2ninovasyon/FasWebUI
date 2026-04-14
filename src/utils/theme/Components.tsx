@@ -256,6 +256,10 @@ const components: any = (theme: Theme) => {
         root: {
           borderBottom: `1px solid ${theme.palette.divider}`,
         },
+        // Sağa yaslanmış hücrelerde tabular rakam fontu (sayısal hizalama)
+        alignRight: {
+          fontVariantNumeric: 'tabular-nums',
+        },
       },
     },
     MuiTableRow: {

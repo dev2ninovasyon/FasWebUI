@@ -28,6 +28,7 @@ Use this skill when editing:
 ## UI And Layout Rules
 
 - Match the existing `FasWebUI` visual language instead of adding a new design system.
+- **Font & Stil Kuralı:** Projede hiçbir şekilde farklı font (font-family) ve manuel yazı stili (fontStyle, uçuk renkli kalın punto vb.) override kullanma. Her zaman standart Material UI tabloları (`Table`, `TableCell`) ve tema varsayılanı font yazı tiplerini diğer sayfalarla aynı olacak şekilde referans al. Özellikle `Handsontable` gibi farklı rendering motorları gerektiren özel UI parçalarından kaçın.
 - Prefer the project's MUI-based cards, spacing, inputs, and buttons over raw HTML-looking controls.
 - Keep pages compact and balanced. Avoid oversized info blocks that push the main form too far down.
 - Do not add duplicate headings or redundant hero sections when the screen is already clear.

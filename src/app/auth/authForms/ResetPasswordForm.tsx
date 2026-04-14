@@ -423,7 +423,7 @@ export default function ResetPasswordForm() {
             </Button>
 
             <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-              <Link href="/login" style={{ textDecoration: "none" }}>
+              <Link href="/" style={{ textDecoration: "none" }}>
                 <Button
                   variant="text"
                   startIcon={<IconArrowLeft size={18} />}

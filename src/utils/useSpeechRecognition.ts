@@ -21,16 +21,8 @@ interface SpeechRecognition extends EventTarget {
   onend: () => void;
 }
 
-declare global {
-  interface Window {
-    SpeechRecognition: {
-      new (): SpeechRecognition;
-    };
-    webkitSpeechRecognition: {
-      new (): SpeechRecognition;
-    };
-  }
-}
+// Window Speech API'ye erişim için yardımcı tip (global bildirim yerine)
+type SpeechRecognitionCtor = new () => SpeechRecognition;
 
 export const useSpeechRecognition = (
   onFinalResults: (text: string) => void,
@@ -41,7 +33,9 @@ export const useSpeechRecognition = (
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = (
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    ) as SpeechRecognitionCtor | undefined;
 
     if (!SpeechRecognition) {
       setError('Speech Recognition API is not supported in this browser.');
@@ -132,6 +126,6 @@ export const useSpeechRecognition = (
     startListening,
     stopListening,
     toggleListening,
-    isSupported: !!(typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition))
+    isSupported: !!(typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition))
   };
 };

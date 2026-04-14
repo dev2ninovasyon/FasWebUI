@@ -10,6 +10,15 @@
   visibility: hidden !important;
 }
 
+/* Handsontable: Sayısal sütunlar sağa yasla */
+.handsontable td.htRight,
+.handsontable th.htRight,
+.ht-theme-horizon td.htRight,
+.ht-theme-horizon th.htRight {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Handsontable header dropdown arrow fix - Replace 3 dots with arrow */
 .ht-theme-horizon .changeType {
   background-image: none !important;

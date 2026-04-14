@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, Chip, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Stack } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import BilgiIslemMuhasebeTable from "@/app/(Uygulama)/components/CalismaKagitlari/BilgiIslemMuhasebeTableHandson";
@@ -39,12 +39,9 @@ const Page = () => {
           }}
         >
           <Stack spacing={0.5}>
-            <Typography variant="body2" color="text.secondary">
-              Excel şablonuna dayalı değerlendirme soruları ve aksiyon metinleri
-            </Typography>
             <Chip
-              color={tamamlanan === toplam && toplam > 0 ? "success" : "primary"}
-              label={`${tamamlanan}/${toplam} soru değerlendirildi`}
+              variant="outlined"
+              label={`${tamamlanan}/${toplam}`}
               sx={{ width: "fit-content" }}
             />
           </Stack>
