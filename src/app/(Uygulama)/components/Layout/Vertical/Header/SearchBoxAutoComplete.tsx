@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useMemo } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -225,7 +225,6 @@ const SearchBoxAutocomplete = () => {
 
   return (
     <Autocomplete
-      disablePortal
       id="search-box"
       options={localPages}
       noOptionsText="Bulunamadı"

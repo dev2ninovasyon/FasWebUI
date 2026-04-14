@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
@@ -158,18 +158,16 @@ const toPayload = (state: WorkbookState) => ({
 
 const Section = ({
   title,
-  color,
   subtitle,
   children,
 }: {
   title: string;
-  color: string;
   subtitle?: string;
   children: React.ReactNode;
 }) => (
   <Paper sx={{ borderRadius: 3, border: "1px solid #dbe3f0", overflow: "hidden", boxShadow: "0 12px 28px rgba(15,23,42,.06)" }}>
-    <Box sx={{ px: 3, py: 1.5, background: color, color: "#fff", fontWeight: 800, fontSize: "1.2rem" }}>{title}</Box>
-    {subtitle ? <Box sx={{ px: 3, py: 1.2, background: "#fff5df", color: "#b45309", fontWeight: 700 }}>{subtitle}</Box> : null}
+    <Box sx={{ px: 3, py: 1.5, background: "#f8fafc", color: "#1e293b", borderBottom: "1px solid #e2e8f0", fontWeight: 800, fontSize: "1.1rem" }}>{title}</Box>
+    {subtitle ? <Box sx={{ px: 3, py: 1.2, background: "#fffbeb", color: "#92400e", fontWeight: 700, fontSize: "0.85rem" }}>{subtitle}</Box> : null}
     <Box sx={{ p: 3 }}>{children}</Box>
   </Paper>
 );
@@ -189,12 +187,12 @@ const FORM_URL = "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerl
 const getRiskLevelStyles = (value?: string | null) => {
   const risk = (value || "").toLowerCase();
   if (risk.includes("yüksek")) {
-    return { backgroundColor: "#fde2e0", color: "#b42318", fontWeight: 800 };
+    return { backgroundColor: "#fff1f0", color: "#cf222e", fontWeight: 800 };
   }
   if (risk.includes("orta")) {
-    return { backgroundColor: "#fff1cc", color: "#b7791f", fontWeight: 800 };
+    return { backgroundColor: "#fff8e1", color: "#b45309", fontWeight: 800 };
   }
-  return { backgroundColor: "#e6f4ea", color: "#2f6f44", fontWeight: 800 };
+  return { backgroundColor: "#f0fdf4", color: "#166534", fontWeight: 800 };
 };
 
 export interface OnemlilikExcelStepperRef {
@@ -927,25 +925,25 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ background: "#2f6fb0", color: "#fff", fontWeight: 800 }}>Alan</TableCell>
-                <TableCell sx={{ background: "#2f6fb0", color: "#fff", fontWeight: 800 }}>Değer</TableCell>
-                <TableCell sx={{ background: "#2f6fb0", color: "#fff", fontWeight: 800 }}>Not</TableCell>
+                <TableCell sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>Alan</TableCell>
+                <TableCell sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>Değer</TableCell>
+                <TableCell sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>Not</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
                 <TableCell>Firma Adı</TableCell>
-                <TableCell sx={{ background: "#fff7cc" }}><TextField fullWidth variant="standard" value={draftState.parametreler.firmaAdi} onChange={(e) => updateParam("firmaAdi", e.target.value)} /></TableCell>
+                <TableCell><TextField fullWidth variant="standard" value={draftState.parametreler.firmaAdi} onChange={(e) => updateParam("firmaAdi", e.target.value)} /></TableCell>
                 <TableCell>Şirket kartı veya kullanıcı girişi</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Denetim Yılı</TableCell>
-                <TableCell sx={{ background: "#fff7cc" }}><TextField fullWidth variant="standard" type="number" value={draftState.parametreler.denetimYili} onChange={(e) => updateParam("denetimYili", Number(e.target.value || 1))} /></TableCell>
+                <TableCell><TextField fullWidth variant="standard" type="number" value={draftState.parametreler.denetimYili} onChange={(e) => updateParam("denetimYili", Number(e.target.value || 1))} /></TableCell>
                 <TableCell>1 = ilk yıl, 2-4 = devam, 5+ = uzun vadeli</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Sektör Tipi</TableCell>
-                <TableCell sx={{ background: "#fff7cc" }}>
+                <TableCell>
                   <TextField select fullWidth variant="standard" value={draftState.parametreler.sektorTipi} onChange={(e) => updateParam("sektorTipi", e.target.value)}>
                     <MenuItem value="Uretim">Üretim</MenuItem>
                     <MenuItem value="Ticaret">Ticaret</MenuItem>
@@ -956,12 +954,12 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
               </TableRow>
               <TableRow>
                 <TableCell>Raporlama Dönemi</TableCell>
-                <TableCell sx={{ background: "#fff7cc" }}><TextField fullWidth variant="standard" value={draftState.parametreler.raporlamaDonemi} onChange={(e) => updateParam("raporlamaDonemi", e.target.value)} /></TableCell>
+                <TableCell><TextField fullWidth variant="standard" value={draftState.parametreler.raporlamaDonemi} onChange={(e) => updateParam("raporlamaDonemi", e.target.value)} /></TableCell>
                 <TableCell>Örn: 31.12.2024</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Hedef Denetim Riski</TableCell>
-                <TableCell sx={{ background: "#fff7cc" }}><TextField fullWidth variant="standard" value={formatPercent(draftState.parametreler.hedefDenetimRiski, 100)} onChange={(e) => updateParam("hedefDenetimRiski", parseDecimal(e.target.value) / 100)} /></TableCell>
+                <TableCell><TextField fullWidth variant="standard" value={formatPercent(draftState.parametreler.hedefDenetimRiski, 100)} onChange={(e) => updateParam("hedefDenetimRiski", parseDecimal(e.target.value) / 100)} /></TableCell>
                 <TableCell>Genellikle %5</TableCell>
               </TableRow>
             </TableBody>
@@ -973,7 +971,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
             <TableHead>
               <TableRow>
                 {["#", "Kod", "Hesaplama Bazı", "Tutar (TL)", "Mizan Kaynağı", "Notlar"].map((title) => (
-                  <TableCell key={title} sx={{ background: "#1f6b5f", color: "#fff", fontWeight: 800 }}>{title}</TableCell>
+                  <TableCell key={title} sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>{title}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -985,7 +983,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
                     <TableCell>{row.siraNo}</TableCell>
                     <TableCell>{row.kod}</TableCell>
                     <TableCell>{row.hesaplamaBazi}</TableCell>
-                    <TableCell sx={{ background: "#fff7cc" }}>
+                    <TableCell>
                       <TextField fullWidth variant="standard" value={formatMoney(draftState.parametreler[key] as number)} onChange={(e) => updateParam(key, parseDecimal(e.target.value))} />
                     </TableCell>
                     <TableCell>{row.mizanKaynagi}</TableCell>
@@ -1001,13 +999,13 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
 
   const m1 = (
     <Stack spacing={3}>
-      <Section title="BOLUM 2: GENEL ONEMLILIK (M)" color="#c00000" subtitle="Seçilen oran veya önceki parametreler değiştiğinde sonuçlar anlık güncellenir.">
+      <Section title="BÖLÜM 2: GENEL ÖNEMLİLİK (M)" subtitle="Seçilen oran veya önceki parametreler değiştiğinde sonuçlar anlık güncellenir.">
         <TableContainer sx={{ ...tableScrollSx, maxHeight: "42vh" }}>
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 {["#", "Kriter", "Tutar", "Seçilen Oran %", "Ham Önemlilik", "Ağırlık", "Ağırlıklı Önemlilik"].map((title) => (
-                  <TableCell key={title} sx={{ background: "#c00000", color: "#fff", fontWeight: 800 }}>{title}</TableCell>
+                  <TableCell key={title} sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>{title}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -1018,8 +1016,8 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
                   <TableRow key={row.siraNo}>
                     <TableCell>{row.siraNo}</TableCell>
                     <TableCell>{row.kriter}</TableCell>
-                    <TableCell sx={{ background: "#e8f1ff" }}>{formatMoney(row.tutar)}</TableCell>
-                    <TableCell sx={{ background: "#fff7cc" }}>
+                    <TableCell>{formatMoney(row.tutar)}</TableCell>
+                    <TableCell>
                       <TextField
                         fullWidth
                         variant="standard"
@@ -1027,9 +1025,9 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
                         onChange={(e) => updateParam(overrideKey, parseDecimal(e.target.value))}
                       />
                     </TableCell>
-                    <TableCell sx={{ background: "#ffe8da" }}>{formatMoney(row.hamOnemlilik)}</TableCell>
-                    <TableCell sx={{ background: "#efe4ff" }}>{plain.format(row.agirlikKatsayisi)}</TableCell>
-                    <TableCell sx={{ background: "#ffe8da" }}>{formatMoney(row.agirlikliOnemlilik)}</TableCell>
+                    <TableCell>{formatMoney(row.hamOnemlilik)}</TableCell>
+                    <TableCell>{plain.format(row.agirlikKatsayisi)}</TableCell>
+                    <TableCell>{formatMoney(row.agirlikliOnemlilik)}</TableCell>
                   </TableRow>
                 );
               })}
@@ -1038,7 +1036,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
         </TableContainer>
       </Section>
 
-      <Section title="BOLUM 3: PERFORMANS ONEMLILIGI VE HATA SINIRI" color="#146356">
+      <Section title="BÖLÜM 3: PERFORMANS ÖNEMLİLİĞİ VE HATA SINIRI">
         <Grid container spacing={2}>
           {[
             ["Genel Önemlilik (M)", currentWorkbook.ozet.genelOnemlilik],
@@ -1060,13 +1058,13 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   );
 
   const m2 = (
-    <Section title="BÖLÜM 4: HESAP BAZINDA ÖNEMLİLİK DAĞITIMI" color="#c45d0a" subtitle="Risk K veya mizan değiştiğinde ilgili satır ve toplamlar anlık güncellenir.">
+    <Section title="BÖLÜM 4: HESAP BAZINDA ÖNEMLİLİK DAĞITIMI" subtitle="Risk K veya mizan değiştiğinde ilgili satır ve toplamlar anlık güncellenir.">
       <TableContainer sx={{ ...tableScrollSx, maxHeight: "52vh" }}>
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
               {["Kebir", "Hesap Adı", "Mizan Tutarı", "Risk K", "Ağırlık", "Ağırlık %", "Sabit Pay", "Kalan", "Dağıtılan Pay", "Nihai Önemlilik", "PM", "Risk Seviyesi"].map((title) => (
-                <TableCell key={title} sx={{ background: "#c45d0a", color: "#fff", fontWeight: 800 }}>{title}</TableCell>
+                <TableCell key={title} sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>{title}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -1077,23 +1075,23 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
                 <TableRow key={row.kebirKodu}>
                   <TableCell>{row.kebirKodu}</TableCell>
                   <TableCell>{row.hesapAdi}</TableCell>
-                  <TableCell sx={{ background: "#fff7cc" }}>
+                  <TableCell>
                     <TextField fullWidth variant="standard" value={formatMoney(editable?.mizanTutari ?? row.mizanTutari)} onChange={(e) => updateHesap(row.kebirKodu, { mizanTutari: parseDecimal(e.target.value) })} />
                   </TableCell>
-                  <TableCell sx={{ background: "#fff7cc" }}>
+                  <TableCell>
                     <TextField select fullWidth variant="standard" value={editable?.riskK ?? row.riskK} onChange={(e) => updateHesap(row.kebirKodu, { riskK: Number(e.target.value) })}>
                       <MenuItem value={1}>1</MenuItem>
                       <MenuItem value={2}>2</MenuItem>
                       <MenuItem value={3}>3</MenuItem>
                     </TextField>
                   </TableCell>
-                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "agirlikTutari"), { background: "#ffe8da" })}>{formatMoney(row.agirlikTutari)}</TableCell>
-                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "agirlikOraniYuzde"), { background: "#fff7cc" })}>{formatPercent(row.agirlikOraniYuzde)}</TableCell>
-                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "sabitPay"), { background: "#e8f1ff" })}>{formatMoney(row.sabitPay)}</TableCell>
-                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "kalanTutar"), { background: "#e8f1ff" })}>{formatMoney(row.kalanTutar)}</TableCell>
-                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "dagitilanPay"), { background: "#dff1d8" })}>{formatMoney(row.dagitilanPay)}</TableCell>
-                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "nihaiOnemlilik"), { background: "#ffe8da" })}>{formatMoney(row.nihaiOnemlilik)}</TableCell>
-                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "performansOnemliligi"), { background: "#dff1d8" })}>{formatMoney(row.performansOnemliligi)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "agirlikTutari"))}>{formatMoney(row.agirlikTutari)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "agirlikOraniYuzde"))}>{formatPercent(row.agirlikOraniYuzde)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "sabitPay"))}>{formatMoney(row.sabitPay)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "kalanTutar"))}>{formatMoney(row.kalanTutar)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "dagitilanPay"))}>{formatMoney(row.dagitilanPay)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "nihaiOnemlilik"))}>{formatMoney(row.nihaiOnemlilik)}</TableCell>
+                  <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "performansOnemliligi"))}>{formatMoney(row.performansOnemliligi)}</TableCell>
                   <TableCell sx={getChangedCellSx(getChangedCellKey("m2", row.kebirKodu, "riskSeviyesi"), getRiskLevelStyles(row.riskSeviyesi))}>{row.riskSeviyesi}</TableCell>
                 </TableRow>
               );
@@ -1105,14 +1103,14 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   );
 
   const m3 = (
-    <Section title="DENETIM RISKI MODELI" color="#5b1c9d" subtitle="Doğal risk ve kontrol riski değiştiğinde önerilen yaklaşım anlık güncellenir.">
+    <Section title="DENETİM RİSKİ MODELİ" subtitle="Doğal risk ve kontrol riski değiştiğinde önerilen yaklaşım anlık güncellenir.">
       <Stack spacing={3}>
         <TableContainer sx={{ ...tableScrollSx, maxHeight: "26vh" }}>
           <Table stickyHeader size="small">
             <TableHead>
               <TableRow>
                 {["#", "Kavram", "Simge", "Formül", "Değer", "Açıklama"].map((title) => (
-                  <TableCell key={title} sx={{ background: "#5b1c9d", color: "#fff", fontWeight: 800 }}>{title}</TableCell>
+                  <TableCell key={title} sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>{title}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -1120,10 +1118,10 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
               {currentWorkbook.denetimRiskiModelTanimlari.map((row) => (
                 <TableRow key={row.siraNo}>
                   <TableCell>{row.siraNo}</TableCell>
-                  <TableCell sx={{ background: "#efe4ff" }}>{row.kavram}</TableCell>
+                  <TableCell>{row.kavram}</TableCell>
                   <TableCell>{row.simge}</TableCell>
                   <TableCell>{row.formul}</TableCell>
-                  <TableCell sx={{ background: "#fff7cc" }}>{row.deger != null ? formatPercent(row.deger, 100) : "-"}</TableCell>
+                  <TableCell>{row.deger != null ? formatPercent(row.deger, 100) : "-"}</TableCell>
                   <TableCell>{row.aciklama}</TableCell>
                 </TableRow>
               ))}
@@ -1136,7 +1134,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
             <TableHead>
               <TableRow>
                 {["Kebir", "Hesap Adı", "Doğal Risk", "Kontrol Riski", "ÖYR", "TER", "Güven Düzeyi", "Örnekleme %", "Nihai Önemlilik", "Denetim Yaklaşımı"].map((title) => (
-                  <TableCell key={title} sx={{ background: "#5b1c9d", color: "#fff", fontWeight: 800 }}>{title}</TableCell>
+                  <TableCell key={title} sx={{ background: "#f8fafc", color: "#475569", fontWeight: 800 }}>{title}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -1147,17 +1145,17 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
                   <TableRow key={row.kebirKodu}>
                     <TableCell>{row.kebirKodu}</TableCell>
                     <TableCell>{row.hesapAdi}</TableCell>
-                    <TableCell sx={{ background: "#fff7cc" }}>
+                    <TableCell>
                       <TextField fullWidth variant="standard" value={plain.format(editable?.dogalRisk ?? row.dogalRisk)} onChange={(e) => updateHesap(row.kebirKodu, { dogalRisk: parseDecimal(e.target.value) })} />
                     </TableCell>
-                    <TableCell sx={{ background: "#fff7cc" }}>
+                    <TableCell>
                       <TextField fullWidth variant="standard" value={plain.format(editable?.kontrolRiski ?? row.kontrolRiski)} onChange={(e) => updateHesap(row.kebirKodu, { kontrolRiski: parseDecimal(e.target.value) })} />
                     </TableCell>
-                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "oyr"), { background: "#ffe8da" })}>{formatPercent(row.oyr, 100)}</TableCell>
-                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "ter"), { background: "#ffe8da" })}>{formatPercent(row.ter, 100)}</TableCell>
-                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "guvenDuzeyi"), { background: "#dff1d8" })}>{formatPercent(row.guvenDuzeyi, 100)}</TableCell>
-                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "orneklemeYuzdesi"), { background: "#fff7cc" })}>{row.orneklemeYuzdesi}</TableCell>
-                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "hesapOnemlilikTutari"), { background: "#ffe8da" })}>{formatMoney(row.hesapOnemlilikTutari)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "oyr"))}>{formatPercent(row.oyr, 100)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "ter"))}>{formatPercent(row.ter, 100)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "guvenDuzeyi"))}>{formatPercent(row.guvenDuzeyi, 100)}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "orneklemeYuzdesi"))}>{row.orneklemeYuzdesi}</TableCell>
+                    <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "hesapOnemlilikTutari"))}>{formatMoney(row.hesapOnemlilikTutari)}</TableCell>
                     <TableCell sx={getChangedCellSx(getChangedCellKey("m3", row.kebirKodu, "onerilenYaklasim"))}>{row.onerilenYaklasim}</TableCell>
                   </TableRow>
                 );

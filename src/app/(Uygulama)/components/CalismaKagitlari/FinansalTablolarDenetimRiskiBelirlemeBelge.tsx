@@ -244,13 +244,22 @@ const getAssertionCellColor = (value?: string | null) => {
   return { backgroundColor: "#f8f8f8", color: "#5f6470" };
 };
 
-const getIndicatorCellColor = (value?: string | null, mode: "red" | "green" | "light" = "light") => {
+const getIndicatorCellColor = (value?: string | null, mode: "red" | "green" | "light" | "materiality" = "light") => {
   const normalized = value?.toLocaleLowerCase("tr-TR") ?? "";
+  const isImportant = normalized.includes("önemli") || normalized.includes("onemli");
+
+  if (mode === "materiality") {
+    if (isImportant) {
+      return { backgroundColor: "#fff7e6", color: "#d46b08", fontWeight: 700, border: "1px solid #ffe7ba" }; // Soft turuncu/sarı
+    }
+    return { backgroundColor: "transparent", color: "#9ca3af", fontWeight: 500 }; // Pasif gri
+  }
+
   const active =
     normalized.includes("var") ||
-    normalized.includes("önemli") ||
-    normalized.includes("onemli") ||
-    normalized.includes("✔");
+    isImportant ||
+    normalized.includes("✔") ||
+    normalized.includes("✓");
 
   if (!active) {
     return {
@@ -724,8 +733,8 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 6 }}>
-                        <Box sx={{ ...bodyCellBaseSx, ...getIndicatorCellColor(row.nicelOnemlilik, "light"), borderRadius: 2, textAlign: "center" }}>
-                          {row.nicelOnemlilik || "-"}
+                        <Box sx={{ ...bodyCellBaseSx, ...getIndicatorCellColor(row.nicelOnemlilik, "materiality"), borderRadius: 2, textAlign: "center" }}>
+                          {row.nicelOnemlilik?.replace(/[✓✔]/g, "").trim() || "-"}
                         </Box>
                       </Grid>
                       <Grid size={{ xs: 6 }}>
@@ -989,8 +998,8 @@ const FinansalTablolarDenetimRiskiBelirlemeBelge: React.FC<CalismaKagidiProps> =
                       <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center" }}>
                         {isActive(row.hileRiski) ? "✓" : "-"}
                       </TableCell>
-                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.nicelOnemlilik, "light") }}>
-                        {row.nicelOnemlilik || "-"}
+                      <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", ...getIndicatorCellColor(row.nicelOnemlilik, "materiality") }}>
+                        {row.nicelOnemlilik?.replace(/[✓✔]/g, "").trim() || "-"}
                       </TableCell>
                       <TableCell sx={{ ...bodyCellBaseSx, textAlign: "center", color: isActive(row.kontrolTesti) ? "#3f6428" : undefined, fontWeight: isActive(row.kontrolTesti) ? 800 : undefined }}>
                         {isActive(row.kontrolTesti) ? "✓" : "-"}
