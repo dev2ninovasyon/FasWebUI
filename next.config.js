@@ -20,6 +20,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material', '@tabler/icons-react'],
   },
+  transpilePackages: ['handsontable', '@handsontable/react'],
   compress: true,
 };
 

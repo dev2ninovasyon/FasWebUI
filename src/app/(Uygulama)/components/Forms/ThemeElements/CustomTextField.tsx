@@ -26,6 +26,20 @@ const StyledTextField = styled((props: any) => {
   "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
   },
+  "& input:-webkit-autofill": {
+    WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset !important`,
+    WebkitTextFillColor: `${theme.palette.text.primary} !important`,
+    transition: "background-color 5000s ease-in-out 0s",
+  },
+  "& input:-webkit-autofill:hover": {
+    WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset !important`,
+  },
+  "& input:-webkit-autofill:focus": {
+    WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset !important`,
+  },
+  "& input:-webkit-autofill:active": {
+    WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.paper} inset !important`,
+  },
 }));
 
 type CustomTextFieldProps = TextFieldProps & { disableVoice?: boolean };

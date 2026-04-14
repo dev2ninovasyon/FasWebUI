@@ -1,9 +1,6 @@
-﻿import "@/lib/handsontableSetup";
+import "@/lib/handsontableSetup";
 import Handsontable from "handsontable";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
-import 'handsontable/styles/handsontable.css';
-import 'handsontable/styles/ht-theme-horizon.css';
-import 'handsontable/styles/ht-icons-main.css';
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { Button, Grid, useTheme } from "@mui/material";
