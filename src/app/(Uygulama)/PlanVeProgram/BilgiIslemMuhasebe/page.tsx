@@ -8,15 +8,11 @@ import BilgiIslemMuhasebeTable from "@/app/(Uygulama)/components/CalismaKagitlar
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
 
 const BCrumb = [
-  {
-    to: "/PlanVeProgram",
-    title: "Plan ve Program",
-  },
-  {
-    to: "/PlanVeProgram/BilgiIslemMuhasebe",
-    title: "Bilgi İşlem ve Muhasebe Sistemi",
-  },
+  { to: "/PlanVeProgram", title: "Plan ve Program" },
+  { to: "/PlanVeProgram/BilgiIslemMuhasebe", title: "Bilgi İşlem ve Muhasebe Sistemi" },
 ];
+
+const btnSx = { fontSize: "0.72rem", py: 0.4, px: 1.2 };
 
 const Page = () => {
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
@@ -53,17 +49,11 @@ const Page = () => {
               label={`${tamamlanan}/${toplam}`}
               sx={{ width: "fit-content" }}
             />
-            <Chip
-              size="small"
-              variant="outlined"
-              label={`Toplam: ${tableState.recordCount} | Hayır: ${tableState.hayirCount} | Kritik: ${tableState.kritikCount}`}
-              sx={{ width: "fit-content" }}
-            />
           </Stack>
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={1.5}
+            spacing={1}
             sx={{ alignItems: { xs: "stretch", sm: "center" } }}
           >
             <EkBelgeYukleButton
@@ -72,25 +62,14 @@ const Page = () => {
               text="Belge Yükle"
             />
             <Button
-              size="medium"
+              size="small"
               variant="outlined"
               color="primary"
+              sx={btnSx}
               disabled={isClickedVarsayilanaDon || tableState.loading}
               onClick={() => setIsClickedVarsayilanaDon(true)}
             >
               {isClickedVarsayilanaDon ? "Sıfırlanıyor..." : "Varsayılana Dön"}
-            </Button>
-            <Button
-              size="medium"
-              variant={tableState.isDirty ? "contained" : "outlined"}
-              color="primary"
-              disabled={tableState.saving || tableState.loading}
-              onClick={() => setSaveRequestVersion((prev) => prev + 1)}
-              startIcon={
-                tableState.saving ? <CircularProgress size={16} color="inherit" /> : undefined
-              }
-            >
-              {tableState.saving ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
             </Button>
           </Stack>
         </Stack>
@@ -101,6 +80,22 @@ const Page = () => {
         description="Bilgi işlem ve muhasebe sistemine ilişkin değerlendirme belgesi"
       >
         <Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+            <Button
+              size="small"
+              variant={tableState.isDirty ? "contained" : "outlined"}
+              color="primary"
+              sx={btnSx}
+              disabled={!tableState.isDirty || tableState.saving || tableState.loading}
+              onClick={() => setSaveRequestVersion((prev) => prev + 1)}
+              startIcon={
+                tableState.saving ? <CircularProgress size={14} color="inherit" /> : undefined
+              }
+            >
+              {tableState.saving ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
+            </Button>
+          </Box>
+
           <BilgiIslemMuhasebeTable
             isClickedVarsayilanaDon={isClickedVarsayilanaDon}
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}

@@ -78,23 +78,6 @@ const ICON_MIC_OFF = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height=
   <line x1="8" y1="23" x2="16" y2="23"/>
 </svg>`;
 
-const ICON_AI = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 36 36">
-  <circle cx="18" cy="18" r="18" fill="#0d0d1a"/>
-  <defs>
-    <radialGradient id="orb" cx="42%" cy="38%" r="55%">
-      <stop offset="0%" stop-color="#7ee8ff"/>
-      <stop offset="45%" stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#0a1a4a"/>
-    </radialGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="1.2" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <circle cx="18" cy="18" r="9" fill="url(#orb)" filter="url(#glow)"/>
-  <ellipse cx="18" cy="18" rx="14" ry="5" fill="none" stroke="#4fc3f7" stroke-width="1" opacity="0.7" transform="rotate(-30 18 18)"/>
-  <ellipse cx="18" cy="18" rx="14" ry="5" fill="none" stroke="#81d4fa" stroke-width="0.8" opacity="0.5" transform="rotate(30 18 18)"/>
-</svg>`;
 
 const ICON_CLOSE = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -669,19 +652,42 @@ export class SpeechTextEditor extends BaseEditor {
     aiBtn.setAttribute("type", "button");
     aiBtn.title = "FasAI ile Geliştir";
 
+    // Fallback icon shown until iframe loads
+    const aiBtnFallback = document.createElement("div");
+    aiBtnFallback.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 36 36">
+  <circle cx="18" cy="18" r="18" fill="#0d0d1a"/>
+  <defs>
+    <radialGradient id="fasai-orb-fb" cx="42%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#7ee8ff"/>
+      <stop offset="45%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#0a1a4a"/>
+    </radialGradient>
+  </defs>
+  <circle cx="18" cy="18" r="9" fill="url(#fasai-orb-fb)"/>
+  <ellipse cx="18" cy="18" rx="14" ry="5" fill="none" stroke="#4fc3f7" stroke-width="1" opacity="0.7" transform="rotate(-30 18 18)"/>
+  <ellipse cx="18" cy="18" rx="14" ry="5" fill="none" stroke="#81d4fa" stroke-width="0.8" opacity="0.5" transform="rotate(30 18 18)"/>
+</svg>`;
+    Object.assign(aiBtnFallback.style, {
+      position: "absolute", top: "0", left: "0",
+      width: "100%", height: "100%",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      pointerEvents: "none",
+    });
+    aiBtn.appendChild(aiBtnFallback);
+
     const aiBtnIframe = document.createElement("iframe");
     aiBtnIframe.src = "https://widget.galichat.com/chat/6691wb9cakfml2mjro2x19";
     aiBtnIframe.scrolling = "no";
     Object.assign(aiBtnIframe.style, {
-      pointerEvents: "none",
-      border: "0",
-      width: "63px",
-      height: "63px",
-      transform: "scale(0.476)",
-      transformOrigin: "top left",
-      position: "absolute",
-      top: "0",
-      left: "0",
+      pointerEvents: "none", border: "0",
+      width: "63px", height: "63px",
+      transform: "scale(0.476)", transformOrigin: "top left",
+      position: "absolute", top: "0", left: "0",
+      opacity: "0",
+    });
+    aiBtnIframe.addEventListener("load", () => {
+      aiBtnIframe.style.opacity = "1";
+      aiBtnFallback.style.display = "none";
     });
     aiBtn.appendChild(aiBtnIframe);
 
