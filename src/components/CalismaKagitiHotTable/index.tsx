@@ -1,10 +1,13 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { HotTable } from "@handsontable/react";
 import type { HotTableProps } from "@handsontable/react";
 import "@/lib/handsontableSetup";
 import { HOT_BASE_ROW_HEIGHT } from "./renderers";
+import { setEditorUserGetter, setEditorPrimaryColor } from "./SpeechTextEditor";
+import { store } from "@/store/storeConfig";
+import { useTheme } from "@mui/material/styles";
 
 export interface CalismaKagitiHotTableProps extends Omit<HotTableProps, "data"> {
   /**
@@ -63,6 +66,12 @@ const CalismaKagitiHotTable = React.forwardRef<any, CalismaKagitiHotTableProps>(
     },
     ref
   ) => {
+    const theme = useTheme();
+    useEffect(() => {
+      setEditorUserGetter(() => store.getState().userReducer);
+      setEditorPrimaryColor(theme.palette.primary.main, theme.palette.primary.light);
+    }, [theme.palette.primary.main, theme.palette.primary.light]);
+
     // ── Enter → yeni satır (afterBeginEditing) ─────────────────────────────
     const handleAfterBeginEditing = useCallback(
       function (this: any, _row: number, col: number) {
