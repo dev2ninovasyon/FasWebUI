@@ -254,7 +254,9 @@ const HazirFisListesi: React.FC<Props> = ({ konsolidasyonMu = false }) => {
             fis_listesine_ekle: {
               name: 'Fiş Listesine Ekle',
               callback: async function (key, selection) {
-                const row = await handleGetRowData(selection[0].start.row);
+                if (!selection || !selection.length) return;
+                const rowIdx = selection[0].start.row;
+                const row = await handleGetRowData(rowIdx);
                 if (!row) return;
                 try {
                   const result = await createFisListesineHazirFis(

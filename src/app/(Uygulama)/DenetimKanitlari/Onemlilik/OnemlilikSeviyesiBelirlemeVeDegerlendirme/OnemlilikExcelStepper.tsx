@@ -227,7 +227,12 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   const changedCellsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousWorkbookRef = useRef<Workbook | null>(null);
 
-  const getErrorMessage = (error: unknown, fallback: string) => {
+  const getErrorMessage = (error: any, fallback: string) => {
+    if (error?.response?.data) {
+      if (typeof error.response.data === "string") return error.response.data;
+      if (error.response.data.message) return error.response.data.message;
+      if (error.response.data.title) return error.response.data.title;
+    }
     if (error instanceof Error && error.message) {
       return error.message;
     }
@@ -529,17 +534,29 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
       .replace(/>/g, "&gt;")
       .replace(/\"/g, "&quot;");
 
-  const buildTableHtml = (title: string, headers: string[], rows: (string | number)[][], color: string) => `
-    <section style="margin-top:24px;">
-      <div style="background:${color};color:#fff;padding:10px 14px;font-weight:700;border-radius:8px 8px 0 0;">${escapeHtml(title)}</div>
-      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+  const buildTableHtml = (title: string, headers: string[], rows: (string | number)[][]) => `
+    <section style="margin-top:24px; page-break-inside: avoid;">
+      <div style="background:#f8fafc;color:#1e293b;padding:10px 14px;font-weight:800;border:1px solid #d6deef;border-bottom:none;border-radius:8px 8px 0 0;font-size:13px;">${escapeHtml(title)}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px;border:1px solid #d6deef;">
         <thead>
           <tr>
-            ${headers.map((header) => `<th style="border:1px solid #d6deef;padding:8px;background:#eef3fb;text-align:left;">${escapeHtml(header)}</th>`).join("")}
+            ${headers.map((header) => `<th style="border:1px solid #d6deef;padding:8px;background:#eef3fb;color:#475569;text-align:left;font-weight:800;">${escapeHtml(header)}</th>`).join("")}
           </tr>
         </thead>
         <tbody>
-          ${rows.map((row) => `<tr>${row.map((cell) => `<td style="border:1px solid #d6deef;padding:8px;vertical-align:top;">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}
+          ${rows.map((row) => `<tr>${row.map((cell) => {
+            let cellStyle = "border:1px solid #d6deef;padding:8px;vertical-align:top;color:#334155;";
+            let cellValue = escapeHtml(cell);
+            // Soft colors for risk levels
+            if (typeof cell === "string" && cell.toLowerCase().includes("yüksek")) {
+              cellStyle += "background-color:#fff1f0;color:#cf222e;font-weight:800;";
+            } else if (typeof cell === "string" && cell.toLowerCase().includes("orta")) {
+              cellStyle += "background-color:#fff8e1;color:#b45309;font-weight:800;";
+            } else if (typeof cell === "string" && cell.toLowerCase().includes("düşük")) {
+              cellStyle += "background-color:#f0fdf4;color:#166534;font-weight:800;";
+            }
+            return `<td style="${cellStyle}">${cellValue}</td>`;
+          }).join("")}</tr>`).join("")}
         </tbody>
       </table>
     </section>
@@ -627,25 +644,25 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
             </div>
           `).join("")}
         </div>
-        ${buildTableHtml("Parametre Özeti", ["Alan", "Değer"], paramRows, "#1f3a6d")}
-        ${buildTableHtml("Genel Önemlilik", ["Kriter", "Tutar", "Seçilen Oran %", "Ham Önemlilik", "Ağırlık", "Ağırlıklı Önemlilik"], genelRows, "#c00000")}
-        ${buildTableHtml("Hesap Dağıtım", ["Kebir", "Hesap Adı", "Mizan Tutarı", "Risk K", "Nihai Önemlilik", "PM", "Risk Seviyesi"], dagitimRows, "#c45d0a")}
-        ${buildTableHtml("Denetim Riski", ["Kebir", "Hesap Adı", "Doğal Risk", "Kontrol Riski", "ÖYR", "TER", "Örnekleme %", "Yaklaşım"], riskRows, "#5b1c9d")}
+        ${buildTableHtml("BÖLÜM 1: PARAMETRE ÖZETİ", ["Alan", "Değer"], paramRows)}
+        ${buildTableHtml("BÖLÜM 2: GENEL ÖNEMLİLİK (M)", ["Kriter", "Tutar", "Seçilen Oran %", "Ham Önemlilik", "Ağırlık", "Ağırlıklı Önemlilik"], genelRows)}
+        ${buildTableHtml("BÖLÜM 4: HESAP BAZINDA ÖNEMLİLİK DAĞITIMI", ["Kebir", "Hesap Adı", "Mizan Tutarı", "Risk K", "Nihai Önemlilik", "PM", "Risk Seviyesi"], dagitimRows)}
+        ${buildTableHtml("DENETİM RİSKİ", ["Kebir", "Hesap Adı", "Doğal Risk", "Kontrol Riski", "ÖYR", "TER", "Örnekleme %", "Yaklaşım"], riskRows)}
         <section style="margin-top:28px;border:1px solid #d6deef;border-radius:10px;overflow:hidden;">
           <div style="background:#1f3a6d;color:#fff;padding:10px 14px;font-weight:700;">Belge Onay Bilgileri</div>
           <table style="width:100%;border-collapse:collapse;font-size:12px;">
             <thead>
               <tr>
-                ${["Rol", "Ad Soyad", "Unvan", "Tarih"].map((header) => `<th style="border:1px solid #d6deef;padding:8px;background:#eef3fb;text-align:left;">${escapeHtml(header)}</th>`).join("")}
+                ${["Rol", "Ad Soyad", "Unvan", "Tarih"].map((header) => `<th style="border:1px solid #d6deef;padding:8px;background:#f8fafc;color:#475569;text-align:left;font-weight:800;">${escapeHtml(header)}</th>`).join("")}
               </tr>
             </thead>
             <tbody>
               ${approvalRows.map(([label, person]) => `
                 <tr>
-                  <td style="border:1px solid #d6deef;padding:8px;font-weight:700;">${escapeHtml(label)}</td>
-                  <td style="border:1px solid #d6deef;padding:8px;">${escapeHtml(person?.adSoyad || "-")}</td>
-                  <td style="border:1px solid #d6deef;padding:8px;">${escapeHtml(person?.unvan || "-")}</td>
-                  <td style="border:1px solid #d6deef;padding:8px;">${escapeHtml(formatDate(person?.tarih))}</td>
+                  <td style="border:1px solid #d6deef;padding:8px;font-weight:700;color:#334155;">${escapeHtml(label)}</td>
+                  <td style="border:1px solid #d6deef;padding:8px;color:#334155;">${escapeHtml(person?.adSoyad || "-")}</td>
+                  <td style="border:1px solid #d6deef;padding:8px;color:#334155;">${escapeHtml(person?.unvan || "-")}</td>
+                  <td style="border:1px solid #d6deef;padding:8px;color:#334155;">${escapeHtml(formatDate(person?.tarih))}</td>
                 </tr>
               `).join("")}
             </tbody>
@@ -665,6 +682,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
           yil: user.yil,
           denetlenenId: user.denetlenenId,
           title: "OnemlilikSeviyesiBelirlemeVeDegerlendirme",
+          modelAdi: "OnemlilikSeviyesiBelirlemeVeDegerlendirme",
           html,
           save: true,
         },
@@ -758,6 +776,7 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
           yil: user.yil,
           denetlenenId: user.denetlenenId,
           title: "OnemlilikSeviyesiBelirlemeVeDegerlendirme",
+          modelAdi: "OnemlilikSeviyesiBelirlemeVeDegerlendirme",
           html,
           save: true,
         },

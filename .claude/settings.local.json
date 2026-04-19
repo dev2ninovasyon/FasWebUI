@@ -51,7 +51,18 @@
       "Bash(curl -v \"http://localhost:5080/api/BilgiIslemMuhasebe?denetciId=1&yil=2025&denetlenenId=1\")",
       "Bash(taskkill /PID 21944 /F)",
       "Bash(powershell.exe -Command \"Get-Process -Name FasWebApi -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 2; Write-Host 'Done'\")",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(cd \"c:\\\\\\\\Users\\\\\\\\lenov\\\\\\\\source\\\\\\\\repos\\\\\\\\dev2ninovasyon\\\\\\\\FasWebUI\")",
+      "Bash(node -e \"console.log\\('ok'\\)\")",
+      "Bash(grep -r \"afterDeselect\" node_modules/@handsontable/react/dist/*.d.ts)",
+      "Bash(grep -r \"afterDeselect\" node_modules/handsontable/types/*.d.ts)",
+      "Bash(grep -c \"afterDeselect\" node_modules/handsontable/base.d.ts)",
+      "Bash(grep -l \"afterDeselect\" node_modules/handsontable/*.d.ts)",
+      "Bash(ls node_modules/@handsontable/react/)",
+      "Bash(ls node_modules/@handsontable/react/types/)",
+      "Bash(grep -c \"afterDeselect\" node_modules/handsontable/core/hooks/index.d.ts)",
+      "Bash(grep \"afterDeselect\" node_modules/handsontable/core/hooks/index.d.ts)",
+      "Bash(echo \"exit: $?\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\lenov\\source\\repos\\dev2ninovasyon\\FasWebAPI\\Data\\Migrations"

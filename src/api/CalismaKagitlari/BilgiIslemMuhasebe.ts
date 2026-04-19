@@ -62,13 +62,25 @@ export const kaydetBilgiIslemMuhasebe = async (
   dto: BilgiIslemMuhasebeKaydetDto
 ): Promise<boolean> => {
   try {
+    // PascalCase'e dönüştür (Backend DTO uyumluluğu)
+    const payloadDTO = {
+      DenetciId: dto.denetciId,
+      DenetlenenId: dto.denetlenenId,
+      Yil: dto.yil,
+      Satirlar: dto.satirlar.map(item => ({
+        Id: item.id,
+        Durum: item.durum,
+        Tespit: item.tespit,
+      })),
+    };
+
     const response = await apiFetch(`/BilgiIslemMuhasebe/kaydet`, {
       method: "POST",
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(dto),
+      body: JSON.stringify(payloadDTO),
     });
     return response.ok;
   } catch (error) {

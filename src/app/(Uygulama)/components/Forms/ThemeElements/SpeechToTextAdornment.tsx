@@ -32,19 +32,53 @@ declare global {
   }
 }
 
+type SpeechButtonSize = "small" | "medium" | "large";
+
+const SIZE_MAP: Record<SpeechButtonSize, { button: number; icon: number }> = {
+  small:  { button: 24, icon: 14 },
+  medium: { button: 32, icon: 18 },
+  large:  { button: 40, icon: 22 },
+};
+
+const pulseKeyframes = `
+@keyframes speechPulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+`;
+
 interface SpeechToTextAdornmentProps {
   onTranscript: (text: string) => void;
   onInterimTranscript?: (text: string) => void;
   onListeningChange?: (isListening: boolean) => void;
   standalone?: boolean;
+  /** İkon ve buton boyutu. Varsayılan: "medium" */
+  size?: SpeechButtonSize;
+  /** Minimal mod: Durum paneli ve animasyon halkalarını gizler. Sadece ikon görünür. */
+  variant?: "default" | "minimal";
+  /** Butonun dış çapı (px). Belirtilirse 'size' haritasını ezer. */
+  customButtonSize?: number;
+  /** İçerideki ikonun boyutu (px). Belirtilirse 'size' haritasını ezer. */
+  customIconSize?: number;
+  /** Butona tıklandığında odağı geri kazanmak için çağrılacak callback */
+  onFocusRestoration?: () => void;
 }
 
-const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({ 
-  onTranscript, 
+const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
+  onTranscript,
   onInterimTranscript,
   onListeningChange,
-  standalone 
+  standalone,
+  size = "medium",
+  variant = "default",
+  customButtonSize,
+  customIconSize,
+  onFocusRestoration,
 }) => {
+  const { button: defaultBtnSize, icon: defaultIconSize } = SIZE_MAP[size];
+  const btnSize = customButtonSize || defaultBtnSize;
+  const iconSize = customIconSize || defaultIconSize;
   const theme = useTheme();
   const [isRecording, setIsRecording] = useState(false);
   const [interimTranscript, setInterimTranscript] = useState('');
@@ -133,11 +167,16 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
         }
       }
       if (final) {
+        setInterimTranscript('');
+        if (onInterimTranscriptRef.current) {
+          onInterimTranscriptRef.current('');
+        }
         onTranscriptRef.current(final);
-      }
-      setInterimTranscript(interim);
-      if (onInterimTranscriptRef.current) {
-        onInterimTranscriptRef.current(interim);
+      } else {
+        setInterimTranscript(interim);
+        if (onInterimTranscriptRef.current) {
+          onInterimTranscriptRef.current(interim);
+        }
       }
       
       if (interim) {
@@ -209,8 +248,9 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
 
   const content = (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, position: 'relative' }}>
+      <style>{pulseKeyframes}</style>
       <AnimatePresence>
-        {isRecording && (
+        {isRecording && variant !== "minimal" && (
           <Box
             sx={{
               position: 'absolute',
@@ -303,17 +343,18 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
       </AnimatePresence>
 
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Kayıt sırasında arka plan yerine sadece halka animasyonu (Minimal modda gizli) */}
         <AnimatePresence>
-          {isRecording && (
+          {isRecording && variant !== "minimal" && (
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: audioStatus === 'LISTENING' ? 1.4 : 1.2, opacity: 0.2 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeOut" }}
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: audioStatus === 'LISTENING' ? 1.8 : 1.4, opacity: 0 }}
+              exit={{ scale: 0.6, opacity: 0 }}
+              transition={{ repeat: Infinity, duration: 1.2, ease: "easeOut" }}
               style={{
                 position: 'absolute',
-                inset: -10,
-                backgroundColor: audioStatus === 'LISTENING' ? errorColor : primaryColor,
+                inset: -4,
+                border: `2px solid ${audioStatus === 'LISTENING' ? errorColor : primaryColor}`,
                 borderRadius: '50%',
                 zIndex: 0,
                 pointerEvents: 'none'
@@ -321,39 +362,59 @@ const SpeechToTextAdornment: React.FC<SpeechToTextAdornmentProps> = ({
             />
           )}
         </AnimatePresence>
-        
+
         <Tooltip title={isRecording ? "Durdurmak için dokunun" : "Sesle Yazmayı Başlat"} arrow>
           <IconButton
             component={motion.button as any}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
             size="small"
+            tabIndex={-1} // Odaklanmayı engelle (Focus Lock)
+            onMouseDown={(e: React.MouseEvent) => {
+              e.preventDefault(); // Odak kaybını engeller
+              e.stopPropagation(); // Olayın tabloya (Handsontable) gitmesini engeller
+              e.nativeEvent.stopImmediatePropagation(); // Tüm üst dinleyicileri durdur
+              
+              if (onFocusRestoration) {
+                onFocusRestoration();
+              }
+            }}
             onClick={(e: React.MouseEvent) => {
               e.preventDefault();
               e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
               toggleRecording();
             }}
             sx={{
               position: 'relative',
               zIndex: 1,
-              width: 36,
-              height: 36,
-              bgcolor: isRecording ? errorColor : primaryColor,
-              color: theme.palette.common.white,
-              boxShadow: theme.shadows[2],
+              width: btnSize,
+              height: btnSize,
+              // Minimal modda pulse animasyonu yok: box-shadow hücre dışına taşmasın
+              animation: (isRecording && variant !== "minimal") ? 'speechPulse 1.5s infinite' : 'none',
+              bgcolor: isRecording ? 'rgba(211, 47, 47, 0.1)' : 'transparent',
+              color: isRecording
+                ? (audioStatus === 'LISTENING' ? errorColor : primaryColor)
+                : 'text.secondary',
               '&:hover': {
-                bgcolor: isRecording ? theme.palette.error.dark : theme.palette.primary.dark,
-              }
+                bgcolor: 'transparent',
+                color: isRecording ? errorColor : primaryColor,
+              },
+              boxShadow: 'none',
+              border: 'none',
+              minWidth: 0,
+              minHeight: 0,
+              p: 0,
             }}
           >
-            {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
+            {isRecording ? <MicOff size={iconSize} /> : <Mic size={iconSize} />}
           </IconButton>
         </Tooltip>
       </div>
     </Box>
   );
 
-  if (standalone) {
+  if (standalone || variant === "minimal") {
     return content;
   }
 

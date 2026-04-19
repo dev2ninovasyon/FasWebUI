@@ -16,8 +16,8 @@ export const PageTitleProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const updatePageTitle = useCallback((title: string) => {
     setPageTitle(title);
     
-    // Atualizar o título do navegador
-    let newTitle = title ? `${title} - FAS Denetim` : "FAS Denetim";
+    // Browser başlığını güncelle
+    let newTitle = title ? `${title} | FAS Denetim` : "FAS Denetim";
     
     // Se houver notificações não lidas, adicionar badge
     if (unreadNotifications > 0) {
@@ -30,8 +30,8 @@ export const PageTitleProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const updateUnreadNotifications = useCallback((count: number) => {
     setUnreadNotifications(count);
     
-    // Atualizar o título do navegador
-    let newTitle = pageTitle ? `${pageTitle} - FAS Denetim` : "FAS Denetim";
+    // Browser başlığını güncelle
+    let newTitle = pageTitle ? `${pageTitle} | FAS Denetim` : "FAS Denetim";
     
     // Se houver notificações não lidas, adicionar badge
     if (count > 0) {

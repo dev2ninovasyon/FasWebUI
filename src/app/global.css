@@ -10,6 +10,16 @@
   visibility: hidden !important;
 }
 
+/* Handsontable: Zebra / striped satırlar
+   .htCore eklenerek specificity ≥ tema selektörü yapıldı (0,3,3 > 0,3,1)
+   Inline style'lar (custom renderer) hâlâ override eder */
+.ht-theme-horizon .handsontable .htCore tbody tr:nth-child(odd) td {
+  background-color: #ffffff !important;
+}
+.ht-theme-horizon .handsontable .htCore tbody tr:nth-child(even) td {
+  background-color: #f5f7fa !important;
+}
+
 /* Handsontable: Sayısal sütunlar sağa yasla */
 .handsontable td.htRight,
 .handsontable th.htRight,
@@ -17,6 +27,68 @@
 .ht-theme-horizon th.htRight {
   text-align: right !important;
   font-variant-numeric: tabular-nums;
+}
+
+/* Handsontable: Metin editörü (textarea) boyutunu sınırla — çok satırlı içerikte diğer hücrelerin üstüne taşmayı önler */
+.handsontable textarea.handsontableInput {
+  max-height: 140px !important;
+  overflow-y: auto !important;
+  resize: none !important;
+  white-space: pre-wrap !important;
+  font-size: 0.82rem !important;
+  line-height: 1.5 !important;
+}
+
+.ht-cell-clamp {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.calisma-kagidi-hot-table-shell {
+  background: var(--mui-palette-background-paper, #fff);
+}
+
+.calisma-kagidi-hot-table .handsontable,
+.calisma-kagidi-hot-table .wtHolder,
+.calisma-kagidi-hot-table .wtHider {
+  z-index: 0 !important;
+}
+
+.calisma-kagidi-hot-table .ht_clone_top,
+.calisma-kagidi-hot-table .ht_clone_left,
+.calisma-kagidi-hot-table .ht_clone_top_left_corner {
+  z-index: 5 !important;
+}
+
+.calisma-kagidi-hot-table .ht_clone_left,
+.calisma-kagidi-hot-table .ht_clone_left .wtHolder {
+  overflow: hidden !important;
+}
+
+.calisma-kagidi-hot-table .ht_clone_top,
+.calisma-kagidi-hot-table .ht_clone_top .wtHolder,
+.calisma-kagidi-hot-table .ht_clone_top .wtHider,
+.calisma-kagidi-hot-table .ht_clone_top_left_corner,
+.calisma-kagidi-hot-table .ht_clone_top_left_corner .wtHolder,
+.calisma-kagidi-hot-table .ht_clone_top_left_corner .wtHider {
+  overflow: hidden !important;
+}
+
+.calisma-kagidi-hot-table .ht_master .wtHolder {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.calisma-kagidi-hot-table-shell .handsontable {
+  overflow-x: hidden !important;
 }
 
 /* Handsontable header dropdown arrow fix - Replace 3 dots with arrow */
@@ -31,4 +103,3 @@
   align-items: center !important;
   justify-content: center !important;
 }
-

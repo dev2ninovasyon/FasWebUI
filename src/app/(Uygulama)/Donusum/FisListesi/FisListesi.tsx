@@ -315,15 +315,19 @@ const FisListesi = () => {
             fise_git: {
               name: 'Fişe Git',
               callback: async function (key, selection) {
-                const row = await handleGetRowData(selection[0].start.row);
+                if (!selection || !selection.length) return;
+                const rowIdx = selection[0].start.row;
+                const row = await handleGetRowData(rowIdx);
                 if (!row) return;
                 router.push(`/Donusum/FisListesi/FisDetaylari/${row[1]}`);
               },
             },
-            fise_durumu_değiştir: {
+            fise_durumu_degistir: {
               name: 'Fiş Durumu Değiştir',
               callback: async function (key, selection) {
-                const row = await handleGetRowData(selection[0].start.row);
+                if (!selection || !selection.length) return;
+                const rowIdx = selection[0].start.row;
+                const row = await handleGetRowData(rowIdx);
                 if (!row) return;
                 handleUpdateFisDurumu(row[1]);
               },

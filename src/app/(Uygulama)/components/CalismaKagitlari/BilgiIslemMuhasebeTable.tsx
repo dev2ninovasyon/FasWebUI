@@ -350,6 +350,23 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
   };
 
   const buildHtmlAsync = async () => {
+    const escapeHtml = (unsafe: unknown) => {
+      return String(unsafe ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const riskChipClass = (val?: string | null) => {
+      const v = (val || "").toLowerCase();
+      if (v.includes("yüksek") || v.includes("kritik")) return "chip chip-error";
+      if (v.includes("orta")) return "chip chip-warn";
+      if (v.includes("düşük") || v.includes("bilgi")) return "chip chip-info";
+      return "chip chip-ok";
+    };
+
     const createdAt = new Date().toLocaleString("tr-TR");
 
     const tableRows = renderedRows

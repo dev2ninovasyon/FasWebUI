@@ -230,6 +230,7 @@ const SearchBoxAutocomplete = () => {
       noOptionsText="Bulunamadı"
       size="small"
       fullWidth
+      popupIcon={<SearchIcon style={{ color: "gray" }} />}
       filterOptions={filterOptions}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.label}
@@ -280,14 +281,6 @@ const SearchBoxAutocomplete = () => {
           color="secondary"
           InputProps={{
             ...params.InputProps,
-            endAdornment: (
-              <>
-                {params.InputProps.endAdornment}
-                <div style={{ marginRight: "-28px", marginTop: " 5px" }}>
-                  <SearchIcon style={{ color: "gray" }} />
-                </div>
-              </>
-            ),
           }}
         />
       )}

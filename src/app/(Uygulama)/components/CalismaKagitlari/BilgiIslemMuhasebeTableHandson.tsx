@@ -80,6 +80,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   const user = useSelector((state: AppState) => state.userReducer);
   const router = useRouter();
   const hotRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [rows, setRows] = useState<BilgiIslemMuhasebeRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -185,7 +186,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   }, [tableData]);
 
   const colHeaders = useMemo(
-    () => ["No", "Risk", "Soru", "Yanıt (E/H)", "Açıklama / Değerlendirme Metni", "BDS Referansı"],
+    () => ["No", "Risk", "Soru", "Yanıt (E/H)", "Açıklama / Değerlendirme Metni", "BDS"],
     []
   );
 
@@ -193,20 +194,20 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     () => [
       { type: "text" as const, readOnly: false, width: 40, editor: "speech-text" },
       { type: "text" as const, readOnly: false, width: 90, renderer: riskRenderer, editor: "speech-text" },
-      { type: "text" as const, readOnly: false, width: 260, renderer: islemRenderer, editor: "speech-text" },
+      { type: "text" as const, readOnly: false, width: 360, renderer: islemRenderer, editor: "speech-text" },
       {
         type: "dropdown" as const,
         source: ["Evet", "Hayır"],
-        width: 90,
+        width: 100,
         renderer: durumRenderer,
       },
       {
         type: "text" as const,
-        width: 440,
+        width: 517,
         renderer: tespitRenderer,
         editor: "speech-text",
       },
-      { type: "text" as const, readOnly: false, width: 130, renderer: bdsRefRenderer, editor: "speech-text" },
+      { type: "text" as const, readOnly: false, width: 90, renderer: bdsRefRenderer, editor: "speech-text" },
     ],
     []
   );
@@ -258,6 +259,29 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     setTamamlanan(tableData.filter((r) => r.durum?.trim()).length);
     setToplam(tableData.length);
   }, [tableData, setTamamlanan, setToplam]);
+
+  useEffect(() => {
+    const applyWidth = () => {
+      const hot = hotRef.current?.hotInstance;
+      const container = containerRef.current;
+      if (!hot || !container) return;
+      const containerWidth = container.offsetWidth;
+      const fixedWidths = 40 + 90 + 360 + 100 + 90;
+      const açıklamaWidth = Math.max(517, containerWidth - fixedWidths - 2);
+      hot.updateSettings({
+        columns: [
+          { type: "text", readOnly: false, width: 40, editor: "speech-text" },
+          { type: "text", readOnly: false, width: 90, renderer: riskRenderer, editor: "speech-text" },
+          { type: "text", readOnly: false, width: 360, renderer: islemRenderer, editor: "speech-text" },
+          { type: "dropdown", source: ["Evet", "Hayır"], width: 100, renderer: durumRenderer },
+          { type: "text", width: açıklamaWidth, renderer: tespitRenderer, editor: "speech-text" },
+          { type: "text", readOnly: false, width: 90, renderer: bdsRefRenderer, editor: "speech-text" },
+        ],
+      });
+    };
+    const timer = setTimeout(applyWidth, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!isHotDirty) return;
@@ -420,12 +444,12 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
 
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column", bgcolor: "#ffffff" }}>
-      <Box sx={{ px: 2 }}>
+      <Box sx={{ px: { xs: 0.25, md: 0.5 } }}>
         <Box
           className="calisma-kagidi-hot-table-shell"
           sx={{ width: "100%", overflow: "hidden", borderRadius: 1, border: "1px solid", borderColor: "divider" }}
         >
-          <Box className="calisma-kagidi-hot-table" sx={{ position: "relative", minWidth: 0 }}>
+          <Box ref={containerRef} className="calisma-kagidi-hot-table" sx={{ position: "relative", minWidth: 0 }}>
             <CalismaKagitiHotTable
               ref={hotRef}
               className="ht-theme-horizon calisma-kagidi-hot-table-grid"
@@ -435,6 +459,8 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
               rowHeaders={false}
               height="calc(100vh - 260px)"
               rowHeight={HOT_BASE_ROW_HEIGHT}
+              stretchH="none"
+              dropdownMenu={true}
               manualColumnResize={true}
               manualRowResize={false}
               editableColumnIndices={editableColumnIndices}

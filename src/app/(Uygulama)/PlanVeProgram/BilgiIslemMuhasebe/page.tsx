@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, Chip, Stack } from "@mui/material";
+import { Box, Button, Chip, CircularProgress, Stack } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import BilgiIslemMuhasebeTable from "@/app/(Uygulama)/components/CalismaKagitlari/BilgiIslemMuhasebeTableHandson";
@@ -22,6 +22,15 @@ const Page = () => {
   const [isClickedVarsayilanaDon, setIsClickedVarsayilanaDon] = useState(false);
   const [tamamlanan, setTamamlanan] = useState(0);
   const [toplam, setToplam] = useState(0);
+  const [saveRequestVersion, setSaveRequestVersion] = useState(0);
+  const [tableState, setTableState] = useState({
+    isDirty: false,
+    saving: false,
+    loading: false,
+    recordCount: 0,
+    hayirCount: 0,
+    kritikCount: 0,
+  });
 
   const controller = "BilgiIslemMuhasebe";
 
@@ -32,16 +41,22 @@ const Page = () => {
           direction={{ xs: "column", lg: "row" }}
           spacing={1.5}
           sx={{
-            width: "95%",
+            width: "99%",
             margin: "0 auto",
             alignItems: { xs: "stretch", lg: "center" },
             justifyContent: "space-between",
           }}
         >
-          <Stack spacing={0.5}>
+          <Stack spacing={0.75}>
             <Chip
               variant="outlined"
               label={`${tamamlanan}/${toplam}`}
+              sx={{ width: "fit-content" }}
+            />
+            <Chip
+              size="small"
+              variant="outlined"
+              label={`Toplam: ${tableState.recordCount} | Hayır: ${tableState.hayirCount} | Kritik: ${tableState.kritikCount}`}
               sx={{ width: "fit-content" }}
             />
           </Stack>
@@ -60,10 +75,22 @@ const Page = () => {
               size="medium"
               variant="outlined"
               color="primary"
-              disabled={isClickedVarsayilanaDon}
+              disabled={isClickedVarsayilanaDon || tableState.loading}
               onClick={() => setIsClickedVarsayilanaDon(true)}
             >
-              Varsayılana Dön
+              {isClickedVarsayilanaDon ? "Sıfırlanıyor..." : "Varsayılana Dön"}
+            </Button>
+            <Button
+              size="medium"
+              variant={tableState.isDirty ? "contained" : "outlined"}
+              color="primary"
+              disabled={tableState.saving || tableState.loading}
+              onClick={() => setSaveRequestVersion((prev) => prev + 1)}
+              startIcon={
+                tableState.saving ? <CircularProgress size={16} color="inherit" /> : undefined
+              }
+            >
+              {tableState.saving ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
             </Button>
           </Stack>
         </Stack>
@@ -79,6 +106,8 @@ const Page = () => {
             setIsClickedVarsayilanaDon={setIsClickedVarsayilanaDon}
             setTamamlanan={setTamamlanan}
             setToplam={setToplam}
+            saveRequestVersion={saveRequestVersion}
+            onStateChange={setTableState}
           />
         </Box>
       </PageContainer>

@@ -1,3 +1,6 @@
+import { registerEditor } from "handsontable/editors";
+import { SpeechTextEditor } from "@/components/CalismaKagitiHotTable/SpeechTextEditor";
+import { FloatingTextEditor } from "@/components/CalismaKagitiHotTable/FloatingTextEditor";
 import {
   AutocompleteCellType,
   CheckboxCellType,
@@ -79,6 +82,9 @@ if (!globalThis.__HOT_SELECTED_MODULES_REGISTERED__) {
   registerPlugin(StretchColumns);
   registerPlugin(TouchScroll);
   registerPlugin(UndoRedo);
+
+  registerEditor(SpeechTextEditor.EDITOR_TYPE, SpeechTextEditor);
+  registerEditor(FloatingTextEditor.EDITOR_TYPE, FloatingTextEditor);
 
   globalThis.__HOT_SELECTED_MODULES_REGISTERED__ = true;
 }
