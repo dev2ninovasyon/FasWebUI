@@ -1,8 +1,6 @@
 "use client";
 
-// import { Helmet } from 'react-helmet';
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 import { usePathname } from "next/navigation";
 
@@ -117,17 +115,11 @@ const PageContainer = ({ title, description, children }: Props) => {
   const pageTitle = title || prettifyPathname(pathname);
   const finalTitle = pageTitle ? `${pageTitle} | FAS Denetim` : "FAS Denetim";
 
-  return (
-    <HelmetProvider>
-      <div>
-        <Helmet>
-          <title>{finalTitle}</title>
-          <meta name="description" content={description} />
-        </Helmet>
-        {children}
-      </div>
-    </HelmetProvider>
-  );
+  useEffect(() => {
+    document.title = finalTitle;
+  }, [finalTitle]);
+
+  return <div>{children}</div>;
 };
 
 export default PageContainer;

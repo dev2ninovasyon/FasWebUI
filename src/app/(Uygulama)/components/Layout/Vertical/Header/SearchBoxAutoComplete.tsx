@@ -133,10 +133,13 @@ function extractDynamicMenuItems(dynamicItems: any[]): SearchItemType[] {
   return pages;
 }
 
-function handleButtonClick(link: string) {
-  if (link) {
-    window.location.href = link;
+function handleButtonClick(link: string, event?: React.MouseEvent) {
+  if (!link) return;
+  if (event && (event.ctrlKey || event.metaKey || event.button === 1)) {
+    window.open(link, "_blank");
+    return;
   }
+  window.location.href = link;
 }
 
 const SearchBoxAutocomplete = () => {
@@ -235,44 +238,51 @@ const SearchBoxAutocomplete = () => {
       isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.label}
       onChange={(event, value) => handleButtonClick(value?.href || "")}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          {...props}
-          key={option.id}
-          sx={{
-            padding: "8px 16px",
-            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
-            "&:last-child": {
-              borderBottom: "none",
-            },
-          }}
-        >
-          <Stack direction="column" spacing={0.5} width="100%">
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 600,
-                color: theme.palette.text.primary,
-              }}
-            >
-              {option.label}
-            </Typography>
-            {option.breadcrumb && (
+      renderOption={(props, option) => {
+        const { key, onClick, ...liProps } = props as any;
+        return (
+          <Box
+            component="a"
+            key={key ?? option.id}
+            href={option.href}
+            onClick={(e: React.MouseEvent) => {
+              e.preventDefault();
+              onClick?.(e);
+              handleButtonClick(option.href, e);
+            }}
+            {...liProps}
+            sx={{
+              padding: "8px 16px",
+              borderBottom: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
+              "&:last-child": { borderBottom: "none" },
+              textDecoration: "none",
+              display: "block",
+              cursor: "pointer",
+            }}
+          >
+            <Stack direction="column" spacing={0.5} width="100%">
               <Typography
-                variant="caption"
-                sx={{
-                  color: theme.palette.text.secondary,
-                  fontSize: "0.75rem",
-                  fontStyle: "italic",
-                }}
+                variant="body2"
+                sx={{ fontWeight: 600, color: theme.palette.text.primary }}
               >
-                {option.breadcrumb}
+                {option.label}
               </Typography>
-            )}
-          </Stack>
-        </Box>
-      )}
+              {option.breadcrumb && (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontSize: "0.75rem",
+                    fontStyle: "italic",
+                  }}
+                >
+                  {option.breadcrumb}
+                </Typography>
+              )}
+            </Stack>
+          </Box>
+        );
+      }}
       renderInput={(params) => (
         <CustomTextField
           {...params}

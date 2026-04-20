@@ -63,7 +63,7 @@ interface RowData {
   durum: string;
   riskSeviyesi: string;
   tespit: string;
-  ilgiliBds: string;
+  denetimAdimi: string;
   bdsReferansi: string;
   id: number;
   evetIcerik?: string | null;
@@ -201,8 +201,8 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
           durum,
           riskSeviyesi,
           tespit: row.tespit ?? (durum === "Evet" ? (row.evetIcerik ?? "") : (row.hayirIcerik ?? "")),
-          ilgiliBds: row.ilgiliBds ?? (durum === "Evet" ? (row.evetDenetimAksiyonu ?? "") : (row.hayirDenetimAksiyonu ?? "")),
-          bdsReferansi: row.ilgiliBds ?? "", // Salt okunur orijinal BDS
+          denetimAdimi: durum === "Evet" ? (row.evetDenetimAksiyonu ?? "") : (row.hayirDenetimAksiyonu ?? ""),
+          bdsReferansi: row.ilgiliBds ?? "",
           id: row.id,
           evetIcerik: row.evetIcerik ?? "",
           hayirIcerik: row.hayirIcerik ?? "",
@@ -220,7 +220,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
     const query = searchTerm.trim().toLocaleLowerCase("tr-TR");
     return baseTableData.filter((row) => {
       const matchesRisk = riskFilter === "Tümü" || normalizeText(row.riskSeviyesi) === normalizeText(riskFilter);
-      const matchesSearch = query.length === 0 || [row.bolum, row.konu, row.islem, row.tespit, row.ilgiliBds, row.bdsReferansi].join(" ").toLocaleLowerCase("tr-TR").includes(query);
+      const matchesSearch = query.length === 0 || [row.bolum, row.konu, row.islem, row.tespit, row.denetimAdimi, row.bdsReferansi].join(" ").toLocaleLowerCase("tr-TR").includes(query);
       const matchesHayirFilter = !yalnizcaHayirlar || row.durum === "Hayır";
       return matchesRisk && matchesSearch && matchesHayirFilter;
     });
@@ -300,35 +300,36 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
 
   const columns = useMemo(
     () => [
-      { type: "text" as const, readOnly: false, width: 40, editor: "speech-text" }, // 0: No
-      { type: "text" as const, readOnly: false, width: 80, renderer: islemRenderer, editor: "speech-text" }, // 1: Bölüm
-      { type: "text" as const, readOnly: false, width: 100, renderer: islemRenderer, editor: "speech-text" }, // 2: Alt Bölüm
-      { type: "text" as const, readOnly: false, width: 220, renderer: islemRenderer, editor: "speech-text" }, // 3: Soru
+      { type: "text" as const, readOnly: false, width: 60, editor: "speech-text" }, // 0: No
+      { type: "text" as const, readOnly: false, width: 110, renderer: islemRenderer, editor: "speech-text" }, // 1: Bölüm
+      { type: "text" as const, readOnly: false, width: 130, renderer: islemRenderer, editor: "speech-text" }, // 2: Alt Bölüm
+      { type: "text" as const, readOnly: false, width: 260, renderer: islemRenderer, editor: "speech-text" }, // 3: Soru
       {
         type: "dropdown" as const,
         source: ["Evet", "Hayır"],
-        width: 80,
+        width: 90,
         renderer: durumRenderer,
       }, // 4: Yanıt
-      { type: "text" as const, readOnly: false, width: 90, renderer: riskRenderer, editor: "speech-text" }, // 5: Risk
+      { type: "text" as const, readOnly: false, width: 110, renderer: riskRenderer, editor: "speech-text" }, // 5: Risk
       {
         type: "text" as const,
-        width: 320,
+        width: 360,
         renderer: customTespitRenderer,
         editor: "speech-text",
       }, // 6: Açıklama Metni
       {
         type: "text" as const,
-        width: 250,
+        width: 290,
         renderer: islemRenderer,
-        editor: "speech-text",
+        editor: false,
+        readOnly: true,
       }, // 7: Denetim Adımı (Aksiyon)
-      { type: "text" as const, readOnly: false, width: 100, renderer: bdsRefRenderer, editor: "speech-text" }, // 8: İlgili BDS
+      { type: "text" as const, readOnly: true, width: 130, renderer: bdsRefRenderer, editor: false }, // 8: İlgili BDS
     ],
     []
   );
 
-  const editableColumnIndices = useMemo(() => [COL_SATIR_NO, COL_BOLUM, COL_KONU, COL_SORU, COL_DURUM, COL_RISK, COL_TESPIT, COL_AKSIYON, COL_BDS_REF], []);
+  const editableColumnIndices = useMemo(() => [COL_SATIR_NO, COL_BOLUM, COL_KONU, COL_SORU, COL_DURUM, COL_RISK, COL_TESPIT], []);
 
   const hotData = useMemo(
     () =>
@@ -340,7 +341,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
         row.durum,
         row.riskSeviyesi,
         row.tespit,
-        row.ilgiliBds,
+        row.denetimAdimi,
         row.bdsReferansi,
         row.id,
       ]),
@@ -437,8 +438,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
     setSaving(true);
     try {
       const sourceData = hot.getSourceData() as any[][];
-      
-      const satirlar = sourceData
+      const gosterilenSatirlar = sourceData
         .map((rowArr) => ({
           id: Number(rowArr[9] || 0),
           satirNo: rowArr[COL_SATIR_NO] ? Number(rowArr[COL_SATIR_NO]) : null,
@@ -448,15 +448,36 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
           durum: (rowArr[COL_DURUM] ?? "Evet").toString(),
           riskSeviyesi: (rowArr[COL_RISK] ?? "").toString(),
           tespit: (rowArr[COL_TESPIT] ?? "").toString(),
-          ilgiliBds: (rowArr[COL_AKSIYON] ?? "").toString(),
-        }))
-        .filter(item => item.id === 0 || changedRowIdsRef.current.has(item.id));
-      
-      if (satirlar.length === 0) {
+          ilgiliBds: (rowArr[COL_BDS_REF] ?? "").toString(),
+        }));
+
+      if (gosterilenSatirlar.length === 0) {
         enqueueSnackbar("Değişiklik yapılmadı", { variant: "info" });
         setSaving(false);
         return;
       }
+
+      const gosterilenSatirIdleri = new Set(
+        gosterilenSatirlar.filter((item) => item.id > 0).map((item) => item.id)
+      );
+
+      const gizliSatirlar = baseTableData
+        .filter((row) => row.id > 0 && !gosterilenSatirIdleri.has(row.id))
+        .map((row) => ({
+          id: row.id,
+          satirNo: typeof row.satirNo === "number" ? row.satirNo : Number(row.satirNo) || null,
+          bolum: row.bolum,
+          konu: row.konu,
+          islem: row.islem,
+          durum: row.durum,
+          riskSeviyesi: row.riskSeviyesi,
+          tespit: row.tespit,
+          ilgiliBds: row.bdsReferansi,
+        }));
+
+      const satirlar = [...gosterilenSatirlar, ...gizliSatirlar].sort(
+        (a, b) => (a.satirNo ?? Number.MAX_SAFE_INTEGER) - (b.satirNo ?? Number.MAX_SAFE_INTEGER)
+      );
 
       const success = await kaydetIsletmeyeIliskinIcKontrolTespit({
         denetciId: user.denetciId,
@@ -479,7 +500,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
     } finally {
       setSaving(false);
     }
-  }, [user.denetciId, user.denetlenenId, user.yil, tableData, fetchData, enqueueSnackbar]);
+  }, [user.denetciId, user.denetlenenId, user.yil, baseTableData, fetchData, enqueueSnackbar]);
 
   // ── HTML çıktı ────────────────────────────────────────────────────────────────
 
@@ -513,7 +534,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
         <td style="text-align:center">${escapeHtml(row.durum)}</td>
         <td style="text-align:center"><span class="${riskChipClass(row.riskSeviyesi)}">${escapeHtml(row.riskSeviyesi)}</span></td>
         <td>${escapeHtml(row.tespit)}</td>
-        <td>${escapeHtml(row.ilgiliBds)}</td>
+        <td>${escapeHtml(row.denetimAdimi)}</td>
         <td style="text-align:center">${escapeHtml(row.bdsReferansi)}</td>
       </tr>`
       )
@@ -585,7 +606,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
     );
 
   return (
-    <Box sx={{ width: "95%", margin: "0 auto", display: "flex", flexDirection: "column", bgcolor: "#ffffff" }}>
+    <Box sx={{ width: "100%", margin: 0, display: "flex", flexDirection: "column", bgcolor: "#ffffff" }}>
       <Stack spacing={2.5}>
 
 
@@ -600,19 +621,20 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
           </Button>
         </Box>
 
-        <Box sx={{ minHeight: "60vh" }}>
+        <Box sx={{ minHeight: "auto", width: "100%", overflowX: "auto" }}>
           <CalismaKagitiHotTable
             ref={hotRef}
             data={hotData}
             colHeaders={colHeaders}
             columns={columns}
             rowHeaders={false}
+            stretchH="none"
             manualColumnResize={true}
             manualRowResize={false}
             editableColumnIndices={editableColumnIndices}
             afterChange={handleAfterChange}
             afterCreateRow={handleAfterCreateRow}
-            height={700}
+            height="calc(100vh - 420px)"
           />
         </Box>
 

@@ -29,8 +29,12 @@ export interface IsletmeyeIliskinIcKontrolTespitSayfaRow {
 
 export interface IsletmeyeIliskinIcKontrolTespitSatirDto {
   id: number;
+  satirNo?: number | null;
+  bolum?: string | null;
+  konu?: string | null;
   durum: string;
   islem: string | null;
+  riskSeviyesi?: string | null;
   tespit: string | null;
   ilgiliBds: string | null;
 }
@@ -65,10 +69,27 @@ export const kaydetIsletmeyeIliskinIcKontrolTespit = async (
   dto: IsletmeyeIliskinIcKontrolTespitKaydetDto
 ): Promise<boolean> => {
   try {
+    const payloadDTO = {
+      DenetciId: dto.denetciId,
+      DenetlenenId: dto.denetlenenId,
+      Yil: dto.yil,
+      Satirlar: dto.satirlar.map((item) => ({
+        Id: item.id,
+        SatirNo: item.satirNo,
+        Bolum: item.bolum,
+        Konu: item.konu,
+        Islem: item.islem,
+        RiskSeviyesi: item.riskSeviyesi,
+        Durum: item.durum,
+        Tespit: item.tespit,
+        IlgiliBds: item.ilgiliBds,
+      })),
+    };
+
     const response = await apiFetch(`/IsletmeyeIliskinIcKontrolTespit/kaydet`, {
       method: "POST",
       headers: { accept: "application/json", "Content-Type": "application/json" },
-      body: JSON.stringify(dto),
+      body: JSON.stringify(payloadDTO),
     });
     return response.ok;
   } catch (error) {

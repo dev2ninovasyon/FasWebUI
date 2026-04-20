@@ -8,11 +8,10 @@ import ListItemText from "@mui/material/ListItemText";
 import { Theme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { useSelector } from "@/store/hooks";
 import { useTranslation } from "react-i18next";
 import { AppState } from "@/store/store";
-import { useLoading } from "@/contexts/LoadingContext";
 import React from "react";
 
 type NavGroup = {
@@ -90,10 +89,7 @@ export default function NavItem({
   const lgDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("lg"));
   const customizer = useSelector((state: AppState) => state.customizer);
   const Icon = item?.icon;
-  const theme = useTheme();
   const { t } = useTranslation();
-  const { setLoading } = useLoading();
-
   const itemIcon =
     level > 1 ? (
       <Icon strokeWidth={1.5} size="1rem" />
@@ -102,18 +98,13 @@ export default function NavItem({
     );
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    // Eğer farklı bir sayfaya gidiyorsak loading göster
-    if (pathDirect !== item?.href && item?.href) {
-      setLoading(true);
-    }
-    // Mobile'da sidebar'ı kapat
     if (lgDown && onClick) {
       onClick(e);
     }
   };
 
   return (
-    <List component="li" disablePadding key={item?.id && item.title}>
+    <List component="li" disablePadding key={item?.id}>
       <Link href={item.href} prefetch={false}>
         <ListItemStyled
           disabled={item?.disabled}

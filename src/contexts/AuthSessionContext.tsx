@@ -31,7 +31,13 @@ const AuthSessionContext = createContext<AuthSessionContextValue | undefined>(un
 export function AuthSessionProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
   const user = useSelector((state: AppState) => state.userReducer);
-  const [status, setStatus] = useState<AuthSessionStatus>("loading");
+  // Optimistic: token varsa hemen "authenticated" göster, arka planda doğrula.
+  // PersistGate loading={null} ile token her zaman hazır olduğu için güvenli.
+  const [status, setStatus] = useState<AuthSessionStatus>(() => {
+    if (typeof window === "undefined") return "loading";
+    const { accessToken } = readStoredAuthTokens();
+    return accessToken ? "authenticated" : "loading";
+  });
   const [hasBootstrapped, setHasBootstrapped] = useState(false);
   const activeBootstrapPromiseRef = useRef<Promise<boolean> | null>(null);
 

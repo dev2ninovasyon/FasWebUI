@@ -321,8 +321,13 @@ const BilgiIslemMuhasebeTable: React.FC<Props> = ({
 
         return {
           id: Number(id),
+          satirNo: sourceRow?.satirNo ?? null,
+          riskSeviyesi: sourceRow?.riskSeviyesi ?? null,
+          islem: sourceRow?.islem ?? null,
           durum: value.durum,
           tespit: finalTespit,
+          bdsReferansi: sourceRow?.bdsReferansi ?? null,
+          sheetAdi: sourceRow?.sheetAdi ?? null,
         };
       });
 

@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿"use client";
+import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import useMediaQuery from "@mui/material/useMediaQuery";

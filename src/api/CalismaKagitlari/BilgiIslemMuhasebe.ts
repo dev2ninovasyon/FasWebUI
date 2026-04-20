@@ -16,8 +16,13 @@ export interface BilgiIslemMuhasebeRow {
 
 export interface BilgiIslemMuhasebeUpdateItem {
   id: number;
+  satirNo?: number | null;
+  riskSeviyesi?: string | null;
+  islem?: string | null;
   durum: string;
   tespit: string | null;
+  bdsReferansi?: string | null;
+  sheetAdi?: string | null;
 }
 
 export interface BilgiIslemMuhasebeKaydetDto {
@@ -69,8 +74,13 @@ export const kaydetBilgiIslemMuhasebe = async (
       Yil: dto.yil,
       Satirlar: dto.satirlar.map(item => ({
         Id: item.id,
+        SatirNo: item.satirNo,
+        RiskSeviyesi: item.riskSeviyesi,
+        Islem: item.islem,
         Durum: item.durum,
         Tespit: item.tespit,
+        BdsReferansi: item.bdsReferansi,
+        SheetAdi: item.sheetAdi,
       })),
     };
 
