@@ -20,9 +20,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 import { usePathname } from "next/navigation";
 import { getMenus, getMenuUsagePanelByMenuId, incrementMenuUsageView, Menu as ApiMenu, MenuUsagePanel } from "@/api/Menu/Menu";
 import MenuUsageDrawer from "./MenuUsageDrawer";
-import { Info, MessageSquareDot } from "lucide-react";
-import FeedbackDrawer from "@/app/(Uygulama)/components/Feedback/FeedbackDrawer";
-import { usePageFeedback } from "@/hooks/usePageFeedback";
+import { Info } from "lucide-react";
 
 interface BreadCrumbType {
   subtitle?: string;
@@ -84,8 +82,6 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
   };
 
   const smDown = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
-
-  const { isOpen: isFeedbackOpen, open: openFeedback, close: closeFeedback } = usePageFeedback();
 
   const [isUsageDrawerOpen, setIsUsageDrawerOpen] = useState(false);
   const [usageData, setUsageData] = useState<MenuUsagePanel | null>(null);
@@ -181,18 +177,6 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
             title="Kullanim Bilgisi"
           >
             <Info size={18} />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={openFeedback}
-            sx={{
-              color: (theme: Theme) => theme.palette.secondary.main,
-              "&:hover": { backgroundColor: (theme: Theme) => theme.palette.secondary.light },
-              ml: 0.25,
-            }}
-            title="Geri Bildirim Bırak"
-          >
-            <MessageSquareDot size={18} />
           </IconButton>
         </Stack>
         {items && (
@@ -302,13 +286,8 @@ const Breadcrumb = ({ subtitle, items, title, children }: BreadCrumbType) => {
         icon={itemIcon}
         usageData={usageData}
         isLoading={isUsageLoading}
-      />
-
-      <FeedbackDrawer
-        open={isFeedbackOpen}
-        onClose={closeFeedback}
-        pageTitle={title}
         pageKey={pathname}
+        pageTitle={title}
         route={pathname}
       />
     </Grid>

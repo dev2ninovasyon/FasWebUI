@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -11,12 +11,15 @@ import {
   Drawer,
   IconButton,
   Stack,
+  Tab,
+  Tabs,
   Typography,
   useTheme,
 } from "@mui/material";
 import { ChevronDown } from "lucide-react";
-import { BookOpen, CircleHelp, Clapperboard, Clock3, Info, Lightbulb, ListChecks, X } from "lucide-react";
+import { BookOpen, CircleHelp, Clapperboard, Clock3, Info, Lightbulb, ListChecks, MessageSquareDot, X } from "lucide-react";
 import { MenuUsagePanel } from "@/api/Menu/Menu";
+import FeedbackPanelContent from "@/app/(Uygulama)/components/Feedback/FeedbackPanelContent";
 
 interface MenuUsageDrawerProps {
   open: boolean;
@@ -25,6 +28,9 @@ interface MenuUsageDrawerProps {
   icon?: React.ReactNode;
   usageData: MenuUsagePanel | null;
   isLoading?: boolean;
+  pageKey?: string;
+  pageTitle?: string;
+  route?: string;
 }
 
 const sectionCardSx = {
@@ -34,30 +40,22 @@ const sectionCardSx = {
 
 const getVimeoEmbedUrl = (value?: string) => {
   const url = String(value || "").trim();
-
-  if (!url) {
-    return null;
-  }
-
+  if (!url) return null;
   if (/^\d+$/.test(url)) {
     return `https://player.vimeo.com/video/${url}?badge=0&autopause=0&player_id=0&app_id=58479`;
   }
-
   const iframeSrcMatch = url.match(/src=["']([^"']+)["']/i);
   const candidateUrl = iframeSrcMatch?.[1] || url;
-
   try {
     const parsedUrl = new URL(candidateUrl);
     const pathParts = parsedUrl.pathname.split("/").filter(Boolean);
     const videoId = pathParts.find((item) => /^\d+$/.test(item)) || pathParts[pathParts.length - 1];
-
     if (
       (parsedUrl.hostname.includes("vimeo.com") || parsedUrl.hostname.includes("player.vimeo.com")) &&
       /^\d+$/.test(videoId || "")
     ) {
       return `https://player.vimeo.com/video/${videoId}?badge=0&autopause=0&player_id=0&app_id=58479`;
     }
-
     return candidateUrl;
   } catch {
     return candidateUrl;
@@ -65,15 +63,9 @@ const getVimeoEmbedUrl = (value?: string) => {
 };
 
 const formatUsageDate = (value?: string) => {
-  if (!value) {
-    return "-";
-  }
-
+  if (!value) return "-";
   const parsedDate = new Date(value);
-  if (Number.isNaN(parsedDate.getTime())) {
-    return value;
-  }
-
+  if (Number.isNaN(parsedDate.getTime())) return value;
   return new Intl.DateTimeFormat("tr-TR", {
     timeZone: "Europe/Istanbul",
     day: "2-digit",
@@ -85,17 +77,30 @@ const formatUsageDate = (value?: string) => {
 const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
   <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 1.5 }}>
     <Box sx={{ display: "flex", alignItems: "center", color: "primary.main" }}>{icon}</Box>
-    <Typography variant="subtitle1" fontWeight={700}>
-      {title}
-    </Typography>
+    <Typography variant="subtitle1" fontWeight={700}>{title}</Typography>
   </Stack>
 );
 
-const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title, icon, usageData, isLoading }) => {
+const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({
+  open,
+  onClose,
+  title,
+  icon,
+  usageData,
+  isLoading,
+  pageKey = "",
+  pageTitle,
+  route = "",
+}) => {
   const theme = useTheme();
   const videoEmbedUrl = getVimeoEmbedUrl(usageData?.video?.url);
+  const [activeTab, setActiveTab] = useState(0);
 
-  // Debug logging for FAQ data
+  // Reset to usage tab when drawer closes
+  useEffect(() => {
+    if (!open) setActiveTab(0);
+  }, [open]);
+
   useEffect(() => {
     if (open && usageData) {
       console.log("[MenuUsageDrawer Debug]", {
@@ -110,6 +115,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
       });
     }
   }, [open, usageData]);
+
   const hasManualContent = Boolean(
     usageData?.kullanimNotu ||
       usageData?.kullanimAdimlari?.length ||
@@ -144,6 +150,7 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
       }}
     >
       <Box sx={{ height: "100%", display: "flex", flexDirection: "column", fontFamily: "inherit" }}>
+        {/* Header */}
         <Box
           sx={{
             px: { xs: 2.5, md: 4 },
@@ -161,265 +168,350 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
           <Typography variant="overline" sx={{ letterSpacing: 1.4, fontWeight: 700, color: "text.secondary" }}>
             SAYFA KULLANIM REHBERİ
           </Typography>
-
           <IconButton onClick={onClose} size="small" sx={{ color: "text.secondary" }}>
             <X size={18} />
           </IconButton>
         </Box>
 
-        <Box sx={{ flex: 1, p: { xs: 2.5, md: 3.5 }, overflowY: "auto", backgroundColor: "background.default" }}>
-          {!isLoading && (
-            <Box sx={{ mb: 3.5 }}>
-              <Stack direction="row" spacing={2.5} alignItems="flex-start">
-                <Box
-                  sx={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 3,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "primary.main",
-                    backgroundColor: theme.palette.mode === "dark" ? "rgba(144, 202, 249, 0.08)" : "rgba(25, 118, 210, 0.08)",
-                    flexShrink: 0,
-                  }}
-                >
-                  {icon || <Info size={24} />}
-                </Box>
-                <Stack spacing={0.75}>
-                  <Typography variant="h5" fontWeight={700} sx={{ lineHeight: 1.2, color: "text.primary" }}>
-                    {usageData?.baslik || `${title} nasıl kullanılır?`}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 640, lineHeight: 1.6 }}>
-                    {usageData?.ozet || "Bu panel, ilgili ekranın ne amaçla kullanıldığını ve hangi adımlarla ilerlemeniz gerektiğini açıklar."}
-                  </Typography>
-                </Stack>
-              </Stack>
-              <Divider sx={{ mt: 3 }} />
-            </Box>
-          )}
-          {isLoading ? (
-            <Box sx={{ ...sectionCardSx, textAlign: "center" }}>
-                <Typography variant="body2" color="text.secondary">
-                Kullanım bilgisi yükleniyor...
-              </Typography>
-            </Box>
-          ) : usageData && hasUsageContent ? (
-            <Stack spacing={2}>
-              <Box sx={{ ...sectionCardSx, backgroundColor: "background.paper" }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Clock3 size={16} color={theme.palette.text.secondary} />
-                    <Typography variant="caption" color="text.secondary">
-                      Son güncelleme: {formatUsageDate(usageData.eklenmeTarihi)}
-                    </Typography>
-                  </Stack>
-                  <Chip label={`${usageData.hitCount} görüntüleme`} size="small" variant="outlined" />
-                </Stack>
-              </Box>
+        {/* Tabs */}
+        <Box sx={{ borderBottom: `1px solid ${theme.palette.divider}`, px: { xs: 2, md: 3 } }}>
+          <Tabs
+            value={activeTab}
+            onChange={(_, v) => setActiveTab(v)}
+            variant="fullWidth"
+            sx={{
+              minHeight: 44,
+              "& .MuiTab-root": { minHeight: 44, fontSize: "0.78rem", fontWeight: 600, textTransform: "none" },
+            }}
+          >
+            <Tab
+              icon={<Info size={15} />}
+              iconPosition="start"
+              label="Kullanım Rehberi"
+            />
+            <Tab
+              icon={<MessageSquareDot size={15} />}
+              iconPosition="start"
+              label="Geri Bildirim"
+            />
+          </Tabs>
+        </Box>
 
-              {!!usageData.kullanimNotu && (
-                <Box sx={sectionCardSx}>
-                  <SectionHeader icon={<BookOpen size={18} />} title="Genel Açıklama" />
-                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>
-                    {usageData.kullanimNotu}
-                  </Typography>
+        {/* Tab panels */}
+        <Box sx={{ flex: 1, overflowY: "auto", backgroundColor: "background.default" }}>
+          {/* --- Tab 0: Kullanım Rehberi --- */}
+          {activeTab === 0 && (
+            <Box sx={{ p: { xs: 2.5, md: 3.5 } }}>
+              {!isLoading && (
+                <Box sx={{ mb: 3.5 }}>
+                  <Stack direction="row" spacing={2.5} alignItems="flex-start">
+                    <Box
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 3,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "primary.main",
+                        backgroundColor:
+                          theme.palette.mode === "dark"
+                            ? "rgba(144, 202, 249, 0.08)"
+                            : "rgba(25, 118, 210, 0.08)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {icon || <Info size={24} />}
+                    </Box>
+                    <Stack spacing={0.75}>
+                      <Typography variant="h5" fontWeight={700} sx={{ lineHeight: 1.2, color: "text.primary" }}>
+                        {usageData?.baslik || `${title} nasıl kullanılır?`}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 640, lineHeight: 1.6 }}>
+                        {usageData?.ozet ||
+                          "Bu panel, ilgili ekranın ne amaçla kullanıldığını ve hangi adımlarla ilerlemeniz gerektiğini açıklar."}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                  <Divider sx={{ mt: 3 }} />
                 </Box>
               )}
 
-              {!hasManualContent &&
-                !!usageData.kullanimSemasi &&
-                (usageData.kullanimSemasi.onKosullar.length > 0 ||
-                  usageData.kullanimSemasi.buSayfadaYapacaklariniz.length > 0 ||
-                  usageData.kullanimSemasi.sonrakiAdimlar.length > 0 ||
-                  usageData.kullanimSemasi.hataRiskiYuksekAlanlar.length > 0) && (
-                  <Box sx={sectionCardSx}>
-                    <SectionHeader icon={<Info size={18} />} title="Kullanım Şeması" />
-                    <Stack spacing={2}>
-                      {usageData.kullanimSemasi.onKosullar.length > 0 && (
-                        <Box>
-                          <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
-                            Önce Bunları Kontrol Edin
-                          </Typography>
-                          <Stack spacing={0.75}>
-                            {usageData.kullanimSemasi.onKosullar.map((item, index) => (
-                              <Typography key={`on-kosul-${index}-${item}`} variant="body2" sx={{ lineHeight: 1.7 }}>
-                                {`\u2022 ${item}`}
-                              </Typography>
-                            ))}
-                          </Stack>
-                        </Box>
-                      )}
-
-                      {usageData.kullanimSemasi.buSayfadaYapacaklariniz.length > 0 && (
-                        <Box>
-                          <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
-                            Bu Sayfada Yapacaklarınız
-                          </Typography>
-                          <Stack spacing={0.75}>
-                            {usageData.kullanimSemasi.buSayfadaYapacaklariniz.map((item, index) => (
-                              <Typography key={`yapacaklar-${index}-${item}`} variant="body2" sx={{ lineHeight: 1.7 }}>
-                                {`\u2022 ${item}`}
-                              </Typography>
-                            ))}
-                          </Stack>
-                        </Box>
-                      )}
-
-                      {usageData.kullanimSemasi.sonrakiAdimlar.length > 0 && (
-                        <Box>
-                          <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
-                            Sonraki Adımlar
-                          </Typography>
-                          <Stack spacing={0.75}>
-                            {usageData.kullanimSemasi.sonrakiAdimlar.map((item, index) => (
-                              <Typography key={`sonraki-${index}-${item}`} variant="body2" sx={{ lineHeight: 1.7 }}>
-                                {`\u2022 ${item}`}
-                              </Typography>
-                            ))}
-                          </Stack>
-                        </Box>
-                      )}
-
-                      {usageData.kullanimSemasi.hataRiskiYuksekAlanlar.length > 0 && (
-                        <Box>
-                          <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
-                            Hata Oluşabilecek Alanlar
-                          </Typography>
-                          <Stack spacing={1}>
-                            {usageData.kullanimSemasi.hataRiskiYuksekAlanlar.map((item, index) => (
-                              <Alert key={`risk-${index}-${item}`} severity="warning" variant="outlined">
-                                {item}
-                              </Alert>
-                            ))}
-                          </Stack>
-                        </Box>
-                      )}
-                    </Stack>
-                  </Box>
-                )}
-
-              {usageData.kullanimAdimlari && usageData.kullanimAdimlari.length > 0 && (
-                <Box sx={sectionCardSx}>
-                  <SectionHeader icon={<ListChecks size={18} />} title="Adım Adım Nasıl Kullanılır?" />
-                  <Stack spacing={1.25}>
-                    {usageData.kullanimAdimlari.map((step, index) => (
-                      <Stack key={`step-${index}-${step?.substring(0, 20) || index}`} direction="row" spacing={1.5} alignItems="flex-start">
-                        <Chip label={index + 1} size="small" color="primary" sx={{ minWidth: 32 }} />
-                        <Typography variant="body2" sx={{ lineHeight: 1.7, pt: 0.2, whiteSpace: "pre-wrap" }}>
-                          {step || `Adım ${index + 1}`}
+              {isLoading ? (
+                <Box sx={{ ...sectionCardSx, textAlign: "center" }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Kullanım bilgisi yükleniyor...
+                  </Typography>
+                </Box>
+              ) : usageData && hasUsageContent ? (
+                <Stack spacing={2}>
+                  <Box sx={{ ...sectionCardSx, backgroundColor: "background.paper" }}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <Clock3 size={16} color={theme.palette.text.secondary} />
+                        <Typography variant="caption" color="text.secondary">
+                          Son güncelleme: {formatUsageDate(usageData.eklenmeTarihi)}
                         </Typography>
                       </Stack>
-                    ))}
-                  </Stack>
-                </Box>
-              )}
+                      <Chip label={`${usageData.hitCount} görüntüleme`} size="small" variant="outlined" />
+                    </Stack>
+                  </Box>
 
-              {usageData.dikkatEdilecekler && usageData.dikkatEdilecekler.length > 0 && (
-                <Box sx={sectionCardSx}>
-                  <SectionHeader icon={<Lightbulb size={18} />} title="Dikkat Edilecekler" />
-                  <Stack spacing={1}>
-                    {usageData.dikkatEdilecekler.map((note, index) => (
-                      <Alert key={`note-${index}-${note?.substring(0, 20) || index}`} severity="info" variant="outlined">
-                        {note || `Not ${index + 1}`}
-                      </Alert>
-                    ))}
-                  </Stack>
-                </Box>
-              )}
-
-              {usageData.sikSorulanSorular && usageData.sikSorulanSorular.length > 0 && (
-                <Box sx={sectionCardSx}>
-                  <SectionHeader icon={<CircleHelp size={18} />} title="Sık Sorulan Sorular" />
-                  <Stack spacing={0}>
-                    {usageData.sikSorulanSorular.map((item, index) => (
-                      <Accordion key={`faq-${index}-${item?.soru?.substring(0, 20) || index}`} sx={{ 
-                        backgroundColor: "transparent",
-                        backgroundImage: "none",
-                        boxShadow: "none",
-                        borderBottom: index < usageData.sikSorulanSorular.length - 1 ? `1px solid ${theme.palette.divider}` : "none",
-                        "&:before": {
-                          display: "none",
-                        },
-                        "&.Mui-expanded": {
-                          margin: 0,
-                        }
-                      }}>
-                        <AccordionSummary expandIcon={<ChevronDown size={18} />} sx={{ py: 1 }}>
-                          <Typography variant="body2" fontWeight={700} sx={{ color: "text.primary" }}>
-                            {item?.soru || `Soru ${index + 1}`}
-                          </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails sx={{ pt: 0, pb: 1.5 }}>
-                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
-                            {item?.cevap || "Cevap yükleniyor..."}
-                          </Typography>
-                        </AccordionDetails>
-                      </Accordion>
-                    ))}
-                  </Stack>
-                </Box>
-              )}
-              {usageData.hasVideo && usageData.video?.url && (
-                <Box sx={sectionCardSx}>
-                  <SectionHeader icon={<Clapperboard size={18} />} title="Anlatım Videosu" />
-                  {!!usageData.video.baslik && (
-                    <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
-                      {usageData.video.baslik}
-                    </Typography>
-                  )}
-                  {!!usageData.video.aciklama && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
-                      {usageData.video.aciklama}
-                    </Typography>
+                  {!!usageData.kullanimNotu && (
+                    <Box sx={sectionCardSx}>
+                      <SectionHeader icon={<BookOpen size={18} />} title="Genel Açıklama" />
+                      <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>
+                        {usageData.kullanimNotu}
+                      </Typography>
+                    </Box>
                   )}
 
+                  {!hasManualContent &&
+                    !!usageData.kullanimSemasi &&
+                    (usageData.kullanimSemasi.onKosullar.length > 0 ||
+                      usageData.kullanimSemasi.buSayfadaYapacaklariniz.length > 0 ||
+                      usageData.kullanimSemasi.sonrakiAdimlar.length > 0 ||
+                      usageData.kullanimSemasi.hataRiskiYuksekAlanlar.length > 0) && (
+                      <Box sx={sectionCardSx}>
+                        <SectionHeader icon={<Info size={18} />} title="Kullanım Şeması" />
+                        <Stack spacing={2}>
+                          {usageData.kullanimSemasi.onKosullar.length > 0 && (
+                            <Box>
+                              <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
+                                Önce Bunları Kontrol Edin
+                              </Typography>
+                              <Stack spacing={0.75}>
+                                {usageData.kullanimSemasi.onKosullar.map((item, index) => (
+                                  <Typography key={`on-kosul-${index}-${item}`} variant="body2" sx={{ lineHeight: 1.7 }}>
+                                    {`\u2022 ${item}`}
+                                  </Typography>
+                                ))}
+                              </Stack>
+                            </Box>
+                          )}
+                          {usageData.kullanimSemasi.buSayfadaYapacaklariniz.length > 0 && (
+                            <Box>
+                              <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
+                                Bu Sayfada Yapacaklarınız
+                              </Typography>
+                              <Stack spacing={0.75}>
+                                {usageData.kullanimSemasi.buSayfadaYapacaklariniz.map((item, index) => (
+                                  <Typography key={`yapacaklar-${index}-${item}`} variant="body2" sx={{ lineHeight: 1.7 }}>
+                                    {`\u2022 ${item}`}
+                                  </Typography>
+                                ))}
+                              </Stack>
+                            </Box>
+                          )}
+                          {usageData.kullanimSemasi.sonrakiAdimlar.length > 0 && (
+                            <Box>
+                              <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
+                                Sonraki Adımlar
+                              </Typography>
+                              <Stack spacing={0.75}>
+                                {usageData.kullanimSemasi.sonrakiAdimlar.map((item, index) => (
+                                  <Typography key={`sonraki-${index}-${item}`} variant="body2" sx={{ lineHeight: 1.7 }}>
+                                    {`\u2022 ${item}`}
+                                  </Typography>
+                                ))}
+                              </Stack>
+                            </Box>
+                          )}
+                          {usageData.kullanimSemasi.hataRiskiYuksekAlanlar.length > 0 && (
+                            <Box>
+                              <Typography variant="body2" fontWeight={700} sx={{ mb: 1 }}>
+                                Hata Oluşabilecek Alanlar
+                              </Typography>
+                              <Stack spacing={1}>
+                                {usageData.kullanimSemasi.hataRiskiYuksekAlanlar.map((item, index) => (
+                                  <Alert key={`risk-${index}-${item}`} severity="warning" variant="outlined">
+                                    {item}
+                                  </Alert>
+                                ))}
+                              </Stack>
+                            </Box>
+                          )}
+                        </Stack>
+                      </Box>
+                    )}
+
+                  {usageData.kullanimAdimlari && usageData.kullanimAdimlari.length > 0 && (
+                    <Box sx={sectionCardSx}>
+                      <SectionHeader icon={<ListChecks size={18} />} title="Adım Adım Nasıl Kullanılır?" />
+                      <Stack spacing={1.25}>
+                        {usageData.kullanimAdimlari.map((step, index) => (
+                          <Stack
+                            key={`step-${index}-${step?.substring(0, 20) || index}`}
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="flex-start"
+                          >
+                            <Chip label={index + 1} size="small" color="primary" sx={{ minWidth: 32 }} />
+                            <Typography variant="body2" sx={{ lineHeight: 1.7, pt: 0.2, whiteSpace: "pre-wrap" }}>
+                              {step || `Adım ${index + 1}`}
+                            </Typography>
+                          </Stack>
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+
+                  {usageData.dikkatEdilecekler && usageData.dikkatEdilecekler.length > 0 && (
+                    <Box sx={sectionCardSx}>
+                      <SectionHeader icon={<Lightbulb size={18} />} title="Dikkat Edilecekler" />
+                      <Stack spacing={1}>
+                        {usageData.dikkatEdilecekler.map((note, index) => (
+                          <Alert
+                            key={`note-${index}-${note?.substring(0, 20) || index}`}
+                            severity="info"
+                            variant="outlined"
+                          >
+                            {note || `Not ${index + 1}`}
+                          </Alert>
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+
+                  {usageData.sikSorulanSorular && usageData.sikSorulanSorular.length > 0 && (
+                    <Box sx={sectionCardSx}>
+                      <SectionHeader icon={<CircleHelp size={18} />} title="Sık Sorulan Sorular" />
+                      <Stack spacing={0}>
+                        {usageData.sikSorulanSorular.map((item, index) => (
+                          <Accordion
+                            key={`faq-${index}-${item?.soru?.substring(0, 20) || index}`}
+                            sx={{
+                              backgroundColor: "transparent",
+                              backgroundImage: "none",
+                              boxShadow: "none",
+                              borderBottom:
+                                index < usageData.sikSorulanSorular.length - 1
+                                  ? `1px solid ${theme.palette.divider}`
+                                  : "none",
+                              "&:before": { display: "none" },
+                              "&.Mui-expanded": { margin: 0 },
+                            }}
+                          >
+                            <AccordionSummary expandIcon={<ChevronDown size={18} />} sx={{ py: 1 }}>
+                              <Typography variant="body2" fontWeight={700} sx={{ color: "text.primary" }}>
+                                {item?.soru || `Soru ${index + 1}`}
+                              </Typography>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ pt: 0, pb: 1.5 }}>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ lineHeight: 1.7, whiteSpace: "pre-wrap" }}
+                              >
+                                {item?.cevap || "Cevap yükleniyor..."}
+                              </Typography>
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+
+                  {usageData.hasVideo && usageData.video?.url && (
+                    <Box sx={sectionCardSx}>
+                      <SectionHeader icon={<Clapperboard size={18} />} title="Anlatım Videosu" />
+                      {!!usageData.video.baslik && (
+                        <Typography variant="body2" fontWeight={700} sx={{ mb: 0.75 }}>
+                          {usageData.video.baslik}
+                        </Typography>
+                      )}
+                      {!!usageData.video.aciklama && (
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 2, whiteSpace: "pre-wrap", lineHeight: 1.6 }}
+                        >
+                          {usageData.video.aciklama}
+                        </Typography>
+                      )}
+                      <Box
+                        sx={{
+                          position: "relative",
+                          width: "100%",
+                          overflow: "hidden",
+                          borderRadius: 2,
+                          backgroundColor: "#000",
+                          pt: "56.25%",
+                        }}
+                      >
+                        <Box
+                          component="iframe"
+                          src={videoEmbedUrl || usageData.video.url}
+                          title={usageData.video.baslik || `${title} video anlatımı`}
+                          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                          allowFullScreen
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          sx={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: 0 }}
+                        />
+                      </Box>
+                    </Box>
+                  )}
+                </Stack>
+              ) : usageData ? (
+                <Stack spacing={2}>
                   <Box
                     sx={{
-                      position: "relative",
-                      width: "100%",
-                      overflow: "hidden",
-                      borderRadius: 2,
-                      backgroundColor: "#000",
-                      pt: "56.25%",
+                      ...sectionCardSx,
+                      background:
+                        theme.palette.mode === "dark"
+                          ? "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)"
+                          : "linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)",
                     }}
                   >
-                    <Box
-                      component="iframe"
-                      src={videoEmbedUrl || usageData.video.url}
-                      title={usageData.video.baslik || `${title} video anlatımı`}
-                      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                      allowFullScreen
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      sx={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        border: 0,
-                      }}
-                    />
+                    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
+                      <Box
+                        sx={{
+                          width: 42,
+                          height: 42,
+                          borderRadius: "50%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "text.secondary",
+                        }}
+                      >
+                        <Info size={20} strokeWidth={1.8} />
+                      </Box>
+                      <Box>
+                        <Typography variant="subtitle1" fontWeight={700}>
+                          Bu sayfa için ayrıntılı içerik henüz tamamlanmamış
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Üst başlık bilgisi hazır; detay adımları eklendiğinde bu alan otomatik zenginleşecek.
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <Alert severity="info" sx={{ borderRadius: 2 }}>
+                      Sayfa bazlı kullanım adımları, dikkat notları ve istenirse video bağlantısı tanımlandığında burada
+                      otomatik görünecek.
+                    </Alert>
                   </Box>
-                </Box>
-              )}
-            </Stack>
-          ) : usageData ? (
-            <Stack spacing={2}>
-              <Box
-                sx={{
-                  ...sectionCardSx,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)"
-                      : "linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)",
-                }}
-              >
-                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
+                </Stack>
+              ) : (
+                <Box
+                  sx={{
+                    ...sectionCardSx,
+                    mt: 2,
+                    maxWidth: 620,
+                    mx: "auto",
+                    textAlign: "center",
+                    background:
+                      theme.palette.mode === "dark"
+                        ? "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)"
+                        : "linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)",
+                  }}
+                >
                   <Box
                     sx={{
-                      width: 42,
-                      height: 42,
+                      width: 56,
+                      height: 56,
+                      mx: "auto",
+                      mb: 2,
                       borderRadius: "50%",
                       display: "flex",
                       alignItems: "center",
@@ -427,58 +519,28 @@ const MenuUsageDrawer: React.FC<MenuUsageDrawerProps> = ({ open, onClose, title,
                       color: "text.secondary",
                     }}
                   >
-                    <Info size={20} strokeWidth={1.8} />
+                    <Info size={24} strokeWidth={1.8} />
                   </Box>
-                  <Box>
-                    <Typography variant="subtitle1" fontWeight={700}>
-                      Bu sayfa için ayrıntılı içerik henüz tamamlanmamış
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Üst başlık bilgisi hazır; detay adımları eklendiğinde bu alan otomatik zenginleşecek.
-                    </Typography>
-                  </Box>
-                </Stack>
-                <Alert severity="info" sx={{ borderRadius: 2 }}>
-                  Sayfa bazlı kullanım adımları, dikkat notları ve istenirse video bağlantısı tanımlandığında burada otomatik görünecek.
-                </Alert>
-              </Box>
-            </Stack>
-          ) : (
-            <Box
-              sx={{
-                ...sectionCardSx,
-                mt: 2,
-                maxWidth: 620,
-                mx: "auto",
-                textAlign: "center",
-                background:
-                  theme.palette.mode === "dark"
-                    ? "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)"
-                    : "linear-gradient(180deg, #ffffff 0%, #f8fbff 100%)",
-              }}
-            >
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  mx: "auto",
-                  mb: 2,
-                  borderRadius: "50%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "text.secondary",
-                }}
-              >
-                <Info size={24} strokeWidth={1.8} />
-              </Box>
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                Bu ekran için rehber içeriği henüz hazır değil
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 520, mx: "auto", lineHeight: 1.8 }}>
-                Rehber kaydı oluşturulduğunda bu alan otomatik olarak adımlar, dikkat notları ve varsa video anlatımı ile dolacaktır.
-              </Typography>
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    Bu ekran için rehber içeriği henüz hazır değil
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 520, mx: "auto", lineHeight: 1.8 }}>
+                    Rehber kaydı oluşturulduğunda bu alan otomatik olarak adımlar, dikkat notları ve varsa video
+                    anlatımı ile dolacaktır.
+                  </Typography>
+                </Box>
+              )}
             </Box>
+          )}
+
+          {/* --- Tab 1: Geri Bildirim --- */}
+          {activeTab === 1 && pageKey && (
+            <FeedbackPanelContent
+              pageKey={pageKey}
+              pageTitle={pageTitle ?? title}
+              route={route}
+              isActive={activeTab === 1}
+            />
           )}
         </Box>
       </Box>

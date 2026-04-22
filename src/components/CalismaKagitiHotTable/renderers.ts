@@ -79,9 +79,9 @@ export function islemRenderer(this: any, ...args: HtRendererArgs) {
 }
 
 export function tespitRenderer(this: any, ...args: HtRendererArgs) {
-  const [instance, td, row] = args;
+  const [instance, td, row, col, prop, value] = args;
 
-  const tespitValue = instance.getDataAtCell(row, 4) ?? "";
+  const tespitValue = value ?? "";
   const durum = instance.getDataAtCell(row, 3) ?? "Evet";
   const evetIcerik = instance.getDataAtCell(row, 7) ?? "";
   const hayirIcerik = instance.getDataAtCell(row, 8) ?? "";

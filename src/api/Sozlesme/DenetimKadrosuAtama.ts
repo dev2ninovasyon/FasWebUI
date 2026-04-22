@@ -76,6 +76,7 @@ export const createGorevAtamalari = async (
         accept: "*/*",
         "Content-Type": "application/json",
       },
+      suppressErrorLog: true,
       body: JSON.stringify(createdGorevAtamalari),
     });
 
@@ -86,15 +87,26 @@ export const createGorevAtamalari = async (
       let message = "Hata Oluştu";
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
-        message = errorData || message;
+        message =
+          errorData?.message ||
+          errorData?.Message ||
+          errorData?.error ||
+          errorData?.title ||
+          (typeof errorData === "string" ? errorData : message);
       } else {
         message = await response.text();
       }
 
-      return { message };
+      return { message: message || "Görev ataması kaydedilemedi." };
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    return {
+      message:
+        error instanceof Error && error.message
+          ? error.message
+          : "Görev ataması kaydedilemedi.",
+    };
   }
 };
 
@@ -109,6 +121,7 @@ export const updateGorevAtamalari = async (
         accept: "*/*",
         "Content-Type": "application/json",
       },
+      suppressErrorLog: true,
       body: JSON.stringify(updatedGorevAtamalari),
     });
 
@@ -119,15 +132,26 @@ export const updateGorevAtamalari = async (
       let message = "Hata Oluştu";
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
-        message = errorData || message;
+        message =
+          errorData?.message ||
+          errorData?.Message ||
+          errorData?.error ||
+          errorData?.title ||
+          (typeof errorData === "string" ? errorData : message);
       } else {
         message = await response.text();
       }
 
-      return { message };
+      return { message: message || "Görev ataması güncellenemedi." };
     }
   } catch (error) {
     console.log("Bir hata oluştu:", error);
+    return {
+      message:
+        error instanceof Error && error.message
+          ? error.message
+          : "Görev ataması güncellenemedi.",
+    };
   }
 };
 

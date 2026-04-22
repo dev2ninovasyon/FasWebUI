@@ -38,7 +38,8 @@ export const getPageStats = async (
 ): Promise<FeedbackPageStats | null> => {
   try {
     const res = await apiFetch(
-      `${BASE}/stats?pageKey=${encodeURIComponent(pageKey)}`
+      `${BASE}/stats?pageKey=${encodeURIComponent(pageKey)}`,
+      { suppressErrorLog: true } as Parameters<typeof apiFetch>[1]
     );
     if (!res.ok) return null;
     return res.json();

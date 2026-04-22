@@ -10,20 +10,37 @@ import CalismaKagitiHotTable, {
   tespitRenderer,
   islemRenderer,
 } from "@/components/CalismaKagitiHotTable";
+import { setEditorPanelOpener } from "@/components/CalismaKagitiHotTable/SpeechTextEditor";
+import { enhanceText } from "@/utils/gemini";
 import {
   Box,
   Button,
+  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Drawer,
+  IconButton,
+  Paper,
   Snackbar,
   Alert as MuiAlert,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import KeyboardVoiceRoundedIcon from "@mui/icons-material/KeyboardVoiceRounded";
+import StopCircleRoundedIcon from "@mui/icons-material/StopCircleRounded";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { GlobalStyles } from "@mui/material";
 import {
   BilgiIslemMuhasebeRow,
   getBilgiIslemMuhasebeByDenetlenen,
@@ -62,12 +79,76 @@ interface RowData {
   standartmi?: boolean | null;
 }
 
+interface DrawerFormState {
+  rowIndex: number;
+  id: number;
+  satirNo: string;
+  riskSeviyesi: string;
+  islem: string;
+  durum: string;
+  tespit: string;
+  bdsReferansi: string;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+}
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  maxAlternatives: number;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onstart: (() => void) | null;
+  onresult: ((e: SpeechRecognitionEvent) => void) | null;
+  onerror: ((e: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+}
+
 const COL_SATIR_NO = 0;
 const COL_RISK = 1;
 const COL_ISLEM = 2;
 const COL_DURUM = 3;
-const COL_TESPIT = 4;
-const COL_BDS_REF = 5;
+const COL_BDS_REF = 4;
+const COL_TESPIT = 5;
+
+const AI_PROMPTS = [
+  {
+    label: "Zenginleştir",
+    instruction:
+      "Aşağıdaki metni daha profesyonel ve resmi bir dille yeniden yazın. Teknik terimleri koruyun ancak ifadeyi daha net ve anlaşılır hale getirin ve yalnızca yeniden yazılmış metni döndürün. Ek açıklama eklemeyin.",
+  },
+  {
+    label: "Özetle",
+    instruction:
+      "Aşağıdaki metni ana noktaları koruyarak daha özlü bir şekilde özetleyin ve yalnızca yeniden yazılmış metni döndürün. Ek açıklama eklemeyin.",
+  },
+  {
+    label: "Detaylandır",
+    instruction:
+      "Aşağıdaki metni daha detaylı ve açıklayıcı bir şekilde genişletin, önemli noktaları vurgulayın ve yalnızca yeniden yazılmış metni döndürün. Ek açıklama eklemeyin.",
+  },
+] as const;
+
+const getFieldByColumn = (col?: number): "islem" | "tespit" | "bdsReferansi" => {
+  if (col === COL_ISLEM) return "islem";
+  if (col === COL_BDS_REF) return "bdsReferansi";
+  return "tespit";
+};
+
+const getFieldLabel = (field: "islem" | "tespit" | "bdsReferansi") => {
+  if (field === "islem") return "Soru";
+  if (field === "bdsReferansi") return "BDS Referansı";
+  return "Açıklama / Değerlendirme Metni";
+};
 
 const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   isClickedVarsayilanaDon,
@@ -88,9 +169,18 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   const [isHotDirty, setIsHotDirty] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [targetUrl, setTargetUrl] = useState("");
+  const [editorDrawerOpen, setEditorDrawerOpen] = useState(false);
+  const [drawerForm, setDrawerForm] = useState<DrawerFormState | null>(null);
+  const [drawerActiveField, setDrawerActiveField] = useState<"islem" | "tespit" | "bdsReferansi">("tespit");
+  const [drawerAiLoading, setDrawerAiLoading] = useState(false);
+  const [drawerAiResult, setDrawerAiResult] = useState("");
+  const [drawerRecordingField, setDrawerRecordingField] = useState<"islem" | "tespit" | "bdsReferansi" | null>(null);
 
   const tableDataRef = useRef<RowData[]>([]);
   const changedRowIdsRef = useRef<Set<number>>(new Set());
+  const drawerRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const drawerSpeechAnchorRef = useRef("");
+  const [drawerAiPanelOpen, setDrawerAiPanelOpen] = useState(false);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -186,7 +276,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   }, [tableData]);
 
   const colHeaders = useMemo(
-    () => ["No", "Risk", "Soru", "Yanıt (E/H)", "Açıklama / Değerlendirme Metni", "BDS"],
+    () => ["No", "Risk", "Soru", "Yanıt (E/H)", "BDS", "Açıklama / Değerlendirme Metni"],
     []
   );
 
@@ -198,16 +288,15 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
       {
         type: "dropdown" as const,
         source: ["Evet", "Hayır"],
-        width: 100,
+        width: 120,
         renderer: durumRenderer,
       },
+      { type: "text" as const, readOnly: false, width: 110, renderer: bdsRefRenderer, editor: "speech-text" },
       {
         type: "text" as const,
-        width: 517,
         renderer: tespitRenderer,
         editor: "speech-text",
       },
-      { type: "text" as const, readOnly: false, width: 90, renderer: bdsRefRenderer, editor: "speech-text" },
     ],
     []
   );
@@ -224,8 +313,8 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
         row.riskSeviyesi,
         row.islem,
         row.durum,
-        row.tespit,
         row.bdsReferansi,
+        row.tespit,
         row.id,
         row.evetIcerik,
         row.hayirIcerik,
@@ -263,25 +352,38 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   useEffect(() => {
     const applyWidth = () => {
       const hot = hotRef.current?.hotInstance;
-      const container = containerRef.current;
-      if (!hot || !container) return;
-      const containerWidth = container.offsetWidth;
-      const fixedWidths = 40 + 90 + 360 + 100 + 90;
-      const açıklamaWidth = Math.max(517, containerWidth - fixedWidths - 2);
+      if (!hot) return;
+      
+      const containerWidth = containerRef.current?.offsetWidth || window.innerWidth - 100;
+      if (!containerWidth) return;
+
+      const fixedTotal = 40 + 90 + 120 + 110;
+      const remaining = Math.max(400, containerWidth - fixedTotal);
+
+      // Soru %44, Açıklama son sütun olduğu için stretchH="last" ile tüm boşluğu dolduracak.
+      const soruWidth = Math.floor(remaining * 0.44);
+
       hot.updateSettings({
-        columns: [
-          { type: "text", readOnly: false, width: 40, editor: "speech-text" },
-          { type: "text", readOnly: false, width: 90, renderer: riskRenderer, editor: "speech-text" },
-          { type: "text", readOnly: false, width: 360, renderer: islemRenderer, editor: "speech-text" },
-          { type: "dropdown", source: ["Evet", "Hayır"], width: 100, renderer: durumRenderer },
-          { type: "text", width: açıklamaWidth, renderer: tespitRenderer, editor: "speech-text" },
-          { type: "text", readOnly: false, width: 90, renderer: bdsRefRenderer, editor: "speech-text" },
-        ],
+        colWidths: [40, 90, soruWidth, 120, 110, undefined],
+        stretchH: "last",
+        width: containerWidth
       });
     };
-    const timer = setTimeout(applyWidth, 50);
-    return () => clearTimeout(timer);
+
+    const timer = setTimeout(applyWidth, 100);
+    window.addEventListener("resize", applyWidth);
+
+    const container = containerRef.current;
+    const observer = new ResizeObserver(() => applyWidth());
+    if (container) observer.observe(container);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", applyWidth);
+      observer.disconnect();
+    };
   }, []);
+
 
   useEffect(() => {
     if (!isHotDirty) return;
@@ -316,6 +418,43 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     []
   );
 
+  const openDrawerForRow = useCallback((rowIndex: number, activeField: "islem" | "tespit" | "bdsReferansi" = "tespit") => {
+    const hot = hotRef.current?.hotInstance;
+    if (!hot || rowIndex < 0) return;
+
+    const activeEditor = hot.getActiveEditor?.();
+    if (activeEditor?.isOpened?.()) {
+      activeEditor.finishEditing?.(false);
+    }
+
+    const rowData = hot.getSourceDataAtRow(rowIndex) as any[] | undefined;
+    if (!rowData) return;
+
+    setDrawerForm({
+      rowIndex,
+      id: Number(rowData[6] || 0),
+      satirNo: String(rowData[COL_SATIR_NO] ?? ""),
+      riskSeviyesi: String(rowData[COL_RISK] ?? "ORTA"),
+      islem: String(rowData[COL_ISLEM] ?? ""),
+      durum: String(rowData[COL_DURUM] ?? "Evet"),
+      tespit: String(rowData[COL_TESPIT] ?? ""),
+      bdsReferansi: String(rowData[COL_BDS_REF] ?? "—"),
+    });
+    setDrawerActiveField(activeField);
+    setDrawerAiResult("");
+    setEditorDrawerOpen(true);
+  }, []);
+
+  useEffect(() => {
+    setEditorPanelOpener(({ row, col }) => {
+      openDrawerForRow(row, getFieldByColumn(col));
+    });
+
+    return () => {
+      setEditorPanelOpener(null);
+    };
+  }, [openDrawerForRow]);
+
   const handleAfterChange = useCallback(
     function (this: any, change: any[] | null, source: string) {
       if (!change || !change.length || source === "loadData") return;
@@ -349,6 +488,176 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     },
     []
   );
+
+  const handleDrawerFieldChange = useCallback(
+    (field: keyof Omit<DrawerFormState, "rowIndex" | "id">, value: string) => {
+      setDrawerForm((prev) => (prev ? { ...prev, [field]: value } : prev));
+    },
+    []
+  );
+
+  const stopDrawerRecording = useCallback(() => {
+    if (drawerRecognitionRef.current) {
+      try {
+        drawerRecognitionRef.current.onend = null;
+        drawerRecognitionRef.current.onerror = null;
+        drawerRecognitionRef.current.abort();
+      } catch {
+        // noop
+      }
+      drawerRecognitionRef.current = null;
+    }
+    setDrawerRecordingField(null);
+    drawerSpeechAnchorRef.current = "";
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      stopDrawerRecording();
+    };
+  }, [stopDrawerRecording]);
+
+  const startDrawerRecording = useCallback(
+    async (field: "islem" | "tespit" | "bdsReferansi") => {
+      const SR = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition;
+      if (!SR) {
+        setSnackbarMessage("Tarayıcınız ses tanımayı desteklemiyor.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return;
+      }
+
+      if (!drawerForm) return;
+
+      if (drawerRecordingField === field) {
+        stopDrawerRecording();
+        return;
+      }
+
+      stopDrawerRecording();
+
+      const rec: SpeechRecognitionInstance = new SR();
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.lang = "tr-TR";
+      rec.maxAlternatives = 1;
+
+      drawerSpeechAnchorRef.current = drawerForm[field] ?? "";
+      setDrawerRecordingField(field);
+
+      rec.onresult = (event: SpeechRecognitionEvent) => {
+        let interim = "";
+        let final = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+
+        if (final) {
+          const sep = drawerSpeechAnchorRef.current && !drawerSpeechAnchorRef.current.endsWith(" ") ? " " : "";
+          drawerSpeechAnchorRef.current = drawerSpeechAnchorRef.current + sep + final;
+          handleDrawerFieldChange(field, drawerSpeechAnchorRef.current);
+        } else if (interim) {
+          const sep = drawerSpeechAnchorRef.current && !drawerSpeechAnchorRef.current.endsWith(" ") ? " " : "";
+          handleDrawerFieldChange(field, drawerSpeechAnchorRef.current + sep + interim);
+        }
+      };
+
+      rec.onerror = (event: SpeechRecognitionErrorEvent) => {
+        if (event.error !== "aborted" && event.error !== "no-speech") {
+          setSnackbarMessage(`Ses algılama hatası: ${event.error}`);
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+        }
+        stopDrawerRecording();
+      };
+
+      rec.onend = () => {
+        stopDrawerRecording();
+      };
+
+      drawerRecognitionRef.current = rec;
+
+      try {
+        rec.start();
+      } catch {
+        setSnackbarMessage("Ses kaydı başlatılamadı.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        stopDrawerRecording();
+      }
+    },
+    [drawerForm, drawerRecordingField, handleDrawerFieldChange, stopDrawerRecording]
+  );
+
+  const runDrawerAiPrompt = useCallback(
+    async (instruction: string) => {
+      if (!drawerForm) return;
+      const text = drawerForm[drawerActiveField]?.trim();
+      if (!text) {
+        setSnackbarMessage("Önce metin girin.");
+        setSnackbarSeverity("warning");
+        setSnackbarOpen(true);
+        return;
+      }
+
+      setDrawerAiLoading(true);
+      setDrawerAiResult("FasAI çalışıyor...");
+
+      try {
+        const result = await enhanceText(user, text, instruction);
+        setDrawerAiResult(result);
+      } catch {
+        setDrawerAiResult("Hata oluştu, tekrar deneyin.");
+      } finally {
+        setDrawerAiLoading(false);
+      }
+    },
+    [drawerActiveField, drawerForm, user]
+  );
+
+  const applyDrawerAiResult = useCallback(() => {
+    if (
+      !drawerAiResult ||
+      drawerAiResult === "FasAI çalışıyor..." ||
+      drawerAiResult === "Hata oluştu, tekrar deneyin."
+    ) {
+      return;
+    }
+
+    handleDrawerFieldChange(drawerActiveField, drawerAiResult);
+    setDrawerAiResult("");
+  }, [drawerActiveField, drawerAiResult, handleDrawerFieldChange]);
+
+  const handleDrawerApply = useCallback(() => {
+    if (!drawerForm) return;
+    const hot = hotRef.current?.hotInstance;
+    if (!hot) return;
+
+    hot.setDataAtCell(drawerForm.rowIndex, COL_SATIR_NO, drawerForm.satirNo);
+    hot.setDataAtCell(drawerForm.rowIndex, COL_RISK, drawerForm.riskSeviyesi);
+    hot.setDataAtCell(drawerForm.rowIndex, COL_ISLEM, drawerForm.islem);
+    hot.setDataAtCell(drawerForm.rowIndex, COL_DURUM, drawerForm.durum);
+    hot.setDataAtCell(drawerForm.rowIndex, COL_TESPIT, drawerForm.tespit);
+    hot.setDataAtCell(drawerForm.rowIndex, COL_BDS_REF, drawerForm.bdsReferansi);
+
+    if (drawerForm.id) {
+      changedRowIdsRef.current.add(drawerForm.id);
+    }
+
+    setIsHotDirty(true);
+    stopDrawerRecording();
+    setEditorDrawerOpen(false);
+    setDrawerForm(null);
+    setDrawerAiResult("");
+    setSnackbarMessage("Satır güncellendi. Kalıcı olması için kaydedin.");
+    setSnackbarSeverity("success");
+    setSnackbarOpen(true);
+  }, [drawerForm, stopDrawerRecording]);
 
   const handleKaydet = useCallback(async () => {
     if (!user.denetciId || !user.denetlenenId || !user.yil) return;
@@ -427,8 +736,8 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
         <td class="center risk-${(row.riskSeviyesi || "").toLowerCase().replace(/[^a-z]/g, "")}" style="width:8%">${escapeHtml(row.riskSeviyesi)}</td>
         <td style="width:30%">${escapeHtml(row.islem)}</td>
         <td class="center durum-${row.durum === "Hayır" ? "hayir" : "evet"}" style="width:7%">${escapeHtml(row.durum)}</td>
-        <td style="width:40%">${escapeHtml(row.tespit)}</td>
         <td class="center" style="width:11%">${escapeHtml(row.bdsReferansi)}</td>
+        <td style="width:40%">${escapeHtml(row.tespit)}</td>
       </tr>`
       )
       .join("");
@@ -444,6 +753,29 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
 
   return (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column", bgcolor: "#ffffff" }}>
+      <GlobalStyles
+        styles={{
+          ".ht-cell-clamp": {
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 3,
+            overflow: "hidden",
+            fontSize: "0.82rem",
+            lineHeight: "1.35",
+            padding: "8px !important",
+            whiteSpace: "pre-wrap",
+          },
+          ".handsontable .htCore": {
+            width: "100% !important",
+          },
+          ".calisma-kagiti-hot-table-shell": {
+            overflow: "hidden !important",
+          },
+          ".handsontable td": {
+            verticalAlign: "top !important",
+          },
+        }}
+      />
       <Box sx={{ px: { xs: 0.25, md: 0.5 } }}>
         <Box
           className="calisma-kagidi-hot-table-shell"
@@ -458,6 +790,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
               columns={columns}
               rowHeaders={false}
               height="calc(100vh - 260px)"
+              width="100%"
               rowHeight={HOT_BASE_ROW_HEIGHT}
               stretchH="last"
               dropdownMenu={true}
@@ -520,6 +853,270 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Drawer
+        anchor="right"
+        open={editorDrawerOpen}
+        onClose={() => {
+          setEditorDrawerOpen(false);
+          setDrawerForm(null);
+        }}
+        PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: 520, lg: 620 },
+            p: 0,
+          },
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <Box
+            sx={{
+              px: 2.5,
+              py: 2,
+              borderBottom: "1px solid",
+              borderColor: "divider",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              bgcolor: "background.paper",
+            }}
+          >
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Satır Düzenleme Paneli
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Değişiklikleri tabloya uygula, ardından üstteki kaydet butonuyla kalıcı hale getir.
+              </Typography>
+            </Box>
+            <IconButton
+              onClick={() => {
+                stopDrawerRecording();
+                setEditorDrawerOpen(false);
+                setDrawerForm(null);
+                setDrawerAiResult("");
+              }}
+            >
+              <CloseRoundedIcon />
+            </IconButton>
+          </Box>
+
+          {/* Alan Sekmeleri */}
+          <Box sx={{ borderBottom: 1, borderColor: "divider", px: 2.5 }}>
+            <Tabs
+              value={drawerActiveField}
+              onChange={(_, v) => {
+                setDrawerActiveField(v);
+                setDrawerAiResult("");
+              }}
+              variant="fullWidth"
+              textColor="primary"
+              indicatorColor="primary"
+            >
+              <Tab value="islem" label="Soru" sx={{ fontSize: "0.75rem" }} />
+              <Tab value="tespit" label="Açıklama" sx={{ fontSize: "0.75rem" }} />
+              <Tab value="bdsReferansi" label="BDS Ref." sx={{ fontSize: "0.75rem" }} />
+            </Tabs>
+          </Box>
+
+          <Box sx={{ p: 2.5, overflowY: "auto", flex: 1 }}>
+            <Stack spacing={1.5}>
+              {/* Metin Alanı */}
+              <TextField
+                label={getFieldLabel(drawerActiveField)}
+                value={drawerForm?.[drawerActiveField] ?? ""}
+                onChange={(e) => handleDrawerFieldChange(drawerActiveField, e.target.value)}
+                fullWidth
+                multiline
+                minRows={drawerActiveField === "bdsReferansi" ? 4 : drawerActiveField === "islem" ? 6 : 8}
+                variant="outlined"
+              />
+
+              {/* SpeechTextEditor Stili Araç Çubuğu */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  px: 1,
+                  py: 0.5,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: 1,
+                  bgcolor: "grey.50",
+                }}
+              >
+                {/* Sol: Kayıt durumu */}
+                <Typography
+                  variant="caption"
+                  color="primary.main"
+                  fontWeight={600}
+                  sx={{
+                    fontSize: "0.65rem",
+                    visibility: drawerRecordingField === drawerActiveField ? "visible" : "hidden",
+                  }}
+                >
+                  ● Dinliyor
+                </Typography>
+
+                {/* Sağ: İkon Butonları */}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  {/* FasAI Butonu */}
+                  <Tooltip title="FasAI ile Geliştir">
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setDrawerAiPanelOpen((v) => !v);
+                        setDrawerAiResult("");
+                      }}
+                      sx={{
+                        width: 26,
+                        height: 26,
+                        border: "1px solid",
+                        borderColor: drawerAiPanelOpen ? "primary.main" : "divider",
+                        bgcolor: drawerAiPanelOpen ? "primary.50" : "background.paper",
+                        color: drawerAiPanelOpen ? "primary.main" : "text.secondary",
+                        borderRadius: "50%",
+                      }}
+                    >
+                      <AutoAwesomeRoundedIcon sx={{ fontSize: 14 }} />
+                    </IconButton>
+                  </Tooltip>
+
+                  {/* Mikrofon Butonu */}
+                  <Tooltip title={drawerRecordingField === drawerActiveField ? "Kaydı Durdur" : "Sesle Yaz"}>
+                    <IconButton
+                      size="small"
+                      onClick={() => startDrawerRecording(drawerActiveField)}
+                      sx={{
+                        width: 26,
+                        height: 26,
+                        border: "1px solid",
+                        borderColor: drawerRecordingField === drawerActiveField ? "error.main" : "divider",
+                        bgcolor: drawerRecordingField === drawerActiveField ? "error.50" : "background.paper",
+                        color: drawerRecordingField === drawerActiveField ? "error.main" : "text.secondary",
+                        borderRadius: "50%",
+                      }}
+                    >
+                      {drawerRecordingField === drawerActiveField ? (
+                        <StopCircleRoundedIcon sx={{ fontSize: 14 }} />
+                      ) : (
+                        <KeyboardVoiceRoundedIcon sx={{ fontSize: 14 }} />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </Box>
+
+              {/* AI Paneli (FasAI butonuna tıklanınca açılır) */}
+              {drawerAiPanelOpen && (
+                <Box
+                  sx={{
+                    p: 1.5,
+                    bgcolor: "primary.50",
+                    border: "1px solid",
+                    borderColor: "primary.light",
+                    borderRadius: 1,
+                  }}
+                >
+                  {/* Prompt Chip'leri */}
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, mb: 1 }}>
+                    {AI_PROMPTS.map((p) => (
+                      <Chip
+                        key={p.label}
+                        label={p.label}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => runDrawerAiPrompt(p.instruction)}
+                        disabled={drawerAiLoading || !(drawerForm?.[drawerActiveField]?.trim())}
+                        sx={{ cursor: "pointer", fontSize: "0.7rem" }}
+                      />
+                    ))}
+                  </Box>
+
+                  {/* Yükleniyor */}
+                  {drawerAiLoading && (
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <CircularProgress size={12} />
+                      <Typography variant="body2" color="text.secondary">İşleniyor...</Typography>
+                    </Box>
+                  )}
+
+                  {/* Sonuç */}
+                  {!drawerAiLoading && drawerAiResult && (
+                    <>
+                      <Typography
+                        variant="body2"
+                        sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word", mb: 1, color: "text.primary" }}
+                      >
+                        {drawerAiResult}
+                      </Typography>
+                      <Stack direction="row" spacing={1} justifyContent="flex-end">
+                        <Button
+                          size="small"
+                          variant="text"
+                          color="inherit"
+                          onClick={() => setDrawerAiResult("")}
+                          sx={{ fontSize: "0.7rem" }}
+                        >
+                          Vazgeç
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            applyDrawerAiResult();
+                            setDrawerAiPanelOpen(false);
+                          }}
+                          sx={{ fontSize: "0.7rem" }}
+                        >
+                          Kullan
+                        </Button>
+                      </Stack>
+                    </>
+                  )}
+
+                  {/* Bekleme mesajı */}
+                  {!drawerAiLoading && !drawerAiResult && (
+                    <Typography variant="caption" color="text.secondary">
+                      Bir seçenek seçin...
+                    </Typography>
+                  )}
+                </Box>
+              )}
+            </Stack>
+          </Box>
+
+          <Box
+            sx={{
+              px: 2.5,
+              py: 2,
+              borderTop: "1px solid",
+              borderColor: "divider",
+              display: "flex",
+              gap: 1,
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              variant="text"
+              onClick={() => {
+                stopDrawerRecording();
+                setEditorDrawerOpen(false);
+                setDrawerForm(null);
+                setDrawerAiResult("");
+              }}
+            >
+              Kapat
+            </Button>
+            <Button variant="contained" onClick={handleDrawerApply} disabled={!drawerForm}>
+              Tabloya Uygula
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   );
 };

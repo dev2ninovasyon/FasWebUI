@@ -1,18 +1,16 @@
 "use client";
 import React from "react";
 import { Box, Tooltip, useTheme } from "@mui/material";
-import { Smile, SmilePlus, Meh, Frown, FrownOpen } from "lucide-react";
+import { SmilePlus, Meh, Frown } from "lucide-react";
 import type { FeedbackSentiment, ColorVariant } from "@/api/Feedback/feedback.types";
 import { SENTIMENT_OPTIONS } from "@/api/Feedback/feedback.types";
 import AppIcon from "./AppIcon";
 import { LucideIcon } from "lucide-react";
 
-const SENTIMENT_ICONS: Record<FeedbackSentiment, LucideIcon> = {
+const SENTIMENT_ICONS: Partial<Record<FeedbackSentiment, LucideIcon>> = {
   5: SmilePlus,
-  4: Smile,
   3: Meh,
-  2: Frown,
-  1: FrownOpen,
+  1: Frown,
 };
 
 interface FeedbackSentimentSelectorProps {
@@ -51,7 +49,6 @@ const FeedbackSentimentSelector: React.FC<FeedbackSentimentSelectorProps> = ({
   return (
     <Box sx={{ display: "flex", gap: 1.5, justifyContent: "center", flexWrap: "wrap" }}>
       {SENTIMENT_OPTIONS.map((opt) => {
-        const Icon = SENTIMENT_ICONS[opt.value];
         const isSelected = value === opt.value;
         const color = colorMap[opt.colorVariant];
         const bg = bgMap[opt.colorVariant];
@@ -84,7 +81,7 @@ const FeedbackSentimentSelector: React.FC<FeedbackSentimentSelectorProps> = ({
               }}
             >
               <AppIcon
-                icon={Icon}
+                icon={SENTIMENT_ICONS[opt.value] ?? Meh}
                 colorVariant={opt.colorVariant}
                 size={28}
                 active={isSelected}

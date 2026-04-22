@@ -1,4 +1,4 @@
-import { uniqueId } from "lodash";
+﻿import { uniqueId } from "lodash";
 import { applyDynamicIconsToMenuItems } from "@/utils/menuIconResolver";
 
 export interface MenuitemsType {

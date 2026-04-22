@@ -123,11 +123,9 @@ export interface FeedbackTypeOption {
 }
 
 export const SENTIMENT_OPTIONS: SentimentOption[] = [
-  { value: 5, label: "Çok Memnun", emoji: "😄", colorVariant: "success" },
-  { value: 4, label: "Memnun", emoji: "🙂", colorVariant: "primary" },
+  { value: 5, label: "Memnun", emoji: "😊", colorVariant: "success" },
   { value: 3, label: "Nötr", emoji: "😐", colorVariant: "neutral" },
-  { value: 2, label: "Memnun Değil", emoji: "😕", colorVariant: "warning" },
-  { value: 1, label: "Çok Memnun Değil", emoji: "😞", colorVariant: "error" },
+  { value: 1, label: "Memnun Değil", emoji: "☹️", colorVariant: "error" },
 ];
 
 export const FEEDBACK_TYPE_OPTIONS: FeedbackTypeOption[] = [

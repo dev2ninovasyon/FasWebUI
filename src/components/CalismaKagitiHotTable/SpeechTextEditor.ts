@@ -17,6 +17,13 @@ export function setEditorPrimaryColor(main: string, light: string): void {
   _primaryLight = light;
 }
 
+let _panelOpener: ((payload: { row: number; col: number }) => void) | null = null;
+export function setEditorPanelOpener(
+  fn: ((payload: { row: number; col: number }) => void) | null
+): void {
+  _panelOpener = fn;
+}
+
 // ── Speech recognition types ──────────────────────────────────────────────────
 interface SpeechRecognitionEvent extends Event {
   results: SpeechRecognitionResultList;
@@ -84,6 +91,21 @@ const ICON_CLOSE = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="1
   stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
   <line x1="18" y1="6" x2="6" y2="18"/>
   <line x1="6" y1="6" x2="18" y2="18"/>
+</svg>`;
+
+const ICON_PANEL = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="4" width="18" height="16" rx="2"/>
+  <path d="M15 4v16"/>
+  <path d="M7 8h4"/>
+  <path d="M7 12h4"/>
+  <path d="M7 16h3"/>
+</svg>`;
+
+const ICON_AI = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+  viewBox="0 0 24 24" fill="currentColor">
+  <path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/>
 </svg>`;
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -368,6 +390,7 @@ function toggleAiPanel(editor: SpeechTextEditor, s: EditorState, forceClose = fa
   Object.assign(s.aiBtn.style, {
     color: s.aiPanelVisible ? _primaryMain : "#6b7280",
     background: s.aiPanelVisible ? _primaryLight : "#ffffff",
+    borderColor: s.aiPanelVisible ? _primaryMain : "#e5e7eb",
   });
 
   // Reposition with new height
@@ -607,6 +630,8 @@ export class SpeechTextEditor extends BaseEditor {
     });
     const waveCtx = waveCanvas.getContext("2d");
 
+    const defaultHint = "Enter: tamamla  •  Shift+Enter: yeni satır  •  Esc: iptal";
+
     const makeIconBtn = (icon: string, title: string) => {
       const b = document.createElement("button");
       Object.assign(b.style, {
@@ -630,72 +655,30 @@ export class SpeechTextEditor extends BaseEditor {
       b.setAttribute("type", "button");
       b.title = title;
       b.innerHTML = icon;
+
+      b.addEventListener("mouseenter", () => {
+        hint.textContent = title;
+        hint.style.color = _primaryMain;
+        hint.style.fontWeight = "600";
+      });
+      b.addEventListener("mouseleave", () => {
+        hint.textContent = defaultHint;
+        hint.style.color = "#6b7280";
+        hint.style.fontWeight = "normal";
+      });
+
       return b;
     };
 
-    const aiBtn = document.createElement("button");
-    Object.assign(aiBtn.style, {
-      width: "30px",
-      height: "30px",
-      border: "none",
-      background: "white",
-      borderRadius: "50%",
-      cursor: "pointer",
-      padding: "0",
-      outline: "none",
-      flexShrink: "0",
-      overflow: "hidden",
-      boxSizing: "border-box",
-      position: "relative",
-    });
-    aiBtn.setAttribute("tabindex", "-1");
-    aiBtn.setAttribute("type", "button");
-    aiBtn.title = "FasAI ile Geliştir";
+    const aiBtn = makeIconBtn(ICON_AI, "FasAI ile Geliştir");
 
-    // Fallback icon shown until iframe loads
-    const aiBtnFallback = document.createElement("div");
-    aiBtnFallback.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 36 36">
-  <circle cx="18" cy="18" r="18" fill="#0d0d1a"/>
-  <defs>
-    <radialGradient id="fasai-orb-fb" cx="42%" cy="38%" r="55%">
-      <stop offset="0%" stop-color="#7ee8ff"/>
-      <stop offset="45%" stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#0a1a4a"/>
-    </radialGradient>
-  </defs>
-  <circle cx="18" cy="18" r="9" fill="url(#fasai-orb-fb)"/>
-  <ellipse cx="18" cy="18" rx="14" ry="5" fill="none" stroke="#4fc3f7" stroke-width="1" opacity="0.7" transform="rotate(-30 18 18)"/>
-  <ellipse cx="18" cy="18" rx="14" ry="5" fill="none" stroke="#81d4fa" stroke-width="0.8" opacity="0.5" transform="rotate(30 18 18)"/>
-</svg>`;
-    Object.assign(aiBtnFallback.style, {
-      position: "absolute", top: "0", left: "0",
-      width: "100%", height: "100%",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      pointerEvents: "none",
-    });
-    aiBtn.appendChild(aiBtnFallback);
-
-    const aiBtnIframe = document.createElement("iframe");
-    aiBtnIframe.src = "https://widget.galichat.com/chat/6691wb9cakfml2mjro2x19";
-    aiBtnIframe.scrolling = "no";
-    Object.assign(aiBtnIframe.style, {
-      pointerEvents: "none", border: "0",
-      width: "63px", height: "63px",
-      transform: "scale(0.476)", transformOrigin: "top left",
-      position: "absolute", top: "0", left: "0",
-      opacity: "0",
-    });
-    aiBtnIframe.addEventListener("load", () => {
-      aiBtnIframe.style.opacity = "1";
-      aiBtnFallback.style.display = "none";
-    });
-    aiBtn.appendChild(aiBtnIframe);
-
+    const panelBtn = makeIconBtn(ICON_PANEL, "Panelde Düzenle");
     const micBtn = makeIconBtn(ICON_MIC, "Sesle Yaz");
 
     btnGroup.appendChild(statusEl);
     btnGroup.appendChild(waveCanvas);
     btnGroup.appendChild(aiBtn);
+    btnGroup.appendChild(panelBtn);
     btnGroup.appendChild(micBtn);
     toolbar.appendChild(hint);
     toolbar.appendChild(btnGroup);
@@ -749,6 +732,19 @@ export class SpeechTextEditor extends BaseEditor {
       e.stopPropagation();
       const st = getState(this);
       if (st) toggleAiPanel(this, st);
+    });
+
+    panelBtn.addEventListener("mousedown", (e) => { e.preventDefault(); e.stopPropagation(); });
+    panelBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (_panelOpener) {
+        const row = (this as any).row;
+        const col = (this as any).col;
+        if (typeof row === "number" && typeof col === "number") {
+          _panelOpener({ row, col });
+        }
+      }
     });
 
     textarea.addEventListener("keydown", (e: KeyboardEvent) => {

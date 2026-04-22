@@ -54,6 +54,16 @@ export interface CalismaKagitiHotTableProps extends Omit<HotTableProps, "data"> 
  *   import { riskRenderer, durumRenderer, bdsRefRenderer, tespitRenderer, RISK_COLORS }
  *     from "@/components/CalismaKagitiHotTable/renderers";
  */
+// Tüm tablolarda dropdownMenu'da sadece filtre seçenekleri görünsün;
+// sütun ekleme/silme ve salt okunur işlemleri gizlenir.
+const DROPDOWN_FILTER_ONLY = [
+  "filter_by_condition",
+  "filter_operators",
+  "filter_by_condition2",
+  "filter_by_value",
+  "filter_action_bar",
+];
+
 const CalismaKagitiHotTable = React.forwardRef<any, CalismaKagitiHotTableProps>(
   (
     {
@@ -62,6 +72,7 @@ const CalismaKagitiHotTable = React.forwardRef<any, CalismaKagitiHotTableProps>(
       height = "calc(100vh - 340px)",
       rowHeight = HOT_BASE_ROW_HEIGHT,
       afterBeginEditing,
+      dropdownMenu: _dropdownMenuProp,
       ...rest
     },
     ref
@@ -139,12 +150,12 @@ const CalismaKagitiHotTable = React.forwardRef<any, CalismaKagitiHotTableProps>(
             undo: { name: "Geri Al" },
             redo: { name: "İleri Al" },
             separator2: "---------",
-            make_read_only: { name: "Salt Okunur Yap" },
             alignment: { name: "Hizalama" },
             copy: { name: "Kopyala" },
             cut: { name: "Kes" },
           },
         }}
+        dropdownMenu={_dropdownMenuProp ? DROPDOWN_FILTER_ONLY : false}
         manualColumnMove={true}
         manualRowMove={true}
         manualColumnResize={true}

@@ -1,4 +1,4 @@
-﻿import { Grid, Button, useTheme } from "@mui/material";
+import { Alert, Grid, Button, useTheme } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "@/store/hooks";
@@ -34,6 +34,7 @@ const DenetimKadrosuDuzenleForm = () => {
   const [saatBasiUcreti, setSaatBasiUcreti] = useState<any>(0);
   const [denetimUcreti, setDenetimUcreti] = useState<any>(0);
   const [aktifPasif, setAktifPasif] = useState(true);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const [kullaniciId, setKullaniciId] = useState(0);
   const [unvanId, setUnvanId] = useState(0);
@@ -42,7 +43,44 @@ const DenetimKadrosuDuzenleForm = () => {
   const denetlenenId = user.denetlenenId;
   const yil = user.yil;
 
+  const showWarning = (message: string) => {
+    setFormError(message);
+    enqueueSnackbar(message, {
+      variant: "warning",
+      autoHideDuration: 5000,
+      style: {
+        backgroundColor:
+          customizer.activeMode === "dark"
+            ? theme.palette.warning.dark
+            : theme.palette.warning.main,
+        maxWidth: "720px",
+      },
+    });
+  };
+
   const handleButtonClick = async () => {
+    setFormError(null);
+
+    if (!kullaniciId) {
+      showWarning("Lütfen personel seçin.");
+      return;
+    }
+
+    if (!unvanId) {
+      showWarning("Lütfen ünvan seçin.");
+      return;
+    }
+
+    if (!asilYedek) {
+      showWarning("Lütfen Asil / Yedek seçin.");
+      return;
+    }
+
+    if (!Number.isInteger(Number(calismaSaati))) {
+      showWarning("Çalışma Saati tam sayı olmalıdır.");
+      return;
+    }
+
     const updatedGorevAtamalari = {
       denetciId,
       denetlenenId,
@@ -50,41 +88,28 @@ const DenetimKadrosuDuzenleForm = () => {
       kullaniciId,
       unvanId,
       asilYedek,
-      calismaSaati: Number(calismaSaati),
+      calismaSaati: Number.parseInt(String(calismaSaati), 10),
       saatBasiUcreti: Number(saatBasiUcreti),
       denetimUcreti: Number(denetimUcreti),
       aktifPasif,
     };
+
     try {
-      const result = await updateGorevAtamalari(
-        id,
-        updatedGorevAtamalari
-      );
+      const result = await updateGorevAtamalari(id, updatedGorevAtamalari);
       if (result == true) {
         router.push("/Sozlesme/DenetimKadrosuAtama");
       } else {
-        enqueueSnackbar(result && result.message, {
-          variant: "warning",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.warning.dark
-                : theme.palette.warning.main,
-            maxWidth: "720px",
-          },
-        });
+        showWarning(result?.message || "Görev ataması güncellenemedi.");
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+      showWarning("Görev ataması güncellenemedi.");
     }
   };
 
   const fetchData = async () => {
     try {
-      const görevAtamalariVerileri = await getGorevAtamalariById(
-        pathId
-      );
+      const görevAtamalariVerileri = await getGorevAtamalariById(pathId);
       setKullaniciId(görevAtamalariVerileri.kullaniciId);
       setKullaniciAdi(görevAtamalariVerileri.kullaniciAdi);
       setUnvanId(görevAtamalariVerileri.unvanId);
@@ -110,6 +135,12 @@ const DenetimKadrosuDuzenleForm = () => {
 
   return (
     <div>
+      {formError && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          {formError}
+        </Alert>
+      )}
+
       <Grid container spacing={3}>
         <Grid
           display="flex"
@@ -213,15 +244,17 @@ const DenetimKadrosuDuzenleForm = () => {
             type="number"
             value={calismaSaati}
             fullWidth
-            inputProps={{ step: "0.01", pattern: "[0-9]*[.,]?[0-9]*" }}
+            inputProps={{ step: "1", min: "0", pattern: "[0-9]*" }}
             onChange={(e: any) => {
               const value = e.target.value;
-              if (value === "" || /^\d*[.,]?\d*$/.test(value)) {
-                setCalismaSaati(value.replace(",", "."));
+              if (value === "" || /^\d*$/.test(value)) {
+                setCalismaSaati(value);
               }
             }}
             onBlur={() => {
-              setCalismaSaati(Number(calismaSaati).toFixed(2));
+              setCalismaSaati(
+                calismaSaati === "" ? "0" : String(Number.parseInt(String(calismaSaati), 10) || 0)
+              );
             }}
           />
         </Grid>
@@ -348,4 +381,5 @@ const DenetimKadrosuDuzenleForm = () => {
     </div>
   );
 };
+
 export default DenetimKadrosuDuzenleForm;
