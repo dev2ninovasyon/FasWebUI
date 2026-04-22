@@ -28,6 +28,7 @@ export default function UygulamaError({
 }) {
   const [detailOpen, setDetailOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const isDev = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
     console.error('[UygulamaErrorBoundary]', error);
@@ -49,90 +50,119 @@ export default function UygulamaError({
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 720, mx: 'auto' }}>
-      <Alert
-        severity="error"
-        icon={<IconAlertTriangle size={20} />}
-        sx={{ mb: 2, alignItems: 'flex-start' }}
-        action={
-          <Button
-            color="error"
-            size="small"
-            variant="outlined"
-            startIcon={<IconRefresh size={14} />}
-            onClick={reset}
-            sx={{ mt: 0.25, whiteSpace: 'nowrap' }}
-          >
-            Tekrar Dene
-          </Button>
-        }
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px',
+        p: { xs: 2, md: 4 },
+        maxWidth: 720,
+        mx: 'auto',
+        textAlign: 'center',
+      }}
+    >
+      <Box
+        sx={{
+          mb: 3,
+          p: 2,
+          borderRadius: '50%',
+          bgcolor: 'error.light',
+          color: 'error.main',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 64,
+          height: 64,
+        }}
       >
-        <Typography variant="subtitle2" fontWeight={700} gutterBottom>
-          Sayfa yüklenirken bir hata oluştu
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {error.message
-            ? error.message.length > 300
-              ? error.message.slice(0, 300) + '…'
-              : error.message
-            : 'Beklenmeyen bir hata oluştu.'}
-        </Typography>
+        <IconAlertTriangle size={32} />
+      </Box>
 
-        {error.digest && (
-          <Typography variant="caption" color="text.disabled" display="block" mt={0.5}>
-            Hata kodu: {error.digest}
-          </Typography>
-        )}
-      </Alert>
+      <Typography variant="h5" fontWeight={700} gutterBottom sx={{ color: 'text.primary' }}>
+        Bir Şeyler Ters Gitti
+      </Typography>
 
-      {/* Teknik detay */}
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={0.5}
-        sx={{ cursor: 'pointer', userSelect: 'none', width: 'fit-content' }}
-        onClick={() => setDetailOpen((p) => !p)}
-      >
-        <Typography variant="caption" color="text.secondary">
-          Teknik Detay
-        </Typography>
-        <IconButton size="small" tabIndex={-1}>
-          {detailOpen ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
-        </IconButton>
-        <Tooltip title={copied ? 'Kopyalandı!' : 'Panoya Kopyala'} placement="top">
-          <IconButton
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCopy();
-            }}
-          >
-            <IconCopy size={14} />
-          </IconButton>
-        </Tooltip>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 480 }}>
+        {isDev
+          ? error.message || 'Beklenmeyen bir hata oluştu.'
+          : 'İşleminiz gerçekleştirilirken teknik bir aksaklık oluştu. Lütfen sayfayı yenilemeyi deneyin veya sorun devam ederse destek ekibimize başvurun.'}
+      </Typography>
+
+      <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: isDev ? 4 : 0 }}>
+        <Button
+          color="primary"
+          variant="contained"
+          size="large"
+          startIcon={<IconRefresh size={18} />}
+          onClick={reset}
+          sx={{ borderRadius: 2, px: 4, py: 1 }}
+        >
+          Tekrar Dene
+        </Button>
       </Stack>
 
-      <Collapse in={detailOpen}>
-        <Box
-          component="pre"
-          sx={{
-            mt: 1,
-            p: 1.5,
-            bgcolor: 'grey.100',
-            borderRadius: 1,
-            fontSize: '0.7rem',
-            lineHeight: 1.6,
-            overflowX: 'auto',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-all',
-            color: 'text.secondary',
-            maxHeight: 320,
-            overflowY: 'auto',
-          }}
-        >
-          {errorDetails || '(hata detayı yok)'}
+      {/* Teknik detay sadece local/dev ortamında gösterilir */}
+      {isDev && (
+        <Box sx={{ width: '100%', textAlign: 'left', mt: 4 }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.5}
+            sx={{ cursor: 'pointer', userSelect: 'none', width: 'fit-content', mb: 1 }}
+            onClick={() => setDetailOpen((p) => !p)}
+          >
+            <Typography variant="caption" color="text.secondary" fontWeight={600}>
+              TEKNİK DETAY (SADECE LOCAL)
+            </Typography>
+            <IconButton size="small">
+              {detailOpen ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
+            </IconButton>
+            <Tooltip title={copied ? 'Kopyalandı!' : 'Hata Detayını Kopyala'} placement="top">
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopy();
+                }}
+              >
+                <IconCopy size={14} />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+
+          <Collapse in={detailOpen}>
+            <Box
+              component="pre"
+              sx={{
+                p: 2,
+                bgcolor: 'grey.900',
+                color: 'success.light',
+                borderRadius: 2,
+                fontSize: '0.75rem',
+                lineHeight: 1.6,
+                overflowX: 'auto',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-all',
+                maxHeight: 400,
+                overflowY: 'auto',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                border: '1px solid',
+                borderColor: 'grey.800',
+              }}
+            >
+              {errorDetails || '(hata detayı yok)'}
+            </Box>
+          </Collapse>
         </Box>
-      </Collapse>
+      )}
+
+      {!isDev && error.digest && (
+        <Typography variant="caption" color="text.disabled" sx={{ mt: 2 }}>
+          Hata Kodu: {error.digest}
+        </Typography>
+      )}
     </Box>
   );
 }

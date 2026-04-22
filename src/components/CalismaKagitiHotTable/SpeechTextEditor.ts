@@ -721,6 +721,10 @@ export class SpeechTextEditor extends BaseEditor {
       e.stopPropagation();
       const st = getState(this);
       if (!st) return;
+      
+      // AI paneli açıksa kapat
+      if (st.aiPanelVisible) toggleAiPanel(this, st, true);
+
       if (st.recording) stopRecording(this);
       else void startRecording(this);
     });
@@ -731,13 +735,21 @@ export class SpeechTextEditor extends BaseEditor {
       e.preventDefault();
       e.stopPropagation();
       const st = getState(this);
-      if (st) toggleAiPanel(this, st);
+      if (!st) return;
+
+      // Ses kaydı varsa durdur (opsiyonel ama iyi bir pratik)
+      if (st.recording) stopRecording(this);
+
+      toggleAiPanel(this, st);
     });
 
     panelBtn.addEventListener("mousedown", (e) => { e.preventDefault(); e.stopPropagation(); });
     panelBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
+      const st = getState(this);
+      if (st && st.aiPanelVisible) toggleAiPanel(this, st, true);
+
       if (_panelOpener) {
         const row = (this as any).row;
         const col = (this as any).col;

@@ -38,49 +38,44 @@ function firstLetterUpperCase(str: string | undefined | null) {
   return newWord;
 }
 
-const seenTitles = new Map<string, SearchItemType>();
-
 function extractMenuItems(
   menuItems: MenuitemsType[],
-  breadcrumbPath: string[] = []
+  breadcrumbPath: string[] = [],
+  seenTitles: Set<string> = new Set()
 ) {
   const pages: SearchItemType[] = [];
 
   for (const menuItem of menuItems) {
-    // navlabel veya title olmayan itemleri atla
     if (menuItem.navlabel || !menuItem.title) continue;
 
     const formattedTitle = firstLetterUpperCase(menuItem.title);
     if (!formattedTitle) continue;
 
-    // Breadcrumb path'i oluştur
     const currentPath = [...breadcrumbPath, formattedTitle];
     const breadcrumb = currentPath.join(" > ");
 
-    // Aynı başlık daha önce eklendiyse, tekrar ekleme
     if (seenTitles.has(breadcrumb)) continue;
 
     const searchItem: SearchItemType = {
       label: formattedTitle,
       breadcrumb: breadcrumb,
       href: menuItem.href || "",
-      id: menuItem.id || "",
+      id: menuItem.id || breadcrumb, // ID yoksa breadcrumb kullan
       isDynamic: false,
     };
 
     pages.push(searchItem);
-    seenTitles.set(breadcrumb, searchItem);
+    seenTitles.add(breadcrumb);
 
-    // Alt menüleri işle - yeni path ile
     if (menuItem.children && menuItem.children.length > 0) {
-      pages.push(...extractMenuItems(menuItem.children, currentPath));
+      pages.push(...extractMenuItems(menuItem.children, currentPath, seenTitles));
     }
   }
 
   return pages;
 }
 
-function extractDynamicMenuItems(dynamicItems: any[]): SearchItemType[] {
+function extractDynamicMenuItems(dynamicItems: any[], seenTitles: Set<string> = new Set()): SearchItemType[] {
   const pages: SearchItemType[] = [];
 
   for (const item of dynamicItems) {
@@ -98,14 +93,13 @@ function extractDynamicMenuItems(dynamicItems: any[]): SearchItemType[] {
       label: formattedTitle,
       breadcrumb: breadcrumb,
       href: item.href || "",
-      id: `dynamic-${item.id}`,
+      id: item.id ? `dynamic-${item.id}` : key,
       isDynamic: true,
     };
 
     pages.push(searchItem);
-    seenTitles.set(key, searchItem);
+    seenTitles.add(key);
 
-    // Alt menüleri işle
     if (item.children && item.children.length > 0) {
       for (const child of item.children) {
         if (!child || !child.name) continue;
@@ -120,11 +114,11 @@ function extractDynamicMenuItems(dynamicItems: any[]): SearchItemType[] {
             label: childTitle,
             breadcrumb: childBreadcrumb,
             href: child.href || "",
-            id: `dynamic-${child.id}`,
+            id: child.id ? `dynamic-${child.id}` : childKey,
             isDynamic: true,
           };
           pages.push(childSearchItem);
-          seenTitles.set(childKey, childSearchItem);
+          seenTitles.add(childKey);
         }
       }
     }
@@ -173,10 +167,11 @@ const SearchBoxAutocomplete = () => {
 
   // Menü itemlerini extract et ve state'e kaydet
   React.useEffect(() => {
-    seenTitles.clear();
-    const staticPages = extractMenuItems(Menuitems);
+    const seenTitles = new Set<string>();
+    const staticPages = extractMenuItems(Menuitems, [], seenTitles);
     const dynamicPages = extractDynamicMenuItems(
-      dynamicMenu.maddiDogrulamaItems || []
+      dynamicMenu.maddiDogrulamaItems || [],
+      seenTitles
     );
     const allPages = [...staticPages, ...dynamicPages];
     setLocalPages(allPages);
@@ -240,26 +235,35 @@ const SearchBoxAutocomplete = () => {
       onChange={(event, value) => handleButtonClick(value?.href || "")}
       renderOption={(props, option) => {
         const { key, onClick, ...liProps } = props as any;
+        const uniqueKey = key || `opt-${option.id}-${option.breadcrumb}`;
         return (
           <Box
-            component="a"
-            key={key ?? option.id}
-            href={option.href}
+            component="li"
+            key={uniqueKey}
+            {...liProps}
             onClick={(e: React.MouseEvent) => {
-              e.preventDefault();
               onClick?.(e);
               handleButtonClick(option.href, e);
             }}
-            {...liProps}
             sx={{
-              padding: "8px 16px",
+              padding: "0 !important",
               borderBottom: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
               "&:last-child": { borderBottom: "none" },
-              textDecoration: "none",
-              display: "block",
               cursor: "pointer",
             }}
           >
+            <Box
+              component="a"
+              href={option.href}
+              onClick={(e: React.MouseEvent) => e.preventDefault()}
+              sx={{
+                display: "block",
+                padding: "8px 16px",
+                width: "100%",
+                textDecoration: "none",
+                color: "inherit"
+              }}
+            >
             <Stack direction="column" spacing={0.5} width="100%">
               <Typography
                 variant="body2"
@@ -281,8 +285,9 @@ const SearchBoxAutocomplete = () => {
               )}
             </Stack>
           </Box>
-        );
-      }}
+        </Box>
+      );
+    }}
       renderInput={(params) => (
         <CustomTextField
           {...params}

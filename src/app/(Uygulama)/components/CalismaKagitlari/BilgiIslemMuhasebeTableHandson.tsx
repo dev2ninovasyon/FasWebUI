@@ -67,7 +67,6 @@ interface Props {
 }
 
 interface RowData {
-  satirNo: number | string;
   riskSeviyesi: string;
   islem: string;
   durum: string;
@@ -82,7 +81,6 @@ interface RowData {
 interface DrawerFormState {
   rowIndex: number;
   id: number;
-  satirNo: string;
   riskSeviyesi: string;
   islem: string;
   durum: string;
@@ -113,12 +111,11 @@ interface SpeechRecognitionInstance extends EventTarget {
   onend: (() => void) | null;
 }
 
-const COL_SATIR_NO = 0;
-const COL_RISK = 1;
-const COL_ISLEM = 2;
-const COL_DURUM = 3;
-const COL_BDS_REF = 4;
-const COL_TESPIT = 5;
+const COL_RISK = 0;
+const COL_ISLEM = 1;
+const COL_DURUM = 2;
+const COL_BDS_REF = 3;
+const COL_TESPIT = 4;
 
 const AI_PROMPTS = [
   {
@@ -256,8 +253,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
 
   const tableData = useMemo<RowData[]>(
     () =>
-      rows.map((row, index) => ({
-        satirNo: row.satirNo || index + 1,
+      rows.map((row) => ({
         riskSeviyesi: row.riskSeviyesi || "ORTA",
         islem: row.islem || "",
         durum: row.durum || "Evet",
@@ -276,13 +272,12 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   }, [tableData]);
 
   const colHeaders = useMemo(
-    () => ["No", "Risk", "Soru", "Yanıt (E/H)", "BDS", "Açıklama / Değerlendirme Metni"],
+    () => ["Risk", "Soru", "Yanıt (E/H)", "BDS", "Açıklama / Değerlendirme Metni"],
     []
   );
 
   const columns = useMemo(
     () => [
-      { type: "text" as const, readOnly: false, width: 40, editor: "speech-text" },
       { type: "text" as const, readOnly: false, width: 90, renderer: riskRenderer, editor: "speech-text" },
       { type: "text" as const, readOnly: false, width: 360, renderer: islemRenderer, editor: "speech-text" },
       {
@@ -302,14 +297,13 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   );
 
   const editableColumnIndices = useMemo(
-    () => [COL_SATIR_NO, COL_RISK, COL_ISLEM, COL_DURUM, COL_TESPIT, COL_BDS_REF],
+    () => [COL_RISK, COL_ISLEM, COL_DURUM, COL_TESPIT, COL_BDS_REF],
     []
   );
 
   const hotData = useMemo(
     () =>
       tableData.map((row) => [
-        row.satirNo,
         row.riskSeviyesi,
         row.islem,
         row.durum,
@@ -357,14 +351,14 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
       const containerWidth = containerRef.current?.offsetWidth || window.innerWidth - 100;
       if (!containerWidth) return;
 
-      const fixedTotal = 40 + 90 + 120 + 110;
+      const fixedTotal = 90 + 120 + 110;
       const remaining = Math.max(400, containerWidth - fixedTotal);
 
       // Soru %44, Açıklama son sütun olduğu için stretchH="last" ile tüm boşluğu dolduracak.
       const soruWidth = Math.floor(remaining * 0.44);
 
       hot.updateSettings({
-        colWidths: [40, 90, soruWidth, 120, 110, undefined],
+        colWidths: [90, soruWidth, 120, 110, undefined],
         stretchH: "last",
         width: containerWidth
       });
@@ -432,8 +426,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
 
     setDrawerForm({
       rowIndex,
-      id: Number(rowData[6] || 0),
-      satirNo: String(rowData[COL_SATIR_NO] ?? ""),
+      id: Number(rowData[5] || 0),
       riskSeviyesi: String(rowData[COL_RISK] ?? "ORTA"),
       islem: String(rowData[COL_ISLEM] ?? ""),
       durum: String(rowData[COL_DURUM] ?? "Evet"),
@@ -638,7 +631,6 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     const hot = hotRef.current?.hotInstance;
     if (!hot) return;
 
-    hot.setDataAtCell(drawerForm.rowIndex, COL_SATIR_NO, drawerForm.satirNo);
     hot.setDataAtCell(drawerForm.rowIndex, COL_RISK, drawerForm.riskSeviyesi);
     hot.setDataAtCell(drawerForm.rowIndex, COL_ISLEM, drawerForm.islem);
     hot.setDataAtCell(drawerForm.rowIndex, COL_DURUM, drawerForm.durum);
@@ -669,8 +661,8 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
 
       const satirlar = sourceData
         .map((rowArr) => ({
-          id: Number(rowArr[6] || 0),
-          satirNo: rowArr[COL_SATIR_NO] ? Number(rowArr[COL_SATIR_NO]) : null,
+          id: Number(rowArr[5] || 0),
+          satirNo: null,
           riskSeviyesi: (rowArr[COL_RISK] ?? "").toString(),
           islem: (rowArr[COL_ISLEM] ?? "").toString(),
           durum: (rowArr[COL_DURUM] ?? "Evet").toString(),
@@ -730,14 +722,13 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   const buildHtmlAsync = async (): Promise<string> => {
     const tableRows = tableData
       .map(
-        (row, idx) => `
+        (row) => `
       <tr>
-        <td class="center" style="width:4%">${escapeHtml(String(row.satirNo ?? idx + 1))}</td>
-        <td class="center risk-${(row.riskSeviyesi || "").toLowerCase().replace(/[^a-z]/g, "")}" style="width:8%">${escapeHtml(row.riskSeviyesi)}</td>
-        <td style="width:30%">${escapeHtml(row.islem)}</td>
-        <td class="center durum-${row.durum === "Hayır" ? "hayir" : "evet"}" style="width:7%">${escapeHtml(row.durum)}</td>
-        <td class="center" style="width:11%">${escapeHtml(row.bdsReferansi)}</td>
-        <td style="width:40%">${escapeHtml(row.tespit)}</td>
+        <td class="center risk-${(row.riskSeviyesi || "").toLowerCase().replace(/[^a-z]/g, "")}" style="width:10%">${escapeHtml(row.riskSeviyesi)}</td>
+        <td style="width:32%">${escapeHtml(row.islem)}</td>
+        <td class="center durum-${row.durum === "Hayır" ? "hayir" : "evet"}" style="width:9%">${escapeHtml(row.durum)}</td>
+        <td class="center" style="width:12%">${escapeHtml(row.bdsReferansi)}</td>
+        <td style="width:37%">${escapeHtml(row.tespit)}</td>
       </tr>`
       )
       .join("");
@@ -788,7 +779,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
               data={hotData}
               colHeaders={colHeaders}
               columns={columns}
-              rowHeaders={false}
+              rowHeaders={true}
               height="calc(100vh - 260px)"
               width="100%"
               rowHeight={HOT_BASE_ROW_HEIGHT}

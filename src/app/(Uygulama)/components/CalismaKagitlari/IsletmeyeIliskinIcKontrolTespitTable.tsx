@@ -8,6 +8,7 @@ import CalismaKagitiHotTable, {
   bdsRefRenderer,
   islemRenderer,
 } from "@/components/CalismaKagitiHotTable";
+import { setEditorPanelOpener } from "@/components/CalismaKagitiHotTable/SpeechTextEditor";
 import {
   Box,
   Button,
@@ -23,13 +24,24 @@ import {
   Typography,
   Stack,
   Alert,
-  Grid,
   Paper,
+  Tab,
+  Tabs,
   TextField,
-  InputAdornment,
   MenuItem,
   Collapse,
+  Drawer,
+  IconButton as MuiIconButton,
+  Tooltip,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
+import KeyboardVoiceRoundedIcon from "@mui/icons-material/KeyboardVoiceRounded";
+import StopCircleRoundedIcon from "@mui/icons-material/StopCircleRounded";
+import { enhanceText } from "@/utils/gemini";
+import GlobalStyles from "@mui/material/GlobalStyles";
+import { HOT_BASE_ROW_HEIGHT, tespitRenderer } from "@/components/CalismaKagitiHotTable/renderers";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import SearchIcon from "@mui/icons-material/Search";
@@ -75,15 +87,67 @@ interface RowData {
   standartmi?: boolean | null;
 }
 
+interface DrawerFormState {
+  rowIndex: number;
+  id: number;
+  satirNo: string;
+  bolum: string;
+  konu: string;
+  islem: string;
+  durum: string;
+  riskSeviyesi: string;
+  tespit: string;
+  denetimAdimi: string;
+  bdsReferansi: string;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+}
+
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  maxAlternatives: number;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onstart: (() => void) | null;
+  onresult: ((e: SpeechRecognitionEvent) => void) | null;
+  onerror: ((e: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+}
+
 const COL_SATIR_NO = 0;
 const COL_BOLUM = 1;
 const COL_KONU = 2;
 const COL_SORU = 3;
 const COL_DURUM = 4;
 const COL_RISK = 5;
-const COL_TESPIT = 6;
-const COL_AKSIYON = 7;
-const COL_BDS_REF = 8;
+const COL_AKSIYON = 6;
+const COL_BDS_REF = 7;
+const COL_TESPIT = 8;
+
+const AI_PROMPTS = [
+  {
+    label: "Zenginleştir",
+    instruction: "Bu metni daha profesyonel ve detaylı bir dille zenginleştir:",
+  },
+  {
+    label: "Özetle",
+    instruction: "Bu metni denetim raporu için kısa ve öz bir tespite dönüştür:",
+  },
+  {
+    label: "Detaylandır",
+    instruction: "Bu metni denetim standartlarına uygun şekilde daha fazla detay ekleyerek genişlet:",
+  },
+];
 
 const SOFT_SURFACE = "#f8f7f4";
 const SOFT_BORDER = "#e7e2d8";
@@ -98,6 +162,22 @@ const summaryCardStyles = {
 function normalizeText(value: string | null | undefined) {
   return (value ?? "").toLocaleUpperCase("tr-TR");
 }
+
+const getFieldByColumn = (
+  col?: number
+): "islem" | "tespit" | "bdsReferansi" => {
+  if (col === COL_SORU) return "islem";
+  if (col === COL_BDS_REF) return "bdsReferansi";
+  return "tespit";
+};
+
+const getFieldLabel = (
+  field: "islem" | "tespit" | "bdsReferansi"
+) => {
+  if (field === "islem") return "Soru";
+  if (field === "bdsReferansi") return "BDS Referansı";
+  return "Açıklama / Değerlendirme Metni";
+};
 
 const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
   isClickedVarsayilanaDon,
@@ -124,6 +204,21 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
 
   const tableDataRef = useRef<RowData[]>([]);
   const changedRowIdsRef = useRef<Set<number>>(new Set());
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [editorDrawerOpen, setEditorDrawerOpen] = useState(false);
+  const [drawerForm, setDrawerForm] = useState<DrawerFormState | null>(null);
+  const [drawerActiveField, setDrawerActiveField] = useState<
+    "islem" | "tespit" | "bdsReferansi"
+  >("tespit");
+  const [drawerAiPanelOpen, setDrawerAiPanelOpen] = useState(false);
+  const [drawerAiLoading, setDrawerAiLoading] = useState(false);
+  const [drawerAiResult, setDrawerAiResult] = useState("");
+  const [drawerRecordingField, setDrawerRecordingField] = useState<
+    "islem" | "tespit" | "bdsReferansi" | null
+  >(null);
+  const drawerRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const drawerSpeechAnchorRef = useRef("");
 
   // ── Veri yükleme ─────────────────────────────────────────────────────────────
 
@@ -252,79 +347,39 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
       "Kontrol Sorusu",
       "Yanıt",
       "Risk",
-      "Açıklama Metni",
       "Denetim Adımı",
       "İlgili BDS",
+      "Açıklama / Değerlendirme Metni",
     ],
     []
   );
 
-  const customTespitRenderer = useCallback(function (this: any, ...args: any[]) {
-    const [instance, td, row, col, prop, value] = args;
-    const durum = instance.getDataAtCell(row, COL_DURUM);
-    const rowData = tableDataRef.current[row];
-    
-    let displayValue = value;
-    let isPlaceholder = false;
-    
-    if (!value || String(value).trim() === "") {
-        displayValue = durum === "Hayır" ? (rowData?.hayirIcerik ?? "") : (rowData?.evetIcerik ?? "");
-        isPlaceholder = true;
-    }
-    
-    td.style.padding = "0";
-    td.style.overflow = "hidden";
-    td.style.verticalAlign = "top";
-
-    td.innerHTML = "";
-    const div = document.createElement("div");
-    div.style.fontSize = "0.82rem";
-    div.style.lineHeight = "1.5";
-    div.style.whiteSpace = "pre-wrap";
-    div.style.overflow = "hidden";
-    div.style.maxHeight = "68px";
-    div.style.padding = "6px 4px";
-    div.style.boxSizing = "border-box";
-    div.style.fontFamily = "inherit";
-    
-    if (isPlaceholder) {
-      div.style.color = "#999999";
-      div.style.fontStyle = "italic";
-    }
-    
-    const text = String(displayValue ?? "");
-    div.textContent = text;
-    if (text && !isPlaceholder) div.title = text;
-    td.appendChild(div);
-  }, []);
-
   const columns = useMemo(
     () => [
-      { type: "text" as const, readOnly: false, width: 60, editor: "speech-text" }, // 0: No
-      { type: "text" as const, readOnly: false, width: 110, renderer: islemRenderer, editor: "speech-text" }, // 1: Bölüm
-      { type: "text" as const, readOnly: false, width: 130, renderer: islemRenderer, editor: "speech-text" }, // 2: Alt Bölüm
-      { type: "text" as const, readOnly: false, width: 260, renderer: islemRenderer, editor: "speech-text" }, // 3: Soru
+      { type: "text" as const, readOnly: false, width: 40, editor: "speech-text" }, // 0: No
+      { type: "text" as const, readOnly: false, width: 90, renderer: islemRenderer, editor: "speech-text" }, // 1: Bölüm
+      { type: "text" as const, readOnly: false, width: 110, renderer: islemRenderer, editor: "speech-text" }, // 2: Alt Bölüm
+      { type: "text" as const, readOnly: false, width: 360, renderer: islemRenderer, editor: "speech-text" }, // 3: Soru
       {
         type: "dropdown" as const,
         source: ["Evet", "Hayır"],
-        width: 90,
+        width: 100,
         renderer: durumRenderer,
       }, // 4: Yanıt
-      { type: "text" as const, readOnly: false, width: 110, renderer: riskRenderer, editor: "speech-text" }, // 5: Risk
+      { type: "text" as const, readOnly: false, width: 90, renderer: riskRenderer, editor: "speech-text" }, // 5: Risk
       {
         type: "text" as const,
-        width: 360,
-        renderer: customTespitRenderer,
-        editor: "speech-text",
-      }, // 6: Açıklama Metni
-      {
-        type: "text" as const,
-        width: 290,
+        width: 250,
         renderer: islemRenderer,
         editor: false,
         readOnly: true,
-      }, // 7: Denetim Adımı (Aksiyon)
-      { type: "text" as const, readOnly: true, width: 130, renderer: bdsRefRenderer, editor: false }, // 8: İlgili BDS
+      }, // 6: Denetim Adımı (Aksiyon)
+      { type: "text" as const, readOnly: true, width: 90, renderer: bdsRefRenderer, editor: false }, // 7: İlgili BDS
+      {
+        type: "text" as const,
+        renderer: tespitRenderer,
+        editor: "speech-text",
+      }, // 8: Açıklama Metni (Tespit)
     ],
     []
   );
@@ -340,15 +395,52 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
         row.islem,
         row.durum,
         row.riskSeviyesi,
-        row.tespit,
         row.denetimAdimi,
         row.bdsReferansi,
+        row.tespit,
         row.id,
+        row.evetIcerik,
+        row.hayirIcerik,
       ]),
     [tableData]
   );
 
   // ── Sayfa terk uyarısı ────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    const applyWidth = () => {
+      const hot = hotRef.current?.hotInstance;
+      if (!hot) return;
+      
+      const containerWidth = containerRef.current?.offsetWidth || window.innerWidth - 100;
+      if (!containerWidth) return;
+
+      const fixedTotal = 40 + 90 + 110 + 100 + 90 + 250 + 90;
+      const remaining = Math.max(400, containerWidth - fixedTotal);
+
+      // Soru %44, Açıklama son sütun olduğu için stretchH="last" ile tüm boşluğu dolduracak.
+      const soruWidth = Math.floor(remaining * 0.44);
+
+      hot.updateSettings({
+        colWidths: [40, 90, 110, soruWidth, 100, 90, 250, 90, undefined],
+        stretchH: "last",
+        width: containerWidth
+      });
+    };
+
+    const timer = setTimeout(applyWidth, 100);
+    window.addEventListener("resize", applyWidth);
+
+    const container = containerRef.current;
+    const observer = new ResizeObserver(() => applyWidth());
+    if (container) observer.observe(container);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", applyWidth);
+      if (container) observer.unobserve(container);
+    };
+  }, [tableData]);
 
   useEffect(() => {
     if (!isHotDirty) return;
@@ -370,20 +462,262 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
     };
   }, [isHotDirty]);
 
+  const openDrawerForRow = useCallback(
+    (
+      rowIndex: number,
+      activeField: "islem" | "tespit" | "bdsReferansi" = "tespit"
+    ) => {
+      const hot = hotRef.current?.hotInstance;
+      if (!hot || rowIndex < 0) return;
+
+      const activeEditor = hot.getActiveEditor?.();
+      if (activeEditor?.isOpened?.()) {
+        activeEditor.finishEditing?.(false);
+      }
+
+      const rowData = hot.getSourceDataAtRow(rowIndex) as any[] | undefined;
+      if (!rowData) return;
+
+      setDrawerForm({
+        rowIndex,
+        id: Number(rowData[9] || 0),
+        satirNo: String(rowData[COL_SATIR_NO] ?? ""),
+        bolum: String(rowData[COL_BOLUM] ?? ""),
+        konu: String(rowData[COL_KONU] ?? ""),
+        islem: String(rowData[COL_SORU] ?? ""),
+        durum: String(rowData[COL_DURUM] ?? "Evet"),
+        riskSeviyesi: String(rowData[COL_RISK] ?? "-"),
+        tespit: String(rowData[COL_TESPIT] ?? ""),
+        denetimAdimi: String(rowData[COL_AKSIYON] ?? ""),
+        bdsReferansi: String(rowData[COL_BDS_REF] ?? ""),
+      });
+      setDrawerActiveField(activeField);
+      setDrawerAiResult("");
+      setDrawerAiPanelOpen(false);
+      setEditorDrawerOpen(true);
+    },
+    []
+  );
+
+  useEffect(() => {
+    setEditorPanelOpener(({ row, col }) => {
+      openDrawerForRow(row, getFieldByColumn(col));
+    });
+
+    return () => {
+      setEditorPanelOpener(null);
+    };
+  }, [openDrawerForRow]);
+
+  const handleDrawerFieldChange = useCallback(
+    (field: keyof Omit<DrawerFormState, "rowIndex" | "id">, value: string) => {
+      setDrawerForm((prev) => (prev ? { ...prev, [field]: value } : prev));
+    },
+    []
+  );
+
+  const stopDrawerRecording = useCallback(() => {
+    if (drawerRecognitionRef.current) {
+      try {
+        drawerRecognitionRef.current.onend = null;
+        drawerRecognitionRef.current.onerror = null;
+        drawerRecognitionRef.current.abort();
+      } catch {
+        // noop
+      }
+      drawerRecognitionRef.current = null;
+    }
+    setDrawerRecordingField(null);
+    drawerSpeechAnchorRef.current = "";
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      stopDrawerRecording();
+    };
+  }, [stopDrawerRecording]);
+
+  const startDrawerRecording = useCallback(
+    async (field: "islem" | "tespit" | "bdsReferansi") => {
+      const SR =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+      if (!SR) {
+        enqueueSnackbar("Tarayıcınız ses tanımayı desteklemiyor.", {
+          variant: "error",
+        });
+        return;
+      }
+
+      if (!drawerForm) return;
+
+      if (drawerRecordingField === field) {
+        stopDrawerRecording();
+        return;
+      }
+
+      stopDrawerRecording();
+
+      const rec: SpeechRecognitionInstance = new SR();
+      rec.continuous = true;
+      rec.interimResults = true;
+      rec.lang = "tr-TR";
+      rec.maxAlternatives = 1;
+
+      drawerSpeechAnchorRef.current = drawerForm[field] ?? "";
+      setDrawerRecordingField(field);
+
+      rec.onresult = (event: SpeechRecognitionEvent) => {
+        let interim = "";
+        let final = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+
+        if (final) {
+          const sep =
+            drawerSpeechAnchorRef.current &&
+            !drawerSpeechAnchorRef.current.endsWith(" ")
+              ? " "
+              : "";
+          drawerSpeechAnchorRef.current =
+            drawerSpeechAnchorRef.current + sep + final;
+          handleDrawerFieldChange(field, drawerSpeechAnchorRef.current);
+        } else if (interim) {
+          const sep =
+            drawerSpeechAnchorRef.current &&
+            !drawerSpeechAnchorRef.current.endsWith(" ")
+              ? " "
+              : "";
+          handleDrawerFieldChange(
+            field,
+            drawerSpeechAnchorRef.current + sep + interim
+          );
+        }
+      };
+
+      rec.onerror = (event: SpeechRecognitionErrorEvent) => {
+        if (event.error !== "aborted" && event.error !== "no-speech") {
+          enqueueSnackbar(`Ses algılama hatası: ${event.error}`, {
+            variant: "error",
+          });
+        }
+        stopDrawerRecording();
+      };
+
+      rec.onend = () => {
+        stopDrawerRecording();
+      };
+
+      drawerRecognitionRef.current = rec;
+
+      try {
+        rec.start();
+      } catch {
+        enqueueSnackbar("Ses kaydı başlatılamadı.", { variant: "error" });
+        stopDrawerRecording();
+      }
+    },
+    [
+      drawerForm,
+      drawerRecordingField,
+      enqueueSnackbar,
+      handleDrawerFieldChange,
+      stopDrawerRecording,
+    ]
+  );
+
+  const runDrawerAiPrompt = useCallback(
+    async (instruction: string) => {
+      if (!drawerForm) return;
+      const text = drawerForm[drawerActiveField]?.trim();
+      if (!text) {
+        enqueueSnackbar("Önce metin girin.", { variant: "warning" });
+        return;
+      }
+
+      setDrawerAiLoading(true);
+      setDrawerAiPanelOpen(true);
+      setDrawerAiResult("FasAI çalışıyor...");
+
+      try {
+        const result = await enhanceText(user, text, instruction);
+        setDrawerAiResult(result);
+      } catch {
+        setDrawerAiResult("Hata oluştu, tekrar deneyin.");
+      } finally {
+        setDrawerAiLoading(false);
+      }
+    },
+    [drawerActiveField, drawerForm, enqueueSnackbar, user]
+  );
+
+  const applyDrawerAiResult = useCallback(() => {
+    if (
+      !drawerAiResult ||
+      drawerAiResult === "FasAI çalışıyor..." ||
+      drawerAiResult === "Hata oluştu, tekrar deneyin."
+    ) {
+      return;
+    }
+
+    handleDrawerFieldChange(drawerActiveField, drawerAiResult);
+    setDrawerAiResult("");
+  }, [drawerActiveField, drawerAiResult, handleDrawerFieldChange]);
+
+  const handleDrawerApply = useCallback(() => {
+    if (!drawerForm) return;
+    const hot = hotRef.current?.hotInstance;
+    if (!hot) return;
+
+    hot.setDataAtCell(drawerForm.rowIndex, COL_SORU, drawerForm.islem);
+    hot.setDataAtCell(drawerForm.rowIndex, COL_TESPIT, drawerForm.tespit);
+    hot.setDataAtCell(drawerForm.rowIndex, COL_BDS_REF, drawerForm.bdsReferansi);
+
+    if (drawerForm.id) {
+      changedRowIdsRef.current.add(drawerForm.id);
+    }
+
+    setIsHotDirty(true);
+    stopDrawerRecording();
+    setEditorDrawerOpen(false);
+    setDrawerForm(null);
+    setDrawerAiResult("");
+    setDrawerAiPanelOpen(false);
+    enqueueSnackbar("Satır güncellendi. Kalıcı olması için kaydedin.", {
+      variant: "success",
+    });
+  }, [drawerForm, enqueueSnackbar, stopDrawerRecording]);
+
   // ── Handsontable event handlers ───────────────────────────────────────────────
 
   const handleAfterChange = useCallback(
     function (this: any, change: any[] | null, source: string) {
       if (!change || !change.length || source === "loadData") return;
-      setIsHotDirty(true);
+      
+      const hot = this;
+
       change.forEach(([row, prop, oldValue, newValue]: [number, any, any, any]) => {
+        if (newValue === "EDITOR_DRAWER_OPEN") {
+          const colIndex = hot.propToCol(prop);
+          const val = hot.getDataAtCell(row, colIndex);
+          openDrawerForRow(row, getFieldByColumn(colIndex));
+          setTimeout(() => hot.setDataAtCell(row, colIndex, val, "internal"), 0);
+          return;
+        }
+
+        setIsHotDirty(true);
         const rowData = tableDataRef.current[row];
         if (rowData?.id) {
           changedRowIdsRef.current.add(rowData.id);
         }
 
         if ((prop === "durum" || prop === COL_DURUM) && newValue?.trim()) {
-          const hot = this;
           const currentTespit = hot.getDataAtCell(row, COL_TESPIT) ?? "";
           const currentAksiyon = hot.getDataAtCell(row, COL_AKSIYON) ?? "";
           
@@ -407,14 +741,9 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
             setTimeout(() => hot.setDataAtCell(row, COL_AKSIYON, newAksiyonTemplate), 0);
           }
         }
-        
-        // Tracking changes directly to textfields in case
-        if (prop === COL_TESPIT || prop === COL_AKSIYON) {
-           // changes caught, dirty tag tracked via top logic constraint
-        }
       });
     },
-    []
+    [openDrawerForRow]
   );
 
   const handleAfterCreateRow = useCallback(
@@ -449,6 +778,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
           riskSeviyesi: (rowArr[COL_RISK] ?? "").toString(),
           tespit: (rowArr[COL_TESPIT] ?? "").toString(),
           ilgiliBds: (rowArr[COL_BDS_REF] ?? "").toString(),
+          denetimAdimi: (rowArr[COL_AKSIYON] ?? "").toString(),
         }));
 
       if (gosterilenSatirlar.length === 0) {
@@ -533,9 +863,9 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
         <td>${escapeHtml(row.islem)}</td>
         <td style="text-align:center">${escapeHtml(row.durum)}</td>
         <td style="text-align:center"><span class="${riskChipClass(row.riskSeviyesi)}">${escapeHtml(row.riskSeviyesi)}</span></td>
-        <td>${escapeHtml(row.tespit)}</td>
         <td>${escapeHtml(row.denetimAdimi)}</td>
         <td style="text-align:center">${escapeHtml(row.bdsReferansi)}</td>
+        <td>${escapeHtml(row.tespit)}</td>
       </tr>`
       )
       .join("");
@@ -578,9 +908,9 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
               <th style="width:18%;">Kontrol Sorusu</th>
               <th style="width:5%;">Yanıt</th>
               <th style="width:6%;">Risk</th>
-              <th style="width:23%;">Açıklama</th>
               <th style="width:20%;">Denetim Adımı</th>
               <th style="width:8%;">BDS</th>
+              <th style="width:23%;">Açıklama</th>
             </tr>
           </thead>
           <tbody>
@@ -607,9 +937,30 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
 
   return (
     <Box sx={{ width: "100%", margin: 0, display: "flex", flexDirection: "column", bgcolor: "#ffffff" }}>
+      <GlobalStyles
+        styles={{
+          ".ht-cell-clamp": {
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 3,
+            overflow: "hidden",
+            fontSize: "0.82rem",
+            lineHeight: "1.35",
+            padding: "8px !important",
+            whiteSpace: "pre-wrap",
+          },
+          ".handsontable .htCore": {
+            width: "100% !important",
+          },
+          ".calisma-kagiti-hot-table-shell": {
+            overflow: "hidden !important",
+          },
+          ".handsontable td": {
+            verticalAlign: "top !important",
+          },
+        }}
+      />
       <Stack spacing={2.5}>
-
-
         <Box sx={{ px: 2, display: "flex", justifyContent: "flex-end" }}>
           <Button
             onClick={handleKaydet}
@@ -621,21 +972,42 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
           </Button>
         </Box>
 
-        <Box sx={{ minHeight: "auto", width: "100%", overflowX: "auto" }}>
-          <CalismaKagitiHotTable
-            ref={hotRef}
-            data={hotData}
-            colHeaders={colHeaders}
-            columns={columns}
-            rowHeaders={false}
-            stretchH="none"
-            manualColumnResize={true}
-            manualRowResize={false}
-            editableColumnIndices={editableColumnIndices}
-            afterChange={handleAfterChange}
-            afterCreateRow={handleAfterCreateRow}
-            height="calc(100vh - 420px)"
-          />
+        <Box sx={{ px: 2 }}>
+          <Box
+            className="calisma-kagiti-hot-table-shell"
+            sx={{
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: 1,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Box
+              ref={containerRef}
+              className="calisma-kagiti-hot-table"
+              sx={{ position: "relative", minWidth: 0 }}
+            >
+              <CalismaKagitiHotTable
+                ref={hotRef}
+                className="ht-theme-horizon calisma-kagiti-hot-table-grid"
+                data={hotData}
+                colHeaders={colHeaders}
+                columns={columns}
+                rowHeaders={false}
+                height="calc(100vh - 420px)"
+                width="100%"
+                rowHeight={HOT_BASE_ROW_HEIGHT}
+                stretchH="last"
+                dropdownMenu={true}
+                manualColumnResize={true}
+                manualRowResize={false}
+                editableColumnIndices={editableColumnIndices}
+                afterChange={handleAfterChange}
+                afterCreateRow={handleAfterCreateRow}
+              />
+            </Box>
+          </Box>
         </Box>
 
         <Box sx={{ mt: 2 }}>
@@ -655,6 +1027,321 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
           />
         </Box>
       </Stack>
+
+      {/* Editor Drawer */}
+      <Drawer
+        anchor="right"
+        open={editorDrawerOpen}
+        onClose={() => {
+          stopDrawerRecording();
+          setEditorDrawerOpen(false);
+          setDrawerForm(null);
+          setDrawerAiResult("");
+          setDrawerAiPanelOpen(false);
+        }}
+        PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: 520, lg: 620 },
+            p: 0,
+          },
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <Box
+            sx={{
+              px: 2.5,
+              py: 2,
+              borderBottom: "1px solid",
+              borderColor: "divider",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              bgcolor: "background.paper",
+            }}
+          >
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Satır Düzenleme Paneli
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Değişiklikleri tabloya uygula, ardından üstteki kaydet butonuyla kalıcı hale getir.
+              </Typography>
+            </Box>
+            <MuiIconButton
+              onClick={() => {
+                stopDrawerRecording();
+                setEditorDrawerOpen(false);
+                setDrawerForm(null);
+                setDrawerAiResult("");
+                setDrawerAiPanelOpen(false);
+              }}
+            >
+              <CloseIcon />
+            </MuiIconButton>
+          </Box>
+
+          <Box sx={{ borderBottom: 1, borderColor: "divider", px: 2.5 }}>
+            <Tabs
+              value={drawerActiveField}
+              onChange={(_, v) => {
+                setDrawerActiveField(v);
+                setDrawerAiResult("");
+              }}
+              variant="fullWidth"
+              textColor="primary"
+              indicatorColor="primary"
+            >
+              <Tab value="islem" label="Soru" sx={{ fontSize: "0.75rem" }} />
+              <Tab value="tespit" label="Açıklama" sx={{ fontSize: "0.75rem" }} />
+              <Tab value="bdsReferansi" label="BDS Ref." sx={{ fontSize: "0.75rem" }} />
+            </Tabs>
+          </Box>
+
+          <Box sx={{ p: 2.5, overflowY: "auto", flex: 1 }}>
+            <Stack spacing={1.5}>
+              <TextField
+                label={getFieldLabel(drawerActiveField)}
+                value={drawerForm?.[drawerActiveField] ?? ""}
+                onChange={(e) =>
+                  handleDrawerFieldChange(drawerActiveField, e.target.value)
+                }
+                fullWidth
+                multiline
+                minRows={
+                  drawerActiveField === "bdsReferansi"
+                    ? 4
+                    : drawerActiveField === "islem"
+                      ? 6
+                      : 8
+                }
+                variant="outlined"
+              />
+
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  px: 1,
+                  py: 0.5,
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: 1,
+                  bgcolor: "grey.50",
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  color="primary.main"
+                  fontWeight={600}
+                  sx={{
+                    fontSize: "0.65rem",
+                    visibility:
+                      drawerRecordingField === drawerActiveField
+                        ? "visible"
+                        : "hidden",
+                  }}
+                >
+                  ● Dinliyor
+                </Typography>
+
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                  <Tooltip title="FasAI ile Geliştir">
+                    <MuiIconButton
+                      size="small"
+                      onClick={() => {
+                        setDrawerAiPanelOpen((v) => !v);
+                        setDrawerAiResult("");
+                      }}
+                      sx={{
+                        width: 26,
+                        height: 26,
+                        border: "1px solid",
+                        borderColor: drawerAiPanelOpen
+                          ? "primary.main"
+                          : "divider",
+                        bgcolor: drawerAiPanelOpen
+                          ? "primary.50"
+                          : "background.paper",
+                        color: drawerAiPanelOpen
+                          ? "primary.main"
+                          : "text.secondary",
+                        borderRadius: "50%",
+                      }}
+                    >
+                      <AutoAwesomeRoundedIcon sx={{ fontSize: 14 }} />
+                    </MuiIconButton>
+                  </Tooltip>
+
+                  <Tooltip
+                    title={
+                      drawerRecordingField === drawerActiveField
+                        ? "Kaydı Durdur"
+                        : "Sesle Yaz"
+                    }
+                  >
+                    <MuiIconButton
+                      size="small"
+                      onClick={() => startDrawerRecording(drawerActiveField)}
+                      sx={{
+                        width: 26,
+                        height: 26,
+                        border: "1px solid",
+                        borderColor:
+                          drawerRecordingField === drawerActiveField
+                            ? "error.main"
+                            : "divider",
+                        bgcolor:
+                          drawerRecordingField === drawerActiveField
+                            ? "error.50"
+                            : "background.paper",
+                        color:
+                          drawerRecordingField === drawerActiveField
+                            ? "error.main"
+                            : "text.secondary",
+                        borderRadius: "50%",
+                      }}
+                    >
+                      {drawerRecordingField === drawerActiveField ? (
+                        <StopCircleRoundedIcon sx={{ fontSize: 14 }} />
+                      ) : (
+                        <KeyboardVoiceRoundedIcon sx={{ fontSize: 14 }} />
+                      )}
+                    </MuiIconButton>
+                  </Tooltip>
+                </Box>
+              </Box>
+
+              {drawerAiPanelOpen && (
+                <Box
+                  sx={{
+                    p: 1.5,
+                    bgcolor: "primary.50",
+                    border: "1px solid",
+                    borderColor: "primary.light",
+                    borderRadius: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 0.75,
+                      mb: 1,
+                    }}
+                  >
+                    {AI_PROMPTS.map((item) => (
+                      <Chip
+                        key={item.label}
+                        label={item.label}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => runDrawerAiPrompt(item.instruction)}
+                        disabled={
+                          drawerAiLoading ||
+                          !(drawerForm?.[drawerActiveField]?.trim())
+                        }
+                        sx={{ cursor: "pointer", fontSize: "0.7rem" }}
+                      />
+                    ))}
+                  </Box>
+
+                  {drawerAiLoading && (
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <CircularProgress size={12} />
+                      <Typography variant="body2" color="text.secondary">
+                        İşleniyor...
+                      </Typography>
+                    </Box>
+                  )}
+
+                  {!drawerAiLoading && drawerAiResult && (
+                    <>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                          mb: 1,
+                          color: "text.primary",
+                        }}
+                      >
+                        {drawerAiResult}
+                      </Typography>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        justifyContent="flex-end"
+                      >
+                        <Button
+                          size="small"
+                          variant="text"
+                          color="inherit"
+                          onClick={() => setDrawerAiResult("")}
+                          sx={{ fontSize: "0.7rem" }}
+                        >
+                          Vazgeç
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            applyDrawerAiResult();
+                            setDrawerAiPanelOpen(false);
+                          }}
+                          sx={{ fontSize: "0.7rem" }}
+                        >
+                          Kullan
+                        </Button>
+                      </Stack>
+                    </>
+                  )}
+
+                  {!drawerAiLoading && !drawerAiResult && (
+                    <Typography variant="caption" color="text.secondary">
+                      Bir seçenek seçin...
+                    </Typography>
+                  )}
+                </Box>
+              )}
+            </Stack>
+          </Box>
+
+          <Box
+            sx={{
+              px: 2.5,
+              py: 2,
+              borderTop: "1px solid",
+              borderColor: "divider",
+              display: "flex",
+              gap: 1,
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              variant="text"
+              onClick={() => {
+                stopDrawerRecording();
+                setEditorDrawerOpen(false);
+                setDrawerForm(null);
+                setDrawerAiResult("");
+                setDrawerAiPanelOpen(false);
+              }}
+            >
+              Kapat
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleDrawerApply}
+              disabled={!drawerForm}
+            >
+              Tabloya Uygula
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
 
       <Dialog open={confirmDialogOpen} onClose={() => setConfirmDialogOpen(false)}>
         <DialogTitle>Değişiklikler Kaybolacak</DialogTitle>
