@@ -10,7 +10,11 @@ import CalismaKagitiHotTable, {
   tespitRenderer,
   islemRenderer,
 } from "@/components/CalismaKagitiHotTable";
-import { setEditorPanelOpener } from "@/components/CalismaKagitiHotTable/SpeechTextEditor";
+import {
+  getPreferredAudioConstraint,
+  openMicrophoneSetupDialog,
+  setEditorPanelOpener,
+} from "@/components/CalismaKagitiHotTable/SpeechTextEditor";
 import { enhanceText } from "@/utils/gemini";
 import {
   Box,
@@ -147,6 +151,13 @@ const getFieldLabel = (field: "islem" | "tespit" | "bdsReferansi") => {
   return "Açıklama / Değerlendirme Metni";
 };
 
+const drawerWaveStyles = {
+  "@keyframes drawerWavePulse": {
+    "0%, 100%": { transform: "scaleY(0.35)", opacity: 0.45 },
+    "50%": { transform: "scaleY(1)", opacity: 1 },
+  },
+} as const;
+
 const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   isClickedVarsayilanaDon,
   setIsClickedVarsayilanaDon,
@@ -175,8 +186,12 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
 
   const tableDataRef = useRef<RowData[]>([]);
   const changedRowIdsRef = useRef<Set<number>>(new Set());
+  const requiresFullSaveRef = useRef(false);
   const drawerRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const drawerSpeechAnchorRef = useRef("");
+  const drawerAnalyserRef = useRef<AnalyserNode | null>(null);
+  const drawerVizAudioCtxRef = useRef<AudioContext | null>(null);
+  const drawerVizStreamRef = useRef<MediaStream | null>(null);
   const [drawerAiPanelOpen, setDrawerAiPanelOpen] = useState(false);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -197,6 +212,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
       setRows(resp);
       setIsHotDirty(false);
       changedRowIdsRef.current.clear();
+      requiresFullSaveRef.current = false;
     } catch {
       setSnackbarMessage("Veriler yüklenemedi");
       setSnackbarSeverity("error");
@@ -407,10 +423,16 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
         hot.setDataAtCell(i, COL_DURUM, "Evet");
         hot.setDataAtCell(i, COL_BDS_REF, "—");
       }
+      requiresFullSaveRef.current = true;
       setIsHotDirty(true);
     },
     []
   );
+
+  const handleAfterRemoveRow = useCallback(() => {
+    requiresFullSaveRef.current = true;
+    setIsHotDirty(true);
+  }, []);
 
   const openDrawerForRow = useCallback((rowIndex: number, activeField: "islem" | "tespit" | "bdsReferansi" = "tespit") => {
     const hot = hotRef.current?.hotInstance;
@@ -451,15 +473,24 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
   const handleAfterChange = useCallback(
     function (this: any, change: any[] | null, source: string) {
       if (!change || !change.length || source === "loadData") return;
-      setIsHotDirty(true);
+      const hot = this;
+
       change.forEach(([row, prop, oldValue, newValue]: [number, any, any, any]) => {
+        if (newValue === "EDITOR_DRAWER_OPEN") {
+          const colIndex = hot.propToCol(prop);
+          const currentValue = hot.getDataAtCell(row, colIndex);
+          openDrawerForRow(row, getFieldByColumn(colIndex));
+          setTimeout(() => hot.setDataAtCell(row, colIndex, currentValue, "internal"), 0);
+          return;
+        }
+
+        setIsHotDirty(true);
         const rowId = tableDataRef.current[row]?.id;
         if (rowId) {
           changedRowIdsRef.current.add(rowId);
         }
 
         if ((prop === "durum" || prop === COL_DURUM) && newValue?.trim()) {
-          const hot = this;
           const currentRow = tableDataRef.current[row];
           const currentTespit = hot.getDataAtCell(row, COL_TESPIT) ?? "";
 
@@ -479,7 +510,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
         }
       });
     },
-    []
+    [openDrawerForRow]
   );
 
   const handleDrawerFieldChange = useCallback(
@@ -502,6 +533,13 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     }
     setDrawerRecordingField(null);
     drawerSpeechAnchorRef.current = "";
+    
+    // Cleanup analyser (same as SpeechTextEditor)
+    try { drawerVizAudioCtxRef.current?.close(); } catch { /* noop */ }
+    drawerVizStreamRef.current?.getTracks().forEach((t) => t.stop());
+    drawerAnalyserRef.current = null;
+    drawerVizAudioCtxRef.current = null;
+    drawerVizStreamRef.current = null;
   }, []);
 
   useEffect(() => {
@@ -529,16 +567,65 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
 
       stopDrawerRecording();
 
+      try {
+        const permissionStream = await navigator.mediaDevices.getUserMedia({ audio: getPreferredAudioConstraint() });
+        
+        // Setup analyser for visualization (like SpeechTextEditor)
+        try {
+          drawerVizAudioCtxRef.current = new AudioContext();
+          drawerAnalyserRef.current = drawerVizAudioCtxRef.current.createAnalyser();
+          drawerAnalyserRef.current.fftSize = 256;
+          drawerVizAudioCtxRef.current.createMediaStreamSource(permissionStream).connect(drawerAnalyserRef.current);
+          drawerVizStreamRef.current = permissionStream;
+        } catch {
+          // Analyser setup failed, but continue without visualization
+          drawerAnalyserRef.current = null;
+        }
+      } catch (err: any) {
+        if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+          setSnackbarMessage("Mikrofon izni reddedildi. Adres çubuğundan izin verin.");
+        } else if (err.name === "NotFoundError") {
+          setSnackbarMessage("Mikrofon bulunamadı.");
+        } else {
+          setSnackbarMessage(`Mikrofon hatası: ${err.message}`);
+        }
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        void openMicrophoneSetupDialog("Mikrofon erişimi veya tercih edilen cihaz açılamadı.");
+        return;
+      }
+
       const rec: SpeechRecognitionInstance = new SR();
+      let hasReceivedResult = false;
+      let hasStarted = false;
+      let retryCount = 0;
+      let restartOnEnd = false;
+      const MAX_NO_SPEECH_RETRIES = 2;
+      const event = { error: "" };
+      const startTimeout = window.setTimeout(() => {
+        if (!hasStarted) {
+          setSnackbarMessage("Ses motoru başlatılamadı. Tarayıcıyı ve mikrofon iznini kontrol edin.");
+          setSnackbarSeverity("warning");
+          setSnackbarOpen(true);
+          void openMicrophoneSetupDialog(`Ses algılama hatası: ${event.error}`);
+          void openMicrophoneSetupDialog("Ses motoru seçili veya varsayılan mikrofonla başlatılamadı.");
+          stopDrawerRecording();
+        }
+      }, 4000);
       rec.continuous = true;
       rec.interimResults = true;
       rec.lang = "tr-TR";
       rec.maxAlternatives = 1;
 
       drawerSpeechAnchorRef.current = drawerForm[field] ?? "";
-      setDrawerRecordingField(field);
+      rec.onstart = () => {
+        hasStarted = true;
+        window.clearTimeout(startTimeout);
+        setDrawerRecordingField(field);
+      };
 
       rec.onresult = (event: SpeechRecognitionEvent) => {
+        hasReceivedResult = true;
         let interim = "";
         let final = "";
 
@@ -561,6 +648,15 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
       };
 
       rec.onerror = (event: SpeechRecognitionErrorEvent) => {
+        window.clearTimeout(startTimeout);
+        if (event.error === "aborted") {
+          stopDrawerRecording();
+          return;
+        }
+        if (event.error === "no-speech" && retryCount < MAX_NO_SPEECH_RETRIES) {
+          restartOnEnd = true;
+          return;
+        }
         if (event.error !== "aborted" && event.error !== "no-speech") {
           setSnackbarMessage(`Ses algılama hatası: ${event.error}`);
           setSnackbarSeverity("error");
@@ -570,6 +666,24 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
       };
 
       rec.onend = () => {
+        window.clearTimeout(startTimeout);
+        if (restartOnEnd && retryCount < MAX_NO_SPEECH_RETRIES) {
+          restartOnEnd = false;
+          retryCount += 1;
+          hasStarted = false;
+          try {
+            rec.start();
+            return;
+          } catch {
+            // fall through
+          }
+        }
+        if (hasStarted && !hasReceivedResult) {
+          setSnackbarMessage("Ses algılanamadı. Mikrofon iznini ve cihazı kontrol edin.");
+          setSnackbarSeverity("warning");
+          setSnackbarOpen(true);
+          void openMicrophoneSetupDialog("Ses algılanamadı. Birden fazla mikrofon varsa çalışan cihazı seçip test edin.");
+        }
         stopDrawerRecording();
       };
 
@@ -669,7 +783,9 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
           tespit: (rowArr[COL_TESPIT] ?? "").toString(),
           bdsReferansi: (rowArr[COL_BDS_REF] ?? "").toString(),
         }))
-        .filter((item) => item.id === 0 || changedRowIdsRef.current.has(item.id));
+        .filter((item) =>
+          requiresFullSaveRef.current ? true : item.id === 0 || changedRowIdsRef.current.has(item.id)
+        );
 
       if (satirlar.length === 0) {
         setSnackbarMessage("Değişiklik yapılmadı");
@@ -688,6 +804,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
       if (success) {
         setIsHotDirty(false);
         changedRowIdsRef.current.clear();
+        requiresFullSaveRef.current = false;
         setSnackbarMessage("Veriler başarıyla kaydedildi");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
@@ -746,6 +863,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     <Box sx={{ width: "100%", display: "flex", flexDirection: "column", bgcolor: "#ffffff" }}>
       <GlobalStyles
         styles={{
+          ...drawerWaveStyles,
           ".ht-cell-clamp": {
             display: "-webkit-box",
             WebkitBoxOrient: "vertical",
@@ -790,6 +908,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
               editableColumnIndices={editableColumnIndices}
               afterChange={handleAfterChange}
               afterCreateRow={handleAfterCreateRow}
+              afterRemoveRow={handleAfterRemoveRow}
             />
           </Box>
         </Box>
@@ -945,6 +1064,13 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
                   sx={{
                     fontSize: "0.65rem",
                     visibility: drawerRecordingField === drawerActiveField ? "visible" : "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.75,
+                    px: 0.8,
+                    py: 0.25,
+                    borderRadius: 1,
+                    bgcolor: "primary.50",
                   }}
                 >
                   ● Dinliyor

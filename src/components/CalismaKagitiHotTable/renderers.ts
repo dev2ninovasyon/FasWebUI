@@ -141,3 +141,21 @@ export function takipRenderer(this: any, ...args: HtRendererArgs) {
     td.textContent = "";
   }
 }
+
+export function moneyRenderer(this: any, ...args: HtRendererArgs) {
+  // @ts-ignore
+  Handsontable.renderers.NumericRenderer.apply(this, args);
+  const [, td] = args;
+  td.style.textAlign = "right";
+  td.style.fontWeight = "600";
+  td.style.color = "#1a237e";
+}
+
+export function percentRenderer(this: any, ...args: HtRendererArgs) {
+  // @ts-ignore
+  Handsontable.renderers.NumericRenderer.apply(this, args);
+  const [, td] = args;
+  td.style.textAlign = "right";
+  td.style.fontWeight = "600";
+  td.style.color = "#2e7d32";
+}

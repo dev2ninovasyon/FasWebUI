@@ -57,7 +57,7 @@ Excel dosyası
   ↓
 1. Excel'i oku → seed satırları belirle
   ↓
-2. Backend: entity alanları ekle → configuration → migration (seed UPDATE'leri dahil)
+2. Backend: Entity → JSON Seed Dosyası → Configuration (HasData) → Migration
   ↓
 3. Backend: DTO → Repository.Kaydet → Service.Kaydet → Controller endpoint'leri
   ↓
@@ -788,3 +788,40 @@ Her yeni sayfa tamamlandığında işaretle:
 | Prod DB erişim reddedildi | `--connection` flag ile dev environment + prod connection string |
 | Türkçe karakter SQL'de bozuk | Python `sql_escape()` ile `'` → `''` dönüştür |
 | `buildHtmlAsync` eksik | `IslemlerCardHtml` prop'u boş kalınca önizleme çalışmaz |
+
+---
+
+## BÖLÜM 6 — Veritabanı Şablon Yönetimi (JSON Seeding)
+
+Bazı çalışma kağıtları (ör. **Bulgu Riski**) her şirket için ayrı satırlar tutar ancak başlangıçta standart bir listeden (23 satır vb.) beslenir. Bu standart listeyi yönetmek için **JSON Seeding** mimarisi kullanılmalıdır.
+
+### 6a. JSON Dosyası Oluşturma
+`FasWebAPI/Data/Seeds/{ModelAdi}StandartSatirlar.json` yoluna verileri ekle.
+- Mutlaka `Id` alanını (PK) el ile belirle (1, 2, 3...).
+- Tüm standart metinleri ve ağırlıkları buraya yaz.
+
+### 6b. Configuration ile Seed (HasData)
+`FasWebAPI/Model/Configurations/{ModelAdi}Configuration.cs` içinde JSON'ı oku:
+
+```csharp
+public class {ModelAdi}Configuration : IEntityTypeConfiguration<{ModelAdi}>
+{
+    public void Configure(EntityTypeBuilder<{ModelAdi}> builder)
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Seeds", "{ModelAdi}StandartSatirlar.json");
+        if (File.Exists(path))
+        {
+            var json = File.ReadAllText(path);
+            var data = JsonSerializer.Deserialize<List<{ModelAdi}>>(json);
+            if (data != null) builder.HasData(data); // EF Core Migration'a veriyi gömer
+        }
+    }
+}
+```
+
+### 6c. Neden Bu Yapı?
+- **Performans:** Runtime'da (C# içinde) "tablo boş mu?" kontrolü yapmaya gerek kalmaz.
+- **Single Source of Truth:** Standart veriler kodun içine gömülmez, temiz bir JSON dosyasında durur.
+- **Migration Güvenliği:** Veriler migration ile bir kez yüklenir. Gelecekte standart değişirse yeni bir migration ile JSON güncellenir ve veritabanı tutarlı kalır.
+- **Şirket İzolasyonu:** Şablon veritabanında durduğu için, kullanıcı şablondan kopyalanan kendi satırlarını güncellese bile orijinal şablon bozulmaz.
+

@@ -155,7 +155,7 @@ const CalismaKagitiHotTable = React.forwardRef<any, CalismaKagitiHotTableProps>(
             cut: { name: "Kes" },
           },
         }}
-        dropdownMenu={_dropdownMenuProp ? DROPDOWN_FILTER_ONLY : false}
+        dropdownMenu={_dropdownMenuProp ? (DROPDOWN_FILTER_ONLY as any) : false}
         manualColumnMove={true}
         manualRowMove={true}
         manualColumnResize={true}

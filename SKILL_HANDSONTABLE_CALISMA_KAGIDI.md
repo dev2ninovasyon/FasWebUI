@@ -1,116 +1,147 @@
 ---
-name: handsontable-calisma-kagidi-standartlari
-description: Karmaşık denetim çalışma kağıtlarında Handsontable bileşeni kullanılırken uygulanması gereken kompakt görünüm, detay izleme paneli ve performans standartları.
+name: fas-handsontable-calisma-kagidi
+description: Use this skill when building or updating a FasWebUI calisma kagidi page that uses Handsontable. Apply the same structure, drawer editing flow, AI tools, speech integration, save flow, and page composition used by the current BilgiIslemMuhasebe and IsletmeyeIliskinIcKontrolTespit working papers.
 ---
 
-# Handsontable Çalışma Kağıdı Tablo Standartları
+# FAS Handsontable Calisma Kagidi
 
-Bu döküman, denetim sayfalarında kullanılan Handsontable tabanlı çalışma kağıtlarının kullanıcı deneyimini bozmadan (satırların aşırı büyümesi vb.) ve performanslı bir şekilde nasıl yapılandırılacağını açıklar.
+## When To Use
 
-## Ne Zaman Kullanılır?
+Use this skill when the task involves:
 
-- Çok sütunlu ve satırlı denetim çalışma kağıtlarında.
-- Spreadsheet (Excel) benzeri bir veri girişi deneyimi gerektiğinde.
-- "Açıklama" veya "Denetim Adımı" gibi uzun metin içerikli hücrelerin olduğu tablolarda.
+- a new `FasWebUI` calisma kagidi page built with `CalismaKagitiHotTable`
+- making one calisma kagidi behave like another existing Handsontable page
+- adding or fixing the row edit drawer on a calisma kagidi page
+- adding speech editor integration, AI tools, save flow, preview flow, or dirty-state protection
+- requests like "bu calisma kagidi diger sayfadaki gibi olsun", "handsontable ile yeni calisma kagidi yap", or "satir duzenleme panelini ayni yap"
 
-## 1. Kompakt Hücre Görünümü (Row Height Stability)
+## Primary Reference
 
-Çalışma kağıdı satırlarının içeriğe göre kontrolsüz büyümesini engellemek için şu CSS ve Props kuralları uygulanmalıdır:
+Read these files first and mirror them before inventing anything:
 
-### CSS (Box Wrapper İçinde)
-```css
-"& .htCore td": { 
-  verticalAlign: "middle !important", 
-  fontSize: "0.85rem",
-  whiteSpace: "nowrap !important", // Satırın büyümesini engeller
-  textOverflow: "ellipsis",       // Uzun metne üç nokta koyar
-  overflow: "hidden"              // Taşan metni gizler
-}
-```
+- `src/app/(Uygulama)/components/CalismaKagitlari/BilgiIslemMuhasebeTableHandson.tsx`
+- `src/app/(Uygulama)/components/CalismaKagitlari/IsletmeyeIliskinIcKontrolTespitTable.tsx`
+- `src/components/CalismaKagitiHotTable/SpeechTextEditor.ts`
+- `src/components/CalismaKagitiHotTable/index.tsx`
 
-### HotTable Props
-- `rowHeights={40}`: Sabit satır yüksekliği.
-- `autoRowSize={false}`: İçeriğe göre otomatik hesaplamayı kapat.
+If the user says one page should match another, treat the currently approved page as the source of truth and copy its interaction model closely.
 
-## 2. Detay İzleme Paneli (Selection Viewer)
+## Required Page Shape
 
-Hücreler kompakt olduğu için, tıklanan hücrenin tüm içeriği çalışma kağıdının altında ayrı bir panelde gösterilmelidir.
+For a full calisma kagidi page, prefer this structure:
 
-### State ve Hook Yapısı
-```typescript
-const [selectedCellInfo, setSelectedCellInfo] = useState<{ label: string; value: string } | null>(null);
+1. top-right save button
+2. bordered `CalismaKagitiHotTable` container
+3. `FormOnayBolumu`
+4. `IslemlerCardHtml`
+5. unsaved-changes navigation guard
+6. row edit drawer opened from `SpeechTextEditor`
 
-const handleSelection = useCallback((r: number, c: number) => {
-  const hot = hotRef.current?.hotInstance;
-  if (hot) {
-    const value = hot.getDataAtCell(r, c) || "";
-    const label = hot.getColHeader(c) || "";
-    setSelectedCellInfo((prev) => {
-      if (prev?.label === label && prev?.value === value) return prev; // Değişim yoksa renderi engelle
-      return { label, value };
-    });
-  }
-}, []);
-```
+Do not add extra hero sections, oversized intros, or decorative wrappers.
 
-## 3. Enter ve Çok Satırlı Metin Yönetimi
+## Handsontable Standard
 
-Açıklama alanlarında Enter tuşunun hücreyi kapatması yerine alt satıra geçmesi (paragraf) için:
+Use `CalismaKagitiHotTable`, not raw Handsontable setup, unless the user explicitly asks otherwise.
 
-### beforeKeyDown Hook
-```typescript
-const handleKeyDown = useCallback(function(this: any, event: any) {
-  if (event.keyCode === 13) { // Enter
-    const editor = this.getActiveEditor();
-    if (editor && editor.isOpened()) {
-      const selected = this.getSelected();
-      if (selected && [X, Y].includes(selected[0][1])) { // Belirli sütunlarda
-        event.stopImmediatePropagation(); // Handsontable'ın kapatmasını durdur
-      }
-    }
-  }
-}, []);
-```
+Follow these conventions:
 
-## 4. Sonsuz Döngü Koruması (Infinite Loop Prevention)
+- keep table data in `tableDataRef`
+- track modified rows in `changedRowIdsRef`
+- track unsaved state with `isHotDirty`
+- use `stretchH="last"` when the final text column should grow
+- use `HOT_BASE_ROW_HEIGHT` and the same shell classes when matching the newer pages
+- use `setEditorPanelOpener` from `SpeechTextEditor` for drawer opening
+- keep `afterChange` responsible for dirty tracking and template propagation
+- if the page has template-driven `durum` logic, preserve it
 
-`@handsontable/react` bileşeni prop değişimlerine çok duyarlıdır. React infinite loop hatasını önlemek için:
+## Row Edit Drawer Standard
 
-1.  **useCallback**: Tüm olay yakalayıcı fonksiyonlar `useCallback` ile sarılmalıdır.
-2.  **State Karşılaştırması**: State güncellenmeden önce `prev === next` kontrolü mutlaka yapılmalıdır.
-3.  **Ref Kullanımı**: Tablo instance'ına erişmek için mutlaka `useRef` kullanılmalıdır.
+When a calisma kagidi has the approved drawer pattern, match this behavior:
 
-## 5. Kaydetmeden Çıkış Uyarısı (Dirty State Tracking)
+- right-side `Drawer`
+- title: `Satır Düzenleme Paneli`
+- subtitle explaining that changes are applied to the table first and saved permanently with the page save button
+- tabbed editing for `Soru`, `Açıklama`, and `BDS Ref.` when the page has those fields
+- one active field at a time
+- speech-to-text button per active field
+- AI tools area opened from the sparkle button
+- AI options:
+  - `Zenginleştir`
+  - `Özetle`
+  - `Detaylandır`
+- do not add a `Düzelt` button unless the user explicitly requests it
+- footer actions:
+  - `Kapat`
+  - `Tabloya Uygula`
 
-Çalışma kağıdında yapılan değişikliklerin kaybolmaması için tablonun "kirli" (dirty) olup olmadığı takip edilmeli ve kullanıcı uyarılmalıdır.
+Match the working visual style too:
 
-### İlk Durumun Tutulması (Snapshot)
-```typescript
-const initialSnapshot = useRef<string>(""); // Tüm verinin JSON string hali
-```
+- drawer width around `{ xs: "100%", sm: 520, lg: 620 }`
+- compact header with divider
+- tab row directly below header
+- light gray speech toolbar
+- `primary.50` AI panel
+- small circular icon buttons for AI and microphone
 
-### Değişiklik Takibi
-```typescript
-const isDirty = useMemo(() => {
-  return initialSnapshot.current !== JSON.stringify(rows.map(r => ({ id: r.id, durum: r.durum, tespit: r.tespit })));
-}, [rows]);
-```
+## Speech Integration Standard
 
-### Tarayıcı ve Navigasyon Koruması
-```typescript
-useEffect(() => {
-  if (!isDirty) return;
+When the drawer supports speech input:
 
-  const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-    e.preventDefault();
-    e.returnValue = ""; // Standart tarayıcı uyarısı
-  };
+- use browser `SpeechRecognition` / `webkitSpeechRecognition`
+- record against the currently active drawer field
+- keep a field-specific anchor string so partial transcripts append correctly
+- show `Dinliyor` state only for the active field
+- stopping recording must clean up listeners and refs
 
-  window.addEventListener("beforeunload", handleBeforeUnload);
-  return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-}, [isDirty]);
-```
+## AI Integration Standard
 
-## 6. Başarı Bildirimi (Snackbar)
+When using the approved AI flow:
 
-Kayıt işlemlerinden sonra sayfa akışını bozmamak için `MUI Alert` yerine `MUI Snackbar` tercih edilmelidir.
+- keep prompts in a local `AI_PROMPTS` array
+- use `enhanceText(...)`
+- require non-empty current text before sending
+- show loading state in the drawer
+- let the user preview AI output before applying it
+- `Kullan` should write back only into the currently active drawer field
+- clear stale AI result when changing tabs or closing the drawer
+
+## Save And Navigation Standard
+
+Preserve these behaviors:
+
+- save only changed rows when possible
+- after successful save, clear dirty tracking
+- show success/error feedback with the page's existing snackbar pattern
+- warn before leaving the page with unsaved changes
+- if the page supports "varsayilana don", preserve that flow
+
+## HTML / Approval Standard
+
+When the page is a full calisma kagidi screen, keep:
+
+- `FormOnayBolumu`
+- `IslemlerCardHtml`
+- export HTML aligned with visible table columns
+- Turkish labels and proper Turkish characters
+
+## Validation Checklist
+
+Before finishing, verify:
+
+- drawer opens from a table cell through `SpeechTextEditor`
+- tabs switch correctly
+- AI panel opens and uses only the approved buttons
+- `Düzelt` is absent unless requested
+- speech button starts and stops safely
+- `Tabloya Uygula` writes back into the table
+- save button persists data after drawer changes
+- unsaved-change warning still works
+- visible Turkish text is not mojibake
+
+## Working Style
+
+- do not redesign the calisma kagidi from scratch
+- copy approved interaction patterns from the reference page first
+- preserve project-specific naming such as `FormOnayBolumu`, `IslemlerCardHtml`, `CalismaKagitiHotTable`
+- when matching two pages, prefer behavior parity over local improvisation
+- if one page is declared "dogru olan", use that page as the source of truth

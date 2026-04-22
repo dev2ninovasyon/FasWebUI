@@ -1,22 +1,16 @@
-﻿"use client";
+"use client";
 
-import React, { useEffect, useState } from "react";
-import { Grid, useTheme } from "@mui/material";
+import React, { useRef } from "react";
+import { Grid } from "@mui/material";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import InfoAlertCart from "@/app/(Uygulama)/components/Alerts/InfoAlertCart";
-import { createOnemlilikVeOrneklem } from "@/api/PlanVeProgram/PlanVeProgram";
-import { useSelector } from "@/store/hooks";
-import { AppState } from "@/store/store";
-import { enqueueSnackbar } from "notistack";
-import OnemlilikVeOrneklemForm from "@/app/(Uygulama)/components/PlanVeProgram/OnemlilikVeOrneklem/OnemlilikVeOrneklemForm";
-import OnemlilikVeOrneklem from "./OnemlilikVeOrneklem";
-import OnemlilikVeOrneklemSeviyesi from "./OnemlilikVeOrneklemSeviyesi";
-import OnemlilikVeOrneklemHesaplamaBazi from "./OnemlilikVeOrneklemHesaplamaBazi";
+import OnemlilikExcelStepper, { OnemlilikExcelStepperRef } from "./OnemlilikExcelStepper";
 import BelgeKontrolCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/BelgeKontrolCard";
 import IslemlerCard from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCard";
-
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
+
 const BCrumb = [
   {
     to: "/PlanVeProgram",
@@ -34,205 +28,63 @@ const BCrumb = [
 
 const Page = () => {
   const user = useSelector((state: AppState) => state.userReducer);
-  const customizer = useSelector((state: AppState) => state.customizer);
-  const theme = useTheme();
+  const stepperRef = useRef<OnemlilikExcelStepperRef>(null);
 
   const controller = "OnemlilikVeOrneklem";
-
-  const [guvenilirlikDuzeyi, setGuvenilirlikDuzeyi] = useState(95);
-  const [hataPayi, setHataPayi] = useState(5);
-
-  const [hesaplaTiklandimi, setHesaplaTiklandimi] = useState(false);
-  const [hesaplaTiklandimi2, setHesaplaTiklandimi2] = useState(false);
-
-  const [openCartAlert, setOpenCartAlert] = useState(false);
-
-  const handleHesapla = async () => {
-    try {
-      const result = await createOnemlilikVeOrneklem(user.denetciId || 0,
-        user.yil || 0,
-        user.denetlenenId || 0,
-        guvenilirlikDuzeyi || 0,
-        hataPayi || 0
-      );
-      if (result) {
-        setHesaplaTiklandimi(false);
-        enqueueSnackbar("Önemlilik Ve Örneklem Hesaplandı", {
-          variant: "success",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.success.light
-                : theme.palette.success.main,
-          },
-        });
-      } else {
-        enqueueSnackbar("Önemlilik Ve Örneklem Hesaplanamadı", {
-          variant: "error",
-          autoHideDuration: 5000,
-          style: {
-            backgroundColor:
-              customizer.activeMode === "dark"
-                ? theme.palette.error.light
-                : theme.palette.error.main,
-            maxWidth: "720px",
-          },
-        });
-      }
-    } catch (error) {
-      console.log("Bir hata oluştu:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (hesaplaTiklandimi) {
-      setOpenCartAlert(true);
-    } else {
-      setOpenCartAlert(false);
-    }
-  }, [hesaplaTiklandimi]);
 
   return (
     <PageContainer
       title="Önemlilik Ve Örneklem"
-      description="this is Önemlilik Ve Örneklem"
+      description="Denetim Planı Önemlilik Ve Örneklem"
     >
       <Breadcrumb title="Önemlilik Ve Örneklem" items={BCrumb}>
         <EkBelgeYukleButton formKodu="OnemlilikVeOrneklem" />
       </Breadcrumb>
-      <Grid container>
-        <Grid
-          mb={3}
-          size={{
-            xs: 12,
-            lg: 12
-          }}>
-          <OnemlilikVeOrneklemForm
-            guvenilirlikDuzeyi={guvenilirlikDuzeyi}
-            hataPayi={hataPayi}
-            setGuvenilirlikDuzeyi={setGuvenilirlikDuzeyi}
-            setHataPayi={setHataPayi}
-            setHesaplaTiklandimi={setHesaplaTiklandimi}
-            handleHesapla={handleHesapla}
-          />
+
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <OnemlilikExcelStepper ref={stepperRef} />
         </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 12
-          }}>
-          <OnemlilikVeOrneklemSeviyesi
-            hesaplaTiklandimi={hesaplaTiklandimi2}
-            setHesaplaTiklandimi={setHesaplaTiklandimi2}
-          />
-        </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 12
-          }}>
-          <OnemlilikVeOrneklemHesaplamaBazi
-            hesaplaTiklandimi={hesaplaTiklandimi2}
-            setHesaplaTiklandimi={setHesaplaTiklandimi2}
-          />
-        </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 12
-          }}>
-          <OnemlilikVeOrneklem hesaplaTiklandimi={hesaplaTiklandimi} />
-        </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 12
-          }}>
-          {user.rol?.includes("KaliteKontrolSorumluDenetci") ||
-          user.rol?.includes("SorumluDenetci") ||
-          user.rol?.includes("Denetci") ||
-          user.rol?.includes("DenetciYardimcisi") ? (
-            <Grid
-              container
-              sx={{
-                width: "100%",
-                margin: "0 auto",
-                justifyContent: "space-between",
-              }}
-            >
-              <Grid
-                mt={3}
-                size={{
-                  xs: 12,
-                  md: 3.9,
-                  lg: 3.9
-                }}>
-                <BelgeKontrolCard
-                  fetch={() => {}}
-                  hazirlayan="Denetçi - Yardımcı Denetçi"
-                  controller={controller}
-                ></BelgeKontrolCard>
-              </Grid>
-              <Grid
-                mt={3}
-                size={{
-                  xs: 12,
-                  md: 3.9,
-                  lg: 3.9
-                }}>
-                <BelgeKontrolCard
-                  fetch={() => {}}
-                  onaylayan="Sorumlu Denetçi"
-                  controller={controller}
-                ></BelgeKontrolCard>
-              </Grid>
-              <Grid
-                mt={3}
-                size={{
-                  xs: 12,
-                  md: 3.9,
-                  lg: 3.9
-                }}>
-                <BelgeKontrolCard
-                  fetch={() => {}}
-                  kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
-                  controller={controller}
-                ></BelgeKontrolCard>
-              </Grid>
+
+        <Grid item xs={12}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={4}>
+              <BelgeKontrolCard
+                fetch={() => {}}
+                hazirlayan="Denetçi - Yardımcı Denetçi"
+                controller={controller}
+              />
             </Grid>
-          ) : (
-            <></>
-          )}
-          <Grid
-            container
-            sx={{
-              width: "100%",
-              margin: "0 auto",
-              justifyContent: "space-between",
-              gap: 1,
-            }}
-          >
-            <Grid
-              mt={5}
-              size={{
-                xs: 12,
-                lg: 12
-              }}>
-              <IslemlerCard controller={controller} />
+            <Grid item xs={12} md={4}>
+              <BelgeKontrolCard
+                fetch={() => {}}
+                onaylayan="Sorumlu Denetçi"
+                controller={controller}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <BelgeKontrolCard
+                fetch={() => {}}
+                kaliteKontrol="Kalite Kontrol Sorumlu Denetçi"
+                controller={controller}
+              />
             </Grid>
           </Grid>
         </Grid>
-        {openCartAlert && (
-          <InfoAlertCart
-            openCartAlert={openCartAlert}
-            setOpenCartAlert={setOpenCartAlert}
-          ></InfoAlertCart>
-        )}
+
+        <Grid item xs={12}>
+          <IslemlerCard
+            controller={controller}
+            handleReset={() => stepperRef.current?.handleReset()}
+            handleRestorePrevious={() => stepperRef.current?.handleRestorePrevious()}
+            handleExcelDownload={() => stepperRef.current?.handleExcelDownload()}
+            handleWordDownload={() => stepperRef.current?.handleWordDownload()}
+            handlePdfPreview={() => stepperRef.current?.handleOpenPreview()}
+          />
+        </Grid>
       </Grid>
     </PageContainer>
   );
 };
 
 export default Page;
-
