@@ -186,8 +186,9 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
       const data = await getDenetimPlaniOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0);
       if (!data) throw new Error("Önemlilik modeli yüklenemedi.");
       syncFromWorkbook(data);
-    } catch {
-      setLoadError("Önemlilik modeli yüklenemedi.");
+    } catch (err: any) {
+      const serverMsg = err?.response?.data || err?.message || "";
+      setLoadError(serverMsg ? `Önemlilik modeli yüklenemedi: ${serverMsg}` : "Önemlilik modeli yüklenemedi.");
     } finally {
       setLoading(false);
     }
