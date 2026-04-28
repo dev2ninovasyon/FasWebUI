@@ -17,9 +17,9 @@ export function setEditorPrimaryColor(main: string, light: string): void {
   _primaryLight = light;
 }
 
-let _panelOpener: ((payload: { row: number; col: number }) => void) | null = null;
+let _panelOpener: ((payload: { row: number; col: number; value?: string }) => void) | null = null;
 export function setEditorPanelOpener(
-  fn: ((payload: { row: number; col: number }) => void) | null
+  fn: ((payload: { row: number; col: number; value?: string }) => void) | null
 ): void {
   _panelOpener = fn;
 }
@@ -1157,10 +1157,11 @@ export class SpeechTextEditor extends BaseEditor {
       if (st && st.aiPanelVisible) toggleAiPanel(this, st, true);
 
       if (_panelOpener) {
+        if (st?.recording) stopRecording(this);
         const row = (this as any).row;
         const col = (this as any).col;
         if (typeof row === "number" && typeof col === "number") {
-          _panelOpener({ row, col });
+          _panelOpener({ row, col, value: st?.textarea.value });
         }
       }
     });

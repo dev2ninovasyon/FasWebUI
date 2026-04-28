@@ -465,7 +465,8 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
   const openDrawerForRow = useCallback(
     (
       rowIndex: number,
-      activeField: "islem" | "tespit" | "bdsReferansi" = "tespit"
+      activeField: "islem" | "tespit" | "bdsReferansi" = "tespit",
+      currentValue?: string
     ) => {
       const hot = hotRef.current?.hotInstance;
       if (!hot || rowIndex < 0) return;
@@ -478,7 +479,7 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
       const rowData = hot.getSourceDataAtRow(rowIndex) as any[] | undefined;
       if (!rowData) return;
 
-      setDrawerForm({
+      const form: DrawerFormState = {
         rowIndex,
         id: Number(rowData[9] || 0),
         satirNo: String(rowData[COL_SATIR_NO] ?? ""),
@@ -490,7 +491,11 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
         tespit: String(rowData[COL_TESPIT] ?? ""),
         denetimAdimi: String(rowData[COL_AKSIYON] ?? ""),
         bdsReferansi: String(rowData[COL_BDS_REF] ?? ""),
-      });
+      };
+      if (currentValue !== undefined) {
+        form[activeField] = currentValue;
+      }
+      setDrawerForm(form);
       setDrawerActiveField(activeField);
       setDrawerAiResult("");
       setDrawerAiPanelOpen(false);
@@ -500,8 +505,8 @@ const IsletmeyeIliskinIcKontrolTespitTable: React.FC<Props> = ({
   );
 
   useEffect(() => {
-    setEditorPanelOpener(({ row, col }) => {
-      openDrawerForRow(row, getFieldByColumn(col));
+    setEditorPanelOpener(({ row, col, value }) => {
+      openDrawerForRow(row, getFieldByColumn(col), value);
     });
 
     return () => {

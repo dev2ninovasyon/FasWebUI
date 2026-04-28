@@ -434,7 +434,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     setIsHotDirty(true);
   }, []);
 
-  const openDrawerForRow = useCallback((rowIndex: number, activeField: "islem" | "tespit" | "bdsReferansi" = "tespit") => {
+  const openDrawerForRow = useCallback((rowIndex: number, activeField: "islem" | "tespit" | "bdsReferansi" = "tespit", currentValue?: string) => {
     const hot = hotRef.current?.hotInstance;
     if (!hot || rowIndex < 0) return;
 
@@ -446,7 +446,7 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
     const rowData = hot.getSourceDataAtRow(rowIndex) as any[] | undefined;
     if (!rowData) return;
 
-    setDrawerForm({
+    const form: DrawerFormState = {
       rowIndex,
       id: Number(rowData[5] || 0),
       riskSeviyesi: String(rowData[COL_RISK] ?? "ORTA"),
@@ -454,15 +454,19 @@ const BilgiIslemMuhasebeTableHandson: React.FC<Props> = ({
       durum: String(rowData[COL_DURUM] ?? "Evet"),
       tespit: String(rowData[COL_TESPIT] ?? ""),
       bdsReferansi: String(rowData[COL_BDS_REF] ?? "—"),
-    });
+    };
+    if (currentValue !== undefined) {
+      form[activeField] = currentValue;
+    }
+    setDrawerForm(form);
     setDrawerActiveField(activeField);
     setDrawerAiResult("");
     setEditorDrawerOpen(true);
   }, []);
 
   useEffect(() => {
-    setEditorPanelOpener(({ row, col }) => {
-      openDrawerForRow(row, getFieldByColumn(col));
+    setEditorPanelOpener(({ row, col, value }) => {
+      openDrawerForRow(row, getFieldByColumn(col), value);
     });
 
     return () => {

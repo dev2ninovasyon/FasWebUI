@@ -437,7 +437,7 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
     setIsHotDirty(true);
   }, []);
 
-  const openDrawerForRow = useCallback((rowIndex: number, activeField: DrawerField = "islem") => {
+  const openDrawerForRow = useCallback((rowIndex: number, activeField: DrawerField = "islem", currentValue?: string) => {
     const hot = hotRef.current?.hotInstance;
     if (!hot || rowIndex < 0) return;
 
@@ -449,22 +449,26 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
     const rowData = hot.getSourceDataAtRow(rowIndex) as any[] | undefined;
     if (!rowData) return;
 
-    setDrawerForm({
+    const form: DrawerFormState = {
       rowIndex,
       id: Number(rowData[10] || 0),
       islem: String(rowData[COL_ISLEM] ?? ""),
       tespit: String(rowData[COL_TESPIT] ?? ""),
       uygulananDenetimTeknikleri: String(rowData[COL_TEKNIK] ?? ""),
       ilgiliBdsStandart: String(rowData[COL_BDS] ?? ""),
-    });
+    };
+    if (currentValue !== undefined) {
+      form[activeField] = currentValue;
+    }
+    setDrawerForm(form);
     setDrawerActiveField(activeField);
     setDrawerAiResult("");
     setEditorDrawerOpen(true);
   }, []);
 
   useEffect(() => {
-    setEditorPanelOpener(({ row, col }) => {
-      openDrawerForRow(row, getFieldByColumn(col));
+    setEditorPanelOpener(({ row, col, value }) => {
+      openDrawerForRow(row, getFieldByColumn(col), value);
     });
 
     return () => {
@@ -945,7 +949,7 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
         />
       </Paper>
 
-      <FormOnayBolumu />
+      <FormOnayBolumu controller="TespitEdilenRiskler" />
       <IslemlerCardHtml controller="TespitEdilenRiskler" buildHtmlAsync={buildHtmlAsync} />
 
       <Drawer
@@ -1100,7 +1104,7 @@ const TespitEdilenRisklerTable: React.FC<Props> = ({
                               bgcolor: "error.main",
                               borderRadius: 1,
                               animation: "drawerWavePulse 1.2s infinite ease-in-out",
-                              animationDelay: \`\${i * 0.15}s\`,
+                              animationDelay: `${i * 0.15}s`,
                             }}
                           />
                         ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Backdrop,
@@ -18,21 +18,16 @@ import {
   Step,
   StepLabel,
   Stepper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
-  Drawer,
-  IconButton as MuiIconButton,
-  Tooltip,
-  Tab,
-  Tabs,
-  Chip,
-  Divider
 } from "@mui/material";
 import { IconHistory, IconRotate } from "@tabler/icons-react";
-import CloseIcon from "@mui/icons-material/Close";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
-import KeyboardVoiceRoundedIcon from "@mui/icons-material/KeyboardVoiceRounded";
-import StopCircleRoundedIcon from "@mui/icons-material/StopCircleRounded";
 import { enqueueSnackbar } from "notistack";
 import { saveAs } from "file-saver";
 import axios from "axios";
@@ -43,24 +38,8 @@ import {
   restorePreviousDenetimPlaniOnemlilikExcelModel,
   updateDenetimPlaniOnemlilikExcelModel,
 } from "@/api/PlanVeProgram/DenetimPlaniOnemlilik";
-import { getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu } from "@/api/CalismaKagitlari/CalismaKagitlari";
-import { getMenus } from "@/api/Menu/Menu";
-import { url } from "@/api/apiBase";
-import { createAuthorizedAxiosConfig } from "@/utils/authSession";
-import { getKullaniciByDenetlenenYilRol, getKullaniciById } from "@/api/Kullanici/KullaniciIslemleri";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { enhanceText } from "@/utils/gemini";
-
-// Handsontable imports
-import CalismaKagitiHotTable, {
-  riskRenderer,
-  durumRenderer,
-  bdsRefRenderer,
-  islemRenderer,
-} from "@/components/CalismaKagitiHotTable";
-import { setEditorPanelOpener } from "@/components/CalismaKagitiHotTable/SpeechTextEditor";
-import { HOT_BASE_ROW_HEIGHT, moneyRenderer, percentRenderer } from "@/components/CalismaKagitiHotTable/renderers";
 
 type Parametreler = {
   firmaAdi: string;
@@ -116,52 +95,7 @@ type WorkbookState = {
   hesaplar: HesapGirdi[];
 };
 
-type SignaturePerson = {
-  adSoyad: string;
-  unvan?: string;
-  tarih?: string | null;
-};
-
-type DocumentMeta = {
-  referansNo?: string;
-  formKodu?: string;
-  belgeAdi?: string;
-  hazirlayan?: SignaturePerson | null;
-  onaylayan?: SignaturePerson | null;
-  kontrolEden?: SignaturePerson | null;
-};
-
-interface DrawerFormState {
-  rowIndex: number;
-  kebirKodu: number;
-  hesapAdi: string;
-  mizanTutari: number;
-  riskK: number;
-  dogalRisk: number;
-  kontrolRiski: number;
-  nihaiOnemlilik?: number;
-  yaklasim?: string;
-}
-
-interface SpeechRecognitionInstance extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  maxAlternatives: number;
-  start(): void;
-  stop(): void;
-  abort(): void;
-  onstart: (() => void) | null;
-  onresult: ((e: any) => void) | null;
-  onerror: ((e: any) => void) | null;
-  onend: (() => void) | null;
-}
-
-const AI_PROMPTS = [
-  { label: "Zenginleştir", instruction: "Bu metni daha profesyonel ve detaylı bir dille zenginleştir:" },
-  { label: "Özetle", instruction: "Bu metni denetim raporu için kısa ve öz bir tespite dönüştür:" },
-  { label: "Detaylandır", instruction: "Bu metni denetim standartlarına uygun şekilde daha fazla detay ekleyerek genişlet:" },
-];
+type ChangedCellMap = Record<string, true>;
 
 const steps = [
   "P0 - Parametreler",
@@ -182,9 +116,9 @@ const parseDecimal = (value: string) => {
 };
 
 const buildState = (workbook: Workbook): WorkbookState => ({
-  parametreler: workbook.parametreler,
-  hesaplar: workbook.hesapDagitimSatirlari.map((item) => {
-    const risk = workbook.denetimRiskiSatirlari.find((x) => x.kebirKodu === item.kebirKodu);
+  parametreler: workbook.parametreler || {},
+  hesaplar: (workbook.hesapDagitimSatirlari || []).map((item) => {
+    const risk = (workbook.denetimRiskiSatirlari || []).find((x) => x.kebirKodu === item.kebirKodu);
     return {
       siraNo: item.siraNo,
       kebirKodu: item.kebirKodu,
@@ -201,18 +135,6 @@ const toPayload = (state: WorkbookState) => ({
   parametreler: state.parametreler,
   hesaplar: state.hesaplar,
 });
-
-const Section = ({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) => (
-  <Paper sx={{ borderRadius: 3, border: "1px solid #dbe3f0", overflow: "hidden", boxShadow: "0 12px 28px rgba(15,23,42,.06)" }}>
-    <Box sx={{ px: 3, py: 1.5, background: "#f8fafc", color: "#1e293b", borderBottom: "1px solid #e2e8f0", fontWeight: 800, fontSize: "1.1rem" }}>{title}</Box>
-    {subtitle ? <Box sx={{ px: 3, py: 1.2, background: "#fffbeb", color: "#92400e", fontWeight: 700, fontSize: "0.85rem" }}>{subtitle}</Box> : null}
-    <Box sx={{ p: 3 }}>{children}</Box>
-  </Paper>
-);
-
-const FORM_KODU = "OnemlilikVeOrneklem";
-const FORM_TITLE = "Önemlilik Ve Örneklem";
-const FORM_URL = "/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem";
 
 export interface OnemlilikExcelStepperRef {
   handleReset: () => Promise<void>;
@@ -234,83 +156,21 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   const [previewWorkbook, setPreviewWorkbook] = useState<Workbook | null>(null);
   const [draftState, setDraftState] = useState<WorkbookState | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pdfPreviewOpen, setPdfPreviewOpen] = useState(false);
-  const [pdfBlobUrl, setPdfBlobUrl] = useState("");
-  const [documentMeta, setDocumentMeta] = useState<DocumentMeta | null>(null);
-  const [toolbarActionLoading, setToolbarActionLoading] = useState<null | "back" | "next" | "restore" | "reset">(null);
+  const [changedCells, setChangedCells] = useState<ChangedCellMap>({});
+  
   const currentWorkbook = previewWorkbook ?? savedWorkbook;
   const previewTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previewSeqRef = useRef(0);
-  const stepLoadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previousWorkbookRef = useRef<Workbook | null>(null);
+  const changedCellsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Drawer states
-  const [editorDrawerOpen, setEditorDrawerOpen] = useState(false);
-  const [drawerForm, setDrawerForm] = useState<DrawerFormState | null>(null);
-  const [drawerActiveField, setDrawerActiveField] = useState<"riskK" | "dogalRisk" | "kontrolRiski">("riskK");
-  const [drawerAiPanelOpen, setDrawerAiPanelOpen] = useState(false);
-  const [drawerAiLoading, setDrawerAiLoading] = useState(false);
-  const [drawerAiResult, setDrawerAiResult] = useState("");
-  const [drawerRecordingField, setDrawerRecordingField] = useState<string | null>(null);
-  const drawerRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
-
-  const hotM2Ref = useRef<any>(null);
-  const hotM3Ref = useRef<any>(null);
-
-  const getErrorMessage = (error: any, fallback: string) => {
-    if (error?.response?.data) {
-      if (typeof error.response.data === "string") return error.response.data;
-      if (error.response.data.message) return error.response.data.message;
-      if (error.response.data.title) return error.response.data.title;
-    }
-    return error instanceof Error ? error.message : fallback;
-  };
-
-  const revokeBlobUrl = (value?: string | null) => {
-    if (value?.startsWith("blob:")) window.URL.revokeObjectURL(value);
-  };
-
-  const formatDate = (value?: string | null) => {
-    if (!value) return "-";
-    const normalized = value.includes("T") ? value.split("T")[0] : value;
-    const [year, month, day] = normalized.split("-");
-    return year && month && day ? `${day}.${month}.${year}` : normalized;
-  };
-
-  const resolvePerson = async (id?: number | null, fallbackTip?: string) => {
-    if (id) {
-      const userData = await getKullaniciById(id);
-      if (userData) return { adSoyad: userData.personelAdi || userData.kullaniciAdi || "-", unvan: userData.unvan || "" };
-    }
-    if (!fallbackTip) return null;
-    const fallbackPeople = await getKullaniciByDenetlenenYilRol(user.denetlenenId || 0, user.yil || 0, fallbackTip);
-    const fallbackUser = fallbackPeople?.[0];
-    return fallbackUser ? { adSoyad: fallbackUser.personelAdi || fallbackUser.kullaniciAdi || "-", unvan: fallbackUser.unvan || "" } : null;
-  };
-
-  const loadDocumentMeta = async () => {
-    try {
-      const [formData, menus] = await Promise.all([
-        getFormHazirlayanOnaylayanByDenetciDenetlenenYilFormKodu(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, FORM_KODU),
-        getMenus(),
-      ]);
-      const matchedMenu = menus.find((menu) => menu.formKodu === FORM_KODU || menu.formUrl === FORM_URL);
-      const [hazirlayan, onaylayan, kontrolEden] = await Promise.all([
-        resolvePerson(formData?.hazirlayanId, "Hazırlayan"),
-        resolvePerson(formData?.onaylayanId, "Onaylayan"),
-        resolvePerson(formData?.kontrolEdenId, "Kalite Kontrol"),
-      ]);
-      setDocumentMeta({
-        referansNo: matchedMenu?.referansNo || "",
-        formKodu: matchedMenu?.formKodu || FORM_KODU,
-        belgeAdi: matchedMenu?.belgeAdi || FORM_TITLE,
-        hazirlayan: hazirlayan ? { ...hazirlayan, tarih: formData?.hazirlanmaTarihi } : null,
-        onaylayan: onaylayan ? { ...onaylayan, tarih: formData?.onaylanmaTarihi } : null,
-        kontrolEden: kontrolEden ? { ...kontrolEden, tarih: formData?.kontrolTarihi } : null,
-      });
-    } catch (error) {
-      setDocumentMeta({ referansNo: "", formKodu: FORM_KODU, belgeAdi: FORM_TITLE });
-    }
-  };
+  useImperativeHandle(ref, () => ({
+    handleReset,
+    handleRestorePrevious,
+    handleOpenPreview: async () => {},
+    handleExcelDownload: async () => {},
+    handleWordDownload: async () => {},
+  }));
 
   const syncFromWorkbook = (workbook: Workbook) => {
     setSavedWorkbook(workbook);
@@ -326,11 +186,8 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
       const data = await getDenetimPlaniOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0);
       if (!data) throw new Error("Önemlilik modeli yüklenemedi.");
       syncFromWorkbook(data);
-    } catch (error) {
-      setSavedWorkbook(null);
-      setPreviewWorkbook(null);
-      setDraftState(null);
-      setLoadError(getErrorMessage(error, "Önemlilik modeli yüklenemedi."));
+    } catch {
+      setLoadError("Önemlilik modeli yüklenemedi.");
     } finally {
       setLoading(false);
     }
@@ -343,24 +200,35 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
       const data = await previewDenetimPlaniOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, toPayload(nextState));
       if (seq !== previewSeqRef.current || !data) return;
       setPreviewWorkbook(data);
-      setLoadError(null);
-    } catch (error) {
-      if (seq !== previewSeqRef.current) return;
-      enqueueSnackbar(getErrorMessage(error, "Önizleme hesaplanamadı."), { variant: "error" });
+    } catch {
+      if (seq === previewSeqRef.current) enqueueSnackbar("Hesaplama yapılamadı.", { variant: "error" });
     } finally {
       if (seq === previewSeqRef.current) setPreviewing(false);
     }
   };
 
+  useEffect(() => { loadWorkbook(); }, []);
+
   useEffect(() => {
-    loadWorkbook();
-    loadDocumentMeta();
-    return () => {
-      if (previewTimerRef.current) clearTimeout(previewTimerRef.current);
-      if (stepLoadingTimerRef.current) clearTimeout(stepLoadingTimerRef.current);
-      revokeBlobUrl(pdfBlobUrl);
-    };
-  }, []);
+    if (!currentWorkbook) return;
+    const previousWorkbook = previousWorkbookRef.current;
+    if (!previousWorkbook) { previousWorkbookRef.current = currentWorkbook; return; }
+    const nextChangedCells: ChangedCellMap = {};
+    const getCellKey = (sec: string, k: any, f: string) => `${sec}:${k}:${f}`;
+    currentWorkbook.hesapDagitimSatirlari.forEach((row) => {
+      const prev = previousWorkbook.hesapDagitimSatirlari.find(x => x.kebirKodu === row.kebirKodu);
+      if (!prev) return;
+      ["nihaiOnemlilik", "performansOnemliligi", "riskSeviyesi"].forEach(f => {
+        if (String(row[f] ?? "") !== String(prev[f] ?? "")) nextChangedCells[getCellKey("m2", row.kebirKodu, f)] = true;
+      });
+    });
+    previousWorkbookRef.current = currentWorkbook;
+    if (Object.keys(nextChangedCells).length) {
+      setChangedCells(nextChangedCells);
+      if (changedCellsTimerRef.current) clearTimeout(changedCellsTimerRef.current);
+      changedCellsTimerRef.current = setTimeout(() => setChangedCells({}), 1800);
+    }
+  }, [currentWorkbook]);
 
   useEffect(() => {
     if (!draftState || !savedWorkbook) return;
@@ -374,480 +242,154 @@ const OnemlilikExcelStepper = forwardRef<OnemlilikExcelStepperRef>((props, ref) 
   }, [draftState, savedWorkbook]);
 
   const handleReset = async () => {
-    setToolbarActionLoading("reset");
     try {
       const data = await resetDenetimPlaniOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0);
-      if (!data) {
-        enqueueSnackbar("Program varsayılanlarına dönülemedi.", { variant: "error" });
-        return;
-      }
-      syncFromWorkbook(data);
-      setActiveStep(0);
-      enqueueSnackbar("Program varsayılanlarına dönüldü.", { variant: "success" });
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error, "Program varsayılanlarına dönülemedi."), { variant: "error" });
-    } finally {
-      setToolbarActionLoading(null);
-    }
+      if (data) { syncFromWorkbook(data); setActiveStep(0); enqueueSnackbar("Sıfırlandı.", { variant: "success" }); }
+    } catch { enqueueSnackbar("Hata oluştu.", { variant: "error" }); }
   };
 
   const handleRestorePrevious = async () => {
-    if (savedWorkbook?.birOncekiHesaplamaVar !== true) return;
-    setToolbarActionLoading("restore");
     try {
       const data = await restorePreviousDenetimPlaniOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0);
-      if (!data) {
-        enqueueSnackbar("Bir önceki hesaplama geri yüklenemedi.", { variant: "error" });
-        return;
-      }
-      syncFromWorkbook(data);
-      enqueueSnackbar("Bir önceki hesaplamaya dönüldü.", { variant: "success" });
-    } catch (error) {
-      enqueueSnackbar(getErrorMessage(error, "Bir önceki hesaplama geri yüklenemedi."), { variant: "error" });
-    } finally {
-      setToolbarActionLoading(null);
-    }
+      if (data) { syncFromWorkbook(data); enqueueSnackbar("Geri yüklendi.", { variant: "success" }); }
+    } catch { enqueueSnackbar("Hata oluştu.", { variant: "error" }); }
   };
 
-  // --- Drawer Logic ---
-
-  const openDrawerForRow = useCallback((rowIndex: number, activeField: "riskK" | "dogalRisk" | "kontrolRiski" = "riskK") => {
-    const workbook = previewWorkbook ?? savedWorkbook;
-    if (!workbook) return;
-
-    // Determine which step we are in to get row data
-    let rowData: any = null;
-    if (activeStep === 2) rowData = workbook.hesapDagitimSatirlari[rowIndex];
-    else if (activeStep === 3) rowData = workbook.denetimRiskiSatirlari[rowIndex];
-
-    if (!rowData) return;
-
-    const kebirKodu = rowData.kebirKodu;
-    const draftRow = draftState?.hesaplar.find(x => x.kebirKodu === kebirKodu);
-
-    setDrawerForm({
-      rowIndex,
-      kebirKodu,
-      hesapAdi: rowData.hesapAdi,
-      mizanTutari: rowData.mizanTutari,
-      riskK: draftRow?.riskK ?? rowData.riskK,
-      dogalRisk: draftRow?.dogalRisk ?? rowData.dogalRisk,
-      kontrolRiski: draftRow?.kontrolRiski ?? rowData.kontrolRiski,
-      nihaiOnemlilik: rowData.nihaiOnemlilik,
-      yaklasim: rowData.onerilenYaklasim
-    });
-    setDrawerActiveField(activeField);
-    setDrawerAiResult("");
-    setDrawerAiPanelOpen(false);
-    setEditorDrawerOpen(true);
-  }, [previewWorkbook, savedWorkbook, activeStep, draftState]);
-
-  useEffect(() => {
-    setEditorPanelOpener(({ row, col }) => {
-      // Logic to determine which field based on column
-      let field: "riskK" | "dogalRisk" | "kontrolRiski" = "riskK";
-      if (activeStep === 3) {
-        if (col === 2) field = "dogalRisk";
-        else if (col === 3) field = "kontrolRiski";
-      }
-      openDrawerForRow(row, field);
-    });
-    return () => setEditorPanelOpener(null);
-  }, [openDrawerForRow, activeStep]);
-
-  const stopDrawerRecording = useCallback(() => {
-    if (drawerRecognitionRef.current) {
-      try {
-        drawerRecognitionRef.current.onend = null;
-        drawerRecognitionRef.current.onerror = null;
-        drawerRecognitionRef.current.abort();
-      } catch {}
-      drawerRecognitionRef.current = null;
-    }
-    setDrawerRecordingField(null);
-  }, []);
-
-  const startDrawerRecording = useCallback(async (field: "riskK" | "dogalRisk" | "kontrolRiski") => {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      enqueueSnackbar("Tarayıcınız ses tanımayı desteklemiyor.", { variant: "error" });
-      return;
-    }
-    if (drawerRecordingField === field) {
-      stopDrawerRecording();
-      return;
-    }
-    stopDrawerRecording();
-    const rec: SpeechRecognitionInstance = new SR();
-    rec.continuous = true;
-    rec.interimResults = true;
-    rec.lang = "tr-TR";
-    setDrawerRecordingField(field);
-
-    rec.onresult = (event: any) => {
-      let final = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) final += event.results[i][0].transcript;
-      }
-      if (final) {
-        // Try to parse as number since these are numeric fields
-        const cleaned = final.replace(/[^0-9,\.]/g, "").replace(",", ".");
-        const val = parseFloat(cleaned);
-        if (!isNaN(val)) setDrawerForm(prev => prev ? { ...prev, [field]: val } : prev);
-      }
-    };
-    rec.onerror = () => stopDrawerRecording();
-    rec.onend = () => stopDrawerRecording();
-    drawerRecognitionRef.current = rec;
-    try { rec.start(); } catch { stopDrawerRecording(); }
-  }, [drawerRecordingField, stopDrawerRecording, enqueueSnackbar]);
-
-  const handleDrawerApply = () => {
-    if (!drawerForm || !draftState) return;
-    const nextHesaplar = [...draftState.hesaplar];
-    const idx = nextHesaplar.findIndex(x => x.kebirKodu === drawerForm.kebirKodu);
-    if (idx > -1) {
-      nextHesaplar[idx] = {
-        ...nextHesaplar[idx],
-        riskK: drawerForm.riskK,
-        dogalRisk: drawerForm.dogalRisk,
-        kontrolRiski: drawerForm.kontrolRiski
-      };
-      setDraftState({ ...draftState, hesaplar: nextHesaplar });
-    }
-    setEditorDrawerOpen(false);
-    enqueueSnackbar("Değişiklikler tabloya uygulandı.", { variant: "success" });
+  const updateParam = (key: keyof Parametreler, value: any) => {
+    if (!draftState) return;
+    setDraftState({ ...draftState, parametreler: { ...draftState.parametreler, [key]: value } });
   };
 
-  const runDrawerAiPrompt = async (instruction: string) => {
-    if (!drawerForm) return;
-    const text = String(drawerForm[drawerActiveField]);
-    setDrawerAiLoading(true);
-    setDrawerAiPanelOpen(true);
-    setDrawerAiResult("FasAI çalışıyor...");
-    try {
-      const result = await enhanceText(user, text, instruction);
-      setDrawerAiResult(result);
-    } catch {
-      setDrawerAiResult("Hata oluştu.");
-    } finally {
-      setDrawerAiLoading(false);
-    }
-  };
-
-  const applyDrawerAiResult = () => {
-    if (!drawerAiResult || drawerAiResult.includes("...")) return;
-    const cleaned = drawerAiResult.replace(/[^0-9,\.]/g, "").replace(",", ".");
-    const val = parseFloat(cleaned);
-    if (!isNaN(val)) setDrawerForm(prev => prev ? { ...prev, [drawerActiveField]: val } : prev);
-    setDrawerAiResult("");
-  };
-
-  // --- Handson Columns & Data ---
-
-  const m2Columns = useMemo(() => [
-    { type: "text", readOnly: true, width: 60, renderer: islemRenderer }, // 0: Kebir
-    { type: "text", readOnly: true, width: 220, renderer: islemRenderer }, // 1: Hesap Adı
-    { type: "numeric", numericFormat: { pattern: "0,0.00" }, readOnly: true, width: 120, renderer: moneyRenderer }, // 2: Mizan
-    { type: "dropdown", source: [1, 2, 3], width: 70, editor: "speech-text" }, // 3: Risk K
-    { type: "numeric", numericFormat: { pattern: "0,0.00" }, readOnly: true, width: 120, renderer: moneyRenderer }, // 4: Nihai
-    { type: "numeric", numericFormat: { pattern: "0,0.00" }, readOnly: true, width: 120, renderer: moneyRenderer }, // 5: PM
-    { type: "text", readOnly: true, width: 100, renderer: riskRenderer } // 6: Risk Seviyesi
-  ], []);
-
-  const m2Data = useMemo(() => currentWorkbook?.hesapDagitimSatirlari.map(row => [
-    row.kebirKodu,
-    row.hesapAdi,
-    row.mizanTutari,
-    draftState?.hesaplar.find(x => x.kebirKodu === row.kebirKodu)?.riskK ?? row.riskK,
-    row.nihaiOnemlilik,
-    row.performansOnemliligi,
-    row.riskSeviyesi
-  ]) ?? [], [currentWorkbook, draftState]);
-
-  const m3Columns = useMemo(() => [
-    { type: "text", readOnly: true, width: 60, renderer: islemRenderer }, // 0: Kebir
-    { type: "text", readOnly: true, width: 180, renderer: islemRenderer }, // 1: Hesap Adı
-    { type: "numeric", numericFormat: { pattern: "0,0.0" }, width: 80, editor: "speech-text" }, // 2: Doğal Risk
-    { type: "numeric", numericFormat: { pattern: "0,0.0" }, width: 80, editor: "speech-text" }, // 3: Kontrol Riski
-    { type: "numeric", numericFormat: { pattern: "0.0%" }, readOnly: true, width: 80, renderer: percentRenderer }, // 4: OYR
-    { type: "numeric", numericFormat: { pattern: "0.0%" }, readOnly: true, width: 80, renderer: percentRenderer }, // 5: TER
-    { type: "text", readOnly: true, width: 100, renderer: islemRenderer }, // 6: Örnekleme %
-    { type: "text", readOnly: true, width: 180, renderer: islemRenderer } // 7: Yaklaşım
-  ], []);
-
-  const m3Data = useMemo(() => currentWorkbook?.denetimRiskiSatirlari.map(row => {
-    const draftRow = draftState?.hesaplar.find(x => x.kebirKodu === row.kebirKodu);
-    return [
-      row.kebirKodu,
-      row.hesapAdi,
-      draftRow?.dogalRisk ?? row.dogalRisk,
-      draftRow?.kontrolRiski ?? row.kontrolRiski,
-      row.oyr,
-      row.ter,
-      row.orneklemeYuzdesi,
-      row.onerilenYaklasim
-    ];
-  }) ?? [], [currentWorkbook, draftState]);
-
-  const handleM2Change = useCallback((changes: any[] | null, source: string) => {
-    if (!changes || source === "loadData" || !draftState) return;
-    const nextHesaplar = [...draftState.hesaplar];
-    changes.forEach(([row, prop, oldVal, newVal]) => {
-      if (prop === 3) { // Risk K
-        const kebirKodu = m2Data[row][0];
-        const idx = nextHesaplar.findIndex(x => x.kebirKodu === kebirKodu);
-        if (idx > -1) nextHesaplar[idx] = { ...nextHesaplar[idx], riskK: Number(newVal) };
-      }
-    });
+  const updateHesap = (kebirKodu: number, field: keyof HesapGirdi, value: any) => {
+    if (!draftState) return;
+    const nextHesaplar = draftState.hesaplar.map(h => h.kebirKodu === kebirKodu ? { ...h, [field]: value } : h);
     setDraftState({ ...draftState, hesaplar: nextHesaplar });
-  }, [draftState, m2Data]);
-
-  const handleM3Change = useCallback((changes: any[] | null, source: string) => {
-    if (!changes || source === "loadData" || !draftState) return;
-    const nextHesaplar = [...draftState.hesaplar];
-    changes.forEach(([row, prop, oldVal, newVal]) => {
-      const kebirKodu = m3Data[row][0];
-      const idx = nextHesaplar.findIndex(x => x.kebirKodu === kebirKodu);
-      if (idx > -1) {
-        if (prop === 2) nextHesaplar[idx] = { ...nextHesaplar[idx], dogalRisk: Number(newVal) };
-        else if (prop === 3) nextHesaplar[idx] = { ...nextHesaplar[idx], kontrolRiski: Number(newVal) };
-      }
-    });
-    setDraftState({ ...draftState, hesaplar: nextHesaplar });
-  }, [draftState, m3Data]);
-
-  // --- Downloads ---
-
-  const handleExcelDownload = async () => {
-    const workbook = previewWorkbook ?? savedWorkbook;
-    if (!workbook) return;
-    try {
-      const { default: ExcelJS } = await import("exceljs");
-      const excel = new ExcelJS.Workbook();
-      const addObjectSheet = (name: string, rows: any[]) => {
-        const ws = excel.addWorksheet(name);
-        if (!rows.length) return;
-        const headers = Object.keys(rows[0]);
-        ws.addRow(headers);
-        rows.forEach(r => ws.addRow(headers.map(h => r[h])));
-      };
-      addObjectSheet("Parametreler", Object.entries(workbook.parametreler).map(([alan, deger]) => ({ alan, deger })));
-      addObjectSheet("Hesap Dagitim", workbook.hesapDagitimSatirlari);
-      const buffer = await excel.xlsx.writeBuffer();
-      saveAs(new Blob([buffer]), `Onemlilik_${user.yil}.xlsx`);
-    } catch {}
   };
 
-  const handleWordDownload = async () => enqueueSnackbar("Yakında eklenecek", { variant: "info" });
-  const handleOpenPreview = async () => enqueueSnackbar("Yakında eklenecek", { variant: "info" });
+  const headerSx = { bgcolor: "#f1f5f9", color: "#475569", fontWeight: 800, fontSize: "0.7rem", py: 0.75, borderBottom: "1px solid #e2e8f0" };
+  const cellSx = { py: 0.5, borderBottom: "1px solid #f1f5f9", fontSize: "0.8rem" };
 
-  useImperativeHandle(ref, () => ({
-    handleReset, handleRestorePrevious, handleOpenPreview, handleExcelDownload, handleWordDownload
-  }));
-
-  const handleBack = () => {
-    setStepLoading(true);
-    setTimeout(() => { setActiveStep(prev => prev - 1); setStepLoading(false); }, 450);
-  };
-
-  const handleNext = async () => {
-    if (activeStep === steps.length - 1) {
-      setSaving(true);
-      try {
-        if (!draftState) throw new Error("Veri yok.");
-        const data = await updateDenetimPlaniOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, toPayload(draftState));
-        if (!data) throw new Error("Hata.");
-        syncFromWorkbook(data);
-        enqueueSnackbar("Kaydedildi.", { variant: "success" });
-      } catch { enqueueSnackbar("Hata.", { variant: "error" }); } finally { setSaving(false); }
-      return;
-    }
-    setStepLoading(true);
-    setTimeout(() => { setActiveStep(prev => prev + 1); setStepLoading(false); }, 450);
-  };
-
-  if (loading) return <Box sx={{ p: 6, textAlign: "center" }}><CircularProgress /><Typography>Yükleniyor...</Typography></Box>;
+  if (loading) return <Box sx={{ p: 10, textAlign: "center" }}><CircularProgress /></Box>;
+  if (loadError) return <Box sx={{ p: 5 }}><Alert severity="error">{loadError}</Alert></Box>;
 
   return (
-    <Box>
+    <Box sx={{ width: "100%", bgcolor: "white", border: "1px solid #e2e8f0", borderRadius: 2, overflow: "hidden" }}>
       <Backdrop open={saving} sx={{ zIndex: 9999, color: "#fff" }}><CircularProgress color="inherit" /></Backdrop>
 
-      <Section title="Önemlilik ve Örneklem Hesaplama">
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+      <Box sx={{ py: 3, borderBottom: "1px solid #f1f5f9" }}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ ".MuiStepLabel-label": { fontWeight: 800, color: "#64748b" }, ".MuiStepIcon-root.Mui-active": { color: "#1e293b" }, ".MuiStepIcon-root.Mui-completed": { color: "#1e293b" } }}>
           {steps.map(label => <Step key={label}><StepLabel>{label}</StepLabel></Step>)}
         </Stepper>
+      </Box>
 
-        <Box sx={{ minHeight: "50vh", position: "relative" }}>
-          {stepLoading && <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10, background: "rgba(255,255,255,0.7)" }}><CircularProgress /></Box>}
+      <Box sx={{ p: 1, minHeight: "42vh", position: "relative" }}>
+        {stepLoading && <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10, background: "rgba(255,255,255,0.5)" }}><CircularProgress /></Box>}
 
-          {activeStep === 0 && draftState && (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={2}>
-                  <TextField fullWidth label="Firma Adı" value={draftState.parametreler.firmaAdi} onChange={e => setDraftState({ ...draftState, parametreler: { ...draftState.parametreler, firmaAdi: e.target.value } })} />
-                  <TextField fullWidth label="Denetim Yılı" type="number" value={draftState.parametreler.denetimYili} onChange={e => setDraftState({ ...draftState, parametreler: { ...draftState.parametreler, denetimYili: Number(e.target.value) } })} />
-                  <TextField fullWidth select label="Sektör Tipi" value={draftState.parametreler.sektorTipi} onChange={e => setDraftState({ ...draftState, parametreler: { ...draftState.parametreler, sektorTipi: e.target.value } })}>
-                    {["Ticaret", "Uretim", "Diger"].map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
-                  </TextField>
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={2}>
-                  <TextField fullWidth label="Vergi Öncesi Kar" value={money.format(draftState.parametreler.vergiOncesiKar)} onChange={e => setDraftState({ ...draftState, parametreler: { ...draftState.parametreler, vergiOncesiKar: parseDecimal(e.target.value) } })} />
-                  <TextField fullWidth label="Net Satışlar" value={money.format(draftState.parametreler.netSatislar)} onChange={e => setDraftState({ ...draftState, parametreler: { ...draftState.parametreler, netSatislar: parseDecimal(e.target.value) } })} />
-                  <TextField fullWidth label="Hedef Denetim Riski" type="number" value={draftState.parametreler.hedefDenetimRiski} onChange={e => setDraftState({ ...draftState, parametreler: { ...draftState.parametreler, hedefDenetimRiski: Number(e.target.value) } })} />
-                </Stack>
-              </Grid>
+        {activeStep === 0 && draftState && (
+          <Stack spacing={1}>
+            <Table size="small">
+              <TableHead><TableRow><TableCell sx={headerSx}>Alan</TableCell><TableCell sx={headerSx}>Değer</TableCell><TableCell sx={headerSx}>Not</TableCell></TableRow></TableHead>
+              <TableBody>
+                {[
+                  { l: "Firma Adı", k: "firmaAdi", n: "Şirket kartı veya kullanıcı girişi" },
+                  { l: "Denetim Yılı", k: "denetimYili", n: "1 = ilk yıl, 2-4 = devam, 5+ = uzun vadeli", t: "number" },
+                  { l: "Sektör Tipi", k: "sektorTipi", n: "Ağırlık matrisi seçimi", t: "select" },
+                  { l: "Raporlama Dönemi", k: "raporlamaDonemi", n: "Örn: 31.12.2024" },
+                  { l: "Hedef Denetim Riski", k: "hedefDenetimRiski", n: "Genellikle %5", t: "percent" }
+                ].map(r => (
+                  <TableRow key={r.k}><TableCell sx={{ ...cellSx, width: "15%", fontWeight: 700 }}>{r.l}</TableCell><TableCell sx={{ ...cellSx, width: "45%" }}>{r.t === "select" ? <TextField fullWidth select variant="standard" value={draftState.parametreler.sektorTipi} onChange={e => updateParam("sektorTipi", e.target.value)} InputProps={{ disableUnderline: true, style: { fontSize: "0.85rem" } }}><MenuItem value="Ticaret">Ticaret</MenuItem><MenuItem value="Uretim">Üretim</MenuItem><MenuItem value="Diger">Diğer</MenuItem></TextField> : <TextField fullWidth variant="standard" value={r.t === "percent" ? formatPercent(draftState.parametreler.hedefDenetimRiski, 100) : (draftState.parametreler as any)[r.k]} onChange={e => updateParam(r.k as any, r.t === "percent" ? parseDecimal(e.target.value)/100 : r.t === "number" ? Number(e.target.value) : e.target.value)} InputProps={{ disableUnderline: true, style: { fontSize: "0.85rem" } }} />}</TableCell><TableCell sx={{ ...cellSx, color: "#94a3b8", fontSize: "0.75rem" }}>{r.n}</TableCell></TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            {currentWorkbook && (
+              <Table size="small">
+                <TableHead><TableRow>{["#", "Kod", "Hesaplama Bazı", "Tutar (TL)", "Mizan Kaynağı", "Notlar"].map(h => <TableCell key={h} sx={headerSx}>{h}</TableCell>)}</TableRow></TableHead>
+                <TableBody>
+                  {currentWorkbook.finansalVeriler.map((row, idx) => (
+                    <TableRow key={idx}><TableCell sx={cellSx}>{idx + 1}</TableCell><TableCell sx={{ ...cellSx, fontWeight: 700 }}>{row.kod}</TableCell><TableCell sx={cellSx}>{row.hesaplamaBazi}</TableCell><TableCell align="right" sx={cellSx}><TextField variant="standard" fullWidth inputProps={{ style: { textAlign: "right", fontWeight: 700, fontSize: "0.85rem" } }} InputProps={{ disableUnderline: true }} value={formatMoney((draftState.parametreler as any)[row.kod === 'VOK' ? 'vergiOncesiKar' : row.kod === 'SAT' ? 'netSatislar' : row.kod === 'OZK' ? 'ozkaynakToplami' : 'toplamVarliklar'])} onChange={e => updateParam(row.kod === 'VOK' ? 'vergiOncesiKar' : row.kod === 'SAT' ? 'netSatislar' : row.kod === 'OZK' ? 'ozkaynakToplami' : 'toplamVarliklar' as any, parseDecimal(e.target.value))} /></TableCell><TableCell sx={{ ...cellSx, color: "#94a3b8", fontSize: "0.75rem" }}>{row.mizanKaynagi}</TableCell><TableCell sx={{ ...cellSx, color: "#94a3b8", fontSize: "0.75rem" }}>{row.notlar}</TableCell></TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </Stack>
+        )}
+
+        {activeStep === 1 && currentWorkbook && (
+          <Stack spacing={2}>
+            <Grid container spacing={1}>
+              {[{ t: "Genel Önemlilik (M)", v: currentWorkbook.ozet.genelOnemlilik, c: "#0ea5e9" }, { t: "Performans (PM)", v: currentWorkbook.ozet.performansOnemliligi, c: "#10b981" }, { t: "De Minimis (DM)", v: currentWorkbook.ozet.deMinimis, c: "#f59e0b" }, { t: "Hesap Sabit Pay", v: currentWorkbook.ozet.hesapSabitPayTutari, c: "#64748b" }].map(x => <Grid size={{ xs: 12, md: 3 }} key={x.t}><Paper elevation={0} sx={{ p: 1.5, border: "1px solid #f1f5f9", borderRadius: 1 }}><Typography variant="caption" sx={{ color: "#94a3b8", fontWeight: 800 }}>{x.t}</Typography><Typography variant="h6" sx={{ fontWeight: 900, color: x.c }}>{formatMoney(x.v)}</Typography></Paper></Grid>)}
             </Grid>
-          )}
-
-          {activeStep === 1 && currentWorkbook && (
-            <Box>
-              <Paper variant="outlined" sx={{ overflow: "hidden" }}>
-                <Table size="small">
-                  <TableHead><TableRow><TableCell>Kriter</TableCell><TableCell align="right">Tutar</TableCell><TableCell align="right">Oran %</TableCell><TableCell align="right">Onemlilik</TableCell></TableRow></TableHead>
-                  <TableBody>
-                    {currentWorkbook.genelOnemlilikSatirlari.map((row, idx) => (
-                      <TableRow key={idx}><TableCell>{row.kriter}</TableCell><TableCell align="right">{formatMoney(row.tutar)}</TableCell><TableCell align="right">{plain.format(row.secilenOranYuzde)}</TableCell><TableCell align="right">{formatMoney(row.agirlikliOnemlilik)}</TableCell></TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Paper>
-              <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                <Paper sx={{ p: 2, flex: 1, bgcolor: "primary.50" }}><Typography variant="caption">M (GENEL)</Typography><Typography variant="h6">{formatMoney(currentWorkbook.ozet.genelOnemlilik)}</Typography></Paper>
-                <Paper sx={{ p: 2, flex: 1, bgcolor: "success.50" }}><Typography variant="caption">PM (PERFORMANS)</Typography><Typography variant="h6">{formatMoney(currentWorkbook.ozet.performansOnemliligi)}</Typography></Paper>
-              </Stack>
-            </Box>
-          )}
-
-          {activeStep === 2 && currentWorkbook && (
-            <Box sx={{ border: "1px solid #ddd", borderRadius: 1, overflow: "hidden" }}>
-              <CalismaKagitiHotTable
-                ref={hotM2Ref}
-                data={m2Data}
-                colHeaders={["Kebir", "Hesap Adı", "Mizan", "Risk K", "Nihai", "PM", "Seviye"]}
-                columns={m2Columns}
-                afterChange={handleM2Change}
-                height="45vh"
-                stretchH="last"
-              />
-            </Box>
-          )}
-
-          {activeStep === 3 && currentWorkbook && (
-            <Box sx={{ border: "1px solid #ddd", borderRadius: 1, overflow: "hidden" }}>
-              <CalismaKagitiHotTable
-                ref={hotM3Ref}
-                data={m3Data}
-                colHeaders={["Kebir", "Hesap Adı", "Doğal R.", "Kontrol R.", "ÖYR", "TER", "Örnekleme %", "Yaklaşım"]}
-                columns={m3Columns}
-                afterChange={handleM3Change}
-                height="45vh"
-                stretchH="last"
-              />
-            </Box>
-          )}
-        </Box>
-
-        <Box sx={{ mt: 4, display: "flex", justifyContent: "space-between" }}>
-          <Stack direction="row" spacing={1}>
-            <Button startIcon={<IconRotate size={18} />} onClick={() => setConfirmOpen(true)}>Sıfırla</Button>
-            {savedWorkbook?.birOncekiHesaplamaVar && <Button startIcon={<IconHistory size={18} />} onClick={handleRestorePrevious}>Geri Yükle</Button>}
+            <Table size="small">
+              <TableHead><TableRow>{["Kriter", "Büyüklük", "Oran (%)", "Ham", "Ağırlık", "Ağırlıklı"].map(h => <TableCell key={h} sx={headerSx}>{h}</TableCell>)}</TableRow></TableHead>
+              <TableBody>{currentWorkbook.genelOnemlilikSatirlari.map((row, idx) => <TableRow key={idx}><TableCell sx={{ ...cellSx, fontWeight: 700 }}>{row.kriter}</TableCell><TableCell align="right" sx={cellSx}>{formatMoney(row.tutar)}</TableCell><TableCell align="right" sx={cellSx}>{plain.format(row.secilenOranYuzde)}</TableCell><TableCell align="right" sx={cellSx}>{formatMoney(row.hamOnemlilik)}</TableCell><TableCell align="right" sx={cellSx}>{formatPercent(row.agirlikKatsayisi)}</TableCell><TableCell align="right" sx={{ ...cellSx, fontWeight: 800, color: "primary.main" }}>{formatMoney(row.agirlikliOnemlilik)}</TableCell></TableRow>)}</TableBody>
+            </Table>
           </Stack>
-          <Stack direction="row" spacing={2}>
-            <Button onClick={handleBack} disabled={activeStep === 0}>Geri</Button>
-            <Button variant="contained" onClick={handleNext}>{activeStep === steps.length - 1 ? "Kaydet" : "İlerle"}</Button>
-          </Stack>
-        </Box>
-      </Section>
+        )}
 
-      {/* Row Edit Drawer */}
-      <Drawer anchor="right" open={editorDrawerOpen} onClose={() => setEditorDrawerOpen(false)} PaperProps={{ sx: { width: { xs: "100%", sm: 520, lg: 620 } } }}>
-        <Box sx={{ p: 3 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-            <Typography variant="h6" fontWeight={700}>Satır Düzenleme Paneli</Typography>
-            <MuiIconButton onClick={() => setEditorDrawerOpen(false)}><CloseIcon /></MuiIconButton>
-          </Stack>
-          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>Hesap: {drawerForm?.kebirKodu} - {drawerForm?.hesapAdi}</Typography>
-          <Divider sx={{ mb: 2 }} />
-
-          <Tabs value={drawerActiveField} onChange={(_, v) => setDrawerActiveField(v)} sx={{ mb: 2 }}>
-            <Tab label="Genel" value="riskK" />
-            <Tab label="Denetim Riski" value="dogalRisk" />
-          </Tabs>
-
-          <Box sx={{ mb: 3 }}>
-            {drawerActiveField === "riskK" && (
-              <Stack spacing={2}>
-                <Typography variant="subtitle2">Risk Katsayısı (K)</Typography>
-                <TextField fullWidth select value={drawerForm?.riskK} onChange={e => setDrawerForm(prev => prev ? { ...prev, riskK: Number(e.target.value) } : prev)}>
-                  <MenuItem value={1}>1 - Düşük</MenuItem>
-                  <MenuItem value={2}>2 - Orta</MenuItem>
-                  <MenuItem value={3}>3 - Yüksek</MenuItem>
-                </TextField>
-                <Typography variant="caption" color="textSecondary">Mizan Tutarı: {formatMoney(drawerForm?.mizanTutari)}</Typography>
-                <Typography variant="caption" color="textSecondary">Nihai Önemlilik: {formatMoney(drawerForm?.nihaiOnemlilik)}</Typography>
-              </Stack>
-            )}
-
-            {(drawerActiveField === "dogalRisk" || drawerActiveField === "kontrolRiski") && (
-              <Stack spacing={3}>
-                <Box>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="subtitle2">Doğal Risk (0.1 - 1.0)</Typography>
-                    <Stack direction="row">
-                      <MuiIconButton size="small" onClick={() => startDrawerRecording("dogalRisk")} color={drawerRecordingField === "dogalRisk" ? "error" : "default"}>
-                        {drawerRecordingField === "dogalRisk" ? <StopCircleRoundedIcon /> : <KeyboardVoiceRoundedIcon />}
-                      </MuiIconButton>
-                      <MuiIconButton size="small" onClick={() => setDrawerAiPanelOpen(!drawerAiPanelOpen)}><AutoAwesomeRoundedIcon /></MuiIconButton>
-                    </Stack>
-                  </Stack>
-                  <TextField fullWidth type="number" inputProps={{ step: 0.1 }} value={drawerForm?.dogalRisk} onChange={e => setDrawerForm(prev => prev ? { ...prev, dogalRisk: Number(e.target.value) } : prev)} />
-                </Box>
-
-                <Box>
-                  <Typography variant="subtitle2">Kontrol Riski (0.1 - 1.0)</Typography>
-                  <TextField fullWidth type="number" inputProps={{ step: 0.1 }} value={drawerForm?.kontrolRiski} onChange={e => setDrawerForm(prev => prev ? { ...prev, kontrolRiski: Number(e.target.value) } : prev)} />
-                </Box>
-                
-                <Typography variant="caption" color="primary" fontWeight={700}>Önerilen Yaklaşım: {drawerForm?.yaklasim}</Typography>
-              </Stack>
-            )}
+        {activeStep === 2 && currentWorkbook && (
+          <Box sx={{ border: "1px solid #f1f5f9", borderRadius: 1, overflow: "hidden" }}>
+            <Table size="small" stickyHeader>
+              <TableHead><TableRow>{["Kebir", "Hesap Adı", "Mizan Tutarı", "Risk K", "Nihai Önemlilik", "PM", "Risk Seviyesi"].map(h => <TableCell key={h} sx={headerSx}>{h}</TableCell>)}</TableRow></TableHead>
+              <TableBody>
+                {currentWorkbook.hesapDagitimSatirlari.map((row) => (
+                  <TableRow key={row.kebirKodu}>
+                    <TableCell sx={{ ...cellSx, fontWeight: 700 }}>{row.kebirKodu}</TableCell><TableCell sx={cellSx}>{row.hesapAdi}</TableCell><TableCell align="right" sx={cellSx}>{formatMoney(row.mizanTutari)}</TableCell>
+                    <TableCell align="center" sx={cellSx}><TextField select variant="standard" value={draftState?.hesaplar.find(x => x.kebirKodu === row.kebirKodu)?.riskK ?? row.riskK} onChange={e => updateHesap(row.kebirKodu, "riskK", Number(e.target.value))} InputProps={{ disableUnderline: true }} sx={{ width: 40 }}><MenuItem value={1}>1</MenuItem><MenuItem value={2}>2</MenuItem><MenuItem value={3}>3</MenuItem></TextField></TableCell>
+                    <TableCell align="right" sx={{ ...cellSx, transition: "background .4s", bgcolor: changedCells[`m2:${row.kebirKodu}:nihaiOnemlilik`] ? "#fff4a3" : "transparent" }}>{formatMoney(row.nihaiOnemlilik)}</TableCell>
+                    <TableCell align="right" sx={{ ...cellSx, transition: "background .4s", bgcolor: changedCells[`m2:${row.kebirKodu}:performansOnemliligi`] ? "#fff4a3" : "transparent" }}>{formatMoney(row.performansOnemliligi)}</TableCell>
+                    <TableCell align="center" sx={{ ...cellSx, transition: "background .4s", bgcolor: changedCells[`m2:${row.kebirKodu}:riskSeviyesi`] ? "#fff4a3" : "transparent" }}>{row.riskSeviyesi}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </Box>
+        )}
 
-          {drawerAiPanelOpen && (
-            <Paper sx={{ p: 2, bgcolor: "primary.50", mb: 3, border: "1px solid", borderColor: "primary.100" }}>
-              <Typography variant="subtitle2" color="primary" gutterBottom>FasAI Araçları</Typography>
-              <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-                {AI_PROMPTS.map(p => <Button key={p.label} size="small" variant="outlined" onClick={() => runDrawerAiPrompt(p.instruction)}>{p.label}</Button>)}
-              </Stack>
-              {drawerAiResult && (
-                <Box sx={{ p: 1.5, bgcolor: "white", borderRadius: 1, border: "1px solid #eee" }}>
-                  <Typography variant="body2">{drawerAiResult}</Typography>
-                  <Button size="small" sx={{ mt: 1 }} onClick={applyDrawerAiResult} disabled={drawerAiLoading}>Uygula</Button>
-                </Box>
-              )}
-            </Paper>
-          )}
+        {activeStep === 3 && currentWorkbook && (
+          <Box sx={{ border: "1px solid #f1f5f9", borderRadius: 1, overflow: "hidden" }}>
+            <Table size="small" stickyHeader>
+              <TableHead><TableRow>{["Kebir", "Hesap Adı", "Doğal Risk", "Kontrol Riski", "ÖYR", "TER", "Örnekleme %", "Yaklaşım"].map(h => <TableCell key={h} sx={headerSx}>{h}</TableCell>)}</TableRow></TableHead>
+              <TableBody>
+                {currentWorkbook.denetimRiskiSatirlari.map((row) => (
+                  <TableRow key={row.kebirKodu}>
+                    <TableCell sx={{ ...cellSx, fontWeight: 700 }}>{row.kebirKodu}</TableCell><TableCell sx={cellSx}>{row.hesapAdi}</TableCell>
+                    <TableCell align="center" sx={cellSx}><TextField variant="standard" type="number" inputProps={{ step: 0.1 }} value={draftState?.hesaplar.find(x => x.kebirKodu === row.kebirKodu)?.dogalRisk ?? row.dogalRisk} onChange={e => updateHesap(row.kebirKodu, "dogalRisk", Number(e.target.value))} InputProps={{ disableUnderline: true }} sx={{ width: 40 }} /></TableCell>
+                    <TableCell align="center" sx={cellSx}><TextField variant="standard" type="number" inputProps={{ step: 0.1 }} value={draftState?.hesaplar.find(x => x.kebirKodu === row.kebirKodu)?.kontrolRiski ?? row.kontrolRiski} onChange={e => updateHesap(row.kebirKodu, "kontrolRiski", Number(e.target.value))} InputProps={{ disableUnderline: true }} sx={{ width: 40 }} /></TableCell>
+                    <TableCell align="right" sx={cellSx}>{formatPercent(row.oyr, 100)}</TableCell>
+                    <TableCell align="right" sx={cellSx}>{formatPercent(row.ter, 100)}</TableCell>
+                    <TableCell align="center" sx={cellSx}>{row.orneklemeYuzdesi}</TableCell>
+                    <TableCell sx={cellSx}>{row.onerilenYaklasim}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        )}
+      </Box>
 
-          <Stack direction="row" spacing={2} sx={{ mt: "auto" }}>
-            <Button fullWidth variant="outlined" onClick={() => setEditorDrawerOpen(false)}>Kapat</Button>
-            <Button fullWidth variant="contained" onClick={handleDrawerApply}>Tabloya Uygula</Button>
-          </Stack>
-        </Box>
-      </Drawer>
+      <Box sx={{ mt: 2, py: 1.5, px: 2, borderTop: "1px solid #e2e8f0", bgcolor: "#f8fafc", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Stack direction="row" spacing={1}>
+          <Button variant="outlined" size="small" sx={{ bgcolor: "white", textTransform: "none", color: "#64748b", borderColor: "#e2e8f0", px: 2 }} onClick={() => setActiveStep(prev => prev - 1)} disabled={activeStep === 0}>Geri</Button>
+          <Button variant="outlined" size="small" sx={{ bgcolor: "white", textTransform: "none", color: "#64748b", borderColor: "#e2e8f0", px: 2 }} onClick={() => setActiveStep(prev => prev + 1)} disabled={activeStep === steps.length - 1}>İleri</Button>
+          {savedWorkbook?.birOncekiHesaplamaVar && <Button startIcon={<IconHistory size={16} />} variant="outlined" size="small" sx={{ bgcolor: "white", textTransform: "none", color: "#64748b", borderColor: "#e2e8f0" }} onClick={handleRestorePrevious}>Bir Önceki Hesaplamaya Dön</Button>}
+          <Button startIcon={<IconRotate size={16} />} variant="outlined" size="small" sx={{ bgcolor: "white", textTransform: "none", color: "#64748b", borderColor: "#e2e8f0" }} onClick={() => setConfirmOpen(true)}>Program Varsayılanlarına Dön</Button>
+        </Stack>
+        <Button variant="contained" size="small" sx={{ bgcolor: "#f1f5f9", color: "#94a3b8", boxShadow: "none", fontWeight: 800, px: 3, "&:hover": { bgcolor: "#e2e8f0" } }} onClick={handleNext}>{activeStep === steps.length - 1 ? "KAYDET VE HESAPLA" : "İLERLE"}</Button>
+      </Box>
 
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>Sıfırlama</DialogTitle>
-        <DialogContent><Typography>Sıfırlamak istediğinize emin misiniz?</Typography></DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)}>Vazgeç</Button>
-          <Button onClick={() => { setConfirmOpen(false); handleReset(); }} color="error">Sıfırla</Button>
-        </DialogActions>
-      </Dialog>
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}><DialogTitle sx={{ fontWeight: 800 }}>Onay</DialogTitle><DialogContent>Sıfırlansın mı?</DialogContent><DialogActions><Button onClick={() => setConfirmOpen(false)}>Hayır</Button><Button variant="contained" color="error" onClick={() => { setConfirmOpen(false); handleReset(); }}>Evet</Button></DialogActions></Dialog>
     </Box>
   );
+
+  async function handleNext() {
+    if (activeStep < steps.length - 1) { setActiveStep(prev => prev + 1); return; }
+    setSaving(true);
+    try {
+      const data = await updateDenetimPlaniOnemlilikExcelModel(user.denetciId || 0, user.denetlenenId || 0, user.yil || 0, toPayload(draftState!));
+      if (data) { syncFromWorkbook(data); enqueueSnackbar("Kaydedildi.", { variant: "success" }); }
+    } catch { enqueueSnackbar("Hata.", { variant: "error" }); } finally { setSaving(false); }
+  }
 });
 
 OnemlilikExcelStepper.displayName = "OnemlilikExcelStepper";

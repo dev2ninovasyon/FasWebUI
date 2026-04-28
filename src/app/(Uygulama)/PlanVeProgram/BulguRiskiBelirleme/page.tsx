@@ -1,6 +1,6 @@
 "use client";
 
-import Breadcrumb from "@/app/(Uygulama)/components/Layout/Vertical/Shared/Breadcrumb/Breadcrumb";
+import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import BulguRiskiBelirlemeStepper from "@/app/(Uygulama)/components/CalismaKagitlari/BulguRiskiBelirlemeStepper";
 import { Box, Typography } from "@mui/material";

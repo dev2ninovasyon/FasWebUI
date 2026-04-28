@@ -58,8 +58,6 @@ const DR_FACTORS = [
   { key: "isletmeKulturesuPuani", label: "İşletme kültürü & yapılanma olgunluğu", desc: "zayıf=5, güçlü=1", weight: 0.10 },
 ];
 
-];
-
 const BulguRiskiBelirlemeStepper = () => {
   const user = useSelector((state: AppState) => state.userReducer);
   const [activeStep, setActiveStep] = useState(0);
@@ -293,7 +291,7 @@ const BulguRiskiBelirlemeStepper = () => {
               { label: "Stok Toplam", field: "stokToplam" },
               { label: "Dönem Kar/Zarar", field: "donemKarZarar" },
             ].map(r => (
-              <Grid item xs={12} sm={6} key={r.field}>
+              <Grid size={{ xs: 12, sm: 6 }} key={r.field}>
                 <TextField 
                   label={r.label}
                   fullWidth
@@ -376,7 +374,7 @@ const BulguRiskiBelirlemeStepper = () => {
         <Paper sx={{ p: 3, mb: 3 }}>
           <Typography variant="h6" mb={3} color="primary">Denetim Riski ve Prosedür Önerisi</Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box bgcolor="#f8fafc" p={3} borderRadius={2} border="1px solid #e2e8f0">
                 <Typography variant="subtitle2" color="text.secondary" mb={2}>HESAPLAMA</Typography>
                 <Box display="flex" justifyContent="space-between" mb={1}><Typography>DR</Typography><Typography fontWeight="bold">{requestData.dogalRisk?.toFixed(3)}</Typography></Box>
@@ -388,7 +386,7 @@ const BulguRiskiBelirlemeStepper = () => {
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box bgcolor="#eff6ff" p={3} borderRadius={2} border="1px solid #bfdbfe">
                 <Typography variant="subtitle2" color="text.secondary" mb={2}>ÖNERİ</Typography>
                 <Typography variant="h6" color="#1e40af">{requestData.onerilen_DenetimProseduru}</Typography>
