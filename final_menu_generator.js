@@ -30,7 +30,8 @@ const menuHierarchy = [
     { title: "HESAPLAMALAR", href: "/Hesaplamalar", children: [
         { title: "Yaşlandırma", href: "/Hesaplamalar/Yaslandirma" },
         { title: "Beklenen Kredi Zararı", href: "/Hesaplamalar/BeklenenKrediZarari" },
-        { title: "Amortisman", href: "/Hesaplamalar/Amortisman" }
+        { title: "Amortisman", href: "/Hesaplamalar/Amortisman" },
+        { title: "Adat Hesaplama", href: "/hesaplamalar/adat-hesaplama" }
     ]},
     { title: "DÖNÜŞÜM", href: "/Donusum", children: [
         { title: "Fiş Girişi", href: "/Donusum/FisGirisi" },

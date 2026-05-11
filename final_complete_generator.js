@@ -98,6 +98,7 @@ const menuTree = [
     { title: "Kredi", href: "/Hesaplamalar/Kredi" },
     { title: "Çek / Senet Reeskont", href: "/Hesaplamalar/CekSenetReeskont" },
     { title: "Dava Karşılıkları", href: "/Hesaplamalar/DavaKarsiliklari" },
+    { title: "Adat Hesaplama", href: "/Hesaplamalar/adat-hesaplama" },
     { title: "Ertelenmiş Vergi Hesabı", href: "/Hesaplamalar/ErtelenmisVergiHesabi" },
     { title: "İlişkili Taraf Sınıflama", href: "/Hesaplamalar/IliskiliTarafSiniflama" },
     { title: "Hareketsiz", href: "/Hesaplamalar/Hareketsiz" },

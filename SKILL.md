@@ -29,6 +29,7 @@ Use this skill when editing:
 
 - Match the existing `FasWebUI` visual language instead of adding a new design system.
 - **Font & Stil Kuralı:** Projede hiçbir şekilde farklı font (font-family) ve manuel yazı stili (fontStyle, uçuk renkli kalın punto vb.) override kullanma. Her zaman standart Material UI tabloları (`Table`, `TableCell`) ve tema varsayılanı font yazı tiplerini diğer sayfalarla aynı olacak şekilde referans al. Özellikle `Handsontable` gibi farklı rendering motorları gerektiren özel UI parçalarından kaçın.
+- **Handsontable Tema Kuralı:** Handsontable seçim alanları, aktif hücre/başlık vurguları, autofill tutamaçları, checkbox/radio durumları ve filtre menüsü aksanları her zaman aktif MUI temasının `theme.palette.primary` renklerinden beslenmelidir. Sayfa veya renderer içinde sabit turuncu/mavi/yeşil renk kullanma; gerekirse global `src/app/AppProviders.tsx` içindeki `[class*="ht-theme-horizon"]` CSS değişkenlerini genişlet.
 - Prefer the project's MUI-based cards, spacing, inputs, and buttons over raw HTML-looking controls.
 - Keep pages compact and balanced. Avoid oversized info blocks that push the main form too far down.
 - Do not add duplicate headings or redundant hero sections when the screen is already clear.
@@ -52,6 +53,59 @@ Use this skill when editing:
 - Before editing a screen, inspect nearby pages and follow the same component and spacing pattern.
 - When fixing one broken label, scan the whole user flow for related Turkish issues.
 - If a route still shows the old UI, trace the actual page file and active render path before making more changes.
+
+---
+
+# Prod DB Migration (EF Core + MySQL + PowerShell)
+
+## Kural: Prod DB güncelle denildiğinde bu adımları uygula
+
+### Sorun
+PowerShell double-quote (`"`) içinde `$` işareti **değişken olarak expand edilir**.  
+Şifre içinde `$` varsa (örn. `N2FAS_2026_!9Kx#47Lm$82Qp@61Rt%73Vb.`) → şifre bozulur → `Access denied`.
+
+### Doğru Yöntem: Environment Variable
+
+```powershell
+# 1. Single-quote ile env var set et ($ expand edilmez)
+$env:PROD_CONN = 'Server=10.10.76.4;Port=3306;Database=FASDB;User=fasdbuserN2adm;Password=N2FAS_2026_!9Kx#47Lm$82Qp@61Rt%73Vb.;AllowLoadLocalInfile=true;MaximumPoolSize=40;MinimumPoolSize=5;ConnectionIdleTimeout=120;ConnectionReset=true;DefaultCommandTimeout=300;'
+
+# 2. Env var'ı --connection argümanı olarak geç
+cd "c:\Users\lenov\source\repos\dev2ninovasyon\FasWebAPI"
+dotnet ef database update --project FasWebApi.csproj --context AppDbContext --connection $env:PROD_CONN
+```
+
+### Neden Çalışır
+- `'...'` single-quote: PowerShell hiç expand etmez, şifre aynen gider.
+- `"..."` double-quote: `$82Qp` → boş string → şifre kırılır → Access denied.
+
+### Prod Bilgileri
+- **Server:** `10.10.76.4:3306`
+- **Database:** `FASDB`
+- **User:** `fasdbuserN2adm`
+- **Bu makinenin IP'si:** `10.20.76.2` (MySQL grant bu IP için gereklidir)
+- **Context:** `AppDbContext`
+- **Project:** `FasWebApi.csproj`
+
+### Erişim Sorunu Yaşanırsa
+MySQL sunucusunda (root ile) şunu çalıştır:
+```sql
+GRANT ALL PRIVILEGES ON FASDB.* TO 'fasdbuserN2adm'@'10.20.76.2' IDENTIFIED BY '...şifre...';
+FLUSH PRIVILEGES;
+-- Doğrula:
+SHOW GRANTS FOR 'fasdbuserN2adm'@'10.20.76.2';
+```
+
+### Port Erişim Testi
+```powershell
+Test-NetConnection -ComputerName 10.10.76.4 -Port 3306
+```
+
+### Migration Başarısız Olursa: SQL Script Alternatifi
+```powershell
+dotnet ef migrations script --context AppDbContext --output "c:\tmp\prod_migration.sql" --idempotent
+# Sonra script'i prod sunucuda MySQL admin ile çalıştır
+```
 
 ---
 

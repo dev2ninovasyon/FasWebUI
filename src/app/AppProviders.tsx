@@ -222,14 +222,40 @@ const InnerProviders = ({ children }: { children: React.ReactNode }) => {
         <SnackbarProvider anchorOrigin={{ vertical: "top", horizontal: "right" }}>
           <ThemeProvider theme={theme}>
             <GlobalStyles styles={{
-              '.ht-theme-horizon': {
+              '[class*="ht-theme-horizon"]': {
                 '--ht-interactive-active-color': `${theme.palette.primary.main} !important`,
                 '--ht-primary-color': `${theme.palette.primary.main} !important`,
+                '--ht-accent-color': `${theme.palette.primary.main} !important`,
                 '--ht-colors-primary-500': `${theme.palette.primary.main} !important`,
                 '--ht-colors-primary-600': `${theme.palette.primary.main} !important`,
                 '--ht-colors-success-500': `${theme.palette.primary.main} !important`,
                 '--ht-colors-success-600': `${theme.palette.primary.main} !important`,
+                '--ht-cell-selection-border-color': `${theme.palette.primary.main} !important`,
+                '--ht-cell-selection-background-color': `color-mix(in srgb, ${theme.palette.primary.main} 14%, transparent) !important`,
+                '--ht-cell-autofill-background-color': `${theme.palette.primary.main} !important`,
+                '--ht-cell-autofill-border-color': `${theme.palette.primary.main} !important`,
+                '--ht-cell-editor-border-color': `${theme.palette.primary.main} !important`,
+                '--ht-cell-editor-shadow-color': `${theme.palette.primary.main} !important`,
+                '--ht-header-active-border-color': `${theme.palette.primary.main} !important`,
+                '--ht-header-active-background-color': `${theme.palette.primary.light} !important`,
+                '--ht-header-active-foreground-color': `${theme.palette.primary.main} !important`,
+                '--ht-header-highlighted-background-color': `${theme.palette.primary.light} !important`,
+                '--ht-header-highlighted-foreground-color': `${theme.palette.primary.main} !important`,
+                '--ht-header-row-active-background-color': `${theme.palette.primary.light} !important`,
+                '--ht-header-row-active-foreground-color': `${theme.palette.primary.main} !important`,
+                '--ht-header-row-highlighted-background-color': `${theme.palette.primary.light} !important`,
+                '--ht-header-row-highlighted-foreground-color': `${theme.palette.primary.main} !important`,
+                '--ht-checkbox-focus-ring-color': `${theme.palette.primary.main} !important`,
+                '--ht-checkbox-checked-border-color': `${theme.palette.primary.main} !important`,
+                '--ht-checkbox-checked-background-color': `${theme.palette.primary.main} !important`,
+                '--ht-checkbox-checked-focus-background-color': `${theme.palette.primary.main} !important`,
+                '--ht-checkbox-indeterminate-border-color': `${theme.palette.primary.main} !important`,
+                '--ht-checkbox-indeterminate-background-color': `${theme.palette.primary.main} !important`,
+                '--ht-checkbox-indeterminate-focus-background-color': `${theme.palette.primary.main} !important`,
                 '--ht-button-primary-background-color': `transparent !important`,
+              },
+              '[class*="ht-theme-horizon"] .htCheckboxRendererInput, [class*="ht-theme-horizon"] input[type="checkbox"], [class*="ht-theme-horizon"] input[type="radio"]': {
+                accentColor: `${theme.palette.primary.main} !important`,
               },
               '.ht-theme-horizon .changeType': {
                 backgroundImage: 'none !important',

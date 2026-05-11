@@ -181,6 +181,191 @@ export const getKrediHesaplanmisDetay = async (
   }
 };
 
+export const createAdatHesaplanmis = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  baslangicTarihi: string,
+  bitisTarihi: string,
+  hesapKodu?: number | number[],
+  hesapAdi?: string,
+  makulKasaBakiyesi: number | null = null,
+  kaydet: boolean = true,
+  varsayilanParaBirimi: string = "TL",
+  kurKaynagiTercihi: string = "EVDS",
+  kurTipi: string = "Satis"
+) => {
+  try {
+    const kebirKodlari = Array.isArray(hesapKodu)
+      ? hesapKodu.map(String)
+      : hesapKodu !== undefined
+      ? [hesapKodu.toString()]
+      : [];
+
+    const response = await apiFetch(
+      `/adat-hesaplama/hesapla`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          denetciId,
+          denetlenenId,
+          yil,
+          baslangicTarihi,
+          bitisTarihi,
+          kebirKodlari,
+          makulKasaBakiyesi,
+          hesaplamaAdi: hesapAdi || "",
+          varsayilanParaBirimi,
+          kurKaynagiTercihi,
+          kurTipi,
+          kaydet,
+        }),
+      }
+    );
+
+    const json = await response.json().catch(() => ({}));
+
+    return {
+      success: response.ok,
+      message: json?.message,
+      data: json?.data,
+      warnings: json?.warnings ?? [],
+    };
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    return {
+      success: false,
+      message: "Adat hesaplama sırasında bir hata oluştu.",
+      warnings: [] as any[],
+    };
+  }
+};
+
+export const createAdatOnIzleme = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  baslangicTarihi: string,
+  bitisTarihi: string,
+  hesapKodlari: number[],
+  varsayilanParaBirimi: string = "TL",
+  kurTipi: string = "Satis"
+) => {
+  try {
+    const response = await apiFetch(`/adat-hesaplama/on-izleme`, {
+      method: "POST",
+      headers: { accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({
+        denetciId,
+        denetlenenId,
+        yil,
+        baslangicTarihi,
+        bitisTarihi,
+        kebirKodlari: hesapKodlari.map(String),
+        varsayilanParaBirimi,
+        kurTipi,
+      }),
+    });
+    const json = await response.json().catch(() => ({}));
+    return { success: response.ok, data: json?.data ?? [] };
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    return { success: false, data: [] };
+  }
+};
+
+export const getAdatKebirKodlari = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  baslangicTarihi?: string,
+  bitisTarihi?: string
+): Promise<{ kod: number; adi: string }[]> => {
+  try {
+    const params = new URLSearchParams({
+      denetciId: denetciId.toString(),
+      denetlenenId: denetlenenId.toString(),
+      yil: yil.toString(),
+      ...(baslangicTarihi ? { baslangicTarihi } : {}),
+      ...(bitisTarihi ? { bitisTarihi } : {}),
+    });
+    const response = await apiFetch(`/adat-hesaplama/kebir-kodlari?${params.toString()}`, {
+      method: "GET",
+      headers: { accept: "application/json" },
+    });
+    if (response.ok) {
+      const json = await response.json();
+      return json?.data ?? [];
+    }
+    return [];
+  } catch {
+    return [];
+  }
+};
+
+export const getAdatHesaplamalar = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/adat-hesaplama/liste?denetlenenId=${denetlenenId}&yil=${yil}&denetciId=${denetciId}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("Adat hesaplama geçmişi getirilemedi");
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const getAdatHesaplamaDetay = async (id: number) => {
+  try {
+    const response = await apiFetch(
+      `/adat-hesaplama/${id}`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+        },
+      }
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log("Adat hesaplama detayları getirilemedi");
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const deleteAdatHesaplama = async (id: number) => {
+  try {
+    const response = await apiFetch(`/adat-hesaplama/${id}`, {
+      method: "DELETE",
+      headers: { accept: "application/json" },
+    });
+    return { success: response.ok };
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+    return { success: false };
+  }
+};
+
 export const getKrediHesaplanmisOrnekFisler = async (
   denetciId: number,
   yil: number,

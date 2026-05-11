@@ -45,11 +45,13 @@ import {
 const hesaplamalarMenuSirasi = new Map<string, number>([
   ["/Hesaplamalar/Yaslandirma", 1000],
   ["/Hesaplamalar/BeklenenKrediZarari", 1001],
-  ["/Hesaplamalar/ErtelenmisVergiHesabi", 1002],
+  ["/Hesaplamalar/AdatHesaplama", 1002],
+  ["/Hesaplamalar/ErtelenmisVergiHesabi", 1003],
 ]);
 
 const hesaplamalarMenuEtiketleri = new Map<string, string>([
   ["/Hesaplamalar/Amortisman", "Amortisman"],
+  ["/Hesaplamalar/AdatHesaplama", "Adat Hesaplama"],
   ["/Hesaplamalar/BeklenenKrediZarari", "Beklenen Kredi Zarari"],
   ["/Hesaplamalar/CekSenetReeskont", "Cek Senet Reeskont"],
   ["/Hesaplamalar/DavaKarsiliklari", "Dava Karsiliklari"],
@@ -681,6 +683,12 @@ export function createMenuItems(
               href: "/Hesaplamalar/Amortisman",
               aciklama:
                 "Veri Yükleme sekmesi altında, amortisman verilerini sisteme girebilirsiniz. Hesaplama sekmesi altında ise, Veri Yükleme sekmesi altında girmiş olduğunuz amortismanları standartlarına uygun olarak aylık veya günlük bazda hesaplama işlemini gerçekleştirebilirsiniz.",
+            },
+            {
+              id: uniqueId(),
+              title: "Adat Hesaplama",
+              icon: IconPoint,
+              href: "/Hesaplamalar/adat-hesaplama",
             },
             {
               id: uniqueId(),
