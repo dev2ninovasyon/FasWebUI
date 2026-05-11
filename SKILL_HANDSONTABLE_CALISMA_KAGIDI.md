@@ -48,6 +48,8 @@ Follow these conventions:
 - keep table data in `tableDataRef`
 - track modified rows in `changedRowIdsRef`
 - track unsaved state with `isHotDirty`
+- keep Handsontable selection colors, active header/cell highlights, autofill handles, checkbox/radio states, and filter menu accents tied to the active MUI theme via `theme.palette.primary`
+- do not hardcode orange or any fixed accent color inside Handsontable pages/renderers; extend the global `[class*="ht-theme-horizon"]` variables in `src/app/AppProviders.tsx` when a new Handsontable state needs theming
 - use `stretchH="last"` when the final text column should grow
 - use `HOT_BASE_ROW_HEIGHT` and the same shell classes when matching the newer pages
 - use `setEditorPanelOpener` from `SpeechTextEditor` for drawer opening

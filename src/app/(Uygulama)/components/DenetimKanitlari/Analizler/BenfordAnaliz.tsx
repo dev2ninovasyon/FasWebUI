@@ -12,7 +12,7 @@ import {
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getBenfordDagilim, getBenfordHesapKodlari, getBenfordBasamakKayitlari } from "@/api/Analizler/Benford";
-import BenfordChart from "./BenfordAnalizChart";
+import BenfordChart, { BENFORD_CHART_HEIGHT } from "./BenfordAnalizChart";
 import { IconRefresh, IconX } from "@tabler/icons-react";
 // import pathâ€™ını projendeki BlankCard konumuna göre ayarla:
 import BlankCard from "@/app/(Uygulama)/components/Layout/Shared/BlankCard/BlankCard";
@@ -168,11 +168,11 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
           }}>
           <BlankCard>
             {loading ? (
-              <Box p={2}>
-                <Skeleton variant="rectangular" height={420} sx={{ borderRadius: 2 }} />
+              <Box sx={{ p: { xs: 1, md: 2 }, width: "100%" }}>
+                <Skeleton variant="rectangular" height={BENFORD_CHART_HEIGHT} sx={{ borderRadius: 2 }} />
               </Box>
             ) : (
-              <Box p={2}>
+              <Box sx={{ p: { xs: 1, md: 2 }, width: "100%" }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   {title}
                 </Typography>
@@ -263,7 +263,7 @@ const BenfordAnaliz: React.FC<Props> = ({ showGraph, toast }) => {
       {/* Kayıt Detay Popup */}
       <Dialog open={popupOpen} onClose={() => setPopupOpen(false)} fullWidth maxWidth="lg">
         <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Typography variant="h5">
+          <Typography variant="h5" component="span">
             Basamak Detayı: {popupBasamak} ({popupRecords.length} Kayıt)
           </Typography>
           <Button onClick={() => setPopupOpen(false)} size="small">

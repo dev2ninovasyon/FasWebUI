@@ -63,7 +63,16 @@
       "Bash(grep -c \"afterDeselect\" node_modules/handsontable/core/hooks/index.d.ts)",
       "Bash(grep \"afterDeselect\" node_modules/handsontable/core/hooks/index.d.ts)",
       "Bash(echo \"exit: $?\")",
-      "Bash(dir \"c:\\\\\\\\Users\\\\\\\\lenov\\\\\\\\source\\\\\\\\repos\\\\\\\\dev2ninovasyon\\\\\\\\FasWebAPI\\\\\\\\Data\\\\\\\\Migrations\")"
+      "Bash(dir \"c:\\\\\\\\Users\\\\\\\\lenov\\\\\\\\source\\\\\\\\repos\\\\\\\\dev2ninovasyon\\\\\\\\FasWebAPI\\\\\\\\Data\\\\\\\\Migrations\")",
+      "Bash(dir \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\" -Recurse -Filter \"*.cs\")",
+      "Bash(sort -t_ -k1)",
+      "PowerShell(dotnet ef migrations list --project \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\" 2>&1)",
+      "PowerShell(dotnet build \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\\\\FasWebAPI.csproj\" 2>&1)",
+      "Bash(mysql -h 10.10.76.4 -P 3306 -u fasdbuserN2adm \"-pN2FAS_2026_!9Kx#47Lm\\\\$82Qp@61Rt%73Vb.\" FASDB -e \"SELECT COUNT\\(*\\) as tablo_var FROM information_schema.tables WHERE table_schema='FASDB' AND table_name='AdatHesaplama';\")",
+      "PowerShell(Get-Command mysql -ErrorAction SilentlyContinue)",
+      "PowerShell($env:ConnectionStrings__FasDbAPIConnection = \"Server=10.10.76.4;Port=3306;Database=FASDB;User=fasdbuserN2adm;Password=N2FAS_2026_!9Kx#47Lm`$82Qp@61Rt%73Vb.;AllowLoadLocalInfile=true;MaximumPoolSize=40;MinimumPoolSize=5;ConnectionIdleTimeout=120;ConnectionReset=true;DefaultCommandTimeout=300;\"; dotnet ef database update --project \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\" --no-build --environment Production 2>&1 | Select-Object -Last 20)",
+      "PowerShell($env:ConnectionStrings__FasDbAPIConnection = \"Server=10.10.76.4;Port=3306;Database=FASDB;User=fasdbuserN2adm;Password=N2FAS_2026_!9Kx#47Lm`$82Qp@61Rt%73Vb.;AllowLoadLocalInfile=true;MaximumPoolSize=40;MinimumPoolSize=5;ConnectionIdleTimeout=120;ConnectionReset=true;DefaultCommandTimeout=300;\"; dotnet ef database update --project \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\" --no-build 2>&1 | Select-Object -Last 20)",
+      "PowerShell($env:ConnectionStrings__FasDbAPIConnection = \"Server=10.10.76.4;Port=3306;Database=FASDB;User=fasdbuserN2adm;Password=N2FAS_2026_!9Kx#47Lm`$82Qp@61Rt%73Vb.;AllowLoadLocalInfile=true;MaximumPoolSize=40;MinimumPoolSize=5;ConnectionIdleTimeout=120;ConnectionReset=true;DefaultCommandTimeout=300;\"; dotnet ef database update --project \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\" --context AppDbContext --no-build 2>&1 | Select-Object -Last 20)"
     ],
     "additionalDirectories": [
       "c:\\Users\\lenov\\source\\repos\\dev2ninovasyon\\FasWebAPI\\Data\\Migrations"

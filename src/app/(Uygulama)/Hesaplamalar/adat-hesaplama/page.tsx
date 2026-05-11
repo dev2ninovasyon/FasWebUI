@@ -2,6 +2,9 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   Autocomplete,
   Box,
@@ -14,7 +17,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  MenuItem,
+  Paper,
   Skeleton,
   Stack,
   Tab,
@@ -33,6 +36,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchIcon from "@mui/icons-material/Search";
 import SaveIcon from "@mui/icons-material/Save";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
@@ -49,6 +53,7 @@ import {
 } from "@/api/Hesaplamalar/Hesaplamalar";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useSelector } from "@/store/hooks";
+import { enqueueSnackbar } from "notistack";
 
 type HesapTipi = "KASA_HESABI" | "KASA_DISI_AKTIF_HESAPLAR" | "PASIF_HESAPLAR";
 
@@ -172,6 +177,15 @@ function fmtDate(value?: string) {
   return new Date(value).toLocaleDateString("tr-TR");
 }
 
+function escapeHtml(value?: string | number | null) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function cellValue(row: AdatDetay, col: string) {
   switch (col) {
     case "Tarih": return fmtDate(row.tarih);
@@ -237,6 +251,8 @@ const AdatHesaplamaPage = () => {
   const [previewRows, setPreviewRows] = useState<OnIzlemeDetay[]>([]);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [gorunumModu, setGorunumModu] = useState<"standart" | "detayli">("standart");
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [exportingExcel, setExportingExcel] = useState(false);
 
   const selectedTip = useMemo(
     () => selectedKebir ? { ...selectedKebir, hesapTipi: hesapTipiBelirle(selectedKebir.kod) } : null,
@@ -318,7 +334,7 @@ const AdatHesaplamaPage = () => {
       return;
     }
     if (!selectedKebir || previewRows.length === 0) {
-      setMessage("Önce 'Verileri Yükle' butonuna tıklayın.");
+      setMessage("Önce 'Getir' butonuna tıklayın.");
       return;
     }
 
@@ -392,16 +408,17 @@ const AdatHesaplamaPage = () => {
     const kolonlar = gorunumModu === "standart" ? kolonlarStandart : kolonlarDetayli;
     let html = `<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"/><style>@page{size:A4 landscape;margin:1cm;}body{font-family:Arial,sans-serif;font-size:10px;color:#000;}table{width:100%;border-collapse:collapse;margin-bottom:14px;}th,td{border:1px solid #333;padding:4px 6px;}th{font-weight:bold;text-align:center;}td.num{text-align:right;}h2{text-align:center;font-size:13px;}h3{font-size:11px;margin:14px 0 4px;}</style></head><body>`;
     html += `<h2>ADAT HESAPLAMA TABLOSU</h2>`;
+    html += `<p><strong>Dönem:</strong> ${fmtDate(baslangicTarihi)} - ${fmtDate(bitisTarihi)} &nbsp; <strong>Yıl:</strong> ${selectedYear}</p>`;
     activeResult.ozetler.forEach((ozet) => {
       const rows = activeResult.detaylar.filter((d) => d.kebirKodu === ozet.kebirKodu);
-      html += `<h3>${ozet.kebirKodu} - ${ozet.hesapAdi} (${hesapTipiEtiketleri[ozet.hesapTipi]})</h3>`;
+      html += `<h3>${escapeHtml(ozet.kebirKodu)} - ${escapeHtml(ozet.hesapAdi)} (${escapeHtml(hesapTipiEtiketleri[ozet.hesapTipi])})</h3>`;
       html += `<p>Toplam TL Faiz Matrahı: ${fmtNum(ozet.toplamTLFaizMatrahi)} | Toplam TL Faiz: ${fmtNum(ozet.toplamTLFaiz)}</p><table><thead><tr>`;
-      kolonlar[ozet.hesapTipi].forEach((col) => { html += `<th>${col}</th>`; });
+      kolonlar[ozet.hesapTipi].forEach((col) => { html += `<th>${escapeHtml(col)}</th>`; });
       html += `</tr></thead><tbody>`;
       rows.forEach((row) => {
         html += `<tr>`;
         kolonlar[ozet.hesapTipi].forEach((col) => {
-          html += `<td class="${numericColumns.has(col) ? "num" : ""}">${cellValue(row, col)}</td>`;
+          html += `<td class="${numericColumns.has(col) ? "num" : ""}">${escapeHtml(cellValue(row, col))}</td>`;
         });
         html += `</tr>`;
       });
@@ -409,18 +426,29 @@ const AdatHesaplamaPage = () => {
     });
     html += `<h3>Genel Toplam TL Faiz: ${fmtNum(activeResult.genelToplamTLFaiz)}</h3></body></html>`;
     return html;
-  }, [result, gorunumModu]);
+  }, [result, gorunumModu, baslangicTarihi, bitisTarihi, selectedYear]);
+
+  const ensureExportReady = useCallback(async () => {
+    if (result) return true;
+    enqueueSnackbar("Önce adat hesaplaması yapın veya geçmiş hesaplamalardan bir kayıt seçin.", {
+      variant: "warning",
+      autoHideDuration: 4000,
+    });
+    return false;
+  }, [result]);
 
   const exportExcel = useCallback(async () => {
-    if (!result) return;
-    const [{ default: ExcelJS }, fileSaver] = await Promise.all([
-      import("exceljs"),
-      import("file-saver"),
-    ]);
-    const workbook = new ExcelJS.Workbook();
-    workbook.creator = "FAS";
-    workbook.created = new Date();
-    const kolonlar = gorunumModu === "standart" ? kolonlarStandart : kolonlarDetayli;
+    if (!(await ensureExportReady()) || !result) return;
+    setExportingExcel(true);
+    try {
+      const [{ default: ExcelJS }, fileSaver] = await Promise.all([
+        import("exceljs"),
+        import("file-saver"),
+      ]);
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = "FAS";
+      workbook.created = new Date();
+      const kolonlar = gorunumModu === "standart" ? kolonlarStandart : kolonlarDetayli;
 
     const summary = workbook.addWorksheet("Özet");
     summary.addRow(["Kebir Kodu", "Hesap Adı", "Hesap Tipi", "Toplam Gün", "Toplam TL Faiz Matrahı", "Toplam TL Faiz", "Satır Sayısı"]);
@@ -443,15 +471,24 @@ const AdatHesaplamaPage = () => {
       sheet.columns.forEach((column) => { column.width = 18; });
     });
 
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-    fileSaver.saveAs(blob, `Adat_Hesaplama_${selectedYear}.xlsx`);
-  }, [result, selectedYear, gorunumModu]);
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      fileSaver.saveAs(blob, `Adat_Hesaplama_${selectedYear}.xlsx`);
+    } finally {
+      setExportingExcel(false);
+    }
+  }, [ensureExportReady, result, selectedYear, gorunumModu]);
 
   useEffect(() => {
     setBaslangicTarihi(`${selectedYear}-01-01`);
     setBitisTarihi(`${selectedYear}-12-31`);
   }, [selectedYear]);
+
+  useEffect(() => {
+    if (selectedKebir) {
+      setHesaplamaAdi(`${selectedKebir.kod} - ${selectedKebir.adi}`);
+    }
+  }, [selectedKebir]);
 
   useEffect(() => {
     void loadHistory();
@@ -479,249 +516,349 @@ const AdatHesaplamaPage = () => {
     <PageContainer title="Adat Hesaplama" description="E-Defter kebir verilerine göre adat hesaplaması yapın.">
       <Breadcrumb title="Adat Hesaplama" items={BCrumb} />
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Card>
-            <CardContent>
-              <Stack spacing={2}>
-                <Typography variant="h6">Hesaplama Parametreleri</Typography>
-                <TextField size="small" label="Hesaplama Adı" value={hesaplamaAdi} onChange={(e) => setHesaplamaAdi(e.target.value)} />
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-                  <TextField size="small" label="Başlangıç Tarihi" type="date" value={baslangicTarihi} onChange={(e) => setBaslangicTarihi(e.target.value)} InputLabelProps={{ shrink: true }} fullWidth />
-                  <TextField size="small" label="Bitiş Tarihi" type="date" value={bitisTarihi} onChange={(e) => setBitisTarihi(e.target.value)} InputLabelProps={{ shrink: true }} fullWidth />
-                </Stack>
-                <Autocomplete
-                  options={kebirKodlari}
-                  getOptionLabel={(o) => `${o.kod} - ${o.adi}`}
-                  value={selectedKebir}
-                  onChange={(_, value) => { setSelectedKebir(value); setPreviewRows([]); setResult(null); }}
-                  onOpen={() => void handleKebirOpen()}
-                  size="small"
-                  loading={loadingKebir}
-                  loadingText="Kebir kodları yükleniyor..."
-                  noOptionsText={kebirLoaded ? "Kebir kodu bulunamadı" : "Açmak için tıklayın"}
-                  renderInput={(params) => <TextField {...params} label="Kebir Kodu" placeholder="Tıklayarak kod seçin" />}
-                />
-                {selectedTip && (
-                  <Chip
-                    size="small"
-                    color={selectedTip.hesapTipi ? "primary" : "error"}
-                    label={selectedTip.hesapTipi ? hesapTipiEtiketleri[selectedTip.hesapTipi] : "Kapsam Dışı"}
-                    sx={{ alignSelf: "flex-start" }}
-                  />
-                )}
-                <Stack direction="row" spacing={1}>
-                  <Button variant="outlined" fullWidth startIcon={loadingPreview ? <CircularProgress size={16} /> : undefined} disabled={loadingPreview || calculating} onClick={() => void handleVeriYukle()}>
-                    {loadingPreview ? "Yükleniyor..." : "Verileri Yükle"}
-                  </Button>
-                  <Button variant="contained" fullWidth startIcon={calculating ? <CircularProgress size={16} color="inherit" /> : <SaveIcon />} disabled={calculating || loadingPreview || previewRows.length === 0} onClick={() => void handleHesapla()}>
-                    {calculating ? "Hesaplanıyor..." : "Hesapla ve Kaydet"}
-                  </Button>
-                </Stack>
-                {message && <Alert severity={message.includes("başarıyla") ? "success" : "warning"}>{message}</Alert>}
+      {/* ── Parametre Barı ── */}
+      <Card sx={{ mb: 2 }}>
+        <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
+          <Grid container spacing={1.5} alignItems="flex-end">
+            <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+              <TextField size="small" fullWidth label="Başlangıç" type="date" value={baslangicTarihi} onChange={(e) => setBaslangicTarihi(e.target.value)} InputLabelProps={{ shrink: true }} />
+            </Grid>
+            <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+              <TextField size="small" fullWidth label="Bitiş" type="date" value={bitisTarihi} onChange={(e) => setBitisTarihi(e.target.value)} InputLabelProps={{ shrink: true }} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <Autocomplete
+                options={kebirKodlari}
+                getOptionLabel={(o) => `${o.kod} - ${o.adi}`}
+                value={selectedKebir}
+                onChange={(_, value) => { setSelectedKebir(value); setPreviewRows([]); setResult(null); }}
+                onOpen={() => void handleKebirOpen()}
+                size="small"
+                loading={loadingKebir}
+                loadingText="Yükleniyor..."
+                noOptionsText={kebirLoaded ? "Kebir kodu bulunamadı" : "Açmak için tıklayın"}
+                renderInput={(params) => <TextField {...params} label="Kebir Kodu" />}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+              <Stack direction="row" spacing={0.75}>
+                <Button
+                  size="small" variant="outlined" fullWidth
+                  startIcon={loadingPreview ? <CircularProgress size={14} /> : undefined}
+                  disabled={loadingPreview || calculating}
+                  onClick={() => void handleVeriYukle()}
+                >
+                  {loadingPreview ? "Getiriliyor" : "Getir"}
+                </Button>
+                <Button
+                  size="small" variant="contained" fullWidth
+                  startIcon={calculating ? <CircularProgress size={14} color="inherit" /> : <SaveIcon fontSize="small" />}
+                  disabled={calculating || loadingPreview || previewRows.length === 0}
+                  onClick={() => void handleHesapla()}
+                >
+                  {calculating ? "Hesap..." : "Hesapla"}
+                </Button>
               </Stack>
-            </CardContent>
-          </Card>
-
-          <Box mt={2}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Geçmiş Hesaplamalar</Typography>
-                <TextField
+            </Grid>
+          </Grid>
+          {(selectedTip || message) && (
+            <Stack direction="row" spacing={1} mt={1} alignItems="center" flexWrap="wrap">
+              {selectedTip && (
+                <Chip
                   size="small"
-                  fullWidth
-                  placeholder="Hesaplama adı ara..."
-                  value={historySearch}
-                  onChange={(e) => setHistorySearch(e.target.value)}
-                  InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment> }}
-                  sx={{ mb: 1 }}
+                  color={selectedTip.hesapTipi ? "primary" : "error"}
+                  label={selectedTip.hesapTipi ? hesapTipiEtiketleri[selectedTip.hesapTipi] : "Kapsam Dışı"}
                 />
-                {loadingHistory ? (
-                  <Stack spacing={0.5}>{[1, 2, 3].map((i) => <Skeleton key={i} height={40} variant="rounded" />)}</Stack>
-                ) : (
-                  <Stack spacing={0.5} sx={{ maxHeight: 320, overflowY: "auto" }}>
-                    {filteredHistory.map((item) => (
-                      <Stack key={item.id} direction="row" spacing={0.5}>
-                        <Button variant={result?.hesaplamaId === item.id ? "contained" : "outlined"} size="small" onClick={() => void selectHistoryItem(item.id)} sx={{ flex: 1, justifyContent: "space-between", textTransform: "none" }}>
-                          <span>{item.hesaplamaAdi || `Adat Hesaplama #${item.id}`}</span>
-                          <span>{fmtNum(item.genelToplamTLFaiz ?? item.genelToplamFaiz)}</span>
-                        </Button>
-                        <Tooltip title="Sil">
-                          <IconButton size="small" color="error" disabled={deletingId === item.id} onClick={() => void handleDelete(item.id)}>
-                            {deletingId === item.id ? <CircularProgress size={16} color="error" /> : <DeleteIcon fontSize="small" />}
-                          </IconButton>
-                        </Tooltip>
-                      </Stack>
-                    ))}
-                    {filteredHistory.length === 0 && <Typography variant="body2" color="text.secondary">Henüz hesaplama kaydı yok.</Typography>}
-                  </Stack>
-                )}
-              </CardContent>
-            </Card>
-          </Box>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 8 }}>
-          {!result && previewRows.length > 0 && (
-            <Stack spacing={2} mb={2}>
-              {previewGruplari.map((group) => {
-                const isKasa = group.rows[0]?.hesapTipi === "KASA_HESABI";
-                const mkb = makulKasaBakiyesi.trim() !== "" ? Number(makulKasaBakiyesi.replace(",", ".")) : 0;
-                return (
-                  <Card key={group.kebirKodu}>
-                    <CardContent>
-                      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-                        <Typography variant="subtitle1">
-                          {group.kebirKodu} — {group.rows[0]?.hesapAdi} ({hesapTipiEtiketleri[group.rows[0]?.hesapTipi ?? "KASA_DISI_AKTIF_HESAPLAR"]})
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">{group.rows.length} satır</Typography>
-                      </Stack>
-                      <TableContainer sx={{ maxHeight: 420, overflow: "auto" }}>
-                        <Table size="small" stickyHeader>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Tarih</TableCell>
-                              <TableCell align="right">Borç Tutarı</TableCell>
-                              <TableCell align="right">Alacak Tutarı</TableCell>
-                              <TableCell align="right">Bakiye</TableCell>
-                              {isKasa && <TableCell align="right" sx={{ minWidth: 150 }}>Makul Bakiye ₺</TableCell>}
-                              {isKasa && <TableCell align="right">Kalan Bakiye</TableCell>}
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {group.rows.map((row, idx) => {
-                              const kalan = isKasa ? Math.max((row.dovizliBakiye ?? 0) - mkb, 0) : 0;
-                              return (
-                                <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
-                                  <TableCell>{fmtDate(row.tarih)}</TableCell>
-                                  <TableCell align="right">{fmtNum(row.dovizBorc)}</TableCell>
-                                  <TableCell align="right">{fmtNum(row.dovizAlacak)}</TableCell>
-                                  <TableCell align="right">{fmtNum(row.dovizliBakiye)}</TableCell>
-                                  {isKasa && (
-                                    <TableCell align="right">
-                                      {idx === 0 ? (
-                                        <TextField
-                                          size="small"
-                                          value={makulKasaBakiyesi}
-                                          onChange={(e) => setMakulKasaBakiyesi(e.target.value)}
-                                          error={makulKasaBakiyesi.trim() === ""}
-                                          inputProps={{ style: { textAlign: "right" } }}
-                                          sx={{ width: 130 }}
-                                        />
-                                      ) : (
-                                        fmtNum(mkb)
-                                      )}
-                                    </TableCell>
-                                  )}
-                                  {isKasa && <TableCell align="right">{fmtNum(kalan)}</TableCell>}
-                                </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              )}
+              {message && (
+                <Alert severity={message.includes("başarıyla") ? "success" : "warning"} sx={{ py: 0, flex: 1 }}>
+                  {message}
+                </Alert>
+              )}
             </Stack>
           )}
-          {result ? (
-            <Stack spacing={2}>
-              <Card>
+        </CardContent>
+      </Card>
+
+      {/* ── İçerik Alanı (tam genişlik) ── */}
+      {!result && previewRows.length === 0 && (
+        <Card sx={{ mb: 2 }}>
+          <CardContent>
+            <Typography variant="body2" color="text.secondary">
+              Kebir kodu seçip <b>Getir</b> butonuna tıklayın. Satırlar yüklendikten sonra makul kasa bakiyesini girin ve <b>Hesapla</b> butonuna tıklayın.
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
+
+      {!result && previewRows.length > 0 && (
+        <Stack spacing={2} mb={2}>
+          {previewGruplari.map((group) => {
+            const isKasa = group.rows[0]?.hesapTipi === "KASA_HESABI";
+            const mkb = makulKasaBakiyesi.trim() !== "" ? Number(makulKasaBakiyesi.replace(",", ".")) : 0;
+            return (
+              <Card key={group.kebirKodu}>
                 <CardContent>
                   <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-                    <Typography variant="h6">Özet</Typography>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Button size="small" variant="outlined" startIcon={<DownloadIcon />} onClick={() => void exportExcel()}>
-                        Excel
-                      </Button>
-                      <Typography variant="h6">Genel Toplam TL Faiz: {fmtNum(result.genelToplamTLFaiz)}</Typography>
-                    </Stack>
+                    <Typography variant="subtitle1">
+                      {group.kebirKodu} — {group.rows[0]?.hesapAdi} ({hesapTipiEtiketleri[group.rows[0]?.hesapTipi ?? "KASA_DISI_AKTIF_HESAPLAR"]})
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">{group.rows.length} satır</Typography>
                   </Stack>
-                  <TableContainer>
-                    <Table size="small">
+                  <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 460 }}>
+                    <Table size="small" stickyHeader>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Kebir Kodu</TableCell>
-                          <TableCell>Hesap Adı</TableCell>
-                          <TableCell>Hesap Tipi</TableCell>
-                          <TableCell align="right">Toplam Gün</TableCell>
-                          <TableCell align="right">Toplam TL Faiz Matrahı</TableCell>
-                          <TableCell align="right">Toplam TL Faiz</TableCell>
-                          <TableCell align="right">Satır Sayısı</TableCell>
+                          <TableCell>Tarih</TableCell>
+                          <TableCell align="right">Borç</TableCell>
+                          <TableCell align="right">Alacak</TableCell>
+                          <TableCell align="right">Bakiye</TableCell>
+                          {isKasa && <TableCell align="right" sx={{ minWidth: 155 }}>Makul Kasa Bakiyesi ₺</TableCell>}
+                          {isKasa && <TableCell align="right">Kalan Bakiye</TableCell>}
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {result.ozetler.map((row) => (
-                          <TableRow key={row.kebirKodu} hover>
-                            <TableCell>{row.kebirKodu}</TableCell>
-                            <TableCell>{row.hesapAdi}</TableCell>
-                            <TableCell>{hesapTipiEtiketleri[row.hesapTipi]}</TableCell>
-                            <TableCell align="right">{row.toplamGun}</TableCell>
-                            <TableCell align="right">{fmtNum(row.toplamTLFaizMatrahi)}</TableCell>
-                            <TableCell align="right">{fmtNum(row.toplamTLFaiz)}</TableCell>
-                            <TableCell align="right">{row.satirSayisi}</TableCell>
-                          </TableRow>
-                        ))}
+                        {group.rows.map((row, idx) => {
+                          const kalan = isKasa ? Math.max((row.dovizliBakiye ?? 0) - mkb, 0) : 0;
+                          return (
+                            <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
+                              <TableCell>{fmtDate(row.tarih)}</TableCell>
+                              <TableCell align="right">{fmtNum(row.dovizBorc)}</TableCell>
+                              <TableCell align="right">{fmtNum(row.dovizAlacak)}</TableCell>
+                              <TableCell align="right">{fmtNum(row.dovizliBakiye)}</TableCell>
+                              {isKasa && (
+                                <TableCell align="right">
+                                  {idx === 0 ? (
+                                    <TextField
+                                      size="small"
+                                      value={makulKasaBakiyesi}
+                                      onChange={(e) => setMakulKasaBakiyesi(e.target.value)}
+                                      error={makulKasaBakiyesi.trim() === ""}
+                                      inputProps={{ style: { textAlign: "right" } }}
+                                      sx={{ width: 130 }}
+                                    />
+                                  ) : (
+                                    fmtNum(mkb)
+                                  )}
+                                </TableCell>
+                              )}
+                              {isKasa && <TableCell align="right">{fmtNum(kalan)}</TableCell>}
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </TableContainer>
                 </CardContent>
               </Card>
+            );
+          })}
+        </Stack>
+      )}
 
-              <Card>
-                <CardContent>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-                    <Tabs value={activeKebir} onChange={(_, value) => setActiveKebir(value)} variant="scrollable" scrollButtons="auto">
-                      {detayGruplari.map((group) => <Tab key={group.kebirKodu} value={group.kebirKodu} label={group.kebirKodu} />)}
-                    </Tabs>
-                    <ToggleButtonGroup value={gorunumModu} exclusive onChange={(_, v) => v && setGorunumModu(v)} size="small" sx={{ ml: 1, flexShrink: 0 }}>
-                      <ToggleButton value="standart">Standart (Excel)</ToggleButton>
-                      <ToggleButton value="detayli">Detaylı</ToggleButton>
-                    </ToggleButtonGroup>
-                  </Stack>
-                  {detayGruplari.filter((group) => group.kebirKodu === activeKebir).map((group) => {
-                    const tip = group.rows[0]?.hesapTipi ?? "KASA_DISI_AKTIF_HESAPLAR";
-                    const aktifKolonlar = gorunumModu === "standart" ? kolonlarStandart[tip] : kolonlarDetayli[tip];
-                    return (
-                      <TableContainer key={group.kebirKodu} sx={{ maxHeight: 520, overflow: "auto" }}>
-                        <Table size="small" stickyHeader>
-                          <TableHead>
-                            <TableRow>{aktifKolonlar.map((col) => <TableCell key={col} align={numericColumns.has(col) ? "right" : "left"}>{col}</TableCell>)}</TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {group.rows.map((row) => (
-                              <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
-                                {aktifKolonlar.map((col) => (
-                                  <TableCell key={col} align={numericColumns.has(col) ? "right" : "left"}>{cellValue(row, col)}</TableCell>
-                                ))}
-                              </TableRow>
+      {result && (
+        <Stack spacing={2} mb={2}>
+          {/* Özet Tablosu */}
+          <Card>
+            <CardContent>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1.5}>
+                <Typography variant="h6">Özet</Typography>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={exportingExcel ? <CircularProgress size={14} /> : <DownloadIcon fontSize="small" />}
+                    disabled={exportingExcel}
+                    onClick={() => void exportExcel()}
+                  >
+                    Excel'e Aktar
+                  </Button>
+                  <Chip label={`Genel Toplam TL Faiz: ${fmtNum(result.genelToplamTLFaiz)}`} color="primary" variant="outlined" />
+                </Stack>
+              </Stack>
+              <TableContainer component={Paper} variant="outlined">
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Kebir Kodu</TableCell>
+                      <TableCell>Hesap Adı</TableCell>
+                      <TableCell>Hesap Tipi</TableCell>
+                      <TableCell align="right">Toplam Gün</TableCell>
+                      <TableCell align="right">TL Faiz Matrahı</TableCell>
+                      <TableCell align="right">TL Faiz Tutarı</TableCell>
+                      <TableCell align="right">Satır</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {result.ozetler.map((row) => (
+                      <TableRow key={row.kebirKodu} hover>
+                        <TableCell>{row.kebirKodu}</TableCell>
+                        <TableCell>{row.hesapAdi}</TableCell>
+                        <TableCell>{hesapTipiEtiketleri[row.hesapTipi]}</TableCell>
+                        <TableCell align="right">{row.toplamGun}</TableCell>
+                        <TableCell align="right">{fmtNum(row.toplamTLFaizMatrahi)}</TableCell>
+                        <TableCell align="right">{fmtNum(row.toplamTLFaiz)}</TableCell>
+                        <TableCell align="right">{row.satirSayisi}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
+
+          {/* Detay Tablosu */}
+          <Card>
+            <CardContent>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
+                <Tabs value={activeKebir} onChange={(_, v) => setActiveKebir(v)} variant="scrollable" scrollButtons="auto">
+                  {detayGruplari.map((g) => <Tab key={g.kebirKodu} value={g.kebirKodu} label={g.kebirKodu} />)}
+                </Tabs>
+                <ToggleButtonGroup value={gorunumModu} exclusive onChange={(_, v) => v && setGorunumModu(v)} size="small" sx={{ ml: 1, flexShrink: 0 }}>
+                  <ToggleButton value="standart">Standart</ToggleButton>
+                  <ToggleButton value="detayli">Detaylı</ToggleButton>
+                </ToggleButtonGroup>
+              </Stack>
+              {detayGruplari.filter((g) => g.kebirKodu === activeKebir).map((group) => {
+                const tip = group.rows[0]?.hesapTipi ?? "KASA_DISI_AKTIF_HESAPLAR";
+                const aktifKolonlar = gorunumModu === "standart" ? kolonlarStandart[tip] : kolonlarDetayli[tip];
+                return (
+                  <TableContainer key={group.kebirKodu} component={Paper} variant="outlined" sx={{ maxHeight: 560 }}>
+                    <Table size="small" stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          {aktifKolonlar.map((col) => (
+                            <TableCell key={col} align={numericColumns.has(col) ? "right" : "left"}>{col}</TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {group.rows.map((row) => (
+                          <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
+                            {aktifKolonlar.map((col) => (
+                              <TableCell key={col} align={numericColumns.has(col) ? "right" : "left"}>{cellValue(row, col)}</TableCell>
                             ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    );
-                  })}
-                </CardContent>
-              </Card>
-            </Stack>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                );
+              })}
+            </CardContent>
+          </Card>
+        </Stack>
+      )}
+
+      {/* ── Geçmiş Hesaplamalar (Accordion) ── */}
+      <Accordion
+        expanded={historyOpen}
+        onChange={() => setHistoryOpen((v) => !v)}
+        sx={{ mb: 2, "&:before": { display: "none" }, boxShadow: "none", border: "1px solid", borderColor: "divider", borderRadius: "8px !important" }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="subtitle1">Geçmiş Hesaplamalar</Typography>
+            {history.length > 0 && <Chip size="small" label={history.length} variant="outlined" />}
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails sx={{ pt: 0 }}>
+          <TextField
+            size="small" fullWidth
+            placeholder="Hesaplama adı ara..."
+            value={historySearch}
+            onChange={(e) => setHistorySearch(e.target.value)}
+            InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment> }}
+            sx={{ mb: 1 }}
+          />
+          {loadingHistory ? (
+            <Stack spacing={0.5}>{[1, 2, 3].map((i) => <Skeleton key={i} height={40} variant="rounded" />)}</Stack>
           ) : (
-            <Card>
-              <CardContent>
-                <Typography variant="body2" color="text.secondary">
-                  Kebir kodu seçip <b>Verileri Yükle</b> butonuna tıklayın. Satırlar yüklendikten sonra makul kasa bakiyesini girin ve <b>Hesapla ve Kaydet</b> butonuna tıklayın.
-                </Typography>
-              </CardContent>
-            </Card>
+            <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 300 }}>
+              <Table size="small" stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Hesaplama Adı</TableCell>
+                    <TableCell align="right">TL Faiz</TableCell>
+                    <TableCell align="right">Başlangıç</TableCell>
+                    <TableCell align="right">Bitiş</TableCell>
+                    <TableCell align="right">Tarih</TableCell>
+                    <TableCell align="center" sx={{ width: 80 }}>İşlem</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredHistory.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} align="center">
+                        <Typography variant="body2" color="text.secondary">Henüz hesaplama kaydı yok.</Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredHistory.map((item) => (
+                      <TableRow
+                        key={item.id}
+                        hover
+                        selected={result?.hesaplamaId === item.id}
+                        onClick={() => void selectHistoryItem(item.id)}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <TableCell>{item.hesaplamaAdi || `Adat Hesaplama #${item.id}`}</TableCell>
+                        <TableCell align="right">{fmtNum(item.genelToplamTLFaiz ?? item.genelToplamFaiz)}</TableCell>
+                        <TableCell align="right">{fmtDate(item.baslangicTarihi)}</TableCell>
+                        <TableCell align="right">{fmtDate(item.bitisTarihi)}</TableCell>
+                        <TableCell align="right">{fmtDate(item.hesaplamaTarihi)}</TableCell>
+                        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+                          <Tooltip title="Sil">
+                            <IconButton size="small" color="error" disabled={deletingId === item.id} onClick={() => void handleDelete(item.id)}>
+                              {deletingId === item.id ? <CircularProgress size={16} color="error" /> : <DeleteIcon fontSize="small" />}
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           )}
-        </Grid>
-      </Grid>
+        </AccordionDetails>
+      </Accordion>
 
       <FormOnayBolumu controller="AdatHesaplama" />
       <Box mt={2}>
         <Divider sx={{ mb: 2 }} />
-        <IslemlerCardHtml controller="AdatHesaplama" buildHtmlAsync={buildHtmlAsync} previewEndpoint="/ArsivIslemleri/WordDosyasiniPdfOlarakOnizleHtml" />
+        <Stack spacing={1}>
+          <Card sx={{ bgcolor: "primary.light" }}>
+            <CardContent sx={{ bgcolor: "primary.light", py: 1.5, "&:last-child": { pb: 1.5 } }}>
+              <Stack
+                direction={{ xs: "column", md: "row" }}
+                spacing={1}
+                justifyContent="space-between"
+                alignItems={{ xs: "stretch", md: "center" }}
+              >
+                <Typography variant="subtitle2" fontWeight={700}>
+                  Excel aktarımı
+                </Typography>
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  startIcon={exportingExcel ? <CircularProgress size={16} /> : <DownloadIcon fontSize="small" />}
+                  disabled={exportingExcel}
+                  onClick={() => void exportExcel()}
+                  sx={{ minWidth: 180 }}
+                >
+                  Excel'e Aktar
+                </Button>
+              </Stack>
+            </CardContent>
+          </Card>
+          <IslemlerCardHtml
+            controller="AdatHesaplama"
+            buildHtmlAsync={buildHtmlAsync}
+            previewEndpoint="/ArsivIslemleri/WordDosyasiniPdfOlarakOnizleHtml"
+            onBeforeAction={ensureExportReady}
+          />
+        </Stack>
       </Box>
     </PageContainer>
   );

@@ -10,7 +10,17 @@
       "Bash(find /c/Users/lenov/source/repos/dev2ninovasyon/FasWebUI/src -name \"*.tsx\" -exec grep -l \"HotTable\\\\|new Handsontable\" {} \\\\; cat /tmp/hotfiles.txt)",
       "Bash(python3 /tmp/process_handsontable.py)",
       "Bash(python /tmp/process_handsontable.py)",
-      "Bash(python process_handsontable.py)"
+      "Bash(python process_handsontable.py)",
+      "PowerShell(cd \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\"; dotnet build 2>&1 | Where-Object { $_ -match \"error CS\" })",
+      "PowerShell(cd \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\"; $output = dotnet build 2>&1; $output | Where-Object { $_ -match \": error\" })",
+      "PowerShell(cd \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\"; dotnet build 2>&1 | Out-String | Select-String \"error\" -AllMatches | ForEach-Object { $_.Matches } | Select-Object -First 5 Value)",
+      "PowerShell(cd \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\"; dotnet ef database update --context AppDbContext --connection \"Server=10.10.76.4;Port=3306;Database=FASDB;User=fasdbuserN2adm;Password=N2FAS_2026_!9Kx#47Lm$82Qp@61Rt%73Vb.;AllowLoadLocalInfile=true;MaximumPoolSize=40;MinimumPoolSize=5;ConnectionIdleTimeout=120;ConnectionReset=true;DefaultCommandTimeout=300;\" 2>&1)",
+      "PowerShell(cd \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\"; dotnet build 2>&1 | Where-Object { $_ -match \"error\" } | Select-Object -First 10)",
+      "PowerShell(Stop-Process -Id 40244 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(cd \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\"; dotnet ef migrations script --context AppDbContext --output \"c:\\\\tmp\\\\prod_adat_migration.sql\" --idempotent 2>&1; Write-Host \"Exit: $LASTEXITCODE\")",
+      "PowerShell(cd \"c:\\\\Users\\\\lenov\\\\source\\\\repos\\\\dev2ninovasyon\\\\FasWebAPI\"; dotnet ef database update --project FasWebApi.csproj --context AppDbContext --connection \"Server=10.10.76.4;Port=3306;Database=FASDB;User=fasdbuserN2adm;Password=N2FAS_2026_!9Kx#47Lm$82Qp@61Rt%73Vb.;AllowLoadLocalInfile=true;MaximumPoolSize=40;MinimumPoolSize=5;ConnectionIdleTimeout=120;ConnectionReset=true;DefaultCommandTimeout=300;\" 2>&1)",
+      "PowerShell(Test-NetConnection -ComputerName 10.10.76.4 -Port 3306 -WarningAction SilentlyContinue)",
+      "PowerShell($r = Test-NetConnection -ComputerName 10.10.76.4 -Port 3306 -WarningAction SilentlyContinue; \"TCP Success: $\\($r.TcpTestSucceeded\\) | Address: $\\($r.RemoteAddress\\) | Port: $\\($r.RemotePort\\)\")"
     ],
     "additionalDirectories": [
       "\\tmp",
