@@ -152,7 +152,7 @@ const hesapTipiEtiketleri: Record<HesapTipi, string> = {
 };
 
 const kolonlarStandart: Record<HesapTipi, string[]> = {
-  KASA_HESABI: ["Tarih", "Borç Tutarı", "Alacak Tutarı", "Bakiye", "Makul Bakiye", "Kalan Bakiye", "Geçen Gün Sayısı", "Faiz Oranı", "Adat Faiz Tutarı"],
+  KASA_HESABI: ["Tarih", "Borç Tutarı", "Alacak Tutarı", "Bakiye", "Geçen Gün Sayısı", "Faiz Oranı", "Adat Faiz Tutarı"],
   KASA_DISI_AKTIF_HESAPLAR: ["Tarih", "Borç Tutarı", "Alacak Tutarı", "Bakiye", "Geçen Gün Sayısı", "Faiz Oranı", "Adat Faiz Tutarı"],
   PASIF_HESAPLAR: ["Tarih", "Borç Tutarı", "Alacak Tutarı", "Bakiye", "Geçen Gün Sayısı", "Faiz Oranı", "Adat Faiz Tutarı"],
 };
@@ -170,6 +170,11 @@ const numericColumns = new Set([
 
 function fmtNum(value?: number | null, dec = 2) {
   return (value ?? 0).toLocaleString("tr-TR", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+
+function fmtDisplayNum(value?: number | null, dec = 2) {
+  if (value == null || value === 0) return "-";
+  return fmtNum(value, dec);
 }
 
 function fmtDate(value?: string) {
@@ -213,6 +218,69 @@ function cellValue(row: AdatDetay, col: string) {
     case "TL Faiz Matrahı": return fmtNum(row.tlFaizMatrahi);
     case "Adat Faiz Tutarı":
     case "TL Faiz Tutarı": return fmtNum(row.tlFaizTutari);
+    default: return "";
+  }
+}
+
+function getNumericValue(row: AdatDetay, col: string): number | null {
+  switch (col) {
+    case "Borç":
+    case "Borç Tutarı": return row.borc;
+    case "Alacak":
+    case "Alacak Tutarı": return row.alacak;
+    case "Bakiye": return row.bakiye;
+    case "Döviz Borç": return row.dovizBorc;
+    case "Döviz Alacak": return row.dovizAlacak;
+    case "Dövizli Bakiye": return row.dovizliBakiye;
+    case "Döviz Kuru": return row.dovizKuru;
+    case "TL Bakiye": return row.tlBakiye;
+    case "Makul Bakiye": return row.makulBakiye ?? null;
+    case "Kalan Bakiye": return row.kalanBakiye ?? null;
+    case "Gün":
+    case "Geçen Gün Sayısı": return row.gun;
+    case "Faiz Oranı": return row.faizOrani;
+    case "TL Faiz Matrahı": return row.tlFaizMatrahi;
+    case "Adat Faiz Tutarı":
+    case "TL Faiz Tutarı": return row.tlFaizTutari;
+    default: return null;
+  }
+}
+
+function getNegativeCellStyle(value?: number | null) {
+  if (value == null || value >= 0) return undefined;
+  return {
+    backgroundColor: "rgba(211, 47, 47, 0.12)",
+    color: "#b71c1c",
+  };
+}
+
+function cellValueForDisplay(row: AdatDetay, col: string) {
+  switch (col) {
+    case "Tarih": return fmtDate(row.tarih);
+    case "Fiş No": return row.fisNo ?? "";
+    case "Açıklama": return row.aciklama ?? "";
+    case "Borç":
+    case "Borç Tutarı": return fmtDisplayNum(row.borc);
+    case "Alacak":
+    case "Alacak Tutarı": return fmtDisplayNum(row.alacak);
+    case "Bakiye": return fmtDisplayNum(row.bakiye);
+    case "Para Birimi": return row.paraBirimi;
+    case "Döviz Borç": return fmtDisplayNum(row.dovizBorc);
+    case "Döviz Alacak": return fmtDisplayNum(row.dovizAlacak);
+    case "Dövizli Bakiye": return fmtDisplayNum(row.dovizliBakiye);
+    case "Döviz Kuru": return fmtDisplayNum(row.dovizKuru, 4);
+    case "Kur Tarihi": return fmtDate(row.kurTarihi);
+    case "Kur Kaynağı": return row.kurKaynak;
+    case "TL Bakiye": return fmtDisplayNum(row.tlBakiye);
+    case "Makul Bakiye": return fmtDisplayNum(row.makulBakiye);
+    case "Kalan Bakiye": return fmtDisplayNum(row.kalanBakiye);
+    case "Gün":
+    case "Geçen Gün Sayısı": return row.gun === 0 ? "-" : row.gun;
+    case "Faiz Oranı": return row.faizOrani === 0 ? "-" : `%${fmtNum(row.faizOrani)}`;
+    case "Faiz Kaynağı": return row.faizKaynak;
+    case "TL Faiz Matrahı": return fmtDisplayNum(row.tlFaizMatrahi);
+    case "Adat Faiz Tutarı":
+    case "TL Faiz Tutarı": return fmtDisplayNum(row.tlFaizTutari);
     default: return "";
   }
 }
@@ -372,6 +440,10 @@ const AdatHesaplamaPage = () => {
       setResult(nextResult);
       setActiveKebir(nextResult.ozetler?.[0]?.kebirKodu ?? "");
       setMessage("Adat hesaplama başarıyla tamamlandı.");
+      enqueueSnackbar("Adat hesaplama başarıyla tamamlandı.", {
+        variant: "success",
+        autoHideDuration: 4000,
+      });
       await loadHistory();
     } finally {
       setCalculating(false);
@@ -695,10 +767,10 @@ const AdatHesaplamaPage = () => {
                         <TableCell>{row.kebirKodu}</TableCell>
                         <TableCell>{row.hesapAdi}</TableCell>
                         <TableCell>{hesapTipiEtiketleri[row.hesapTipi]}</TableCell>
-                        <TableCell align="right">{row.toplamGun}</TableCell>
-                        <TableCell align="right">{fmtNum(row.toplamTLFaizMatrahi)}</TableCell>
-                        <TableCell align="right">{fmtNum(row.toplamTLFaiz)}</TableCell>
-                        <TableCell align="right">{row.satirSayisi}</TableCell>
+                        <TableCell align="right">{row.toplamGun === 0 ? "-" : row.toplamGun}</TableCell>
+                        <TableCell align="right" sx={getNegativeCellStyle(row.toplamTLFaizMatrahi)}>{fmtDisplayNum(row.toplamTLFaizMatrahi)}</TableCell>
+                        <TableCell align="right" sx={getNegativeCellStyle(row.toplamTLFaiz)}>{fmtDisplayNum(row.toplamTLFaiz)}</TableCell>
+                        <TableCell align="right">{row.satirSayisi === 0 ? "-" : row.satirSayisi}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -736,7 +808,13 @@ const AdatHesaplamaPage = () => {
                         {group.rows.map((row) => (
                           <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
                             {aktifKolonlar.map((col) => (
-                              <TableCell key={col} align={numericColumns.has(col) ? "right" : "left"}>{cellValue(row, col)}</TableCell>
+                              <TableCell
+                                key={col}
+                                align={numericColumns.has(col) ? "right" : "left"}
+                                sx={numericColumns.has(col) ? getNegativeCellStyle(getNumericValue(row, col)) : undefined}
+                              >
+                                {cellValueForDisplay(row, col)}
+                              </TableCell>
                             ))}
                           </TableRow>
                         ))}
@@ -794,28 +872,31 @@ const AdatHesaplamaPage = () => {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredHistory.map((item) => (
-                      <TableRow
-                        key={item.id}
-                        hover
-                        selected={result?.hesaplamaId === item.id}
-                        onClick={() => void selectHistoryItem(item.id)}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <TableCell>{item.hesaplamaAdi || `Adat Hesaplama #${item.id}`}</TableCell>
-                        <TableCell align="right">{fmtNum(item.genelToplamTLFaiz ?? item.genelToplamFaiz)}</TableCell>
-                        <TableCell align="right">{fmtDate(item.baslangicTarihi)}</TableCell>
-                        <TableCell align="right">{fmtDate(item.bitisTarihi)}</TableCell>
-                        <TableCell align="right">{fmtDate(item.hesaplamaTarihi)}</TableCell>
-                        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
-                          <Tooltip title="Sil">
-                            <IconButton size="small" color="error" disabled={deletingId === item.id} onClick={() => void handleDelete(item.id)}>
-                              {deletingId === item.id ? <CircularProgress size={16} color="error" /> : <DeleteIcon fontSize="small" />}
-                            </IconButton>
-                          </Tooltip>
-                        </TableCell>
-                      </TableRow>
-                    ))
+                    filteredHistory.map((item) => {
+                      const historyValue = item.genelToplamTLFaiz ?? item.genelToplamFaiz;
+                      return (
+                        <TableRow
+                          key={item.id}
+                          hover
+                          selected={result?.hesaplamaId === item.id}
+                          onClick={() => void selectHistoryItem(item.id)}
+                          sx={{ cursor: "pointer" }}
+                        >
+                          <TableCell>{item.hesaplamaAdi || `Adat Hesaplama #${item.id}`}</TableCell>
+                          <TableCell align="right" sx={getNegativeCellStyle(historyValue)}>{fmtDisplayNum(historyValue)}</TableCell>
+                          <TableCell align="right">{fmtDate(item.baslangicTarihi)}</TableCell>
+                          <TableCell align="right">{fmtDate(item.bitisTarihi)}</TableCell>
+                          <TableCell align="right">{fmtDate(item.hesaplamaTarihi)}</TableCell>
+                          <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+                            <Tooltip title="Sil">
+                              <IconButton size="small" color="error" disabled={deletingId === item.id} onClick={() => void handleDelete(item.id)}>
+                                {deletingId === item.id ? <CircularProgress size={16} color="error" /> : <DeleteIcon fontSize="small" />}
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                   )}
                 </TableBody>
               </Table>
