@@ -8,6 +8,7 @@ import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import ProtectedPage from "@/app/ProtectedPage";
 import EnflasyonIframe from "@/app/(Uygulama)/components/Enflasyon/EnflasyonIframe";
+import KgkExcelButton from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/KgkExcelButton";
 
 const BCrumb = [
   {
@@ -24,7 +25,6 @@ const BCrumb = [
   },
 ];
 
-
 const Page: React.FC = () => {
   const user = useSelector((state: AppState) => state.userReducer);
 
@@ -34,7 +34,9 @@ const Page: React.FC = () => {
         title="Kar / Zarar Tablosu"
         description="this is Kar / Zarar Tablosu"
       >
-        <Breadcrumb title="Kar / Zarar Tablosu" items={BCrumb} />
+        <Breadcrumb title="Kar / Zarar Tablosu" items={BCrumb}>
+          <KgkExcelButton tabloTuru="karzarar" konsolidasyonMu={false} />
+        </Breadcrumb>
         <Grid container spacing={3} sx={{ height: "calc(100vh - 225px)", overflow: "hidden" }}>
           <Grid
             size={{
@@ -51,4 +53,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

@@ -208,10 +208,18 @@ export async function apiFetch(
   const mergedHeaders: HeadersInit = {
     ...(headers || {}),
     "X-Client-Url": clientUrl,
-    ...(!ignoreCustomHeaders && denetlenenIdFromStorage
+    ...(!ignoreCustomHeaders &&
+    denetlenenIdFromStorage &&
+    denetlenenIdFromStorage !== "null" &&
+    denetlenenIdFromStorage !== "undefined"
       ? { "X-Denetlenen-Id": denetlenenIdFromStorage }
       : {}),
-    ...(!ignoreCustomHeaders && yilFromStorage ? { "X-Yil": yilFromStorage } : {}),
+    ...(!ignoreCustomHeaders &&
+    yilFromStorage &&
+    yilFromStorage !== "null" &&
+    yilFromStorage !== "undefined"
+      ? { "X-Yil": yilFromStorage }
+      : {}),
     ...(!isAuthEndpoint(normalizedPath) && sessionAccessToken
       ? { Authorization: `Bearer ${sessionAccessToken}` }
       : {}),

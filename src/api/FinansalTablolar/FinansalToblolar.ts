@@ -1,4 +1,4 @@
-﻿import { apiFetch } from "@/api/apiBase";
+import { apiFetch } from "@/api/apiBase";
 
 
 export const getFinansalDurumTablosu = async (
@@ -127,6 +127,100 @@ export const FinansalTabloOlustur = async (
     } else {
       return false;
     }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const exportFinansalDurumTablosuEnflasyonKgkExcel = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number
+) => {
+  try {
+    const response = await apiFetch(
+      `/FinansalTablolar/FinansalDurumTablosuEnflasyonKgkExcelAtma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}`,
+      {
+        method: "GET",
+      }
+    );
+    if (response.ok) {
+      return response.blob();
+    } else {
+      console.log("KGK Excel verileri getirilemedi");
+    }
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const exportFinansalDurumTablosuKgkExcel = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  konsolidasyonMu: boolean = false
+) => {
+  try {
+    const response = await apiFetch(
+      `/FinansalTablolar/FinansalDurumTablosuKgkExcelAtma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
+      { method: "GET" }
+    );
+    if (response.ok) return response.blob();
+    else console.log("KGK Excel verileri getirilemedi");
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const exportKarZararTablosuKgkExcel = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  konsolidasyonMu: boolean = false
+) => {
+  try {
+    const response = await apiFetch(
+      `/FinansalTablolar/KarZararTablosuKgkExcelAtma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
+      { method: "GET" }
+    );
+    if (response.ok) return response.blob();
+    else console.log("KGK KarZarar Excel verileri getirilemedi");
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const exportNakitAkisTablosuKgkExcel = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  konsolidasyonMu: boolean = false
+) => {
+  try {
+    const response = await apiFetch(
+      `/FinansalTablolar/NakitAkisTablosuKgkExcelAtma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
+      { method: "GET" }
+    );
+    if (response.ok) return response.blob();
+    else console.log("KGK NakitAkis Excel verileri getirilemedi");
+  } catch (error) {
+    console.log("Bir hata oluştu:", error);
+  }
+};
+
+export const exportOzkaynakTablosuKgkExcel = async (
+  denetciId: number,
+  yil: number,
+  denetlenenId: number,
+  konsolidasyonMu: boolean = false
+) => {
+  try {
+    const response = await apiFetch(
+      `/FinansalTablolar/OzkaynakTablosuKgkExcelAtma?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&konsolidasyonMu=${konsolidasyonMu}`,
+      { method: "GET" }
+    );
+    if (response.ok) return response.blob();
+    else console.log("KGK Özkaynak Excel verileri getirilemedi");
   } catch (error) {
     console.log("Bir hata oluştu:", error);
   }

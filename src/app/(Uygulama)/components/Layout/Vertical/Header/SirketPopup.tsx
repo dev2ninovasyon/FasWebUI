@@ -94,7 +94,7 @@ const SirketPopup = () => {
     await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
     localStorage.setItem("fas_denetlenenId", selectedId.toString());
     localStorage.setItem("fas_denetlenenFirmaAdi", selectedAdi);
-    localStorage.setItem("fas_yil", selectedYear.toString());
+    localStorage.setItem("fas_yil", selectedYearNumber.toString());
     try {
       if (selectedId && selectedYearNumber) {
         // Redux ve LocalStorage güncellemeleri zaten yapıldı.

@@ -2,12 +2,13 @@
 
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import React, { useState } from "react";
-import { Grid, CircularProgress, Box } from "@mui/material";
+import React from "react";
+import { Grid } from "@mui/material";
 import { AppState } from "@/store/store";
 import { useSelector } from "@/store/hooks";
 import ProtectedPage from "@/app/ProtectedPage";
 import EnflasyonIframe from "@/app/(Uygulama)/components/Enflasyon/EnflasyonIframe";
+import KgkExcelButton from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/KgkExcelButton";
 
 const BCrumb = [
   {
@@ -34,7 +35,9 @@ const Page: React.FC = () => {
         title="Finansal Durum Tablosu"
         description="this is Finansal Durum Tablosu"
       >
-        <Breadcrumb title="Finansal Durum Tablosu" items={BCrumb} />
+        <Breadcrumb title="Finansal Durum Tablosu" items={BCrumb}>
+          <KgkExcelButton tabloTuru="finansaldurum" konsolidasyonMu={false} />
+        </Breadcrumb>
         <Grid container spacing={3} sx={{ height: "calc(100vh - 225px)", overflow: "hidden" }}>
           <Grid
             size={{
@@ -51,4 +54,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconButton,
@@ -61,7 +61,7 @@ const MobileSirketPopup = () => {
 
   const dispatch = useDispatch();
 
-  // Redux state değiş tiğinde local state'i güncelle
+  // Redux state değiştiğinde local state'i güncelle
   useEffect(() => {
     if (user.yil) {
       setYear(user.yil);
@@ -84,10 +84,10 @@ const MobileSirketPopup = () => {
     await dispatch(setTfrsmi(selectedTfrsmi));
     await dispatch(setEnflasyonmu(selectedEnflasyonmu));
     await dispatch(setKonsolidemi(selectedKonsolidemi));
-    await setYear(parseInt(selectedYear));
+    await setYear(selectedYearNumber);
     await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
     localStorage.setItem("fas_denetlenenId", selectedId.toString());
-    localStorage.setItem("fas_yil", selectedYear.toString());
+    localStorage.setItem("fas_yil", selectedYearNumber.toString());
 
     try {
       if (selectedId && selectedYearNumber) {
@@ -96,6 +96,7 @@ const MobileSirketPopup = () => {
         // 1. Önce DB Persist (Son Seçilen Ayarlar) - BU ÖNEMLİ: 
         // Backend'deki session/ayarlar güncellenmeli ki refresh token yeni şirketle gelsin.
         if (user.token && user.id && user.id !== 0) {
+
           console.log(`MobileSirketPopup - Persisting selection for user ${user.id}: Company=${selectedId}, Year=${selectedYearNumber}`);
           try {
             await updateSonSecilenAyarlari(user.id, selectedId, selectedYearNumber);

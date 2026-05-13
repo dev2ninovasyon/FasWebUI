@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import { Grid } from "@mui/material";
@@ -7,6 +7,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import OzkaynakDegisimTablosu from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/OzkaynakDegisimTablosu";
 
 import EkBelgeYukleButton from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/EkBelgeYukleButton";
+import KgkExcelButton from "@/app/(Uygulama)/components/DenetimKanitlari/FinansalTablolar/KgkExcelButton";
 const BCrumb = [
   {
     to: "/DenetimKanitlari",
@@ -29,17 +30,21 @@ const Page = () => {
       description="this is Özkaynak Değişim Tablosu"
     >
       <Breadcrumb title="Özkaynak Değişim Tablosu" items={BCrumb}>
-        <EkBelgeYukleButton formKodu="FinansalTabloOzkaynakKayitlari" />
+        <Grid container spacing={1}>
+          <Grid size="auto">
+            <EkBelgeYukleButton formKodu="FinansalTabloOzkaynakKayitlari" />
+          </Grid>
+          <Grid size="auto">
+            <KgkExcelButton tabloTuru="ozkaynak" konsolidasyonMu={false} />
+          </Grid>
+        </Grid>
       </Breadcrumb>
       <Grid container>
         <Grid
           sx={{
             width: "500px",
           }}
-          size={{
-            xs: 12,
-            lg: 12
-          }}>
+          size={{ xs: 12, lg: 12 }}>
           <OzkaynakDegisimTablosu konsolidasyonMu={false} />
         </Grid>
       </Grid>
