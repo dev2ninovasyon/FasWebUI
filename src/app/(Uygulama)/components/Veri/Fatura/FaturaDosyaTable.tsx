@@ -25,6 +25,7 @@ import {
   Stack,
   Chip,
   Tooltip,
+  LinearProgress,
   useMediaQuery,
 } from "@mui/material";
 // LoadingButton import removed
@@ -360,7 +361,25 @@ const DosyaTable: React.FC<{
                       <TableCell align="center">
                         {row.olusturulmaTarihi}
                       </TableCell>
-                      <TableCell align="center">{progressText}</TableCell>
+                      <TableCell align="center">
+                        <Stack spacing={0.5} sx={{ minWidth: 140 }}>
+                          <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                            {row.total > 0 ? Math.round((row.processed / row.total) * 100) : 0}%
+                          </Typography>
+                          <Stack direction="row" alignItems="center" spacing={0.5}>
+                            <Box sx={{ flex: 1, minWidth: 60 }}>
+                              <LinearProgress
+                                variant="determinate"
+                                value={row.total > 0 ? (row.processed / row.total) * 100 : 0}
+                                sx={{ height: 6, borderRadius: 1 }}
+                              />
+                            </Box>
+                            <Typography variant="caption" sx={{ minWidth: 50, textAlign: "right" }}>
+                              {progressText}
+                            </Typography>
+                          </Stack>
+                        </Stack>
+                      </TableCell>
                       <TableCell align="right">
                         <IconButton
                           onClick={(e) => {

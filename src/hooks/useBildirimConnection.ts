@@ -87,14 +87,19 @@ export function useBildirimConnection(config: BildirimConnectionConfig) {
             return;
           }
 
+          let latestTime = lastNotificationTimeRef.current;
+          
           for (const bildirim of bildirimler) {
             const bildirimTarihi = new Date(bildirim.tarih || new Date());
 
             if (bildirimTarihi > lastNotificationTimeRef.current && !bildirim.okundumu) {
               callback(bildirim);
-              lastNotificationTimeRef.current = new Date();
+              if (bildirimTarihi > latestTime) {
+                latestTime = bildirimTarihi;
+              }
             }
           }
+          lastNotificationTimeRef.current = latestTime;
         } catch (error) {
           console.error('Polling hatasi:', error);
         }

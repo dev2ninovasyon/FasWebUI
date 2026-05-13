@@ -36,6 +36,26 @@ type YuklemeSatiri = {
   faturaDosyalari?: FaturaDosyaRow[];
 };
 
+const normalizeStatus = (value?: string | null) =>
+  (value ?? "")
+    .trim()
+    .toLocaleLowerCase("tr-TR")
+    .replaceAll("ı", "i")
+    .replaceAll("ş", "s")
+    .replaceAll("ğ", "g")
+    .replaceAll("ü", "u")
+    .replaceAll("ö", "o")
+    .replaceAll("ç", "c");
+
+const isSuccessStatus = (value?: string | null) =>
+  ["basarili", "successful", "completed", "tamamlandi"].includes(normalizeStatus(value));
+
+const isFailureStatus = (value?: string | null) =>
+  ["hatali", "failed", "error", "hata"].includes(normalizeStatus(value));
+
+const isPendingStatus = (value?: string | null) =>
+  ["kuyrukta", "queued", "processing", "isleniyor"].includes(normalizeStatus(value));
+
 const Page: React.FC = () => {
   const theme = useTheme();
   const smDown = useMediaQuery((t: any) => t.breakpoints.down("sm"));
@@ -53,6 +73,8 @@ const Page: React.FC = () => {
 
   const [uploading, setUploading] = useState(false);
   const [progressInfos, setProgressInfos] = useState<{ fileName: string; percentage: number }[]>([]);
+  const [activeUploadId, setActiveUploadId] = useState<string | null>(null);
+  const [uploadPhase, setUploadPhase] = useState<"idle" | "uploading" | "processing" | "completed">("idle");
 
   const processingSnackRef = React.useRef<string | number | undefined>(undefined);
 
@@ -63,6 +85,33 @@ const Page: React.FC = () => {
 
   const anyInProgress = (items: YuklemeSatiri[]) =>
     items.some(r => r.inProgress || (r.total > 0 && r.processed < r.total));
+
+  const getPercent = (processed: number, total: number) =>
+    total > 0 ? Math.min(100, Math.max(0, Math.round((processed / total) * 100))) : 0;
+
+  const activeUploadRow = activeUploadId
+    ? rows.find((r) => String(r.id).toLowerCase() === activeUploadId.toLowerCase())
+    : undefined;
+
+  const uploadTransferPercent = progressInfos.length > 0
+    ? Math.round(progressInfos.reduce((sum, item) => sum + item.percentage, 0) / progressInfos.length)
+    : 0;
+
+  const activePercent = uploadPhase === "uploading"
+    ? uploadTransferPercent
+    : activeUploadRow
+      ? getPercent(activeUploadRow.processed, activeUploadRow.total)
+      : uploadPhase === "completed"
+        ? 100
+        : 0;
+
+  const activeStatusText = uploadPhase === "uploading"
+    ? "Dosyalar sunucuya gönderiliyor"
+    : uploadPhase === "processing"
+      ? "Sunucuda işleniyor"
+      : uploadPhase === "completed"
+        ? "İşlem tamamlandı"
+        : "";
 
   const openProcessingSnack = () => {
     if (processingSnackRef.current) {
@@ -115,12 +164,8 @@ const Page: React.FC = () => {
       x.hataDosyaSayisi ?? x.HataDosyaSayisi ?? x.failedFiles ?? x.FailedFiles ?? 0
     );
 
-    const childSuccess = faturaDosyalari.filter((d) =>
-      d.durum.toLowerCase() === "başarılı" || d.durum.toLowerCase() === "basarili"
-    ).length;
-    const childFailed = faturaDosyalari.filter((d) =>
-      d.durum.toLowerCase() === "hatalı" || d.durum.toLowerCase() === "hatali"
-    ).length;
+    const childSuccess = faturaDosyalari.filter((d) => isSuccessStatus(d.durum)).length;
+    const childFailed = faturaDosyalari.filter((d) => isFailureStatus(d.durum)).length;
     const childProcessed = childSuccess + childFailed;
 
     const total = totalRaw > 0 ? totalRaw : faturaDosyalari.length;
@@ -139,9 +184,22 @@ const Page: React.FC = () => {
       status = failed > 0 ? (success > 0 ? "PartialSuccess" : "Failed") : "Completed";
     }
 
-    const needsPolling = Boolean(
-      x.needsPolling ?? x.NeedsPolling ?? (status === "Queued" || status === "Processing")
-    );
+    const normalizedParentStatus = normalizeStatus(status);
+    const isTerminalStatus =
+      ["completed", "failed", "partialsuccess"].includes(normalizedParentStatus) ||
+      (total > 0 && processed >= total);
+    const displayDosyalari = isTerminalStatus
+      ? faturaDosyalari.map((d) => ({
+          ...d,
+          durum: isPendingStatus(d.durum)
+            ? (status === "Failed" ? "Hatali" : "Basarili")
+            : d.durum,
+        }))
+      : faturaDosyalari;
+
+    const needsPolling = isTerminalStatus
+      ? false
+      : Boolean(x.needsPolling ?? x.NeedsPolling ?? (status === "Queued" || status === "Processing"));
     const inProgress = Boolean(
       (x.isInProgress ?? x.IsInProgress) ??
       needsPolling ??
@@ -160,7 +218,7 @@ const Page: React.FC = () => {
       processed,
       failed,
       durum: `${processed}/${total}`,
-      faturaDosyalari
+      faturaDosyalari: displayDosyalari
     };
   };
 
@@ -199,16 +257,37 @@ const Page: React.FC = () => {
     return () => window.clearInterval(intervalId);
   }, [rows, fetchRows]);
 
+  useEffect(() => {
+    if (!activeUploadRow || uploadPhase !== "processing") return;
+
+    const isCompleted = !activeUploadRow.inProgress &&
+      activeUploadRow.total > 0 &&
+      activeUploadRow.processed >= activeUploadRow.total;
+
+    if (isCompleted) {
+      setUploadPhase("completed");
+      closeProcessingSnack();
+      toast("İşlem tamamlandı.", activeUploadRow.failed > 0 ? "warning" : "success");
+      window.setTimeout(() => {
+        setActiveUploadId(null);
+        setProgressInfos([]);
+        setUploadPhase("idle");
+      }, 5000);
+    }
+  }, [activeUploadRow, uploadPhase]);
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (!islemAdi?.trim()) { toast("Lütfen işlem adını giriniz.", "warning"); return; }
     if (acceptedFiles.length === 0) return;
 
     setUploading(true);
+    setUploadPhase("uploading");
+    setActiveUploadId(null);
     setProgressInfos(acceptedFiles.map(f => ({ fileName: f.name, percentage: 0 })));
     openProcessingSnack();
 
     try {
-      await uploadFaturaDosyalari(user, acceptedFiles, tip, islemAdi, (ev) => {
+      const response = await uploadFaturaDosyalari(user, acceptedFiles, tip, islemAdi, (ev) => {
         const pct = typeof ev.progress === "number"
           ? Math.round(ev.progress * 100)
           : ev.total
@@ -217,12 +296,19 @@ const Page: React.FC = () => {
         setProgressInfos(infos => infos.map(i => ({ ...i, percentage: pct })));
       });
 
+      const responseData = response?.data ?? {};
+      const islemId = responseData.islemId ?? responseData.IslemId;
+      if (islemId) setActiveUploadId(String(islemId));
+      setUploadPhase("processing");
+      setProgressInfos(infos => infos.map(i => ({ ...i, percentage: 100 })));
       toast("Dosyalar yüklendi. Kuyrukta işleniyor.", "success");
       void fetchRows({ tryCloseSnack: true });
       setTimeout(() => { void fetchRows({ tryCloseSnack: true }); }, 15000);
     } catch (e) {
       console.log(e);
       toast("Yükleme sırasında hata oluştu.", "error");
+      setActiveUploadId(null);
+      setUploadPhase("idle");
     } finally {
       setUploading(false);
     }
@@ -263,12 +349,36 @@ const Page: React.FC = () => {
               ) : (
                 <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">
                   <Grid textAlign="center" size={12}>
-                    {uploading ? (
+                    {uploading || uploadPhase === "processing" || uploadPhase === "completed" ? (
                       <Stack spacing={2} p={2} maxHeight={260} overflow="auto">
+                        <Box>
+                          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
+                            <Typography variant="body2" fontWeight={600}>
+                              {activeStatusText}
+                            </Typography>
+                            <Typography variant="caption" sx={{ ml: 1, fontWeight: "bold", color: "primary.main" }}>
+                              {activePercent}%
+                            </Typography>
+                          </Stack>
+                          <LinearProgress variant="determinate" value={activePercent} sx={{ height: 8, borderRadius: 1 }} />
+                          {activeUploadRow && (
+                            <Typography variant="caption" color="text.secondary" display="block" mt={0.75}>
+                              {activeUploadRow.processed}/{activeUploadRow.total} dosya işlendi
+                              {activeUploadRow.failed > 0 ? `, ${activeUploadRow.failed} hatalı` : ""}
+                            </Typography>
+                          )}
+                        </Box>
                         {progressInfos.map((i, idx) => (
                           <Box key={idx}>
-                            <Typography>{i.fileName}</Typography>
-                            <LinearProgress variant="indeterminate" />
+                            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
+                              <Typography variant="body2" sx={{ wordBreak: "break-word", flex: 1 }}>
+                                {i.fileName}
+                              </Typography>
+                              <Typography variant="caption" sx={{ ml: 1, fontWeight: "bold", color: "primary.main" }}>
+                                {i.percentage}%
+                              </Typography>
+                            </Stack>
+                            <LinearProgress variant="determinate" value={i.percentage} sx={{ height: 6, borderRadius: 1 }} />
                           </Box>
                         ))}
                       </Stack>

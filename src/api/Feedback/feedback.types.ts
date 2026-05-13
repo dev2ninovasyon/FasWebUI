@@ -38,6 +38,9 @@ export interface FeedbackCreateRequest {
   browserInfo?: string;
   appVersion?: string;
   queryContext?: string;
+  yil?: number;
+  denetlenenId?: number;
+  firmaAdi?: string;
 }
 
 export interface FeedbackResponse {

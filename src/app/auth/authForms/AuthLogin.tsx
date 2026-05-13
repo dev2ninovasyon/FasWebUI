@@ -1,4 +1,4 @@
-﻿import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
+import CustomFormLabel from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomFormLabel";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { Box, Typography, Button, Stack, useTheme, InputAdornment } from "@mui/material";
 import React, { useState, useRef } from "react";
@@ -104,7 +104,7 @@ const AuthLogin: React.FC<loginType> = ({ title, subtitle, subtext }) => {
           accept: "*/*",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, CaptchaToken: token }),
+        body: JSON.stringify({ Email: email, Password: password, CaptchaToken: token }),
       });
       // console.timeEnd("Login API İsteği");
 

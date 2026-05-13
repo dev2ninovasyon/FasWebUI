@@ -973,7 +973,7 @@ const Page: React.FC = () => {
               setDosyaYuklendiMi={(deger) => setDosyaYuklendiMi(deger)}
               setRows={setRows}
               pendingUploadRows={pendingUploadRows}
-              onlyShowFinalizedRows={true}
+              onlyShowFinalizedRows={false}
               onServerRowsChange={handleServerRowsChange}
               openLogsFromStatusChip={true}
             />

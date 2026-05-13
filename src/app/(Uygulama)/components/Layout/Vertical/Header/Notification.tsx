@@ -141,6 +141,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
   const shakeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const browserNotificationsRef = React.useRef<Notification[]>([]);
+  const processedIdsRef = React.useRef<Set<number>>(new Set());
 
   // Tarih formatı: "Bugün 14:30" veya "Dün 09:45" veya "01 Ş 14:30"
   const formatTarih = (tarih?: string) => {
@@ -219,9 +220,6 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
           rowsAll.push(newRow);
         });
         setFetchedData(rowsAll);
-        const newUnread = rowsAll.filter((item: any) => !item.okundumu).length;
-        setUnreadCount(newUnread);
-        setUnreadNotifications(newUnread);
       }
     } catch (error) {
       console.log("Bir hata oluştu:", error);
@@ -273,19 +271,19 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       kaynakUrl: bildirim.kaynakUrl || bildirim.KaynakUrl,
     };
 
+    // Aynı ID'ye sahip bildirimi tekrar işleme (ses, modal vb.)
+    if (processedIdsRef.current.has(yeniBildirim.id)) {
+      return;
+    }
+    processedIdsRef.current.add(yeniBildirim.id);
+
     setFetchedData((prev) => {
-      // Çift bildirim gelmesini engelle
+      // Çift bildirim gelmesini engelle (Liste için)
       if (prev.some(item => item.id === yeniBildirim.id)) {
         return prev;
       }
       
-      const newFetchedData = [yeniBildirim, ...prev].slice(0, MAX_NOTIFICATION_ITEMS);
-      const newUnreadCount = newFetchedData.filter((item) => !item.okundumu).length;
-      
-      setUnreadCount(newUnreadCount);
-      setUnreadNotifications(newUnreadCount);
-      
-      return newFetchedData;
+      return [yeniBildirim, ...prev].slice(0, MAX_NOTIFICATION_ITEMS);
     });
 
     // İkonu ve sayfayı sallandır
@@ -314,8 +312,7 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
 
     setSnackbarOpen(true);
 
-    // Ses çal (daha yüksek ve daha çok)
-    playNotificationSound();
+    // Ses çal (Tek sefer)
     playNotificationSound();
 
     // Browser notification (izin varsa)
@@ -401,6 +398,13 @@ const Notifications: React.FC<Props> = ({ isSidebarHover }) => {
       browserNotificationsRef.current = [];
     };
   }, []);
+
+  // Unread count sync effect
+  useEffect(() => {
+    const unread = fetchedData.filter((item) => !item.okundumu).length;
+    setUnreadCount(unread);
+    setUnreadNotifications(unread);
+  }, [fetchedData, setUnreadNotifications]);
 
   // Akıllı Yönlendirme ve Şirket Değiştirme Mantığı
   const handleKontrolEt = async (bildirim: Veri) => {

@@ -43,6 +43,7 @@ import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Bre
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import FormOnayBolumu from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/FormOnayBolumu";
 import IslemlerCardHtml from "@/app/(Uygulama)/components/CalismaKagitlari/Cards/IslemlerCardHtml";
+import PageUsageVideo from "@/app/(Uygulama)/components/Layout/Shared/Section/PageUsageVideo";
 import {
   createAdatHesaplanmis,
   createAdatOnIzleme,
@@ -305,6 +306,13 @@ const AdatHesaplamaPage = () => {
   const [selectedKebir, setSelectedKebir] = useState<KebirOption | null>(null);
   const [kebirKodlari, setKebirKodlari] = useState<KebirOption[]>([]);
   const [makulKasaBakiyesi, setMakulKasaBakiyesi] = useState("");
+  const deferredMakulKasaBakiyesi = React.useDeferredValue(makulKasaBakiyesi);
+
+  const mkbNum = useMemo(() => {
+    const val = deferredMakulKasaBakiyesi.trim();
+    if (val === "" || isNaN(Number(val.replace(",", ".")))) return 0;
+    return Number(val.replace(",", "."));
+  }, [deferredMakulKasaBakiyesi]);
   const [hesaplamaAdi, setHesaplamaAdi] = useState("");
   const [history, setHistory] = useState<AdatHesaplamaListe[]>([]);
   const [result, setResult] = useState<AdatResult | null>(null);
@@ -376,7 +384,6 @@ const AdatHesaplamaPage = () => {
       );
       if (response.success) {
         setPreviewRows(response.data ?? []);
-        setMakulKasaBakiyesi("");
       } else {
         setMessage("Veriler yüklenemedi.");
       }
@@ -401,8 +408,8 @@ const AdatHesaplamaPage = () => {
       setMessage("Kullanıcı veya denetlenen bilgisi eksik.");
       return;
     }
-    if (!selectedKebir || previewRows.length === 0) {
-      setMessage("Önce 'Getir' butonuna tıklayın.");
+    if (!selectedKebir) {
+      setMessage("Önce kebir kodu seçin.");
       return;
     }
 
@@ -612,6 +619,18 @@ const AdatHesaplamaPage = () => {
                 renderInput={(params) => <TextField {...params} label="Kebir Kodu" />}
               />
             </Grid>
+            {selectedTip?.hesapTipi === "KASA_HESABI" && (
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Makul Kasa Bakiyesi ₺"
+                  value={makulKasaBakiyesi}
+                  onChange={(e) => setMakulKasaBakiyesi(e.target.value)}
+                  inputProps={{ style: { textAlign: "right" } }}
+                />
+              </Grid>
+            )}
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
               <Stack direction="row" spacing={0.75}>
                 <Button
@@ -625,7 +644,7 @@ const AdatHesaplamaPage = () => {
                 <Button
                   size="small" variant="contained" fullWidth
                   startIcon={calculating ? <CircularProgress size={14} color="inherit" /> : <SaveIcon fontSize="small" />}
-                  disabled={calculating || loadingPreview || previewRows.length === 0}
+                  disabled={calculating || loadingPreview || !selectedKebir}
                   onClick={() => void handleHesapla()}
                 >
                   {calculating ? "Hesap..." : "Hesapla"}
@@ -667,7 +686,6 @@ const AdatHesaplamaPage = () => {
         <Stack spacing={2} mb={2}>
           {previewGruplari.map((group) => {
             const isKasa = group.rows[0]?.hesapTipi === "KASA_HESABI";
-            const mkb = makulKasaBakiyesi.trim() !== "" ? Number(makulKasaBakiyesi.replace(",", ".")) : 0;
             return (
               <Card key={group.kebirKodu}>
                 <CardContent>
@@ -691,30 +709,18 @@ const AdatHesaplamaPage = () => {
                       </TableHead>
                       <TableBody>
                         {group.rows.map((row, idx) => {
-                          const kalan = isKasa ? Math.max((row.dovizliBakiye ?? 0) - mkb, 0) : 0;
                           return (
                             <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
                               <TableCell>{fmtDate(row.tarih)}</TableCell>
                               <TableCell align="right">{fmtNum(row.dovizBorc)}</TableCell>
                               <TableCell align="right">{fmtNum(row.dovizAlacak)}</TableCell>
                               <TableCell align="right">{fmtNum(row.dovizliBakiye)}</TableCell>
-                              {isKasa && (
+                          {isKasa && (
                                 <TableCell align="right">
-                                  {idx === 0 ? (
-                                    <TextField
-                                      size="small"
-                                      value={makulKasaBakiyesi}
-                                      onChange={(e) => setMakulKasaBakiyesi(e.target.value)}
-                                      error={makulKasaBakiyesi.trim() === ""}
-                                      inputProps={{ style: { textAlign: "right" } }}
-                                      sx={{ width: 130 }}
-                                    />
-                                  ) : (
-                                    fmtNum(mkb)
-                                  )}
+                                  {fmtNum(mkbNum)}
                                 </TableCell>
                               )}
-                              {isKasa && <TableCell align="right">{fmtNum(kalan)}</TableCell>}
+                              {isKasa && <TableCell align="right">{fmtNum(Math.max((row.dovizliBakiye ?? 0) - mkbNum, 0))}</TableCell>}
                             </TableRow>
                           );
                         })}
@@ -940,6 +946,7 @@ const AdatHesaplamaPage = () => {
             onBeforeAction={ensureExportReady}
           />
         </Stack>
+        <PageUsageVideo />
       </Box>
     </PageContainer>
   );

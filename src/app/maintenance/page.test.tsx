@@ -32,7 +32,7 @@ vi.mock('@/store/hooks', () => ({
 }))
 
 vi.mock('@/api/apiBase', () => ({
-    url: 'http://localhost:5000/api',
+    url: 'http://localhost:5080/api',
 }))
 
 vi.mock('@/utils/authSession', () => ({
@@ -77,7 +77,7 @@ describe('Maintenance Page', () => {
         render(<Page />)
 
         await waitFor(() => {
-            expect(screen.getByRole('link', { name: 'Log Ekranini Ac' })).toHaveAttribute(
+            expect(screen.getByRole('link', { name: 'Log Ekranını Aç' })).toHaveAttribute(
                 'href',
                 '/DigerIslemler/SistemLoglari'
             )

@@ -86,19 +86,21 @@ function extractDynamicMenuItems(dynamicItems: any[], seenTitles: Set<string> = 
 
     const breadcrumb = `Maddi Doğrulama Prosedürleri > ${formattedTitle}`;
 
-    const key = `dynamic-${breadcrumb}`;
-    if (seenTitles.has(key)) continue;
+    // seenTitles key olarak plain breadcrumb kullan (static extractor ile aynı format)
+    // "dynamic-" prefix static ile çakışmayı engellemiyor, aksine dedup'u kırıyor.
+    if (seenTitles.has(breadcrumb)) continue;
 
+    const dynamicId = item.id ? `dynamic-${item.id}` : `dynamic-${breadcrumb}`;
     const searchItem: SearchItemType = {
       label: formattedTitle,
       breadcrumb: breadcrumb,
       href: item.href || "",
-      id: item.id ? `dynamic-${item.id}` : key,
+      id: dynamicId,
       isDynamic: true,
     };
 
     pages.push(searchItem);
-    seenTitles.add(key);
+    seenTitles.add(breadcrumb);
 
     if (item.children && item.children.length > 0) {
       for (const child of item.children) {
@@ -107,18 +109,17 @@ function extractDynamicMenuItems(dynamicItems: any[], seenTitles: Set<string> = 
         if (!childTitle) continue;
 
         const childBreadcrumb = `Maddi Doğrulama Prosedürleri > ${formattedTitle} > ${childTitle}`;
-        const childKey = `dynamic-${childBreadcrumb}`;
 
-        if (!seenTitles.has(childKey)) {
+        if (!seenTitles.has(childBreadcrumb)) {
           const childSearchItem: SearchItemType = {
             label: childTitle,
             breadcrumb: childBreadcrumb,
             href: child.href || "",
-            id: child.id ? `dynamic-${child.id}` : childKey,
+            id: child.id ? `dynamic-${child.id}` : `dynamic-${childBreadcrumb}`,
             isDynamic: true,
           };
           pages.push(childSearchItem);
-          seenTitles.add(childKey);
+          seenTitles.add(childBreadcrumb);
         }
       }
     }
@@ -230,6 +231,7 @@ const SearchBoxAutocomplete = () => {
       fullWidth
       popupIcon={<SearchIcon style={{ color: "gray" }} />}
       filterOptions={filterOptions}
+      getOptionKey={(option) => option.id}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.label}
       onChange={(event, value) => handleButtonClick(value?.href || "")}

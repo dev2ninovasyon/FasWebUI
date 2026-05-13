@@ -1,5 +1,7 @@
 # ⚡ Skill: Kidem Tazminatı Hesaplama Modülü & AI Fiş Oluşturma
 
+> Deprecated: Use `FasWebUI/SKILL.md` as the single FasWebUI skill source of truth. This file is kept only for reference.
+
 **Proje**: FasWebUI - Finansal Denetim Yazılımı  
 **Alanı**: Hesaplama Modülleri, AI Fiş Oluşturma, Backend API Entegrasyonu  
 **Versiyon**: 1.0

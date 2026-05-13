@@ -74,7 +74,7 @@ describe('apiFetch', () => {
 
         expect(response.ok).toBe(true)
         expect(fetchMock).toHaveBeenCalledWith(
-            'http://localhost:5000/api/Test',
+            'http://localhost:5080/api/Test',
             expect.objectContaining({
                 credentials: 'include',
                 headers: expect.objectContaining({
@@ -109,7 +109,8 @@ describe('apiFetch', () => {
         const { apiFetch } = await import('@/api/apiBase')
         const result = await apiFetch('/BaglantiBilgileri/BaglantiBilgileriByTip')
 
-        expect(result).toBeUndefined()
+        expect(result).toBeInstanceOf(Response)
+        expect(result.status).toBe(400)
     })
 
     it('should refresh session and retry once after a 401 response', async () => {
@@ -247,7 +248,7 @@ describe('apiFetch', () => {
             'API bağlantı hatası: /MaddiDogrulama/Calistir',
             expect.objectContaining({
                 errorMessage: 'Failed to fetch',
-                fullUrl: 'http://localhost:5000/api/MaddiDogrulama/Calistir',
+                fullUrl: 'http://localhost:5080/api/MaddiDogrulama/Calistir',
             }),
             expect.objectContaining({
                 source: 'network',

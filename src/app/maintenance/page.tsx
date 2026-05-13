@@ -27,13 +27,12 @@ export default function Maintenance() {
     user?.yetki === "FasAdmin" || user?.rol?.includes("FasAdmin") || false;
 
   useEffect(() => {
-    // Bakım sayfasındayken eski logout nedenlerini temizle ki 
-    // giriş ekranına gidince "oturrumunuz sonlandırıldı" uyarısı çıkmasın.
+    // Bakım sayfasındayken eski logout nedenlerini temizle ki
+    // giriş ekranına gidince "oturumunuz sonlandırıldı" uyarısı çıkmasın.
     if (typeof window !== "undefined") {
       window.sessionStorage.removeItem(LOGOUT_REASON_KEY);
     }
   }, []);
-  const canGoHome = isApiReachable && !hasTokenIssue;
 
   const checkStatus = async () => {
     if (typeof window === "undefined") return;
@@ -47,19 +46,26 @@ export default function Maintenance() {
     const timeoutId = window.setTimeout(() => controller.abort(), 6000);
 
     try {
-      const safeUrl = url || "http://localhost:5000/api";
+      const safeUrl = url || "http://localhost:5080/api";
       const baseUrl = safeUrl.endsWith("/") ? safeUrl.slice(0, -1) : safeUrl;
       const fetchUrl = `${baseUrl}/Health`;
-      const healthResponse = await fetch(
-        fetchUrl,
-        {
-          method: "GET",
-          signal: controller.signal,
-        }
-      );
+      const healthResponse = await fetch(fetchUrl, {
+        method: "GET",
+        signal: controller.signal,
+      });
       setIsApiReachable(healthResponse.ok);
-    } catch (err) {
-      console.error("Health check error:", err);
+    } catch (err: any) {
+      // "Failed to fetch" veya "AbortError" gibi beklenen bağlantı hatalarını
+      // console.error yerine console.warn ile loglayalım ki overlay çıkmasın.
+      const isConnectionError = 
+        err?.message?.includes("Failed to fetch") || 
+        err?.name === "AbortError";
+
+      if (isConnectionError) {
+        console.warn("Health check connection issues (expected if API is down):", err.message);
+      } else {
+        console.error("Health check critical error:", err);
+      }
       setIsApiReachable(false);
     } finally {
       window.clearTimeout(timeoutId);
@@ -93,7 +99,7 @@ export default function Maintenance() {
       <Image
         priority
         src={"/images/backgrounds/maintenance2.svg"}
-        alt="404"
+        alt="Bakım modu"
         width={500}
         height={300}
         style={{
@@ -104,10 +110,10 @@ export default function Maintenance() {
         }}
       />
       <Typography align="center" variant="h1" mb={4}>
-        Bakim Modu!!!
+        Bakım Modu
       </Typography>
       <Typography align="center" variant="h4" mb={4}>
-        Web Sitesi Bakim Asamasindadir.
+        Web sitesi bakım aşamasındadır.
       </Typography>
       <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
         {!isCheckingHealth && isApiReachable && (
@@ -136,7 +142,7 @@ export default function Maintenance() {
             href="/DigerIslemler/SistemLoglari"
             disableElevation
           >
-            Log Ekranini Ac
+            Log Ekranını Aç
           </Button>
         )}
         {!isCheckingHealth && !isApiReachable && (

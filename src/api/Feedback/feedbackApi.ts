@@ -14,6 +14,7 @@ const BASE = "/PageFeedback";
 export const submitFeedback = async (
   dto: FeedbackCreateRequest
 ): Promise<FeedbackResponse> => {
+  console.log("feedbackApi.submitFeedback REACHED with:", dto);
   const res = await apiFetch(BASE, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

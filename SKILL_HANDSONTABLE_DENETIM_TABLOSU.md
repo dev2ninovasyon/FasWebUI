@@ -5,6 +5,8 @@ description: Karmaşık denetim çalışma kağıtlarında Handsontable bileşen
 
 # Handsontable Denetim Tablosu Standartları
 
+> Deprecated: Use `FasWebUI/SKILL.md` as the single FasWebUI skill source of truth. This file is kept only for reference.
+
 Bu döküman, denetim sayfalarında kullanılan Handsontable bileşenlerinin kullanıcı deneyimini bozmadan (satırların aşırı büyümesi vb.) ve performanslı bir şekilde nasıl yapılandırılacağını açıklar.
 
 ## Ne Zaman Kullanılır?

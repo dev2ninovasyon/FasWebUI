@@ -5,6 +5,8 @@ description: Use this skill when building or updating a FasWebUI calisma kagidi 
 
 # FAS Handsontable Calisma Kagidi
 
+> Deprecated: Use `FasWebUI/SKILL.md` as the single FasWebUI skill source of truth. This file is kept only for reference.
+
 ## When To Use
 
 Use this skill when the task involves:

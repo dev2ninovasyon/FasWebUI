@@ -289,9 +289,13 @@ export const syncSelectionStorageFromUserData = (userData: Record<string, any>) 
   if (userData?.denetlenenId && userData?.yil) {
     window.localStorage.setItem("fas_denetlenenId", String(userData.denetlenenId));
     window.localStorage.setItem("fas_yil", String(userData.yil));
+    if (userData.denetlenenFirmaAdi) {
+      window.localStorage.setItem("fas_denetlenenFirmaAdi", String(userData.denetlenenFirmaAdi));
+    }
     return;
   }
 
   window.localStorage.removeItem("fas_denetlenenId");
   window.localStorage.removeItem("fas_yil");
+  window.localStorage.removeItem("fas_denetlenenFirmaAdi");
 };

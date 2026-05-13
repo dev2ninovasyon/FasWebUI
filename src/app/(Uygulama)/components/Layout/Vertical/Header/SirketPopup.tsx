@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconButton,
@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import CompanyBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/CompanyBoxAutoComplete";
-import YearBoxAutocomplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/YearBoxAutoComplete";
+import YearBoxAutoComplete from "@/app/(Uygulama)/components/Layout/Vertical/Header/YearBoxAutoComplete";
 import { useDispatch, useSelector } from "@/store/hooks";
 import {
   setBobimi,
@@ -93,6 +93,7 @@ const SirketPopup = () => {
     await setYear(parseInt(selectedYear));
     await setCompany(selectedAdi.split(" ").slice(0, 2).join(" "));
     localStorage.setItem("fas_denetlenenId", selectedId.toString());
+    localStorage.setItem("fas_denetlenenFirmaAdi", selectedAdi);
     localStorage.setItem("fas_yil", selectedYear.toString());
     try {
       if (selectedId && selectedYearNumber) {
@@ -242,7 +243,7 @@ const SirketPopup = () => {
             <Typography variant="h6" p={1}>
               Yıl Seçiniz
             </Typography>
-            <YearBoxAutocomplete
+            <YearBoxAutoComplete
               onSelect={(selectedYear) => setSelectedYear(selectedYear)}
               onSelectYear={(selectedYear) =>
                 setSelectedYearNumber(selectedYear)

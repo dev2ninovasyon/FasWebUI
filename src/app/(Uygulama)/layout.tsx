@@ -163,6 +163,7 @@ export default function RootLayout({
     dispatch(setDenetlenen(data));
 
     localStorage.setItem("fas_denetlenenId", data.id.toString());
+    localStorage.setItem("fas_denetlenenFirmaAdi", data.adi);
     localStorage.setItem("fas_yil", data.year.toString());
 
     try {

@@ -13,7 +13,7 @@ export const getDenetimPlaniOnemlilikExcelModel = async (
     {
       baseURL: url,
       method: "get",
-      url: `/api/${controller}/OnemlilikExcelModel`,
+      url: `/${controller}/OnemlilikExcelModel`,
       params: { denetciId, denetlenenId, yil },
     },
     null
@@ -32,7 +32,7 @@ export const previewDenetimPlaniOnemlilikExcelModel = async (
     {
       baseURL: url,
       method: "post",
-      url: `/api/${controller}/PreviewOnemlilikExcelModel`,
+      url: `/${controller}/PreviewOnemlilikExcelModel`,
       params: { denetciId, denetlenenId, yil },
       data: payload,
     },
@@ -52,7 +52,7 @@ export const updateDenetimPlaniOnemlilikExcelModel = async (
     {
       baseURL: url,
       method: "post",
-      url: `/api/${controller}/UpdateOnemlilikExcelModel`,
+      url: `/${controller}/UpdateOnemlilikExcelModel`,
       params: { denetciId, denetlenenId, yil },
       data: payload,
     },
@@ -71,7 +71,7 @@ export const resetDenetimPlaniOnemlilikExcelModel = async (
     {
       baseURL: url,
       method: "post",
-      url: `/api/${controller}/ResetOnemlilikExcelModel`,
+      url: `/${controller}/ResetOnemlilikExcelModel`,
       params: { denetciId, denetlenenId, yil },
     },
     null
@@ -89,7 +89,7 @@ export const restorePreviousDenetimPlaniOnemlilikExcelModel = async (
     {
       baseURL: url,
       method: "post",
-      url: `/api/${controller}/RestorePreviousOnemlilikExcelModel`,
+      url: `/${controller}/RestorePreviousOnemlilikExcelModel`,
       params: { denetciId, denetlenenId, yil },
     },
     null

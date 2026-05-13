@@ -32,6 +32,11 @@ interface FeedbackFormProps {
   onSubmit: (dto: FeedbackCreateRequest) => Promise<void>;
   isSubmitting: boolean;
   submitError?: string | null;
+  companyContext?: {
+    yil: number;
+    denetlenenId: number;
+    firmaAdi: string;
+  };
 }
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
@@ -41,6 +46,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmit,
   isSubmitting,
   submitError,
+  companyContext,
 }) => {
   const [sentiment, setSentiment] = useState<FeedbackSentiment | null>(null);
   const [feedbackType, setFeedbackType] = useState<FeedbackType | "">("");
@@ -94,7 +100,12 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         ? window.location.search.slice(0, 200)
         : undefined;
 
-    await onSubmit({
+    // Şirket ve Yıl bilgilerini doğrudan burada (en güvenli noktada) ekliyoruz
+    const storageYil = typeof window !== "undefined" ? window.localStorage.getItem("fas_yil") : null;
+    const storageId = typeof window !== "undefined" ? window.localStorage.getItem("fas_denetlenenId") : null;
+    const storageFirma = typeof window !== "undefined" ? window.localStorage.getItem("fas_denetlenenFirmaAdi") : null;
+
+    const finalData: FeedbackCreateRequest = {
       pageKey,
       pageTitle,
       route,
@@ -104,7 +115,12 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       wantsContact,
       browserInfo,
       queryContext,
-    });
+      yil: companyContext?.yil || Number(storageYil || 0) || undefined,
+      denetlenenId: companyContext?.denetlenenId || Number(storageId || 0) || undefined,
+      firmaAdi: companyContext?.firmaAdi || storageFirma || "Firma Bilgisi Alınamadı",
+    };
+
+    await onSubmit(finalData);
 
     handleReset();
   };

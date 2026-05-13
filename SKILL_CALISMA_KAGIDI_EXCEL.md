@@ -5,6 +5,8 @@ description: Use this skill when implementing a new CalismaKagitlari page from a
 
 # Skill: Excel → Çalışma Kağıdı Sayfası (Full Stack)
 
+> Deprecated: Use `FasWebUI/SKILL.md` as the single FasWebUI skill source of truth. This file is kept only for reference.
+
 **Proje**: FasWebUI + FasWebAPI  
 **Alanı**: PlanVeProgram / CalismaKagitlari  
 **Güncel Örnekler**:

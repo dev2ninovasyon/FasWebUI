@@ -976,7 +976,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
         scroll="paper"
       >
         <DialogTitle sx={{ m: 0, p: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Typography variant="h6">İşlem Logları</Typography>
+          <Typography variant="h6" component="span">İşlem Logları</Typography>
           <IconButton onClick={() => setIsOpen(false)}>
             <IconX size="20" />
           </IconButton>

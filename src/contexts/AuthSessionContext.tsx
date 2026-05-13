@@ -28,6 +28,9 @@ interface AuthSessionContextValue {
 
 const AuthSessionContext = createContext<AuthSessionContextValue | undefined>(undefined);
 
+const isMaintenanceRoute = () =>
+  typeof window !== "undefined" && window.location.pathname === "/maintenance";
+
 export function AuthSessionProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
   const user = useSelector((state: AppState) => state.userReducer);
@@ -119,6 +122,11 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
 
   const refreshSession = useCallback(
     async ({ forceRefresh = false }: RefreshSessionOptions = {}) => {
+      if (!forceRefresh && isMaintenanceRoute()) {
+        setHasBootstrapped(true);
+        return false;
+      }
+
       if (activeBootstrapPromiseRef.current) {
         return activeBootstrapPromiseRef.current;
       }
@@ -202,6 +210,11 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
   // Initial Bootstrapping
   useEffect(() => {
     if (!hasBootstrapped) {
+      if (isMaintenanceRoute()) {
+        setHasBootstrapped(true);
+        return;
+      }
+
       void refreshSession();
     }
   }, [hasBootstrapped, refreshSession]);

@@ -177,12 +177,21 @@ export const uploadFaturaDosyalari = async (
 };
 
 export const getYuklemeIslemleri = async (user: any) => {
+  const cacheBust = Date.now();
   const r = await apiFetch(
-    `/Invoices/GetYuklemeIslemleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
-    { headers: { accept: "application/json" } }
+    `/Invoices/GetYuklemeIslemleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&_=${cacheBust}`,
+    {
+      cache: "no-store",
+      headers: {
+        accept: "application/json",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+      },
+    }
   );
   if (!r.ok) throw new Error("Yükleme işlemleri alınamadı");
-  return r.json();
+  const json = await r.json();
+  return Array.isArray(json) ? json : (json?.data ?? json?.Data ?? []);
 };
 
 export const getYuklemeDosyalari = async (user: any, yuklemeId: string) => {

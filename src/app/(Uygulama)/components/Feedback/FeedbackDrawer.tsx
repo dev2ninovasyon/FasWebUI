@@ -21,6 +21,8 @@ import type {
 import { getPageStats, submitFeedback } from "@/api/Feedback/feedbackApi";
 import FeedbackForm from "./FeedbackForm";
 import AppIcon from "./AppIcon";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 
 interface FeedbackDrawerProps {
   open: boolean;
@@ -49,6 +51,7 @@ const FeedbackDrawer: React.FC<FeedbackDrawerProps> = ({
   route,
 }) => {
   const theme = useTheme();
+  const user = useSelector((state: AppState) => state.userReducer);
 
   const [stats, setStats] = useState<FeedbackPageStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
@@ -81,6 +84,7 @@ const FeedbackDrawer: React.FC<FeedbackDrawerProps> = ({
     setSubmitError(null);
 
     try {
+      console.log("FeedbackDrawer.handleSubmit forwarding:", dto);
       await submitFeedback(dto);
       setSuccessSnack(true);
       const refreshedStats = await getPageStats(pageKey);
@@ -163,6 +167,11 @@ const FeedbackDrawer: React.FC<FeedbackDrawerProps> = ({
               onSubmit={handleSubmit}
               isSubmitting={isSubmitting}
               submitError={submitError}
+              companyContext={{
+                yil: user.yil || user.sonSecilenYil || 0,
+                denetlenenId: user.denetlenenId || user.sonSecilenDenetlenenId || 0,
+                firmaAdi: user.denetlenenFirmaAdi || user.sonSecilenDenetlenenFirmaAdi || ""
+              }}
             />
           )}
 

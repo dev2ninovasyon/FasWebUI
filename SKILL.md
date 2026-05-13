@@ -5,6 +5,15 @@ description: Use this skill when editing FasWebUI pages, auth flows, forms, menu
 
 # FasWebUI Standards
 
+## Single Skill File Decision
+
+This file is the single source of truth for FasWebUI skill guidance. Do not create or use multiple complex skill files for the same project area.
+
+- Ana kararlar burada toplanır.
+- UI, export ve Word aktarımları için tek bir ortak rehber kullanın.
+- `SKILL_KIDEM_HESAPLAMA.md`, `SKILL_HANDSONTABLE_DENETIM_TABLOSU.md`, `SKILL_HANDSONTABLE_CALISMA_KAGIDI.md`, `SKILL_CALISMA_KAGIDI_EXCEL.md` gibi dosyalar artık proje ana rehberi olarak kabul edilmez; bu dosya esas alınır.
+- Yeni standart eklerken önce bu dosyayı güncelleyin.
+
 ## Overview
 
 Use these standards for user-facing work in `FasWebUI`. Keep the interface clean, Turkish-first, visually aligned with the existing application, and practical in real use.
@@ -34,6 +43,25 @@ Use this skill when editing:
 - Keep pages compact and balanced. Avoid oversized info blocks that push the main form too far down.
 - Do not add duplicate headings or redundant hero sections when the screen is already clear.
 - If content editing and preview are both important, prefer side-by-side layouts on wide screens.
+
+## Numeric Alignment and Word Export
+
+- Sayısal değerler her zaman sağa hizalanmalıdır: hem uygulama ekranında hem de Word aktarımlarında.
+- Handsontable sütun tanımlarında `type: "numeric"` kullanın ve `className: "htRight"` veya `renderer: numericRenderer` ile hücre içeriğini sağa yaslayın.
+- MUI tablolarda `TableCell` için `textAlign: "right"` kullanın ve sayısal başlık/alt toplam hücrelerinde tutarlı sağ hizalama sağlayın.
+- Word aktarımlarında `docx` veya benzeri kütüphanelerde sayısal hücreleri `AlignmentType.RIGHT` olarak ayarlayın.
+- Hem UI hem Word için aynı formatı kullanan standart bir sayı hücresi kuralı oluşturun; bu, rapor ve ekrana bakış arasında tutarlılık sağlar.
+
+### Example: Handsontable numeric column
+```ts
+{ data: "tutar", type: "numeric", className: "htRight", numericFormat: { pattern: "0,0.00", culture: "tr-TR" } }
+```
+
+### Example: Word export numeric cell
+```ts
+import { AlignmentType } from "docx";
+new Paragraph({ text: value.toString(), alignment: AlignmentType.RIGHT })
+```
 
 ## Form Behavior
 
