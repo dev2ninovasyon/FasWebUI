@@ -33,11 +33,19 @@ const MizanCard: React.FC<Props> = ({
     let totalAlacakTutari = 0;
 
     mizanVerileri.forEach((veri: any) => {
-      if (veri.detayKodu?.length === 3) {
-        totalBorcTutari += veri.borcTutari || 0;
-      }
-      if (veri.detayKodu?.length === 3) {
-        totalAlacakTutari += veri.alacakTutari || 0;
+      // Support both array format [kebirKodu, detayKodu, ..., borcTutari, alacakTutari]
+      // and object format {detayKodu, borcTutari, alacakTutari}
+      const detayKodu = Array.isArray(veri) ? veri[1] : veri.detayKodu;
+      const borcTutari = Array.isArray(veri) ? veri[4] : veri.borcTutari;
+      const alacakTutari = Array.isArray(veri) ? veri[5] : veri.alacakTutari;
+
+      if (
+        detayKodu &&
+        detayKodu.toString().length === 3 &&
+        parseInt(detayKodu) < 700
+      ) {
+        totalBorcTutari += borcTutari || 0;
+        totalAlacakTutari += alacakTutari || 0;
       }
     });
 

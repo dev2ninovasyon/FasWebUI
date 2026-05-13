@@ -7,11 +7,11 @@ import CustomHotTable from "@/components/HotTableWrapper";
 
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { Grid, useTheme, CircularProgress, Box, Pagination, Typography, Button, Fab, Tooltip, Stack } from "@mui/material";
+import { Grid, useTheme, CircularProgress, Box, Typography, Button, Fab, Tooltip, Stack } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CustomDatePicker } from "@/utils/datePickerUtil";
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { getFormat } from "@/api/Veri/base";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
@@ -75,10 +75,8 @@ const Mizan: React.FC<Props> = ({
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const [allRawData, setAllRawData] = useState<any[]>([]); // Source of Truth
+  const [allRawData, setAllRawData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [showDrawer, setShowDrawer] = useState(false);
   const [rowCount, setRowCount] = useState(0);
 
@@ -194,7 +192,6 @@ const Mizan: React.FC<Props> = ({
   const fetchData = async () => {
     try {
       setLoading(true);
-      setPage(0);
       const mizanVerileri = (sharedData && sharedData.length > 0) ? sharedData : await getMizanVerileri(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
@@ -216,7 +213,7 @@ const Mizan: React.FC<Props> = ({
           veri.netBakiye,
         ];
         rowsAll.push(newRow);
-        if (veri.detayKodu.length === 3) {
+        if (veri.detayKodu.length === 3 && parseInt(veri.detayKodu) < 700) {
           totalBorc += veri.borcTutari;
           totalAlacak += veri.alacakTutari;
         }
@@ -252,11 +249,6 @@ const Mizan: React.FC<Props> = ({
     }
   };
 
-  const paginatedData = useMemo(() => {
-    const startIndex = page * rowsPerPage;
-    return allRawData.slice(startIndex, startIndex + rowsPerPage);
-  }, [allRawData, page, rowsPerPage]);
-
   const rawMizanData = useMemo(() => {
     // Only return if it's the raw mizan format needed by MizanCard
     // Note: since we changed allRawData to be the formatted rows, 
@@ -269,7 +261,6 @@ const Mizan: React.FC<Props> = ({
     if (mizanOlusturTiklandimi) {
       setAllRawData([]);
       setRowCount(0);
-      setPage(0);
     } else {
       fetchData();
     }
@@ -359,14 +350,12 @@ const Mizan: React.FC<Props> = ({
     const filtered = allRawData.filter((row: any) => (row[1] && row[1].toString().length === 3) || row[3] === 'Toplam');
     setAllRawData(filtered);
     setRowCount(filtered.length);
-    setPage(0);
   };
 
   const handleShowDetayHesap = () => {
     const filtered = allRawData.filter((row: any) => (row[1] && row[1].toString().length > 3) || row[3] === 'Toplam');
     setAllRawData(filtered);
     setRowCount(filtered.length);
-    setPage(0);
   };
 
   // If showOnlyTable is true, render only HotTable
@@ -400,7 +389,7 @@ const Mizan: React.FC<Props> = ({
           }}
           language={dictionary.languageCode}
           ref={hotTableComponent}
-          data={paginatedData}
+          data={allRawData}
           height="calc(100vh - 450px)"
           colHeaders={colHeaders}
           columns={columns}
@@ -419,9 +408,7 @@ const Mizan: React.FC<Props> = ({
             "filter_by_value",
             "filter_action_bar",
           ]}
-          afterFilter={() => {
-            setPage(0);
-          }}
+          afterFilter={() => {}}
           licenseKey="non-commercial-and-evaluation"
           contextMenu={["alignment", "copy"]}
         />
@@ -624,7 +611,7 @@ const Mizan: React.FC<Props> = ({
             }}
             language={dictionary.languageCode}
             ref={hotTableComponent}
-            data={paginatedData}
+            data={allRawData}
             height="calc(100vh - 450px)"
             colHeaders={colHeaders}
             columns={columns}
@@ -643,51 +630,20 @@ const Mizan: React.FC<Props> = ({
               "filter_by_value",
               "filter_action_bar",
             ]}
-            afterFilter={() => {
-              setPage(0); // Reset to first page on filter change
-            }}
-            licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+            afterFilter={() => {}}
+            licenseKey="non-commercial-and-evaluation"
             contextMenu={["alignment", "copy"]}
           />
         </Box>
         <Grid container marginTop={2} marginBottom={1} alignItems="center">
           <Grid
-            size={{
-              xs: 12,
-              lg: 6
-            }}
-            sx={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: 2
-            }}>
-            <Pagination
-              count={Math.ceil(rowCount / rowsPerPage)}
-              page={page + 1}
-              onChange={(event, value) => setPage(value - 1)}
-              color="primary"
-              showFirstButton
-              showLastButton
-            />
-            <Typography variant="body2" color="text.secondary">
-              {rowCount} kayıttan {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, rowCount)} arası gösteriliyor
-            </Typography>
-          </Grid>
-          <Grid
-            size={{
-              xs: 12,
-              lg: 6
-            }}
+            size={{ xs: 12 }}
             sx={{
               display: "flex",
               justifyContent: "flex-end",
               alignItems: "center",
             }}>
-
-            <ExceleAktarButton
-              handleDownload={handleDownload}
-            ></ExceleAktarButton>
+            <ExceleAktarButton handleDownload={handleDownload} />
           </Grid>
         </Grid>
       </>

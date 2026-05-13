@@ -1,9 +1,6 @@
-﻿import "@/lib/handsontableSetup";
+import "@/lib/handsontableSetup";
 import { dictionary } from "@/utils/languages/handsontable.tr-TR";
 import CustomHotTable from "@/components/HotTableWrapper";
-
-
-
 
 import { useDispatch, useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
@@ -11,10 +8,8 @@ import {
   Grid,
   useTheme,
   Box,
-  Pagination,
   Typography,
   IconButton,
-  Paper,
   CircularProgress,
   Backdrop,
   Alert,
@@ -24,14 +19,13 @@ import {
   DialogTitle,
   Slide,
 } from "@mui/material";
-import { ChevronLeft, ChevronRight, Close } from "@mui/icons-material";
-import { useEffect, useRef, useState, forwardRef } from "react";
+import { Close } from "@mui/icons-material";
+import { useEffect, useRef, useState, useCallback, forwardRef } from "react";
 import { enqueueSnackbar } from "notistack";
 import ExceleAktarButton from "@/app/(Uygulama)/components/Veri/ExceleAktarButton";
 import { saveAs } from "file-saver";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import {
-  getEDefterIncelemeVerileri,
   getEDefterIncelemeVerileriPaged,
   updateEDefterIncelemeVerisi,
 } from "@/api/Veri/EDefterInceleme";
@@ -39,7 +33,6 @@ import { useRouter } from "next/navigation";
 import numbro from "numbro";
 import trTR from "numbro/languages/tr-TR";
 import FisDetaylari from "./FisDetaylari/[id]/FisDetaylari";
-import { width } from "@mui/system";
 
 const Transition = forwardRef(function Transition(
   props: any,
@@ -48,23 +41,10 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-// register Handsontable's modules
 numbro.registerLanguage(trTR);
 numbro.setLanguage("tr-TR");
 
-interface Veri {
-  id: number;
-  fisNo: number;
-  fisTarihi: string;
-  detayKodu: string;
-  hesapAdi: string;
-  aciklama: string;
-  faturaNo: number;
-  muhasebeFisNo: number;
-  borc: number;
-  alacak: number;
-  tespitAciklama: string;
-}
+const PAGE_SIZE = 20;
 
 interface Props {
   hesapNo: string;
@@ -103,25 +83,21 @@ const EDefterInceleme: React.FC<Props> = ({
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [rowCount, setRowCount] = useState(0);
-
-  const [fetchedData, setFetchedData] = useState<Veri[]>([]);
-  const [noDataOpen, setNoDataOpen] = useState(false);
-
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
+  const [displayedData, setDisplayedData] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+  const [noDataOpen, setNoDataOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const [isFisPopupOpen, setIsFisPopupOpen] = useState(false);
-  const [selectedFisNo, setSelectedFisNo] = useState<number | undefined>(
-    undefined
-  );
-  const [selectedItemId, setSelectedItemId] = useState<number | undefined>(
-    undefined
-  );
+  const [selectedFisNo, setSelectedFisNo] = useState<number | undefined>(undefined);
+  const [selectedItemId, setSelectedItemId] = useState<number | undefined>(undefined);
+
+  // Mutable refs to avoid stale closures in scroll handler
+  const loadedPageRef = useRef(0);
+  const hasMoreRef = useRef(false);
+  const isLoadingMoreRef = useRef(false);
+  const totalCountRef = useRef(0);
 
   useEffect(() => {
     const loadStyles = async () => {
@@ -136,7 +112,6 @@ const EDefterInceleme: React.FC<Props> = ({
         );
       }
     };
-
     loadStyles();
   }, [customizer.activeMode]);
 
@@ -155,290 +130,210 @@ const EDefterInceleme: React.FC<Props> = ({
   ];
 
   const columns = [
+    { type: "numeric", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+    { type: "numeric", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+    { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htRight" },
+    { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+    { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+    { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+    { type: "numeric", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+    { type: "numeric", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
     {
       type: "numeric",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Id
+      numericFormat: { pattern: "0,0.00", columnSorting: true, culture: "tr-TR" },
+      columnSorting: true, readOnly: true, editor: false, className: "htRight",
+    },
     {
       type: "numeric",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Yevmiye No
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htRight",
-    }, // Yevmiye Tarihi
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Detay Kodu
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Hesap Adı
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Açıklama
-    {
-      type: "numeric",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Fatura No
-    {
-      type: "numeric",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Muhasebe Fiş No
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htRight",
-    }, // Borc
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htRight",
-    }, // Alacak
-    {
-      type: "text",
-      columnSorting: true,
-      className: "htLeft",
-    }, // Tespit Açıklama
+      numericFormat: { pattern: "0,0.00", columnSorting: true, culture: "tr-TR" },
+      columnSorting: true, readOnly: true, editor: false, className: "htRight",
+    },
+    { type: "text", columnSorting: true, className: "htLeft" },
   ];
 
+  const mapRows = (items: any[]): any[] =>
+    items
+      .map((veri: any) => [
+        veri.id,
+        veri.yevmiyeNo,
+        veri.yevmiyeTarih.split("T")[0].split("-").reverse().join("."),
+        veri.detayKodu,
+        veri.hesapAdi,
+        veri.aciklama,
+        veri.faturaNo,
+        veri.muhasebeFisNo,
+        veri.borc,
+        veri.alacak,
+        veri.tespitAciklama,
+      ])
+      .sort((a: any, b: any) => (a[1] > b[1] ? 1 : -1));
 
+  const fetchPage = async (pageNum: number, append: boolean) => {
+    const response = await getEDefterIncelemeVerileriPaged(
+      user.denetciId || 0,
+      user.denetlenenId || 0,
+      user.yil || 0,
+      hesapNo,
+      baslangicTarihi,
+      bitisTarihi,
+      hesaplar,
+      iliskilihesaplar,
+      yevmiyeNolar,
+      haricYevmiyeNo,
+      borcTutarindanFazla,
+      alacakTutarindanFazla,
+      aciklama,
+      pageNum,
+      PAGE_SIZE
+    );
 
+    if (!response || (!response.items && !response.data)) return null;
+
+    const pagedData = response.data || response;
+    if (!Array.isArray(pagedData.items)) return null;
+
+    const rows = mapRows(pagedData.items);
+    const total = pagedData.totalCount || 0;
+    return { rows, total };
+  };
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      setDisplayedData([]);
+      loadedPageRef.current = 0;
+      hasMoreRef.current = false;
+
+      const result = await fetchPage(1, false);
+      if (!result || result.rows.length === 0) {
+        setDisplayedData([]);
+        setTotalCount(0);
+        totalCountRef.current = 0;
+        hasMoreRef.current = false;
+        loadedPageRef.current = 1;
+        setNoDataOpen(true);
+        return;
+      }
+
+      setDisplayedData(result.rows);
+      setTotalCount(result.total);
+      totalCountRef.current = result.total;
+      loadedPageRef.current = 1;
+      hasMoreRef.current = result.rows.length < result.total;
+      setNoDataOpen(false);
+    } catch (error) {
+      console.error("Bir hata oluştu:", error);
+      setDisplayedData([]);
+      setTotalCount(0);
+      enqueueSnackbar("Veriler yüklenirken bir hata oluştu", { variant: "error" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadMore = useCallback(async () => {
+    if (isLoadingMoreRef.current || !hasMoreRef.current) return;
+
+    isLoadingMoreRef.current = true;
+    setIsLoadingMore(true);
+
+    try {
+      const nextPage = loadedPageRef.current + 1;
+      const result = await fetchPage(nextPage, true);
+      if (!result) return;
+
+      setDisplayedData((prev) => {
+        const combined = [...prev, ...result.rows];
+        hasMoreRef.current = combined.length < totalCountRef.current;
+        return combined;
+      });
+      loadedPageRef.current = nextPage;
+    } catch (error) {
+      console.error("Daha fazla veri yüklenirken hata:", error);
+    } finally {
+      isLoadingMoreRef.current = false;
+      setIsLoadingMore(false);
+    }
+  }, []);
+
+  const handleAfterScrollVertically = useCallback(() => {
+    if (isLoadingMoreRef.current || !hasMoreRef.current) return;
+    const hotInstance = hotTableComponent.current?.hotInstance;
+    if (!hotInstance) return;
+    const holder = hotInstance.rootElement?.querySelector(".ht_master .wtHolder") as HTMLElement | null;
+    if (!holder) return;
+    const { scrollTop, clientHeight, scrollHeight } = holder;
+    if (scrollTop + clientHeight >= scrollHeight - 120) {
+      loadMore();
+    }
+  }, [loadMore]);
+
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      if (verileriGetirTiklandimi) {
+        await fetchData();
+        setVerileriGetirTiklandimi(false);
+      }
+    };
+    fetchDataAsync();
+  }, [verileriGetirTiklandimi]);
 
   const handleGetRowData = async (row: number) => {
     if (hotTableComponent.current) {
-      const hotInstance = hotTableComponent.current.hotInstance;
-      const cellMeta = hotInstance.getDataAtRow(row);
-      console.log("Satır Verileri:", cellMeta);
-      return cellMeta;
+      return hotTableComponent.current.hotInstance.getDataAtRow(row);
     }
   };
 
   const handleAfterChange = async (changes: any, source: any) => {
-    //Değişen Cellin Satır Indexi
-    let changedRow = -1;
-    //Değişen Cellin Satır Verileri
-    let changedRowData: any;
-    if (source === "loadData") {
-      return; // Skip this hook on loadData
-    }
+    if (source === "loadData") return;
     if (changes) {
-      for (const [row, prop, oldValue, newValue] of changes) {
-        console.log(
-          `Changed cell at row: ${row}, col: ${prop}, from: ${oldValue}, to: ${newValue}`
-        );
-        changedRow = row;
-
-        changedRowData = await handleGetRowData(row);
-
-        //Cell Güncelleme
-        if (changedRow >= 0) {
-          await handleUpdateEDefterIncelemeVerisi(changedRow);
-          changedRow = -1;
-        }
+      for (const [row] of changes) {
+        await handleUpdateEDefterIncelemeVerisi(row);
       }
     }
   };
 
   const handleUpdateEDefterIncelemeVerisi = async (row: number) => {
     const rowData = await handleGetRowData(row);
-    if (rowData[10] == null || rowData[10] == undefined) {
-      rowData[10] == "";
-    }
-    const updatedEDefterIncelemeVerisi = {
-      tespitAciklama: rowData[10],
-    };
-
+    if (!rowData) return;
+    if (rowData[10] == null || rowData[10] == undefined) rowData[10] = "";
     try {
       const result = await updateEDefterIncelemeVerisi(
         user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         rowData[0],
-        updatedEDefterIncelemeVerisi
+        { tespitAciklama: rowData[10] }
       );
-      if (result) {
-        await fetchData();
-        console.log("E-Defter İnceleme Verisi güncelleme başarılı");
-      } else {
-        console.log("E-Defter İnceleme güncelleme başarısız");
-      }
+      if (!result) console.log("E-Defter İnceleme güncelleme başarısız");
     } catch (error) {
       console.log("Bir hata oluştu:", error);
     }
   };
 
-  const fetchData = async (pageNum: number = 1) => {
-    try {
-      setIsLoading(true);
-      const response = await getEDefterIncelemeVerileriPaged(
-        user.denetciId || 0,
-        user.denetlenenId || 0,
-        user.yil || 0,
-        hesapNo,
-        baslangicTarihi,
-        bitisTarihi,
-        hesaplar,
-        iliskilihesaplar,
-        yevmiyeNolar,
-        haricYevmiyeNo,
-        borcTutarindanFazla,
-        alacakTutarindanFazla,
-        aciklama,
-        pageNum,
-        pageSize
-      );
-
-      if (!response || (!response.items && !response.data)) {
-        setFetchedData([]);
-        setRowCount(0);
-        setTotalCount(0);
-        setTotalPages(1);
-        setCurrentPage(pageNum);
-        setNoDataOpen(true);
-        return;
-      }
-
-      const pagedData = response.data || response;
-      const rowsAll: any = [];
-
-      if (Array.isArray(pagedData.items)) {
-        pagedData.items.forEach((veri: any) => {
-          const newRow: any = [
-            veri.id,
-            veri.yevmiyeNo,
-            veri.yevmiyeTarih.split("T")[0].split("-").reverse().join("."),
-            veri.detayKodu,
-            veri.hesapAdi,
-            veri.aciklama,
-            veri.faturaNo,
-            veri.muhasebeFisNo,
-            veri.borc,
-            veri.alacak,
-            veri.tespitAciklama,
-          ];
-          rowsAll.push(newRow);
-        });
-      }
-
-      rowsAll.sort((a: any, b: any) => (a[1] > b[1] ? 1 : -1));
-
-      setNoDataOpen(rowsAll.length === 0);
-
-      setFetchedData(rowsAll);
-      setRowCount(rowsAll.length);
-      setTotalCount(pagedData.totalCount || 0);
-      setTotalPages(
-        Math.max(1, Math.ceil((pagedData.totalCount || 0) / pageSize))
-      );
-      setCurrentPage(pageNum);
-    } catch (error) {
-      console.error("Bir hata oluştu:", error);
-      setFetchedData([]);
-      setRowCount(0);
-      enqueueSnackbar("Veriler yüklenirken bir hata oluştu", {
-        variant: "error",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const fetchDataAsync = async () => {
-      if (verileriGetirTiklandimi) {
-        await fetchData(1); // Reset to first page when filters change
-        setVerileriGetirTiklandimi(false);
-      }
-    };
-
-    fetchDataAsync();
-  }, [verileriGetirTiklandimi]);
-
   const handleDownload = () => {
     const hotTableInstance = hotTableComponent.current.hotInstance;
     const data = hotTableInstance.getData();
-
     const processedData = data.map((row: any) => row.slice(1));
-
     const headers = hotTableInstance.getColHeader().slice(1);
-
     const fullData = [headers, ...processedData];
 
     async function createExcelFile() {
       const { default: ExcelJS } = await import("exceljs");
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sayfa1");
-
-      fullData.forEach((row: any) => {
-        worksheet.addRow(row);
-      });
+      fullData.forEach((row: any) => worksheet.addRow(row));
 
       const headerRow = worksheet.getRow(1);
-      headerRow.font = {
-        name: "Calibri",
-        size: 12,
-        bold: true,
-        color: { argb: "FFFFFF" },
-      };
-      headerRow.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "1a6786" },
-      };
+      headerRow.font = { name: "Calibri", size: 12, bold: true, color: { argb: "FFFFFF" } };
+      headerRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "1a6786" } };
       headerRow.alignment = { horizontal: "left" };
-
-      worksheet.columns.forEach((column) => {
-        column.width = 25;
-      });
+      worksheet.columns.forEach((col) => { col.width = 25; });
 
       try {
         const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
+        const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
         saveAs(blob, "EDefterInceleme.xlsx");
-        console.log("Excel dosyası başarıyla oluşturuldu");
       } catch (error) {
         console.log("Excel dosyası oluşturulurken bir hata oluştu:", error);
       }
@@ -453,19 +348,13 @@ const EDefterInceleme: React.FC<Props> = ({
         : customizer.SidebarWidth && customizer.MiniSidebarWidth
           ? customizer.SidebarWidth - customizer.MiniSidebarWidth
           : 0;
-
       hotTableComponent.current.hotInstance.updateSettings({
         width: customizer.isCollapse
           ? "100%"
-          : hotTableComponent.current.hotInstance.rootElement.clientWidth -
-          diff,
+          : hotTableComponent.current.hotInstance.rootElement.clientWidth - diff,
       });
     }
-  }, [
-    customizer.isCollapse,
-    customizer.SidebarWidth,
-    customizer.MiniSidebarWidth,
-  ]);
+  }, [customizer.isCollapse, customizer.SidebarWidth, customizer.MiniSidebarWidth]);
 
   return (
     <>
@@ -481,7 +370,8 @@ const EDefterInceleme: React.FC<Props> = ({
         >
           <CircularProgress color="primary" size={50} />
         </Backdrop>
-        <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
+        <CustomHotTable
+          theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
           style={{
             height: "100%",
             width: "100%",
@@ -492,7 +382,7 @@ const EDefterInceleme: React.FC<Props> = ({
           }}
           language={dictionary.languageCode}
           ref={hotTableComponent}
-          data={fetchedData}
+          data={displayedData}
           height={450}
           colHeaders={colHeaders}
           columns={columns}
@@ -502,26 +392,21 @@ const EDefterInceleme: React.FC<Props> = ({
           rowHeaders={true}
           rowHeights={35}
           autoWrapRow={true}
-          minRows={rowCount}
+          minRows={displayedData.length}
           minCols={10}
-          hiddenColumns={{
-            columns: [0],
-          }}
+          hiddenColumns={{ columns: [0] }}
           filters={true}
           columnSorting={true}
-          dropdownMenu={[
-            "filter_by_condition",
-            "filter_by_value",
-            "filter_action_bar",
-          ]}
-          licenseKey="non-commercial-and-evaluation" // For non-commercial use only
+          dropdownMenu={["filter_by_condition", "filter_by_value", "filter_action_bar"]}
+          licenseKey="non-commercial-and-evaluation"
           afterChange={handleAfterChange}
+          afterScrollVertically={handleAfterScrollVertically}
           contextMenu={{
             items: {
               copy: {},
               fise_git: {
                 name: "Fişe Git",
-                callback: async function (key, selection) {
+                callback: async function (key: any, selection: any) {
                   const row = await handleGetRowData(selection[0].start.row);
                   setSelectedItemId(row[0]);
                   setSelectedFisNo(row[1]);
@@ -532,123 +417,37 @@ const EDefterInceleme: React.FC<Props> = ({
           }}
           copyPaste={true}
         />
+        {isLoadingMore && (
+          <Box sx={{
+            position: "absolute",
+            bottom: 8,
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            backgroundColor: "background.paper",
+            borderRadius: 2,
+            px: 2,
+            py: 0.5,
+            boxShadow: 2,
+            zIndex: 2,
+          }}>
+            <CircularProgress size={14} />
+            <Typography variant="caption" color="text.secondary">
+              Yükleniyor...
+            </Typography>
+          </Box>
+        )}
       </Box>
-      {fetchedData.length > 0 && (
-        <Paper
-          elevation={0}
-          sx={{
-            marginTop: 2,
-            padding: 2,
-            backgroundColor: "transparent",
-          }}
-        >
-          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            {/* Left side - Page info and navigation */}
-            <Grid
-              size={{
-                xs: 12,
-                sm: 6,
-                md: 4,
-              }}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <Typography variant="body2" color="textSecondary" sx={{ whiteSpace: "nowrap" }}>
-                Toplam: <strong>{totalCount}</strong> kayıt
-              </Typography>
-              {totalPages > 1 && (
-                <>
-                  <Typography variant="body2" color="textSecondary">|</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Sayfa: <strong>{currentPage}/{totalPages}</strong>
-                  </Typography>
-                </>
-              )}
-            </Grid>
 
-            {/* Center - Pagination controls */}
-            <Grid
-              size={{
-                xs: 12,
-                sm: 6,
-                md: 4,
-              }}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              {totalPages > 1 && (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  {/* Previous button */}
-                  <IconButton
-                    size="small"
-                    disabled={currentPage === 1}
-                    onClick={() => fetchData(currentPage - 1)}
-                    sx={{
-                      color: currentPage === 1 ? "action.disabled" : "primary.main",
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                    title="Önceki sayfa"
-                  >
-                    <ChevronLeft fontSize="small" />
-                  </IconButton>
-
-                  {/* Pagination component */}
-                  <Pagination
-                    count={totalPages}
-                    page={currentPage}
-                    onChange={(event, value) => {
-                      fetchData(value);
-                    }}
-                    color="primary"
-                    size="small"
-                    variant="outlined"
-                    shape="rounded"
-                  />
-
-                  {/* Next button */}
-                  <IconButton
-                    size="small"
-                    disabled={currentPage === totalPages}
-                    onClick={() => fetchData(currentPage + 1)}
-                    sx={{
-                      color: currentPage === totalPages ? "action.disabled" : "primary.main",
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                    title="Sonraki sayfa"
-                  >
-                    <ChevronRight fontSize="small" />
-                  </IconButton>
-                </Box>
-              )}
-            </Grid>
-
-            {/* Right side - Export button */}
-            <Grid
-              size={{
-                xs: 12,
-                sm: 12,
-                md: 4,
-              }}
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "flex-start", md: "flex-end" },
-              }}
-            >
-              <ExceleAktarButton handleDownload={handleDownload} />
-            </Grid>
-          </Grid>
-        </Paper>
+      {displayedData.length > 0 && (
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 1 }}>
+          <Typography variant="body2" color="text.secondary">
+            <strong>{displayedData.length}</strong> / <strong>{totalCount}</strong> kayıt gösteriliyor
+          </Typography>
+          <ExceleAktarButton handleDownload={handleDownload} />
+        </Box>
       )}
 
       {/* Fiş Detayları Popup */}
@@ -659,13 +458,7 @@ const EDefterInceleme: React.FC<Props> = ({
         onClose={() => setIsFisPopupOpen(false)}
         TransitionComponent={Transition}
       >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Typography variant="h5">Fiş Detayları - Yevmiye No: {selectedFisNo}</Typography>
           <IconButton onClick={() => setIsFisPopupOpen(false)}>
             <Close />
@@ -673,27 +466,17 @@ const EDefterInceleme: React.FC<Props> = ({
         </DialogTitle>
         <DialogContent dividers>
           {selectedFisNo && (
-            <FisDetaylari
-              fisNoProp={selectedFisNo}
-              highlightId={selectedItemId}
-            />
+            <FisDetaylari fisNoProp={selectedFisNo} highlightId={selectedItemId} />
           )}
         </DialogContent>
       </Dialog>
 
-      <Snackbar
-        open={noDataOpen}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
+      <Snackbar open={noDataOpen} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
         <Alert
           severity="warning"
           variant="filled"
           action={
-            <IconButton
-              size="small"
-              color="inherit"
-              onClick={() => setNoDataOpen(false)}
-            >
+            <IconButton size="small" color="inherit" onClick={() => setNoDataOpen(false)}>
               <Close fontSize="small" />
             </IconButton>
           }

@@ -346,7 +346,7 @@ export const createProgramVukMizan = async (
     const response = await apiFetch(
       `/Mizan/ProgramVukMizan?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${type}`,
       {
-        method: "POST",
+        method: "GET",
         headers: {
           accept: "application/json",
         },
