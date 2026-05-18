@@ -14,10 +14,14 @@ import {
   Chip,
   CircularProgress,
   Divider,
+  FormControl,
   Grid,
   IconButton,
   InputAdornment,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Skeleton,
   Stack,
   Tab,
@@ -323,12 +327,11 @@ const AdatHesaplamaPage = () => {
   const [loadingKebir, setLoadingKebir] = useState(false);
   const [kebirLoaded, setKebirLoaded] = useState(false);
   const [calculating, setCalculating] = useState(false);
-  const [loadingPreview, setLoadingPreview] = useState(false);
-  const [previewRows, setPreviewRows] = useState<OnIzlemeDetay[]>([]);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [gorunumModu, setGorunumModu] = useState<"standart" | "detayli">("standart");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [exportingExcel, setExportingExcel] = useState(false);
+  const [faizOraniTipi, setFaizOraniTipi] = useState("AVANS");
 
   const selectedTip = useMemo(
     () => selectedKebir ? { ...selectedKebir, hesapTipi: hesapTipiBelirle(selectedKebir.kod) } : null,
@@ -349,48 +352,6 @@ const AdatHesaplamaPage = () => {
     });
     return Array.from(groups.entries()).map(([kebirKodu, rows]) => ({ kebirKodu, rows }));
   }, [result]);
-
-  const previewGruplari = useMemo(() => {
-    const groups = new Map<string, OnIzlemeDetay[]>();
-    previewRows.forEach((row) => {
-      if (!groups.has(row.kebirKodu)) groups.set(row.kebirKodu, []);
-      groups.get(row.kebirKodu)!.push(row);
-    });
-    return Array.from(groups.entries()).map(([kebirKodu, rows]) => ({ kebirKodu, rows }));
-  }, [previewRows]);
-
-  const handleVeriYukle = useCallback(async () => {
-    if (!denetciId || !denetlenenId) {
-      setMessage("Kullanıcı veya denetlenen bilgisi eksik.");
-      return;
-    }
-    if (!selectedKebir) {
-      setMessage("Kebir kodu seçin.");
-      return;
-    }
-    if (!hesapTipiBelirle(selectedKebir.kod)) {
-      setMessage(`${selectedKebir.kod}: Seçilen kebir kodu adat hesaplama kapsamına uygun değildir.`);
-      return;
-    }
-    setLoadingPreview(true);
-    setMessage(null);
-    setResult(null);
-    try {
-      const response = await createAdatOnIzleme(
-        denetciId, selectedYear, denetlenenId,
-        baslangicTarihi, bitisTarihi,
-        [selectedKebir.kod],
-        "TL", "Satis"
-      );
-      if (response.success) {
-        setPreviewRows(response.data ?? []);
-      } else {
-        setMessage("Veriler yüklenemedi.");
-      }
-    } finally {
-      setLoadingPreview(false);
-    }
-  }, [denetciId, denetlenenId, selectedKebir, selectedYear, baslangicTarihi, bitisTarihi]);
 
   const loadHistory = useCallback(async () => {
     if (!denetlenenId || !selectedYear) return;
@@ -437,7 +398,8 @@ const AdatHesaplamaPage = () => {
         true,
         "TL",
         "EVDS",
-        "Satis"
+        "Satis",
+        faizOraniTipi
       );
       if (!response?.success) {
         setMessage(response?.message || "Adat hesaplama yapılamadı.");
@@ -455,11 +417,10 @@ const AdatHesaplamaPage = () => {
     } finally {
       setCalculating(false);
     }
-  }, [denetciId, denetlenenId, selectedKebir, selectedTip, selectedYear, baslangicTarihi, bitisTarihi, hesaplamaAdi, makulKasaBakiyesi, previewRows, loadHistory]);
+  }, [denetciId, denetlenenId, selectedKebir, selectedTip, selectedYear, baslangicTarihi, bitisTarihi, hesaplamaAdi, makulKasaBakiyesi, faizOraniTipi, loadHistory]);
 
   const selectHistoryItem = useCallback(async (id: number) => {
     setMessage(null);
-    setPreviewRows([]);
     const response = await getAdatHesaplamaDetay(id);
     const nextResult: AdatResult | undefined = response?.data;
     if (nextResult) {
@@ -610,7 +571,7 @@ const AdatHesaplamaPage = () => {
                 options={kebirKodlari}
                 getOptionLabel={(o) => `${o.kod} - ${o.adi}`}
                 value={selectedKebir}
-                onChange={(_, value) => { setSelectedKebir(value); setPreviewRows([]); setResult(null); }}
+                onChange={(_, value) => { setSelectedKebir(value); setResult(null); }}
                 onOpen={() => void handleKebirOpen()}
                 size="small"
                 loading={loadingKebir}
@@ -618,6 +579,21 @@ const AdatHesaplamaPage = () => {
                 noOptionsText={kebirLoaded ? "Kebir kodu bulunamadı" : "Açmak için tıklayın"}
                 renderInput={(params) => <TextField {...params} label="Kebir Kodu" />}
               />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <FormControl size="small" fullWidth>
+                <InputLabel>Faiz Oranı Kaynağı</InputLabel>
+                <Select
+                  value={faizOraniTipi}
+                  label="Faiz Oranı Kaynağı"
+                  onChange={(e) => setFaizOraniTipi(e.target.value)}
+                >
+                  <MenuItem value="AVANS">Avans İşlemlerinde Uygulanan Faiz Oranı (**)</MenuItem>
+                  <MenuItem value="TL">Ticari Krediler TL (TP.KTF18)</MenuItem>
+                  <MenuItem value="EUR">Ticari Krediler EUR (TP.KTF17.EUR)</MenuItem>
+                  <MenuItem value="USD">Ticari Krediler USD (TP.KTF17.USD)</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             {selectedTip?.hesapTipi === "KASA_HESABI" && (
               <Grid size={{ xs: 12, sm: 6, md: 2 }}>
@@ -632,24 +608,14 @@ const AdatHesaplamaPage = () => {
               </Grid>
             )}
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-              <Stack direction="row" spacing={0.75}>
-                <Button
-                  size="small" variant="outlined" fullWidth
-                  startIcon={loadingPreview ? <CircularProgress size={14} /> : undefined}
-                  disabled={loadingPreview || calculating}
-                  onClick={() => void handleVeriYukle()}
-                >
-                  {loadingPreview ? "Getiriliyor" : "Getir"}
-                </Button>
-                <Button
-                  size="small" variant="contained" fullWidth
-                  startIcon={calculating ? <CircularProgress size={14} color="inherit" /> : <SaveIcon fontSize="small" />}
-                  disabled={calculating || loadingPreview || !selectedKebir}
-                  onClick={() => void handleHesapla()}
-                >
-                  {calculating ? "Hesap..." : "Hesapla"}
-                </Button>
-              </Stack>
+              <Button
+                size="small" variant="contained" fullWidth
+                startIcon={calculating ? <CircularProgress size={14} color="inherit" /> : <SaveIcon fontSize="small" />}
+                disabled={calculating || !selectedKebir}
+                onClick={() => void handleHesapla()}
+              >
+                {calculating ? "Hesap..." : "Hesapla"}
+              </Button>
             </Grid>
           </Grid>
           {(selectedTip || message) && (
@@ -672,67 +638,16 @@ const AdatHesaplamaPage = () => {
       </Card>
 
       {/* ── İçerik Alanı (tam genişlik) ── */}
-      {!result && previewRows.length === 0 && (
+      {!result && (
         <Card sx={{ mb: 2 }}>
           <CardContent>
             <Typography variant="body2" color="text.secondary">
-              Kebir kodu seçip <b>Getir</b> butonuna tıklayın. Satırlar yüklendikten sonra makul kasa bakiyesini girin ve <b>Hesapla</b> butonuna tıklayın.
+              Kebir kodunu seçip makul kasa bakiyesini girin ve <b>Hesapla</b> butonuna tıklayın.
             </Typography>
           </CardContent>
         </Card>
       )}
 
-      {!result && previewRows.length > 0 && (
-        <Stack spacing={2} mb={2}>
-          {previewGruplari.map((group) => {
-            const isKasa = group.rows[0]?.hesapTipi === "KASA_HESABI";
-            return (
-              <Card key={group.kebirKodu}>
-                <CardContent>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-                    <Typography variant="subtitle1">
-                      {group.kebirKodu} — {group.rows[0]?.hesapAdi} ({hesapTipiEtiketleri[group.rows[0]?.hesapTipi ?? "KASA_DISI_AKTIF_HESAPLAR"]})
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">{group.rows.length} satır</Typography>
-                  </Stack>
-                  <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 460 }}>
-                    <Table size="small" stickyHeader>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Tarih</TableCell>
-                          <TableCell align="right">Borç</TableCell>
-                          <TableCell align="right">Alacak</TableCell>
-                          <TableCell align="right">Bakiye</TableCell>
-                          {isKasa && <TableCell align="right" sx={{ minWidth: 155 }}>Makul Kasa Bakiyesi ₺</TableCell>}
-                          {isKasa && <TableCell align="right">Kalan Bakiye</TableCell>}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {group.rows.map((row, idx) => {
-                          return (
-                            <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
-                              <TableCell>{fmtDate(row.tarih)}</TableCell>
-                              <TableCell align="right">{fmtNum(row.dovizBorc)}</TableCell>
-                              <TableCell align="right">{fmtNum(row.dovizAlacak)}</TableCell>
-                              <TableCell align="right">{fmtNum(row.dovizliBakiye)}</TableCell>
-                          {isKasa && (
-                                <TableCell align="right">
-                                  {fmtNum(mkbNum)}
-                                </TableCell>
-                              )}
-                              {isKasa && <TableCell align="right">{fmtNum(Math.max((row.dovizliBakiye ?? 0) - mkbNum, 0))}</TableCell>}
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </Stack>
-      )}
 
       {result && (
         <Stack spacing={2} mb={2}>

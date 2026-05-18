@@ -134,6 +134,7 @@ export const getMenuUsagePanelByMenuId = async (menuId: number): Promise<MenuUsa
     });
     if (response.ok) {
       const data = await response.json();
+      console.log("Menu Usage Panel Response:", data); // DEBUG: API yanıtını kontrol et
       
       // Map PascalCase backend response to camelCase frontend interface
       return {
@@ -155,12 +156,12 @@ export const getMenuUsagePanelByMenuId = async (menuId: number): Promise<MenuUsa
           sonrakiAdimlar: data.KullanimSemasi?.SonrakiAdimlar || data.kullanimSemasi?.sonrakiAdimlar || [],
           hataRiskiYuksekAlanlar: data.KullanimSemasi?.HataRiskiYuksekAlanlar || data.kullanimSemasi?.hataRiskiYuksekAlanlar || [],
         },
-        video: data.Video ? {
-          url: data.Video.Url || data.Video.url,
-          baslik: data.Video.Baslik || data.Video.baslik,
-          aciklama: data.Video.Aciklama || data.Video.aciklama,
+        video: (data.video || data.Video) ? {
+          url: (data.video?.url || data.video?.Url || data.Video?.Url || data.Video?.url),
+          baslik: (data.video?.baslik || data.video?.Baslik || data.Video?.Baslik || data.Video?.baslik),
+          aciklama: (data.video?.aciklama || data.video?.Aciklama || data.Video?.Aciklama || data.Video?.aciklama),
         } : null,
-        hasVideo: data.HasVideo || data.hasVideo || false,
+        hasVideo: data.hasVideo || data.HasVideo || false,
         hitCount: data.HitCount || data.hitCount || 0,
         ekleyenKullaniciId: data.EkleyenKullaniciId || data.ekleyenKullaniciId,
         eklenmeTarihi: data.EklenmeTarihi || data.eklenmeTarihi,

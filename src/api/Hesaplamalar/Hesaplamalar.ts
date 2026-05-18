@@ -193,7 +193,8 @@ export const createAdatHesaplanmis = async (
   kaydet: boolean = true,
   varsayilanParaBirimi: string = "TL",
   kurKaynagiTercihi: string = "EVDS",
-  kurTipi: string = "Satis"
+  kurTipi: string = "Satis",
+  faizOraniTipi: string = "AVANS"
 ) => {
   try {
     const kebirKodlari = Array.isArray(hesapKodu)
@@ -223,6 +224,7 @@ export const createAdatHesaplanmis = async (
           kurKaynagiTercihi,
           kurTipi,
           kaydet,
+          faizOraniTipi,
         }),
       }
     );
