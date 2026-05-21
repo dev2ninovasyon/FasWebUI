@@ -60,7 +60,7 @@ interface MyComponentProps {
   dosyaYuklendiMi: boolean;
   setRows: (dosya: DosyaType[]) => void;
   setDosyaYuklendiMi: (deger: boolean) => void;
-  pendingUploadRows?: { fileName: string; status: string }[];
+  pendingUploadRows?: { fileName: string; status: string; durumMesaji?: string }[];
   onlyShowFinalizedRows?: boolean;
   onServerRowsChange?: (rows: DosyaType[]) => void;
   openLogsFromStatusChip?: boolean;
@@ -71,6 +71,7 @@ interface DosyaType {
   adi: string;
   olusturulmaTarihi: string;
   durum: string;
+  durumMesaji?: string;
   progress?: number;
 }
 
@@ -104,7 +105,20 @@ const isCompletedStatus = (status?: string) =>
 
 const isErrorStatus = (status?: string) => {
   const normalized = normalizeStatusText(status);
-  return normalized.includes("hata oluştu") || normalized.includes("hata!");
+  return normalized.includes("hata");
+};
+
+const getDisplayStatus = (status?: string) => {
+  if (isErrorStatus(status)) return "Hata";
+  return status || "";
+};
+
+const getStatusDetail = (row: DosyaType) => {
+  if (row.durumMesaji) return row.durumMesaji;
+  if (isErrorStatus(row.durum) && row.durum?.includes(":")) {
+    return row.durum.split(":").slice(1).join(":").trim();
+  }
+  return "";
 };
 
 const canOpenLogsForStatusChip = (status?: string) =>
@@ -197,10 +211,10 @@ const DosyaTable: React.FC<MyComponentProps> = ({
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const isFinalStatus = (status?: string) => {
-    const s = (status || "").toLocaleLowerCase("tr-TR");
+    const s = normalizeStatusText(status);
     return (
       s.includes("tamamlandı") ||
-      s.includes("hata oluştu") ||
+      s.includes("hata") ||
       s.includes("hatalı belge")
     );
   };
@@ -461,6 +475,18 @@ const DosyaTable: React.FC<MyComponentProps> = ({
     setIsOpen(true);
   };
 
+  const handleStatusDetail = (row: DosyaType) => {
+    const detail = getStatusDetail(row);
+    if (isErrorStatus(row.durum) && row.id < 0 && detail) {
+      setDefterLoglari(detail);
+      setSelectedLogFileName(row.adi || `Dosya #${row.id}`);
+      setIsOpen(true);
+      return;
+    }
+
+    handlePreview(row.id, row.adi, row.durum);
+  };
+
   const handlePreview2 = async () => {
     if (isLoadingPreview !== null) return; // Prevent double-click
 
@@ -594,10 +620,12 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       if (!Array.isArray(dosyaBilgileri)) return false;
 
       const serverRows: DosyaType[] = dosyaBilgileri.map((dosya: DosyaType) => ({
+        ...dosya,
         id: dosya.id,
         adi: dosya.adi,
         olusturulmaTarihi: formatDosyaOlusturulmaTarihi(dosya.olusturulmaTarihi),
         durum: dosya.durum,
+        durumMesaji: (dosya as any).durumMesaji,
         progress: Number((dosya as any).progress ?? (dosya as any).Progress ?? 0),
       }));
       onServerRowsChange?.(serverRows);
@@ -613,6 +641,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
           adi: pending.fileName,
           olusturulmaTarihi: today,
           durum: pending.status,
+          durumMesaji: pending.durumMesaji,
           progress: 0,
         }));
 
@@ -627,7 +656,7 @@ const DosyaTable: React.FC<MyComponentProps> = ({
       const newRows: DosyaType[] = [...optimisticRows, ...displayServerRows];
 
       const nextSignature = newRows
-        .map((r) => `${r.id}|${r.adi}|${r.olusturulmaTarihi}|${r.durum}`)
+        .map((r) => `${r.id}|${r.adi}|${r.olusturulmaTarihi}|${r.durum}|${r.durumMesaji || ""}`)
         .join("~");
 
       if (lastRowsSignatureRef.current !== nextSignature) {
@@ -879,14 +908,14 @@ const DosyaTable: React.FC<MyComponentProps> = ({
                   <TableCell>{row.olusturulmaTarihi}</TableCell>
                   <TableCell>
                     <Chip
-                      label={row.durum}
+                      label={getDisplayStatus(row.durum)}
                       size="small"
                       clickable={openLogsFromStatusChip && canOpenLogsForStatusChip(row.durum)}
                       onClick={
                         openLogsFromStatusChip && canOpenLogsForStatusChip(row.durum)
                           ? (e) => {
                             e.stopPropagation();
-                            handlePreview(row.id, row.adi, row.durum);
+                            handleStatusDetail(row);
                           }
                           : undefined
                       }

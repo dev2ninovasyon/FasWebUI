@@ -69,6 +69,34 @@ export const deleteDosyaBilgisiMultiple = async (
   }
 };
 
+export const kaydetDosyaYuklemeHatasi = async (
+  denetciId: number,
+  denetlenenId: number,
+  yil: number,
+  tip: string,
+  dosyaAdi: string,
+  hataMesaji: string
+) => {
+  try {
+    const response = await apiFetch(
+      `/Veri/DosyaYuklemeHatasi?denetciId=${denetciId}&yil=${yil}&denetlenenId=${denetlenenId}&tip=${encodeURIComponent(tip)}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ dosyaAdi, hataMesaji }),
+      }
+    );
+
+    return response.ok;
+  } catch (error) {
+    console.log("Dosya yükleme hatası kaydedilemedi:", error);
+    return false;
+  }
+};
+
 export const getDefterYuklemeLoglari = async (id: number) => {
   try {
     const response = await apiFetch(`/Veri/EDefterYuklemeLoglari?id=${id}`, {

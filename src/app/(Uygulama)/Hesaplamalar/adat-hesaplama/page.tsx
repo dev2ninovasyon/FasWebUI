@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -142,6 +142,7 @@ interface AdatResult {
   genelToplamTLFaiz: number;
   ozetler: AdatOzet[];
   detaylar: AdatDetay[];
+  detayTotalCount?: number;
   uyarilar?: string[];
 }
 
@@ -333,6 +334,12 @@ const AdatHesaplamaPage = () => {
   const [exportingExcel, setExportingExcel] = useState(false);
   const [faizOraniTipi, setFaizOraniTipi] = useState("AVANS");
 
+  const [displayedRowCount, setDisplayedRowCount] = useState(20);
+  const [currentDetailPage, setCurrentDetailPage] = useState(1);
+  const [detailPageSize] = useState(20);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
   const selectedTip = useMemo(
     () => selectedKebir ? { ...selectedKebir, hesapTipi: hesapTipiBelirle(selectedKebir.kod) } : null,
     [selectedKebir]
@@ -344,14 +351,19 @@ const AdatHesaplamaPage = () => {
     return history.filter((item) => (item.hesaplamaAdi ?? "").toLowerCase().includes(q));
   }, [history, historySearch]);
 
+  const visibleDetaylar = useMemo(() => {
+    if (!result) return [];
+    return result.detaylar.slice(0, displayedRowCount);
+  }, [result, displayedRowCount]);
+
   const detayGruplari = useMemo(() => {
     const groups = new Map<string, AdatDetay[]>();
-    (result?.detaylar ?? []).forEach((row) => {
+    visibleDetaylar.forEach((row) => {
       if (!groups.has(row.kebirKodu)) groups.set(row.kebirKodu, []);
       groups.get(row.kebirKodu)!.push(row);
     });
     return Array.from(groups.entries()).map(([kebirKodu, rows]) => ({ kebirKodu, rows }));
-  }, [result]);
+  }, [visibleDetaylar]);
 
   const loadHistory = useCallback(async () => {
     if (!denetlenenId || !selectedYear) return;
@@ -419,15 +431,44 @@ const AdatHesaplamaPage = () => {
     }
   }, [denetciId, denetlenenId, selectedKebir, selectedTip, selectedYear, baslangicTarihi, bitisTarihi, hesaplamaAdi, makulKasaBakiyesi, faizOraniTipi, loadHistory]);
 
+  const loadDetailPage = useCallback(async (id: number, page: number) => {
+    if (detailLoading) return;
+    setDetailLoading(true);
+    try {
+      const response = await getAdatHesaplamaDetay(id, page, detailPageSize);
+      const nextResult: AdatResult | undefined = response ?? response?.data;
+      if (!nextResult) return null;
+
+      setResult((prev) => {
+        if (!prev || prev.hesaplamaId !== nextResult.hesaplamaId) {
+          return nextResult;
+        }
+        return {
+          ...prev,
+          ozetler: nextResult.ozetler,
+          detayTotalCount: nextResult.detayTotalCount,
+          detaylar: [...prev.detaylar, ...nextResult.detaylar],
+        } as AdatResult;
+      });
+      return nextResult;
+    } finally {
+      setDetailLoading(false);
+    }
+  }, [detailLoading, detailPageSize]);
+
   const selectHistoryItem = useCallback(async (id: number) => {
     setMessage(null);
-    const response = await getAdatHesaplamaDetay(id);
-    const nextResult: AdatResult | undefined = response?.data;
+    setDisplayedRowCount(detailPageSize);
+    setCurrentDetailPage(1);
+
+    const response = await getAdatHesaplamaDetay(id, 1, detailPageSize);
+    const nextResult: AdatResult | undefined = response ?? response?.data;
     if (nextResult) {
       setResult(nextResult);
       setActiveKebir(nextResult.ozetler?.[0]?.kebirKodu ?? "");
+      setCurrentDetailPage(1);
     }
-  }, []);
+  }, [detailPageSize]);
 
   const handleDelete = useCallback(async (id: number) => {
     setDeletingId(id);
@@ -538,6 +579,48 @@ const AdatHesaplamaPage = () => {
     setKebirLoaded(false);
     setKebirKodlari([]);
   }, [denetciId, denetlenenId, selectedYear, baslangicTarihi, bitisTarihi]);
+
+  // Scroll ile yükleme - IntersectionObserver
+  useEffect(() => {
+    if (!loaderRef.current || !result) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+
+        const totalRows = result.detayTotalCount ?? result.detaylar.length;
+        const hasTotalCount = result.detayTotalCount != null && result.detayTotalCount > 0;
+        const loadedRows = hasTotalCount ? result.detaylar.length : displayedRowCount;
+
+        if (hasTotalCount && loadedRows < totalRows) {
+          const nextPage = currentDetailPage + 1;
+          void loadDetailPage(result.hesaplamaId ?? 0, nextPage).then((next) => {
+            if (next) {
+              setCurrentDetailPage(nextPage);
+              setDisplayedRowCount((prev) => Math.min(prev + detailPageSize, totalRows));
+            }
+          });
+          return;
+        }
+
+        if (displayedRowCount < totalRows) {
+          setDisplayedRowCount((prev) => Math.min(prev + detailPageSize, totalRows));
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [result, displayedRowCount, currentDetailPage, detailPageSize, loadDetailPage]);
+
+  // Result değiştiğinde displayedRowCount'u sıfırla
+  useEffect(() => {
+    if (result) {
+      setDisplayedRowCount(detailPageSize);
+      setCurrentDetailPage(1);
+    }
+  }, [result?.hesaplamaId, detailPageSize]);
 
   const handleKebirOpen = useCallback(async () => {
     if (loadingKebir || kebirLoaded || !denetciId || !denetlenenId || !selectedYear) return;
@@ -715,33 +798,54 @@ const AdatHesaplamaPage = () => {
               {detayGruplari.filter((g) => g.kebirKodu === activeKebir).map((group) => {
                 const tip = group.rows[0]?.hesapTipi ?? "KASA_DISI_AKTIF_HESAPLAR";
                 const aktifKolonlar = gorunumModu === "standart" ? kolonlarStandart[tip] : kolonlarDetayli[tip];
+                const displayedRows = group.rows;
+                const totalRows = result.detayTotalCount ?? result.detaylar.length;
+                const loadedRows = result.detayTotalCount ? result.detaylar.length : displayedRowCount;
+                const hasMore = result.detayTotalCount ? loadedRows < totalRows : displayedRowCount < totalRows;
+
                 return (
-                  <TableContainer key={group.kebirKodu} component={Paper} variant="outlined" sx={{ maxHeight: 560 }}>
-                    <Table size="small" stickyHeader>
-                      <TableHead>
-                        <TableRow>
-                          {aktifKolonlar.map((col) => (
-                            <TableCell key={col} align={numericColumns.has(col) ? "right" : "left"}>{col}</TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {group.rows.map((row) => (
-                          <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
+                  <Box key={group.kebirKodu}>
+                    <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 560 }}>
+                      <Table size="small" stickyHeader>
+                        <TableHead>
+                          <TableRow>
                             {aktifKolonlar.map((col) => (
-                              <TableCell
-                                key={col}
-                                align={numericColumns.has(col) ? "right" : "left"}
-                                sx={numericColumns.has(col) ? getNegativeCellStyle(getNumericValue(row, col)) : undefined}
-                              >
-                                {cellValueForDisplay(row, col)}
-                              </TableCell>
+                              <TableCell key={col} align={numericColumns.has(col) ? "right" : "left"}>{col}</TableCell>
                             ))}
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                          {displayedRows.map((row) => (
+                            <TableRow key={`${row.kebirKodu}-${row.siraNo}`} hover>
+                              {aktifKolonlar.map((col) => (
+                                <TableCell
+                                  key={col}
+                                  align={numericColumns.has(col) ? "right" : "left"}
+                                  sx={numericColumns.has(col) ? getNegativeCellStyle(getNumericValue(row, col)) : undefined}
+                                >
+                                  {cellValueForDisplay(row, col)}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {hasMore && (
+                      <Box
+                        ref={loaderRef}
+                        sx={{
+                          py: 2,
+                          textAlign: "center",
+                          color: "text.secondary",
+                          fontSize: "0.875rem",
+                        }}
+                      >
+                        <CircularProgress size={24} sx={{ mr: 1 }} />
+                        Kaydı kaydırarak yükle... ({displayedRowCount} / {totalRows})
+                      </Box>
+                    )}
+                  </Box>
                 );
               })}
             </CardContent>

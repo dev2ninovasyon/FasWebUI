@@ -225,6 +225,8 @@ export const createAdatHesaplanmis = async (
           kurTipi,
           kaydet,
           faizOraniTipi,
+          page: 1,
+          pageSize: 20,
         }),
       }
     );
@@ -334,10 +336,19 @@ export const getAdatHesaplamalar = async (
   }
 };
 
-export const getAdatHesaplamaDetay = async (id: number) => {
+export const getAdatHesaplamaDetay = async (
+  id: number,
+  page?: number,
+  pageSize?: number
+) => {
   try {
+    const params = new URLSearchParams();
+    if (page && page > 0) params.append("page", page.toString());
+    if (pageSize && pageSize > 0) params.append("pageSize", pageSize.toString());
+
+    const query = params.toString() ? `?${params.toString()}` : "";
     const response = await apiFetch(
-      `/adat-hesaplama/${id}`,
+      `/adat-hesaplama/${id}${query}`,
       {
         method: "GET",
         headers: {
@@ -346,7 +357,8 @@ export const getAdatHesaplamaDetay = async (id: number) => {
       }
     );
     if (response.ok) {
-      return response.json();
+      const json = await response.json().catch(() => null);
+      return json?.data ?? json;
     } else {
       console.log("Adat hesaplama detayları getirilemedi");
     }

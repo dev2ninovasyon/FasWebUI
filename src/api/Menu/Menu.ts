@@ -88,6 +88,15 @@ const extractHitCount = (payload: unknown): number | null => {
   return null;
 };
 
+const readJsonOrNull = async <T = any>(response: Response): Promise<T | null> => {
+  if (response.status === 204) return null;
+
+  const text = await response.text();
+  if (!text.trim()) return null;
+
+  return JSON.parse(text) as T;
+};
+
 export const getMenus = async (): Promise<Menu[]> => {
   try {
     const response = await apiFetch("/Menu", {
@@ -97,7 +106,7 @@ export const getMenus = async (): Promise<Menu[]> => {
       },
     });
     if (response.ok) {
-      return response.json();
+      return (await readJsonOrNull<Menu[]>(response)) ?? [];
     }
     return [];
   } catch (error) {
@@ -115,7 +124,7 @@ export const getMenuUsageByMenuId = async (menuId: number): Promise<MenuKullanim
       },
     });
     if (response.ok) {
-      return response.json();
+      return (await readJsonOrNull<MenuKullanimBilgisi[]>(response)) ?? [];
     }
     return [];
   } catch (error) {
@@ -133,8 +142,8 @@ export const getMenuUsagePanelByMenuId = async (menuId: number): Promise<MenuUsa
       },
     });
     if (response.ok) {
-      const data = await response.json();
-      console.log("Menu Usage Panel Response:", data); // DEBUG: API yanıtını kontrol et
+      const data = await readJsonOrNull<any>(response);
+      if (!data) return null;
       
       // Map PascalCase backend response to camelCase frontend interface
       return {
@@ -184,7 +193,7 @@ export const incrementMenuUsageView = async (menuId: number): Promise<number | n
     });
 
     if (response.ok) {
-      const payload = await response.json();
+      const payload = await readJsonOrNull(response);
       return extractHitCount(payload);
     }
 

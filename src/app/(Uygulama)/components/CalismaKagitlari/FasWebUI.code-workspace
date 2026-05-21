@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../../../../../../../../FasAdminWebUI"
+		},
+		{
+			"path": "../../../../../../Fasymmbackend"
 		}
 	],
 	"settings": {

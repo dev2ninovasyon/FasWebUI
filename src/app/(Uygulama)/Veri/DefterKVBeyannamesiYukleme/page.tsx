@@ -29,6 +29,7 @@ import { createAuthorizedAxiosConfig } from "@/utils/authSession";
 
 import axios, { AxiosProgressEvent } from "axios";
 import { enqueueSnackbar } from "notistack";
+import { kaydetDosyaYuklemeHatasi } from "@/api/Dosya/DosyaBilgileri";
 
 const BCrumb = [
   {
@@ -75,6 +76,7 @@ interface ProgressInfo {
 interface PendingUploadRow {
   fileName: string;
   status: string;
+  durumMesaji?: string;
 }
 
 const MAX_FILES_PER_UPLOAD = 365;
@@ -146,6 +148,48 @@ const getStatusOrder = (status: string) => {
   if (isCompletedStatus(status)) return 5;
   return 6;
 };
+
+const getUploadErrorMessage = (error: any) => {
+  const data = error?.response?.data;
+  const statusCode = error?.response?.status;
+  const message =
+    data?.message ??
+    data?.Message ??
+    data?.title ??
+    data?.Title ??
+    data?.error ??
+    data?.Error ??
+    error?.message;
+
+  if (Array.isArray(data?.errors)) {
+    const firstError = data.errors.find(Boolean);
+    if (firstError) return String(firstError);
+  }
+
+  if (data?.errors && typeof data.errors === "object") {
+    const firstError = Object.values(data.errors)
+      .flat()
+      .find(Boolean);
+    if (firstError) return String(firstError);
+  }
+
+  const rawMessage = String(message || "");
+  if (/multipart body length limit/i.test(rawMessage) || /exceeded/i.test(rawMessage)) {
+    const bytesMatch = rawMessage.match(/limit\s+(\d+)/i);
+    const maxMb = bytesMatch ? Math.floor(Number(bytesMatch[1]) / 1024 / 1024) : null;
+    return maxMb
+      ? `Dosya boyutu sistem limitini aşıyor. Bu ekranda tek dosya için en fazla ${maxMb} MB yüklenebilir. Dosyayı küçültüp tekrar yükleyin.`
+      : "Dosya boyutu sistem limitini aşıyor. Dosyayı küçültüp tekrar yükleyin.";
+  }
+  if (statusCode === 400) return message ? String(message) : "Dosya formatı veya içeriği beklenen yapıda değil.";
+  if (statusCode === 401 || statusCode === 403) return "Oturum veya yetki sorunu oluştu. Sayfayı yenileyip tekrar deneyin.";
+  if (statusCode === 413) return "Dosya boyutu sistem limitini aşıyor.";
+  if (statusCode >= 500) return "Sunucu dosyayı işlerken hata oluştu. Dosya içeriği veya sistem logları kontrol edilmeli.";
+  if (rawMessage.toLowerCase().includes("network")) return "Sunucuya ulaşılamadı. İnternet bağlantısı veya API erişimi kontrol edilmeli.";
+
+  return message ? String(message) : "Dosya yüklenemedi. Dosya adı, uzantısı ve içeriği kontrol edilmeli.";
+};
+
 const runWithConcurrencyLimit = async <T,>(
   items: T[],
   limit: number,
@@ -207,6 +251,7 @@ const Page: React.FC = () => {
   const [pendingUploadRows, setPendingUploadRows] = useState<PendingUploadRow[]>([]);
   const [trackedFileNames, setTrackedFileNames] = useState<string[]>([]);
   const pendingCompletionRef = useRef(false);
+  const failedUploadRowsRef = useRef<Map<string, PendingUploadRow>>(new Map());
   const optimisticUploadTimersRef = useRef<Map<string, ReturnType<typeof setInterval>>>(new Map());
   const sortedProgressInfos = useMemo(
     () =>
@@ -217,17 +262,43 @@ const Page: React.FC = () => {
       }),
     [progressInfos]
   );
-  const upsertPendingUploadRows = useCallback((fileNames: string[], status: string) => {
+  const upsertPendingUploadRows = useCallback((fileNames: string[], status: string, durumMesaji?: string) => {
     if (!fileNames.length) return;
 
     setPendingUploadRows((prev) => {
       const map = new Map<string, PendingUploadRow>(prev.map((row) => [row.fileName, row]));
       for (const fileName of fileNames) {
-        map.set(fileName, { fileName, status });
+        map.set(fileName, { fileName, status, durumMesaji });
       }
       return Array.from(map.values());
     });
   }, []);
+  const recordUploadFailure = useCallback(
+    async (fileName: string, error: any) => {
+      const message = getUploadErrorMessage(error);
+      const status = "Hata";
+      const row = { fileName, status, durumMesaji: message };
+      failedUploadRowsRef.current.set(fileName, row);
+      upsertPendingUploadRows([fileName], status, message);
+      setProgressInfos((prev) =>
+        prev.map((info) =>
+          info.fileName === fileName
+            ? { ...info, status, processPercentage: 100, percentage: 100 }
+            : info
+        )
+      );
+      await kaydetDosyaYuklemeHatasi(
+        user.denetciId || 0,
+        user.denetlenenId || 0,
+        user.yil || 0,
+        fileType,
+        fileName,
+        message
+      );
+      return status;
+    },
+    [fileType, upsertPendingUploadRows, user.denetciId, user.denetlenenId, user.yil]
+  );
   const stopOptimisticUploadProgress = useCallback((fileNames?: string[]) => {
     const timers = optimisticUploadTimersRef.current;
     const namesToStop = fileNames && fileNames.length ? fileNames : Array.from(timers.keys());
@@ -340,6 +411,7 @@ const Page: React.FC = () => {
       }
 
       const currentBatchNames = validFiles.map((file) => file.name);
+      currentBatchNames.forEach((fileName) => failedUploadRowsRef.current.delete(fileName));
       setTrackedFileNames((prev) => Array.from(new Set([...prev, ...currentBatchNames])));
       upsertPendingUploadRows(currentBatchNames, "Upload Ediliyor...");
 
@@ -391,6 +463,7 @@ const Page: React.FC = () => {
                 }
               );
               if (res.success) {
+                failedUploadRowsRef.current.delete(file.name);
                 stopOptimisticUploadProgress([file.name]);
                 upsertPendingUploadRows([file.name], "Tamamlandı");
                 setProgressInfos((prev) => {
@@ -411,15 +484,8 @@ const Page: React.FC = () => {
               }
             } catch (error: any) {
               stopOptimisticUploadProgress([file.name]);
-              upsertPendingUploadRows([file.name], "Hata!");
-              setProgressInfos((prev) => {
-                return prev.map((info) =>
-                  info.fileName === file.name
-                    ? { ...info, status: "Hata!", processPercentage: 100, percentage: 100 }
-                    : info
-                );
-              });
-              enqueueSnackbar(error.message || "Bilinmeyen bir hata oluştu.", { variant: "error" });
+              const status = await recordUploadFailure(file.name, error);
+              enqueueSnackbar(status, { variant: "error" });
             }
           });
           await Promise.all(uploadPromises);
@@ -497,6 +563,7 @@ const Page: React.FC = () => {
                   }, user.token)
                 );
 
+                failedUploadRowsRef.current.delete(file.name);
                 stopOptimisticUploadProgress([file.name]);
                 upsertPendingUploadRows([file.name], "Sıraya Alındı.");
                 setProgressInfos((prev) =>
@@ -514,17 +581,10 @@ const Page: React.FC = () => {
                       : info
                   )
                 );
-              } catch (fileError) {
+              } catch (fileError: any) {
                 hasUploadFailure = true;
                 stopOptimisticUploadProgress([file.name]);
-                upsertPendingUploadRows([file.name], "Hata!");
-                setProgressInfos((prev) =>
-                  prev.map((info) =>
-                    info.fileName === file.name
-                      ? { ...info, status: "Hata!", processPercentage: 100, percentage: 100 }
-                      : info
-                  )
-                );
+                await recordUploadFailure(file.name, fileError);
               }
             }
           );
@@ -545,7 +605,7 @@ const Page: React.FC = () => {
 
       } catch (error: any) {
         stopOptimisticUploadProgress(currentBatchNames);
-        upsertPendingUploadRows(currentBatchNames, "Hata!");
+        await Promise.all(currentBatchNames.map((fileName) => recordUploadFailure(fileName, error)));
         console.log("Dosya yüklenirken hata oluştu:", error);
         enqueueSnackbar("İşlem sırasında bir hata oluştu.", { variant: "error" });
         setUploading(false);
@@ -554,6 +614,7 @@ const Page: React.FC = () => {
     [
       fileType,
       fetchedData,
+      recordUploadFailure,
       startOptimisticUploadProgress,
       stopOptimisticUploadProgress,
       upsertPendingUploadRows,
@@ -649,20 +710,33 @@ const Page: React.FC = () => {
     }
 
     if (pendingCompletionRef.current) {
+      const failedRowsByName = new Map<string, PendingUploadRow>(failedUploadRowsRef.current);
+      pendingUploadRows
+        .filter((row) => isErrorStatus(row.status))
+        .forEach((row) => failedRowsByName.set(row.fileName, row));
+      const failedPendingRows = Array.from(failedRowsByName.values());
+      const hasFailedRows = failedPendingRows.length > 0;
+
       setUploading(false);
       setTrackedFileNames([]);
-      setPendingUploadRows([]);
-      setProgressInfos([]);
-      enqueueSnackbar("Tüm dosyalar işlendi.", { variant: "success" });
+      setPendingUploadRows(failedPendingRows);
+      setProgressInfos((prev) => prev.filter((info) => isErrorStatus(info.status)));
+      enqueueSnackbar(
+        hasFailedRows
+          ? "Bazı dosyalar yüklenemedi. Hatalı dosyalar listede tutuldu."
+          : "Tüm dosyalar işlendi.",
+        { variant: hasFailedRows ? "warning" : "success" }
+      );
       pendingCompletionRef.current = false;
     }
-  }, [dosyaYuklendiMi, uploading]);
+  }, [dosyaYuklendiMi, pendingUploadRows, uploading]);
 
   useEffect(() => {
     if (!rows.length || !pendingUploadRows.length) return;
 
     const hasServerRow = (fileName: string) =>
       rows.some((row) => {
+        if (row.id < 0) return false;
         const left = (row.adi || "").toLocaleLowerCase("tr-TR").trim();
         const right = (fileName || "").toLocaleLowerCase("tr-TR").trim();
         return left === right || left.includes(right) || right.includes(left);
