@@ -388,6 +388,14 @@ export function createMenuItems(
             },
             {
               id: uniqueId(),
+              title: "İrsaliye",
+              customIcon:
+                "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
+              icon: IconPoint,
+              href: "/Veri/Irsaliye",
+            },
+            {
+              id: uniqueId(),
               title: "E-Defter İnceleme",
               customIcon: "public/images/svgs/veri/defter-inceleme.svg",
               icon: IconPoint,

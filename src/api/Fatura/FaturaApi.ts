@@ -470,6 +470,117 @@ export type MukerrerFaturaNoGrubu = {
   faturalar?: FaturaEdefterEslesmeItem[];
 };
 
+export type FaturaDetailItem = Fatura & {
+  vergiHaricTutar?: number | null;
+  kdvTutari?: number | null;
+  invoiceTypeCode?: string | null;
+  profileID?: string | null;
+  tevkifatKodu?: string | null;
+  tevkifatAciklamasi?: string | null;
+  tevkifatOrani?: number | null;
+  tevkifatTutari?: number | null;
+  saticiyaKalanKdv?: number | null;
+};
+
+export type FaturaFilterOptions = Record<string, string[]>;
+
+export async function getFilteredPagedFaturalar(
+  user: any,
+  page: number,
+  pageSize: number,
+  tip: string,
+  filters: Record<string, string | null | undefined>
+): Promise<PagedResult<FaturaDetailItem>> {
+  const body = Object.fromEntries(
+    Object.entries(filters).filter(([, v]) => v != null && v !== "").map(([k, v]) => [k, [String(v)]])
+  );
+  const r = await apiFetch(
+    `/Invoices/GetFilteredPagedFaturalar?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&page=${page}&pageSize=${pageSize}&tip=${encodeURIComponent(tip)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      cache: "no-store",
+    }
+  );
+  if (!r.ok) throw new Error("Filtrelenmiş faturalar alınamadı");
+  const json = await r.json();
+  return {
+    items: (json.items ?? json.Items ?? []).map((x: any) => ({
+      id: x.id ?? x.Id,
+      faturaNumarasi: x.faturaNumarasi ?? x.FaturaNumarasi ?? null,
+      faturaTarihi: x.faturaTarihi ?? x.FaturaTarihi ?? null,
+      paraBirimi: x.paraBirimi ?? x.ParaBirimi ?? null,
+      odenecekTutar: Number(x.odenecekTutar ?? x.OdenecekTutar ?? 0),
+      vergiHaricTutar: x.vergiHaricTutar ?? x.VergiHaricTutar ?? null,
+      kdvTutari: x.kdvTutari ?? x.KdvTutari ?? null,
+      invoiceTypeCode: x.invoiceTypeCode ?? x.InvoiceTypeCode ?? null,
+      profileID: x.profileID ?? x.ProfileID ?? null,
+      tevkifatKodu: x.tevkifatKodu ?? x.TevkifatKodu ?? null,
+      tevkifatOrani: x.tevkifatOrani ?? x.TevkifatOrani ?? null,
+      tevkifatTutari: x.tevkifatTutari ?? x.TevkifatTutari ?? null,
+      saticiyaKalanKdv: x.saticiyaKalanKdv ?? x.SaticiyaKalanKdv ?? null,
+      faturaDosyaId: x.faturaDosyaId ?? x.FaturaDosyaId ?? null,
+      tedarikci: x.tedarikci ?? x.Tedarikci ?? null,
+      alici: x.alici ?? x.Alici ?? null,
+      faturaSatirlari: (x.faturaSatirlari ?? x.FaturaSatirlari ?? []).map((s: any) => ({
+        id: s.id ?? s.Id,
+        aciklama: s.aciklama ?? s.Aciklama ?? null,
+        miktar: Number(s.miktar ?? s.Miktar ?? 0),
+        birimKodu: s.birimKodu ?? s.BirimKodu ?? null,
+        birimFiyat: Number(s.birimFiyat ?? s.BirimFiyat ?? 0),
+        satirToplamTutar: Number(s.satirToplamTutar ?? s.SatirToplamTutar ?? 0),
+        faturaId: s.faturaId ?? s.FaturaId ?? null,
+        vergiId: s.vergiId ?? s.VergiId ?? null,
+        vergi: s.vergi ?? s.Vergi ?? null,
+      })),
+      vergiler: x.vergiler ?? x.Vergiler ?? [],
+    })),
+    totalCount: Number(json.totalCount ?? json.TotalCount ?? 0),
+    page: Number(json.page ?? json.Page ?? page),
+    pageSize: Number(json.pageSize ?? json.PageSize ?? pageSize),
+  };
+}
+
+export async function getYuklenenFaturaTipleri(user: any): Promise<string[]> {
+  const r = await apiFetch(
+    `/Invoices/GetYuklenenFaturaTipleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
+    { cache: "no-store" }
+  );
+  if (!r.ok) throw new Error("Fatura tipleri alınamadı");
+  return r.json();
+}
+
+export async function getFiltreSecenekleri(user: any, tip?: string): Promise<FaturaFilterOptions> {
+  const url = tip
+    ? `/Invoices/GetFiltreSecenekleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${encodeURIComponent(tip)}`
+    : `/Invoices/GetFiltreSecenekleri?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`;
+  const r = await apiFetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error("Filtre seçenekleri alınamadı");
+  const data = await r.json();
+  return Object.fromEntries(
+    Object.entries(data ?? {}).map(([key, value]) => [key, Array.isArray(value) ? value.map(String) : []])
+  );
+}
+
+export async function downloadFaturaDosyasi(user: any, dosyaId: string, format: "pdf" | "xml" = "xml"): Promise<Blob> {
+  const r = await apiFetch(
+    `/Invoices/DownloadFaturaDosyasi?dosyaId=${dosyaId}&denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&format=${format}`
+  );
+  if (!r.ok) throw new Error("Dosya indirilemedi");
+  return r.blob();
+}
+
+export async function downloadFaturaKontrolRaporuWord(
+  user: any, month: number, tip: string, kontrol: string, tolerance = 1
+): Promise<Blob> {
+  const r = await apiFetch(
+    `/Invoices/ExportFaturaKontrolRaporuWord?month=${month}&tip=${encodeURIComponent(tip)}&kontrol=${encodeURIComponent(kontrol)}&tolerance=${tolerance}&denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`
+  );
+  if (!r.ok) throw new Error("Word raporu alınamadı");
+  return r.blob();
+}
+
 export type FaturaEdefterEslesmeAnalizi = {
   month: number;
   tip: string;
