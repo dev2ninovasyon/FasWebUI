@@ -305,3 +305,199 @@ export async function getReceivedInvoiceMatches(user: any): Promise<ReceivedInvo
   return r.json();
 }
 
+export type FaturaYuklemeGecmisiDto = {
+  uploadSessionId: string;
+  islemAdi: string;
+  tip: string;
+  baslamaTarihi: string;
+  dosyaSayisi: number;
+  basariliDosyaSayisi: number;
+  hataliDosyaSayisi: number;
+  mukerrerDosyaSayisi: number;
+  batchSayisi: number;
+  durum: string;
+  durumMesaji?: string;
+};
+
+export async function getGroupedYuklemeGecmisi(user: any): Promise<FaturaYuklemeGecmisiDto[]> {
+  const cacheBust = Date.now();
+  const r = await apiFetch(
+    `/Invoices/GetGroupedYuklemeGecmisi?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&_=${cacheBust}`,
+    { cache: "no-store", headers: { accept: "application/json", "Cache-Control": "no-cache", Pragma: "no-cache" } }
+  );
+  if (!r.ok) throw new Error("Gruplanmış yükleme geçmişi alınamadı");
+  return r.json();
+}
+
+export type FaturaBatchDetayDto = {
+  id: string;
+  batchNo: number;
+  toplamBatch: number;
+  islemAdi: string;
+  dosyaSayisi: number;
+  basariliDosyaSayisi: number;
+  hataliDosyaSayisi: number;
+  durum: string;
+  durumMesaji?: string;
+  baslamaTarihi: string;
+  bitisTarihi?: string;
+};
+
+export async function getBatchDetaylari(user: any, uploadSessionId: string): Promise<FaturaBatchDetayDto[]> {
+  const r = await apiFetch(
+    `/Invoices/GetBatchDetaylari?uploadSessionId=${encodeURIComponent(uploadSessionId)}&denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}`,
+    { cache: "no-store", headers: { accept: "application/json" } }
+  );
+  if (!r.ok) throw new Error("Batch detayları alınamadı");
+  return r.json();
+}
+
+export type UploadFaturaKayitDto = {
+  id: string;
+  xmlDosyaId: string;
+  faturaNo?: string | null;
+  ettn?: string | null;
+  faturaTarihi?: string | null;
+  saticiVkn?: string | null;
+  saticiUnvan?: string | null;
+  aliciVkn?: string | null;
+  aliciUnvan?: string | null;
+  invoiceTypeCode?: string | null;
+  profileID?: string | null;
+  matrah?: number | null;
+  kdvTutari?: number | null;
+  tevkifatKodu?: string | null;
+  tevkifatTutari?: number | null;
+  durum: string;
+  hataMesaji?: string | null;
+  dosyaAdi?: string | null;
+  paketId: string;
+  uploadSessionId: string;
+};
+
+export type UploadFaturaPagedResult = {
+  items: UploadFaturaKayitDto[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+};
+
+export async function getUploadSessionFaturalar(
+  user: any,
+  uploadSessionId: string,
+  page: number = 1,
+  pageSize: number = 50,
+  search?: string,
+  durum?: string,
+  invoiceTypeCode?: string
+): Promise<UploadFaturaPagedResult> {
+  const params = new URLSearchParams({
+    uploadSessionId,
+    denetciId: String(user.denetciId),
+    yil: String(user.yil),
+    denetlenenId: String(user.denetlenenId),
+    page: String(page),
+    pageSize: String(pageSize),
+  });
+  if (search) params.set("search", search);
+  if (durum) params.set("durum", durum);
+  if (invoiceTypeCode) params.set("invoiceTypeCode", invoiceTypeCode);
+
+  const r = await apiFetch(`/Invoices/GetUploadSessionFaturalar?${params}`, {
+    cache: "no-store",
+    headers: { accept: "application/json" },
+  });
+  if (!r.ok) throw new Error("Oturum faturaları alınamadı");
+  return r.json();
+}
+
+export type EDefterEslesmeKaydi = {
+  id: string;
+  yevmiyeTarih?: string | null;
+  yevmiyeNo?: number | null;
+  kebirKodu?: number | null;
+  hesapAdi?: string | null;
+  aciklama?: string | null;
+  borc: number;
+  alacak: number;
+  belgeTuru?: string | null;
+  faturaNo?: string | null;
+  faturaTarihi?: string | null;
+  paraBirimi?: string | null;
+  orjinalTutar?: number | null;
+  orjinalParaBirimi?: string | null;
+  orjinalDovizKuru?: number | null;
+};
+
+export type FaturaEdefterEslesmeItem = {
+  faturaId: string;
+  faturaDosyaId?: string | null;
+  faturaNumarasi: string;
+  faturaTarihi?: string | null;
+  tarafAdi?: string | null;
+  tarafVergiNo?: string | null;
+  faturaTutari: number;
+  paraBirimi?: string | null;
+  defterBorcToplami: number;
+  defterAlacakToplami: number;
+  kontrolTutari: number;
+  fark: number;
+  durum: string;
+  aciklama: string;
+  defterKayitlari: EDefterEslesmeKaydi[];
+};
+
+export type FaturaEdefterEslesmeSummary = {
+  faturaSayisi: number;
+  defterKaydiSayisi: number;
+  eslesenKayitSayisi: number;
+  tutarUyumluSayisi: number;
+  tutarFarkliSayisi: number;
+  defterdeOlmayanFaturaSayisi: number;
+  faturadaOlmayanDefterKaydiSayisi: number;
+  mukerrerFaturaNoSayisi: number;
+  mukerrerFaturaKaydiSayisi: number;
+  toplamTutarFarki: number;
+};
+
+export type MukerrerFaturaNoGrubu = {
+  faturaNumarasi: string;
+  normalizeFaturaNumarasi: string;
+  tekrarSayisi: number;
+  toplamTutar: number;
+  paraBirimi?: string | null;
+  tarafAdlari?: string[];
+  faturalar?: FaturaEdefterEslesmeItem[];
+};
+
+export type FaturaEdefterEslesmeAnalizi = {
+  month: number;
+  tip: string;
+  durum: string;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  tolerance: number;
+  summary: FaturaEdefterEslesmeSummary;
+  items: FaturaEdefterEslesmeItem[];
+  mukerrerFaturaGruplari: MukerrerFaturaNoGrubu[];
+};
+
+export async function getEdefterEslesmeAnalizi(
+  user: any,
+  month: number,
+  tip: string = "Alınan",
+  durum: string = "all",
+  page: number = 1,
+  pageSize: number = 100,
+  tolerance: number = 1
+): Promise<FaturaEdefterEslesmeAnalizi> {
+  const qs = `denetciId=${user.denetciId}&denetlenenId=${user.denetlenenId}&yil=${user.yil}&month=${month}&tip=${encodeURIComponent(tip)}&durum=${encodeURIComponent(durum)}&page=${page}&pageSize=${pageSize}&tolerance=${tolerance}`;
+  const r = await apiFetch(`/Invoices/EdefterEslesmeAnalizi?${qs}`, {
+    cache: "no-store",
+    headers: { accept: "application/json" },
+  });
+  if (!r.ok) throw new Error("E-Defter eşleşme analizi alınamadı");
+  return r.json();
+}
+
