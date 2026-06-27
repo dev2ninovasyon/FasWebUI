@@ -800,7 +800,8 @@ const FisGirisi: React.FC<Props> = ({
   } as const;
 
   const handleCreateFisGirisiVerisi = async () => {
-    const validRows = filledRows;
+    const liveData: GridRow[] = hotTableComponent.current?.hotInstance?.getData() ?? fetchedData;
+    const validRows = liveData.filter((row) => !isGridRowEmpty(row));
 
     if (validRows.length === 0) {
       showSnackbar("Kaydetmeden önce en az bir satır doldurmalısınız.", "warning");
@@ -888,32 +889,21 @@ const FisGirisi: React.FC<Props> = ({
 
   return (
     <>
-      <Grid container spacing={2} sx={{ mb: 2, position: "sticky", top: 80, zIndex: 1000, backgroundColor: theme.palette.background.default }}>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 12,
-          }}
-        >
-          <Alert severity="info" sx={{ mb: 1.5 }}>
-            `1` numaralı fiş açılış fişi için ayrılmıştır. Bu ekranda yeni fişler varsayılan
-            olarak `2` numarasıyla başlar ve açılış fişi mantığına göre `1` numarasıyla kayıt
-            oluşturulamaz.
+      <Grid container sx={{ mb: 2, position: "sticky", top: 80, zIndex: 1000, backgroundColor: theme.palette.background.default }}>
+        <Grid size={{ xs: 12 }}>
+          <Alert severity="info" sx={{ mb: 1, py: 0 }} icon={false}>
+            <Typography variant="caption">
+              Fiş no <strong>1</strong> açılış fişi için ayrılmıştır. Yeni fişler <strong>2</strong> numarasından başlar.
+            </Typography>
           </Alert>
         </Grid>
-        <Grid
-          size={{
-            xs: 12,
-            lg: 12,
-          }}
-        >
+        <Grid size={{ xs: 12 }}>
+          <Box sx={{ overflowX: "auto", maxWidth: "100%" }}>
           <CustomHotTable theme={customizer.activeMode === "dark" ? "ht-theme-horizon-dark" : "ht-theme-horizon"}
             style={{
               width: "100%",
               minHeight: "200px",
               maxHeight: 420,
-              maxWidth: "100%",
-              overflow: "auto",
             }}
             language={dictionary.languageCode}
             ref={hotTableComponent}
@@ -972,6 +962,7 @@ const FisGirisi: React.FC<Props> = ({
               },
             }}
           />
+          </Box>
         </Grid>
       </Grid>
 
@@ -1087,7 +1078,7 @@ const FisGirisi: React.FC<Props> = ({
           sx={{
             borderColor: customizer.activeMode === "dark" ? "#10141c" : "#cccccc",
             borderRadius: 1,
-            overflow: "hidden",
+            overflowX: "auto",
           }}
         >
           <Table

@@ -81,9 +81,9 @@ const Page: React.FC = () => {
   };
 
   const fetchData = async () => {
+    if (!user.denetimTuru) return;
     try {
-      const genelHesapPlaniVerileri = await getGenelHesapPlani(user.denetimTuru || ""
-      );
+      const genelHesapPlaniVerileri = await getGenelHesapPlani(user.denetimTuru);
 
       const rowsAll: Veri[] = [];
 
@@ -106,12 +106,12 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [user.denetimTuru]);
 
   return (
     <PageContainer title="Fiş Girişi" description="this is Fiş Girişi">
       <Breadcrumb title="Fiş Girişi" items={BCrumb} />
-      <Grid container>
+      <Grid container sx={{ overflow: "hidden", minWidth: 0 }}>
         <Grid
           mb={2}
           size={{

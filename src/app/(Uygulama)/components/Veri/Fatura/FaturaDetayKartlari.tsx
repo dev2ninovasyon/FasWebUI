@@ -83,7 +83,7 @@ export default function FaturaDetayKartlari({ fatura, tip }: Props) {
               <Typography variant="body2">
                 <strong>Vergi:</strong> {toplamVergi.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} ({toplamMatrah.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} matrah)
               </Typography>
-              <Typography variant="body2"><strong>Durum:</strong> {detay?.durum ? <Chip label={detay.durum} size="small" color={detay.durum === "Başarılı" ? "success" : "default"} /> : "-"}</Typography>
+              <Typography variant="body2" component="div"><strong>Durum:</strong> {detay?.durum ? <Chip label={detay.durum} size="small" color={detay.durum === "Başarılı" ? "success" : "default"} /> : "-"}</Typography>
               <Typography variant="body2" sx={{ wordBreak: "break-word" }}>
                 <strong>Dosya:</strong> {detay?.dosyaAdi ?? "-"}
               </Typography>
