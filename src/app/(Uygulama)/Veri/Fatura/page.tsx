@@ -68,10 +68,10 @@ const Page: React.FC = () => {
 
   const fetchIslemler = useCallback(async () => {
     try { const d = await getGroupedYuklemeGecmisi(user); setIslemler(d); return d; }
-    catch { return undefined; }
-  }, [user]);
+    catch { stopPolling(); return undefined; }
+  }, [user, stopPolling]);
 
-  const loadIslemler = useCallback(async () => { setLoading(true); await fetchIslemler(); setLoading(false); }, [fetchIslemler]);
+  const loadIslemler = useCallback(async () => { setLoading(true); const data = await fetchIslemler(); setLoading(false); return data; }, [fetchIslemler]);
 
   const startPolling = useCallback(() => {
     if (pollRef.current !== null) return;
@@ -85,7 +85,11 @@ const Page: React.FC = () => {
     }, 5000);
   }, [fetchIslemler, stopPolling]);
 
-  const refreshAll = useCallback(async () => { await loadIslemler(); startPolling(); }, [loadIslemler, startPolling]);
+  const refreshAll = useCallback(async () => {
+    const data = await loadIslemler();
+    const hasActive = data?.some(i => i.durum === "Kuyrukta" || i.durum === "Ä°ÅŸleniyor");
+    if (hasActive) startPolling();
+  }, [loadIslemler, startPolling]);
 
   useEffect(() => { void refreshAll(); }, [refreshAll]);
   useEffect(() => () => stopPolling(), [stopPolling]);

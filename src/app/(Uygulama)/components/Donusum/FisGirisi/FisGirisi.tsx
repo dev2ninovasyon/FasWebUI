@@ -163,18 +163,17 @@ const parseFisNo = (value: unknown): number | null => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const isGridRowEmpty = (row: GridRow): boolean =>
-  row.every((value, index) => {
-    if (index === 0) {
-      return value === null || value === undefined || value === "";
-    }
-
+const isGridRowEmpty = (row: GridRow): boolean => {
+  for (let index = 1; index < row.length; index += 1) {
+    const value = row[index];
     if (typeof value === "number") {
-      return value === 0;
+      if (value !== 0) return false;
+    } else {
+      if (value !== null && value !== undefined && String(value).trim() !== "") return false;
     }
-
-    return value === null || value === undefined || String(value).trim() === "";
-  });
+  }
+  return true;
+};
 
 const FisGirisi: React.FC<Props> = ({
   konsolidasyonMu = false,
