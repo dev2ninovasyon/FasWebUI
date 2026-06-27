@@ -1,12 +1,12 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import CustomTextField from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomTextField";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { getKullaniciRol } from "@/api/Sozlesme/DenetimKadrosuAtama";
-import { getAcceptedYears } from "@/api/CalismaKagitlari/Teklif";
 
 const years = [
+  { label: "2026", year: 2026 },
   { label: "2025", year: 2025 },
   { label: "2024", year: 2024 },
   { label: "2023", year: 2023 },
@@ -16,11 +16,13 @@ const years = [
   { label: "2019", year: 2019 },
   { label: "2018", year: 2018 },
 ];
+
 interface YearBoxProps {
   onSelect: (selectedYear: string) => void;
   onSelectYear: (selectedYear: number) => void;
   selectedDenetlenenId: number;
   currentYear?: number;
+  selectedDenetimTuru?: string;
 }
 
 interface Year {
@@ -33,41 +35,35 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
   onSelectYear,
   selectedDenetlenenId,
   currentYear,
+  selectedDenetimTuru,
 }) => {
   const user = useSelector((state: AppState) => state.userReducer);
 
   const [rows, setRows] = useState<Year[]>([]);
 
+  const isKabulEdildi = Boolean(selectedDenetimTuru && selectedDenetimTuru !== "Seçiniz" && selectedDenetimTuru.trim() !== "");
+
   const fetchData = async () => {
     try {
       if (!selectedDenetlenenId) return;
 
-      const [kullaniciRolVerileri, acceptedYears] = await Promise.all([
-        getKullaniciRol(user.id || 0, selectedDenetlenenId),
-        getAcceptedYears(selectedDenetlenenId),
-      ]);
-
       if (user.yetki === "DenetciAdmin") {
-        const adminRows = years.map((y) => {
-          const isAccepted = acceptedYears?.includes(y.year);
-          return {
-            ...y,
-            label: isAccepted ? `${y.year} - (Kabul Edildi)` : y.year.toString(),
-          };
-        });
+        const adminRows = years.map((y) => ({
+          ...y,
+          label: isKabulEdildi ? `${y.year} - (Kabul Edildi)` : y.year.toString(),
+        }));
         setRows(adminRows);
-      } else if (Array.isArray(kullaniciRolVerileri)) {
-        const newRows = kullaniciRolVerileri.map((kullaniciRol: any) => {
-          const isAccepted = acceptedYears?.includes(kullaniciRol.yil);
-          return {
+      } else {
+        const kullaniciRolVerileri = await getKullaniciRol(user.id || 0, selectedDenetlenenId);
+        if (Array.isArray(kullaniciRolVerileri)) {
+          const newRows = kullaniciRolVerileri.map((kullaniciRol: any) => ({
             year: kullaniciRol.yil,
-            label: isAccepted
+            label: isKabulEdildi
               ? `${kullaniciRol.yil} - (Kabul Edildi)`
               : kullaniciRol.yil.toString(),
-          };
-        });
-
-        setRows(newRows);
+          }));
+          setRows(newRows);
+        }
       }
     } catch (error) {
       console.log("YearBox fetchData hatası:", error);
@@ -76,9 +72,9 @@ const YearBoxAutocomplete: React.FC<YearBoxProps> = ({
 
   useEffect(() => {
     if (user.token && selectedDenetlenenId) {
-      fetchData();
+      void fetchData();
     }
-  }, [selectedDenetlenenId, user.token, user.id]);
+  }, [selectedDenetlenenId, user.token, user.id, selectedDenetimTuru]);
 
   const options = rows;
   const selectedValue = options.find(y => y.year === currentYear) || null;

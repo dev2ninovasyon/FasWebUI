@@ -33,9 +33,26 @@ interface Veri {
   aciklama: string;
 }
 
+const COL_HEADERS = [
+  "Id", "No", "Tip", "Detay Kodu", "Hesap Adı", "Borç", "Alacak", "Açıklama",
+];
+
+const COLUMNS = [
+  { type: "numeric", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+  { type: "numeric", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+  { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+  { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+  { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+  { type: "numeric", numericFormat: { pattern: "0,0.00", columnSorting: true, culture: "tr-TR" }, readOnly: true, editor: false, className: "htRight" },
+  { type: "numeric", numericFormat: { pattern: "0,0.00", columnSorting: true, culture: "tr-TR" }, readOnly: true, editor: false, className: "htRight" },
+  { type: "text", columnSorting: true, readOnly: true, editor: false, className: "htLeft" },
+];
+
 const FisListesi = () => {
   const hotTableContainer = useRef<HTMLDivElement>(null);
   const hotTableInstanceRef = useRef<Handsontable | null>(null);
+  const handleUpdateFisDurumuRef = useRef<(fisNo: number) => void>(() => {});
+  const afterRenderer2Ref = useRef<(...args: any[]) => void>(() => {});
 
   const user = useSelector((state: AppState) => state.userReducer);
   const customizer = useSelector((state: AppState) => state.customizer);
@@ -68,83 +85,6 @@ const FisListesi = () => {
     loadStyles();
   }, [customizer.activeMode]);
 
-  const colHeaders = [
-    "Id",
-    "No",
-    "Tip",
-    "Detay Kodu",
-    "Hesap Adı",
-    "Borç",
-    "Alacak",
-    "Açıklama",
-  ];
-
-  const columns = [
-    {
-      type: "numeric",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Id
-    {
-      type: "numeric",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Fiş No
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Tip
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Detay Kodu
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Hesap Adı
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      readOnly: true,
-      editor: false,
-      className: "htRight",
-    }, // Borc
-    {
-      type: "numeric",
-      numericFormat: {
-        pattern: "0,0.00",
-        columnSorting: true,
-        culture: "tr-TR",
-      },
-      readOnly: true,
-      editor: false,
-      className: "htRight",
-    }, // Alacak
-    {
-      type: "text",
-      columnSorting: true,
-      readOnly: true,
-      editor: false,
-      className: "htLeft",
-    }, // Açıklama
-  ];
 
 
 
@@ -210,14 +150,26 @@ const FisListesi = () => {
 
   const handleUpdateFisDurumu = async (fisNo: number) => {
     try {
+      console.log("[FisDurumu] Calling updateFisDurumu, fisNo:", fisNo, "denetciId:", user.denetciId, "denetlenenId:", user.denetlenenId, "yil:", user.yil);
       const result = await updateFisDurumu(user.denetciId || 0,
         user.denetlenenId || 0,
         user.yil || 0,
         fisNo,
         false
       );
+      console.log("[FisDurumu] updateFisDurumu result:", result);
       if (result) {
-        await fetchData();
+        // Directly update the Toplam row cell in HOT without full reload (avoids scroll reset)
+        if (hotTableInstanceRef.current) {
+          const allData = hotTableInstanceRef.current.getData() as any[][];
+          allData.forEach((row, rowIdx) => {
+            if (row[1] === fisNo && row[4] === "Toplam") {
+              const current = row[7];
+              hotTableInstanceRef.current!.setDataAtCell(rowIdx, 7, current === "Aktif" ? "Pasif" : "Aktif");
+            }
+          });
+        }
+        void fetchData();
         enqueueSnackbar("Fiş Durumu Değiştirildi", {
           variant: "success",
           autoHideDuration: 5000,
@@ -247,6 +199,9 @@ const FisListesi = () => {
     }
   };
 
+  handleUpdateFisDurumuRef.current = handleUpdateFisDurumu;
+  afterRenderer2Ref.current = afterRenderer2;
+
   const fetchData = async () => {
     try {
       const fisListesiVerileri = await getFisListesiVerileri(user.denetciId || 0,
@@ -254,6 +209,7 @@ const FisListesi = () => {
         user.yil || 0,
         false
       );
+      console.log("[FisDurumu] getFisListesiVerileri returned:", Array.isArray(fisListesiVerileri) ? fisListesiVerileri.length + " rows" : fisListesiVerileri);
       const rowsAll: any = [];
       fisListesiVerileri.forEach((veri: any) => {
         const newRow: any = [
@@ -284,9 +240,9 @@ const FisListesi = () => {
   useEffect(() => {
     if (hotTableContainer.current && !hotTableInstanceRef.current) {
       hotTableInstanceRef.current = new Handsontable(hotTableContainer.current, {
-        data: fetchedData,
-        colHeaders: colHeaders,
-        columns: columns,
+        data: [],
+        colHeaders: COL_HEADERS,
+        columns: COLUMNS,
         language: dictionary.languageCode,
         theme: customizer.activeMode === "dark" ? 'ht-theme-horizon-dark' : 'ht-theme-horizon',
         height: 684,
@@ -296,7 +252,7 @@ const FisListesi = () => {
         rowHeaders: true,
         rowHeights: 35,
         autoWrapRow: true,
-        minRows: rowCount,
+        minRows: 0,
         minCols: 9,
         hiddenColumns: {
           columns: [0],
@@ -309,6 +265,8 @@ const FisListesi = () => {
           'filter_action_bar',
         ],
         licenseKey: 'non-commercial-and-evaluation',
+        afterRenderer: (TD, row, col, prop, value, cellProperties) =>
+          afterRenderer2Ref.current(TD, row, col, prop, value, cellProperties),
         contextMenu: {
           items: {
             copy: {},
@@ -329,7 +287,7 @@ const FisListesi = () => {
                 const rowIdx = selection[0].start.row;
                 const row = await handleGetRowData(rowIdx);
                 if (!row) return;
-                handleUpdateFisDurumu(row[1]);
+                await handleUpdateFisDurumuRef.current(row[1]);
               },
             },
           },
@@ -344,14 +302,12 @@ const FisListesi = () => {
         hotTableInstanceRef.current = null;
       }
     };
-  }, [fetchedData, rowCount, colHeaders, columns, dictionary, customizer]);
+  }, []);
 
   useEffect(() => {
-    if (hotTableInstanceRef.current && fetchedData.length > 0) {
-      hotTableInstanceRef.current.updateSettings({
-        afterRenderer: afterRenderer2,
-      });
-      hotTableInstanceRef.current.render();
+    if (hotTableInstanceRef.current) {
+      // updateData preserves scroll/sort/filter state; loadData resets viewport
+      hotTableInstanceRef.current.updateData(fetchedData);
     }
   }, [fetchedData]);
 

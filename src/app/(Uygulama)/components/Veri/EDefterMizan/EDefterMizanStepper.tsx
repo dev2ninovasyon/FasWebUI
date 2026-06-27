@@ -288,7 +288,7 @@ const EDefterMizanStepper = () => {
 
   const handleContinue = async () => {
     setProgramFormatinaDonusturTiklandimi(true);
-    handleProgramVukMizan();
+    await handleProgramVukMizan();
     setControl(false);
   };
 
@@ -297,7 +297,7 @@ const EDefterMizanStepper = () => {
       handleIsConfirm();
     } else {
       setProgramFormatinaDonusturTiklandimi(true);
-      handleProgramVukMizan();
+      await handleProgramVukMizan();
     }
   };
 
@@ -326,8 +326,8 @@ const EDefterMizanStepper = () => {
         user.yil || 0,
         type
       );
-      setSharedMizanData(mizanVerileri); // Store data for shared use
-      if (mizanVerileri.length > 0) {
+      setSharedMizanData(mizanVerileri ?? []); // Store data for shared use
+      if (mizanVerileri?.length > 0) {
         setActiveStep(1);
       }
     } catch (error) {

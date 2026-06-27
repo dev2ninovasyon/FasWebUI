@@ -32,7 +32,15 @@ describe('createMenuItems', () => {
 
         expect(flatMenu.some((item) => item.href === '/DigerIslemler/SistemLoglari')).toBe(true)
         expect(flatMenu.some((item) => item.href === '/DigerIslemler/AuditLoglari')).toBe(true)
+        expect(flatMenu.some((item) => item.href === '/Sistem/Hangfire')).toBe(true)
         expect(flatMenu.some((item) => item.href === '/KullanimKilavuzu')).toBe(true)
+    })
+
+    it('shows Hangfire for DenetciAdmin role', () => {
+        const menu = createMenuItems(['Denetci'], 'Tfrs', false, false, false, 2025, 'DenetciAdmin')
+        const flatMenu = flattenMenu(menu)
+        expect(flatMenu.some((item) => item.href === '/Sistem/Hangfire')).toBe(true)
+        expect(flatMenu.some((item) => item.href === '/DigerIslemler/SistemLoglari')).toBe(true)
     })
 
     it('returns extended audit menu for full-access users and feature flags', () => {

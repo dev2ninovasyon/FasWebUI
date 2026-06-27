@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import {
+  Box,
+  CircularProgress,
   Collapse,
   Grid,
   Paper,
@@ -65,6 +67,7 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const [fdtData, setFdtData] = React.useState<Veri[]>([]);
   const [kztdata, setKztData] = React.useState<Veri[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat("tr-TR", {
@@ -86,6 +89,7 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const finansalDurumTablosu = await getFinansalDurumTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
@@ -139,12 +143,18 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
       setKztData(newRowsKzt);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
+    if (!user.denetciId || !user.yil || !user.denetlenenId) {
+      return;
+    }
+
     fetchData();
-  }, []);
+  }, [user.denetciId, user.yil, user.denetlenenId, konsolidasyonMu]);
 
   const hasChildren = (rows: Veri[], id: number) => {
     return rows.some((row) => row.parentId === id);
@@ -454,6 +464,35 @@ const FinansalDurumTablosu: React.FC<Props> = ({ konsolidasyonMu = false }) => {
         );
       });
   };
+
+  if (loading) {
+    return (
+      <Grid container>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}
+        >
+          <Box
+            sx={{
+              minHeight: 320,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <CircularProgress />
+            <Typography variant="body1" color="text.secondary">
+              Finansal tablo verileri yükleniyor...
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
     <Grid container>

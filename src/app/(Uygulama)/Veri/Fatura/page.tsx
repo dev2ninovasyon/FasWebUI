@@ -1,415 +1,281 @@
 "use client";
 
-import { usePageTitle } from "@/hooks/usePageTitle";
 import PageContainer from "@/app/(Uygulama)/components/Container/PageContainer";
 import Breadcrumb from "@/app/(Uygulama)/components/Layout/Shared/Breadcrumb/Breadcrumb";
-import CustomSelect from "@/app/(Uygulama)/components/Forms/ThemeElements/CustomSelect";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import {
-  Box, Typography, Grid, MenuItem, Stack, LinearProgress,
-  TextField, useTheme, useMediaQuery, Button
+  Box, Typography, Grid, Stack, LinearProgress, TextField, useTheme, Button,
+  Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions,
+  CircularProgress, Select, MenuItem, FormControl, InputLabel
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
-import { uploadFaturaDosyalari, getYuklemeIslemleri } from "@/api/Fatura/FaturaApi";
+import { uploadFaturaDosyalari, getGroupedYuklemeGecmisi, deleteYuklemeIslemleri, previewFaturaHtmlNewTab } from "@/api/Fatura/FaturaApi";
+import type { FaturaYuklemeGecmisiDto } from "@/api/Fatura/FaturaApi";
 import DosyaTable from "@/app/(Uygulama)/components/Veri/Fatura/FaturaDosyaTable";
-import { enqueueSnackbar, closeSnackbar } from "notistack";
+import { FaturaPdfPreview } from "@/app/(Uygulama)/components/Veri/Fatura/FaturaPdfPreview";
+import { FaturaErrorBoundary } from "@/app/(Uygulama)/components/Veri/Fatura/FaturaErrorBoundary";
+import { enqueueSnackbar } from "notistack";
 
-const BCrumb = [
-  { to: "/Veri", title: "Veri" },
-];
-
-type FaturaDosyaRow = { id: string; dosyaAdi: string; durum: string; yuklemeTarihi: string; };
-type YuklemeSatiri = {
-  id: string;
-  adi: string;
-  olusturulmaTarihi: string;
-  tip?: string;
-  status?: string;
-  needsPolling?: boolean;
-  inProgress: boolean;
-  total: number;
-  processed: number;
-  failed: number;
-  durum: string;
-  faturaDosyalari?: FaturaDosyaRow[];
-};
-
-const normalizeStatus = (value?: string | null) =>
-  (value ?? "")
-    .trim()
-    .toLocaleLowerCase("tr-TR")
-    .replaceAll("ı", "i")
-    .replaceAll("ş", "s")
-    .replaceAll("ğ", "g")
-    .replaceAll("ü", "u")
-    .replaceAll("ö", "o")
-    .replaceAll("ç", "c");
-
-const isSuccessStatus = (value?: string | null) =>
-  ["basarili", "successful", "completed", "tamamlandi"].includes(normalizeStatus(value));
-
-const isFailureStatus = (value?: string | null) =>
-  ["hatali", "failed", "error", "hata"].includes(normalizeStatus(value));
-
-const isPendingStatus = (value?: string | null) =>
-  ["kuyrukta", "queued", "processing", "isleniyor"].includes(normalizeStatus(value));
+const BCrumb = [{ to: "/Veri", title: "Veri" }];
 
 const Page: React.FC = () => {
   const theme = useTheme();
-  const smDown = useMediaQuery((t: any) => t.breakpoints.down("sm"));
-  const borderColor = theme.palette.divider;
-  const borderRadius = theme.shape.borderRadius;
-
   const user = useSelector((s: AppState) => s.userReducer);
   const customizer = useSelector((s: AppState) => s.customizer);
 
-  const [islemAdi, setIslemAdi] = useState<string>("");
+  const TR_AYLAR = useMemo(() => ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"], []);
+  const defaultIslemAdi = useCallback(() => TR_AYLAR[(new Date().getMonth() - 2 + 12) % 12], [TR_AYLAR]);
+  const [islemAdi, setIslemAdi] = useState(() => defaultIslemAdi());
   const [tip, setTip] = useState<"Alınan" | "Gönderilen">("Alınan");
 
-  const [rows, setRows] = useState<YuklemeSatiri[]>([]);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [islemler, setIslemler] = useState<FaturaYuklemeGecmisiDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isPolling, setIsPolling] = useState(false);
+  const [selectedSessionIds, setSelectedSessionIds] = useState<string[]>([]);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [uploading, setUploading] = useState(false);
-  const [progressInfos, setProgressInfos] = useState<{ fileName: string; percentage: number }[]>([]);
-  const [activeUploadId, setActiveUploadId] = useState<string | null>(null);
+  const [uploadProgressPct, setUploadProgressPct] = useState(0);
   const [uploadPhase, setUploadPhase] = useState<"idle" | "uploading" | "processing" | "completed">("idle");
 
-  const processingSnackRef = React.useRef<string | number | undefined>(undefined);
+  // PDF Preview
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewDosyaAdi, setPreviewDosyaAdi] = useState("");
 
-  const toast = (
-    msg: string,
-    variant: "success" | "error" | "warning" | "info" = "info"
-  ) => enqueueSnackbar(msg, { variant, autoHideDuration: 3500, style: { maxWidth: 720 } });
+  // Delete confirmation
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const anyInProgress = (items: YuklemeSatiri[]) =>
-    items.some(r => r.inProgress || (r.total > 0 && r.processed < r.total));
+  const toast = (msg: string, variant: "success" | "error" | "warning" | "info" = "info") =>
+    enqueueSnackbar(msg, { variant, autoHideDuration: 3500, style: { maxWidth: 720 } });
 
-  const getPercent = (processed: number, total: number) =>
-    total > 0 ? Math.min(100, Math.max(0, Math.round((processed / total) * 100))) : 0;
+  const stats = useMemo(() => ({
+    islem: islemler.length,
+    dosya: islemler.reduce((s, i) => s + i.dosyaSayisi, 0),
+    basarili: islemler.reduce((s, i) => s + i.basariliDosyaSayisi, 0),
+    hatali: islemler.reduce((s, i) => s + (i.hataliDosyaSayisi ?? 0), 0),
+    mukerrer: islemler.reduce((s, i) => s + (i.mukerrerDosyaSayisi ?? 0), 0),
+  }), [islemler]);
 
-  const activeUploadRow = activeUploadId
-    ? rows.find((r) => String(r.id).toLowerCase() === activeUploadId.toLowerCase())
-    : undefined;
+  const stopPolling = useCallback(() => {
+    if (pollRef.current !== null) { clearInterval(pollRef.current); pollRef.current = null; }
+    setIsPolling(false);
+  }, []);
 
-  const uploadTransferPercent = progressInfos.length > 0
-    ? Math.round(progressInfos.reduce((sum, item) => sum + item.percentage, 0) / progressInfos.length)
-    : 0;
-
-  const activePercent = uploadPhase === "uploading"
-    ? uploadTransferPercent
-    : activeUploadRow
-      ? getPercent(activeUploadRow.processed, activeUploadRow.total)
-      : uploadPhase === "completed"
-        ? 100
-        : 0;
-
-  const activeStatusText = uploadPhase === "uploading"
-    ? "Dosyalar sunucuya gönderiliyor"
-    : uploadPhase === "processing"
-      ? "Sunucuda işleniyor"
-      : uploadPhase === "completed"
-        ? "İşlem tamamlandı"
-        : "";
-
-  const openProcessingSnack = () => {
-    if (processingSnackRef.current) {
-      closeSnackbar(processingSnackRef.current);
-    }
-    processingSnackRef.current = enqueueSnackbar("İşlem kuyruğa alındı, dosyalar işleniyor...", {
-      variant: "info",
-      persist: true,
-      action: () => (
-        <Button size="small" onClick={() => void fetchRows({ tryCloseSnack: true })}>
-          Yenile
-        </Button>
-      ),
-      style: {
-        backgroundColor: customizer.activeMode === "dark" ? theme.palette.info.dark : theme.palette.info.main,
-        color: "#fff",
-        maxWidth: 720
-      }
-    });
-  };
-  const closeProcessingSnack = () => {
-    if (processingSnackRef.current) {
-      closeSnackbar(processingSnackRef.current);
-      processingSnackRef.current = undefined;
-    }
-  };
-
-  const mapYukleme = (x: any): YuklemeSatiri => {
-    const childRaw = (x.faturaDosyalari ?? x.FaturaDosyalari ?? []) as any[];
-    const faturaDosyalari: FaturaDosyaRow[] = childRaw.map((d: any) => ({
-      id: d.id ?? d.Id,
-      dosyaAdi: d.dosyaAdi ?? d.DosyaAdi ?? "",
-      durum: d.durum ?? d.Durum ?? "",
-      yuklemeTarihi: d.yuklemeTarihi
-        ? new Date(d.yuklemeTarihi).toLocaleString("tr-TR")
-        : (d.YuklemeTarihi ? new Date(d.YuklemeTarihi).toLocaleString("tr-TR") : "")
-    }));
-
-    const statusRaw = (x.status ?? x.Status ?? "Queued") as string;
-    const processedRaw = Number(
-      x.islenenDosyaSayisi ?? x.IslenenDosyaSayisi ?? x.processedFiles ?? x.ProcessedFiles ?? 0
-    );
-    const successRaw = Number(
-      x.basariliDosyaSayisi ?? x.BasariliDosyaSayisi ?? 0
-    );
-    const totalRaw = Number(
-      x.totalFiles ?? x.TotalFiles ?? x.dosyaSayisi ?? x.DosyaSayisi ?? 0
-    );
-    const failedRaw = Number(
-      x.hataDosyaSayisi ?? x.HataDosyaSayisi ?? x.failedFiles ?? x.FailedFiles ?? 0
-    );
-
-    const childSuccess = faturaDosyalari.filter((d) => isSuccessStatus(d.durum)).length;
-    const childFailed = faturaDosyalari.filter((d) => isFailureStatus(d.durum)).length;
-    const childProcessed = childSuccess + childFailed;
-
-    const total = totalRaw > 0 ? totalRaw : faturaDosyalari.length;
-    let failed = failedRaw > 0 ? failedRaw : childFailed;
-    let success = successRaw > 0 ? successRaw : childSuccess;
-    let processed = Math.max(processedRaw, childProcessed, success + failed);
-
-    if (total > 0) {
-      failed = Math.min(failed, total);
-      success = Math.min(success, total);
-      processed = Math.min(processed, total);
-    }
-
-    let status = statusRaw;
-    if (total > 0 && processed >= total) {
-      status = failed > 0 ? (success > 0 ? "PartialSuccess" : "Failed") : "Completed";
-    }
-
-    const normalizedParentStatus = normalizeStatus(status);
-    const isTerminalStatus =
-      ["completed", "failed", "partialsuccess"].includes(normalizedParentStatus) ||
-      (total > 0 && processed >= total);
-    const displayDosyalari = isTerminalStatus
-      ? faturaDosyalari.map((d) => ({
-          ...d,
-          durum: isPendingStatus(d.durum)
-            ? (status === "Failed" ? "Hatali" : "Basarili")
-            : d.durum,
-        }))
-      : faturaDosyalari;
-
-    const needsPolling = isTerminalStatus
-      ? false
-      : Boolean(x.needsPolling ?? x.NeedsPolling ?? (status === "Queued" || status === "Processing"));
-    const inProgress = Boolean(
-      (x.isInProgress ?? x.IsInProgress) ??
-      needsPolling ??
-      (total > 0 && processed < total)
-    ) || (total > 0 && processed < total);
-
-    return {
-      id: x.id ?? x.Id,
-      adi: x.islemAdi ?? x.IslemAdi,
-      tip: x.tip ?? x.Tip,
-      status,
-      needsPolling,
-      olusturulmaTarihi: new Date(x.islemTarihi ?? x.IslemTarihi).toLocaleDateString("tr-TR"),
-      inProgress,
-      total,
-      processed,
-      failed,
-      durum: `${processed}/${total}`,
-      faturaDosyalari: displayDosyalari
-    };
-  };
-
-  const fetchRows = useCallback(async (opts?: { initial?: boolean; tryCloseSnack?: boolean }) => {
-    try {
-      if (opts?.initial) setInitialLoading(true);
-      const data = await getYuklemeIslemleri(user);
-      const mapped = (data ?? []).map(mapYukleme);
-      setRows(mapped);
-
-      if (opts?.tryCloseSnack) {
-        if (!anyInProgress(mapped)) {
-          closeProcessingSnack();
-          toast("İşlem tamamlandı.", "success");
-        }
-      }
-    } catch (e) {
-      console.log(e);
-      toast("Kayıtlar çekilemedi.", "error");
-    } finally {
-      if (opts?.initial) setInitialLoading(false);
-    }
+  const fetchIslemler = useCallback(async () => {
+    try { const d = await getGroupedYuklemeGecmisi(user); setIslemler(d); return d; }
+    catch { return undefined; }
   }, [user]);
 
-  useEffect(() => { void fetchRows({ initial: true }); }, [fetchRows]);
+  const loadIslemler = useCallback(async () => { setLoading(true); await fetchIslemler(); setLoading(false); }, [fetchIslemler]);
 
-  useEffect(() => {
-    if (!rows.some(r => r.needsPolling || r.inProgress || (r.total > 0 && r.processed < r.total))) {
-      return;
-    }
+  const startPolling = useCallback(() => {
+    if (pollRef.current !== null) return;
+    setIsPolling(true);
+    pollRef.current = setInterval(async () => {
+      const data = await fetchIslemler();
+      if (data) {
+        const hasActive = data.some(i => i.durum === "Kuyrukta" || i.durum === "İşleniyor");
+        if (!hasActive) { stopPolling(); toast("Tüm fatura yükleme işlemleri tamamlandı.", "success"); }
+      }
+    }, 5000);
+  }, [fetchIslemler, stopPolling]);
 
-    const intervalId = window.setInterval(() => {
-      void fetchRows({ tryCloseSnack: true });
-    }, 3000);
+  const refreshAll = useCallback(async () => { await loadIslemler(); startPolling(); }, [loadIslemler, startPolling]);
 
-    return () => window.clearInterval(intervalId);
-  }, [rows, fetchRows]);
-
-  useEffect(() => {
-    if (!activeUploadRow || uploadPhase !== "processing") return;
-
-    const isCompleted = !activeUploadRow.inProgress &&
-      activeUploadRow.total > 0 &&
-      activeUploadRow.processed >= activeUploadRow.total;
-
-    if (isCompleted) {
-      setUploadPhase("completed");
-      closeProcessingSnack();
-      toast("İşlem tamamlandı.", activeUploadRow.failed > 0 ? "warning" : "success");
-      window.setTimeout(() => {
-        setActiveUploadId(null);
-        setProgressInfos([]);
-        setUploadPhase("idle");
-      }, 5000);
-    }
-  }, [activeUploadRow, uploadPhase]);
+  useEffect(() => { void refreshAll(); }, [refreshAll]);
+  useEffect(() => () => stopPolling(), [stopPolling]);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (!islemAdi?.trim()) { toast("Lütfen işlem adını giriniz.", "warning"); return; }
     if (acceptedFiles.length === 0) return;
-
     setUploading(true);
     setUploadPhase("uploading");
-    setActiveUploadId(null);
-    setProgressInfos(acceptedFiles.map(f => ({ fileName: f.name, percentage: 0 })));
-    openProcessingSnack();
+    setUploadProgressPct(0);
 
     try {
-      const response = await uploadFaturaDosyalari(user, acceptedFiles, tip, islemAdi, (ev) => {
-        const pct = typeof ev.progress === "number"
-          ? Math.round(ev.progress * 100)
-          : ev.total
-            ? Math.round((100 * ev.loaded) / ev.total)
-            : 1;
-        setProgressInfos(infos => infos.map(i => ({ ...i, percentage: pct })));
+      const result = await uploadFaturaDosyalari(user, acceptedFiles, tip, islemAdi, (pct) => {
+        setUploadProgressPct(pct);
       });
-
-      const responseData = response?.data ?? {};
-      const islemId = responseData.islemId ?? responseData.IslemId;
-      if (islemId) setActiveUploadId(String(islemId));
-      setUploadPhase("processing");
-      setProgressInfos(infos => infos.map(i => ({ ...i, percentage: 100 })));
-      toast("Dosyalar yüklendi. Kuyrukta işleniyor.", "success");
-      void fetchRows({ tryCloseSnack: true });
-      setTimeout(() => { void fetchRows({ tryCloseSnack: true }); }, 15000);
+      if (result.isSuccess) {
+        setUploadPhase("processing");
+        setUploadProgressPct(100);
+        toast("Dosyalar yüklendi. Kuyrukta işleniyor.", "success");
+        void refreshAll();
+        setTimeout(() => { void refreshAll(); }, 15000);
+      } else {
+        toast(result.message || "Yükleme sırasında hata oluştu.", "error");
+        setUploadPhase("idle");
+      }
     } catch (e) {
       console.log(e);
       toast("Yükleme sırasında hata oluştu.", "error");
-      setActiveUploadId(null);
       setUploadPhase("idle");
-    } finally {
-      setUploading(false);
-    }
-  }, [user, tip, islemAdi, fetchRows]);
+    } finally { setUploading(false); }
+  }, [user, tip, islemAdi, refreshAll]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: { "application/pdf": [".pdf"], "application/xml": [".xml"], "application/zip": [".zip"] }
+    onDrop, accept: { "application/pdf": [".pdf"], "application/xml": [".xml"], "application/zip": [".zip"] }
   });
+
+  const handleDelete = async () => {
+    const validSessionIds = selectedSessionIds.filter((id) => id && id !== "00000000-0000-0000-0000-000000000000");
+    if (validSessionIds.length === 0) {
+      toast("Silinecek geçerli yükleme oturumu bulunamadı.", "warning");
+      setSelectedSessionIds([]);
+      setDeleteConfirmOpen(false);
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await deleteYuklemeIslemleri(user, validSessionIds);
+      toast(`${validSessionIds.length} kayıt silindi.`, "success");
+      setSelectedSessionIds([]);
+      setDeleteConfirmOpen(false);
+      void refreshAll();
+    } catch { toast("Silme sırasında hata oluştu.", "error"); }
+    finally { setIsDeleting(false); }
+  };
+
+  const handleViewDetail = async (dosyaId: string, dosyaAdi?: string) => {
+    setPreviewLoading(true);
+    setPreviewOpen(true);
+    setPreviewDosyaAdi(dosyaAdi ?? "");
+    try {
+      const blob = await previewFaturaHtmlNewTab(user, dosyaId);
+      setPreviewUrl(URL.createObjectURL(blob));
+    } catch { toast("Önizleme açılamadı.", "error"); setPreviewOpen(false); }
+    finally { setPreviewLoading(false); }
+  };
 
   return (
     <PageContainer title="Fatura Yükleme" description="Fatura yükleme ve izleme">
       <Breadcrumb title="Fatura Yükleme" items={BCrumb} />
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, lg: 5 }}>
-          <Box sx={{ height: 560, border: `1px solid ${borderColor}`, borderRadius: `${borderRadius}/5` }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography variant="h5" p={2}>Dosya Yükle</Typography>
-              <CustomSelect size="small" value={tip} onChange={(e: any) => setTip(e.target.value)} sx={{ mr: 2, minWidth: 140 }}>
-                <MenuItem value={"Alınan"}>Alınan</MenuItem>
-                <MenuItem value={"Gönderilen"}>Gönderilen</MenuItem>
-              </CustomSelect>
-            </Stack>
 
-            <Stack direction="row" spacing={1} px={2}>
-              <TextField fullWidth size="small" label="İşlem Adı" value={islemAdi} onChange={e => setIslemAdi(e.target.value)} />
-            </Stack>
+      {/* Upload Form */}
+      <Card variant="outlined" sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" mb={2}>Fatura Dosyası Yükleme</Typography>
+          <Grid container spacing={2} alignItems="end">
+            <Grid size={{ xs: 12, md: 2 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Fatura Tipi</InputLabel>
+                <Select value={tip} label="Fatura Tipi" onChange={(e: any) => setTip(e.target.value)} disabled={uploading}>
+                  <MenuItem value="Alınan">Alınan</MenuItem>
+                  <MenuItem value="Gönderilen">Gönderilen</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, md: 3 }}>
+              <TextField fullWidth size="small" label="İşlem Adı" value={islemAdi} onChange={e => setIslemAdi(e.target.value)} disabled={uploading} />
+            </Grid>
+          </Grid>
 
-            <Box {...getRootProps()} sx={{
-              border: `2px dashed ${borderColor}`, borderRadius: `${borderRadius}/5`,
-              p: 2, m: 2, textAlign: "center", cursor: "pointer", height: 320, mt: 3
-            }}>
-              <input {...getInputProps()} />
-              {isDragActive ? (
-                <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">
-                  <Typography>Dosyaları buraya bırakın...</Typography>
-                </Grid>
-              ) : (
-                <Grid container sx={{ height: "100%" }} alignItems="center" justifyContent="center">
-                  <Grid textAlign="center" size={12}>
-                    {uploading || uploadPhase === "processing" || uploadPhase === "completed" ? (
-                      <Stack spacing={2} p={2} maxHeight={260} overflow="auto">
-                        <Box>
-                          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
-                            <Typography variant="body2" fontWeight={600}>
-                              {activeStatusText}
-                            </Typography>
-                            <Typography variant="caption" sx={{ ml: 1, fontWeight: "bold", color: "primary.main" }}>
-                              {activePercent}%
-                            </Typography>
-                          </Stack>
-                          <LinearProgress variant="determinate" value={activePercent} sx={{ height: 8, borderRadius: 1 }} />
-                          {activeUploadRow && (
-                            <Typography variant="caption" color="text.secondary" display="block" mt={0.75}>
-                              {activeUploadRow.processed}/{activeUploadRow.total} dosya işlendi
-                              {activeUploadRow.failed > 0 ? `, ${activeUploadRow.failed} hatalı` : ""}
-                            </Typography>
-                          )}
-                        </Box>
-                        {progressInfos.map((i, idx) => (
-                          <Box key={idx}>
-                            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={0.5}>
-                              <Typography variant="body2" sx={{ wordBreak: "break-word", flex: 1 }}>
-                                {i.fileName}
-                              </Typography>
-                              <Typography variant="caption" sx={{ ml: 1, fontWeight: "bold", color: "primary.main" }}>
-                                {i.percentage}%
-                              </Typography>
-                            </Stack>
-                            <LinearProgress variant="determinate" value={i.percentage} sx={{ height: 6, borderRadius: 1 }} />
-                          </Box>
-                        ))}
-                      </Stack>
-                    ) : (
-                      <>
-                        <Typography variant="h6" mb={1}>Dosyayı sürükle veya tıkla.</Typography>
-                        <Typography variant="body2">XML / ZIP kabul edilir.</Typography>
-                      </>
-                    )}
-                  </Grid>
-                </Grid>
-              )}
-            </Box>
+          <Box {...getRootProps()} sx={{
+            border: `2px dashed ${theme.palette.divider}`, borderRadius: 1, p: 4, mt: 2, textAlign: "center", cursor: "pointer",
+            bgcolor: isDragActive ? "action.hover" : "transparent"
+          }}>
+            <input {...getInputProps()} />
+            {uploading || uploadPhase !== "idle" ? (
+              <Stack spacing={1}>
+                <Box>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="caption">{uploadPhase === "uploading" ? "Dosyalar yükleniyor..." : "Dosyalar sunucuda işleniyor..."}</Typography>
+                    <Typography variant="caption" fontWeight="bold">{uploadPhase === "uploading" ? `${uploadProgressPct}%` : "İşleniyor"}</Typography>
+                  </Stack>
+                  {uploadPhase === "uploading" && <LinearProgress variant="determinate" value={uploadProgressPct} sx={{ height: 4, borderRadius: 1 }} />}
+                  {uploadPhase === "processing" && <LinearProgress sx={{ height: 4, borderRadius: 1 }} />}
+                </Box>
+              </Stack>
+            ) : (
+              <>
+                <Typography variant="body1">XML veya ZIP dosyalarını buraya bırakın</Typography>
+                <Typography variant="caption" color="text.secondary">Çoklu dosya ve klasör seçimi desteklenir.</Typography>
+              </>
+            )}
           </Box>
-        </Grid>
+        </CardContent>
+      </Card>
 
-        <Grid size={{ xs: 12, lg: 7 }}>
-          <Box sx={{ height: smDown ? 610 : 560, border: `1px solid ${borderColor}`, borderRadius: `${borderRadius}/5` }}>
-            <DosyaTable
-              rows={rows}
-              initialLoading={initialLoading}
-              dosyaYuklendiMi={true}
-              setDosyaYuklendiMi={() => { }}
-              tip={tip}
-              onRefresh={() => fetchRows({ tryCloseSnack: true })}
-            />
-          </Box>
-        </Grid>
+      {/* Stats Cards */}
+      <Grid container spacing={2} mb={3}>
+        {[
+          { label: "İşlem", value: stats.islem, color: undefined },
+          { label: "Dosya", value: stats.dosya, color: undefined },
+          { label: "Başarılı", value: stats.basarili, color: "success.main" },
+          { label: "Hatalı", value: stats.hatali, color: "error.main" },
+          { label: "Mükerrer", value: stats.mukerrer, color: "warning.main" },
+        ].map((s) => (
+          <Grid key={s.label} size={{ xs: 12, sm: 6, md: 12 / 5 }}>
+            <Card variant="outlined" sx={{ textAlign: "center", py: 1.5 }}>
+              <Typography variant="caption" color="text.secondary">{s.label}</Typography>
+              <Typography variant="h5" fontWeight={600} sx={{ color: s.color ?? undefined }}>{s.value.toLocaleString("tr-TR")}</Typography>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
+
+      {/* Table */}
+      <Card variant="outlined">
+        <DosyaTable
+          islemler={islemler}
+          loading={loading}
+          isPolling={isPolling}
+          selectedSessionIds={selectedSessionIds}
+          onSelectChange={(id: string | undefined) => {
+            if (!id || id === "00000000-0000-0000-0000-000000000000") return;
+            setSelectedSessionIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+          }}
+          onSelectAll={(checked: boolean, ids?: string[]) => setSelectedSessionIds(checked ? ids ?? islemler.map(i => i.uploadSessionId).filter((id): id is string => Boolean(id && id !== "00000000-0000-0000-0000-000000000000")) : [])}
+          onRefresh={refreshAll}
+          onDelete={() => selectedSessionIds.length > 0 && setDeleteConfirmOpen(true)}
+          onViewDetail={handleViewDetail}
+        />
+      </Card>
+
+      {/* PDF Preview Dialog */}
+      <FaturaPdfPreview
+        open={previewOpen}
+        onOpenChange={(open) => { setPreviewOpen(open); if (!open) { if (previewUrl) URL.revokeObjectURL(previewUrl); setPreviewUrl(null); } }}
+        previewUrl={previewUrl}
+        loading={previewLoading}
+        dosyaAdi={previewDosyaAdi}
+        onDownload={() => {
+          if (previewUrl) {
+            const a = document.createElement("a"); a.href = previewUrl; a.download = "fatura.pdf"; a.click();
+          }
+        }}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onClose={() => !isDeleting && setDeleteConfirmOpen(false)}>
+        <DialogTitle>Silme Onayı</DialogTitle>
+        <DialogContent>
+          <Typography>{selectedSessionIds.length} yükleme işlemi ve ilişkili fatura kayıtları silinecek. Bu işlem geri alınamaz.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmOpen(false)} disabled={isDeleting}>İptal</Button>
+          <Button onClick={handleDelete} color="error" variant="contained" disabled={isDeleting}>
+            {isDeleting ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
+            Sil
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PageContainer>
   );
 };
 
-export default Page;
+function PageWithErrorBoundary() {
+  return (
+    <FaturaErrorBoundary>
+      <Page />
+    </FaturaErrorBoundary>
+  );
+}
+
+export default PageWithErrorBoundary;

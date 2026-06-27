@@ -21,6 +21,8 @@ import {
   TableSortLabel,
   Tooltip,
   Box,
+  CircularProgress,
+  LinearProgress,
 } from "@mui/material";
 import {
   IconDotsVertical,
@@ -481,23 +483,34 @@ const MusteriTable = ({ refreshKey = 0, searchTerm = "" }: Props) => {
 
       <Dialog
         open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
+        onClose={isDeleting ? undefined : handleCloseDeleteDialog}
+        disableEscapeKeyDown={isDeleting}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
+        {isDeleting && <LinearProgress />}
         <DialogTitle id="alert-dialog-title">
-          {"Şirketi Silmek İstediğinize Emin Misiniz?"}
+          {isDeleting ? "Siliniyor..." : "Şirketi Silmek İstediğinize Emin Misiniz?"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Bu işlem geri alınamaz. Onayladığınız takdirde şirkete ait <b>tüm veriler ve dosyalar kalıcı olarak silinecek</b> ve asla geri getirilemeyecektir.
-          </DialogContentText>
+          {isDeleting ? (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, py: 2 }}>
+              <CircularProgress size={24} />
+              <Typography variant="body2" color="text.secondary">
+                Çok sayıda kayıt (fatura, irsaliye, dosya) siliniyor, lütfen bekleyin...
+              </Typography>
+            </Box>
+          ) : (
+            <DialogContentText id="alert-dialog-description">
+              Bu işlem geri alınamaz. Onayladığınız takdirde şirkete ait <b>tüm veriler ve dosyalar kalıcı olarak silinecek</b> ve asla geri getirilemeyecektir.
+            </DialogContentText>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary" disabled={isDeleting}>
             İptal
           </Button>
-          <Button onClick={confirmDelete} color="error" autoFocus disabled={isDeleting}>
+          <Button onClick={confirmDelete} color="error" autoFocus disabled={isDeleting} startIcon={isDeleting ? <CircularProgress size={16} color="inherit" /> : null}>
             {isDeleting ? "İşlem Yapılıyor..." : "Evet, Sil"}
           </Button>
         </DialogActions>

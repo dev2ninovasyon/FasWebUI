@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { usePageTitle } from "@/hooks/usePageTitle";
 const SonIslemlerKartlari = dynamic(() => import("@/app/(Uygulama)/components/AnaSayfa/SonIslemlerKartlari").then(m => m.SonIslemlerKartlari), { ssr: false });
 const SirketArsivOzetKartlari = dynamic(() => import("@/app/(Uygulama)/components/AnaSayfa/SirketArsivOzetKartlari").then(m => m.SirketArsivOzetKartlari), { ssr: false });
+const YeniSayfalarKartlari = dynamic(() => import("@/app/(Uygulama)/components/AnaSayfa/YeniSayfalarKartlari").then(m => m.YeniSayfalarKartlari), { ssr: false });
 import DriverTour from "@/app/(Uygulama)/components/Dashboards/DriverTour";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "@/store/hooks";
@@ -54,6 +55,7 @@ export default function DashboardPage() {
       <Box mt={2}>
         {/* Diğer dashboard bileşenlerinin üstüne/altına koyabilirsin */}
         <DriverTour run={runTour} onClose={handleCloseTour} />
+        <YeniSayfalarKartlari />
         <SonIslemlerKartlari />
         <SirketArsivOzetKartlari />
       </Box>

@@ -225,6 +225,7 @@ const MobileSirketPopup = () => {
               }
               selectedDenetlenenId={selectedId}
               currentYear={selectedYearNumber}
+              selectedDenetimTuru={selectedDenetimTuru}
             />
           </Box>
           <Button

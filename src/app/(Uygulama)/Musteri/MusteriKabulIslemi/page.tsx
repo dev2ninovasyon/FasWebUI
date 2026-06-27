@@ -90,6 +90,15 @@ const Page: React.FC = () => {
         enflasyon,
       );
       if (result == true) {
+        await firmayiKabulEt(
+          user.token || "",
+          user.denetlenenId || 0,
+          user.yil || new Date().getFullYear(),
+          tur,
+          false,
+          enflasyon === "Evet",
+          user.denetciId || 0,
+        );
         fetchData();
         setHesaplaTiklandimi(false);
         if (tur == "Bobi" || tur == "BobiBüyük") {

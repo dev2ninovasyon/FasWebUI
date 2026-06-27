@@ -107,7 +107,7 @@ export function createMenuItems(
   yetki?: string
 ): MenuitemsType[] {
   const isFasAdmin =
-    yetki === "FasAdmin" || (rol?.includes("FasAdmin") ?? false);
+    yetki === "FasAdmin" || yetki === "DenetciAdmin" || (rol?.includes("FasAdmin") ?? false) || (rol?.includes("DenetciAdmin") ?? false);
 
   const menuItems =
     rol == undefined ||
@@ -190,6 +190,14 @@ export function createMenuItems(
                   title: "Enflasyon Uygulama Logları",
                   icon: IconPoint,
                   href: "/DigerIslemler/EnflasyonLoglari",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Hangfire Yönetimi",
+                  icon: IconPoint,
+                  href: "/Sistem/Hangfire",
+                  chip: "Yeni",
+                  chipColor: "error",
                 },
               ]
               : []),
@@ -385,6 +393,8 @@ export function createMenuItems(
                 "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
               icon: IconPoint,
               href: "/Veri/Fatura",
+              chip: "Yeni",
+              chipColor: "error",
             },
             {
               id: uniqueId(),
@@ -393,6 +403,8 @@ export function createMenuItems(
                 "public/images/svgs/veri/defter-k-v-beyannamesi-yukleme.svg",
               icon: IconPoint,
               href: "/Veri/Irsaliye",
+              chip: "Yeni",
+              chipColor: "error",
             },
             {
               id: uniqueId(),
@@ -536,6 +548,8 @@ export function createMenuItems(
               formKodu: "FinansalTablolarDenetimRiskiBelirleme",
               icon: IconPoint,
               href: "/PlanVeProgram/FinansalTablolarDenetimRiskiBelirleme",
+              chip: "Yeni",
+              chipColor: "error",
             },
             {
               id: uniqueId(),
@@ -543,6 +557,8 @@ export function createMenuItems(
               formKodu: "DogalRisk-KontrolRiski",
               icon: IconPoint,
               href: "/PlanVeProgram/BulguRiskiBelirleme",
+              chip: "Yeni",
+              chipColor: "error",
             },
             {
               id: uniqueId(),
@@ -556,6 +572,8 @@ export function createMenuItems(
                   formKodu: "OnemlilikVeOrneklem",
                   icon: IconPoint,
                   href: "/PlanVeProgram/DenetimPlanindaOnemlilik/OnemlilikVeOrneklem",
+                  chip: "Yeni",
+                  chipColor: "error",
                 },
                 {
                   id: uniqueId(),
@@ -585,6 +603,8 @@ export function createMenuItems(
               formKodu: "BilgiIslemMuhasebe",
               icon: IconPoint,
               href: "/PlanVeProgram/BilgiIslemMuhasebe",
+              chip: "Yeni",
+              chipColor: "error",
             },
             {
               id: uniqueId(),
@@ -599,6 +619,8 @@ export function createMenuItems(
               formKodu: "HesaplaraIliskinIcKontrolTespit",
               icon: IconPoint,
               href: "/PlanVeProgram/HesaplaraIliskinIcKontrolTespit",
+              chip: "Yeni",
+              chipColor: "error",
             },
             {
               id: uniqueId(),
@@ -1123,6 +1145,8 @@ export function createMenuItems(
                     "public/images/svgs/denetim-kanitlari/onemlilik.svg",
                   icon: IconPoint,
                   href: "/DenetimKanitlari/Onemlilik/OnemlilikSeviyesiBelirlemeVeDegerlendirme",
+                  chip: "Yeni",
+                  chipColor: "error",
                 },
               ],
             },
@@ -1360,6 +1384,8 @@ export function createMenuItems(
                 "public/images/svgs/veri/defter-inceleme.svg",
               icon: IconPoint,
               href: "/DenetimKanitlari/FaturaInceleme",
+              chip: "Yeni",
+              chipColor: "error",
             },
             {
               id: uniqueId(),
@@ -2446,6 +2472,14 @@ export function createMenuItems(
                   title: "Enflasyon Uygulama Logları",
                   icon: IconPoint,
                   href: "/DigerIslemler/EnflasyonLoglari",
+                },
+                {
+                  id: uniqueId(),
+                  title: "Hangfire Yönetimi",
+                  icon: IconPoint,
+                  href: "/Sistem/Hangfire",
+                  chip: "Yeni",
+                  chipColor: "error",
                 },
               ]
               : []),

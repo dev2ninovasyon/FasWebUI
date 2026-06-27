@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import {
+  Box,
+  CircularProgress,
   Grid,
   Table,
   TableBody,
@@ -45,6 +47,7 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
   const [dikeyData, setDikeyData] = React.useState<Veri[]>([]);
   const [yatayData, setYatayData] = React.useState<Veri[]>([]);
   const [ozkaynakData, setOzkaynakData] = React.useState<Veri[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   const [renkliKalemIds, setRenkliKalemIds] = React.useState<number[]>([]);
 
@@ -57,6 +60,7 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const ozkaynakTablosu = await getOzkaynakTablosu(user.denetciId || 0,
         user.yil || 0,
         user.denetlenenId || 0,
@@ -117,12 +121,47 @@ const OzkaynakDegisimTablosu: React.FC<Props> = ({
       setRenkliKalemIds(renkli);
     } catch (error) {
       console.log("Bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
+    if (!user.denetciId || !user.yil || !user.denetlenenId) {
+      return;
+    }
+
     fetchData();
-  }, []);
+  }, [user.denetciId, user.yil, user.denetlenenId, konsolidasyonMu]);
+
+  if (loading) {
+    return (
+      <Grid container>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 12
+          }}
+        >
+          <Box
+            sx={{
+              minHeight: 320,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <CircularProgress />
+            <Typography variant="body1" color="text.secondary">
+              Finansal tablo verileri yükleniyor...
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
     <Grid container>

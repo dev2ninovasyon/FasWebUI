@@ -11,15 +11,17 @@ import {
   Menu, ListItemIcon, Collapse, Dialog, DialogContent,
 } from "@mui/material";
 import {
-  IconDownload, IconFileWord, IconRefresh, IconChevronRight,
+  IconDownload, IconFileTypeDoc, IconRefresh, IconChevronRight,
   IconChevronDown, IconEye, IconFileSpreadsheet,
 } from "@tabler/icons-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, Fragment } from "react";
 import { useSelector, useDispatch } from "@/store/hooks";
 import { AppState } from "@/store/store";
 import { setCollapse } from "@/store/customizer/CustomizerSlice";
 import { enqueueSnackbar, closeSnackbar } from "notistack";
 import { saveAs } from "file-saver";
+import "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css";
+import "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css";
 import {
   fetchPagedFaturalarLite, fetchFaturaDetail, Fatura, FaturaListItem, FaturaSatiri,
   findInvoiceYevmiyeRowsByVkn, previewFaturaHtmlNewTab,
@@ -29,6 +31,7 @@ import {
 } from "@/api/Fatura/FaturaApi";
 import { getIrsaliyeKarsilastirma, Karsilastirma } from "@/api/Fatura/IrsaliyeApi";
 import YevmiyeFaturaDialog from "@/app/(Uygulama)/components/Veri/Fatura/YevmiyeFaturaDialog";
+import FaturaDetayKartlari from "@/app/(Uygulama)/components/Veri/Fatura/FaturaDetayKartlari";
 
 type Props = { tip?: string; pageSize?: number };
 type Ctx = { tip: string; vkn: string };
@@ -48,16 +51,8 @@ const FaturaInceleme: React.FC<Props> = ({ tip = "Alınan", pageSize = 10 }) => 
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
-    const load = async () => {
-      dispatch(setCollapse(true));
-      await import(
-        customizer.activeMode === "dark"
-          ? "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableDark.css"
-          : "@/app/(Uygulama)/components/Veri/HandsOnTable/HandsOnTableLight.css"
-      );
-    };
-    load();
-  }, [customizer.activeMode, dispatch]);
+    dispatch(setCollapse(true));
+  }, [dispatch]);
 
   return (
     <>
@@ -284,6 +279,10 @@ const FaturaIncelemeTab: React.FC<{ tip: string; pageSize: number; user: any; cu
           <Button size="small" variant="contained" onClick={handleExportExcel}>Excel'e Aktar</Button>
         </Grid>
 
+        <Grid size={{ xs: 12 }}>
+          <FaturaDetayKartlari fatura={selectedFatura} tip={currentTip} />
+        </Grid>
+
         <Grid size={{ xs: 12, lg: 6 }}>
           {detailLoading && selectedInvoiceId ? (
             <Box display="flex" alignItems="center" justifyContent="center" height={280} gap={1} border="1px solid" borderColor="divider" borderRadius={1}>
@@ -413,11 +412,11 @@ const DefterEslestirmeTab: React.FC<{ user: any }> = ({ user }) => {
       )}
 
       <Stack direction="row" spacing={1} mb={1}>
-        <Button size="small" startIcon={<IconFileWord size={16} />} onClick={() => handleWordExport("all")}>Tümü Word</Button>
-        <Button size="small" startIcon={<IconFileWord size={16} />} onClick={() => handleWordExport("eslesen")}>Eşleşen Word</Button>
-        <Button size="small" startIcon={<IconFileWord size={16} />} onClick={() => handleWordExport("eslesmeyen")}>Eşleşmeyen Word</Button>
-        <Button size="small" startIcon={<IconFileWord size={16} />} onClick={() => handleWordExport("tutar-farki")}>Tutar Farkı Word</Button>
-        <Button size="small" startIcon={<IconFileWord size={16} />} onClick={() => handleWordExport("mukerrer-fatura")}>Mükerrer Word</Button>
+        <Button size="small" startIcon={<IconFileTypeDoc size={16} />} onClick={() => handleWordExport("all")}>Tümü Word</Button>
+        <Button size="small" startIcon={<IconFileTypeDoc size={16} />} onClick={() => handleWordExport("eslesen")}>Eşleşen Word</Button>
+        <Button size="small" startIcon={<IconFileTypeDoc size={16} />} onClick={() => handleWordExport("eslesmeyen")}>Eşleşmeyen Word</Button>
+        <Button size="small" startIcon={<IconFileTypeDoc size={16} />} onClick={() => handleWordExport("tutar-farki")}>Tutar Farkı Word</Button>
+        <Button size="small" startIcon={<IconFileTypeDoc size={16} />} onClick={() => handleWordExport("mukerrer-fatura")}>Mükerrer Word</Button>
       </Stack>
 
       {loading ? (
@@ -535,7 +534,7 @@ const IrsaliyeKarsilastirmaTab: React.FC<{ user: any }> = ({ user }) => {
           {data.length === 0 ? (
             <TableRow><TableCell colSpan={7}><Typography textAlign="center" color="text.secondary">Kayıt yok</Typography></TableCell></TableRow>
           ) : data.map((row, idx) => (
-            <React.Fragment key={row.id ?? idx}>
+            <Fragment key={row.id ?? idx}>
               <TableRow hover>
                 <TableCell>
                   <IconButton size="small" onClick={() => setExpanded((p) => ({ ...p, [String(idx)]: !p[String(idx)] }))}>
@@ -585,7 +584,7 @@ const IrsaliyeKarsilastirmaTab: React.FC<{ user: any }> = ({ user }) => {
                   </Collapse>
                 </TableCell>
               </TableRow>
-            </React.Fragment>
+            </Fragment>
           ))}
         </TableBody>
       </Table>

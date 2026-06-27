@@ -111,6 +111,17 @@ export interface IrsaliyeKarsilastirmaKalem {
   durum: string;
 }
 
+export interface Karsilastirma {
+  id?: string;
+  irsaliyeNo?: string;
+  tarih?: string;
+  tedarikciAdi?: string;
+  faturaNo?: string;
+  tutar?: number;
+  durum?: string;
+  kalemler?: Array<{ aciklama?: string; miktar?: number; birim?: string; birimFiyat?: number; tutar?: number }>;
+}
+
 export const uploadIrsaliyeDosyalari = async (
   user: any,
   files: File[],
@@ -187,15 +198,28 @@ export const getIrsaliyeKarsilastirma = async (
   user: any,
   page: number = 1,
   pageSize: number = 100
-): Promise<{ items: IrsaliyeKarsilastirmaItem[]; totalCount: number }> => {
+): Promise<Karsilastirma[]> => {
   const r = await apiFetch(
     `/Irsaliye/GetIrsaliyeKarsilastirma?denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&page=${page}&pageSize=${pageSize}`,
     { headers: { accept: "application/json" } }
   );
   if (!r.ok) throw new Error("Karşılaştırma verileri alınamadı");
   const data = await r.json();
-  return {
-    items: data.items ?? data.Items ?? data ?? [],
-    totalCount: Number(data.totalCount ?? data.TotalCount ?? 0),
-  };
+  const items: IrsaliyeKarsilastirmaItem[] = data.items ?? data.Items ?? data ?? [];
+  return items.map((i) => ({
+    id: i.irsaliyeId,
+    irsaliyeNo: i.irsaliyeNumarasi,
+    tarih: i.irsaliyeTarihi,
+    tedarikciAdi: i.tedarikciAd,
+    tutar: undefined as number | undefined,
+    faturaNo: undefined as string | undefined,
+    durum: (i as any).durum,
+    kalemler: (i.kalemler ?? []).map((k: IrsaliyeKarsilastirmaKalem) => ({
+      aciklama: k.aciklama,
+      miktar: k.miktar,
+      birim: k.birimKodu,
+      birimFiyat: undefined as number | undefined,
+      tutar: undefined as number | undefined,
+    })),
+  }));
 };

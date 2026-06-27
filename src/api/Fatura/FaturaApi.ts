@@ -1,4 +1,4 @@
-﻿import axios, { AxiosProgressEvent } from "axios";
+﻿import axios from "axios";
 
 import { apiFetch, url } from "@/api/apiBase";
 import { createAuthorizedAxiosConfig } from "@/utils/authSession";
@@ -147,33 +147,59 @@ export async function fetchFaturaDetail(
   }
   return res.json();
 }
+const BATCH_SIZE = 200;
+
 export const uploadFaturaDosyalari = async (
   user: any,
   files: File[],
   tip: string,
   islemAdi: string,
-  onUploadProgress?: (e: AxiosProgressEvent) => void
-) => {
-  const form = new FormData();
-  files.forEach((f) => form.append("files", f));
+  onProgress?: (progress: number) => void
+): Promise<{ isSuccess: boolean; message: string; data: { uploadSessionId: string; batchIndex: number; totalBatches: number } }> => {
+  const uploadSessionId = crypto.randomUUID();
+  const totalFiles = files.length;
+  const totalBatches = Math.ceil(totalFiles / BATCH_SIZE);
+  let lastError: string | null = null;
+  let overallSuccess = false;
 
-  const qs = `denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}&tip=${encodeURIComponent(
-    tip
-  )}&islemAdi=${encodeURIComponent(islemAdi)}`;
+  for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+    const start = batchIndex * BATCH_SIZE;
+    const batch = files.slice(start, start + BATCH_SIZE);
 
-  return axios.post(
-    `${url}/Invoices/Upload?${qs}`,
-    form,
-    createAuthorizedAxiosConfig(
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress,
-      },
-      user?.token
-    )
-  );
+    const form = new FormData();
+    batch.forEach((f) => form.append("files", f));
+
+    const qs =
+      `denetciId=${user.denetciId}&yil=${user.yil}&denetlenenId=${user.denetlenenId}` +
+      `&tip=${encodeURIComponent(tip)}&islemAdi=${encodeURIComponent(islemAdi)}` +
+      `&uploadSessionId=${uploadSessionId}&totalFileCount=${totalFiles}`;
+
+    try {
+      const resp = await axios.post(
+        `${url}/Invoices/Upload?${qs}`,
+        form,
+        createAuthorizedAxiosConfig(
+          { headers: { "Content-Type": "multipart/form-data" } },
+          user?.token
+        )
+      );
+
+      if (batchIndex === 0) overallSuccess = true;
+      lastError = null;
+    } catch (e: any) {
+      lastError = e?.response?.data?.message || e?.message || "Yükleme hatası";
+      if (totalBatches <= 1) break;
+    }
+
+    const processedCount = Math.min((batchIndex + 1) * BATCH_SIZE, totalFiles);
+    onProgress?.(Math.round((processedCount / totalFiles) * 100));
+  }
+
+  if (lastError && !overallSuccess) {
+    return { isSuccess: false, message: lastError, data: { uploadSessionId, batchIndex: 0, totalBatches } };
+  }
+
+  return { isSuccess: true, message: `${totalFiles} dosya sunucuya gönderildi.`, data: { uploadSessionId, batchIndex: totalBatches - 1, totalBatches } };
 };
 
 export const getYuklemeIslemleri = async (user: any) => {
@@ -220,10 +246,15 @@ export const previewFaturaHtmlNewTab = async (
 
 
 export const deleteYuklemeIslemleri = async (user: any, ids: string[]) => {
+  const validIds = ids.filter((id) => id && id !== "00000000-0000-0000-0000-000000000000");
+  if (validIds.length === 0) {
+    throw new Error("Geçerli sessionId bulunamadı");
+  }
+
   const r = await apiFetch(`/Invoices/DeleteYuklemeIslemleri`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(ids)
+    body: JSON.stringify(validIds)
   });
   if (!r.ok) throw new Error("Silinemedi");
   return true;
@@ -306,7 +337,7 @@ export async function getReceivedInvoiceMatches(user: any): Promise<ReceivedInvo
 }
 
 export type FaturaYuklemeGecmisiDto = {
-  uploadSessionId: string;
+  uploadSessionId?: string;
   islemAdi: string;
   tip: string;
   baslamaTarihi: string;

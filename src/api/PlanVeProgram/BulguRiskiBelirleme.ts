@@ -23,6 +23,7 @@ export interface DoğalRiskPuanRequest {
   olaguandisiIslemYogunluguPuani: number | null;
   hukukiDavaPuani: number | null;
   isletmeKulturesuPuani: number | null;
+  muhasebePersonelIstikrariPuani: number | null;
 }
 
 export interface KontrolRiskiSatiriRequest {
@@ -52,6 +53,8 @@ export interface SaveBulguRiskiRequest {
   ortayaCikaramama_OR: number | null;
   onerilen_DenetimProseduru: string | null;
   orneklemeOrani: number | null;
+  kanitYogunlugu?: string | null;
+  aktifSatir?: string | null;
   sonucMetni: string | null;
   tamamMi: boolean;
 }

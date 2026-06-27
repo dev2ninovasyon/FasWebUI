@@ -56,6 +56,7 @@ const DR_FACTORS = [
   { key: "olaguandisiIslemYogunluguPuani", label: "Olağandışı/tekrar etmeyen işlem yoğunluğu", desc: "çok=5, az=1", weight: 0.10 },
   { key: "hukukiDavaPuani", label: "Hukuki dava ve uyuşmazlık", desc: "çok=5, yok=1", weight: 0.10 },
   { key: "isletmeKulturesuPuani", label: "İşletme kültürü & yapılanma olgunluğu", desc: "zayıf=5, güçlü=1", weight: 0.10 },
+  { key: "muhasebePersonelIstikrariPuani", label: "Muhasebe/finans personeli istikrarı", desc: "sık değişim=5, stabil=1", weight: 0.05 },
 ];
 
 const BulguRiskiBelirlemeStepper = () => {
@@ -80,12 +81,13 @@ const BulguRiskiBelirlemeStepper = () => {
       sektorRiskiPuani: null, musteriCesitlilikPuani: null, iliskiliTarafYogunluguPuani: null,
       oncerikiBulgPuani: null, yönetimDurustlukuPuani: null, btSistemKarmasiklikPuani: null,
       olaguandisiIslemYogunluguPuani: null, hukukiDavaPuani: null, isletmeKulturesuPuani: null,
+      muhasebePersonelIstikrariPuani: null,
     },
     dogalRisk: null, dogalRiskSeviyesi: null,
     kontrolRiskiSatirlari: [],
     kontrolRiski: null, kontrolRiskiSeviyesi: null,
     kabulEdilDenetimRiski: 0.05, ortayaCikaramama_OR: null, onerilen_DenetimProseduru: null,
-    orneklemeOrani: null, sonucMetni: null, tamamMi: false,
+    orneklemeOrani: null, kanitYogunlugu: null, aktifSatir: null, sonucMetni: null, tamamMi: false,
   });
 
   const fetchData = async () => {
@@ -135,7 +137,7 @@ const BulguRiskiBelirlemeStepper = () => {
     return sum / 5;
   }, [requestData.doğalRiskPuan]);
 
-  const drSeviyesi = drHesaplanan > 0.6 ? "Riskli" : drHesaplanan > 0.4 ? "Orta Riskli" : "Düşük Risk";
+  const drSeviyesi = drHesaplanan > 0.50 ? "Riskli" : drHesaplanan > 0.20 ? "Orta Riskli" : "Risksiz / Az Riskli";
 
   // KR Calculation (0-1)
   const krHesaplanan = useMemo(() => {
@@ -147,17 +149,25 @@ const BulguRiskiBelirlemeStepper = () => {
     return sum / 5;
   }, [requestData.kontrolRiskiSatirlari]);
 
-  const krSeviyesi = krHesaplanan > 0.6 ? "Riskli" : krHesaplanan > 0.4 ? "Orta Riskli" : "Düşük Risk";
+  const krSeviyesi = krHesaplanan > 0.70 ? "Riskli" : krHesaplanan > 0.30 ? "Orta Riskli" : "Az Riskli";
+
+  const sonucParagrafiOlustur = (dr: number, kr: number, or_: number, prosedurTuru: string, orneklemOrani: string, kanıtYoğunluğu: string) => {
+    return `Yapılan detaylı testler neticesinde Doğal Risk (DR) = ${(dr * 100).toFixed(1)}%, Kontrol Riski (KR) = ${(kr * 100).toFixed(1)}% olarak hesaplanmıştır. %5 kabul edilebilir denetim riskine (KDR) göre Ortaya Çıkaramama Riski (OR) = ${(or_ * 100).toFixed(1)}% hesaplanmıştır. Buna göre: ${prosedurTuru} | Örnekleme: ${orneklemOrani} | Kanıt: ${kanıtYoğunluğu} | BDS 330 §18, BDS 520 §5-7`;
+  };
 
   const fetchOrHesabi = async () => {
     if (drHesaplanan > 0 && krHesaplanan > 0) {
       const result = await hesaplaOrVeProsedur(drHesaplanan, krHesaplanan, requestData.kabulEdilDenetimRiski || 0.05);
       if (result) {
+        const autoMetin = sonucParagrafiOlustur(drHesaplanan, krHesaplanan, result.or, result.prosedurTuru, result.orneklemOrani, result.kanıtYoğunluğu);
         setRequestData(prev => ({
           ...prev,
           ortayaCikaramama_OR: result.or,
           onerilen_DenetimProseduru: result.prosedurTuru,
           orneklemeOrani: result.orneklemOrani,
+          kanitYogunlugu: result.kanıtYoğunluğu,
+          aktifSatir: result.aktifSatir,
+          sonucMetni: prev.sonucMetni || autoMetin,
         }));
       }
     }
@@ -259,10 +269,16 @@ const BulguRiskiBelirlemeStepper = () => {
   // --- Mizan Logic ---
   const handleMizanChange = (field: keyof MizanVerisiRequest, value: string) => {
     const numericValue = value ? parseFloat(value.replace(/,/g, '')) : null;
-    setRequestData((prev) => ({
-      ...prev,
-      mizanVerisi: { ...prev.mizanVerisi!, [field]: numericValue },
-    }));
+    setRequestData((prev) => {
+      const updated = { ...prev.mizanVerisi!, [field]: numericValue };
+      if (field === "netSatislar" && updated.netSatislarOncekiDonem != null && updated.netSatislar != null && updated.netSatislarOncekiDonem !== 0) {
+        updated.değişimYuzde = (updated.netSatislar - updated.netSatislarOncekiDonem) / Math.abs(updated.netSatislarOncekiDonem);
+      }
+      if (field === "netSatislarOncekiDonem" && updated.netSatislar != null && updated.netSatislarOncekiDonem != null && updated.netSatislarOncekiDonem !== 0) {
+        updated.değişimYuzde = (updated.netSatislar - updated.netSatislarOncekiDonem) / Math.abs(updated.netSatislarOncekiDonem);
+      }
+      return { ...prev, mizanVerisi: updated };
+    });
   };
 
   const buildHtmlAsync = async () => `<!DOCTYPE html><html lang="tr"><body><h1>Bulgu Riski Belirleme</h1></body></html>`;
@@ -281,35 +297,78 @@ const BulguRiskiBelirlemeStepper = () => {
       {activeStep === 0 && (
         <Paper sx={{ p: 3, mb: 3 }}>
           <Box bgcolor="#fff8e1" p={2} borderRadius={1} mb={2}>
-            <Typography variant="body2" color="warning.dark">Sarı hücrelere FAS mizanından veya Excel'den aldığınız değerleri girin.</Typography>
+            <Typography variant="body2" color="warning.dark">
+              BDS 200 §A38-A42 (Denetim Riski Modeli) | BDS 320 §10-11 (Önemlilik) | BDS 315 §A128-A133
+            </Typography>
+            <Typography variant="body2" color="warning.dark" mt={1}>Sarı hücrelere FAS mizanından veya Excel'den aldığınız değerleri girin.</Typography>
           </Box>
-          <Grid container spacing={2}>
-            {[
-              { label: "Net Satışlar", field: "netSatislar" },
-              { label: "Toplam Aktif", field: "toplamAktif" },
-              { label: "Ticari Alacaklar", field: "ticariAlacaklar" },
-              { label: "Stok Toplam", field: "stokToplam" },
-              { label: "Dönem Kar/Zarar", field: "donemKarZarar" },
-            ].map(r => (
-              <Grid size={{ xs: 12, sm: 6 }} key={r.field}>
-                <TextField 
-                  label={r.label}
-                  fullWidth
-                  size="small"
-                  type="number"
-                  value={requestData.mizanVerisi?.[r.field as keyof MizanVerisiRequest] ?? ""}
-                  onChange={(e) => handleMizanChange(r.field as keyof MizanVerisiRequest, e.target.value)}
-                  sx={{ bgcolor: "#fffdf0" }}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <Box sx={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: "left", padding: 8, borderBottom: "2px solid #e2e8f0" }}>Alan</th>
+                  <th style={{ textAlign: "right", padding: 8, borderBottom: "2px solid #e2e8f0", width: 150 }}>Cari Dönem (TL)</th>
+                  <th style={{ textAlign: "right", padding: 8, borderBottom: "2px solid #e2e8f0", width: 150 }}>Önceki Dönem (TL)</th>
+                  <th style={{ textAlign: "right", padding: 8, borderBottom: "2px solid #e2e8f0", width: 100 }}>Değişim %</th>
+                  <th style={{ textAlign: "left", padding: 8, borderBottom: "2px solid #e2e8f0", width: 120 }}>BDS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { label: "Net Satışlar", field: "netSatislar", prevField: "netSatislarOncekiDonem", degisimField: "değişimYuzde", bds: "BDS 240 §A31" },
+                  { label: "Toplam Aktif", field: "toplamAktif", bds: "BDS 315 §A35" },
+                  { label: "Ticari Alacaklar", field: "ticariAlacaklar", bds: "BDS 505 §7" },
+                  { label: "Stok Toplam", field: "stokToplam", bds: "BDS 501 §4" },
+                  { label: "MDV Net", field: "maddiDuranVarliklarNet", bds: "BDS 501 §9" },
+                  { label: "Banka & Kasa", field: "bankaKasa", bds: "BDS 505 §7" },
+                  { label: "Ticari Borçlar", field: "ticariBorc", bds: "BDS 330 §18" },
+                  { label: "Dönem Kâr/Zarar", field: "donemKarZarar", bds: "BDS 240 §A24" },
+                ].map((r, idx) => (
+                  <tr key={r.field} style={{ background: idx % 2 === 0 ? "#fafafa" : "white" }}>
+                    <td style={{ padding: 8, borderBottom: "1px solid #e2e8f0", fontWeight: 500 }}>{r.label}</td>
+                    <td style={{ padding: 4, borderBottom: "1px solid #e2e8f0" }}>
+                      <TextField size="small" type="number" fullWidth
+                        value={requestData.mizanVerisi?.[r.field as keyof MizanVerisiRequest] ?? ""}
+                        onChange={(e) => handleMizanChange(r.field as keyof MizanVerisiRequest, e.target.value)}
+                        sx={{ bgcolor: "#fffdf0", "& input": { textAlign: "right" } }} />
+                    </td>
+                    <td style={{ padding: 4, borderBottom: "1px solid #e2e8f0" }}>
+                      {r.prevField ? (
+                        <TextField size="small" type="number" fullWidth
+                          value={requestData.mizanVerisi?.[r.prevField as keyof MizanVerisiRequest] ?? ""}
+                          onChange={(e) => handleMizanChange(r.prevField as keyof MizanVerisiRequest, e.target.value)}
+                          sx={{ bgcolor: "#fffdf0", "& input": { textAlign: "right" } }} />
+                      ) : (
+                        <Typography variant="body2" color="text.disabled" textAlign="right">-</Typography>
+                      )}
+                    </td>
+                    <td style={{ padding: 8, borderBottom: "1px solid #e2e8f0", textAlign: "right" }}>
+                      {r.degisimField ? (
+                        <Typography variant="body2" fontWeight="bold" color={(() => {
+                          const v = requestData.mizanVerisi?.[r.degisimField as keyof MizanVerisiRequest];
+                          if (v == null) return "text.disabled";
+                          return v >= 0 ? "success.main" : "error.main";
+                        })()}>
+                          {requestData.mizanVerisi?.[r.degisimField as keyof MizanVerisiRequest] != null
+                            ? `%${(requestData.mizanVerisi![r.degisimField as keyof MizanVerisiRequest]! * 100).toFixed(1)}`
+                            : "-"}
+                        </Typography>
+                      ) : (
+                        <Typography variant="body2" color="text.disabled">-</Typography>
+                      )}
+                    </td>
+                    <td style={{ padding: 8, borderBottom: "1px solid #e2e8f0", fontSize: 12, color: "#64748b" }}>{r.bds}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Box>
           <Box mt={4} p={2} bgcolor="#f8fafc" borderRadius={1} border="1px solid #e2e8f0">
-            <Typography variant="subtitle2" fontWeight="bold" mb={2}>ÖNEMLİLİK HESAPLAMASI (Otomatik)</Typography>
-            <Box display="flex" gap={6}>
-              <Box><Typography variant="body2" color="text.secondary">PM</Typography><Typography variant="h6">{formatMoney(requestData.onemlilik_PM)}</Typography></Box>
-              <Box><Typography variant="body2" color="text.secondary">OM</Typography><Typography variant="h6">{formatMoney(requestData.onemlilik_OM)}</Typography></Box>
-              <Box><Typography variant="body2" color="text.secondary">Eşik</Typography><Typography variant="h6">{formatMoney(requestData.onemlilik_Esik)}</Typography></Box>
+            <Typography variant="subtitle2" fontWeight="bold" mb={2}>ÖNEMLİLİK HESAPLAMASI — BDS 320 §10-11</Typography>
+            <Box display="flex" gap={6} flexWrap="wrap">
+              <Box><Typography variant="body2" color="text.secondary">PM (Net Satış × %1)</Typography><Typography variant="h6">{formatMoney(requestData.onemlilik_PM)}</Typography></Box>
+              <Box><Typography variant="body2" color="text.secondary">OM (PM × %75)</Typography><Typography variant="h6">{formatMoney(requestData.onemlilik_OM)}</Typography></Box>
+              <Box><Typography variant="body2" color="text.secondary">Eşik (PM × %0.5)</Typography><Typography variant="h6">{formatMoney(requestData.onemlilik_Esik)}</Typography></Box>
             </Box>
           </Box>
         </Paper>
@@ -372,35 +431,61 @@ const BulguRiskiBelirlemeStepper = () => {
       {/* STEP 4: SONUÇLAR */}
       {activeStep === 3 && (
         <Paper sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h6" mb={3} color="primary">Denetim Riski ve Prosedür Önerisi</Typography>
+          <Typography variant="h6" mb={3} color="primary">Bulgu Riski Belirleme Belgesi — Sonuç ve OR Hesabı</Typography>
+          <Typography variant="body2" color="text.secondary" mb={3}>BDS 200 §A38-A42 | BDS 330 §18-21 | BDS 530 §A3-A7 | BDS 520 §5-7</Typography>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Box bgcolor="#f8fafc" p={3} borderRadius={2} border="1px solid #e2e8f0">
                 <Typography variant="subtitle2" color="text.secondary" mb={2}>HESAPLAMA</Typography>
-                <Box display="flex" justifyContent="space-between" mb={1}><Typography>DR</Typography><Typography fontWeight="bold">{requestData.dogalRisk?.toFixed(3)}</Typography></Box>
-                <Box display="flex" justifyContent="space-between" mb={1}><Typography>KR</Typography><Typography fontWeight="bold">{requestData.kontrolRiski?.toFixed(3)}</Typography></Box>
-                <Box display="flex" justifyContent="space-between" mb={1}><Typography>KDR</Typography><Typography fontWeight="bold">0.05</Typography></Box>
+                <Box display="flex" justifyContent="space-between" mb={1}>
+                  <Typography>Doğal Risk — DR</Typography>
+                  <Typography fontWeight="bold">{requestData.dogalRisk?.toFixed(3)} ({requestData.dogalRiskSeviyesi})</Typography>
+                </Box>
+                <Box display="flex" justifyContent="space-between" mb={1}>
+                  <Typography>Kontrol Riski — KR</Typography>
+                  <Typography fontWeight="bold">{requestData.kontrolRiski?.toFixed(3)} ({requestData.kontrolRiskiSeviyesi})</Typography>
+                </Box>
+                <Box display="flex" justifyContent="space-between" mb={1}>
+                  <Typography>Kabul Edilebilir Denetim Riski — KDR</Typography>
+                  <Typography fontWeight="bold">%5 (Sabit)</Typography>
+                </Box>
                 <Box borderTop="1px dashed #ccc" pt={2} display="flex" justifyContent="space-between">
-                  <Typography fontWeight="bold" color="primary">OR</Typography>
+                  <Typography fontWeight="bold" color="primary">OR = KDR / (DR × KR)</Typography>
                   <Typography variant="h6" color="primary">{formatPercent(requestData.ortayaCikaramama_OR)}</Typography>
+                </Box>
+                <Box mt={1} display="flex" justifyContent="space-between">
+                  <Typography variant="body2" color="text.secondary">Formül referansı</Typography>
+                  <Typography variant="body2" color="text.secondary">BDS 200 §A42</Typography>
                 </Box>
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Box bgcolor="#eff6ff" p={3} borderRadius={2} border="1px solid #bfdbfe">
-                <Typography variant="subtitle2" color="text.secondary" mb={2}>ÖNERİ</Typography>
+                <Typography variant="subtitle2" color="text.secondary" mb={2}>OTOMATİK PROSEDÜR ÖNERİSİ — BDS 330 §18-21 | BDS 530 §A3-A7</Typography>
                 <Typography variant="h6" color="#1e40af">{requestData.onerilen_DenetimProseduru}</Typography>
-                <Typography variant="body1" mt={1}>Örnekleme Oranı: {requestData.orneklemeOrani}</Typography>
-                <Box mt={2}>
-                  <TextField 
-                    label="Sonuç Metni" 
-                    multiline 
-                    fullWidth 
-                    rows={4} 
-                    value={requestData.sonucMetni || ""} 
-                    onChange={(e) => setRequestData(p => ({...p, sonucMetni: e.target.value}))}
-                  />
+                <Box mt={1} display="flex" gap={4} flexWrap="wrap">
+                  <Box><Typography variant="body2" color="text.secondary">Örnekleme Oranı</Typography><Typography fontWeight="bold">{requestData.orneklemeOrani}</Typography></Box>
+                  <Box><Typography variant="body2" color="text.secondary">Kanıt Yoğunluğu</Typography><Typography fontWeight="bold">{requestData.kanitYogunlugu || "-"}</Typography></Box>
+                  {requestData.aktifSatir && (
+                    <Box><Typography variant="body2" color="error" fontWeight="bold">{requestData.aktifSatir}</Typography></Box>
+                  )}
                 </Box>
+              </Box>
+              <Box mt={2} bgcolor="#fef2f2" p={2} borderRadius={2} border="1px solid #fecaca">
+                <Typography variant="subtitle2" color="error" mb={1}>Uygulanacak Prosedür</Typography>
+                <Typography fontWeight="bold" color="#991b1b">
+                  {requestData.onerilen_DenetimProseduru} | Örnekleme: {requestData.orneklemeOrani} | Kanıt: {requestData.kanitYogunlugu} | BDS 330 §18
+                </Typography>
+              </Box>
+              <Box mt={3}>
+                <Typography variant="subtitle2" color="text.secondary" mb={1}>SONUÇ PARAGRAFI — BDS 230 §8-11 (Denetim Dokümantasyonu)</Typography>
+                <TextField 
+                  multiline 
+                  fullWidth 
+                  rows={4} 
+                  value={requestData.sonucMetni || ""} 
+                  onChange={(e) => setRequestData(p => ({...p, sonucMetni: e.target.value}))}
+                />
               </Box>
             </Grid>
           </Grid>

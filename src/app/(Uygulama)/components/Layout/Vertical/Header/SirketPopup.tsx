@@ -250,6 +250,7 @@ const SirketPopup = () => {
               }
               selectedDenetlenenId={selectedId}
               currentYear={selectedYearNumber}
+              selectedDenetimTuru={selectedDenetimTuru}
             />
           </Box>
           <Button
